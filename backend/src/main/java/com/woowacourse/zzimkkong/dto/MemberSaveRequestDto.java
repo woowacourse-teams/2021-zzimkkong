@@ -10,8 +10,7 @@ public class MemberSaveRequestDto {
     private String email;
 
     @NotBlank(message = "비밀번호는 공백일 수 없습니다")
-    @Pattern(regexp = "[a-zA-Z0-9]{8,}", message = "비밀번호는 영어와 숫자를 포함해서 8자 이상 입력해주세요")
-    //todo 비밀번호 영어,숫자 반드시 포함 검증로직 추가
+    @Pattern(regexp = "(?=.*[0-9])(?=.*[a-zA-Z]).{8,}", message = "비밀번호는 영어와 숫자를 포함해서 8자 이상 입력해주세요")
     private String password;
 
     @NotBlank(message = "조직명은 공백일 수 없습니다")
