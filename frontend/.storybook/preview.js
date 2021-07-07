@@ -1,7 +1,13 @@
-import { Reset } from 'styled-reset';
+import { INITIAL_VIEWPORTS } from '@storybook/addon-viewport';
+import { ThemeProvider } from 'styled-components';
+import { theme, GlobalStyle } from '../src/App.styles';
 
 export const parameters = {
   actions: { argTypesRegex: '^on[A-Z].*' },
+  viewport: {
+    viewports: INITIAL_VIEWPORTS,
+    defaultViewport: 'iphone12',
+  },
   controls: {
     matchers: {
       color: /(background|color)$/i,
@@ -12,9 +18,9 @@ export const parameters = {
 
 export const decorators = [
   (Story) => (
-    <>
-      <Reset />
+    <ThemeProvider theme={theme}>
+      <GlobalStyle />
       <Story />
-    </>
+    </ThemeProvider>
   ),
 ];
