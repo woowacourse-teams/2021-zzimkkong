@@ -1,15 +1,9 @@
-import styled, { ThemeProvider } from 'styled-components';
-import { Reset } from 'styled-reset';
-import theme from './theme';
-
-const Title = styled.h1`
-  color: red;
-`;
+import { ThemeProvider } from 'styled-components';
+import { theme, GlobalStyle } from './App.styles';
 
 const App = (): JSX.Element => (
   <ThemeProvider theme={theme}>
-    <Reset />
-    <Title>찜꽁</Title>
+    <GlobalStyle />
   </ThemeProvider>
 );
 
