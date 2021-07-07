@@ -10,11 +10,11 @@ public class MemberSaveRequestDto {
     private String email;
 
     @NotBlank(message = "비밀번호는 공백일 수 없습니다")
-    @Pattern(regexp = "(?=.*[0-9])(?=.*[a-zA-Z]).{8,}", message = "비밀번호는 영어와 숫자를 포함해서 8자 이상 입력해주세요")
+    @Pattern(regexp = "^(?=.*[0-9])(?=.*[a-zA-Z]).{8,20}$", message = "비밀번호는 영어와 숫자를 포함해서 8자 이상 20자 이내로 입력해주세요")
     private String password;
 
     @NotBlank(message = "조직명은 공백일 수 없습니다")
-    //todo 조직명 특수문자 일부허용 검증로직 추가
+    @Pattern(regexp = "^[-_!?.,a-zA-Z0-9가-힣ㄱ-ㅎㅏ-ㅣ]{1,20}$", message = "조직명은 특수문자(-_!?.,)를 포함하여 20자 이내로 작성 가능합니다")
     private String organization;
 
     public MemberSaveRequestDto() {
