@@ -1,5 +1,5 @@
 import * as Styled from './Header.styles';
-import { ReactComponent as LogoIcon } from 'assets/svg/logo.svg';
+import LogoIcon from 'assets/svg/logo.svg';
 
 const Header = (): JSX.Element => (
   <Styled.Header>

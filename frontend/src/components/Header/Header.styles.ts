@@ -2,8 +2,11 @@ import styled from 'styled-components';
 
 export const Header = styled.header`
   display: flex;
+  position: sticky;
+  top: 0;
   align-items: center;
   height: 4rem;
+  background-color: ${({ theme }) => theme.white};
 
   svg {
     padding: 0.5rem 0;
