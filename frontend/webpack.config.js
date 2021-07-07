@@ -1,5 +1,6 @@
 const path = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
+const TsconfigPathsPlugin = require('tsconfig-paths-webpack-plugin');
 
 module.exports = () => {
   const isDevelopment = process.env.NODE_ENV !== 'production';
@@ -17,8 +18,13 @@ module.exports = () => {
     devServer: {
       port: 3000,
       hot: true,
+      historyApiFallback: true,
     },
     devtool: isDevelopment ? 'eval-source-map' : 'source-map',
+    resolve: {
+      extensions: ['.ts', '.tsx', '.js', '.jsx'],
+      plugins: [new TsconfigPathsPlugin({})],
+    },
     module: {
       rules: [
         {
@@ -32,8 +38,8 @@ module.exports = () => {
           exclude: /node_modules/,
         },
         {
-          test: /\.svg/,
-          type: 'asset/inline',
+          test: /\.svg$/,
+          use: ['@svgr/webpack', 'url-loader'],
         },
         {
           test: /\.png/,
