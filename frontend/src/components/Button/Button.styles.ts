@@ -27,7 +27,8 @@ const sizeCSS = {
   `,
   large: css`
     padding: 0.75rem 1rem;
-    font-size: 1rem;
+    font-size: 1.25rem;
+    font-weight: 700;
   `,
 };
 
