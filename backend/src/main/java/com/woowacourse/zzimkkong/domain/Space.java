@@ -24,4 +24,9 @@ public class Space {
 
     protected Space() {
     }
+
+    public Space(String name, Map map) {
+        this.name = name;
+        this.map = map;
+    }
 }

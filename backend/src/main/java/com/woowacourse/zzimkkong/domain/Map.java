@@ -24,4 +24,9 @@ public class Map {
 
     protected Map() {
     }
+
+    public Map(String name, Member member) {
+        this.name = name;
+        this.member = member;
+    }
 }

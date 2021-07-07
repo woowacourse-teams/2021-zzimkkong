@@ -24,4 +24,9 @@ public class Member {
     protected Member() {
     }
 
+    public Member(String email, String password, String organization) {
+        this.email = email;
+        this.password = password;
+        this.organization = organization;
+    }
 }
