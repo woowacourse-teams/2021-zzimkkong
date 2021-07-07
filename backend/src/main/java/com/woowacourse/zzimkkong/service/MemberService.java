@@ -7,20 +7,16 @@ import com.woowacourse.zzimkkong.exception.DuplicateEmailException;
 import com.woowacourse.zzimkkong.repository.MemberRepository;
 import org.springframework.stereotype.Service;
 
-import java.util.Optional;
-
 @Service
 public class MemberService {
-    private MemberRepository memberRepository;
+    private final MemberRepository memberRepository;
 
     public MemberService(final MemberRepository memberRepository) {
         this.memberRepository = memberRepository;
     }
 
     public MemberSaveResponseDto saveMember(final MemberSaveRequestDto memberSaveRequestDto) {
-        if (memberRepository.existsByEmail(memberSaveRequestDto.getEmail())) {
-            throw new DuplicateEmailException();
-        }
+        validateDuplicateEmail(memberSaveRequestDto.getEmail());
 
         Member member = new Member(
                 memberSaveRequestDto.getEmail(),
@@ -29,5 +25,11 @@ public class MemberService {
         );
         Member saveMember = memberRepository.save(member);
         return new MemberSaveResponseDto(saveMember.getId());
+    }
+
+    public void validateDuplicateEmail(final String email) {
+        if (memberRepository.existsByEmail(email)) {
+            throw new DuplicateEmailException();
+        }
     }
 }

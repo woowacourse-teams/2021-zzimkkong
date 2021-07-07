@@ -3,7 +3,7 @@ package com.woowacourse.zzimkkong.exception;
 import org.springframework.http.HttpStatus;
 
 public class MemberException extends RuntimeException {
-    private HttpStatus status;
+    private final HttpStatus status;
 
     public MemberException(final String message, final HttpStatus status) {
         super(message);
