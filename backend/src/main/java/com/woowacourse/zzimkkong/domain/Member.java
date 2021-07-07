@@ -29,4 +29,20 @@ public class Member {
         this.password = password;
         this.organization = organization;
     }
+
+    public Long getId() {
+        return id;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public String getOrganization() {
+        return organization;
+    }
 }
