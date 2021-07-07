@@ -1,10 +1,12 @@
-import { createGlobalStyle, css } from 'styled-components';
+import styled, { createGlobalStyle, css } from 'styled-components';
 import PALETTE from './constants/palette';
 
 export const theme = {
   primary: PALETTE.ORANGE,
   black: PALETTE.BLACK,
   white: PALETTE.WHITE,
+  red: PALETTE.RED,
+  green: PALETTE.GREEN,
 };
 
 const resetCSS = css`
@@ -143,13 +145,22 @@ export const GlobalStyle = createGlobalStyle`
 
   body {
     font-family: 'Noto Sans KR', sans-serif;
+    color: ${theme.black[400]};
   }
 
   input, button {
     font-family: inherit;
+    color: inherit;
   }
 
   * {
     box-sizing: border-box;
   }
+`;
+
+export const BaseLayout = styled.div`
+  padding: 0 1rem;
+  margin: 0 auto;
+  min-width: 320px;
+  max-width: 1320px;
 `;
