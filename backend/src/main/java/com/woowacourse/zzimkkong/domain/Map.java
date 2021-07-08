@@ -1,13 +1,6 @@
 package com.woowacourse.zzimkkong.domain;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.ForeignKey;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
+import javax.persistence.*;
 
 @Entity
 public class Map {
@@ -25,7 +18,7 @@ public class Map {
     protected Map() {
     }
 
-    public Map(String name, Member member) {
+    public Map(final String name, final Member member) {
         this.name = name;
         this.member = member;
     }

@@ -1,10 +1,6 @@
 package com.woowacourse.zzimkkong.domain;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
 
 @Entity
 public class Member {
@@ -24,9 +20,28 @@ public class Member {
     protected Member() {
     }
 
-    public Member(String email, String password, String organization) {
+    public Member(
+            final String email,
+            final String password,
+            final String organization) {
         this.email = email;
         this.password = password;
         this.organization = organization;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public String getOrganization() {
+        return organization;
     }
 }

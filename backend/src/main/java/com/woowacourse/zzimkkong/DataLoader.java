@@ -1,39 +1,41 @@
 package com.woowacourse.zzimkkong;
 
-import java.util.List;
-
-import org.springframework.boot.CommandLineRunner;
-import org.springframework.context.annotation.Profile;
-import org.springframework.stereotype.Component;
-
 import com.woowacourse.zzimkkong.domain.Map;
 import com.woowacourse.zzimkkong.domain.Member;
 import com.woowacourse.zzimkkong.domain.Space;
 import com.woowacourse.zzimkkong.repository.MapRepository;
 import com.woowacourse.zzimkkong.repository.MemberRepository;
 import com.woowacourse.zzimkkong.repository.SpaceRepository;
+import org.springframework.boot.CommandLineRunner;
+import org.springframework.context.annotation.Profile;
+import org.springframework.stereotype.Component;
+
+import java.util.List;
 
 @Component
 @Profile("local")
 public class DataLoader implements CommandLineRunner {
-    private MemberRepository memberRepository;
-    private MapRepository mapRepository;
-    private SpaceRepository spaceRepository;
+    private final MemberRepository memberRepository;
+    private final MapRepository mapRepository;
+    private final SpaceRepository spaceRepository;
 
-    public DataLoader(MemberRepository memberRepository, MapRepository mapRepository, SpaceRepository spaceRepository) {
+    public DataLoader(
+            final MemberRepository memberRepository,
+            final MapRepository mapRepository,
+            final SpaceRepository spaceRepository) {
         this.memberRepository = memberRepository;
         this.mapRepository = mapRepository;
         this.spaceRepository = spaceRepository;
     }
 
     @Override
-    public void run(String... args) throws Exception {
+    public void run(String... args) {
         Member pobi = memberRepository.save(
-            new Member("pobi@woowa.com", "test1234", "woowacourse")
+                new Member("pobi@woowa.com", "test1234", "woowacourse")
         );
 
         Map luther = mapRepository.save(
-            new Map("루터회관", pobi)
+                new Map("루터회관", pobi)
         );
 
         Space be = new Space("백엔드 강의실", luther);
@@ -52,11 +54,11 @@ public class DataLoader implements CommandLineRunner {
         Space trackRoom = new Space("트랙방", luther);
 
         List<Space> spaces = List.of(
-            be,
-            fe1, fe2,
-            meetingRoom1, meetingRoom2, meetingRoom3, meetingRoom4, meetingRoom5,
-            pairRoom1, pairRoom2, pairRoom3, pairRoom4, pairRoom5,
-            trackRoom
+                be,
+                fe1, fe2,
+                meetingRoom1, meetingRoom2, meetingRoom3, meetingRoom4, meetingRoom5,
+                pairRoom1, pairRoom2, pairRoom3, pairRoom4, pairRoom5,
+                trackRoom
         );
 
         for (Space space : spaces) {
