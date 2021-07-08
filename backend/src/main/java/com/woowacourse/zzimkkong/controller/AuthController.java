@@ -21,7 +21,7 @@ public class AuthController {
 
     @PostMapping("/login/token")
     // todo Access Token을 응답
-    public ResponseEntity<Void> login(@RequestBody @Valid LoginRequest loginRequest) {
+    public ResponseEntity<Void> login(@RequestBody @Valid final LoginRequest loginRequest) {
         authService.login(loginRequest);
         return ResponseEntity.ok().build();
     }
