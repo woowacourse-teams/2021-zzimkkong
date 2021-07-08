@@ -7,12 +7,17 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class MemberRepositoryTest extends RepositoryTest {
+    public static final String EMAIL = "pobi@email.com";
+    public static final String PASSWORD = "test1234";
+    public static final String ORGANIZATION = "루터";
+
     @Autowired
     private MemberRepository memberRepository;
 
-    private final Member MEMBER = new Member("pobi@woowa.com", "test1234", "woowacourse");
+    private final Member MEMBER = new Member(EMAIL, PASSWORD, ORGANIZATION);
 
     @Test
     @DisplayName("저장된 멤버를 이메일을 통해 찾아올 수 있다.")
@@ -21,10 +26,23 @@ class MemberRepositoryTest extends RepositoryTest {
         Member expected = memberRepository.save(MEMBER);
 
         // when
-        Member findMember = memberRepository.findByEmail(this.MEMBER.getEmail())
+        Member findMember = memberRepository.findByEmail(EMAIL)
                 .orElseThrow(LoginDataMismatchException::new);
 
         // then
         assertThat(findMember).isEqualTo(expected);
+    }
+
+    @Test
+    @DisplayName("특정 이메일을 가진 멤버가 있는지 확인할 수 있다.")
+    void existsByEmail() {
+        // given
+        memberRepository.save(MEMBER);
+
+        // when
+        boolean actual = memberRepository.existsByEmail(EMAIL);
+
+        // then
+        assertTrue(actual);
     }
 }
