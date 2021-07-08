@@ -25,7 +25,9 @@ public class MemberController {
     @PostMapping
     public ResponseEntity<Void> join(@RequestBody @Valid final MemberSaveRequest memberSaveRequest) {
         MemberSaveResponse memberSaveResponse = memberService.saveMember(memberSaveRequest);
-        return ResponseEntity.created(URI.create("/api/members/" + memberSaveResponse.getId())).build();
+        return ResponseEntity
+                .created(URI.create("/api/members/" + memberSaveResponse.getId()))
+                .build();
     }
 
     @GetMapping
