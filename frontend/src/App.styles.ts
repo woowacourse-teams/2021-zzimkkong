@@ -1,12 +1,12 @@
-import styled, { createGlobalStyle, css } from 'styled-components';
+import styled, { createGlobalStyle, css, DefaultTheme } from 'styled-components';
 import PALETTE from './constants/palette';
 
-export const theme = {
+export const theme: DefaultTheme = {
   primary: PALETTE.ORANGE,
-  black: PALETTE.BLACK,
-  white: PALETTE.WHITE,
   red: PALETTE.RED,
   green: PALETTE.GREEN,
+  black: PALETTE.BLACK,
+  white: PALETTE.WHITE,
 };
 
 const resetCSS = css`
