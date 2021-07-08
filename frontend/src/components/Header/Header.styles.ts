@@ -1,10 +1,9 @@
+import Layout from 'components/Layout/Layout';
 import styled from 'styled-components';
 
 export const Header = styled.header`
-  display: flex;
   position: sticky;
   top: 0;
-  align-items: center;
   height: 4rem;
   background-color: ${({ theme }) => theme.white};
 
@@ -12,6 +11,13 @@ export const Header = styled.header`
     padding: 0.5rem 0;
     height: 100%;
   }
+`;
+
+export const HeaderLayout = styled(Layout)`
+  display: flex;
+  align-items: center;
+  height: inherit;
+  width: 100%;
 `;
 
 export const Title = styled.h1`

@@ -157,10 +157,3 @@ export const GlobalStyle = createGlobalStyle`
     box-sizing: border-box;
   }
 `;
-
-export const BaseLayout = styled.div`
-  padding: 0 1rem;
-  margin: 0 auto;
-  min-width: 320px;
-  max-width: 1320px;
-`;
