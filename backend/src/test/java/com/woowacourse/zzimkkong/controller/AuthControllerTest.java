@@ -17,7 +17,7 @@ class AuthControllerTest extends AcceptanceTest {
     public static final String PASSWORD = "test1234";
     public static final String ORGANIZATION = "루터";
 
-    @DisplayName("유효한 정보의 로그인 요청이 들어오면 200 ok를 응답한다.")
+    @DisplayName("유효한 정보의 로그인 요청이 오면 200 ok를 응답한다.")
     @Test
     void login() {
         // given
@@ -29,6 +29,20 @@ class AuthControllerTest extends AcceptanceTest {
 
         // then
         assertEquals(response.statusCode(), HttpStatus.OK.value());
+    }
+
+    @DisplayName("유효하지 않은 정보의 로그인 요청이 오면 400 Bad Request를 응답한다.")
+    @Test
+    void loginWithInvalidInformation() {
+        // given
+        saveMember(new MemberSaveRequest(EMAIL, PASSWORD, ORGANIZATION));
+
+        // when
+        LoginRequest loginRequest = new LoginRequest(EMAIL, "Wrong Password");
+        ExtractableResponse<Response> response = login(loginRequest);
+
+        // then
+        assertEquals(response.statusCode(), HttpStatus.BAD_REQUEST.value());
     }
 
     private ExtractableResponse<Response> login(final LoginRequest loginRequest) {
