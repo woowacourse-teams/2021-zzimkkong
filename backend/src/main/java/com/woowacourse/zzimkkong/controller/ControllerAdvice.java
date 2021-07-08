@@ -7,6 +7,9 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
+import javax.validation.Constraint;
+import javax.validation.ConstraintViolationException;
+
 @RestControllerAdvice
 public class ControllerAdvice {
     @ExceptionHandler(MemberException.class)
@@ -19,4 +22,8 @@ public class ControllerAdvice {
         return ResponseEntity.badRequest().body(ErrorResponse.of(exception));
     }
 
+    @ExceptionHandler(ConstraintViolationException.class)
+    public ResponseEntity<ErrorResponse> invalidParamHandler(final ConstraintViolationException exception) {
+        return ResponseEntity.badRequest().body(ErrorResponse.of(exception));
+    }
 }
