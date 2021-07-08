@@ -18,3 +18,18 @@ export const Form = styled.form`
     margin: 2.5rem 0;
   }
 `;
+
+export const JoinMessage = styled.p`
+  margin: 1rem 0;
+  text-align: center;
+
+  a {
+    color: ${({ theme }) => theme.primary[400]};
+    text-decoration: none;
+    margin-left: 0.375rem;
+
+    &:hover {
+      font-weight: 700;
+    }
+  }
+`;

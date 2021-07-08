@@ -1,12 +1,13 @@
-import styled, { createGlobalStyle, css } from 'styled-components';
+import styled, { createGlobalStyle, css, DefaultTheme } from 'styled-components';
 import PALETTE from './constants/palette';
 
-export const theme = {
+export const theme: DefaultTheme = {
   primary: PALETTE.ORANGE,
-  black: PALETTE.BLACK,
-  white: PALETTE.WHITE,
   red: PALETTE.RED,
   green: PALETTE.GREEN,
+  black: PALETTE.BLACK,
+  white: PALETTE.WHITE,
+  gray: PALETTE.GRAY,
 };
 
 const resetCSS = css`
@@ -156,11 +157,4 @@ export const GlobalStyle = createGlobalStyle`
   * {
     box-sizing: border-box;
   }
-`;
-
-export const BaseLayout = styled.div`
-  padding: 0 1rem;
-  margin: 0 auto;
-  min-width: 320px;
-  max-width: 1320px;
 `;
