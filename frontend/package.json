@@ -21,9 +21,9 @@
     }
   ],
   "scripts": {
-    "prod": "NODE_ENV=production webpack serve",
-    "start": "NODE_ENV=development webpack serve",
-    "build": "NODE_ENV=production webpack",
+    "prod": "cross-env NODE_ENV=production webpack serve",
+    "start": "cross-env NODE_ENV=development webpack serve",
+    "build": "cross-env NODE_ENV=production webpack",
     "storybook": "start-storybook -p 6006",
     "build-storybook": "build-storybook"
   },
@@ -49,6 +49,7 @@
     "@typescript-eslint/parser": "^4.0.0",
     "babel-eslint": "^10.0.0",
     "babel-loader": "^8.2.2",
+    "cross-env": "^7.0.3",
     "eslint": "^7.5.0",
     "eslint-config-react-app": "^6.0.0",
     "eslint-plugin-flowtype": "^5.2.0",
