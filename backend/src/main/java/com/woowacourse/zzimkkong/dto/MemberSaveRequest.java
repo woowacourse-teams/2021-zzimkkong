@@ -5,7 +5,7 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 
-public class MemberSaveRequestDto {
+public class MemberSaveRequest {
     @NotBlank(message = "비어있는 항목을 입력해주세요.")
     @Email(message = "올바른 이메일 형식이 아닙니다.")
     private String email;
@@ -18,10 +18,10 @@ public class MemberSaveRequestDto {
     @Pattern(regexp = "^[-_!?.,a-zA-Z0-9가-힣ㄱ-ㅎㅏ-ㅣ]{1,20}$", message = "조직명은 특수문자(-_!?.,)를 포함하여 20자 이내로 작성 가능합니다.")
     private String organization;
 
-    public MemberSaveRequestDto() {
+    public MemberSaveRequest() {
     }
 
-    public MemberSaveRequestDto(final String email, final String password, final String organization) {
+    public MemberSaveRequest(final String email, final String password, final String organization) {
         this.email = email;
         this.password = password;
         this.organization = organization;

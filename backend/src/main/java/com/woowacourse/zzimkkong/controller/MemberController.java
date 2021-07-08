@@ -1,7 +1,7 @@
 package com.woowacourse.zzimkkong.controller;
 
-import com.woowacourse.zzimkkong.dto.MemberSaveRequestDto;
-import com.woowacourse.zzimkkong.dto.MemberSaveResponseDto;
+import com.woowacourse.zzimkkong.dto.MemberSaveRequest;
+import com.woowacourse.zzimkkong.dto.MemberSaveResponse;
 import com.woowacourse.zzimkkong.service.MemberService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
@@ -23,9 +23,9 @@ public class MemberController {
     }
 
     @PostMapping
-    public ResponseEntity<Void> join(@RequestBody @Valid final MemberSaveRequestDto memberSaveRequestDto) {
-        MemberSaveResponseDto memberSaveResponseDto = memberService.saveMember(memberSaveRequestDto);
-        return ResponseEntity.created(URI.create("/api/members/" + memberSaveResponseDto.getId())).build();
+    public ResponseEntity<Void> join(@RequestBody @Valid final MemberSaveRequest memberSaveRequest) {
+        MemberSaveResponse memberSaveResponse = memberService.saveMember(memberSaveRequest);
+        return ResponseEntity.created(URI.create("/api/members/" + memberSaveResponse.getId())).build();
     }
 
     @GetMapping

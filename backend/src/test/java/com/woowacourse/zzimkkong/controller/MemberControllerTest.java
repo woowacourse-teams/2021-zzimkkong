@@ -1,6 +1,6 @@
 package com.woowacourse.zzimkkong.controller;
 
-import com.woowacourse.zzimkkong.dto.MemberSaveRequestDto;
+import com.woowacourse.zzimkkong.dto.MemberSaveRequest;
 import com.woowacourse.zzimkkong.repository.MemberRepository;
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
@@ -25,9 +25,9 @@ class MemberControllerTest extends AcceptanceTest {
     @DisplayName("정상적인 회원가입 입력이 들어오면 회원 정보를 저장한다")
     @Test
     void join() {
-        MemberSaveRequestDto memberSaveRequestDto = new MemberSaveRequestDto(EMAIL, PASSWORD, ORGANIZATION);
+        MemberSaveRequest memberSaveRequest = new MemberSaveRequest(EMAIL, PASSWORD, ORGANIZATION);
 
-        saveMember(memberSaveRequestDto);
+        saveMember(memberSaveRequest);
 
         assertTrue(memberRepository.existsByEmail(EMAIL));
     }
@@ -35,9 +35,9 @@ class MemberControllerTest extends AcceptanceTest {
     @DisplayName("중복된 이메일을 입력하면 400 에러를 반환한다")
     @Test
     void validateEmail() {
-        MemberSaveRequestDto memberSaveRequestDto = new MemberSaveRequestDto(EMAIL, PASSWORD, ORGANIZATION);
+        MemberSaveRequest memberSaveRequest = new MemberSaveRequest(EMAIL, PASSWORD, ORGANIZATION);
 
-        saveMember(memberSaveRequestDto);
+        saveMember(memberSaveRequest);
 
         ExtractableResponse<Response> response = validateDuplicateEmail();
         assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
@@ -52,11 +52,11 @@ class MemberControllerTest extends AcceptanceTest {
                 .then().log().all().extract();
     }
 
-    private void saveMember(final MemberSaveRequestDto memberSaveRequestDto) {
+    private void saveMember(final MemberSaveRequest memberSaveRequest) {
         RestAssured
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(memberSaveRequestDto)
+                .body(memberSaveRequest)
                 .when().post("/api/members")
                 .then().log().all();
     }

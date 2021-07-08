@@ -1,8 +1,8 @@
 package com.woowacourse.zzimkkong.service;
 
 import com.woowacourse.zzimkkong.domain.Member;
-import com.woowacourse.zzimkkong.dto.MemberSaveRequestDto;
-import com.woowacourse.zzimkkong.dto.MemberSaveResponseDto;
+import com.woowacourse.zzimkkong.dto.MemberSaveRequest;
+import com.woowacourse.zzimkkong.dto.MemberSaveResponse;
 import com.woowacourse.zzimkkong.exception.DuplicateEmailException;
 import com.woowacourse.zzimkkong.repository.MemberRepository;
 import org.springframework.stereotype.Service;
@@ -15,16 +15,16 @@ public class MemberService {
         this.memberRepository = memberRepository;
     }
 
-    public MemberSaveResponseDto saveMember(final MemberSaveRequestDto memberSaveRequestDto) {
-        validateDuplicateEmail(memberSaveRequestDto.getEmail());
+    public MemberSaveResponse saveMember(final MemberSaveRequest memberSaveRequest) {
+        validateDuplicateEmail(memberSaveRequest.getEmail());
 
         Member member = new Member(
-                memberSaveRequestDto.getEmail(),
-                memberSaveRequestDto.getPassword(),
-                memberSaveRequestDto.getOrganization()
+                memberSaveRequest.getEmail(),
+                memberSaveRequest.getPassword(),
+                memberSaveRequest.getOrganization()
         );
         Member saveMember = memberRepository.save(member);
-        return new MemberSaveResponseDto(saveMember.getId());
+        return new MemberSaveResponse(saveMember.getId());
     }
 
     public void validateDuplicateEmail(final String email) {
