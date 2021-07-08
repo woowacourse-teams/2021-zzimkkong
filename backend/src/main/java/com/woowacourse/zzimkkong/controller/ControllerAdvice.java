@@ -11,12 +11,12 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 public class ControllerAdvice {
     @ExceptionHandler(MemberException.class)
     public ResponseEntity<ErrorResponse> memberExceptionHandler(MemberException exception) {
-        return ResponseEntity.status(exception.getStatus()).body(new ErrorResponse(exception.getMessage()));
+        return ResponseEntity.status(exception.getStatus()).body(ErrorResponse.of(exception));
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<ErrorResponse> invalidArgumentHandler(MethodArgumentNotValidException exception) {
-        String message = exception.getBindingResult().getAllErrors().get(0).getDefaultMessage();
-        return ResponseEntity.badRequest().body(new ErrorResponse(message));
+        return ResponseEntity.badRequest().body(ErrorResponse.of(exception));
     }
+
 }
