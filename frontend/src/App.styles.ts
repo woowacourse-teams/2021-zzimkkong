@@ -7,6 +7,7 @@ export const theme: DefaultTheme = {
   green: PALETTE.GREEN,
   black: PALETTE.BLACK,
   white: PALETTE.WHITE,
+  gray: PALETTE.GRAY,
 };
 
 const resetCSS = css`

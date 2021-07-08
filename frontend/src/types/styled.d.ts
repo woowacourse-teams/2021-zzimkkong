@@ -22,6 +22,7 @@ declare module 'styled-components' {
     red: Palette;
     green: Palette;
     black: Palette;
+    gray: Palette;
     white: Color;
   }
 }

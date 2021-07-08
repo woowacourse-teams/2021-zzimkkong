@@ -10,15 +10,17 @@ const Join = (): JSX.Element => {
       <Header />
       <Layout>
         <Styled.PageTitle>회원가입</Styled.PageTitle>
-        <Styled.Form>
-          <Input type="email" label="이메일" autoFocus />
-          <Input type="password" label="비밀번호" />
-          <Input type="password" label="비밀번호 확인" />
-          <Input type="text" label="조직명" />
-          <Button variant="primary" size="large" fullWidth>
-            회원가입
-          </Button>
-        </Styled.Form>
+        <Styled.Container>
+          <Styled.Form>
+            <Input type="email" label="이메일" autoFocus />
+            <Input type="password" label="비밀번호" />
+            <Input type="password" label="비밀번호 확인" />
+            <Input type="text" label="조직명" />
+            <Button variant="primary" size="large" fullWidth>
+              회원가입
+            </Button>
+          </Styled.Form>
+        </Styled.Container>
       </Layout>
     </>
   );
