@@ -1,7 +1,11 @@
 package com.woowacourse.zzimkkong.dto;
 
 public class MemberSaveResponseDto {
-    private final Long id;
+    private Long id;
+
+    public MemberSaveResponseDto() {
+
+    }
 
     public MemberSaveResponseDto(final Long id) {
         this.id = id;

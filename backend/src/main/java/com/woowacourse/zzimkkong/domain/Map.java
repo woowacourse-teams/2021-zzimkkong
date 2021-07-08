@@ -18,7 +18,7 @@ public class Map {
     protected Map() {
     }
 
-    public Map(String name, Member member) {
+    public Map(final String name, final Member member) {
         this.name = name;
         this.member = member;
     }

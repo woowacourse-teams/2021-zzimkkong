@@ -18,7 +18,7 @@ public class Space {
     protected Space() {
     }
 
-    public Space(String name, Map map) {
+    public Space(final String name, final Map map) {
         this.name = name;
         this.map = map;
     }

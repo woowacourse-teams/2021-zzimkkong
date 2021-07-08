@@ -20,7 +20,10 @@ public class Member {
     protected Member() {
     }
 
-    public Member(String email, String password, String organization) {
+    public Member(
+            final String email,
+            final String password,
+            final String organization) {
         this.email = email;
         this.password = password;
         this.organization = organization;

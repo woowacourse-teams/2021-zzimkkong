@@ -19,14 +19,17 @@ public class DataLoader implements CommandLineRunner {
     private final MapRepository mapRepository;
     private final SpaceRepository spaceRepository;
 
-    public DataLoader(MemberRepository memberRepository, MapRepository mapRepository, SpaceRepository spaceRepository) {
+    public DataLoader(
+            final MemberRepository memberRepository,
+            final MapRepository mapRepository,
+            final SpaceRepository spaceRepository) {
         this.memberRepository = memberRepository;
         this.mapRepository = mapRepository;
         this.spaceRepository = spaceRepository;
     }
 
     @Override
-    public void run(String... args) throws Exception {
+    public void run(String... args) {
         Member pobi = memberRepository.save(
                 new Member("pobi@woowa.com", "test1234", "woowacourse")
         );

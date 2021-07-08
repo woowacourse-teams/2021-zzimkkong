@@ -19,13 +19,13 @@ public class MemberController {
     }
 
     @PostMapping
-    public ResponseEntity<Void> join(@RequestBody @Valid MemberSaveRequestDto memberSaveRequestDto) {
+    public ResponseEntity<Void> join(@RequestBody @Valid final MemberSaveRequestDto memberSaveRequestDto) {
         MemberSaveResponseDto memberSaveResponseDto = memberService.saveMember(memberSaveRequestDto);
         return ResponseEntity.created(URI.create("/api/members/" + memberSaveResponseDto.getId())).build();
     }
 
     @GetMapping
-    public ResponseEntity<Void> validateEmail(@RequestParam String email) {
+    public ResponseEntity<Void> validateEmail(@RequestParam final String email) {
         memberService.validateDuplicateEmail(email);
         return ResponseEntity.ok().build();
     }
