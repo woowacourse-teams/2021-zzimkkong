@@ -1,5 +1,6 @@
 package com.woowacourse.zzimkkong.service;
 
+import com.woowacourse.zzimkkong.domain.Member;
 import com.woowacourse.zzimkkong.dto.LoginRequest;
 import com.woowacourse.zzimkkong.exception.LoginDataMismatchException;
 import com.woowacourse.zzimkkong.repository.MemberRepository;
@@ -17,9 +18,12 @@ public class AuthService {
 
     // todo AccessToken이 담긴 Dto를 반환
     public void login(LoginRequest loginRequest) {
-        memberRepository.findByEmail(loginRequest.getEmail())
-                .filter(findMember -> comparePassword(findMember.getPassword(), loginRequest.getPassword()))
+        Member findMember = memberRepository.findByEmail(loginRequest.getEmail())
                 .orElseThrow(LoginDataMismatchException::new);
+
+        if (!comparePassword(findMember.getPassword(), loginRequest.getPassword())) {
+            throw new LoginDataMismatchException();
+        }
     }
 
     private boolean comparePassword(String real, String input) {
