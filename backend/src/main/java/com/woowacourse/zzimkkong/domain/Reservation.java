@@ -31,4 +31,22 @@ public class Reservation {
     protected Reservation() {
     }
 
+    public Reservation(
+            LocalDateTime startTime,
+            LocalDateTime endTime,
+            String description,
+            String userName,
+            String password,
+            Space space) {
+        this.startTime = startTime;
+        this.endTime = endTime;
+        this.description = description;
+        this.userName = userName;
+        this.password = password;
+        this.space = space;
+    }
+
+    public Long getId() {
+        return id;
+    }
 }
