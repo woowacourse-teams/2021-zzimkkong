@@ -38,7 +38,7 @@ class AuthControllerTest extends AcceptanceTest {
         saveMember(new MemberSaveRequest(EMAIL, PASSWORD, ORGANIZATION));
 
         // when
-        LoginRequest loginRequest = new LoginRequest(EMAIL, "Wrong Password");
+        LoginRequest loginRequest = new LoginRequest(EMAIL, "WrongPassword1234");
         ExtractableResponse<Response> response = login(loginRequest);
 
         // then
