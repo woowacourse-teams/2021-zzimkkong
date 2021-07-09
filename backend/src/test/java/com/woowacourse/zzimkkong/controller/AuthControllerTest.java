@@ -20,7 +20,7 @@ class AuthControllerTest extends AcceptanceTest {
     public static final String PASSWORD = "test1234";
     public static final String ORGANIZATION = "루터";
 
-    @DisplayName("유효한 정보의 로그인 요청이 오면 200 ok으로 응답하며 토큰을 발급한다.")
+    @DisplayName("유효한 정보의 로그인 요청이 오면 200 ok로 응답하며 토큰을 발급한다.")
     @Test
     void login() {
         // given
