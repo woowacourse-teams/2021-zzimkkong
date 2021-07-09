@@ -9,7 +9,9 @@ import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 
+import static com.woowacourse.zzimkkong.controller.DocumentUtils.*;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.springframework.restdocs.restassured3.RestAssuredRestDocumentation.document;
 
 class MemberControllerTest extends AcceptanceTest {
     public static final String EMAIL = "pobi@email.com";
@@ -39,25 +41,31 @@ class MemberControllerTest extends AcceptanceTest {
         saveMember(memberSaveRequest);
 
         //then
-        ExtractableResponse<Response> response = validateDuplicateEmail();
+        ExtractableResponse<Response> response = validateDuplicateEmail(EMAIL);
         assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
     }
 
-    private ExtractableResponse<Response> validateDuplicateEmail() {
-        return RestAssured
-                .given().log().all()
-                .queryParam("email", EMAIL)
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .when().get("/api/members")
-                .then().log().all().extract();
+    @DisplayName("중복되지 않은 이메일을 입력하면 200 ok를 반환한다.")
+    @Test
+    void getMembers() {
+        //given
+        String email = "dusdn1702@naver.com";
+
+        //when
+        ExtractableResponse<Response> response = validateDuplicateEmail(email);
+
+        //then
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
     }
 
-    private ExtractableResponse<Response> saveMember(final MemberSaveRequest memberSaveRequest) {
+    private ExtractableResponse<Response> validateDuplicateEmail(String email) {
         return RestAssured
-                .given().log().all()
+                .given(getRequestSpecification()).log().all()
+                .accept("application/json")
+                .filter(document("member/get", getRequestPreprocessor(), getResponsePreprocessor()))
+                .queryParam("email", email)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(memberSaveRequest)
-                .when().post("/api/members")
+                .when().get("/api/members")
                 .then().log().all().extract();
     }
 }
