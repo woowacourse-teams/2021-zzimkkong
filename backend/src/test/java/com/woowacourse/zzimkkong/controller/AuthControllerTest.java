@@ -10,7 +10,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.assertj.core.api.Assertions.assertThat;
 
 class AuthControllerTest extends AcceptanceTest {
     public static final String EMAIL = "pobi@email.com";
@@ -28,7 +28,7 @@ class AuthControllerTest extends AcceptanceTest {
         ExtractableResponse<Response> response = login(loginRequest);
 
         // then
-        assertEquals(response.statusCode(), HttpStatus.OK.value());
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
     }
 
     @DisplayName("유효하지 않은 정보의 로그인 요청이 오면 400 Bad Request를 응답한다.")
@@ -42,7 +42,7 @@ class AuthControllerTest extends AcceptanceTest {
         ExtractableResponse<Response> response = login(loginRequest);
 
         // then
-        assertEquals(response.statusCode(), HttpStatus.BAD_REQUEST.value());
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
     }
 
     private ExtractableResponse<Response> login(final LoginRequest loginRequest) {

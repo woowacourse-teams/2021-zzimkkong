@@ -7,7 +7,6 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class MemberRepositoryTest extends RepositoryTest {
     public static final String EMAIL = "pobi@email.com";
@@ -43,6 +42,6 @@ class MemberRepositoryTest extends RepositoryTest {
         boolean actual = memberRepository.existsByEmail(EMAIL);
 
         // then
-        assertTrue(actual);
+        assertThat(actual).isTrue();
     }
 }
