@@ -51,13 +51,4 @@ class MemberControllerTest extends AcceptanceTest {
                 .when().get("/api/members")
                 .then().log().all().extract();
     }
-
-    private ExtractableResponse<Response> saveMember(final MemberSaveRequest memberSaveRequest) {
-        return RestAssured
-                .given().log().all()
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(memberSaveRequest)
-                .when().post("/api/members")
-                .then().log().all().extract();
-    }
 }
