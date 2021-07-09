@@ -22,4 +22,8 @@ public class Map {
         this.name = name;
         this.member = member;
     }
+
+    public Long getId() {
+        return id;
+    }
 }
