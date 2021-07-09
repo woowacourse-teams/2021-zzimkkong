@@ -28,4 +28,25 @@ public class JwtUtils {
                 .signWith(SignatureAlgorithm.HS256, secretKey)
                 .compact();
     }
+
+    public static PayloadBuilder payloadBuilder() {
+        return new PayloadBuilder();
+    }
+
+    public static class PayloadBuilder {
+        private final Claims claims;
+
+        private PayloadBuilder() {
+            this.claims = Jwts.claims();
+        }
+
+        public PayloadBuilder setSubject(String subject) {
+            claims.setSubject(subject);
+            return this;
+        }
+
+        public Map<String, Object> build() {
+            return claims;
+        }
+    }
 }

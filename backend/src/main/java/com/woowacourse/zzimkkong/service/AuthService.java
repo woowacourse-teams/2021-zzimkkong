@@ -10,9 +10,6 @@ import com.woowacourse.zzimkkong.repository.MemberRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.HashMap;
-import java.util.Map;
-
 @Service
 @Transactional
 public class AuthService {
@@ -27,14 +24,17 @@ public class AuthService {
     @Transactional(readOnly = true)
     public TokenResponse login(LoginRequest loginRequest) {
         Member findMember = findMemberByEmailOrElseThrow(loginRequest.getEmail());
-
         validatePassword(findMember, loginRequest.getPassword());
 
-        String token = jwtUtils.createToken(new HashMap<>(){{
-            put("sub", findMember.getEmail());
-        }});
+        String token = issueToken(findMember);
 
         return TokenResponse.of(token);
+    }
+
+    private String issueToken(Member findMember) {
+        return jwtUtils.createToken(JwtUtils.payloadBuilder()
+                .setSubject(findMember.getEmail())
+                .build());
     }
 
     private Member findMemberByEmailOrElseThrow(String email) {
