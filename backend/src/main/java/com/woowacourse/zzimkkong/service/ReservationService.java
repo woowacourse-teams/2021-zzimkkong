@@ -1,6 +1,5 @@
 package com.woowacourse.zzimkkong.service;
 
-import com.woowacourse.zzimkkong.domain.Map;
 import com.woowacourse.zzimkkong.domain.Reservation;
 import com.woowacourse.zzimkkong.domain.Space;
 import com.woowacourse.zzimkkong.dto.ReservationFindResponse;
@@ -30,8 +29,7 @@ public class ReservationService {
     }
 
     public ReservationSaveResponse saveReservation(Long mapId, ReservationSaveRequest reservationSaveRequest) {
-        Map map = mapRepository.findById(mapId).orElseThrow(NoSuchMapException::new);
-
+        validateMapExistence(mapId);
         Space space = spaceRepository.findById(reservationSaveRequest.getSpaceId())
                 .orElseThrow(NoSuchSpaceException::new);
 
@@ -49,17 +47,36 @@ public class ReservationService {
     }
 
     public ReservationFindResponse find(final Long mapId, final Long spaceId, final LocalDate date) {
+        validateMapExistence(mapId);
+        validateSpaceExistence(spaceId);
+
+        List<Reservation> reservations = getReservations(spaceId, date);
+
+        return ReservationFindResponse.of(reservations);
+    }
+
+    private List<Reservation> getReservations(final Long spaceId, final LocalDate date) {
         LocalDateTime minimumStartDateTime = date.atStartOfDay();
         LocalDateTime maximumStartDateTime = date.plusDays(1L).atStartOfDay();
 
-        List<Reservation> reservations = reservationRepository.findAllBySpaceIdAndStartTimeIsBetweenAndEndTimeIsBetween(
+        return reservationRepository.findAllBySpaceIdAndStartTimeIsBetweenAndEndTimeIsBetween(
                 spaceId,
                 minimumStartDateTime,
                 maximumStartDateTime,
                 minimumStartDateTime,
                 maximumStartDateTime
         );
+    }
 
-        return ReservationFindResponse.of(reservations);
+    private void validateSpaceExistence(final Long spaceId) {
+        if (!spaceRepository.existsById(spaceId)) {
+            throw new NoSuchSpaceException();
+        }
+    }
+
+    private void validateMapExistence(final Long mapId) {
+        if (!mapRepository.existsById(mapId)) {
+            throw new NoSuchMapException();
+        }
     }
 }
