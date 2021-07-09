@@ -462,9 +462,19 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 </li>
 </ul>
 </li>
+<li><a href="#_reservations예약">Reservations(예약)</a>
+<ul class="sectlevel2">
+<li><a href="#_예약_생성">예약 생성</a>
+<ul class="sectlevel3">
+<li><a href="#_request_4">Request</a></li>
+<li><a href="#_response_4">Response</a></li>
+</ul>
+</li>
+</ul>
+</li>
 <li><a href="#_예외처리">예외처리</a>
 <ul class="sectlevel2">
-<li><a href="#_response_4">Response</a></li>
+<li><a href="#_response_5">Response</a></li>
 </ul>
 </li>
 </ul>
@@ -483,7 +493,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">POST /api/members HTTP/1.1
 Accept: application/json
 Content-Type: application/json; charset=UTF-8
-Host: localhost:51883
+Host: localhost:53240
 Content-Length: 88
 
 {
@@ -502,8 +512,8 @@ Content-Length: 88
 Vary: Origin
 Vary: Access-Control-Request-Method
 Vary: Access-Control-Request-Headers
-Location: /api/members/1
-Date: Fri, 09 Jul 2021 07:09:03 GMT
+Location: /api/members/2
+Date: Fri, 09 Jul 2021 09:21:47 GMT
 Keep-Alive: timeout=60
 Connection: keep-alive</code></pre>
 </div>
@@ -519,14 +529,22 @@ Connection: keep-alive</code></pre>
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">GET /api/members?email=dusdn1702%40naver.com HTTP/1.1
 Accept: application/json
 Content-Type: application/json; charset=UTF-8
-Host: localhost:51876</code></pre>
+Host: localhost:53233</code></pre>
 </div>
 </div>
 </div>
 <div class="sect3">
 <h4 id="_response_2"><a class="link" href="#_response_2">Response</a></h4>
-<div class="paragraph">
-<p>Unresolved directive in member.adoc - include::../../../build/generated-snippets/member/gett/http-response.adoc[]</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">HTTP/1.1 200 OK
+Vary: Origin
+Vary: Access-Control-Request-Method
+Vary: Access-Control-Request-Headers
+Date: Fri, 09 Jul 2021 09:21:43 GMT
+Keep-Alive: timeout=60
+Connection: keep-alive</code></pre>
+</div>
 </div>
 </div>
 </div>
@@ -539,7 +557,7 @@ Host: localhost:51876</code></pre>
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">POST /api/login/token HTTP/1.1
 Accept: application/json
 Content-Type: application/json; charset=UTF-8
-Host: localhost:51883
+Host: localhost:53240
 Content-Length: 59
 
 {
@@ -557,7 +575,51 @@ Content-Length: 59
 Vary: Origin
 Vary: Access-Control-Request-Method
 Vary: Access-Control-Request-Headers
-Date: Fri, 09 Jul 2021 07:09:03 GMT
+Date: Fri, 09 Jul 2021 09:21:47 GMT
+Keep-Alive: timeout=60
+Connection: keep-alive</code></pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_reservations예약"><a class="link" href="#_reservations예약">Reservations(예약)</a></h2>
+<div class="sectionbody">
+<div class="sect2">
+<h3 id="_예약_생성"><a class="link" href="#_예약_생성">예약 생성</a></h3>
+<div class="sect3">
+<h4 id="_request_4"><a class="link" href="#_request_4">Request</a></h4>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">POST /api/maps/1/reservations HTTP/1.1
+Accept: application/json
+Content-Type: application/json; charset=UTF-8
+Host: localhost:53244
+Content-Length: 186
+
+{
+  "spaceId" : 1,
+  "startDateTime" : [ 2021, 5, 6, 16, 23 ],
+  "endDateTime" : [ 2021, 5, 6, 19, 23 ],
+  "password" : "2345",
+  "name" : "sally",
+  "description" : "회의입니다."
+}</code></pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_response_4"><a class="link" href="#_response_4">Response</a></h4>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">HTTP/1.1 201 Created
+Vary: Origin
+Vary: Access-Control-Request-Method
+Vary: Access-Control-Request-Headers
+Location: /api/maps/1reservations1
+Date: Fri, 09 Jul 2021 09:21:49 GMT
 Keep-Alive: timeout=60
 Connection: keep-alive</code></pre>
 </div>
@@ -568,7 +630,7 @@ Connection: keep-alive</code></pre>
 </div>
 <h1 id="_예외처리" class="sect0"><a class="link" href="#_예외처리">예외처리</a></h1>
 <div class="sect2">
-<h3 id="_response_4"><a class="link" href="#_response_4">Response</a></h3>
+<h3 id="_response_5"><a class="link" href="#_response_5">Response</a></h3>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">HTTP/1.1 400 Bad Request
@@ -584,7 +646,7 @@ Content-Type: application/json
 <div id="footer">
 <div id="footer-text">
 Version 0.0.1-SNAPSHOT<br>
-Last updated 2021-07-09 15:55:19 +0900
+Last updated 2021-07-09 18:21:16 +0900
 </div>
 </div>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.13.1/styles/github.min.css">

@@ -40,7 +40,7 @@ public class ReservationControllerTest extends AcceptanceTest {
         return RestAssured
                 .given(getRequestSpecification()).log().all()
                 .accept("application/json")
-                .filter(document("reservation/post", getRequestPreprocessor(), getResponsePreprocessor()))
+                .filter(document("reservations/post", getRequestPreprocessor(), getResponsePreprocessor()))
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body(reservationSaveRequest)
                 .when().post("/api/maps/1/reservations")
