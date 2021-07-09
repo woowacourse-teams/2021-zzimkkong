@@ -1,6 +1,7 @@
 package com.woowacourse.zzimkkong.controller;
 
 import com.woowacourse.zzimkkong.dto.LoginRequest;
+import com.woowacourse.zzimkkong.dto.TokenResponse;
 import com.woowacourse.zzimkkong.service.AuthService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -20,9 +21,8 @@ public class AuthController {
     }
 
     @PostMapping("/login/token")
-    // todo Access Token을 응답
-    public ResponseEntity<Void> login(@RequestBody @Valid final LoginRequest loginRequest) {
-        authService.login(loginRequest);
-        return ResponseEntity.ok().build();
+    public ResponseEntity<TokenResponse> login(@RequestBody @Valid final LoginRequest loginRequest) {
+        return ResponseEntity.ok()
+                .body(authService.login(loginRequest));
     }
 }

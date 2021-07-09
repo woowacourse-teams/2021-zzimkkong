@@ -2,6 +2,7 @@ package com.woowacourse.zzimkkong.controller;
 
 import com.woowacourse.zzimkkong.dto.LoginRequest;
 import com.woowacourse.zzimkkong.dto.MemberSaveRequest;
+import com.woowacourse.zzimkkong.dto.TokenResponse;
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
@@ -19,7 +20,7 @@ class AuthControllerTest extends AcceptanceTest {
     public static final String PASSWORD = "test1234";
     public static final String ORGANIZATION = "루터";
 
-    @DisplayName("유효한 정보의 로그인 요청이 오면 200 ok를 응답한다.")
+    @DisplayName("유효한 정보의 로그인 요청이 오면 200 ok와 토큰을 발급한다.")
     @Test
     void login() {
         // given
@@ -28,9 +29,11 @@ class AuthControllerTest extends AcceptanceTest {
         // when
         LoginRequest loginRequest = new LoginRequest(EMAIL, PASSWORD);
         ExtractableResponse<Response> response = login(loginRequest);
+        TokenResponse responseBody = response.body().as(TokenResponse.class);
 
         // then
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
+        assertThat(responseBody.getAccessToken()).isInstanceOf(String.class);
     }
 
     @DisplayName("유효하지 않은 정보의 로그인 요청이 오면 400 Bad Request를 응답한다.")

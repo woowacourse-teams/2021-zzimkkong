@@ -34,6 +34,9 @@ dependencies {
     //restdocs
     asciidoctor 'org.springframework.restdocs:spring-restdocs-asciidoctor'
     testImplementation 'org.springframework.restdocs:spring-restdocs-restassured'
+
+    //jwt
+    implementation 'io.jsonwebtoken:jjwt:0.9.1'
 }
 
 test {

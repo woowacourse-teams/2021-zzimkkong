@@ -2,27 +2,39 @@ package com.woowacourse.zzimkkong.service;
 
 import com.woowacourse.zzimkkong.domain.Member;
 import com.woowacourse.zzimkkong.dto.LoginRequest;
+import com.woowacourse.zzimkkong.dto.TokenResponse;
 import com.woowacourse.zzimkkong.exception.NoSuchEmailException;
 import com.woowacourse.zzimkkong.exception.PasswordMismatchException;
+import com.woowacourse.zzimkkong.infrastructure.JwtUtils;
 import com.woowacourse.zzimkkong.repository.MemberRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.HashMap;
+import java.util.Map;
 
 @Service
 @Transactional
 public class AuthService {
     private final MemberRepository memberRepository;
+    private final JwtUtils jwtUtils;
 
-    public AuthService(final MemberRepository memberRepository) {
+    public AuthService(MemberRepository memberRepository, JwtUtils jwtUtils) {
         this.memberRepository = memberRepository;
+        this.jwtUtils = jwtUtils;
     }
 
-    // todo AccessToken이 담긴 Dto를 반환
     @Transactional(readOnly = true)
-    public void login(LoginRequest loginRequest) {
+    public TokenResponse login(LoginRequest loginRequest) {
         Member findMember = findMemberByEmailOrElseThrow(loginRequest.getEmail());
 
         validatePassword(findMember, loginRequest.getPassword());
+
+        String token = jwtUtils.createToken(new HashMap<>(){{
+            put("sub", findMember.getEmail());
+        }});
+
+        return TokenResponse.of(token);
     }
 
     private Member findMemberByEmailOrElseThrow(String email) {
