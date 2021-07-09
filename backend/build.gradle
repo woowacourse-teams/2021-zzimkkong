@@ -1,7 +1,7 @@
 plugins {
     id 'org.springframework.boot' version '2.5.2'
     id 'io.spring.dependency-management' version '1.0.11.RELEASE'
-    id 'org.asciidoctor.convert' version '1.5.8'
+    id "org.asciidoctor.convert" version "1.5.10"
     id 'java'
 }
 
@@ -14,21 +14,26 @@ repositories {
 }
 
 ext {
-    set('snippetsDir', file("build/generated-snippets"))
+    snippetsDir = file('build/generated-snippets')
 }
 
 dependencies {
+    //spring
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
     implementation 'org.springframework.boot:spring-boot-starter-validation'
     implementation 'org.springframework.boot:spring-boot-starter-web'
 
+    //database
     runtimeOnly 'mysql:mysql-connector-java'
     runtimeOnly 'com.h2database:h2'
 
-
     testImplementation 'io.rest-assured:rest-assured:3.3.0'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
-    testImplementation 'org.springframework.restdocs:spring-restdocs-mockmvc'
+    // testImplementation 'org.springframework.restdocs:spring-restdocs-mockmvc'
+
+    //restdocs
+    asciidoctor 'org.springframework.restdocs:spring-restdocs-asciidoctor'
+    testImplementation 'org.springframework.restdocs:spring-restdocs-restassured'
 }
 
 test {
@@ -39,4 +44,17 @@ test {
 asciidoctor {
     inputs.dir snippetsDir
     dependsOn test
+}
+
+task createDocument(type: Copy) {
+    dependsOn asciidoctor
+    from file("build/asciidoc/html5/index.html")
+    into file("src/main/resources/static/docs")
+}
+
+bootJar {
+    dependsOn createDocument
+    from ("${asciidoctor.outputDir}/html5") {
+        into 'static/docs'
+    }
 }

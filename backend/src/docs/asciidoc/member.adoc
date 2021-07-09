@@ -1,0 +1,6 @@
+== Member(멤버)
+=== 멤버 회원가입
+==== Request
+include::{snippets}/member/http-request.adoc[]
+==== Response
+include::{snippets}/member/http-response.adoc[]

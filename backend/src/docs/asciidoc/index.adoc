@@ -1,0 +1,21 @@
+= ZZIMKKONG Application API Document
+:doctype: book
+:icons: font
+:source-highlighter: highlightjs
+:toc: left
+:toclevels: 3
+:sectlinks:
+
+include::member.adoc[]
+
+# 예외처리
+### Response
+[source,http,options="nowrap"]
+----
+HTTP/1.1 400 Bad Request
+Content-Type: application/json
+
+{
+  "message": "예외 메시지"
+}
+----
