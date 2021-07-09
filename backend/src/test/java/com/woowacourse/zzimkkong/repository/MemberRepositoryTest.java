@@ -16,7 +16,7 @@ class MemberRepositoryTest extends RepositoryTest {
     @Autowired
     private MemberRepository memberRepository;
 
-    private final Member MEMBER = new Member(EMAIL, PASSWORD, ORGANIZATION);
+    public static final Member MEMBER = new Member(EMAIL, PASSWORD, ORGANIZATION);
 
     @Test
     @DisplayName("저장된 멤버를 이메일을 통해 찾아올 수 있다.")
