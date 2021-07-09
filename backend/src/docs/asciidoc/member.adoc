@@ -1,6 +1,20 @@
 == Member(멤버)
+
 === 멤버 회원가입
 ==== Request
-include::{snippets}/member/http-request.adoc[]
+include::{snippets}/member/post/http-request.adoc[]
 ==== Response
-include::{snippets}/member/http-response.adoc[]
+include::{snippets}/member/post/http-response.adoc[]
+
+=== 멤버 이메일 중복 확인
+==== Request
+include::{snippets}/member/get/http-request.adoc[]
+==== Response
+include::{snippets}/member/get/http-response.adoc[]
+
+=== 멤버 로그인
+==== Request
+include::{snippets}/member/login/http-request.adoc[]
+==== Response
+include::{snippets}/member/login/http-response.adoc[]
+

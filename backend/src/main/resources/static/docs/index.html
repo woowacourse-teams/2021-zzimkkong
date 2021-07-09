@@ -448,11 +448,23 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <li><a href="#_response">Response</a></li>
 </ul>
 </li>
+<li><a href="#_멤버_이메일_중복_확인">멤버 이메일 중복 확인</a>
+<ul class="sectlevel3">
+<li><a href="#_request_2">Request</a></li>
+<li><a href="#_response_2">Response</a></li>
+</ul>
+</li>
+<li><a href="#_멤버_로그인">멤버 로그인</a>
+<ul class="sectlevel3">
+<li><a href="#_request_3">Request</a></li>
+<li><a href="#_response_3">Response</a></li>
+</ul>
+</li>
 </ul>
 </li>
 <li><a href="#_예외처리">예외처리</a>
 <ul class="sectlevel2">
-<li><a href="#_response_2">Response</a></li>
+<li><a href="#_response_4">Response</a></li>
 </ul>
 </li>
 </ul>
@@ -471,7 +483,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">POST /api/members HTTP/1.1
 Accept: application/json
 Content-Type: application/json; charset=UTF-8
-Host: localhost:59881
+Host: localhost:51883
 Content-Length: 88
 
 {
@@ -487,8 +499,65 @@ Content-Length: 88
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">HTTP/1.1 201 Created
+Vary: Origin
+Vary: Access-Control-Request-Method
+Vary: Access-Control-Request-Headers
 Location: /api/members/1
-Date: Thu, 08 Jul 2021 12:00:33 GMT
+Date: Fri, 09 Jul 2021 07:09:03 GMT
+Keep-Alive: timeout=60
+Connection: keep-alive</code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_멤버_이메일_중복_확인"><a class="link" href="#_멤버_이메일_중복_확인">멤버 이메일 중복 확인</a></h3>
+<div class="sect3">
+<h4 id="_request_2"><a class="link" href="#_request_2">Request</a></h4>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">GET /api/members?email=dusdn1702%40naver.com HTTP/1.1
+Accept: application/json
+Content-Type: application/json; charset=UTF-8
+Host: localhost:51876</code></pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_response_2"><a class="link" href="#_response_2">Response</a></h4>
+<div class="paragraph">
+<p>Unresolved directive in member.adoc - include::../../../build/generated-snippets/member/gett/http-response.adoc[]</p>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_멤버_로그인"><a class="link" href="#_멤버_로그인">멤버 로그인</a></h3>
+<div class="sect3">
+<h4 id="_request_3"><a class="link" href="#_request_3">Request</a></h4>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">POST /api/login/token HTTP/1.1
+Accept: application/json
+Content-Type: application/json; charset=UTF-8
+Host: localhost:51883
+Content-Length: 59
+
+{
+  "email" : "pobi@email.com",
+  "password" : "test1234"
+}</code></pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_response_3"><a class="link" href="#_response_3">Response</a></h4>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">HTTP/1.1 200 OK
+Vary: Origin
+Vary: Access-Control-Request-Method
+Vary: Access-Control-Request-Headers
+Date: Fri, 09 Jul 2021 07:09:03 GMT
 Keep-Alive: timeout=60
 Connection: keep-alive</code></pre>
 </div>
@@ -499,7 +568,7 @@ Connection: keep-alive</code></pre>
 </div>
 <h1 id="_예외처리" class="sect0"><a class="link" href="#_예외처리">예외처리</a></h1>
 <div class="sect2">
-<h3 id="_response_2"><a class="link" href="#_response_2">Response</a></h3>
+<h3 id="_response_4"><a class="link" href="#_response_4">Response</a></h3>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">HTTP/1.1 400 Bad Request
@@ -515,7 +584,7 @@ Content-Type: application/json
 <div id="footer">
 <div id="footer-text">
 Version 0.0.1-SNAPSHOT<br>
-Last updated 2021-07-08 21:00:10 +0900
+Last updated 2021-07-09 15:55:19 +0900
 </div>
 </div>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.13.1/styles/github.min.css">
