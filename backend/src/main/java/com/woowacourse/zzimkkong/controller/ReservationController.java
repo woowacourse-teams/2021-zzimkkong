@@ -8,6 +8,7 @@ import com.woowacourse.zzimkkong.service.ReservationService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.net.URI;
 
 @RestController
@@ -36,7 +37,7 @@ public class ReservationController {
     public ResponseEntity<Void> delete(
             @PathVariable Long mapId,
             @PathVariable Long reservationId,
-            @RequestBody ReservationDeleteRequest reservationDeleteRequest) {
+            @RequestBody @Valid ReservationDeleteRequest reservationDeleteRequest) {
         reservationService.deleteReservation(mapId, reservationId, reservationDeleteRequest);
         return ResponseEntity.noContent().build();
     }
