@@ -1,18 +1,20 @@
 import { AxiosError } from 'axios';
 import { FormEventHandler } from 'react';
 import { useQuery } from 'react-query';
-import { Link } from 'react-router-dom';
+import { Link, useHistory } from 'react-router-dom';
 import { postLogin } from 'api/login';
 import Button from 'components/Button/Button';
 import Header from 'components/Header/Header';
 import Input from 'components/Input/Input';
 import Layout from 'components/Layout/Layout';
+import PATH from 'constants/path';
 import useInput from 'hooks/useInput';
 import * as Styled from './Login.styles';
 
 const Login = (): JSX.Element => {
   const [email, onChangeEmail] = useInput('');
   const [password, onChangePassword] = useInput('');
+  const history = useHistory();
 
   const login = useQuery(['login', { email, password }], postLogin, {
     enabled: false,
@@ -25,6 +27,10 @@ const Login = (): JSX.Element => {
     if (!(email && password)) return;
 
     login.refetch();
+
+    if (login.isSuccess) {
+      history.push(PATH.HOME);
+    }
   };
 
   return (
