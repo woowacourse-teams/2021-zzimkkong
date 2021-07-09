@@ -1,3 +1,4 @@
+import { AxiosError } from 'axios';
 import { FormEventHandler } from 'react';
 import { useQuery } from 'react-query';
 import { Link } from 'react-router-dom';
@@ -48,14 +49,17 @@ const Login = (): JSX.Element => {
               onChange={onChangePassword}
               required
             />
+            <Styled.LoginErrorMessage>
+              {(login.error as AxiosError)?.response?.data?.message}
+            </Styled.LoginErrorMessage>
             <Button variant="primary" size="large" fullWidth>
               로그인
             </Button>
           </Styled.Form>
-          <Styled.JoinMessage>
+          <Styled.JoinLinkMessage>
             아직 회원이 아니신가요?
             <Link to="/join">회원가입하기</Link>
-          </Styled.JoinMessage>
+          </Styled.JoinLinkMessage>
         </Styled.Container>
       </Layout>
     </>
