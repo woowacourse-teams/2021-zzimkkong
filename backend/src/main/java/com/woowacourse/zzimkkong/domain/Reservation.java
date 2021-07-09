@@ -49,4 +49,20 @@ public class Reservation {
     public Long getId() {
         return id;
     }
+
+    public LocalDateTime getStartTime() {
+        return startTime;
+    }
+
+    public LocalDateTime getEndTime() {
+        return endTime;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public String getUserName() {
+        return userName;
+    }
 }

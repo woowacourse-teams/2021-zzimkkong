@@ -3,6 +3,7 @@ package com.woowacourse.zzimkkong.service;
 import com.woowacourse.zzimkkong.domain.Map;
 import com.woowacourse.zzimkkong.domain.Reservation;
 import com.woowacourse.zzimkkong.domain.Space;
+import com.woowacourse.zzimkkong.dto.ReservationFindResponse;
 import com.woowacourse.zzimkkong.exception.NoSuchMapException;
 import com.woowacourse.zzimkkong.dto.ReservationSaveRequest;
 import com.woowacourse.zzimkkong.dto.ReservationSaveResponse;
@@ -11,6 +12,10 @@ import com.woowacourse.zzimkkong.repository.MapRepository;
 import com.woowacourse.zzimkkong.repository.ReservationRepository;
 import com.woowacourse.zzimkkong.repository.SpaceRepository;
 import org.springframework.stereotype.Service;
+
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.List;
 
 @Service
 public class ReservationService {
@@ -41,5 +46,20 @@ public class ReservationService {
         );
 
         return ReservationSaveResponse.of(reservation);
+    }
+
+    public ReservationFindResponse find(final Long mapId, final Long spaceId, final LocalDate date) {
+        LocalDateTime minimumStartDateTime = date.atStartOfDay();
+        LocalDateTime maximumStartDateTime = date.plusDays(1L).atStartOfDay();
+
+        List<Reservation> reservations = reservationRepository.findAllBySpaceIdAndStartTimeIsBetweenAndEndTimeIsBetween(
+                spaceId,
+                minimumStartDateTime,
+                maximumStartDateTime,
+                minimumStartDateTime,
+                maximumStartDateTime
+        );
+
+        return ReservationFindResponse.of(reservations);
     }
 }
