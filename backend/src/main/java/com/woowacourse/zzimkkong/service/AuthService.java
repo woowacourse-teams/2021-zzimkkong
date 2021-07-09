@@ -16,7 +16,7 @@ public class AuthService {
     private final MemberRepository memberRepository;
     private final JwtUtils jwtUtils;
 
-    public AuthService(MemberRepository memberRepository, JwtUtils jwtUtils) {
+    public AuthService(final MemberRepository memberRepository, final JwtUtils jwtUtils) {
         this.memberRepository = memberRepository;
         this.jwtUtils = jwtUtils;
     }
