@@ -1,0 +1,13 @@
+== Reservation(예약)
+
+=== 예약 추가
+==== Request
+include::{snippets}/reservation/post/http-request.adoc[]
+==== Response
+include::{snippets}/reservation/post/http-response.adoc[]
+
+=== 예약 삭제
+==== Request
+include::{snippets}/reservation/delete/http-request.adoc[]
+==== Response
+include::{snippets}/reservation/delete/http-response.adoc[]
