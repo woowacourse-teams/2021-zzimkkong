@@ -10,7 +10,9 @@ import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 
+import static com.woowacourse.zzimkkong.controller.DocumentUtils.*;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.springframework.restdocs.restassured3.RestAssuredRestDocumentation.document;
 
 class AuthControllerTest extends AcceptanceTest {
     public static final String EMAIL = "pobi@email.com";
@@ -47,7 +49,9 @@ class AuthControllerTest extends AcceptanceTest {
 
     private ExtractableResponse<Response> login(final LoginRequest loginRequest) {
         return RestAssured
-                .given().log().all()
+                .given(getRequestSpecification()).log().all()
+                .accept("application/json")
+                .filter(document("member/login", getRequestPreprocessor(), getResponsePreprocessor()))
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body(loginRequest)
                 .when().post("/api/login/token")
