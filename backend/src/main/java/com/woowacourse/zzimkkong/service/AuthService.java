@@ -18,6 +18,7 @@ public class AuthService {
     }
 
     // todo AccessToken이 담긴 Dto를 반환
+    @Transactional(readOnly = true)
     public void login(LoginRequest loginRequest) {
         Member findMember = findMemberByEmailOrElseThrow(loginRequest.getEmail());
 
