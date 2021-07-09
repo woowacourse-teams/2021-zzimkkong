@@ -1,7 +1,6 @@
 package com.woowacourse.zzimkkong.controller;
 
 import com.woowacourse.zzimkkong.dto.ErrorResponse;
-import com.woowacourse.zzimkkong.exception.AuthorizationException;
 import com.woowacourse.zzimkkong.exception.MemberException;
 import org.springframework.dao.DataAccessException;
 import org.springframework.http.ResponseEntity;
@@ -15,13 +14,6 @@ import javax.validation.ConstraintViolationException;
 public class ControllerAdvice {
     @ExceptionHandler(MemberException.class)
     public ResponseEntity<ErrorResponse> memberExceptionHandler(final MemberException exception) {
-        return ResponseEntity
-                .status(exception.getStatus())
-                .body(ErrorResponse.of(exception));
-    }
-
-    @ExceptionHandler(AuthorizationException.class)
-    public ResponseEntity<ErrorResponse> authorizationExceptionHandler(final AuthorizationException exception) {
         return ResponseEntity
                 .status(exception.getStatus())
                 .body(ErrorResponse.of(exception));
