@@ -18,15 +18,19 @@ public class AuthService {
 
     // todo AccessToken이 담긴 Dto를 반환
     public void login(LoginRequest loginRequest) {
-        Member findMember = memberRepository.findByEmail(loginRequest.getEmail())
-                .orElseThrow(LoginDataMismatchException::new);
+        Member findMember = findMemberByEmailOrElseThrow(loginRequest.getEmail());
 
-        if (!comparePassword(findMember.getPassword(), loginRequest.getPassword())) {
-            throw new LoginDataMismatchException();
-        }
+        validatePassword(findMember, loginRequest.getPassword());
     }
 
-    private boolean comparePassword(String real, String input) {
-        return real.equals(input);
+    private Member findMemberByEmailOrElseThrow(String email) {
+        return memberRepository.findByEmail(email)
+                .orElseThrow(LoginDataMismatchException::new);
+    }
+
+    private void validatePassword(Member findMember, String password) {
+        if (!findMember.getPassword().equals(password)) {
+            throw new LoginDataMismatchException();
+        }
     }
 }
