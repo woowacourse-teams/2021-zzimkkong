@@ -33,13 +33,7 @@ public class ReservationService {
                 .orElseThrow(NoSuchSpaceException::new);
 
         Reservation reservation = reservationRepository.save(
-                new Reservation(
-                        reservationSaveRequest.getStartDateTime(),
-                        reservationSaveRequest.getEndDateTime(),
-                        reservationSaveRequest.getPassword(),
-                        reservationSaveRequest.getName(),
-                        reservationSaveRequest.getDescription(),
-                        space)
+                Reservation.from(reservationSaveRequest, space)
         );
 
         return ReservationSaveResponse.of(reservation);

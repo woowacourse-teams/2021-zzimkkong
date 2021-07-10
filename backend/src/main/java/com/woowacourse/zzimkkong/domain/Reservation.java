@@ -1,5 +1,7 @@
 package com.woowacourse.zzimkkong.domain;
 
+import com.woowacourse.zzimkkong.dto.ReservationSaveRequest;
+
 import javax.persistence.*;
 import java.time.LocalDateTime;
 
@@ -15,14 +17,14 @@ public class Reservation {
     @Column(nullable = false)
     private LocalDateTime endTime;
 
-    @Column(nullable = false, length = 100)
-    private String description;
+    @Column(nullable = false, length = 20)
+    private String password;
 
     @Column(nullable = false, length = 20)
     private String userName;
 
-    @Column(nullable = false, length = 20)
-    private String password;
+    @Column(nullable = false, length = 100)
+    private String description;
 
     @ManyToOne
     @JoinColumn(name = "space_id", foreignKey = @ForeignKey(name = "fk_reservation_space"))
@@ -31,20 +33,31 @@ public class Reservation {
     protected Reservation() {
     }
 
-    public Reservation(
+    protected Reservation(
             LocalDateTime startTime,
             LocalDateTime endTime,
-            String description,
-            String userName,
             String password,
+            String userName,
+            String description,
             Space space) {
         this.startTime = startTime;
         this.endTime = endTime;
-        this.description = description;
-        this.userName = userName;
         this.password = password;
+        this.userName = userName;
+        this.description = description;
         this.space = space;
     }
+
+    public static Reservation from(ReservationSaveRequest reservationSaveRequest, Space space) {
+        return new Reservation(
+                reservationSaveRequest.getStartDateTime(),
+                reservationSaveRequest.getEndDateTime(),
+                reservationSaveRequest.getPassword(),
+                reservationSaveRequest.getName(),
+                reservationSaveRequest.getDescription(),
+                space);
+    }
+
 
     public Long getId() {
         return id;
