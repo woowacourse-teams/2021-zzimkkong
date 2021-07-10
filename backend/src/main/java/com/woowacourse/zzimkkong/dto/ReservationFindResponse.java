@@ -1,6 +1,5 @@
 package com.woowacourse.zzimkkong.dto;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.woowacourse.zzimkkong.domain.Reservation;
 

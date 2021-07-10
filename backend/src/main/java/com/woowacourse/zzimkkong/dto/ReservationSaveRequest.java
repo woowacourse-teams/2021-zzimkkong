@@ -2,8 +2,6 @@ package com.woowacourse.zzimkkong.dto;
 
 import com.woowacourse.zzimkkong.exception.ImpossibleEndTimeException;
 import com.woowacourse.zzimkkong.exception.ImpossibleStartTimeException;
-import org.aspectj.lang.annotation.After;
-import org.aspectj.lang.annotation.Before;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.validation.constraints.NotBlank;
@@ -11,7 +9,6 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 
 public class ReservationSaveRequest {
     @NotNull(message = "비어있는 항목을 입력해주세요.")
@@ -56,11 +53,11 @@ public class ReservationSaveRequest {
     }
 
     public void checkValidateTime() {
-        if(startDateTime.isBefore(LocalDateTime.now())) {
+        if (startDateTime.isBefore(LocalDateTime.now())) {
             throw new ImpossibleStartTimeException();
         }
 
-        if(endDateTime.isBefore(startDateTime)) {
+        if (endDateTime.isBefore(startDateTime)) {
             throw new ImpossibleEndTimeException();
         }
     }

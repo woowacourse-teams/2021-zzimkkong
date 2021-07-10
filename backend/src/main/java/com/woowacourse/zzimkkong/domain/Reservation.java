@@ -1,10 +1,7 @@
 package com.woowacourse.zzimkkong.domain;
 
-import com.woowacourse.zzimkkong.dto.ReservationSaveRequest;
-
 import javax.persistence.*;
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 
 @Entity
 public class Reservation {
@@ -45,11 +42,11 @@ public class Reservation {
 
     public static class Builder {
         private LocalDateTime startTime = null;
-        private LocalDateTime endTime= null;
-        private String password= null;
-        private String userName= null;
-        private String description= null;
-        private Space space= null;
+        private LocalDateTime endTime = null;
+        private String password = null;
+        private String userName = null;
+        private String description = null;
+        private Space space = null;
 
         public Builder() {
         }

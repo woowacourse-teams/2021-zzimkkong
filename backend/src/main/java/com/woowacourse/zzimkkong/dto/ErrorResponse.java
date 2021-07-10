@@ -1,6 +1,5 @@
 package com.woowacourse.zzimkkong.dto;
 
-import com.fasterxml.jackson.databind.exc.InvalidFormatException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 
 import javax.validation.ConstraintViolationException;

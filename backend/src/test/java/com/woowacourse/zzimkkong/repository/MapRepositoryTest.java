@@ -5,7 +5,6 @@ import com.woowacourse.zzimkkong.domain.Member;
 import com.woowacourse.zzimkkong.exception.NoSuchMapException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
 
 import static org.assertj.core.api.Assertions.assertThat;
 

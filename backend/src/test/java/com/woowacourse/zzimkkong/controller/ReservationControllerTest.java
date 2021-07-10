@@ -20,7 +20,6 @@ import org.springframework.http.MediaType;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Arrays;
-import java.time.format.DateTimeFormatter;
 
 import static com.woowacourse.zzimkkong.controller.DocumentUtils.*;
 import static org.assertj.core.api.Assertions.assertThat;

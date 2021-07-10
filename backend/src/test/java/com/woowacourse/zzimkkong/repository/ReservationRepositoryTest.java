@@ -82,7 +82,7 @@ class ReservationRepositoryTest extends RepositoryTest {
                 maximumDateTime,
                 minimumDateTime,
                 maximumDateTime
-                );
+        );
 
         // then
         assertThat(reservations).hasSize(4);
