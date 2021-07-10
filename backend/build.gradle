@@ -34,9 +34,6 @@ dependencies {
     //restdocs
     asciidoctor 'org.springframework.restdocs:spring-restdocs-asciidoctor'
     testImplementation 'org.springframework.restdocs:spring-restdocs-restassured'
-
-    //for datetime
-//    implementation 'com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.12.3'
 }
 
 test {

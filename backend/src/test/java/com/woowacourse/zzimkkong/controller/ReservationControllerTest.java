@@ -160,10 +160,11 @@ public class ReservationControllerTest extends AcceptanceTest {
     private ExtractableResponse<Response> findReservations(final Long spaceId, final String date) {
         return RestAssured
                 .given(getRequestSpecification()).log().all()
+                .accept("*/*")
+                .filter(document("reservation/get", getRequestPreprocessor(), getResponsePreprocessor()))
                 .queryParams(
                         "spaceId", spaceId,
                         "date", date)
-                .filter(document("reservation/get", getRequestPreprocessor(), getResponsePreprocessor()))
                 .when().get("/api/maps/1/spaces/1/reservations")
                 .then().log().all().extract();
     }
@@ -171,8 +172,9 @@ public class ReservationControllerTest extends AcceptanceTest {
     private ExtractableResponse<Response> findAllReservations(final String date) {
         return RestAssured
                 .given(getRequestSpecification()).log().all()
+                .accept("*/*")
+                .filter(document("reservation/get_all", getRequestPreprocessor(), getResponsePreprocessor()))
                 .queryParam("date", date)
-                .filter(document("reservation/get", getRequestPreprocessor(), getResponsePreprocessor()))
                 .when().get("/api/maps/1/reservations")
                 .then().log().all().extract();
     }

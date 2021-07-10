@@ -5,3 +5,15 @@
 include::{snippets}/reservation/post/http-request.adoc[]
 ==== Response
 include::{snippets}/reservation/post/http-response.adoc[]
+
+=== 특정 공간 예약 조회
+==== Request
+include::{snippets}/reservation/get/http-request.adoc[]
+==== Response
+include::{snippets}/reservation/get/http-response.adoc[]
+
+=== 전체 예약 조회
+==== Request
+include::{snippets}/reservation/get_all/http-request.adoc[]
+==== Response
+include::{snippets}/reservation/get_all/http-response.adoc[]
