@@ -21,7 +21,7 @@ const Login = (): JSX.Element => {
     retry: false,
   });
 
-  const handleSubmit: FormEventHandler = (event) => {
+  const handleSubmit: FormEventHandler<HTMLFormElement> = (event) => {
     event.preventDefault();
 
     if (!(email && password)) return;
@@ -52,6 +52,7 @@ const Login = (): JSX.Element => {
               type="password"
               label="비밀번호"
               value={password}
+              minLength={8}
               onChange={onChangePassword}
               required
             />
