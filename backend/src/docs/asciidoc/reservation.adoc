@@ -1,0 +1,7 @@
+== Reservations(예약)
+
+=== 예약 생성
+==== Request
+include::{snippets}/reservation/post/http-request.adoc[]
+==== Response
+include::{snippets}/reservation/post/http-response.adoc[]

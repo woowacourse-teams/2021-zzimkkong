@@ -7,7 +7,7 @@
 :sectlinks:
 
 include::member.adoc[]
-include::reservations.adoc[]
+include::reservation.adoc[]
 
 # 예외처리
 ### Response
