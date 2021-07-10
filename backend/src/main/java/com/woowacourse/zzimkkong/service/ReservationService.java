@@ -28,12 +28,14 @@ public class ReservationService {
         this.reservationRepository = reservationRepository;
     }
 
-    public ReservationSaveResponse saveReservation(Long mapId, ReservationSaveRequest reservationSaveRequest) {
+    public ReservationSaveResponse saveReservation(Long mapId, ReservationSaveRequest reservationSaveRequest) { ;
         mapRepository.findById(mapId)
                 .orElseThrow(NoSuchMapException::new);
 
         Space space = spaceRepository.findById(reservationSaveRequest.getSpaceId())
                 .orElseThrow(NoSuchSpaceException::new);
+
+        reservationSaveRequest.checkValidateTime();
 
         Reservation reservation = reservationRepository.save(
                 new Reservation.Builder(reservationSaveRequest, space).build()

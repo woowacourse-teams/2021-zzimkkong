@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.exc.InvalidFormatException;
 import com.woowacourse.zzimkkong.dto.ErrorResponse;
 import com.woowacourse.zzimkkong.exception.MapException;
 import com.woowacourse.zzimkkong.exception.MemberException;
+import com.woowacourse.zzimkkong.exception.ReservationException;
 import com.woowacourse.zzimkkong.exception.SpaceException;
 import org.springframework.dao.DataAccessException;
 import org.springframework.http.ResponseEntity;
@@ -31,6 +32,13 @@ public class ControllerAdvice {
 
     @ExceptionHandler(SpaceException.class)
     public ResponseEntity<ErrorResponse> spaceExceptionHandler(final SpaceException exception) {
+        return ResponseEntity
+                .status(exception.getStatus())
+                .body(ErrorResponse.of(exception));
+    }
+
+    @ExceptionHandler(ReservationException.class)
+    public ResponseEntity<ErrorResponse> reservationExceptionHandler(final ReservationException exception) {
         return ResponseEntity
                 .status(exception.getStatus())
                 .body(ErrorResponse.of(exception));

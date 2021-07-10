@@ -10,6 +10,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 import static com.woowacourse.zzimkkong.controller.DocumentUtils.*;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -22,8 +23,8 @@ public class ReservationControllerTest extends AcceptanceTest {
         //given
         ReservationSaveRequest reservationSaveRequest = new ReservationSaveRequest(
                 1L, //TODO: 나중에 인수테스트 전부 생기면 갖다 쓰기
-                LocalDateTime.of(2021, 5, 6, 16, 23, 0),
-                LocalDateTime.of(2021, 5, 6, 19, 23, 0),
+                LocalDateTime.now().plusDays(1),
+                LocalDateTime.now().plusDays(1).plusHours(2),
                 "2345",
                 "sally",
                 "회의입니다."
