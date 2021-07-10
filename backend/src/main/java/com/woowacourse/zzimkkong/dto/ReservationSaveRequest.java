@@ -1,5 +1,7 @@
 package com.woowacourse.zzimkkong.dto;
 
+import org.springframework.format.annotation.DateTimeFormat;
+
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
@@ -10,9 +12,11 @@ public class ReservationSaveRequest {
     @NotNull(message = "비어있는 항목을 입력해주세요.")
     private Long spaceId;
 
+    @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss")
     @NotNull(message = "비어있는 항목을 입력해주세요.")
     private LocalDateTime startDateTime;
 
+    @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss")
     @NotNull(message = "비어있는 항목을 입력해주세요.")
     private LocalDateTime endDateTime;
 

@@ -27,6 +27,6 @@ class MapRepositoryTest extends RepositoryTest {
                 .orElseThrow(NoSuchMapException::new);
 
         //then
-        assertThat(savedMap).isEqualTo(findMap);
+        assertThat(findMap).isEqualTo(savedMap);
     }
 }

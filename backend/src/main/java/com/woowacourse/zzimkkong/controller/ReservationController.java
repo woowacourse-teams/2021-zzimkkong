@@ -6,6 +6,7 @@ import com.woowacourse.zzimkkong.service.ReservationService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.net.URI;
 
 @RestController
@@ -20,11 +21,11 @@ public class ReservationController {
     @PostMapping("/maps/{mapId}/reservations")
     public ResponseEntity<Void> create(
             @PathVariable Long mapId,
-            @RequestBody ReservationSaveRequest reservationSaveRequest) {
+            @RequestBody @Valid ReservationSaveRequest reservationSaveRequest) {
 
         ReservationSaveResponse reservationSaveResponse = reservationService.saveReservation(mapId, reservationSaveRequest);
         return ResponseEntity
-                .created(URI.create("/api/maps/" + mapId + "reservations" + reservationSaveResponse.getId()))
+                .created(URI.create("/api/maps/" + mapId + "/reservations/" + reservationSaveResponse.getId()))
                 .build();
     }
 }

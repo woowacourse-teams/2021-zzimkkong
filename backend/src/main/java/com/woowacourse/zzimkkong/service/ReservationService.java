@@ -19,7 +19,10 @@ public class ReservationService {
     private final SpaceRepository spaceRepository;
     private final ReservationRepository reservationRepository;
 
-    public ReservationService(MapRepository mapRepository, SpaceRepository spaceRepository, ReservationRepository reservationRepository) {
+    public ReservationService(
+            final MapRepository mapRepository,
+            final SpaceRepository spaceRepository,
+            final ReservationRepository reservationRepository) {
         this.mapRepository = mapRepository;
         this.spaceRepository = spaceRepository;
         this.reservationRepository = reservationRepository;
