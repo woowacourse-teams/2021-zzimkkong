@@ -1,4 +1,5 @@
 import { ReactNode } from 'react';
+import { formatTime } from 'utils/datetime';
 import * as Styled from './ReservationListItem.styles';
 
 export interface Props {
@@ -14,19 +15,8 @@ export interface Props {
 const ReservationListItem = ({ reservation, control }: Props): JSX.Element => {
   const { name, description, startDateTime, endDateTime } = reservation;
 
-  const startHour = startDateTime.getHours();
-  const startMinute = startDateTime.getMinutes();
-
-  const endHour = endDateTime.getHours();
-  const endMinute = endDateTime.getMinutes();
-
-  const start = `${startHour < 10 ? `0${startHour}` : `${startHour}`}:${
-    startMinute < 10 ? `0${startMinute}` : `${startMinute}`
-  }`;
-
-  const end = `${endHour < 10 ? `0${endHour}` : `${endHour}`}:${
-    endMinute < 10 ? `0${endMinute}` : `${endMinute}`
-  }`;
+  const start = formatTime(startDateTime);
+  const end = formatTime(endDateTime);
 
   return (
     <Styled.Item role="listitem">
