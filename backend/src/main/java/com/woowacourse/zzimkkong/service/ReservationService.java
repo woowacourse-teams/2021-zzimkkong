@@ -1,6 +1,5 @@
 package com.woowacourse.zzimkkong.service;
 
-import com.woowacourse.zzimkkong.domain.Map;
 import com.woowacourse.zzimkkong.domain.Reservation;
 import com.woowacourse.zzimkkong.domain.Space;
 import com.woowacourse.zzimkkong.dto.ReservationDeleteRequest;
@@ -25,8 +24,7 @@ public class ReservationService {
     }
 
     public ReservationSaveResponse saveReservation(Long mapId, ReservationSaveRequest reservationSaveRequest) {
-        Map map = mapRepository.findById(mapId).orElseThrow(NoSuchMapException::new);
-
+        mapRepository.findById(mapId).orElseThrow(NoSuchMapException::new);
         Space space = spaceRepository.findById(reservationSaveRequest.getSpaceId())
                 .orElseThrow(NoSuchSpaceException::new);
 
@@ -39,7 +37,6 @@ public class ReservationService {
                         reservationSaveRequest.getDescription(),
                         space)
         );
-
         return ReservationSaveResponse.of(reservation);
     }
 
@@ -49,13 +46,7 @@ public class ReservationService {
         Reservation reservation = reservationRepository
                 .findById(reservationId)
                 .orElseThrow(NoSuchReservationException::new);
-        validatePassword(reservation.getPassword(), reservationDeleteRequest.getPassword());
+        reservation.checkPassword(reservationDeleteRequest.getPassword());
         reservationRepository.delete(reservation);
-    }
-
-    private void validatePassword(String actual, String input) {
-        if (!actual.equals(input)) {
-            throw new ReservationPasswordException();
-        }
     }
 }

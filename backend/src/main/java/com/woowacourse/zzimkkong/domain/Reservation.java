@@ -1,5 +1,7 @@
 package com.woowacourse.zzimkkong.domain;
 
+import com.woowacourse.zzimkkong.exception.ReservationPasswordException;
+
 import javax.persistence.*;
 import java.time.LocalDateTime;
 
@@ -52,5 +54,11 @@ public class Reservation {
 
     public String getPassword() {
         return password;
+    }
+
+    public void checkPassword(String password) {
+        if (!this.password.equals(password)) {
+            throw new ReservationPasswordException();
+        }
     }
 }
