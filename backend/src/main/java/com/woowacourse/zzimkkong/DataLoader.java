@@ -2,14 +2,18 @@ package com.woowacourse.zzimkkong;
 
 import com.woowacourse.zzimkkong.domain.Map;
 import com.woowacourse.zzimkkong.domain.Member;
+import com.woowacourse.zzimkkong.domain.Reservation;
 import com.woowacourse.zzimkkong.domain.Space;
 import com.woowacourse.zzimkkong.repository.MapRepository;
 import com.woowacourse.zzimkkong.repository.MemberRepository;
+import com.woowacourse.zzimkkong.repository.ReservationRepository;
 import com.woowacourse.zzimkkong.repository.SpaceRepository;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Component
@@ -18,14 +22,17 @@ public class DataLoader implements CommandLineRunner {
     private final MemberRepository memberRepository;
     private final MapRepository mapRepository;
     private final SpaceRepository spaceRepository;
+    private final ReservationRepository reservationRepository;
 
     public DataLoader(
             final MemberRepository memberRepository,
             final MapRepository mapRepository,
-            final SpaceRepository spaceRepository) {
+            final SpaceRepository spaceRepository,
+            final ReservationRepository reservationRepository) {
         this.memberRepository = memberRepository;
         this.mapRepository = mapRepository;
         this.spaceRepository = spaceRepository;
+        this.reservationRepository = reservationRepository;
     }
 
     @Override
@@ -64,5 +71,58 @@ public class DataLoader implements CommandLineRunner {
         for (Space space : spaces) {
             spaceRepository.save(space);
         }
+
+        LocalDate targetDate = LocalDate.of(2021, 7, 9);
+
+        Reservation reservationBackEndTargetDate0To1 = new Reservation(
+                targetDate.atStartOfDay(),
+                targetDate.atTime(1, 0, 0),
+                "찜꽁 1차 회의",
+                "찜꽁",
+                "1234",
+                be
+        );
+
+        Reservation reservationBackEndTargetDate13To14 = new Reservation(
+                targetDate.atTime(13, 0, 0),
+                targetDate.atTime(14, 0, 0),
+                "찜꽁 2차 회의",
+                "찜꽁",
+                "1234",
+                be
+        );
+
+        Reservation reservationBackEndTargetDate18To23 = new Reservation(
+                targetDate.atTime(18, 0, 0),
+                targetDate.atTime(23, 59, 59),
+                "찜꽁 3차 회의",
+                "찜꽁",
+                "6789",
+                be
+        );
+
+        Reservation reservationBackEndTheDayAfterTargetDate = new Reservation(
+                targetDate.plusDays(1L).atStartOfDay(),
+                targetDate.plusDays(1L).atTime(1, 0, 0),
+                "찜꽁 4차 회의",
+                "찜꽁",
+                "1234",
+                be
+        );
+
+        Reservation reservationFrontEnd1TargetDate0to1 = new Reservation(
+                targetDate.atStartOfDay(),
+                targetDate.atTime(1, 0, 0),
+                "찜꽁 5차 회의",
+                "찜꽁",
+                "1234",
+                fe1
+        );
+
+        reservationRepository.save(reservationBackEndTargetDate0To1);
+        reservationRepository.save(reservationBackEndTargetDate13To14);
+        reservationRepository.save(reservationBackEndTargetDate18To23);
+        reservationRepository.save(reservationBackEndTheDayAfterTargetDate);
+        reservationRepository.save(reservationFrontEnd1TargetDate0to1);
     }
 }
