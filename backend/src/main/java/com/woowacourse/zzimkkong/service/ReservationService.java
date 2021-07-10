@@ -3,20 +3,22 @@ package com.woowacourse.zzimkkong.service;
 import com.woowacourse.zzimkkong.domain.Reservation;
 import com.woowacourse.zzimkkong.domain.Space;
 import com.woowacourse.zzimkkong.dto.ReservationFindResponse;
-import com.woowacourse.zzimkkong.exception.NoSuchMapException;
 import com.woowacourse.zzimkkong.dto.ReservationSaveRequest;
 import com.woowacourse.zzimkkong.dto.ReservationSaveResponse;
+import com.woowacourse.zzimkkong.exception.NoSuchMapException;
 import com.woowacourse.zzimkkong.exception.NoSuchSpaceException;
 import com.woowacourse.zzimkkong.repository.MapRepository;
 import com.woowacourse.zzimkkong.repository.ReservationRepository;
 import com.woowacourse.zzimkkong.repository.SpaceRepository;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
+@Transactional
 public class ReservationService {
     public static final long ONE_DAY = 1L;
 
@@ -32,9 +34,9 @@ public class ReservationService {
 
     public ReservationSaveResponse saveReservation(Long mapId, ReservationSaveRequest reservationSaveRequest) {
         validateMapExistence(mapId);
+
         Space space = spaceRepository.findById(reservationSaveRequest.getSpaceId())
                 .orElseThrow(NoSuchSpaceException::new);
-
         Reservation reservation = reservationRepository.save(
                 new Reservation(
                         reservationSaveRequest.getStartDateTime(),

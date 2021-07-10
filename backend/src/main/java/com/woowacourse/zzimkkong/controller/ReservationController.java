@@ -3,7 +3,6 @@ package com.woowacourse.zzimkkong.controller;
 import com.woowacourse.zzimkkong.dto.ReservationFindResponse;
 import com.woowacourse.zzimkkong.dto.ReservationSaveRequest;
 import com.woowacourse.zzimkkong.dto.ReservationSaveResponse;
-import com.woowacourse.zzimkkong.service.MapService;
 import com.woowacourse.zzimkkong.service.ReservationService;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
@@ -15,8 +14,7 @@ import java.time.LocalDate;
 @RestController
 @RequestMapping("/api")
 public class ReservationController {
-    private MapService mapService;
-    private ReservationService reservationService;
+    private final ReservationService reservationService;
 
     public ReservationController(ReservationService reservationService) {
         this.reservationService = reservationService;
