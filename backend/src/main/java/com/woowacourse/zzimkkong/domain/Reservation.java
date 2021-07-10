@@ -40,6 +40,28 @@ public class Reservation {
         this.space = builder.space;
     }
 
+    public boolean hasConflictWith(final LocalDateTime startDateTime, final LocalDateTime endDateTime) {
+        if (contains(startDateTime, endDateTime)
+                || intersects(startDateTime, endDateTime)
+                || equals(startDateTime, endDateTime)) {
+            return true;
+        }
+        return false;
+    }
+
+    private boolean contains(final LocalDateTime startDateTime, final LocalDateTime endDateTime) {
+        return startDateTime.isAfter(startTime) && endDateTime.isBefore(endTime);
+    }
+
+    private boolean intersects(final LocalDateTime startDateTime, final LocalDateTime endDateTime) {
+        return (startDateTime.isBefore(startTime) && endDateTime.isAfter(startTime))
+                || (endDateTime.isAfter(endTime) && startDateTime.isBefore(endTime));
+    }
+
+    private boolean equals(final LocalDateTime startDateTime, final LocalDateTime endDateTime) {
+        return startDateTime.isEqual(startTime) && endDateTime.isEqual(endTime);
+    }
+
     public static class Builder {
         private LocalDateTime startTime = null;
         private LocalDateTime endTime = null;

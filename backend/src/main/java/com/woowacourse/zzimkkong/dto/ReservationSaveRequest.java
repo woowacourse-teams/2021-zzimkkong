@@ -52,17 +52,6 @@ public class ReservationSaveRequest {
         this.description = description;
     }
 
-    public void checkValidateTime() {
-        if (startDateTime.isBefore(LocalDateTime.now())) {
-            throw new ImpossibleStartTimeException();
-        }
-
-        if(endDateTime.isBefore(startDateTime) || startDateTime.equals(endDateTime)) {
-            throw new ImpossibleEndTimeException();
-        }
-    }
-
-
     public Long getSpaceId() {
         return spaceId;
     }

@@ -6,9 +6,7 @@ import com.woowacourse.zzimkkong.dto.ReservationFindAllResponse;
 import com.woowacourse.zzimkkong.dto.ReservationFindResponse;
 import com.woowacourse.zzimkkong.dto.ReservationSaveRequest;
 import com.woowacourse.zzimkkong.dto.ReservationSaveResponse;
-import com.woowacourse.zzimkkong.exception.ImpossibleReservationTimeException;
-import com.woowacourse.zzimkkong.exception.NoSuchMapException;
-import com.woowacourse.zzimkkong.exception.NoSuchSpaceException;
+import com.woowacourse.zzimkkong.exception.*;
 import com.woowacourse.zzimkkong.repository.MapRepository;
 import com.woowacourse.zzimkkong.repository.ReservationRepository;
 import com.woowacourse.zzimkkong.repository.SpaceRepository;
@@ -45,8 +43,7 @@ public class ReservationService {
 
         Space space = spaceRepository.findById(reservationSaveRequest.getSpaceId())
                 .orElseThrow(NoSuchSpaceException::new);
-        reservationSaveRequest.checkValidateTime();
-        checkAlreadyExistReservationInTime(reservationSaveRequest, space);
+        validateReservation(reservationSaveRequest, space);
 
         Reservation reservation = reservationRepository.save(
                 new Reservation.Builder()
@@ -59,6 +56,39 @@ public class ReservationService {
                         .build());
 
         return ReservationSaveResponse.of(reservation);
+    }
+
+    private void validateReservation(final ReservationSaveRequest reservationSaveRequest, final Space space) {
+        LocalDateTime startDateTime = reservationSaveRequest.getStartDateTime();
+        LocalDateTime endDateTime = reservationSaveRequest.getEndDateTime();
+        validateTime(startDateTime, endDateTime);
+        validateAvailability(space, startDateTime, endDateTime);
+    }
+
+    private void validateTime(final LocalDateTime startDateTime, final LocalDateTime endDateTime) {
+        if (startDateTime.isBefore(LocalDateTime.now())) {
+            throw new ImpossibleStartTimeException();
+        }
+
+        if (endDateTime.isBefore(startDateTime) || startDateTime.equals(endDateTime)) {
+            throw new ImpossibleEndTimeException();
+        }
+
+        if (!startDateTime.toLocalDate().isEqual(endDateTime.toLocalDate())) {
+            throw new NonMatchingStartAndEndDateException();
+        }
+    }
+
+    private void validateAvailability(final Space space, final LocalDateTime startDateTime, final LocalDateTime endDateTime) {
+        List<Reservation> reservationsOnDate = getReservations(
+                Collections.singletonList(space.getId()),
+                startDateTime.toLocalDate());
+
+        for (Reservation reservation : reservationsOnDate) {
+            if (reservation.hasConflictWith(startDateTime, endDateTime)) {
+                throw new ImpossibleReservationTimeException();
+            }
+        }
     }
 
     public ReservationFindResponse find(final Long mapId, final Long spaceId, final LocalDate date) {
@@ -106,25 +136,5 @@ public class ReservationService {
         if (!spaceRepository.existsById(spaceId)) {
             throw new NoSuchSpaceException();
         }
-    }
-
-    private void checkAlreadyExistReservationInTime(ReservationSaveRequest reservationSaveRequest, Space space) {
-        if (isPossibleStartTime(reservationSaveRequest, space) || isPossibleEndTime(reservationSaveRequest, space)) {
-            throw new ImpossibleReservationTimeException();
-        }
-    }
-
-    private Boolean isPossibleEndTime(ReservationSaveRequest reservationSaveRequest, Space space) {
-        return reservationRepository.existsBySpaceIdAndEndTimeBetween(
-                space.getId(),
-                reservationSaveRequest.getStartDateTime().plusSeconds(1),
-                reservationSaveRequest.getEndDateTime().minusSeconds(1));
-    }
-
-    private Boolean isPossibleStartTime(ReservationSaveRequest reservationSaveRequest, Space space) {
-        return reservationRepository.existsBySpaceIdAndStartTimeBetween(
-                space.getId(),
-                reservationSaveRequest.getStartDateTime().plusSeconds(1),
-                reservationSaveRequest.getEndDateTime().minusSeconds(1));
     }
 }
