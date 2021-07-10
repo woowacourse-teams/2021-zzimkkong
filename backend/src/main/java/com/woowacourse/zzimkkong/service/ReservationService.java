@@ -18,6 +18,8 @@ import java.util.List;
 
 @Service
 public class ReservationService {
+    public static final long ONE_DAY = 1L;
+
     private final MapRepository mapRepository;
     private final SpaceRepository spaceRepository;
     private final ReservationRepository reservationRepository;
@@ -56,27 +58,27 @@ public class ReservationService {
     }
 
     private List<Reservation> getReservations(final Long spaceId, final LocalDate date) {
-        LocalDateTime minimumStartDateTime = date.atStartOfDay();
-        LocalDateTime maximumStartDateTime = date.plusDays(1L).atStartOfDay();
+        LocalDateTime minimumDateTime = date.atStartOfDay();
+        LocalDateTime maximumDateTime = minimumDateTime.plusDays(ONE_DAY);
 
         return reservationRepository.findAllBySpaceIdAndStartTimeIsBetweenAndEndTimeIsBetween(
                 spaceId,
-                minimumStartDateTime,
-                maximumStartDateTime,
-                minimumStartDateTime,
-                maximumStartDateTime
+                minimumDateTime,
+                maximumDateTime,
+                minimumDateTime,
+                maximumDateTime
         );
-    }
-
-    private void validateSpaceExistence(final Long spaceId) {
-        if (!spaceRepository.existsById(spaceId)) {
-            throw new NoSuchSpaceException();
-        }
     }
 
     private void validateMapExistence(final Long mapId) {
         if (!mapRepository.existsById(mapId)) {
             throw new NoSuchMapException();
+        }
+    }
+
+    private void validateSpaceExistence(final Long spaceId) {
+        if (!spaceRepository.existsById(spaceId)) {
+            throw new NoSuchSpaceException();
         }
     }
 }
