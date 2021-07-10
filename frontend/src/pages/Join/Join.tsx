@@ -1,44 +1,82 @@
-import { useQuery } from 'react-query';
+import { getValidateEmail, postJoin } from 'api/join';
 import { AxiosError } from 'axios';
-import * as Styled from './Join.styles';
-import { getValidateEmail } from 'api/join';
 import Button from 'components/Button/Button';
 import Header from 'components/Header/Header';
 import Input from 'components/Input/Input';
 import Layout from 'components/Layout/Layout';
 import MESSAGE from 'constants/message';
+import PATH from 'constants/path';
+import REGEXP from 'constants/regexp';
 import useInput from 'hooks/useInput';
+import { FormEventHandler, useState } from 'react';
+import { useMutation, useQuery } from 'react-query';
+import { useHistory } from 'react-router-dom';
+import * as Styled from './Join.styles';
 
 const Join = (): JSX.Element => {
   const [email, onChangeEmail] = useInput('');
+  const [password, onChangePassword] = useInput('');
+  const [passwordConfirm, onChangePasswordConfirm] = useInput('');
+  const [organization, onChangeOrganization] = useInput('');
+
+  const [emailMessage, setEmailMessage] = useState('');
+  const [passwordMessage, setPasswordMessage] = useState('');
+  const [passwordConfirmMessage, setPasswordConfirmMessage] = useState('');
+
+  const history = useHistory();
 
   const isValidEmail = useQuery(['isValidEmail', email], getValidateEmail, {
     enabled: false,
     retry: false,
+
+    onSuccess: () => {
+      setEmailMessage(MESSAGE.JOIN.VALID_EMAIL);
+    },
+
+    onError: (error: AxiosError) => {
+      setEmailMessage(error?.response?.data.message);
+    },
   });
 
-  const getEmailMessage = () => {
-    const { isFetched, isError, isSuccess } = isValidEmail;
-    const error = isValidEmail.error as AxiosError;
-    const message = error?.response?.data?.message as string;
+  const postJoinMutation = useMutation(postJoin, {
+    onSuccess: () => {
+      alert(MESSAGE.JOIN.SUCCESS);
+      history.push(PATH.LOGIN);
+    },
 
-    if (!isFetched) return '';
-
-    if (isSuccess) {
-      return MESSAGE.JOIN.VALID_EMAIL;
-    }
-
-    if (isError && message) {
-      return message;
-    }
-
-    return MESSAGE.JOIN.UNEXPECTED_ERROR;
-  };
+    onError: () => {
+      alert(MESSAGE.JOIN.FAILURE);
+    },
+  });
 
   const handleValidateEmail = () => {
     if (!email) return;
 
     isValidEmail.refetch();
+  };
+
+  const handleValidatePassword = () => {
+    if (!REGEXP.PASSWORD.test(password)) {
+      setPasswordMessage(MESSAGE.JOIN.INVALID_PASSWORD);
+    } else {
+      setPasswordMessage(MESSAGE.JOIN.VALID_PASSWORD);
+    }
+  };
+
+  const handleValidatePasswordConfirm = () => {
+    if (password !== passwordConfirm) {
+      setPasswordConfirmMessage(MESSAGE.JOIN.INVALID_PASSWORD_CONFIRM);
+    } else {
+      setPasswordConfirmMessage(MESSAGE.JOIN.VALID_PASSWORD_CONFIRM);
+    }
+  };
+
+  const handleSubmitJoinForm: FormEventHandler<HTMLFormElement> = (event) => {
+    event.preventDefault();
+
+    if (!email || !password || !passwordConfirm || !organization) return;
+
+    postJoinMutation.mutate({ email, password, organization });
   };
 
   return (
@@ -47,7 +85,7 @@ const Join = (): JSX.Element => {
       <Layout>
         <Styled.PageTitle>회원가입</Styled.PageTitle>
         <Styled.Container>
-          <Styled.Form>
+          <Styled.Form onSubmit={handleSubmitJoinForm}>
             <Input
               type="email"
               label="이메일"
@@ -55,14 +93,46 @@ const Join = (): JSX.Element => {
               value={email}
               onChange={onChangeEmail}
               onBlur={handleValidateEmail}
-              message={getEmailMessage()}
-              status={isValidEmail.isError ? 'error' : 'success'}
+              message={emailMessage}
+              status={isValidEmail.isSuccess ? 'success' : 'error'}
               required
             />
-            <Input type="password" label="비밀번호" required />
-            <Input type="password" label="비밀번호 확인" required />
-            <Input type="text" label="조직명" required />
-            <Button variant="primary" size="large" fullWidth>
+            <Input
+              type="password"
+              label="비밀번호"
+              minLength={8}
+              value={password}
+              onChange={onChangePassword}
+              onBlur={handleValidatePassword}
+              message={passwordMessage}
+              status={REGEXP.PASSWORD.test(password) ? 'success' : 'error'}
+              required
+            />
+            <Input
+              type="password"
+              label="비밀번호 확인"
+              minLength={8}
+              value={passwordConfirm}
+              onChange={onChangePasswordConfirm}
+              onBlur={handleValidatePasswordConfirm}
+              message={passwordConfirmMessage}
+              status={password === passwordConfirm ? 'success' : 'error'}
+              required
+            />
+            <Input
+              type="text"
+              label="조직명"
+              minLength={1}
+              value={organization}
+              onChange={onChangeOrganization}
+              required
+            />
+            <Button
+              variant="primary"
+              size="large"
+              fullWidth
+              disabled={email && password && passwordConfirm && organization ? false : true}
+            >
               회원가입
             </Button>
           </Styled.Form>
