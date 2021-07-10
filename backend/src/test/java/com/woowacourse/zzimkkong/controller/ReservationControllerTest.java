@@ -20,6 +20,7 @@ import org.springframework.http.MediaType;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Arrays;
+import java.time.format.DateTimeFormatter;
 
 import static com.woowacourse.zzimkkong.controller.DocumentUtils.*;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -43,41 +44,41 @@ public class ReservationControllerTest extends AcceptanceTest {
         be = spaceRepository.findById(1L).orElseThrow(NoSuchSpaceException::new);
         fe1 = spaceRepository.findById(2L).orElseThrow(NoSuchSpaceException::new);
 
-        reservationBackEndTargetDate0To1 = new Reservation(
-                targetDate.atStartOfDay(),
-                targetDate.atTime(1, 0, 0),
-                "찜꽁 1차 회의",
-                "찜꽁",
-                "1234",
-                be
-        );
+        reservationBackEndTargetDate0To1 = new Reservation.Builder()
+                .startTime(targetDate.atStartOfDay())
+                .endTime(targetDate.atTime(1, 0, 0))
+                .description("찜꽁 1차 회의")
+                .userName("찜꽁")
+                .password("1234")
+                .space(be)
+                .build();
 
-        reservationBackEndTargetDate13To14 = new Reservation(
-                targetDate.atTime(13, 0, 0),
-                targetDate.atTime(14, 0, 0),
-                "찜꽁 2차 회의",
-                "찜꽁",
-                "1234",
-                be
-        );
+        reservationBackEndTargetDate13To14 = new Reservation.Builder()
+                .startTime(targetDate.atTime(13, 0, 0))
+                .endTime(targetDate.atTime(14, 0, 0))
+                .description("찜꽁 2차 회의")
+                .userName("찜꽁")
+                .password("1234")
+                .space(be)
+                .build();
 
-        reservationBackEndTargetDate18To23 = new Reservation(
-                targetDate.atTime(18, 0, 0),
-                targetDate.atTime(23, 59, 59),
-                "찜꽁 3차 회의",
-                "찜꽁",
-                "6789",
-                be
-        );
+        reservationBackEndTargetDate18To23 = new Reservation.Builder()
+                .startTime(targetDate.atTime(18, 0, 0))
+                .endTime(targetDate.atTime(23, 59, 59))
+                .description("찜꽁 3차 회의")
+                .userName("찜꽁")
+                .password("6789")
+                .space(be)
+                .build();
 
-        reservationFrontEnd1TargetDate0to1 = new Reservation(
-                targetDate.atStartOfDay(),
-                targetDate.atTime(1, 0, 0),
-                "찜꽁 5차 회의",
-                "찜꽁",
-                "1234",
-                fe1
-        );
+        reservationFrontEnd1TargetDate0to1 = new Reservation.Builder()
+                .startTime(targetDate.atStartOfDay())
+                .endTime(targetDate.atTime(1, 0, 0))
+                .description("찜꽁 5차 회의")
+                .userName("찜꽁")
+                .password("1234")
+                .space(fe1)
+                .build();
     }
 
     @DisplayName("예약을 등록한다.")
@@ -86,8 +87,8 @@ public class ReservationControllerTest extends AcceptanceTest {
         //given
         ReservationSaveRequest reservationSaveRequest = new ReservationSaveRequest(
                 1L, //TODO: 나중에 인수테스트 전부 생기면 갖다 쓰기
-                LocalDateTime.of(2021, 5, 6, 16, 23, 0),
-                LocalDateTime.of(2021, 5, 6, 19, 23, 0),
+                LocalDateTime.now().plusDays(1),
+                LocalDateTime.now().plusDays(1).plusHours(2),
                 "2345",
                 "sally",
                 "회의입니다."

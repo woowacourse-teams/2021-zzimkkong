@@ -74,50 +74,50 @@ public class DataLoader implements CommandLineRunner {
 
         LocalDate targetDate = LocalDate.of(2021, 7, 9);
 
-        Reservation reservationBackEndTargetDate0To1 = new Reservation(
-                targetDate.atStartOfDay(),
-                targetDate.atTime(1, 0, 0),
-                "찜꽁 1차 회의",
-                "찜꽁",
-                "1234",
-                be
-        );
+        Reservation reservationBackEndTargetDate0To1 = new Reservation.Builder()
+                .startTime(targetDate.atStartOfDay())
+                .endTime(targetDate.atTime(1, 0, 0))
+                .description("찜꽁 1차 회의")
+                .userName("찜꽁")
+                .password("1234")
+                .space(be)
+                .build();
 
-        Reservation reservationBackEndTargetDate13To14 = new Reservation(
-                targetDate.atTime(13, 0, 0),
-                targetDate.atTime(14, 0, 0),
-                "찜꽁 2차 회의",
-                "찜꽁",
-                "1234",
-                be
-        );
+        Reservation reservationBackEndTargetDate13To14 = new Reservation.Builder()
+                .startTime(targetDate.atTime(13, 0, 0))
+                .endTime(targetDate.atTime(14, 0, 0))
+                .description("찜꽁 2차 회의")
+                .userName("찜꽁")
+                .password("1234")
+                .space(be)
+                .build();
 
-        Reservation reservationBackEndTargetDate18To23 = new Reservation(
-                targetDate.atTime(18, 0, 0),
-                targetDate.atTime(23, 59, 59),
-                "찜꽁 3차 회의",
-                "찜꽁",
-                "6789",
-                be
-        );
+        Reservation reservationBackEndTargetDate18To23 = new Reservation.Builder()
+                .startTime(targetDate.atTime(18, 0, 0))
+                .endTime(targetDate.atTime(23, 59, 59))
+                .description("찜꽁 3차 회의")
+                .userName("찜꽁")
+                .password("6789")
+                .space(be)
+                .build();
 
-        Reservation reservationBackEndTheDayAfterTargetDate = new Reservation(
-                targetDate.plusDays(1L).atStartOfDay(),
-                targetDate.plusDays(1L).atTime(1, 0, 0),
-                "찜꽁 4차 회의",
-                "찜꽁",
-                "1234",
-                be
-        );
+        Reservation reservationBackEndTheDayAfterTargetDate = new Reservation.Builder()
+                .startTime(targetDate.plusDays(1L).atStartOfDay())
+                .endTime(targetDate.plusDays(1L).atTime(1, 0, 0))
+                .description("찜꽁 4차 회의")
+                .userName("찜꽁")
+                .password("1234")
+                .space(be)
+                .build();
 
-        Reservation reservationFrontEnd1TargetDate0to1 = new Reservation(
-                targetDate.atStartOfDay(),
-                targetDate.atTime(1, 0, 0),
-                "찜꽁 5차 회의",
-                "찜꽁",
-                "1234",
-                fe1
-        );
+        Reservation reservationFrontEnd1TargetDate0to1 = new Reservation.Builder()
+                .startTime(targetDate.atStartOfDay())
+                .endTime(targetDate.atTime(1, 0, 0))
+                .description("찜꽁 5차 회의")
+                .userName("찜꽁")
+                .password("1234")
+                .space(fe1)
+                .build();
 
         reservationRepository.save(reservationBackEndTargetDate0To1);
         reservationRepository.save(reservationBackEndTargetDate13To14);

@@ -6,6 +6,7 @@ import com.woowacourse.zzimkkong.dto.ReservationFindAllResponse;
 import com.woowacourse.zzimkkong.dto.ReservationFindResponse;
 import com.woowacourse.zzimkkong.dto.ReservationSaveRequest;
 import com.woowacourse.zzimkkong.dto.ReservationSaveResponse;
+import com.woowacourse.zzimkkong.exception.ImpossibleReservationTimeException;
 import com.woowacourse.zzimkkong.exception.NoSuchMapException;
 import com.woowacourse.zzimkkong.exception.NoSuchSpaceException;
 import com.woowacourse.zzimkkong.repository.MapRepository;
@@ -30,7 +31,10 @@ public class ReservationService {
     private final SpaceRepository spaceRepository;
     private final ReservationRepository reservationRepository;
 
-    public ReservationService(MapRepository mapRepository, SpaceRepository spaceRepository, ReservationRepository reservationRepository) {
+    public ReservationService(
+            final MapRepository mapRepository,
+            final SpaceRepository spaceRepository,
+            final ReservationRepository reservationRepository) {
         this.mapRepository = mapRepository;
         this.spaceRepository = spaceRepository;
         this.reservationRepository = reservationRepository;
@@ -41,15 +45,20 @@ public class ReservationService {
 
         Space space = spaceRepository.findById(reservationSaveRequest.getSpaceId())
                 .orElseThrow(NoSuchSpaceException::new);
+
+        reservationSaveRequest.checkValidateTime();
+
+        checkAlreadyExistReservationInTime(reservationSaveRequest, space);
+
         Reservation reservation = reservationRepository.save(
-                new Reservation(
-                        reservationSaveRequest.getStartDateTime(),
-                        reservationSaveRequest.getEndDateTime(),
-                        reservationSaveRequest.getPassword(),
-                        reservationSaveRequest.getName(),
-                        reservationSaveRequest.getDescription(),
-                        space)
-        );
+                new Reservation.Builder()
+                        .startTime(reservationSaveRequest.getStartDateTime())
+                        .endTime(reservationSaveRequest.getEndDateTime())
+                        .password(reservationSaveRequest.getPassword())
+                        .userName(reservationSaveRequest.getName())
+                        .description(reservationSaveRequest.getDescription())
+                        .space(space)
+                        .build());
 
         return ReservationSaveResponse.of(reservation);
     }
@@ -98,6 +107,19 @@ public class ReservationService {
     private void validateSpaceExistence(final Long spaceId) {
         if (!spaceRepository.existsById(spaceId)) {
             throw new NoSuchSpaceException();
+        }
+    }
+
+    private void checkAlreadyExistReservationInTime(ReservationSaveRequest reservationSaveRequest, Space space) {
+        if (reservationRepository.existsBySpaceIdAndStartTimeBetween(
+                space.getId(),
+                reservationSaveRequest.getStartDateTime(),
+                reservationSaveRequest.getEndDateTime())
+                || reservationRepository.existsBySpaceIdAndEndTimeBetween(
+                space.getId(),
+                reservationSaveRequest.getStartDateTime(),
+                reservationSaveRequest.getEndDateTime())) {
+            throw new ImpossibleReservationTimeException();
         }
     }
 }

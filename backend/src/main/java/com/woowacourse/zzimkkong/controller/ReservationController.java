@@ -9,6 +9,7 @@ import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.net.URI;
 import java.time.LocalDate;
 
@@ -24,11 +25,11 @@ public class ReservationController {
     @PostMapping("/reservations")
     public ResponseEntity<Void> create(
             @PathVariable Long mapId,
-            @RequestBody ReservationSaveRequest reservationSaveRequest) {
+            @RequestBody @Valid ReservationSaveRequest reservationSaveRequest) {
 
         ReservationSaveResponse reservationSaveResponse = reservationService.saveReservation(mapId, reservationSaveRequest);
         return ResponseEntity
-                .created(URI.create("/api/maps/" + mapId + "reservations" + reservationSaveResponse.getId()))
+                .created(URI.create("/api/maps/" + mapId + "/reservations/" + reservationSaveResponse.getId()))
                 .build();
     }
 

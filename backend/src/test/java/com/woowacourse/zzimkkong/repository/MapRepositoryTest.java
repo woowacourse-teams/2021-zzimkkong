@@ -14,16 +14,6 @@ class MapRepositoryTest extends RepositoryTest {
     public static final Map MAP = new Map("롯데몰", MEMBER);
 
     @Test
-    @DisplayName("Map을 저장할 수 있다.")
-    void saveMap() {
-        //when
-        Map savedMap = mapRepository.save(MAP);
-
-        //then
-        assertThat(savedMap).isEqualTo(MAP);
-    }
-
-    @Test
     @DisplayName("id로부터 저장된 Map을 찾아올 수 있다.")
     void findById() {
         //given
@@ -34,6 +24,6 @@ class MapRepositoryTest extends RepositoryTest {
                 .orElseThrow(NoSuchMapException::new);
 
         //then
-        assertThat(savedMap).isEqualTo(findMap);
+        assertThat(findMap).isEqualTo(savedMap);
     }
 }
