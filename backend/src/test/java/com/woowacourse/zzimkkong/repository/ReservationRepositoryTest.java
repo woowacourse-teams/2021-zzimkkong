@@ -16,7 +16,7 @@ import static com.woowacourse.zzimkkong.service.ReservationService.ONE_DAY;
 import static org.assertj.core.api.Assertions.assertThat;
 
 class ReservationRepositoryTest extends RepositoryTest {
-    private LocalDate targetDate;
+    private final LocalDate targetDate = LocalDate.of(2021, 7, 9);
     private Space be;
     private Space fe1;
 
@@ -26,8 +26,6 @@ class ReservationRepositoryTest extends RepositoryTest {
 
         be = spaceRepository.findById(1L).orElseThrow(NoSuchSpaceException::new);
         fe1 = spaceRepository.findById(2L).orElseThrow(NoSuchSpaceException::new);
-
-        targetDate = LocalDate.of(2021, 7, 9);
     }
 
     @DisplayName("space id와 특정 날짜가 주어질 때, 해당 날짜에 속하는 space의 예약들만 찾아온다")

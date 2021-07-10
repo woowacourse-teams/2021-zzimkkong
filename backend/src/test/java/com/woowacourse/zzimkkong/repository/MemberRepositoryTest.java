@@ -13,9 +13,6 @@ class MemberRepositoryTest extends RepositoryTest {
     public static final String PASSWORD = "test1234";
     public static final String ORGANIZATION = "루터";
 
-    @Autowired
-    private MemberRepository memberRepository;
-
     private final Member MEMBER = new Member(EMAIL, PASSWORD, ORGANIZATION);
 
     @Test

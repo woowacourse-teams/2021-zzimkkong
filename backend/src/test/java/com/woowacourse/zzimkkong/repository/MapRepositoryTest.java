@@ -13,9 +13,6 @@ class MapRepositoryTest extends RepositoryTest {
     public static final Member MEMBER = new Member("Sally@gmail.com", "1234", "Sally");
     public static final Map MAP = new Map("롯데몰", MEMBER);
 
-    @Autowired
-    private MapRepository mapRepository;
-
     @Test
     @DisplayName("Map을 저장할 수 있다.")
     void saveMap() {
