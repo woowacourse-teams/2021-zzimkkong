@@ -1,10 +1,7 @@
 package com.woowacourse.zzimkkong.domain;
 
-import com.woowacourse.zzimkkong.dto.ReservationSaveRequest;
-
 import javax.persistence.*;
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 
 @Entity
 public class Reservation {
@@ -45,19 +42,13 @@ public class Reservation {
 
     public static class Builder {
         private LocalDateTime startTime = null;
-        private LocalDateTime endTime= null;
-        private String password= null;
-        private String userName= null;
-        private String description= null;
-        private Space space= null;
+        private LocalDateTime endTime = null;
+        private String password = null;
+        private String userName = null;
+        private String description = null;
+        private Space space = null;
 
-        public Builder(ReservationSaveRequest reservationSaveRequest, Space space) {
-            this.startTime(reservationSaveRequest.getStartDateTime())
-                    .endTime(reservationSaveRequest.getEndDateTime())
-                    .password(reservationSaveRequest.getPassword())
-                    .userName(reservationSaveRequest.getName())
-                    .description(reservationSaveRequest.getDescription())
-                    .space(space);
+        public Builder() {
         }
 
         public Builder startTime(LocalDateTime inputStartTime) {
@@ -97,5 +88,25 @@ public class Reservation {
 
     public Long getId() {
         return id;
+    }
+
+    public LocalDateTime getStartTime() {
+        return startTime;
+    }
+
+    public LocalDateTime getEndTime() {
+        return endTime;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public String getUserName() {
+        return userName;
+    }
+
+    public Space getSpace() {
+        return space;
     }
 }
