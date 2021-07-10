@@ -11,7 +11,7 @@ public class ReservationDeleteRequest {
     public ReservationDeleteRequest() {
     }
 
-    public ReservationDeleteRequest(String password) {
+    public ReservationDeleteRequest(final String password) {
         this.password = password;
     }
 

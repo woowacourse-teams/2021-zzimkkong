@@ -14,11 +14,9 @@ import java.net.URI;
 @RestController
 @RequestMapping("/api")
 public class ReservationController {
-    private final MapService mapService;
     private final ReservationService reservationService;
 
-    public ReservationController(MapService mapService, ReservationService reservationService) {
-        this.mapService = mapService;
+    public ReservationController(final ReservationService reservationService) {
         this.reservationService = reservationService;
     }
 
