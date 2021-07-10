@@ -1,9 +1,12 @@
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
 import { Color } from 'types/styled';
 import { getTextColor } from 'utils/color';
 
-interface HeaderWrapperProps {
+interface ResponsiveColorProps {
   bgColor?: Color;
+}
+
+interface HeaderWrapperProps extends ResponsiveColorProps {
   expandable: boolean;
 }
 
@@ -11,10 +14,19 @@ interface ToggleProps {
   expanded: boolean;
 }
 
-export const HeaderWrapper = styled.div<HeaderWrapperProps>`
-  background-color: ${({ bgColor = 'transparent' }) => bgColor};
+const responsiveTextColor = css<ResponsiveColorProps>`
   color: ${({ theme, bgColor = 'transparent' }) =>
     getTextColor(bgColor) === 'black' ? theme.black[500] : theme.white};
+`;
+
+const responsiveFill = css<ResponsiveColorProps>`
+  fill: ${({ theme, bgColor = 'transparent' }) =>
+    getTextColor(bgColor) === 'black' ? theme.black[500] : theme.white};
+`;
+
+export const HeaderWrapper = styled.div<HeaderWrapperProps>`
+  ${responsiveTextColor};
+  background-color: ${({ bgColor = 'transparent' }) => bgColor};
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -23,8 +35,7 @@ export const HeaderWrapper = styled.div<HeaderWrapperProps>`
   gap: 1rem;
 
   path {
-    fill: ${({ theme, bgColor = 'transparent' }) =>
-      getTextColor(bgColor) === 'black' ? theme.black[500] : theme.white};
+    ${responsiveFill};
   }
 `;
 
