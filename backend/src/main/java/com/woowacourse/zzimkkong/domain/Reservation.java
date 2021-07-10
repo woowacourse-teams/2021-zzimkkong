@@ -65,4 +65,12 @@ public class Reservation {
     public String getUserName() {
         return userName;
     }
+
+    public Space getSpace() {
+        return space;
+    }
+
+//    public Long getSpaceId() {
+//        return space.getId();
+//    }
 }

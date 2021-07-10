@@ -2,22 +2,20 @@ package com.woowacourse.zzimkkong.controller;
 
 import com.woowacourse.zzimkkong.domain.Reservation;
 import com.woowacourse.zzimkkong.domain.Space;
+import com.woowacourse.zzimkkong.dto.ReservationFindAllResponse;
 import com.woowacourse.zzimkkong.dto.ReservationFindResponse;
-import com.woowacourse.zzimkkong.dto.ReservationResponse;
 import com.woowacourse.zzimkkong.dto.ReservationSaveRequest;
 import com.woowacourse.zzimkkong.exception.NoSuchSpaceException;
 import com.woowacourse.zzimkkong.repository.SpaceRepository;
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import org.springframework.restdocs.RestDocumentationContextProvider;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -33,6 +31,54 @@ public class ReservationControllerTest extends AcceptanceTest {
 
     private LocalDate targetDate;
     private Space be;
+    private Space fe1;
+    private Reservation reservationBackEndTargetDate0To1;
+    private Reservation reservationBackEndTargetDate13To14;
+    private Reservation reservationBackEndTargetDate18To23;
+    private Reservation reservationFrontEnd1TargetDate0to1;
+
+    @BeforeEach
+    void setUp() {
+        targetDate = LocalDate.of(2021, 7, 9);
+        be = spaceRepository.findById(1L).orElseThrow(NoSuchSpaceException::new);
+        fe1 = spaceRepository.findById(2L).orElseThrow(NoSuchSpaceException::new);
+
+        reservationBackEndTargetDate0To1 = new Reservation(
+                targetDate.atStartOfDay(),
+                targetDate.atTime(1, 0, 0),
+                "찜꽁 1차 회의",
+                "찜꽁",
+                "1234",
+                be
+        );
+
+        reservationBackEndTargetDate13To14 = new Reservation(
+                targetDate.atTime(13, 0, 0),
+                targetDate.atTime(14, 0, 0),
+                "찜꽁 2차 회의",
+                "찜꽁",
+                "1234",
+                be
+        );
+
+        reservationBackEndTargetDate18To23 = new Reservation(
+                targetDate.atTime(18, 0, 0),
+                targetDate.atTime(23, 59, 59),
+                "찜꽁 3차 회의",
+                "찜꽁",
+                "6789",
+                be
+        );
+
+        reservationFrontEnd1TargetDate0to1 = new Reservation(
+                targetDate.atStartOfDay(),
+                targetDate.atTime(1, 0, 0),
+                "찜꽁 5차 회의",
+                "찜꽁",
+                "1234",
+                fe1
+        );
+    }
 
     @DisplayName("예약을 등록한다.")
     @Test
@@ -54,43 +100,44 @@ public class ReservationControllerTest extends AcceptanceTest {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
     }
 
-    @DisplayName("space id와 특정 날짜가 주어질 때, 해당 날짜에 속하는 space의 예약들만 찾아온다")
+    @DisplayName("map id, space id, 특정 날짜가 주어질 때 해당 맵, 해당 공간, 해당 날짜에 속하는 예약들만 찾아온다")
     @Test
     void find() {
         //given
-        targetDate = LocalDate.of(2021, 7, 9);
         be = spaceRepository.findById(1L).orElseThrow(NoSuchSpaceException::new);
 
         //when
-        ExtractableResponse<Response> response = findAllReservation(1L, "2021-07-09");
+        ExtractableResponse<Response> response = findReservations(1L, "2021-07-09");
         ReservationFindResponse actualResponse = response.as(ReservationFindResponse.class);
 
         ReservationFindResponse expectedResponse = ReservationFindResponse.of(
                 Arrays.asList(
-                        new Reservation(
-                                targetDate.atStartOfDay(),
-                                targetDate.atTime(1, 0, 0),
-                                "찜꽁 1차 회의",
-                                    "찜꽁",
-                                    "1234",
-                                    be
-                                ),
-                        new Reservation(
-                                targetDate.atTime(13, 0, 0),
-                                targetDate.atTime(14, 0, 0),
-                                "찜꽁 2차 회의",
-                                "찜꽁",
-                                "1234",
-                                be
-                        ),
-                        new Reservation(
-                                targetDate.atTime(18, 0, 0),
-                                targetDate.atTime(23, 59, 59),
-                                "찜꽁 3차 회의",
-                                "찜꽁",
-                                "6789",
-                                be
-                        )
+                        reservationBackEndTargetDate0To1,
+                        reservationBackEndTargetDate13To14,
+                        reservationBackEndTargetDate18To23
+                )
+        );
+
+        //then
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
+        assertThat(actualResponse).usingRecursiveComparison().ignoringExpectedNullFields().isEqualTo(expectedResponse);
+    }
+
+    @DisplayName("map id와 특정 날짜가 주어질 때 해당 맵, 해당 날짜의 모든 공간에 대한 예약 조회")
+    @Test
+    void findAll() {
+        //given
+
+        //when
+        ExtractableResponse<Response> response = findAllReservations("2021-07-09");
+        ReservationFindAllResponse actualResponse = response.as(ReservationFindAllResponse.class);
+
+        ReservationFindAllResponse expectedResponse = ReservationFindAllResponse.of(
+                Arrays.asList(
+                        reservationBackEndTargetDate0To1,
+                        reservationBackEndTargetDate13To14,
+                        reservationBackEndTargetDate18To23,
+                        reservationFrontEnd1TargetDate0to1
                 )
         );
 
@@ -110,12 +157,21 @@ public class ReservationControllerTest extends AcceptanceTest {
                 .then().log().all().extract();
     }
 
-    private ExtractableResponse<Response> findAllReservation(final Long spaceId, final String date) {
+    private ExtractableResponse<Response> findReservations(final Long spaceId, final String date) {
         return RestAssured
                 .given(getRequestSpecification()).log().all()
                 .queryParams(
                         "spaceId", spaceId,
                         "date", date)
+                .filter(document("reservation/get", getRequestPreprocessor(), getResponsePreprocessor()))
+                .when().get("/api/maps/1/spaces/1/reservations")
+                .then().log().all().extract();
+    }
+
+    private ExtractableResponse<Response> findAllReservations(final String date) {
+        return RestAssured
+                .given(getRequestSpecification()).log().all()
+                .queryParam("date", date)
                 .filter(document("reservation/get", getRequestPreprocessor(), getResponsePreprocessor()))
                 .when().get("/api/maps/1/reservations")
                 .then().log().all().extract();

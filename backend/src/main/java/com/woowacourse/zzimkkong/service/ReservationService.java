@@ -2,6 +2,7 @@ package com.woowacourse.zzimkkong.service;
 
 import com.woowacourse.zzimkkong.domain.Reservation;
 import com.woowacourse.zzimkkong.domain.Space;
+import com.woowacourse.zzimkkong.dto.ReservationFindAllResponse;
 import com.woowacourse.zzimkkong.dto.ReservationFindResponse;
 import com.woowacourse.zzimkkong.dto.ReservationSaveRequest;
 import com.woowacourse.zzimkkong.dto.ReservationSaveResponse;
@@ -15,7 +16,10 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @Transactional
@@ -54,17 +58,30 @@ public class ReservationService {
         validateMapExistence(mapId);
         validateSpaceExistence(spaceId);
 
-        List<Reservation> reservations = getReservations(spaceId, date);
+        List<Reservation> reservations = getReservations(Collections.singletonList(spaceId), date);
 
         return ReservationFindResponse.of(reservations);
     }
 
-    private List<Reservation> getReservations(final Long spaceId, final LocalDate date) {
+    public ReservationFindAllResponse findAll(final Long mapId, final LocalDate date) {
+        validateMapExistence(mapId);
+
+        List<Long> spaceIds = spaceRepository.findAllByMapId(mapId)
+                .stream()
+                .map(Space::getId)
+                .collect(Collectors.toList());
+
+        List<Reservation> reservations = getReservations(spaceIds, date);
+
+        return ReservationFindAllResponse.of(reservations);
+    }
+
+    private List<Reservation> getReservations(final Collection<Long> spaceIds, final LocalDate date) {
         LocalDateTime minimumDateTime = date.atStartOfDay();
         LocalDateTime maximumDateTime = minimumDateTime.plusDays(ONE_DAY);
 
-        return reservationRepository.findAllBySpaceIdAndStartTimeIsBetweenAndEndTimeIsBetween(
-                spaceId,
+        return reservationRepository.findAllBySpaceIdInAndStartTimeIsBetweenAndEndTimeIsBetween(
+                spaceIds,
                 minimumDateTime,
                 maximumDateTime,
                 minimumDateTime,
