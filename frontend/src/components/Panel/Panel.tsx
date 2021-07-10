@@ -7,12 +7,25 @@ import PanelContent from './PanelContent';
 export interface Props {
   expandable?: boolean;
   expanded?: boolean;
+  onToggle?: () => void;
 }
 
-const Panel = ({ expandable = false, expanded = false, children }: PropsWithChildren<Props>) => {
+const Panel = ({
+  expandable = false,
+  expanded = false,
+  onToggle,
+  children,
+}: PropsWithChildren<Props>) => {
+  const handleToggle = () => {
+    if (expandable && onToggle) {
+      onToggle();
+    }
+  };
+
   const contextValue = {
     expandable,
     expanded,
+    onToggle: handleToggle,
   };
 
   return (

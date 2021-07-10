@@ -9,10 +9,10 @@ export interface Props {
 }
 
 const PanelHeader = ({ bgColor, children }: PropsWithChildren<Props>) => {
-  const { expandable = false, expanded = false } = useContext(PanelContext);
+  const { expandable = false, expanded = false, onToggle } = useContext(PanelContext);
 
   return (
-    <Styled.HeaderWrapper bgColor={bgColor} expandable={expandable}>
+    <Styled.HeaderWrapper bgColor={bgColor} expandable={expandable} onClick={onToggle}>
       <Styled.HeaderContent>{children}</Styled.HeaderContent>
       {expandable && (
         <Styled.Toggle expanded={expanded}>

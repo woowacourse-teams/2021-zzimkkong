@@ -6,6 +6,9 @@ import Panel, { Props } from './Panel';
 export default {
   title: 'shared/Panel',
   component: Panel,
+  argTypes: {
+    onToggle: { action: 'toggle' },
+  },
 };
 
 const Template: Story<PropsWithChildren<Props>> = (args) => <Panel {...args} />;
