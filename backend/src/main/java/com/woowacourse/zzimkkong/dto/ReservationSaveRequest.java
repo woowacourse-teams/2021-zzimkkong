@@ -60,7 +60,7 @@ public class ReservationSaveRequest {
             throw new ImpossibleStartTimeException();
         }
 
-        if(endDateTime.isBefore(startDateTime)) {
+        if(endDateTime.isBefore(startDateTime) || startDateTime.equals(endDateTime)) {
             throw new ImpossibleEndTimeException();
         }
     }

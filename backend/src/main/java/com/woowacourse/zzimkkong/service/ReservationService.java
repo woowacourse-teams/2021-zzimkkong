@@ -30,14 +30,12 @@ public class ReservationService {
     }
 
     public ReservationSaveResponse saveReservation(Long mapId, ReservationSaveRequest reservationSaveRequest) {
-        mapRepository.findById(mapId)
-                .orElseThrow(NoSuchMapException::new);
-
+        if (!mapRepository.existsById(mapId)) {
+            throw new NoSuchMapException();
+        }
         Space space = spaceRepository.findById(reservationSaveRequest.getSpaceId())
                 .orElseThrow(NoSuchSpaceException::new);
-
         reservationSaveRequest.checkValidateTime();
-
         checkAlreadyExistReservationInTime(reservationSaveRequest, space);
 
         Reservation reservation = reservationRepository.save(
@@ -48,15 +46,22 @@ public class ReservationService {
     }
 
     private void checkAlreadyExistReservationInTime(ReservationSaveRequest reservationSaveRequest, Space space) {
-        if (reservationRepository.existsBySpaceIdAndStartTimeBetween(
-                space.getId(),
-                reservationSaveRequest.getStartDateTime(),
-                reservationSaveRequest.getEndDateTime())
-                || reservationRepository.existsBySpaceIdAndEndTimeBetween(
-                space.getId(),
-                reservationSaveRequest.getStartDateTime(),
-                reservationSaveRequest.getEndDateTime())) {
+        if (isPossibleStartTime(reservationSaveRequest, space) || isPossibleEndTime(reservationSaveRequest, space)) {
             throw new ImpossibleReservationTimeException();
         }
+    }
+
+    private Boolean isPossibleEndTime(ReservationSaveRequest reservationSaveRequest, Space space) {
+        return reservationRepository.existsBySpaceIdAndEndTimeBetween(
+                space.getId(),
+                reservationSaveRequest.getStartDateTime().plusSeconds(1),
+                reservationSaveRequest.getEndDateTime().minusSeconds(1));
+    }
+
+    private Boolean isPossibleStartTime(ReservationSaveRequest reservationSaveRequest, Space space) {
+        return reservationRepository.existsBySpaceIdAndStartTimeBetween(
+                space.getId(),
+                reservationSaveRequest.getStartDateTime().plusSeconds(1),
+                reservationSaveRequest.getEndDateTime().minusSeconds(1));
     }
 }
