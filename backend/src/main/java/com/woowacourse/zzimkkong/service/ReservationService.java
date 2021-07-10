@@ -30,7 +30,6 @@ public class ReservationService {
     }
 
     public ReservationSaveResponse saveReservation(Long mapId, ReservationSaveRequest reservationSaveRequest) {
-        ;
         mapRepository.findById(mapId)
                 .orElseThrow(NoSuchMapException::new);
 
@@ -39,19 +38,25 @@ public class ReservationService {
 
         reservationSaveRequest.checkValidateTime();
 
-        if (reservationRepository.existsBySpaceIdAndStartTimeBetweenAndEndTimeBetween(
-                space.getId(),
-                reservationSaveRequest.getStartDateTime(),
-                reservationSaveRequest.getEndDateTime(),
-                reservationSaveRequest.getStartDateTime(),
-                reservationSaveRequest.getEndDateTime())) {
-            throw new ImpossibleReservationTimeException();
-        }
+        checkAlreadyExistReservationInTime(reservationSaveRequest, space);
 
         Reservation reservation = reservationRepository.save(
                 new Reservation.Builder(reservationSaveRequest, space).build()
         );
 
         return ReservationSaveResponse.of(reservation);
+    }
+
+    private void checkAlreadyExistReservationInTime(ReservationSaveRequest reservationSaveRequest, Space space) {
+        if (reservationRepository.existsBySpaceIdAndStartTimeBetween(
+                space.getId(),
+                reservationSaveRequest.getStartDateTime(),
+                reservationSaveRequest.getEndDateTime())
+                || reservationRepository.existsBySpaceIdAndEndTimeBetween(
+                space.getId(),
+                reservationSaveRequest.getStartDateTime(),
+                reservationSaveRequest.getEndDateTime())) {
+            throw new ImpossibleReservationTimeException();
+        }
     }
 }
