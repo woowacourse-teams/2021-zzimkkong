@@ -4,6 +4,7 @@ import com.woowacourse.zzimkkong.domain.Reservation;
 import com.woowacourse.zzimkkong.domain.Space;
 import com.woowacourse.zzimkkong.dto.ReservationSaveRequest;
 import com.woowacourse.zzimkkong.dto.ReservationSaveResponse;
+import com.woowacourse.zzimkkong.exception.ImpossibleReservationTimeException;
 import com.woowacourse.zzimkkong.exception.NoSuchMapException;
 import com.woowacourse.zzimkkong.exception.NoSuchSpaceException;
 import com.woowacourse.zzimkkong.repository.MapRepository;
@@ -28,7 +29,8 @@ public class ReservationService {
         this.reservationRepository = reservationRepository;
     }
 
-    public ReservationSaveResponse saveReservation(Long mapId, ReservationSaveRequest reservationSaveRequest) { ;
+    public ReservationSaveResponse saveReservation(Long mapId, ReservationSaveRequest reservationSaveRequest) {
+        ;
         mapRepository.findById(mapId)
                 .orElseThrow(NoSuchMapException::new);
 
@@ -36,6 +38,15 @@ public class ReservationService {
                 .orElseThrow(NoSuchSpaceException::new);
 
         reservationSaveRequest.checkValidateTime();
+
+        if (reservationRepository.existsBySpaceIdAndStartTimeBetweenAndEndTimeBetween(
+                space.getId(),
+                reservationSaveRequest.getStartDateTime(),
+                reservationSaveRequest.getEndDateTime(),
+                reservationSaveRequest.getStartDateTime(),
+                reservationSaveRequest.getEndDateTime())) {
+            throw new ImpossibleReservationTimeException();
+        }
 
         Reservation reservation = reservationRepository.save(
                 new Reservation.Builder(reservationSaveRequest, space).build()
