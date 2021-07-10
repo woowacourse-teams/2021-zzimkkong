@@ -36,7 +36,7 @@ public class ReservationService {
                 .orElseThrow(NoSuchSpaceException::new);
 
         Reservation reservation = reservationRepository.save(
-                Reservation.from(reservationSaveRequest, space)
+                new Reservation.Builder(reservationSaveRequest, space).build()
         );
 
         return ReservationSaveResponse.of(reservation);

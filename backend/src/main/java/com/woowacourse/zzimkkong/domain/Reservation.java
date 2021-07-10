@@ -33,31 +33,66 @@ public class Reservation {
     protected Reservation() {
     }
 
-    protected Reservation(
-            LocalDateTime startTime,
-            LocalDateTime endTime,
-            String password,
-            String userName,
-            String description,
-            Space space) {
-        this.startTime = startTime;
-        this.endTime = endTime;
-        this.password = password;
-        this.userName = userName;
-        this.description = description;
-        this.space = space;
+    protected Reservation(Builder builder) {
+        this.startTime = builder.startTime;
+        this.endTime = builder.endTime;
+        this.password = builder.password;
+        this.userName = builder.userName;
+        this.description = builder.description;
+        this.space = builder.space;
     }
 
-    public static Reservation from(ReservationSaveRequest reservationSaveRequest, Space space) {
-        return new Reservation(
-                reservationSaveRequest.getStartDateTime(),
-                reservationSaveRequest.getEndDateTime(),
-                reservationSaveRequest.getPassword(),
-                reservationSaveRequest.getName(),
-                reservationSaveRequest.getDescription(),
-                space);
-    }
+    public static class Builder {
+        private LocalDateTime startTime = null;
+        private LocalDateTime endTime= null;
+        private String password= null;
+        private String userName= null;
+        private String description= null;
+        private Space space= null;
 
+        public Builder(ReservationSaveRequest reservationSaveRequest, Space space) {
+            this.startTime(reservationSaveRequest.getStartDateTime())
+                    .endTime(reservationSaveRequest.getEndDateTime())
+                    .password(reservationSaveRequest.getPassword())
+                    .userName(reservationSaveRequest.getName())
+                    .description(reservationSaveRequest.getDescription())
+                    .space(space);
+        }
+
+        public Builder startTime(LocalDateTime inputStartTime) {
+            startTime = inputStartTime;
+            return this;
+        }
+
+        public Builder endTime(LocalDateTime inputEndTime) {
+            endTime = inputEndTime;
+            return this;
+        }
+
+        public Builder password(String inputPassword) {
+            password = inputPassword;
+            return this;
+        }
+
+        public Builder userName(String inputUserName) {
+            userName = inputUserName;
+            return this;
+        }
+
+        public Builder description(String inputDescription) {
+            description = inputDescription;
+            return this;
+        }
+
+        public Builder space(Space inputSpace) {
+            space = inputSpace;
+            return this;
+        }
+
+        public Reservation build() {
+            return new Reservation(this);
+        }
+    }
 
     public Long getId() {
         return id;
