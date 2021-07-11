@@ -91,6 +91,7 @@ public class ReservationService {
         }
     }
 
+    @Transactional(readOnly = true)
     public ReservationFindResponse find(final Long mapId, final Long spaceId, final LocalDate date) {
         validateMapExistence(mapId);
         validateSpaceExistence(spaceId);
@@ -100,6 +101,7 @@ public class ReservationService {
         return ReservationFindResponse.of(reservations);
     }
 
+    @Transactional(readOnly = true)
     public ReservationFindAllResponse findAll(final Long mapId, final LocalDate date) {
         validateMapExistence(mapId);
 
