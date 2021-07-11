@@ -42,11 +42,13 @@ public class ReservationService {
 
     public void deleteReservation(Long mapId, Long reservationId, ReservationDeleteRequest reservationDeleteRequest) {
         mapRepository.findById(mapId).orElseThrow(NoSuchMapException::new);
-
         Reservation reservation = reservationRepository
                 .findById(reservationId)
                 .orElseThrow(NoSuchReservationException::new);
-        reservation.checkPassword(reservationDeleteRequest.getPassword());
+
+        if (reservation.isWrongPassword(reservationDeleteRequest.getPassword())) {
+            throw new ReservationPasswordException();
+        };
         reservationRepository.delete(reservation);
     }
 }

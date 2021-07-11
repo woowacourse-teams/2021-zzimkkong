@@ -56,9 +56,7 @@ public class Reservation {
         return password;
     }
 
-    public void checkPassword(String password) {
-        if (!this.password.equals(password)) {
-            throw new ReservationPasswordException();
-        }
+    public boolean isWrongPassword(String password) {
+        return !this.password.equals(password);
     }
 }
