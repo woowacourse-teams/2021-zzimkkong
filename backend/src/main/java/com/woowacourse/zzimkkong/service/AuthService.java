@@ -43,7 +43,7 @@ public class AuthService {
     }
 
     private void validatePassword(Member findMember, String password) {
-        if (!findMember.getPassword().equals(password)) {
+        if (!findMember.checkPassword(password)) {
             throw new PasswordMismatchException();
         }
     }
