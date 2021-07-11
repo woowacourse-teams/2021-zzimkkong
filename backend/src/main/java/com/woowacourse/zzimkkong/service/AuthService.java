@@ -10,6 +10,8 @@ import com.woowacourse.zzimkkong.repository.MemberRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Map;
+
 @Service
 @Transactional
 public class AuthService {
@@ -34,9 +36,11 @@ public class AuthService {
     }
 
     private String issueToken(Member findMember) {
-        return jwtUtils.createToken(JwtUtils.payloadBuilder()
+        Map<String, Object> payload = JwtUtils.payloadBuilder()
                 .setSubject(findMember.getEmail())
-                .build());
+                .build();
+        
+        return jwtUtils.createToken(payload);
     }
 
     private void validatePassword(Member findMember, String password) {
