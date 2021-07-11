@@ -14,4 +14,3 @@ public class ReservationException extends RuntimeException {
         return status;
     }
 }
-

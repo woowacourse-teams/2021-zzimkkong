@@ -1,5 +1,6 @@
 package com.woowacourse.zzimkkong.controller;
 
+import com.woowacourse.zzimkkong.dto.ReservationDeleteRequest;
 import com.woowacourse.zzimkkong.dto.ReservationFindAllResponse;
 import com.woowacourse.zzimkkong.dto.ReservationFindResponse;
 import com.woowacourse.zzimkkong.dto.ReservationSaveRequest;
@@ -18,7 +19,7 @@ import java.time.LocalDate;
 public class ReservationController {
     private final ReservationService reservationService;
 
-    public ReservationController(ReservationService reservationService) {
+    public ReservationController(final ReservationService reservationService) {
         this.reservationService = reservationService;
     }
 
@@ -48,5 +49,14 @@ public class ReservationController {
             @RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate date) {
         ReservationFindAllResponse reservationFindAllResponse = reservationService.findAll(mapId, date);
         return ResponseEntity.ok().body(reservationFindAllResponse);
+    }
+
+    @DeleteMapping("/reservations/{reservationId}")
+    public ResponseEntity<Void> delete(
+            @PathVariable Long mapId,
+            @PathVariable Long reservationId,
+            @RequestBody @Valid ReservationDeleteRequest reservationDeleteRequest) {
+        reservationService.deleteReservation(mapId, reservationId, reservationDeleteRequest);
+        return ResponseEntity.noContent().build();
     }
 }

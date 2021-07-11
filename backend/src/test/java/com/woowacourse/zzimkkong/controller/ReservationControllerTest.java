@@ -5,6 +5,7 @@ import com.woowacourse.zzimkkong.domain.Space;
 import com.woowacourse.zzimkkong.dto.ReservationFindAllResponse;
 import com.woowacourse.zzimkkong.dto.ReservationFindResponse;
 import com.woowacourse.zzimkkong.dto.ReservationSaveRequest;
+import com.woowacourse.zzimkkong.dto.ReservationDeleteRequest;
 import com.woowacourse.zzimkkong.exception.NoSuchSpaceException;
 import com.woowacourse.zzimkkong.repository.SpaceRepository;
 import io.restassured.RestAssured;
@@ -36,6 +37,15 @@ public class ReservationControllerTest extends AcceptanceTest {
     private Reservation reservationBackEndTargetDate13To14;
     private Reservation reservationBackEndTargetDate18To23;
     private Reservation reservationFrontEnd1TargetDate0to1;
+
+    public ReservationSaveRequest reservationSaveRequest = new ReservationSaveRequest(
+            1L, //TODO: 나중에 인수테스트 전부 생기면 갖다 쓰기
+            LocalDateTime.of(2021, 5, 6, 16, 23, 0),
+            LocalDateTime.of(2021, 5, 6, 19, 23, 0),
+            "1234",
+            "bada",
+            "회의"
+    );
 
     @BeforeEach
     void setUp() {
@@ -100,6 +110,34 @@ public class ReservationControllerTest extends AcceptanceTest {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
     }
 
+    @DisplayName("예약을 삭제한다.")
+    @Test
+    void delete() {
+        //given
+        saveReservation(reservationSaveRequest);
+        ReservationDeleteRequest reservationDeleteRequest = new ReservationDeleteRequest("1234");
+
+        //when
+        final ExtractableResponse<Response> response = deleteReservation(reservationDeleteRequest);
+
+        //then
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
+    }
+
+    @DisplayName("잘못된 비밀번호로 예약삭제를 요청하면, 400 에러를 반환한다.")
+    @Test
+    void deleteWithWrongPassword() {
+        //given
+        saveReservation(reservationSaveRequest);
+        ReservationDeleteRequest reservationDeleteRequest = new ReservationDeleteRequest("0987");
+
+        //when
+        final ExtractableResponse<Response> response = deleteReservation(reservationDeleteRequest);
+
+        //then
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+    }
+
     @DisplayName("map id, space id, 특정 날짜가 주어질 때 해당 맵, 해당 공간, 해당 날짜에 속하는 예약들만 찾아온다")
     @Test
     void find() {
@@ -160,6 +198,17 @@ public class ReservationControllerTest extends AcceptanceTest {
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body(reservationSaveRequest)
                 .when().post("/api/maps/1/reservations")
+                .then().log().all().extract();
+    }
+
+    private ExtractableResponse<Response> deleteReservation(final ReservationDeleteRequest reservationDeleteRequest) {
+        return RestAssured
+                .given(getRequestSpecification()).log().all()
+                .accept("application/json")
+                .filter(document("reservation/delete", getRequestPreprocessor(), getResponsePreprocessor()))
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .body(reservationDeleteRequest)
+                .when().delete("/api/maps/1/reservations/1")
                 .then().log().all().extract();
     }
 
