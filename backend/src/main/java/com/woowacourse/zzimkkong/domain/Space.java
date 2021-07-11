@@ -22,4 +22,8 @@ public class Space {
         this.name = name;
         this.map = map;
     }
+
+    public Long getId() {
+        return id;
+    }
 }
