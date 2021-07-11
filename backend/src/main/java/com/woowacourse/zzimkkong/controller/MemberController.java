@@ -34,8 +34,7 @@ public class MemberController {
     public ResponseEntity<Void> validateEmail(
             @RequestParam
             @NotBlank(message = "비어있는 항목을 입력해주세요.")
-            @Email(message = "올바른 이메일 형식이 아닙니다.")
-            final String email) {
+            @Email(message = "올바른 이메일 형식이 아닙니다.") final String email) {
         memberService.validateDuplicateEmail(email);
         return ResponseEntity.ok().build();
     }

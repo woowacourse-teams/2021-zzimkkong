@@ -29,6 +29,10 @@ public class ErrorResponse {
         return new ErrorResponse(message);
     }
 
+    public static ErrorResponse invalidFormat() {
+        return new ErrorResponse("날짜 및 시간 데이터 형식이 올바르지 않습니다.");
+    }
+
     public String getMessage() {
         return message;
     }
