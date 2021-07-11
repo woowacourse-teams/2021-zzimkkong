@@ -462,9 +462,31 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 </li>
 </ul>
 </li>
+<li><a href="#_reservations예약">Reservations(예약)</a>
+<ul class="sectlevel2">
+<li><a href="#_예약_생성">예약 생성</a>
+<ul class="sectlevel3">
+<li><a href="#_request_4">Request</a></li>
+<li><a href="#_response_4">Response</a></li>
+</ul>
+</li>
+<li><a href="#_특정_공간_예약_조회">특정 공간 예약 조회</a>
+<ul class="sectlevel3">
+<li><a href="#_request_5">Request</a></li>
+<li><a href="#_response_5">Response</a></li>
+</ul>
+</li>
+<li><a href="#_전체_예약_조회">전체 예약 조회</a>
+<ul class="sectlevel3">
+<li><a href="#_request_6">Request</a></li>
+<li><a href="#_response_6">Response</a></li>
+</ul>
+</li>
+</ul>
+</li>
 <li><a href="#_예외처리">예외처리</a>
 <ul class="sectlevel2">
-<li><a href="#_response_4">Response</a></li>
+<li><a href="#_response_7">Response</a></li>
 </ul>
 </li>
 </ul>
@@ -483,7 +505,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">POST /api/members HTTP/1.1
 Accept: application/json
 Content-Type: application/json; charset=UTF-8
-Host: localhost:51883
+Host: localhost:58620
 Content-Length: 88
 
 {
@@ -502,8 +524,8 @@ Content-Length: 88
 Vary: Origin
 Vary: Access-Control-Request-Method
 Vary: Access-Control-Request-Headers
-Location: /api/members/1
-Date: Fri, 09 Jul 2021 07:09:03 GMT
+Location: /api/members/2
+Date: Sat, 10 Jul 2021 12:50:47 GMT
 Keep-Alive: timeout=60
 Connection: keep-alive</code></pre>
 </div>
@@ -519,14 +541,22 @@ Connection: keep-alive</code></pre>
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">GET /api/members?email=dusdn1702%40naver.com HTTP/1.1
 Accept: application/json
 Content-Type: application/json; charset=UTF-8
-Host: localhost:51876</code></pre>
+Host: localhost:58613</code></pre>
 </div>
 </div>
 </div>
 <div class="sect3">
 <h4 id="_response_2"><a class="link" href="#_response_2">Response</a></h4>
-<div class="paragraph">
-<p>Unresolved directive in member.adoc - include::../../../build/generated-snippets/member/gett/http-response.adoc[]</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">HTTP/1.1 200 OK
+Vary: Origin
+Vary: Access-Control-Request-Method
+Vary: Access-Control-Request-Headers
+Date: Sat, 10 Jul 2021 12:50:46 GMT
+Keep-Alive: timeout=60
+Connection: keep-alive</code></pre>
+</div>
 </div>
 </div>
 </div>
@@ -539,7 +569,7 @@ Host: localhost:51876</code></pre>
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">POST /api/login/token HTTP/1.1
 Accept: application/json
 Content-Type: application/json; charset=UTF-8
-Host: localhost:51883
+Host: localhost:58620
 Content-Length: 59
 
 {
@@ -557,7 +587,7 @@ Content-Length: 59
 Vary: Origin
 Vary: Access-Control-Request-Method
 Vary: Access-Control-Request-Headers
-Date: Fri, 09 Jul 2021 07:09:03 GMT
+Date: Sat, 10 Jul 2021 12:50:47 GMT
 Keep-Alive: timeout=60
 Connection: keep-alive</code></pre>
 </div>
@@ -566,9 +596,167 @@ Connection: keep-alive</code></pre>
 </div>
 </div>
 </div>
+<div class="sect1">
+<h2 id="_reservations예약"><a class="link" href="#_reservations예약">Reservations(예약)</a></h2>
+<div class="sectionbody">
+<div class="sect2">
+<h3 id="_예약_생성"><a class="link" href="#_예약_생성">예약 생성</a></h3>
+<div class="sect3">
+<h4 id="_request_4"><a class="link" href="#_request_4">Request</a></h4>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">POST /api/maps/1/reservations HTTP/1.1
+Accept: application/json
+Content-Type: application/json; charset=UTF-8
+Host: localhost:58630
+Content-Length: 218
+
+{
+  "spaceId" : 1,
+  "startDateTime" : [ 2021, 7, 11, 21, 50, 48, 989827000 ],
+  "endDateTime" : [ 2021, 7, 11, 23, 50, 48, 989853000 ],
+  "password" : "2345",
+  "name" : "sally",
+  "description" : "회의입니다."
+}</code></pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_response_4"><a class="link" href="#_response_4">Response</a></h4>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">HTTP/1.1 201 Created
+Vary: Origin
+Vary: Access-Control-Request-Method
+Vary: Access-Control-Request-Headers
+Location: /api/maps/1/reservations/6
+Date: Sat, 10 Jul 2021 12:50:48 GMT
+Keep-Alive: timeout=60
+Connection: keep-alive</code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_특정_공간_예약_조회"><a class="link" href="#_특정_공간_예약_조회">특정 공간 예약 조회</a></h3>
+<div class="sect3">
+<h4 id="_request_5"><a class="link" href="#_request_5">Request</a></h4>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">GET /api/maps/1/spaces/1/reservations?spaceId=1&amp;date=2021-07-09 HTTP/1.1
+Host: localhost:58627</code></pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_response_5"><a class="link" href="#_response_5">Response</a></h4>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">HTTP/1.1 200 OK
+Vary: Origin
+Vary: Access-Control-Request-Method
+Vary: Access-Control-Request-Headers
+Content-Type: application/json
+Transfer-Encoding: chunked
+Date: Sat, 10 Jul 2021 12:50:48 GMT
+Keep-Alive: timeout=60
+Connection: keep-alive
+Content-Length: 544
+
+{
+  "reservations" : [ {
+    "id" : 1,
+    "startDateTime" : "2021-07-09T00:00:00",
+    "endDateTime" : "2021-07-09T01:00:00",
+    "name" : "찜꽁",
+    "description" : "찜꽁 1차 회의"
+  }, {
+    "id" : 2,
+    "startDateTime" : "2021-07-09T13:00:00",
+    "endDateTime" : "2021-07-09T14:00:00",
+    "name" : "찜꽁",
+    "description" : "찜꽁 2차 회의"
+  }, {
+    "id" : 3,
+    "startDateTime" : "2021-07-09T18:00:00",
+    "endDateTime" : "2021-07-09T23:59:59",
+    "name" : "찜꽁",
+    "description" : "찜꽁 3차 회의"
+  } ]
+}</code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_전체_예약_조회"><a class="link" href="#_전체_예약_조회">전체 예약 조회</a></h3>
+<div class="sect3">
+<h4 id="_request_6"><a class="link" href="#_request_6">Request</a></h4>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">GET /api/maps/1/reservations?date=2021-07-09 HTTP/1.1
+Host: localhost:58624</code></pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_response_6"><a class="link" href="#_response_6">Response</a></h4>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">HTTP/1.1 200 OK
+Vary: Origin
+Vary: Access-Control-Request-Method
+Vary: Access-Control-Request-Headers
+Content-Type: application/json
+Transfer-Encoding: chunked
+Date: Sat, 10 Jul 2021 12:50:47 GMT
+Keep-Alive: timeout=60
+Connection: keep-alive
+Content-Length: 857
+
+{
+  "data" : [ {
+    "spaceId" : 2,
+    "reservations" : [ {
+      "id" : 5,
+      "startDateTime" : "2021-07-09T00:00:00",
+      "endDateTime" : "2021-07-09T01:00:00",
+      "name" : "찜꽁",
+      "description" : "찜꽁 5차 회의"
+    } ]
+  }, {
+    "spaceId" : 1,
+    "reservations" : [ {
+      "id" : 1,
+      "startDateTime" : "2021-07-09T00:00:00",
+      "endDateTime" : "2021-07-09T01:00:00",
+      "name" : "찜꽁",
+      "description" : "찜꽁 1차 회의"
+    }, {
+      "id" : 2,
+      "startDateTime" : "2021-07-09T13:00:00",
+      "endDateTime" : "2021-07-09T14:00:00",
+      "name" : "찜꽁",
+      "description" : "찜꽁 2차 회의"
+    }, {
+      "id" : 3,
+      "startDateTime" : "2021-07-09T18:00:00",
+      "endDateTime" : "2021-07-09T23:59:59",
+      "name" : "찜꽁",
+      "description" : "찜꽁 3차 회의"
+    } ]
+  } ]
+}</code></pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
 <h1 id="_예외처리" class="sect0"><a class="link" href="#_예외처리">예외처리</a></h1>
 <div class="sect2">
-<h3 id="_response_4"><a class="link" href="#_response_4">Response</a></h3>
+<h3 id="_response_7"><a class="link" href="#_response_7">Response</a></h3>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">HTTP/1.1 400 Bad Request
@@ -584,7 +772,7 @@ Content-Type: application/json
 <div id="footer">
 <div id="footer-text">
 Version 0.0.1-SNAPSHOT<br>
-Last updated 2021-07-09 15:55:19 +0900
+Last updated 2021-07-10 21:00:49 +0900
 </div>
 </div>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.13.1/styles/github.min.css">

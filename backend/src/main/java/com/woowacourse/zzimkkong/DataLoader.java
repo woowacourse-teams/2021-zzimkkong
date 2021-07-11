@@ -2,30 +2,36 @@ package com.woowacourse.zzimkkong;
 
 import com.woowacourse.zzimkkong.domain.Map;
 import com.woowacourse.zzimkkong.domain.Member;
+import com.woowacourse.zzimkkong.domain.Reservation;
 import com.woowacourse.zzimkkong.domain.Space;
 import com.woowacourse.zzimkkong.repository.MapRepository;
 import com.woowacourse.zzimkkong.repository.MemberRepository;
+import com.woowacourse.zzimkkong.repository.ReservationRepository;
 import com.woowacourse.zzimkkong.repository.SpaceRepository;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @Component
-@Profile("local")
+@Profile({"local", "test"})
 public class DataLoader implements CommandLineRunner {
     private final MemberRepository memberRepository;
     private final MapRepository mapRepository;
     private final SpaceRepository spaceRepository;
+    private final ReservationRepository reservationRepository;
 
     public DataLoader(
             final MemberRepository memberRepository,
             final MapRepository mapRepository,
-            final SpaceRepository spaceRepository) {
+            final SpaceRepository spaceRepository,
+            final ReservationRepository reservationRepository) {
         this.memberRepository = memberRepository;
         this.mapRepository = mapRepository;
         this.spaceRepository = spaceRepository;
+        this.reservationRepository = reservationRepository;
     }
 
     @Override
@@ -64,5 +70,58 @@ public class DataLoader implements CommandLineRunner {
         for (Space space : spaces) {
             spaceRepository.save(space);
         }
+
+        LocalDate targetDate = LocalDate.of(2021, 7, 9);
+
+        Reservation reservationBackEndTargetDate0To1 = new Reservation.Builder()
+                .startTime(targetDate.atStartOfDay())
+                .endTime(targetDate.atTime(1, 0, 0))
+                .description("찜꽁 1차 회의")
+                .userName("찜꽁")
+                .password("1234")
+                .space(be)
+                .build();
+
+        Reservation reservationBackEndTargetDate13To14 = new Reservation.Builder()
+                .startTime(targetDate.atTime(13, 0, 0))
+                .endTime(targetDate.atTime(14, 0, 0))
+                .description("찜꽁 2차 회의")
+                .userName("찜꽁")
+                .password("1234")
+                .space(be)
+                .build();
+
+        Reservation reservationBackEndTargetDate18To23 = new Reservation.Builder()
+                .startTime(targetDate.atTime(18, 0, 0))
+                .endTime(targetDate.atTime(23, 59, 59))
+                .description("찜꽁 3차 회의")
+                .userName("찜꽁")
+                .password("6789")
+                .space(be)
+                .build();
+
+        Reservation reservationBackEndTheDayAfterTargetDate = new Reservation.Builder()
+                .startTime(targetDate.plusDays(1L).atStartOfDay())
+                .endTime(targetDate.plusDays(1L).atTime(1, 0, 0))
+                .description("찜꽁 4차 회의")
+                .userName("찜꽁")
+                .password("1234")
+                .space(be)
+                .build();
+
+        Reservation reservationFrontEnd1TargetDate0to1 = new Reservation.Builder()
+                .startTime(targetDate.atStartOfDay())
+                .endTime(targetDate.atTime(1, 0, 0))
+                .description("찜꽁 5차 회의")
+                .userName("찜꽁")
+                .password("1234")
+                .space(fe1)
+                .build();
+
+        reservationRepository.save(reservationBackEndTargetDate0To1);
+        reservationRepository.save(reservationBackEndTargetDate13To14);
+        reservationRepository.save(reservationBackEndTargetDate18To23);
+        reservationRepository.save(reservationBackEndTheDayAfterTargetDate);
+        reservationRepository.save(reservationFrontEnd1TargetDate0to1);
     }
 }

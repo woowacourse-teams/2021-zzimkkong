@@ -4,7 +4,6 @@ import com.woowacourse.zzimkkong.domain.Member;
 import com.woowacourse.zzimkkong.exception.NoSuchEmailException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
@@ -12,9 +11,6 @@ class MemberRepositoryTest extends RepositoryTest {
     public static final String EMAIL = "pobi@email.com";
     public static final String PASSWORD = "test1234";
     public static final String ORGANIZATION = "루터";
-
-    @Autowired
-    private MemberRepository memberRepository;
 
     private final Member MEMBER = new Member(EMAIL, PASSWORD, ORGANIZATION);
 
