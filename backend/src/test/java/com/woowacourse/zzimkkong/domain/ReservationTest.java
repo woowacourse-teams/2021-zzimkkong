@@ -35,40 +35,40 @@ class ReservationTest {
     private static Stream<Arguments> provideStartAndEndDateTime() {
         return Stream.of(
                 Arguments.of(
-                        DATE.atTime(8,1,0),
-                        DATE.atTime(8,59,0),
+                        DATE.atTime(8, 1, 0),
+                        DATE.atTime(8, 59, 0),
                         true),
                 Arguments.of(
-                        DATE.atTime(7,59,0),
-                        DATE.atTime(8,1,0),
+                        DATE.atTime(7, 59, 0),
+                        DATE.atTime(8, 1, 0),
                         true),
                 Arguments.of(
-                        DATE.atTime(8,59,0),
-                        DATE.atTime(9,1,0),
+                        DATE.atTime(8, 59, 0),
+                        DATE.atTime(9, 1, 0),
                         true),
                 Arguments.of(
-                        DATE.atTime(7,59,0),
-                        DATE.atTime(9,1,0),
+                        DATE.atTime(7, 59, 0),
+                        DATE.atTime(9, 1, 0),
                         true),
                 Arguments.of(
-                        DATE.atTime(8,0,0),
-                        DATE.atTime(9,0,0),
+                        DATE.atTime(8, 0, 0),
+                        DATE.atTime(9, 0, 0),
                         true),
                 Arguments.of(
-                        DATE.atTime(7,59,0),
-                        DATE.atTime(8,0,0),
+                        DATE.atTime(7, 59, 0),
+                        DATE.atTime(8, 0, 0),
                         false),
                 Arguments.of(
-                        DATE.atTime(9,0,0),
-                        DATE.atTime(9,1,0),
+                        DATE.atTime(9, 0, 0),
+                        DATE.atTime(9, 1, 0),
                         false),
                 Arguments.of(
-                        DATE.atTime(7,0,0),
-                        DATE.atTime(8,0,0),
+                        DATE.atTime(7, 0, 0),
+                        DATE.atTime(8, 0, 0),
                         false),
                 Arguments.of(
-                        DATE.atTime(9,0,0),
-                        DATE.atTime(10,0,0),
+                        DATE.atTime(9, 0, 0),
+                        DATE.atTime(10, 0, 0),
                         false)
         );
     }
