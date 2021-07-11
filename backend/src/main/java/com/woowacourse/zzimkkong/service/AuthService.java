@@ -3,7 +3,7 @@ package com.woowacourse.zzimkkong.service;
 import com.woowacourse.zzimkkong.domain.Member;
 import com.woowacourse.zzimkkong.dto.LoginRequest;
 import com.woowacourse.zzimkkong.dto.TokenResponse;
-import com.woowacourse.zzimkkong.exception.NoSuchEmailException;
+import com.woowacourse.zzimkkong.exception.NoSuchMemberException;
 import com.woowacourse.zzimkkong.exception.PasswordMismatchException;
 import com.woowacourse.zzimkkong.infrastructure.JwtUtils;
 import com.woowacourse.zzimkkong.repository.MemberRepository;
@@ -39,7 +39,7 @@ public class AuthService {
 
     private Member findMemberByEmailOrElseThrow(String email) {
         return memberRepository.findByEmail(email)
-                .orElseThrow(NoSuchEmailException::new);
+                .orElseThrow(NoSuchMemberException::new);
     }
 
     private void validatePassword(Member findMember, String password) {
