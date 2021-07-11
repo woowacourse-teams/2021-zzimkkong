@@ -23,7 +23,9 @@ public class AuthService {
 
     @Transactional(readOnly = true)
     public TokenResponse login(LoginRequest loginRequest) {
-        Member findMember = findMemberByEmailOrElseThrow(loginRequest.getEmail());
+        Member findMember = memberRepository.findByEmail(loginRequest.getEmail())
+                .orElseThrow(NoSuchMemberException::new);
+
         validatePassword(findMember, loginRequest.getPassword());
 
         String token = issueToken(findMember);
@@ -35,11 +37,6 @@ public class AuthService {
         return jwtUtils.createToken(JwtUtils.payloadBuilder()
                 .setSubject(findMember.getEmail())
                 .build());
-    }
-
-    private Member findMemberByEmailOrElseThrow(String email) {
-        return memberRepository.findByEmail(email)
-                .orElseThrow(NoSuchMemberException::new);
     }
 
     private void validatePassword(Member findMember, String password) {
