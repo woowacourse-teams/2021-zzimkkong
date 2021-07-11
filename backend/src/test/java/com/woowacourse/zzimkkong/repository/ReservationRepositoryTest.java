@@ -6,6 +6,7 @@ import com.woowacourse.zzimkkong.exception.NoSuchSpaceException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -20,6 +21,21 @@ class ReservationRepositoryTest extends RepositoryTest {
     private final LocalDate targetDate = LocalDate.of(2021, 7, 9);
     private Space be;
     private Space fe1;
+
+    private static final LocalDateTime startTime = LocalDateTime.of(2021, 5, 6, 16, 23, 0);
+    private static final LocalDateTime endTime = LocalDateTime.of(2021, 5, 6, 19, 23, 0);
+    public static final Space SPACE = new Space("회의실", MapRepositoryTest.MAP);
+    public static final Reservation RESERVATION = new Reservation.Builder()
+            .startTime(startTime)
+            .endTime(endTime)
+            .description("찜꽁 3차 회의")
+            .userName("찜꽁")
+            .password("1234")
+            .space(SPACE)
+            .build();
+
+    @Autowired
+    private ReservationRepository reservations;
 
     @BeforeEach
     void setUp() {
@@ -86,5 +102,29 @@ class ReservationRepositoryTest extends RepositoryTest {
 
         // then
         assertThat(reservations).hasSize(4);
+    }
+
+    @Test
+    @DisplayName("예약을 추가할 수 있다.")
+    void save() {
+        //when
+        final Reservation actual = reservations.save(RESERVATION);
+
+        //then
+        assertThat(actual.getId()).isNotNull();
+        assertThat(actual.getPassword()).isEqualTo("1234");
+    }
+
+    @Test
+    @DisplayName("예약을 삭제할 수 있다.")
+    void delete() {
+        //given
+        final Reservation reservation = reservations.save(RESERVATION);
+
+        //when
+        reservations.delete(reservation);
+
+        //then
+        reservations.flush();
     }
 }

@@ -17,3 +17,9 @@ include::{snippets}/reservation/get/http-response.adoc[]
 include::{snippets}/reservation/get_all/http-request.adoc[]
 ==== Response
 include::{snippets}/reservation/get_all/http-response.adoc[]
+
+=== 예약 삭제
+==== Request
+include::{snippets}/reservation/delete/http-request.adoc[]
+==== Response
+include::{snippets}/reservation/delete/http-response.adoc[]

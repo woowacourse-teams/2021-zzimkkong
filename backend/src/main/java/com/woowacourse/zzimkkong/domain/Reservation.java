@@ -63,13 +63,13 @@ public class Reservation {
     }
 
     public static class Builder {
+
         private LocalDateTime startTime = null;
         private LocalDateTime endTime = null;
         private String password = null;
         private String userName = null;
         private String description = null;
         private Space space = null;
-
         public Builder() {
         }
 
@@ -106,6 +106,10 @@ public class Reservation {
         public Reservation build() {
             return new Reservation(this);
         }
+
+    }
+    public boolean isWrongPassword(String password) {
+        return !this.password.equals(password);
     }
 
     public Long getId() {
@@ -118,6 +122,10 @@ public class Reservation {
 
     public LocalDateTime getEndTime() {
         return endTime;
+    }
+
+    public String getPassword() {
+        return password;
     }
 
     public String getDescription() {
