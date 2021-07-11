@@ -92,7 +92,7 @@ public class ReservationService {
     }
 
     @Transactional(readOnly = true)
-    public ReservationFindResponse find(final Long mapId, final Long spaceId, final LocalDate date) {
+    public ReservationFindResponse findReservations(final Long mapId, final Long spaceId, final LocalDate date) {
         validateMapExistence(mapId);
         validateSpaceExistence(spaceId);
 
@@ -102,7 +102,7 @@ public class ReservationService {
     }
 
     @Transactional(readOnly = true)
-    public ReservationFindAllResponse findAll(final Long mapId, final LocalDate date) {
+    public ReservationFindAllResponse findAllReservations(final Long mapId, final LocalDate date) {
         validateMapExistence(mapId);
 
         List<Long> spaceIds = spaceRepository.findAllByMapId(mapId)

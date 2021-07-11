@@ -3,7 +3,6 @@ package com.woowacourse.zzimkkong.repository;
 import com.woowacourse.zzimkkong.domain.Reservation;
 import com.woowacourse.zzimkkong.domain.Space;
 import com.woowacourse.zzimkkong.exception.NoSuchSpaceException;
-import com.woowacourse.zzimkkong.exception.NonMatchingStartAndEndDateException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

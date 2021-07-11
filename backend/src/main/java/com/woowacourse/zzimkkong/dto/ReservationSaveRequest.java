@@ -1,7 +1,5 @@
 package com.woowacourse.zzimkkong.dto;
 
-import com.woowacourse.zzimkkong.exception.ImpossibleEndTimeException;
-import com.woowacourse.zzimkkong.exception.ImpossibleStartTimeException;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.validation.constraints.NotBlank;
