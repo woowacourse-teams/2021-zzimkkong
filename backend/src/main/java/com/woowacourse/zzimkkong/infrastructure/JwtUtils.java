@@ -6,22 +6,20 @@ import io.jsonwebtoken.*;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
-import javax.annotation.PostConstruct;
 import java.util.Date;
 import java.util.Map;
 
 @Component
 public class JwtUtils {
-    @Value("${jwt.token.secret-key}")
-    private String secretKey;
-    @Value("${jwt.token.expire-length}")
-    private long validityInMilliseconds;
+    private final String secretKey;
+    private final long validityInMilliseconds;
+    private final JwtParser jwtParser;
 
-    private JwtParser jwtParser;
-
-    @PostConstruct
-    void init() {
-        jwtParser = Jwts.parser().setSigningKey(secretKey);
+    public JwtUtils(@Value("${jwt.token.secret-key}") String secretKey,
+                    @Value("${jwt.token.expire-length}") long validityInMilliseconds) {
+        this.secretKey = secretKey;
+        this.validityInMilliseconds = validityInMilliseconds;
+        this.jwtParser = Jwts.parser().setSigningKey(secretKey);
     }
 
     public String createToken(Map<String, Object> payload) {
