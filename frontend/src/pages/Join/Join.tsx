@@ -25,7 +25,7 @@ const Join = (): JSX.Element => {
 
   const history = useHistory();
 
-  const isValidEmail = useQuery(['isValidEmail', email], getValidateEmail, {
+  const isValidEmail = useQuery(['isValidEmail', email], queryValidateEmail, {
     enabled: false,
     retry: false,
 
@@ -38,7 +38,7 @@ const Join = (): JSX.Element => {
     },
   });
 
-  const postJoinMutation = useMutation(postJoin, {
+  const joinUser = useMutation(postJoin, {
     onSuccess: () => {
       alert(MESSAGE.JOIN.SUCCESS);
       history.push(PATH.LOGIN);
