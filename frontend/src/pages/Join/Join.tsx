@@ -64,19 +64,15 @@ const Join = (): JSX.Element => {
   };
 
   useEffect(() => {
-    if (password !== passwordConfirm) {
-      setPasswordConfirmMessage(MESSAGE.JOIN.INVALID_PASSWORD_CONFIRM);
-    } else {
-      setPasswordConfirmMessage(MESSAGE.JOIN.VALID_PASSWORD_CONFIRM);
-    }
+    password !== passwordConfirm
+      ? setPasswordConfirmMessage(MESSAGE.JOIN.INVALID_PASSWORD_CONFIRM)
+      : setPasswordConfirmMessage(MESSAGE.JOIN.VALID_PASSWORD_CONFIRM);
   }, [passwordConfirm]);
 
   useEffect(() => {
-    if (!REGEXP.PASSWORD.test(password)) {
-      setPasswordMessage(MESSAGE.JOIN.INVALID_PASSWORD);
-    } else {
-      setPasswordMessage(MESSAGE.JOIN.VALID_PASSWORD);
-    }
+    !REGEXP.PASSWORD.test(password)
+      ? setPasswordMessage(MESSAGE.JOIN.INVALID_PASSWORD)
+      : setPasswordMessage(MESSAGE.JOIN.VALID_PASSWORD);
   }, [password]);
 
   return (
