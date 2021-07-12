@@ -4,7 +4,7 @@ module.exports = {
     es2021: true,
   },
   ignorePatterns: ['*.js'],
-  extends: ['react-app', 'prettier'],
+  extends: ['react-app', 'plugin:prettier/recommended'],
   parser: '@typescript-eslint/parser',
   parserOptions: {
     ecmaFeatures: {
@@ -16,4 +16,12 @@ module.exports = {
   },
   plugins: [],
   rules: {},
+  overrides: [
+    {
+      files: ['**/*.stories.*'],
+      rules: {
+        'import/no-anonymous-default-export': 'off',
+      },
+    },
+  ],
 };
