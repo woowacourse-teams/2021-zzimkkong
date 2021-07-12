@@ -1,4 +1,4 @@
-import { getValidateEmail, postJoin } from 'api/join';
+import { postJoin, queryValidateEmail } from 'api/join';
 import { AxiosError } from 'axios';
 import Button from 'components/Button/Button';
 import Header from 'components/Header/Header';
@@ -8,7 +8,7 @@ import MESSAGE from 'constants/message';
 import PATH from 'constants/path';
 import REGEXP from 'constants/regexp';
 import useInput from 'hooks/useInput';
-import { FormEventHandler, useState } from 'react';
+import { FormEventHandler, useEffect, useState } from 'react';
 import { useMutation, useQuery } from 'react-query';
 import { useHistory } from 'react-router-dom';
 import * as Styled from './Join.styles';
@@ -55,29 +55,29 @@ const Join = (): JSX.Element => {
     isValidEmail.refetch();
   };
 
-  const handleValidatePassword = () => {
-    if (!REGEXP.PASSWORD.test(password)) {
-      setPasswordMessage(MESSAGE.JOIN.INVALID_PASSWORD);
-    } else {
-      setPasswordMessage(MESSAGE.JOIN.VALID_PASSWORD);
-    }
-  };
-
-  const handleValidatePasswordConfirm = () => {
-    if (password !== passwordConfirm) {
-      setPasswordConfirmMessage(MESSAGE.JOIN.INVALID_PASSWORD_CONFIRM);
-    } else {
-      setPasswordConfirmMessage(MESSAGE.JOIN.VALID_PASSWORD_CONFIRM);
-    }
-  };
-
   const handleSubmitJoinForm: FormEventHandler<HTMLFormElement> = (event) => {
     event.preventDefault();
 
     if (!email || !password || !passwordConfirm || !organization) return;
 
-    postJoinMutation.mutate({ email, password, organization });
+    joinUser.mutate({ email, password, organization });
   };
+
+  useEffect(() => {
+    if (password !== passwordConfirm) {
+      setPasswordConfirmMessage(MESSAGE.JOIN.INVALID_PASSWORD_CONFIRM);
+    } else {
+      setPasswordConfirmMessage(MESSAGE.JOIN.VALID_PASSWORD_CONFIRM);
+    }
+  }, [passwordConfirm]);
+
+  useEffect(() => {
+    if (!REGEXP.PASSWORD.test(password)) {
+      setPasswordMessage(MESSAGE.JOIN.INVALID_PASSWORD);
+    } else {
+      setPasswordMessage(MESSAGE.JOIN.VALID_PASSWORD);
+    }
+  }, [password]);
 
   return (
     <>
@@ -103,7 +103,6 @@ const Join = (): JSX.Element => {
               minLength={8}
               value={password}
               onChange={onChangePassword}
-              onBlur={handleValidatePassword}
               message={passwordMessage}
               status={REGEXP.PASSWORD.test(password) ? 'success' : 'error'}
               required
@@ -114,7 +113,6 @@ const Join = (): JSX.Element => {
               minLength={8}
               value={passwordConfirm}
               onChange={onChangePasswordConfirm}
-              onBlur={handleValidatePasswordConfirm}
               message={passwordConfirmMessage}
               status={password === passwordConfirm ? 'success' : 'error'}
               required
