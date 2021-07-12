@@ -1,7 +1,7 @@
 import { QueryFunction } from 'react-query';
 import api from './api';
 
-interface JoinProps {
+interface JoinParams {
   email: string;
   password: string;
   organization: string;
@@ -13,6 +13,6 @@ export const queryValidateEmail: QueryFunction = ({ queryKey }) => {
   return api.get(`/members/?email=${email}`);
 };
 
-export const postJoin = ({ email, password, organization }: JoinProps) => {
+export const postJoin = ({ email, password, organization }: JoinParams) => {
   return api.post('/members', { email, password, organization });
 };
