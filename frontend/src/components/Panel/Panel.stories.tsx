@@ -6,9 +6,6 @@ import Panel, { Props } from './Panel';
 export default {
   title: 'shared/Panel',
   component: Panel,
-  argTypes: {
-    onToggle: { action: 'toggle' },
-  },
 };
 
 const Template: Story<PropsWithChildren<Props>> = (args) => <Panel {...args} />;
@@ -16,7 +13,7 @@ const Template: Story<PropsWithChildren<Props>> = (args) => <Panel {...args} />;
 export const Default = Template.bind({});
 Default.args = {
   expandable: false,
-  expanded: false,
+  initialExpanded: false,
   children: (
     <>
       <Panel.Header>
@@ -32,7 +29,7 @@ Default.args = {
 export const BgColor = Template.bind({});
 BgColor.args = {
   expandable: false,
-  expanded: false,
+  initialExpanded: false,
   children: (
     <>
       <Panel.Header bgColor={PALETTE.ORANGE[500]}>
@@ -48,7 +45,7 @@ BgColor.args = {
 export const Expandable = Template.bind({});
 Expandable.args = {
   expandable: true,
-  expanded: false,
+  initialExpanded: false,
   children: (
     <>
       <Panel.Header>

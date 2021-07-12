@@ -1,4 +1,4 @@
-import { PropsWithChildren } from 'react';
+import { PropsWithChildren, useState } from 'react';
 import * as Styled from './Panel.styles';
 import PanelContext from './PanelContext';
 import PanelHeader from './PanelHeader';
@@ -6,19 +6,19 @@ import PanelContent from './PanelContent';
 
 export interface Props {
   expandable?: boolean;
-  expanded?: boolean;
-  onToggle?: () => void;
+  initialExpanded?: boolean;
 }
 
 const Panel = ({
   expandable = false,
-  expanded = false,
-  onToggle,
+  initialExpanded = false,
   children,
 }: PropsWithChildren<Props>) => {
+  const [expanded, setExpanded] = useState(initialExpanded);
+
   const handleToggle = () => {
-    if (expandable && onToggle) {
-      onToggle();
+    if (expandable) {
+      setExpanded((prev) => !prev);
     }
   };
 
