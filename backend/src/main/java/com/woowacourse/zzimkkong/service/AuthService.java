@@ -39,7 +39,7 @@ public class AuthService {
         Map<String, Object> payload = JwtUtils.payloadBuilder()
                 .setSubject(findMember.getEmail())
                 .build();
-        
+
         return jwtUtils.createToken(payload);
     }
 
