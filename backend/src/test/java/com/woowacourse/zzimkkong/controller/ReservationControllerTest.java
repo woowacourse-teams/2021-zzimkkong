@@ -97,7 +97,7 @@ public class ReservationControllerTest extends AcceptanceTest {
         ReservationSaveRequest reservationSaveRequest = new ReservationSaveRequest(
                 1L, //TODO: 나중에 인수테스트 전부 생기면 갖다 쓰기
                 LocalDateTime.now().plusDays(1),
-                LocalDateTime.now().plusDays(1).plusHours(2),
+                LocalDateTime.now().plusDays(1).plusHours(1),
                 "2345",
                 "sally",
                 "회의입니다."
