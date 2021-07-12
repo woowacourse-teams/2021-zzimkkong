@@ -1,10 +1,10 @@
 package com.woowacourse.zzimkkong.controller;
 
-import com.woowacourse.zzimkkong.dto.ReservationDeleteRequest;
-import com.woowacourse.zzimkkong.dto.ReservationFindAllResponse;
-import com.woowacourse.zzimkkong.dto.ReservationFindResponse;
-import com.woowacourse.zzimkkong.dto.ReservationSaveRequest;
-import com.woowacourse.zzimkkong.dto.ReservationSaveResponse;
+import com.woowacourse.zzimkkong.dto.reservation.ReservationDeleteRequest;
+import com.woowacourse.zzimkkong.dto.reservation.ReservationFindAllResponse;
+import com.woowacourse.zzimkkong.dto.reservation.ReservationFindResponse;
+import com.woowacourse.zzimkkong.dto.reservation.ReservationSaveRequest;
+import com.woowacourse.zzimkkong.dto.reservation.ReservationSaveResponse;
 import com.woowacourse.zzimkkong.service.ReservationService;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;

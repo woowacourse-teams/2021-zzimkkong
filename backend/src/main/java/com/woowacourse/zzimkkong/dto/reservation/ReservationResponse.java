@@ -1,4 +1,4 @@
-package com.woowacourse.zzimkkong.dto;
+package com.woowacourse.zzimkkong.dto.reservation;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;

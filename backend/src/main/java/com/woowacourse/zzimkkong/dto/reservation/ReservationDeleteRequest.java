@@ -1,4 +1,4 @@
-package com.woowacourse.zzimkkong.dto;
+package com.woowacourse.zzimkkong.dto.reservation;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Pattern;

@@ -1,8 +1,8 @@
 package com.woowacourse.zzimkkong.controller;
 
-import com.woowacourse.zzimkkong.dto.LoginRequest;
-import com.woowacourse.zzimkkong.dto.MemberSaveRequest;
-import com.woowacourse.zzimkkong.dto.TokenResponse;
+import com.woowacourse.zzimkkong.dto.member.LoginRequest;
+import com.woowacourse.zzimkkong.dto.member.MemberSaveRequest;
+import com.woowacourse.zzimkkong.dto.member.TokenResponse;
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;

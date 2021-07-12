@@ -1,4 +1,4 @@
-package com.woowacourse.zzimkkong.dto;
+package com.woowacourse.zzimkkong.dto.member;
 
 public class TokenResponse {
     private String accessToken;

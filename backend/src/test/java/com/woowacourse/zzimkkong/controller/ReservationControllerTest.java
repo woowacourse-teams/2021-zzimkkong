@@ -2,10 +2,10 @@ package com.woowacourse.zzimkkong.controller;
 
 import com.woowacourse.zzimkkong.domain.Reservation;
 import com.woowacourse.zzimkkong.domain.Space;
-import com.woowacourse.zzimkkong.dto.ReservationFindAllResponse;
-import com.woowacourse.zzimkkong.dto.ReservationFindResponse;
-import com.woowacourse.zzimkkong.dto.ReservationSaveRequest;
-import com.woowacourse.zzimkkong.dto.ReservationDeleteRequest;
+import com.woowacourse.zzimkkong.dto.reservation.ReservationFindAllResponse;
+import com.woowacourse.zzimkkong.dto.reservation.ReservationFindResponse;
+import com.woowacourse.zzimkkong.dto.reservation.ReservationSaveRequest;
+import com.woowacourse.zzimkkong.dto.reservation.ReservationDeleteRequest;
 import com.woowacourse.zzimkkong.exception.NoSuchSpaceException;
 import com.woowacourse.zzimkkong.repository.SpaceRepository;
 import io.restassured.RestAssured;
