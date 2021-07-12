@@ -20,7 +20,7 @@ class JwtUtilsTest {
 
     @DisplayName("Payload를 담아 token을 발급한다.")
     @Test
-    public void createToken() {
+    void createToken() {
         // given
         Map<String, Object> payload = JwtUtils.payloadBuilder()
                 .setSubject(EMAIL)
