@@ -2,10 +2,7 @@ package com.woowacourse.zzimkkong.controller;
 
 import com.fasterxml.jackson.databind.exc.InvalidFormatException;
 import com.woowacourse.zzimkkong.dto.ErrorResponse;
-import com.woowacourse.zzimkkong.exception.MapException;
-import com.woowacourse.zzimkkong.exception.MemberException;
-import com.woowacourse.zzimkkong.exception.ReservationException;
-import com.woowacourse.zzimkkong.exception.SpaceException;
+import com.woowacourse.zzimkkong.exception.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.dao.DataAccessException;
@@ -22,6 +19,14 @@ public class ControllerAdvice {
 
     @ExceptionHandler(MemberException.class)
     public ResponseEntity<ErrorResponse> memberExceptionHandler(final MemberException exception) {
+        logger.warn(exception.getMessage());
+        return ResponseEntity
+                .status(exception.getStatus())
+                .body(ErrorResponse.of(exception));
+    }
+
+    @ExceptionHandler(AuthorizationException.class)
+    public ResponseEntity<ErrorResponse> AuthorizationExceptionHandler(final AuthorizationException exception) {
         logger.warn(exception.getMessage());
         return ResponseEntity
                 .status(exception.getStatus())
