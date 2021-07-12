@@ -11,12 +11,16 @@ import org.springframework.test.context.ActiveProfiles;
 @DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
 @ActiveProfiles("test")
 public class RepositoryTest {
+
     @Autowired
     protected ReservationRepository reservationRepository;
+
     @Autowired
     protected SpaceRepository spaceRepository;
+
     @Autowired
     protected MemberRepository memberRepository;
+
     @Autowired
     protected MapRepository mapRepository;
 
@@ -28,7 +32,6 @@ public class RepositoryTest {
                 spaceRepository,
                 reservationRepository
         );
-
         dataLoader.run();
     }
 }

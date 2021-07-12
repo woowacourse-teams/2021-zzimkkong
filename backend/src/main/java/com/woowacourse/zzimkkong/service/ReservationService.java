@@ -12,6 +12,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
@@ -56,8 +57,8 @@ public class ReservationService {
     }
 
     private void validateReservation(final ReservationSaveRequest reservationSaveRequest, final Space space) {
-        LocalDateTime startDateTime = reservationSaveRequest.getStartDateTime();
-        LocalDateTime endDateTime = reservationSaveRequest.getEndDateTime();
+        LocalDateTime startDateTime = reservationSaveRequest.getStartDateTime().truncatedTo(ChronoUnit.SECONDS);
+        LocalDateTime endDateTime = reservationSaveRequest.getEndDateTime().truncatedTo(ChronoUnit.SECONDS);
         validateTime(startDateTime, endDateTime);
         validateAvailability(space, startDateTime, endDateTime);
     }
