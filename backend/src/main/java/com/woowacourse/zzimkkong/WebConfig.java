@@ -23,7 +23,8 @@ public class WebConfig implements WebMvcConfigurer {
 
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
-        registry.addInterceptor(this.loginInterceptor);
+        registry.addInterceptor(this.loginInterceptor)
+                .addPathPatterns("/temporal");  // malfunction 방지
         // todo 인가가 필요한 API url을 addPathPattern()로 등록하기
     }
 }
