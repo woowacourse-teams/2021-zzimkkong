@@ -23,7 +23,7 @@ class JwtUtilsTest {
     public void createToken() {
         // given
         Map<String, Object> payload = JwtUtils.payloadBuilder()
-                .setSubject("pobi@woowa.com")
+                .setSubject(EMAIL)
                 .build();
 
         // when
