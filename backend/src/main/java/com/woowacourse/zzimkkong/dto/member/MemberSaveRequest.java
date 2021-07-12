@@ -13,11 +13,11 @@ public class MemberSaveRequest {
     private String email;
 
     @NotNull(message = EMPTY_MESSAGE)
-    @Pattern(regexp = "^(?=.*[0-9])(?=.*[a-zA-Z]).{8,20}$", message = MEMBER_PASSWORD_MESSAGE)
+    @Pattern(regexp = MEMBER_PASSWORD_FORMAT, message = MEMBER_PASSWORD_MESSAGE)
     private String password;
 
     @NotNull(message = EMPTY_MESSAGE)
-    @Pattern(regexp = "^[-_!?.,a-zA-Z0-9가-힣ㄱ-ㅎㅏ-ㅣ]{1,20}$", message = ORGANIZATION_MESSAGE)
+    @Pattern(regexp = NAMING_FORMAT, message = ORGANIZATION_MESSAGE)
     private String organization;
 
     public MemberSaveRequest() {

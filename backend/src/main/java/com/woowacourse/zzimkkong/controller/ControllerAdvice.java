@@ -16,6 +16,8 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import javax.validation.ConstraintViolationException;
 
+import static com.woowacourse.zzimkkong.dto.Validator.*;
+
 @RestControllerAdvice
 public class ControllerAdvice {
     private final Logger logger = LoggerFactory.getLogger(ControllerAdvice.class);
@@ -66,13 +68,13 @@ public class ControllerAdvice {
 
     @ExceptionHandler(DataAccessException.class)
     public ResponseEntity<ErrorResponse> invalidDataAccessHandler() {
-        logger.warn("예상치 못한 문제가 발생했습니다. 개발자에게 문의하세요.");
+        logger.warn(SERVER_ERROR_MESSAGE);
         return ResponseEntity.internalServerError().build();
     }
 
     @ExceptionHandler(InvalidFormatException.class)
     public ResponseEntity<ErrorResponse> invalidFormatHandler() {
-        logger.warn("날짜 및 시간 데이터 형식이 올바르지 않습니다.");
+        logger.warn(FORMAT_MESSAGE);
         return ResponseEntity.badRequest().body(ErrorResponse.invalidFormat());
     }
 }

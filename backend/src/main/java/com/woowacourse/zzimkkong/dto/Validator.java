@@ -8,9 +8,12 @@ public class Validator {
     public static final String ORGANIZATION_MESSAGE = "조직명은 특수문자(-_!?.,)를 포함하여 20자 이내로 작성 가능합니다.";
     public static final String NAME_MESSAGE = "이름은 특수문자(-_!?.,)를 포함하여 20자 이내로 작성 가능합니다.";
     public static final String DESCRIPTION_MESSAGE = "예약 내용은 100자 이내로 작성 가능합니다.";
+    public static final String FORMAT_MESSAGE = "날짜 및 시간 데이터 형식이 올바르지 않습니다.";
+    public static final String SERVER_ERROR_MESSAGE = "예상치 못한 문제가 발생했습니다. 개발자에게 문의하세요.";
 
-    public static final String DATEFORMAT = "yyyy-MM-dd'T'HH:mm:ss";
+    public static final String DATE_FORMAT = "yyyy-MM-dd";
+    public static final String DATETIME_FORMAT = "yyyy-MM-dd'T'HH:mm:ss";
     public static final String MEMBER_PASSWORD_FORMAT = "^(?=.*[0-9])(?=.*[a-zA-Z]).{8,20}$";
     public static final String RESERVATION_PASSWORD_FORMAT = "^[0-9]{4}$";
-    public static final String NAME_FORMAT = "^[-_!?.,a-zA-Z0-9가-힣ㄱ-ㅎㅏ-ㅣ]{1,20}$";
+    public static final String NAMING_FORMAT = "^[-_!?.,a-zA-Z0-9가-힣ㄱ-ㅎㅏ-ㅣ]{1,20}$";
 }

@@ -14,6 +14,8 @@ import javax.validation.Valid;
 import java.net.URI;
 import java.time.LocalDate;
 
+import static com.woowacourse.zzimkkong.dto.Validator.DATE_FORMAT;
+
 @RestController
 @RequestMapping("/api/maps/{mapId}")
 public class ReservationController {
@@ -38,7 +40,7 @@ public class ReservationController {
     public ResponseEntity<ReservationFindResponse> find(
             @PathVariable Long mapId,
             @PathVariable Long spaceId,
-            @RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate date) {
+            @RequestParam @DateTimeFormat(pattern = DATE_FORMAT) LocalDate date) {
         ReservationFindResponse reservationFindResponse = reservationService.findReservations(mapId, spaceId, date);
         return ResponseEntity.ok().body(reservationFindResponse);
     }
@@ -46,7 +48,7 @@ public class ReservationController {
     @GetMapping("/reservations")
     public ResponseEntity<ReservationFindAllResponse> findAll(
             @PathVariable Long mapId,
-            @RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate date) {
+            @RequestParam @DateTimeFormat(pattern = DATE_FORMAT) LocalDate date) {
         ReservationFindAllResponse reservationFindAllResponse = reservationService.findAllReservations(mapId, date);
         return ResponseEntity.ok().body(reservationFindAllResponse);
     }

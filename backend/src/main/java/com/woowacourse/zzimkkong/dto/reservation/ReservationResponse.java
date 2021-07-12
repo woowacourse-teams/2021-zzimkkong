@@ -6,14 +6,14 @@ import com.woowacourse.zzimkkong.domain.Reservation;
 
 import java.time.LocalDateTime;
 
-import static com.woowacourse.zzimkkong.dto.Validator.DATEFORMAT;
+import static com.woowacourse.zzimkkong.dto.Validator.DATETIME_FORMAT;
 
 public class ReservationResponse {
     @JsonProperty
     private Long id;
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = DATEFORMAT)
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = DATETIME_FORMAT)
     private LocalDateTime startDateTime;
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = DATEFORMAT)
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = DATETIME_FORMAT)
     private LocalDateTime endDateTime;
     @JsonProperty
     private String name;

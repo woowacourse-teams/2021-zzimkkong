@@ -11,11 +11,11 @@ public class ReservationSaveRequest {
     @NotNull(message = EMPTY_MESSAGE)
     private Long spaceId;
 
-    @DateTimeFormat(pattern = DATEFORMAT)
+    @DateTimeFormat(pattern = DATETIME_FORMAT)
     @NotNull(message = EMPTY_MESSAGE)
     private LocalDateTime startDateTime;
 
-    @DateTimeFormat(pattern = DATEFORMAT)
+    @DateTimeFormat(pattern = DATETIME_FORMAT)
     @NotNull(message = EMPTY_MESSAGE)
     private LocalDateTime endDateTime;
 
@@ -24,7 +24,7 @@ public class ReservationSaveRequest {
     private String password;
 
     @NotBlank(message = EMPTY_MESSAGE)
-    @Pattern(regexp = NAME_FORMAT, message = NAME_MESSAGE)
+    @Pattern(regexp = NAMING_FORMAT, message = NAME_MESSAGE)
     private String name;
 
     @NotBlank(message = EMPTY_MESSAGE)
