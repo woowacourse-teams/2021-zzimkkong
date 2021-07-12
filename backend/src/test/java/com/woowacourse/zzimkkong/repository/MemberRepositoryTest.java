@@ -1,7 +1,7 @@
 package com.woowacourse.zzimkkong.repository;
 
 import com.woowacourse.zzimkkong.domain.Member;
-import com.woowacourse.zzimkkong.exception.NoSuchEmailException;
+import com.woowacourse.zzimkkong.exception.NoSuchMemberException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,7 +26,7 @@ class MemberRepositoryTest extends RepositoryTest {
 
         // when
         Member findMember = memberRepository.findByEmail(EMAIL)
-                .orElseThrow(NoSuchEmailException::new);
+                .orElseThrow(NoSuchMemberException::new);
 
         // then
         assertThat(findMember).isEqualTo(expected);
