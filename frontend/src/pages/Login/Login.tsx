@@ -2,23 +2,33 @@ import { AxiosError } from 'axios';
 import { FormEventHandler, useState } from 'react';
 import { useMutation } from 'react-query';
 import { Link, useHistory } from 'react-router-dom';
+import { useSetRecoilState } from 'recoil';
 import { postLogin } from 'api/login';
 import Button from 'components/Button/Button';
 import Header from 'components/Header/Header';
 import Input from 'components/Input/Input';
 import Layout from 'components/Layout/Layout';
 import PATH from 'constants/path';
+import { TOKEN_KEY } from 'constants/storage';
 import useInput from 'hooks/useInput';
+import tokenState from 'state/tokenState';
+import { setLocalStorageItem } from 'utils/localStorage';
 import * as Styled from './Login.styles';
 
 const Login = (): JSX.Element => {
   const [email, onChangeEmail] = useInput('');
   const [password, onChangePassword] = useInput('');
   const [loginMessage, setLoginMessage] = useState('');
+  const setToken = useSetRecoilState(tokenState);
   const history = useHistory();
 
   const login = useMutation(postLogin, {
-    onSuccess: () => {
+    onSuccess: (data) => {
+      const { accessToken } = data.data;
+
+      setLocalStorageItem({ key: TOKEN_KEY, item: accessToken });
+      setToken(accessToken);
+
       history.push(PATH.HOME);
     },
     onError: (error) => {
