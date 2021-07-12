@@ -87,16 +87,16 @@ public class ReservationService {
         return ReservationFindAllResponse.of(reservations);
     }
 
-    public void deleteReservation(Long mapId, Long reservationId, ReservationDeleteRequest reservationDeleteRequest) {
+    public void deleteReservation(Long mapId, Long reservationId, ReservationPasswordAuthenticationRequest reservationPasswordAuthenticationRequest) {
         validateMapExistence(mapId);
-        Reservation reservation = reservationRepository
-                .findById(reservationId)
-                .orElseThrow(NoSuchReservationException::new);
-
-        if (reservation.isWrongPassword(reservationDeleteRequest.getPassword())) {
-            throw new ReservationPasswordException();
-        }
+        Reservation reservation = getReservation(reservationId, reservationPasswordAuthenticationRequest);
         reservationRepository.delete(reservation);
+    }
+
+    public ReservationResponse findReservation(final Long mapId, final Long reservationId, final ReservationPasswordAuthenticationRequest reservationPasswordAuthenticationRequest) {
+        validateMapExistence(mapId);
+        Reservation reservation = getReservation(reservationId, reservationPasswordAuthenticationRequest);
+        return ReservationResponse.of(reservation);
     }
 
     public void updateReservation(
@@ -147,6 +147,17 @@ public class ReservationService {
                 throw new ImpossibleReservationTimeException();
             }
         }
+    }
+
+    private Reservation getReservation(final Long reservationId, final ReservationPasswordAuthenticationRequest reservationPasswordAuthenticationRequest) {
+        Reservation reservation = reservationRepository
+                .findById(reservationId)
+                .orElseThrow(NoSuchReservationException::new);
+
+        if (reservation.isWrongPassword(reservationPasswordAuthenticationRequest.getPassword())) {
+            throw new ReservationPasswordException();
+        }
+        return reservation;
     }
 
     private List<Reservation> getReservations(final Collection<Long> spaceIds, final LocalDate date) {

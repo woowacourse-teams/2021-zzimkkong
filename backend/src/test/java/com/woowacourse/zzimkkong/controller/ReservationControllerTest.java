@@ -2,10 +2,7 @@ package com.woowacourse.zzimkkong.controller;
 
 import com.woowacourse.zzimkkong.domain.Reservation;
 import com.woowacourse.zzimkkong.domain.Space;
-import com.woowacourse.zzimkkong.dto.ReservationFindAllResponse;
-import com.woowacourse.zzimkkong.dto.ReservationFindResponse;
-import com.woowacourse.zzimkkong.dto.ReservationCreateUpdateRequest;
-import com.woowacourse.zzimkkong.dto.ReservationDeleteRequest;
+import com.woowacourse.zzimkkong.dto.*;
 import com.woowacourse.zzimkkong.exception.NoSuchSpaceException;
 import com.woowacourse.zzimkkong.repository.SpaceRepository;
 import io.restassured.RestAssured;
@@ -14,9 +11,6 @@ import io.restassured.response.Response;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.Arguments;
-import org.junit.jupiter.params.provider.MethodSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -24,8 +18,6 @@ import org.springframework.http.MediaType;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
-import java.util.List;
-import java.util.stream.Stream;
 
 import static com.woowacourse.zzimkkong.controller.DocumentUtils.*;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -137,10 +129,10 @@ public class ReservationControllerTest extends AcceptanceTest {
     @Test
     void delete() {
         //given
-        ReservationDeleteRequest reservationDeleteRequest = new ReservationDeleteRequest("1234");
+        ReservationPasswordAuthenticationRequest reservationPasswordAuthenticationRequest = new ReservationPasswordAuthenticationRequest("1234");
 
         //when
-        final ExtractableResponse<Response> response = deleteReservation(reservationDeleteRequest);
+        final ExtractableResponse<Response> response = deleteReservation(reservationPasswordAuthenticationRequest);
 
         //then
         assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
@@ -150,10 +142,10 @@ public class ReservationControllerTest extends AcceptanceTest {
     @Test
     void deleteWithWrongPassword() {
         //given
-        ReservationDeleteRequest reservationDeleteRequest = new ReservationDeleteRequest("0987");
+        ReservationPasswordAuthenticationRequest reservationPasswordAuthenticationRequest = new ReservationPasswordAuthenticationRequest("0987");
 
         //when
-        final ExtractableResponse<Response> response = deleteReservation(reservationDeleteRequest);
+        final ExtractableResponse<Response> response = deleteReservation(reservationPasswordAuthenticationRequest);
 
         //then
         assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
@@ -292,6 +284,27 @@ public class ReservationControllerTest extends AcceptanceTest {
         assertThat(updateResponse.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
     }
 
+    @DisplayName("정확한 예약 비밀번호를 입력하면 해당 예약에 대한 정보를 반환한다")
+    @Test
+    void findOne() {
+        //given
+        ReservationPasswordAuthenticationRequest reservationPasswordAuthenticationRequest = new ReservationPasswordAuthenticationRequest("1234");
+
+        //when
+        ExtractableResponse<Response> response = findReservation(reservationPasswordAuthenticationRequest);
+        ReservationResponse actualResponse = response.as(ReservationResponse.class);
+
+        ReservationResponse expectedResponse = ReservationResponse.of(
+                reservationBackEndTargetDate0To1
+        );
+
+        //then
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
+        assertThat(actualResponse).usingRecursiveComparison()
+                .ignoringExpectedNullFields()
+                .isEqualTo(expectedResponse);
+    }
+
     private ExtractableResponse<Response> saveReservation(final ReservationCreateUpdateRequest reservationCreateUpdateRequest) {
         return RestAssured
                 .given(getRequestSpecification()).log().all()
@@ -303,13 +316,13 @@ public class ReservationControllerTest extends AcceptanceTest {
                 .then().log().all().extract();
     }
 
-    private ExtractableResponse<Response> deleteReservation(final ReservationDeleteRequest reservationDeleteRequest) {
+    private ExtractableResponse<Response> deleteReservation(final ReservationPasswordAuthenticationRequest reservationPasswordAuthenticationRequest) {
         return RestAssured
                 .given(getRequestSpecification()).log().all()
                 .accept("application/json")
                 .filter(document("reservation/delete", getRequestPreprocessor(), getResponsePreprocessor()))
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(reservationDeleteRequest)
+                .body(reservationPasswordAuthenticationRequest)
                 .when().delete("/api/maps/1/reservations/1")
                 .then().log().all().extract();
     }
@@ -342,6 +355,17 @@ public class ReservationControllerTest extends AcceptanceTest {
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body(reservationCreateUpdateRequest)
                 .when().put("/api/maps/1/reservations/1")
+                .then().log().all().extract();
+    }
+
+    private ExtractableResponse<Response> findReservation(final ReservationPasswordAuthenticationRequest reservationPasswordAuthenticationRequest) {
+        return RestAssured
+                .given(getRequestSpecification()).log().all()
+                .accept("application/json")
+                .filter(document("reservation/post_for_update", getRequestPreprocessor(), getResponsePreprocessor()))
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .body(reservationPasswordAuthenticationRequest)
+                .when().post("/api/maps/1/reservations/1")
                 .then().log().all().extract();
     }
 }

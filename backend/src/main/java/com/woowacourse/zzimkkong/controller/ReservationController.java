@@ -1,10 +1,6 @@
 package com.woowacourse.zzimkkong.controller;
 
-import com.woowacourse.zzimkkong.dto.ReservationDeleteRequest;
-import com.woowacourse.zzimkkong.dto.ReservationFindAllResponse;
-import com.woowacourse.zzimkkong.dto.ReservationFindResponse;
-import com.woowacourse.zzimkkong.dto.ReservationCreateUpdateRequest;
-import com.woowacourse.zzimkkong.dto.ReservationCreateResponse;
+import com.woowacourse.zzimkkong.dto.*;
 import com.woowacourse.zzimkkong.service.ReservationService;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
@@ -54,9 +50,18 @@ public class ReservationController {
     public ResponseEntity<Void> delete(
             @PathVariable Long mapId,
             @PathVariable Long reservationId,
-            @RequestBody @Valid ReservationDeleteRequest reservationDeleteRequest) {
-        reservationService.deleteReservation(mapId, reservationId, reservationDeleteRequest);
+            @RequestBody @Valid ReservationPasswordAuthenticationRequest reservationPasswordAuthenticationRequest) {
+        reservationService.deleteReservation(mapId, reservationId, reservationPasswordAuthenticationRequest);
         return ResponseEntity.noContent().build();
+    }
+
+    @PostMapping("/reservations/{reservationId}")
+    public ResponseEntity<ReservationResponse> findOne(
+            @PathVariable Long mapId,
+            @PathVariable Long reservationId,
+            @RequestBody @Valid ReservationPasswordAuthenticationRequest reservationPasswordAuthenticationRequest) {
+        ReservationResponse reservationResponse = reservationService.findReservation(mapId, reservationId, reservationPasswordAuthenticationRequest);
+        return ResponseEntity.ok().body(reservationResponse);
     }
 
     @PutMapping("/reservations/{reservationId}")
