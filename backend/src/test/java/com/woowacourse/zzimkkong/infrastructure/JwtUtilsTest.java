@@ -103,7 +103,6 @@ class JwtUtilsTest {
         String manipulatedPayload = encode(payload);
 
         String[] originJwt = token.split("\\.");
-
         List<String> manipulatedJwt = Arrays.asList(originJwt[INDEX_OF_HEADER], manipulatedPayload, originJwt[INDEX_OF_SIGNATURE]);
 
         return String.join("\\.", manipulatedJwt);
