@@ -8,7 +8,7 @@ interface JoinProps {
 }
 
 export const queryValidateEmail: QueryFunction = ({ queryKey }) => {
-  const [_, email] = queryKey;
+  const [, email] = queryKey;
 
   return api.get(`/members/?email=${email}`);
 };

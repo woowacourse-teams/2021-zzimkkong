@@ -77,7 +77,7 @@ const Join = (): JSX.Element => {
     password !== passwordConfirm
       ? setPasswordConfirmMessage(MESSAGE.JOIN.INVALID_PASSWORD_CONFIRM)
       : setPasswordConfirmMessage(MESSAGE.JOIN.VALID_PASSWORD_CONFIRM);
-  }, [passwordConfirm]);
+  }, [password, passwordConfirm]);
 
   return (
     <>
