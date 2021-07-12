@@ -10,4 +10,7 @@ public class AuthorizationException extends RuntimeException {
         this.httpStatus = httpStatus;
     }
 
+    public HttpStatus getStatus() {
+        return httpStatus;
+    }
 }
