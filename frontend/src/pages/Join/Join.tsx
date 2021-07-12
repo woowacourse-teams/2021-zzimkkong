@@ -25,6 +25,8 @@ const Join = (): JSX.Element => {
 
   const history = useHistory();
 
+  const isPassword = REGEXP.PASSWORD.test(password);
+
   const isValidEmail = useQuery(['isValidEmail', email], queryValidateEmail, {
     enabled: false,
     retry: false,
@@ -66,10 +68,10 @@ const Join = (): JSX.Element => {
   useEffect(() => {
     if (!password) return;
 
-    !REGEXP.PASSWORD.test(password)
+    !isPassword
       ? setPasswordMessage(MESSAGE.JOIN.INVALID_PASSWORD)
       : setPasswordMessage(MESSAGE.JOIN.VALID_PASSWORD);
-  }, [password]);
+  }, [password, isPassword]);
 
   useEffect(() => {
     if (!password || !passwordConfirm) return;
@@ -104,7 +106,7 @@ const Join = (): JSX.Element => {
               value={password}
               onChange={onChangePassword}
               message={passwordMessage}
-              status={REGEXP.PASSWORD.test(password) ? 'success' : 'error'}
+              status={isPassword ? 'success' : 'error'}
               required
             />
             <Input
