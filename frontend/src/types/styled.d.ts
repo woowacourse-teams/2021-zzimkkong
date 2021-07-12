@@ -1,5 +1,4 @@
 import 'styled-components';
-import PALETTE from 'constants/palette';
 
 type Color = string;
 

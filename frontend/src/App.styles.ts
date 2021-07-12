@@ -1,4 +1,4 @@
-import styled, { createGlobalStyle, css, DefaultTheme } from 'styled-components';
+import { createGlobalStyle, css, DefaultTheme } from 'styled-components';
 import PALETTE from './constants/palette';
 
 export const theme: DefaultTheme = {
