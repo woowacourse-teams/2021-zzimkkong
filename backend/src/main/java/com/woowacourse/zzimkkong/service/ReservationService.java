@@ -35,57 +35,32 @@ public class ReservationService {
         this.reservationRepository = reservationRepository;
     }
 
-    public ReservationSaveResponse saveReservation(Long mapId, ReservationSaveRequest reservationSaveRequest) {
+    public ReservationCreateResponse saveReservation(Long mapId, ReservationCreateUpdateRequest reservationCreateUpdateRequest) {
         validateMapExistence(mapId);
 
-        Space space = spaceRepository.findById(reservationSaveRequest.getSpaceId())
+        LocalDateTime startDateTime = reservationCreateUpdateRequest.getStartDateTime();
+        LocalDateTime endDateTime = reservationCreateUpdateRequest.getEndDateTime();
+
+        validateTime(startDateTime, endDateTime);
+
+        Space space = spaceRepository.findById(reservationCreateUpdateRequest.getSpaceId())
                 .orElseThrow(NoSuchSpaceException::new);
-        validateReservation(reservationSaveRequest, space);
+        List<Reservation> reservations = getReservations(
+                Collections.singletonList(space.getId()),
+                startDateTime.toLocalDate());
+        validateAvailability(reservations, startDateTime, endDateTime);
 
         Reservation reservation = reservationRepository.save(
                 new Reservation.Builder()
-                        .startTime(reservationSaveRequest.getStartDateTime())
-                        .endTime(reservationSaveRequest.getEndDateTime())
-                        .password(reservationSaveRequest.getPassword())
-                        .userName(reservationSaveRequest.getName())
-                        .description(reservationSaveRequest.getDescription())
+                        .startTime(reservationCreateUpdateRequest.getStartDateTime())
+                        .endTime(reservationCreateUpdateRequest.getEndDateTime())
+                        .password(reservationCreateUpdateRequest.getPassword())
+                        .userName(reservationCreateUpdateRequest.getName())
+                        .description(reservationCreateUpdateRequest.getDescription())
                         .space(space)
                         .build());
 
-        return ReservationSaveResponse.of(reservation);
-    }
-
-    private void validateReservation(final ReservationSaveRequest reservationSaveRequest, final Space space) {
-        LocalDateTime startDateTime = reservationSaveRequest.getStartDateTime();
-        LocalDateTime endDateTime = reservationSaveRequest.getEndDateTime();
-        validateTime(startDateTime, endDateTime);
-        validateAvailability(space, startDateTime, endDateTime);
-    }
-
-    private void validateTime(final LocalDateTime startDateTime, final LocalDateTime endDateTime) {
-        if (startDateTime.isBefore(LocalDateTime.now())) {
-            throw new ImpossibleStartTimeException();
-        }
-
-        if (endDateTime.isBefore(startDateTime) || startDateTime.equals(endDateTime)) {
-            throw new ImpossibleEndTimeException();
-        }
-
-        if (!startDateTime.toLocalDate().isEqual(endDateTime.toLocalDate())) {
-            throw new NonMatchingStartAndEndDateException();
-        }
-    }
-
-    private void validateAvailability(final Space space, final LocalDateTime startDateTime, final LocalDateTime endDateTime) {
-        List<Reservation> reservationsOnDate = getReservations(
-                Collections.singletonList(space.getId()),
-                startDateTime.toLocalDate());
-
-        for (Reservation reservation : reservationsOnDate) {
-            if (reservation.hasConflictWith(startDateTime, endDateTime)) {
-                throw new ImpossibleReservationTimeException();
-            }
-        }
+        return ReservationCreateResponse.of(reservation);
     }
 
     @Transactional(readOnly = true)
@@ -122,6 +97,56 @@ public class ReservationService {
             throw new ReservationPasswordException();
         }
         reservationRepository.delete(reservation);
+    }
+
+    public void updateReservation(
+            final Long mapId,
+            final Long reservationId,
+            final ReservationCreateUpdateRequest reservationCreateUpdateRequest) {
+        validateMapExistence(mapId);
+
+        LocalDateTime startDateTime = reservationCreateUpdateRequest.getStartDateTime();
+        LocalDateTime endDateTime = reservationCreateUpdateRequest.getEndDateTime();
+
+        validateTime(startDateTime, endDateTime);
+
+        Space space = spaceRepository.findById(reservationCreateUpdateRequest.getSpaceId())
+                .orElseThrow(NoSuchSpaceException::new);
+        List<Reservation> reservations = getReservations(
+                Collections.singletonList(space.getId()),
+                startDateTime.toLocalDate());
+
+        Reservation reservation = reservationRepository.findById(reservationId)
+                .orElseThrow(NoSuchReservationException::new);
+        if (reservation.getSpace().equals(space)) {
+            reservations.remove(reservation);
+        }
+        validateAvailability(reservations, startDateTime, endDateTime);
+
+        reservation.update(reservationCreateUpdateRequest, space);
+        reservationRepository.save(reservation);
+    }
+
+    private void validateTime(final LocalDateTime startDateTime, final LocalDateTime endDateTime) {
+        if (startDateTime.isBefore(LocalDateTime.now())) {
+            throw new ImpossibleStartTimeException();
+        }
+
+        if (endDateTime.isBefore(startDateTime) || startDateTime.equals(endDateTime)) {
+            throw new ImpossibleEndTimeException();
+        }
+
+        if (!startDateTime.toLocalDate().isEqual(endDateTime.toLocalDate())) {
+            throw new NonMatchingStartAndEndDateException();
+        }
+    }
+
+    private void validateAvailability(final List<Reservation> reservations, final LocalDateTime startDateTime, final LocalDateTime endDateTime) {
+        for (Reservation reservation : reservations) {
+            if (reservation.hasConflictWith(startDateTime, endDateTime)) {
+                throw new ImpossibleReservationTimeException();
+            }
+        }
     }
 
     private List<Reservation> getReservations(final Collection<Long> spaceIds, final LocalDate date) {

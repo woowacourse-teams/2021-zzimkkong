@@ -3,8 +3,8 @@ package com.woowacourse.zzimkkong.controller;
 import com.woowacourse.zzimkkong.dto.ReservationDeleteRequest;
 import com.woowacourse.zzimkkong.dto.ReservationFindAllResponse;
 import com.woowacourse.zzimkkong.dto.ReservationFindResponse;
-import com.woowacourse.zzimkkong.dto.ReservationSaveRequest;
-import com.woowacourse.zzimkkong.dto.ReservationSaveResponse;
+import com.woowacourse.zzimkkong.dto.ReservationCreateUpdateRequest;
+import com.woowacourse.zzimkkong.dto.ReservationCreateResponse;
 import com.woowacourse.zzimkkong.service.ReservationService;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
@@ -26,11 +26,10 @@ public class ReservationController {
     @PostMapping("/reservations")
     public ResponseEntity<Void> create(
             @PathVariable Long mapId,
-            @RequestBody @Valid ReservationSaveRequest reservationSaveRequest) {
-
-        ReservationSaveResponse reservationSaveResponse = reservationService.saveReservation(mapId, reservationSaveRequest);
+            @RequestBody @Valid ReservationCreateUpdateRequest reservationCreateUpdateRequest) {
+        ReservationCreateResponse reservationCreateResponse = reservationService.saveReservation(mapId, reservationCreateUpdateRequest);
         return ResponseEntity
-                .created(URI.create("/api/maps/" + mapId + "/reservations/" + reservationSaveResponse.getId()))
+                .created(URI.create("/api/maps/" + mapId + "/reservations/" + reservationCreateResponse.getId()))
                 .build();
     }
 
@@ -58,5 +57,14 @@ public class ReservationController {
             @RequestBody @Valid ReservationDeleteRequest reservationDeleteRequest) {
         reservationService.deleteReservation(mapId, reservationId, reservationDeleteRequest);
         return ResponseEntity.noContent().build();
+    }
+
+    @PutMapping("/reservations/{reservationId}")
+    public ResponseEntity<Void> update(
+            @PathVariable Long mapId,
+            @PathVariable Long reservationId,
+            @RequestBody @Valid ReservationCreateUpdateRequest reservationCreateUpdateRequest) {
+        reservationService.updateReservation(mapId, reservationId, reservationCreateUpdateRequest);
+        return ResponseEntity.ok().build();
     }
 }

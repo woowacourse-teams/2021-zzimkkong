@@ -7,7 +7,7 @@ import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 import java.time.LocalDateTime;
 
-public class ReservationSaveRequest {
+public class ReservationCreateUpdateRequest {
     @NotNull(message = "비어있는 항목을 입력해주세요.")
     private Long spaceId;
 
@@ -31,10 +31,10 @@ public class ReservationSaveRequest {
     @Size(max = 100, message = "예약 내용은 100자 이내로 작성 가능합니다.")
     private String description;
 
-    public ReservationSaveRequest() {
+    public ReservationCreateUpdateRequest() {
     }
 
-    public ReservationSaveRequest(
+    public ReservationCreateUpdateRequest(
             final Long spaceId,
             final LocalDateTime startDateTime,
             final LocalDateTime endDateTime,

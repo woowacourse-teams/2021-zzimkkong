@@ -4,7 +4,7 @@ import com.woowacourse.zzimkkong.domain.Reservation;
 import com.woowacourse.zzimkkong.domain.Space;
 import com.woowacourse.zzimkkong.dto.ReservationFindAllResponse;
 import com.woowacourse.zzimkkong.dto.ReservationFindResponse;
-import com.woowacourse.zzimkkong.dto.ReservationSaveRequest;
+import com.woowacourse.zzimkkong.dto.ReservationCreateUpdateRequest;
 import com.woowacourse.zzimkkong.dto.ReservationDeleteRequest;
 import com.woowacourse.zzimkkong.exception.NoSuchSpaceException;
 import com.woowacourse.zzimkkong.repository.SpaceRepository;
@@ -14,13 +14,18 @@ import io.restassured.response.Response;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Stream;
 
 import static com.woowacourse.zzimkkong.controller.DocumentUtils.*;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -31,27 +36,53 @@ public class ReservationControllerTest extends AcceptanceTest {
     private SpaceRepository spaceRepository;
 
     private LocalDate targetDate;
+    private String targetDateString;
     private Space be;
     private Space fe1;
     private Reservation reservationBackEndTargetDate0To1;
     private Reservation reservationBackEndTargetDate13To14;
     private Reservation reservationBackEndTargetDate18To23;
     private Reservation reservationFrontEnd1TargetDate0to1;
-
-    public ReservationSaveRequest reservationSaveRequest = new ReservationSaveRequest(
-            1L, //TODO: 나중에 인수테스트 전부 생기면 갖다 쓰기
-            LocalDateTime.of(2021, 5, 6, 16, 23, 0),
-            LocalDateTime.of(2021, 5, 6, 19, 23, 0),
-            "1234",
-            "bada",
-            "회의"
-    );
+    private ReservationCreateUpdateRequest reservationCreateUpdateRequestSameSpace;
+    private ReservationCreateUpdateRequest reservationCreateUpdateRequestDifferentSpace;
+    private ReservationCreateUpdateRequest reservationCreateUpdateRequestForFail;
 
     @BeforeEach
     void setUp() {
-        targetDate = LocalDate.of(2021, 7, 9);
+        targetDate = LocalDate.now().plusDays(1L);
+
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+        targetDateString = targetDate.format(formatter);
+
         be = spaceRepository.findById(1L).orElseThrow(NoSuchSpaceException::new);
         fe1 = spaceRepository.findById(2L).orElseThrow(NoSuchSpaceException::new);
+
+        reservationCreateUpdateRequestSameSpace = new ReservationCreateUpdateRequest(
+                1L,
+                targetDate.atTime(1, 0, 0),
+                targetDate.atTime(2, 30, 0),
+                "1234",
+                "sally",
+                "회의입니다."
+        );
+
+        reservationCreateUpdateRequestDifferentSpace = new ReservationCreateUpdateRequest(
+                2L,
+                targetDate.atTime(3, 30, 0),
+                targetDate.atTime(4, 30, 0),
+                "1234",
+                "sally",
+                "회의입니다."
+        );
+
+        reservationCreateUpdateRequestForFail = new ReservationCreateUpdateRequest(
+                1L,
+                targetDate.atTime(12, 0, 0),
+                targetDate.atTime(13, 30, 0),
+                "1234",
+                "sally",
+                "회의입니다."
+        );
 
         reservationBackEndTargetDate0To1 = new Reservation.Builder()
                 .startTime(targetDate.atStartOfDay())
@@ -94,17 +125,9 @@ public class ReservationControllerTest extends AcceptanceTest {
     @Test
     void save() {
         //given
-        ReservationSaveRequest reservationSaveRequest = new ReservationSaveRequest(
-                1L, //TODO: 나중에 인수테스트 전부 생기면 갖다 쓰기
-                LocalDateTime.now().plusDays(1),
-                LocalDateTime.now().plusDays(1).plusHours(2),
-                "2345",
-                "sally",
-                "회의입니다."
-        );
 
         //when
-        ExtractableResponse<Response> response = saveReservation(reservationSaveRequest);
+        ExtractableResponse<Response> response = saveReservation(reservationCreateUpdateRequestSameSpace);
 
         //then
         assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
@@ -114,7 +137,6 @@ public class ReservationControllerTest extends AcceptanceTest {
     @Test
     void delete() {
         //given
-        saveReservation(reservationSaveRequest);
         ReservationDeleteRequest reservationDeleteRequest = new ReservationDeleteRequest("1234");
 
         //when
@@ -128,7 +150,6 @@ public class ReservationControllerTest extends AcceptanceTest {
     @Test
     void deleteWithWrongPassword() {
         //given
-        saveReservation(reservationSaveRequest);
         ReservationDeleteRequest reservationDeleteRequest = new ReservationDeleteRequest("0987");
 
         //when
@@ -145,7 +166,7 @@ public class ReservationControllerTest extends AcceptanceTest {
         be = spaceRepository.findById(1L).orElseThrow(NoSuchSpaceException::new);
 
         //when
-        ExtractableResponse<Response> response = findReservations(1L, "2021-07-09");
+        ExtractableResponse<Response> response = findReservations(1L, targetDateString);
         ReservationFindResponse actualResponse = response.as(ReservationFindResponse.class);
 
         ReservationFindResponse expectedResponse = ReservationFindResponse.of(
@@ -170,7 +191,7 @@ public class ReservationControllerTest extends AcceptanceTest {
         //given
 
         //when
-        ExtractableResponse<Response> response = findAllReservations("2021-07-09");
+        ExtractableResponse<Response> response = findAllReservations(targetDateString);
         ReservationFindAllResponse actualResponse = response.as(ReservationFindAllResponse.class);
 
         ReservationFindAllResponse expectedResponse = ReservationFindAllResponse.of(
@@ -190,13 +211,94 @@ public class ReservationControllerTest extends AcceptanceTest {
                 .isEqualTo(expectedResponse);
     }
 
-    private ExtractableResponse<Response> saveReservation(final ReservationSaveRequest reservationSaveRequest) {
+    @DisplayName("공간 변경 없는 새로운 예약 정보가 주어지면 예약을 업데이트 한다")
+    @Test
+    void update_sameSpace() {
+        //given
+
+        //when
+        ExtractableResponse<Response> updateResponse = updateReservation(reservationCreateUpdateRequestSameSpace);
+        ExtractableResponse<Response> findResponse = findReservations(
+                be.getId(),
+                targetDateString);
+        ReservationFindResponse actualResponse = findResponse.as(ReservationFindResponse.class);
+
+        ReservationFindResponse expectedResponse = ReservationFindResponse.of(
+                Arrays.asList(
+                        new Reservation.Builder()
+                                .startTime(reservationCreateUpdateRequestSameSpace.getStartDateTime())
+                                .endTime(reservationCreateUpdateRequestSameSpace.getEndDateTime())
+                                .description(reservationCreateUpdateRequestSameSpace.getDescription())
+                                .userName(reservationCreateUpdateRequestSameSpace.getName())
+                                .password(reservationCreateUpdateRequestSameSpace.getPassword())
+                                .space(be)
+                                .build(),
+                        reservationBackEndTargetDate13To14,
+                        reservationBackEndTargetDate18To23
+                )
+        );
+
+        //then
+        assertThat(updateResponse.statusCode()).isEqualTo(HttpStatus.OK.value());
+        assertThat(actualResponse).usingRecursiveComparison()
+                .ignoringCollectionOrder()
+                .ignoringExpectedNullFields()
+                .isEqualTo(expectedResponse);
+    }
+
+    @DisplayName("공간 변경 있는 새로운 예약 정보가 주어지면 공간을 이동한 채로 예약을 업데이트 한다")
+    @Test
+    void update_spaceUpdate() {
+        //given
+
+        //when
+        ExtractableResponse<Response> updateResponse = updateReservation(reservationCreateUpdateRequestDifferentSpace);
+        ExtractableResponse<Response> findResponse = findReservations(
+                fe1.getId(),
+                targetDateString);
+        ReservationFindResponse actualResponse = findResponse.as(ReservationFindResponse.class);
+
+        ReservationFindResponse expectedResponse = ReservationFindResponse.of(
+                Arrays.asList(
+                        new Reservation.Builder()
+                                .startTime(reservationCreateUpdateRequestDifferentSpace.getStartDateTime())
+                                .endTime(reservationCreateUpdateRequestDifferentSpace.getEndDateTime())
+                                .description(reservationCreateUpdateRequestDifferentSpace.getDescription())
+                                .userName(reservationCreateUpdateRequestDifferentSpace.getName())
+                                .password(reservationCreateUpdateRequestDifferentSpace.getPassword())
+                                .space(fe1)
+                                .build(),
+                        reservationFrontEnd1TargetDate0to1
+                )
+        );
+
+        //then
+        assertThat(updateResponse.statusCode()).isEqualTo(HttpStatus.OK.value());
+        assertThat(actualResponse).usingRecursiveComparison()
+                .ignoringCollectionOrder()
+                .ignoringExpectedNullFields()
+                .isEqualTo(expectedResponse);
+    }
+
+    @DisplayName("예약 할 수 없는 조건의 정보가 주어지면 400 에러를 반환한다")
+    @Test
+    void update_fail() {
+        //given
+
+        //when
+        ExtractableResponse<Response> updateResponse = updateReservation(reservationCreateUpdateRequestForFail);
+
+        //then
+        assertThat(updateResponse.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+    }
+
+    private ExtractableResponse<Response> saveReservation(final ReservationCreateUpdateRequest reservationCreateUpdateRequest) {
         return RestAssured
                 .given(getRequestSpecification()).log().all()
                 .accept("application/json")
                 .filter(document("reservation/post", getRequestPreprocessor(), getResponsePreprocessor()))
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(reservationSaveRequest)
+                .body(reservationCreateUpdateRequest)
                 .when().post("/api/maps/1/reservations")
                 .then().log().all().extract();
     }
@@ -217,10 +319,8 @@ public class ReservationControllerTest extends AcceptanceTest {
                 .given(getRequestSpecification()).log().all()
                 .accept("*/*")
                 .filter(document("reservation/get", getRequestPreprocessor(), getResponsePreprocessor()))
-                .queryParams(
-                        "spaceId", spaceId,
-                        "date", date)
-                .when().get("/api/maps/1/spaces/1/reservations")
+                .queryParam("date", date)
+                .when().get("/api/maps/1/spaces/" + spaceId + "/reservations")
                 .then().log().all().extract();
     }
 
@@ -231,6 +331,17 @@ public class ReservationControllerTest extends AcceptanceTest {
                 .filter(document("reservation/get_all", getRequestPreprocessor(), getResponsePreprocessor()))
                 .queryParam("date", date)
                 .when().get("/api/maps/1/reservations")
+                .then().log().all().extract();
+    }
+
+    private ExtractableResponse<Response> updateReservation(final ReservationCreateUpdateRequest reservationCreateUpdateRequest) {
+        return RestAssured
+                .given(getRequestSpecification()).log().all()
+                .accept("application/json")
+                .filter(document("reservation/put", getRequestPreprocessor(), getResponsePreprocessor()))
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .body(reservationCreateUpdateRequest)
+                .when().put("/api/maps/1/reservations/1")
                 .then().log().all().extract();
     }
 }
