@@ -1,9 +1,15 @@
 import { createContext } from 'react';
-import { Props as PanelProps } from './Panel';
 
-const PanelContext = createContext<PanelProps>({
+interface PanelContextValue {
+  expandable: boolean;
+  expanded: boolean;
+  onToggle: () => void;
+}
+
+const PanelContext = createContext<PanelContextValue>({
   expandable: true,
   expanded: false,
+  onToggle: () => {},
 });
 
 if (process.env.NODE_ENV !== 'production') {
