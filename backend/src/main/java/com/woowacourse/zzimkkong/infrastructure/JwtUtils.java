@@ -37,19 +37,11 @@ public class JwtUtils {
 
     public void validateToken(String token) {
         try {
-            Date expirationDate = jwtParser.parseClaimsJws(token).getBody().getExpiration();
-            validateExpiration(expirationDate);
+            jwtParser.parseClaimsJws(token);
+        } catch (ExpiredJwtException e) {
+            throw new TokenExpiredException();
         } catch (JwtException e) {
             throw new InvalidTokenException();
-        }
-    }
-
-    private void validateExpiration(Date expirationDate) {
-        Date now = new Date();
-        boolean isExpired = expirationDate.before(now);
-
-        if (isExpired) {
-            throw new TokenExpiredException();
         }
     }
 
