@@ -24,6 +24,9 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 @ActiveProfiles("test")
 class JwtUtilsTest {
     private static final String EMAIL = "pobi@email.com";
+    private static final int INDEX_OF_HEADER = 0;
+    private static final int INDEX_OF_PAYLOAD = 1;
+    private static final int INDEX_OF_SIGNATURE = 2;
 
     @Autowired
     private JwtUtils jwtUtils;
@@ -100,13 +103,13 @@ class JwtUtilsTest {
         String manipulatedPayload = encode(payload);
 
         String[] originJwt = token.split("\\.");
-        List<String> manipulatedJwt = Arrays.asList(originJwt[0], manipulatedPayload, originJwt[2]);
+
+        List<String> manipulatedJwt = Arrays.asList(originJwt[INDEX_OF_HEADER], manipulatedPayload, originJwt[INDEX_OF_SIGNATURE]);
 
         return String.join("\\.", manipulatedJwt);
     }
 
     private Map<String, Object> extractPayload(String token) throws JsonProcessingException {
-        final int INDEX_OF_PAYLOAD = 1;
         String encodedPayload = token.split("\\.")[INDEX_OF_PAYLOAD];
 
         Decoder decoder = Base64.getDecoder();
