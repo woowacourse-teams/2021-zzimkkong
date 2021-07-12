@@ -39,7 +39,7 @@ public class ReservationController {
             @PathVariable Long mapId,
             @PathVariable Long spaceId,
             @RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate date) {
-        ReservationFindResponse reservationFindResponse = reservationService.find(mapId, spaceId, date);
+        ReservationFindResponse reservationFindResponse = reservationService.findReservations(mapId, spaceId, date);
         return ResponseEntity.ok().body(reservationFindResponse);
     }
 
@@ -47,7 +47,7 @@ public class ReservationController {
     public ResponseEntity<ReservationFindAllResponse> findAll(
             @PathVariable Long mapId,
             @RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate date) {
-        ReservationFindAllResponse reservationFindAllResponse = reservationService.findAll(mapId, date);
+        ReservationFindAllResponse reservationFindAllResponse = reservationService.findAllReservations(mapId, date);
         return ResponseEntity.ok().body(reservationFindAllResponse);
     }
 
