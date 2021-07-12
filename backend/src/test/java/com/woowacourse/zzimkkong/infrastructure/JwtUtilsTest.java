@@ -13,6 +13,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 @SpringBootTest
 @ActiveProfiles("test")
 class JwtUtilsTest {
+    private static final String EMAIL = "pobi@email.com";
+
     @Autowired
     private JwtUtils jwtUtils;
 
@@ -29,5 +31,19 @@ class JwtUtilsTest {
 
         // then
         assertThat(token).isInstanceOf(String.class);
+    }
+
+    @DisplayName("발급한 토큰의 유효성을 검사한다.")
+    @Test
+    void validateToken() {
+        // given
+        Map<String, Object> payload = JwtUtils.payloadBuilder()
+                .setSubject(EMAIL)
+                .build();
+
+        String token = jwtUtils.createToken(payload);
+
+        // when, then
+        jwtUtils.validateToken(token);
     }
 }

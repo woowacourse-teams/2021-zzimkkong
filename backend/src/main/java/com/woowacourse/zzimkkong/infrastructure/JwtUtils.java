@@ -1,11 +1,12 @@
 package com.woowacourse.zzimkkong.infrastructure;
 
-import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
+import com.woowacourse.zzimkkong.exception.InvalidTokenException;
+import com.woowacourse.zzimkkong.exception.TokenExpiredException;
+import io.jsonwebtoken.*;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
+import javax.annotation.PostConstruct;
 import java.util.Date;
 import java.util.Map;
 
@@ -15,6 +16,13 @@ public class JwtUtils {
     private String secretKey;
     @Value("${jwt.token.expire-length}")
     private long validityInMilliseconds;
+
+    private JwtParser jwtParser;
+
+    @PostConstruct
+    void init() {
+        jwtParser = Jwts.parser().setSigningKey(secretKey);
+    }
 
     public String createToken(Map<String, Object> payload) {
         Claims claims = Jwts.claims(payload);
@@ -27,6 +35,24 @@ public class JwtUtils {
                 .setExpiration(validity)
                 .signWith(SignatureAlgorithm.HS256, secretKey)
                 .compact();
+    }
+
+    public void validateToken(String token) {
+        try {
+            Date expirationDate = jwtParser.parseClaimsJws(token).getBody().getExpiration();
+            validateExpiration(expirationDate);
+        } catch (JwtException e) {
+            throw new InvalidTokenException();
+        }
+    }
+
+    private void validateExpiration(Date expirationDate) {
+        Date now = new Date();
+        boolean isExpired = expirationDate.before(now);
+
+        if (isExpired) {
+            throw new TokenExpiredException();
+        }
     }
 
     public static PayloadBuilder payloadBuilder() {
