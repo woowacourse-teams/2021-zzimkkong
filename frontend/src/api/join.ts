@@ -1,18 +1,18 @@
-import { MutateFunction, QueryFunction } from 'react-query';
+import { QueryFunction } from 'react-query';
 import api from './api';
 
-interface PostJoinProps {
+interface JoinProps {
   email: string;
   password: string;
   organization: string;
 }
 
-export const getValidateEmail: QueryFunction = ({ queryKey }) => {
-  const [, email] = queryKey;
+export const queryValidateEmail: QueryFunction = ({ queryKey }) => {
+  const [_, email] = queryKey;
 
   return api.get(`/members/?email=${email}`);
 };
 
-export const postJoin = ({ email, password, organization }: PostJoinProps) => {
+export const postJoin = ({ email, password, organization }: JoinProps) => {
   return api.post('/members', { email, password, organization });
 };
