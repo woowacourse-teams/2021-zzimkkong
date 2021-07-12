@@ -6,7 +6,7 @@ import com.woowacourse.zzimkkong.dto.reservation.ReservationFindAllResponse;
 import com.woowacourse.zzimkkong.dto.reservation.ReservationFindResponse;
 import com.woowacourse.zzimkkong.dto.reservation.ReservationSaveRequest;
 import com.woowacourse.zzimkkong.dto.reservation.ReservationDeleteRequest;
-import com.woowacourse.zzimkkong.exception.NoSuchSpaceException;
+import com.woowacourse.zzimkkong.exception.space.NoSuchSpaceException;
 import com.woowacourse.zzimkkong.repository.SpaceRepository;
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;

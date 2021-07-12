@@ -1,11 +1,11 @@
-package com.woowacourse.zzimkkong.exception;
+package com.woowacourse.zzimkkong.exception.space;
 
 import org.springframework.http.HttpStatus;
 
-public class MemberException extends RuntimeException {
+public class SpaceException extends RuntimeException {
     private final HttpStatus status;
 
-    public MemberException(final String message, final HttpStatus status) {
+    public SpaceException(final String message, final HttpStatus status) {
         super(message);
         this.status = status;
     }

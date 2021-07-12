@@ -1,5 +1,6 @@
-package com.woowacourse.zzimkkong.exception;
+package com.woowacourse.zzimkkong.exception.space;
 
+import com.woowacourse.zzimkkong.exception.space.SpaceException;
 import org.springframework.http.HttpStatus;
 
 public class NoSuchSpaceException extends SpaceException {

@@ -2,10 +2,10 @@ package com.woowacourse.zzimkkong.controller;
 
 import com.fasterxml.jackson.databind.exc.InvalidFormatException;
 import com.woowacourse.zzimkkong.dto.ErrorResponse;
-import com.woowacourse.zzimkkong.exception.MapException;
-import com.woowacourse.zzimkkong.exception.MemberException;
-import com.woowacourse.zzimkkong.exception.ReservationException;
-import com.woowacourse.zzimkkong.exception.SpaceException;
+import com.woowacourse.zzimkkong.exception.map.MapException;
+import com.woowacourse.zzimkkong.exception.member.MemberException;
+import com.woowacourse.zzimkkong.exception.reservation.ReservationException;
+import com.woowacourse.zzimkkong.exception.space.SpaceException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.dao.DataAccessException;

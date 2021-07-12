@@ -1,11 +1,11 @@
-package com.woowacourse.zzimkkong.exception;
+package com.woowacourse.zzimkkong.exception.member;
 
 import org.springframework.http.HttpStatus;
 
-public class ReservationException extends RuntimeException {
+public class MemberException extends RuntimeException {
     private final HttpStatus status;
 
-    public ReservationException(final String message, final HttpStatus status) {
+    public MemberException(final String message, final HttpStatus status) {
         super(message);
         this.status = status;
     }
