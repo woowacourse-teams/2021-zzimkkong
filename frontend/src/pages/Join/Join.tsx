@@ -129,7 +129,7 @@ const Join = (): JSX.Element => {
               variant="primary"
               size="large"
               fullWidth
-              disabled={email && password && passwordConfirm && organization ? false : true}
+              disabled={!(email && password && passwordConfirm && organization)}
             >
               회원가입
             </Button>
