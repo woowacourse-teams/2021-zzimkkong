@@ -1,34 +1,34 @@
 package com.woowacourse.zzimkkong.dto;
 
 import org.springframework.format.annotation.DateTimeFormat;
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Pattern;
-import javax.validation.constraints.Size;
+
+import javax.validation.constraints.*;
 import java.time.LocalDateTime;
 
+import static com.woowacourse.zzimkkong.dto.Validator.*;
+
 public class ReservationSaveRequest {
-    @NotNull(message = "비어있는 항목을 입력해주세요.")
+    @NotNull(message = EMPTY_MESSAGE)
     private Long spaceId;
 
-    @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss")
-    @NotNull(message = "비어있는 항목을 입력해주세요.")
+    @DateTimeFormat(pattern = DATEFORMAT)
+    @NotNull(message = EMPTY_MESSAGE)
     private LocalDateTime startDateTime;
 
-    @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss")
-    @NotNull(message = "비어있는 항목을 입력해주세요.")
+    @DateTimeFormat(pattern = DATEFORMAT)
+    @NotNull(message = EMPTY_MESSAGE)
     private LocalDateTime endDateTime;
 
-    @NotBlank(message = "비어있는 항목을 입력해주세요.")
-    @Pattern(regexp = "^[0-9]{4}$", message = "비밀번호는 숫자 4자리만 입력 가능합니다.")
+    @NotBlank(message = EMPTY_MESSAGE)
+    @Pattern(regexp = RESERVATION_PASSWORD_FORMAT, message = RESERVATION_PASSWORD_MESSAGE)
     private String password;
 
-    @NotBlank(message = "비어있는 항목을 입력해주세요.")
-    @Pattern(regexp = "^[-_!?.,a-zA-Z0-9가-힣ㄱ-ㅎㅏ-ㅣ]{1,20}$", message = "이름은 특수문자(-_!?.,)를 포함하여 20자 이내로 작성 가능합니다.")
+    @NotBlank(message = EMPTY_MESSAGE)
+    @Pattern(regexp = NAME_FORMAT, message = NAME_MESSAGE)
     private String name;
 
-    @NotBlank(message = "비어있는 항목을 입력해주세요.")
-    @Size(max = 100, message = "예약 내용은 100자 이내로 작성 가능합니다.")
+    @NotBlank(message = EMPTY_MESSAGE)
+    @Size(max = 100, message = DESCRIPTION_MESSAGE)
     private String description;
 
     public ReservationSaveRequest() {
