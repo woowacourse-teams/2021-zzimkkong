@@ -1,8 +1,10 @@
-import { QueryFunction } from 'react-query';
 import api from './api';
 
-export const postLogin: QueryFunction = ({ queryKey }) => {
-  const [_key, loginData] = queryKey;
+interface LoginParams {
+  email: string;
+  password: string;
+}
 
+export const postLogin = (loginData: LoginParams) => {
   return api.post('/login/token', loginData);
 };

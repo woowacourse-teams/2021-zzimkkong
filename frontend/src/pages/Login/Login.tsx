@@ -1,6 +1,6 @@
 import { AxiosError } from 'axios';
-import { FormEventHandler } from 'react';
-import { useQuery } from 'react-query';
+import { FormEventHandler, useState } from 'react';
+import { useMutation } from 'react-query';
 import { Link, useHistory } from 'react-router-dom';
 import { postLogin } from 'api/login';
 import Button from 'components/Button/Button';
@@ -14,11 +14,16 @@ import * as Styled from './Login.styles';
 const Login = (): JSX.Element => {
   const [email, onChangeEmail] = useInput('');
   const [password, onChangePassword] = useInput('');
+  const [loginMessage, setLoginMessage] = useState('');
   const history = useHistory();
 
-  const login = useQuery(['login', { email, password }], postLogin, {
-    enabled: false,
-    retry: false,
+  const login = useMutation(postLogin, {
+    onSuccess: () => {
+      history.push(PATH.HOME);
+    },
+    onError: (error) => {
+      setLoginMessage((error as AxiosError)?.response?.data.message);
+    },
   });
 
   const handleSubmit: FormEventHandler<HTMLFormElement> = (event) => {
@@ -26,11 +31,7 @@ const Login = (): JSX.Element => {
 
     if (!(email && password)) return;
 
-    login.refetch();
-
-    if (login.isSuccess) {
-      history.push(PATH.HOME);
-    }
+    login.mutate({ email, password });
   };
 
   return (
@@ -56,9 +57,7 @@ const Login = (): JSX.Element => {
               onChange={onChangePassword}
               required
             />
-            <Styled.LoginErrorMessage>
-              {(login.error as AxiosError)?.response?.data?.message}
-            </Styled.LoginErrorMessage>
+            <Styled.LoginErrorMessage>{loginMessage}</Styled.LoginErrorMessage>
             <Button variant="primary" size="large" fullWidth>
               로그인
             </Button>
