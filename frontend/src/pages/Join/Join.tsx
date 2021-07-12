@@ -36,7 +36,7 @@ const Join = (): JSX.Element => {
     },
 
     onError: (error: AxiosError) => {
-      setEmailMessage(error?.response?.data.message);
+      setEmailMessage(error.response?.data.message);
     },
   });
 
