@@ -7,6 +7,7 @@ import { GlobalStyle, theme } from './App.styles';
 import PATH from './constants/path';
 import Join from './pages/Join/Join';
 import Login from './pages/Login/Login';
+import UserReservation from './pages/UserReservation/UserReservation';
 
 const queryClient = new QueryClient();
 
@@ -22,6 +23,9 @@ const App = (): JSX.Element => (
             </Route>
             <Route path={PATH.JOIN}>
               <Join />
+            </Route>
+            <Route path={PATH.RESERVATION}>
+              <UserReservation />
             </Route>
           </Switch>
         </Router>
