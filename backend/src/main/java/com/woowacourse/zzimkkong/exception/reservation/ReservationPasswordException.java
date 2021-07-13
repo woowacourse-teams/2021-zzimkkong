@@ -1,5 +1,6 @@
-package com.woowacourse.zzimkkong.exception;
+package com.woowacourse.zzimkkong.exception.reservation;
 
+import com.woowacourse.zzimkkong.exception.reservation.ReservationException;
 import org.springframework.http.HttpStatus;
 
 public class ReservationPasswordException extends ReservationException {

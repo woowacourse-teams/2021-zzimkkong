@@ -1,4 +1,4 @@
-package com.woowacourse.zzimkkong.dto;
+package com.woowacourse.zzimkkong.dto.reservation;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -6,12 +6,14 @@ import com.woowacourse.zzimkkong.domain.Reservation;
 
 import java.time.LocalDateTime;
 
+import static com.woowacourse.zzimkkong.dto.Validator.DATETIME_FORMAT;
+
 public class ReservationResponse {
     @JsonProperty
     private Long id;
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = DATETIME_FORMAT)
     private LocalDateTime startDateTime;
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = DATETIME_FORMAT)
     private LocalDateTime endDateTime;
     @JsonProperty
     private String name;
