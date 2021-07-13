@@ -4,10 +4,7 @@ import com.woowacourse.zzimkkong.domain.Map;
 import com.woowacourse.zzimkkong.domain.Member;
 import com.woowacourse.zzimkkong.domain.Reservation;
 import com.woowacourse.zzimkkong.domain.Space;
-import com.woowacourse.zzimkkong.dto.ReservationFindAllResponse;
-import com.woowacourse.zzimkkong.dto.ReservationFindResponse;
-import com.woowacourse.zzimkkong.dto.ReservationSaveRequest;
-import com.woowacourse.zzimkkong.dto.ReservationSaveResponse;
+import com.woowacourse.zzimkkong.dto.*;
 import com.woowacourse.zzimkkong.exception.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -25,6 +22,7 @@ import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.BDDMockito.given;
 
@@ -322,7 +320,7 @@ class ReservationServiceTest extends ServiceTest {
                 makeReservation(
                         reservationSaveRequest.getStartDateTime().minusMinutes(conferenceTime),
                         reservationSaveRequest.getEndDateTime().minusMinutes(conferenceTime),
-                        RESTAURANT),
+                        CAFE),
                 makeReservation(
                         reservationSaveRequest.getStartDateTime().plusMinutes(conferenceTime),
                         reservationSaveRequest.getEndDateTime().plusMinutes(conferenceTime),
@@ -348,6 +346,62 @@ class ReservationServiceTest extends ServiceTest {
                 .isEqualTo(reservationFindAllResponse);
     }
 
+
+    @Test
+    @DisplayName("예약 삭제 요청이 옳다면 삭제한다.")
+    void deleteReservation() {
+        //given
+        ReservationDeleteRequest reservationDeleteRequest = new ReservationDeleteRequest("1234");
+
+        //when
+        given(mapRepository.existsById(anyLong()))
+                .willReturn(true);
+        given(reservationRepository.findById(anyLong()))
+                .willReturn(Optional.of(makeReservation(
+                        LocalDateTime.now().plusDays(2),
+                        LocalDateTime.now().plusDays(2).plusHours(2),
+                        RESTAURANT)));
+
+        //then
+        assertDoesNotThrow(() -> reservationService.deleteReservation(1L, 1L, reservationDeleteRequest));
+    }
+
+    @Test
+    @DisplayName("예약 삭제 요청 시, 예약이 존재하지 않는다면 오류가 발생한다.")
+    void deleteReservationException() {
+        //given
+        ReservationDeleteRequest reservationDeleteRequest = new ReservationDeleteRequest("1234");
+
+        //when
+        given(mapRepository.existsById(anyLong()))
+                .willReturn(true);
+        given(reservationRepository.findById(anyLong()))
+                .willReturn(Optional.empty());
+
+        //then
+        assertThatThrownBy(() -> reservationService.deleteReservation(1L, 1L, reservationDeleteRequest))
+                .isInstanceOf(NoSuchReservationException.class);
+    }
+
+    @Test
+    @DisplayName("예약 삭제 요청 시, 비밀번호가 일치하지 않는다면 오류가 발생한다.")
+    void deleteReservationPasswordException() {
+        //given
+        ReservationDeleteRequest reservationDeleteRequest = new ReservationDeleteRequest("1233");
+
+        //when
+        given(mapRepository.existsById(anyLong()))
+                .willReturn(true);
+        given(reservationRepository.findById(anyLong()))
+                .willReturn(Optional.of(makeReservation(
+                        LocalDateTime.now().plusDays(2),
+                        LocalDateTime.now().plusDays(2).plusHours(2),
+                        RESTAURANT)));
+
+        //then
+        assertThatThrownBy(() -> reservationService.deleteReservation(1L, 1L, reservationDeleteRequest))
+                .isInstanceOf(ReservationPasswordException.class);
+    }
 
     private Reservation makeReservation(final LocalDateTime startTime, final LocalDateTime endTime, final Space space) {
         return new Reservation.Builder()
