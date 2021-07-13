@@ -83,7 +83,7 @@ public class ReservationService {
 
     public void deleteReservation(Long mapId, Long reservationId, ReservationPasswordAuthenticationRequest reservationPasswordAuthenticationRequest) {
         validateMapExistence(mapId);
-        Reservation reservation = getReservation(reservationId, reservationPasswordAuthenticationRequest);
+        Reservation reservation = getReservation(reservationId, reservationPasswordAuthenticationRequest.getPassword());
         reservationRepository.delete(reservation);
     }
 
