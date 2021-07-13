@@ -1,8 +1,8 @@
 import { PropsWithChildren, useState } from 'react';
 import * as Styled from './Panel.styles';
+import PanelContent from './PanelContent';
 import PanelContext from './PanelContext';
 import PanelHeader from './PanelHeader';
-import PanelContent from './PanelContent';
 
 export interface Props {
   expandable?: boolean;
@@ -13,7 +13,7 @@ const Panel = ({
   expandable = false,
   initialExpanded = false,
   children,
-}: PropsWithChildren<Props>) => {
+}: PropsWithChildren<Props>): JSX.Element => {
   const [expanded, setExpanded] = useState(initialExpanded);
 
   const handleToggle = () => {

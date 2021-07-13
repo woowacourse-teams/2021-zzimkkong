@@ -1,10 +1,12 @@
 import { PropsWithChildren, useContext } from 'react';
-import PanelContext from './PanelContext';
 import * as Styled from './PanelContent.styles';
+import PanelContext from './PanelContext';
 
-interface Props {}
+interface Props {
+  children: JSX.Element;
+}
 
-const PanelContent = ({ children }: PropsWithChildren<Props>) => {
+const PanelContent = ({ children }: PropsWithChildren<Props>): JSX.Element => {
   const { expandable = false, expanded = false } = useContext(PanelContext);
 
   return (
