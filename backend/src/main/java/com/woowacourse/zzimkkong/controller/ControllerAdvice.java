@@ -2,6 +2,7 @@ package com.woowacourse.zzimkkong.controller;
 
 import com.fasterxml.jackson.databind.exc.InvalidFormatException;
 import com.woowacourse.zzimkkong.dto.ErrorResponse;
+import com.woowacourse.zzimkkong.exception.ZzimkkongException;
 import com.woowacourse.zzimkkong.exception.map.MapException;
 import com.woowacourse.zzimkkong.exception.member.MemberException;
 import com.woowacourse.zzimkkong.exception.reservation.ReservationException;
@@ -22,32 +23,8 @@ import static com.woowacourse.zzimkkong.dto.Validator.*;
 public class ControllerAdvice {
     private final Logger logger = LoggerFactory.getLogger(ControllerAdvice.class);
 
-    @ExceptionHandler(MemberException.class)
-    public ResponseEntity<ErrorResponse> memberExceptionHandler(final MemberException exception) {
-        logger.warn(exception.getMessage());
-        return ResponseEntity
-                .status(exception.getStatus())
-                .body(ErrorResponse.of(exception));
-    }
-
-    @ExceptionHandler(MapException.class)
-    public ResponseEntity<ErrorResponse> mapExceptionHandler(final MapException exception) {
-        logger.warn(exception.getMessage());
-        return ResponseEntity
-                .status(exception.getStatus())
-                .body(ErrorResponse.of(exception));
-    }
-
-    @ExceptionHandler(SpaceException.class)
-    public ResponseEntity<ErrorResponse> spaceExceptionHandler(final SpaceException exception) {
-        logger.warn(exception.getMessage());
-        return ResponseEntity
-                .status(exception.getStatus())
-                .body(ErrorResponse.of(exception));
-    }
-
-    @ExceptionHandler(ReservationException.class)
-    public ResponseEntity<ErrorResponse> reservationExceptionHandler(final ReservationException exception) {
+    @ExceptionHandler({MemberException.class, MapException.class, SpaceException.class, ReservationException.class})
+    public ResponseEntity<ErrorResponse> zzimkkongExceptionHandler(final ZzimkkongException exception) {
         logger.warn(exception.getMessage());
         return ResponseEntity
                 .status(exception.getStatus())
