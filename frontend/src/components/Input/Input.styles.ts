@@ -21,6 +21,7 @@ const statusCSS = {
 export const Label = styled.label`
   display: block;
   position: relative;
+  margin-top: 0.5rem;
   margin-bottom: 1.625rem;
 `;
 
