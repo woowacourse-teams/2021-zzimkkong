@@ -3,11 +3,11 @@ package com.woowacourse.zzimkkong.controller;
 import com.fasterxml.jackson.databind.exc.InvalidFormatException;
 import com.woowacourse.zzimkkong.dto.ErrorResponse;
 import com.woowacourse.zzimkkong.exception.ZzimkkongException;
+import com.woowacourse.zzimkkong.exception.authorization.AuthorizationException;
 import com.woowacourse.zzimkkong.exception.map.MapException;
 import com.woowacourse.zzimkkong.exception.member.MemberException;
 import com.woowacourse.zzimkkong.exception.reservation.ReservationException;
 import com.woowacourse.zzimkkong.exception.space.SpaceException;
-import com.woowacourse.zzimkkong.exception.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.dao.DataAccessException;
@@ -24,16 +24,8 @@ import static com.woowacourse.zzimkkong.dto.Validator.*;
 public class ControllerAdvice {
     private final Logger logger = LoggerFactory.getLogger(ControllerAdvice.class);
 
-    @ExceptionHandler({MemberException.class, MapException.class, SpaceException.class, ReservationException.class})
+    @ExceptionHandler({MemberException.class, MapException.class, SpaceException.class, ReservationException.class, AuthorizationException.class})
     public ResponseEntity<ErrorResponse> zzimkkongExceptionHandler(final ZzimkkongException exception) {
-        logger.warn(exception.getMessage());
-        return ResponseEntity
-                .status(exception.getStatus())
-                .body(ErrorResponse.of(exception));
-    }
-
-    @ExceptionHandler(AuthorizationException.class)
-    public ResponseEntity<ErrorResponse> AuthorizationExceptionHandler(final AuthorizationException exception) {
         logger.warn(exception.getMessage());
         return ResponseEntity
                 .status(exception.getStatus())

@@ -1,6 +1,6 @@
 package com.woowacourse.zzimkkong.infrastructure;
 
-import com.woowacourse.zzimkkong.exception.AuthorizationHeaderUninvolvedException;
+import com.woowacourse.zzimkkong.exception.authorization.AuthorizationHeaderUninvolvedException;
 import org.springframework.http.HttpMethod;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.HandlerInterceptor;

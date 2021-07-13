@@ -1,7 +1,7 @@
 package com.woowacourse.zzimkkong.infrastructure;
 
-import com.woowacourse.zzimkkong.exception.InvalidTokenException;
-import com.woowacourse.zzimkkong.exception.TokenExpiredException;
+import com.woowacourse.zzimkkong.exception.authorization.InvalidTokenException;
+import com.woowacourse.zzimkkong.exception.authorization.TokenExpiredException;
 import io.jsonwebtoken.*;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
