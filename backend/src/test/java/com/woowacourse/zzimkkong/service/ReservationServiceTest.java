@@ -278,6 +278,19 @@ class ReservationServiceTest extends ServiceTest {
     }
 
     @Test
+    @DisplayName("특정 공간 예약 조회 요청 시, 해당하는 공간이 없으면 오류가 발생한다.")
+    void findReservationsNotExistSpace() {
+        //given, when
+        given(mapRepository.existsById(anyLong()))
+                .willReturn(true);
+        given(spaceRepository.existsById(anyLong()))
+                .willReturn(false);
+        //then
+        assertThatThrownBy(() -> reservationService.findReservations(1L, 1L, LocalDate.now().plusDays(2)))
+                .isInstanceOf(NoSuchSpaceException.class);
+    }
+
+    @Test
     @DisplayName("전체 예약이나 특정 공간 예약 조회 요청 시, 해당하는 예약이 없으면 빈 정보가 조회된다.")
     void findEmptyReservations() {
         //given, when
@@ -302,6 +315,7 @@ class ReservationServiceTest extends ServiceTest {
                 .usingRecursiveComparison()
                 .isEqualTo(ReservationFindAllResponse.of(Collections.emptyList()));
     }
+
 
     @Test
     @DisplayName("전체 예약 조회 요청 시, 올바른 mapId, 날짜를 입력하면 해당 날짜에 존재하는 모든 예약 정보가 조회된다.")
