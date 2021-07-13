@@ -115,10 +115,29 @@ public class ReservationService {
         Space space = spaceRepository.findById(reservationCreateUpdateRequest.getSpaceId())
                 .orElseThrow(NoSuchSpaceException::new);
         Reservation reservation = getReservation(reservationId, reservationCreateUpdateRequest.getPassword());
+        doDirtyCheck(reservation, reservationCreateUpdateRequest, space);
+
         validateAvailability(space, reservationCreateUpdateRequest, reservation);
 
         reservation.update(reservationCreateUpdateRequest, space);
         reservationRepository.save(reservation);
+    }
+
+    private void doDirtyCheck(
+            final Reservation reservation,
+            final ReservationCreateUpdateRequest reservationCreateUpdateRequest,
+            final Space space) {
+        Reservation updatedReservation = new Reservation.Builder()
+                .startTime(reservationCreateUpdateRequest.getStartDateTime())
+                .endTime(reservationCreateUpdateRequest.getEndDateTime())
+                .userName(reservationCreateUpdateRequest.getName())
+                .description(reservationCreateUpdateRequest.getDescription())
+                .space(space)
+                .build();
+
+        if (reservation.hasSameData(updatedReservation)) {
+            throw new NoDataUpdateException();
+        }
     }
 
     private void validateTime(final ReservationCreateUpdateRequest reservationCreateUpdateRequest) {

@@ -1,0 +1,11 @@
+package com.woowacourse.zzimkkong.exception.reservation;
+
+import org.springframework.http.HttpStatus;
+
+public class NoDataUpdateException extends ReservationException {
+    private static final String MESSAGE = "기존 예약 정보와 동일한 내용의 수정입니다.";
+
+    public NoDataUpdateException() {
+        super(MESSAGE, HttpStatus.BAD_REQUEST);
+    }
+}

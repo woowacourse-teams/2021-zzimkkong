@@ -65,6 +65,14 @@ public class Reservation {
         return startDateTime.isEqual(startTime) && endDateTime.isEqual(endTime);
     }
 
+    public boolean hasSameData(final Reservation updatedReservation) {
+        return this.startTime.equals(updatedReservation.startTime)
+                && this.endTime.equals(updatedReservation.endTime)
+                && this.userName.equals(updatedReservation.userName)
+                && this.description.equals(updatedReservation.description)
+                && this.space.equals(updatedReservation.space);
+    }
+
     public void update(final ReservationCreateUpdateRequest reservationCreateUpdateRequest, final Space space) {
         this.startTime = reservationCreateUpdateRequest.getStartDateTime();
         this.endTime = reservationCreateUpdateRequest.getEndDateTime();
