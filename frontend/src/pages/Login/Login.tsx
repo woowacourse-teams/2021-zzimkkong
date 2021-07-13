@@ -1,9 +1,9 @@
 import { Link } from 'react-router-dom';
-import * as Styled from './Login.styles';
-import Header from 'components/Header/Header';
-import Layout from 'components/Layout/Layout';
-import Input from 'components/Input/Input';
 import Button from 'components/Button/Button';
+import Header from 'components/Header/Header';
+import Input from 'components/Input/Input';
+import Layout from 'components/Layout/Layout';
+import * as Styled from './Login.styles';
 
 const Login = (): JSX.Element => {
   return (

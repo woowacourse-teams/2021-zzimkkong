@@ -1,7 +1,7 @@
 import { Story } from '@storybook/react';
-import ReservationListItem, { Props } from './ReservationListItem';
-import { ReactComponent as EditIcon } from 'assets/svg/edit.svg';
 import { ReactComponent as DeleteIcon } from 'assets/svg/delete.svg';
+import { ReactComponent as EditIcon } from 'assets/svg/edit.svg';
+import ReservationListItem, { Props } from './ReservationListItem';
 
 export default {
   title: 'shared/ReservationListItem',
