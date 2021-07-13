@@ -1,4 +1,4 @@
-import { AxiosError } from 'axios';
+import { AxiosError, AxiosResponse } from 'axios';
 import { FormEventHandler, useState } from 'react';
 import { useMutation } from 'react-query';
 import { Link, useHistory } from 'react-router-dom';
@@ -8,10 +8,12 @@ import Button from 'components/Button/Button';
 import Header from 'components/Header/Header';
 import Input from 'components/Input/Input';
 import Layout from 'components/Layout/Layout';
+import MESSAGE from 'constants/message';
 import PATH from 'constants/path';
 import { TOKEN_KEY } from 'constants/storage';
 import useInput from 'hooks/useInput';
 import tokenState from 'state/tokenState';
+import { LoginSuccess } from 'types/response';
 import { setLocalStorageItem } from 'utils/localStorage';
 import * as Styled from './Login.styles';
 
@@ -19,20 +21,21 @@ const Login = (): JSX.Element => {
   const [email, onChangeEmail] = useInput('');
   const [password, onChangePassword] = useInput('');
   const [loginMessage, setLoginMessage] = useState('');
+
   const setToken = useSetRecoilState(tokenState);
   const history = useHistory();
 
   const login = useMutation(postLogin, {
-    onSuccess: (data) => {
-      const { accessToken } = data.data;
+    onSuccess: (response: AxiosResponse<LoginSuccess>) => {
+      const { accessToken } = response.data;
 
       setLocalStorageItem({ key: TOKEN_KEY, item: accessToken });
       setToken(accessToken);
 
       history.push(PATH.HOME);
     },
-    onError: (error) => {
-      setLoginMessage((error as AxiosError)?.response?.data.message);
+    onError: (error: AxiosError<Error>) => {
+      setLoginMessage(error.response?.data.message ?? MESSAGE.LOGIN.UNEXPECTED_ERROR);
     },
   });
 
