@@ -1,4 +1,4 @@
-package com.woowacourse.zzimkkong.controller;
+package com.woowacourse.zzimkkong;
 
 import io.restassured.specification.RequestSpecification;
 import org.springframework.restdocs.operation.preprocess.OperationRequestPreprocessor;
