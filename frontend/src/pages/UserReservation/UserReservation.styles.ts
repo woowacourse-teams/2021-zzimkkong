@@ -1,7 +1,7 @@
 import styled from 'styled-components';
 
 export const ReservationForm = styled.form`
-  margin: 1.5rem 0;
+  margin: 1.5rem 0 5rem 0;
 `;
 
 export const Section = styled.section`
@@ -33,4 +33,11 @@ export const ReservationList = styled.div`
       border-bottom: none;
     }
   }
+`;
+
+export const ButtonWrapper = styled.div`
+  position: fixed;
+  width: 100%;
+  bottom: 0;
+  left: 0;
 `;

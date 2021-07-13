@@ -78,9 +78,11 @@ const UserReservation = () => {
               />
             </Styled.ReservationList>
           </Styled.Section>
-          <Button fullWidth variant="primary" size="large">
-            예약하기
-          </Button>
+          <Styled.ButtonWrapper>
+            <Button fullWidth variant="primary" size="large">
+              예약하기
+            </Button>
+          </Styled.ButtonWrapper>
         </Styled.ReservationForm>
       </Layout>
     </>
