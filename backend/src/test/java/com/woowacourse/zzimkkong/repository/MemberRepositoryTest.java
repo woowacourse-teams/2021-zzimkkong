@@ -1,7 +1,7 @@
 package com.woowacourse.zzimkkong.repository;
 
 import com.woowacourse.zzimkkong.domain.Member;
-import com.woowacourse.zzimkkong.exception.NoSuchEmailException;
+import com.woowacourse.zzimkkong.exception.NoSuchMemberException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,10 +13,10 @@ class MemberRepositoryTest extends RepositoryTest {
     public static final String PASSWORD = "test1234";
     public static final String ORGANIZATION = "루터";
 
+    private final Member MEMBER = new Member(EMAIL, PASSWORD, ORGANIZATION);
+
     @Autowired
     private MemberRepository memberRepository;
-
-    private final Member MEMBER = new Member(EMAIL, PASSWORD, ORGANIZATION);
 
     @Test
     @DisplayName("저장된 멤버를 이메일을 통해 찾아올 수 있다.")
@@ -26,7 +26,7 @@ class MemberRepositoryTest extends RepositoryTest {
 
         // when
         Member findMember = memberRepository.findByEmail(EMAIL)
-                .orElseThrow(NoSuchEmailException::new);
+                .orElseThrow(NoSuchMemberException::new);
 
         // then
         assertThat(findMember).isEqualTo(expected);

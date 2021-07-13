@@ -44,4 +44,8 @@ public class Member {
     public String getOrganization() {
         return organization;
     }
+
+    public boolean checkPassword(String password) {
+        return this.password.equals(password);
+    }
 }
