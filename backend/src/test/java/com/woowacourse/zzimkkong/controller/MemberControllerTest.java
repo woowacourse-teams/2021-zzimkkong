@@ -31,21 +31,7 @@ class MemberControllerTest extends AcceptanceTest {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
     }
 
-    @DisplayName("중복된 이메일을 입력하면 400 에러를 반환한다")
-    @Test
-    void duplicateEmail() {
-        //given
-        MemberSaveRequest memberSaveRequest = new MemberSaveRequest(EMAIL, PASSWORD, ORGANIZATION);
-
-        //when
-        saveMember(memberSaveRequest);
-
-        //then
-        ExtractableResponse<Response> response = validateDuplicateEmail(EMAIL);
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
-    }
-
-    @DisplayName("중복되지 않은 이메일을 입력하면 200 ok를 반환한다.")
+    @DisplayName("이메일 중복 확인 시, 중복되지 않은 이메일을 입력하면 200을 반환한다.")
     @Test
     void getMembers() {
         //given

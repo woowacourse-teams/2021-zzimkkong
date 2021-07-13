@@ -36,20 +36,6 @@ class AuthControllerTest extends AcceptanceTest {
         assertThat(responseBody.getAccessToken()).isInstanceOf(String.class);
     }
 
-    @DisplayName("유효하지 않은 정보의 로그인 요청이 오면 400 Bad Request를 응답한다.")
-    @Test
-    void loginWithInvalidInformation() {
-        // given
-        saveMember(new MemberSaveRequest(EMAIL, PASSWORD, ORGANIZATION));
-
-        // when
-        LoginRequest loginRequest = new LoginRequest(EMAIL, "WrongPassword1234");
-        ExtractableResponse<Response> response = login(loginRequest);
-
-        // then
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
-    }
-
     private ExtractableResponse<Response> login(final LoginRequest loginRequest) {
         return RestAssured
                 .given(getRequestSpecification()).log().all()

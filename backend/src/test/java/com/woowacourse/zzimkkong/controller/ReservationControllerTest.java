@@ -124,20 +124,6 @@ public class ReservationControllerTest extends AcceptanceTest {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
     }
 
-    @DisplayName("잘못된 비밀번호로 예약삭제를 요청하면, 400 에러를 반환한다.")
-    @Test
-    void deleteWithWrongPassword() {
-        //given
-        saveReservation(reservationSaveRequest);
-        ReservationDeleteRequest reservationDeleteRequest = new ReservationDeleteRequest("0987");
-
-        //when
-        final ExtractableResponse<Response> response = deleteReservation(reservationDeleteRequest);
-
-        //then
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
-    }
-
     @DisplayName("map id, space id, 특정 날짜가 주어질 때 해당 맵, 해당 공간, 해당 날짜에 속하는 예약들만 찾아온다")
     @Test
     void find() {
