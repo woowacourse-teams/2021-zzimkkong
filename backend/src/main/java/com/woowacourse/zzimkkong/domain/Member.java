@@ -37,6 +37,11 @@ public class Member {
         this(email, password, organization);
         this.id = id;
     }
+
+    public boolean checkPassword(String password) {
+        return this.password.equals(password);
+    }
+
     public Long getId() {
         return id;
     }
@@ -51,9 +56,5 @@ public class Member {
 
     public String getOrganization() {
         return organization;
-    }
-
-    public boolean checkPassword(String password) {
-        return this.password.equals(password);
     }
 }
