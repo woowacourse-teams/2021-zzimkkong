@@ -136,7 +136,7 @@ public class ReservationService {
                 .build();
 
         if (reservation.hasSameData(updatedReservation)) {
-            throw new NoDataUpdateException();
+            throw new NoDataToUpdateException();
         }
     }
 
