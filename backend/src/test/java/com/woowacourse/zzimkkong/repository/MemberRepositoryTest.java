@@ -5,7 +5,9 @@ import com.woowacourse.zzimkkong.exception.NoSuchMemberException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataAccessException;
 
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
 class MemberRepositoryTest extends RepositoryTest {
@@ -43,5 +45,19 @@ class MemberRepositoryTest extends RepositoryTest {
 
         // then
         assertThat(actual).isTrue();
+    }
+
+    @Test
+    @DisplayName("중복된 이메일을 가진 멤버를 등록하면 에러가 발생한다.")
+    void duplicatedEmail() {
+        // given
+        memberRepository.save(MEMBER);
+
+        // when
+        Member sameEmailMember = new Member(EMAIL, "password", "루터회관");
+
+        // then
+        assertThatThrownBy(() -> memberRepository.save(sameEmailMember))
+                .isInstanceOf(DataAccessException.class);
     }
 }
