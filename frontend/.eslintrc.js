@@ -4,7 +4,12 @@ module.exports = {
     es2021: true,
   },
   ignorePatterns: ['*.js'],
-  extends: ['react-app', 'plugin:prettier/recommended'],
+  extends: [
+    'react-app',
+    'plugin:@typescript-eslint/recommended',
+    'plugin:@typescript-eslint/recommended-requiring-type-checking',
+    'plugin:prettier/recommended',
+  ],
   parser: '@typescript-eslint/parser',
   parserOptions: {
     ecmaFeatures: {
@@ -15,7 +20,26 @@ module.exports = {
     project: './tsconfig.json',
   },
   plugins: [],
-  rules: {},
+  rules: {
+    'import/order': [
+      'error',
+      {
+        groups: ['builtin', 'external', 'internal', 'parent', 'sibling', 'index'],
+        alphabetize: {
+          order: 'asc',
+        },
+      },
+    ],
+    'react/react-in-jsx-scope': 'off',
+    '@typescript-eslint/no-floating-promises': 'off',
+  },
+  settings: {
+    'import/resolver': {
+      typescript: {
+        alwaysTryTypes: true,
+      },
+    },
+  },
   overrides: [
     {
       files: ['**/*.stories.*'],

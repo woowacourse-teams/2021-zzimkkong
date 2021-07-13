@@ -2,8 +2,9 @@ package com.woowacourse.zzimkkong.controller;
 
 import com.woowacourse.zzimkkong.domain.Reservation;
 import com.woowacourse.zzimkkong.domain.Space;
-import com.woowacourse.zzimkkong.dto.*;
-import com.woowacourse.zzimkkong.exception.NoSuchSpaceException;
+
+import com.woowacourse.zzimkkong.dto.reservation.*;
+import com.woowacourse.zzimkkong.exception.space.NoSuchSpaceException;
 import com.woowacourse.zzimkkong.repository.SpaceRepository;
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
@@ -19,7 +20,7 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
 
-import static com.woowacourse.zzimkkong.controller.DocumentUtils.*;
+import static com.woowacourse.zzimkkong.DocumentUtils.*;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.restdocs.restassured3.RestAssuredRestDocumentation.document;
 

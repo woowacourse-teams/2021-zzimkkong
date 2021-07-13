@@ -9,7 +9,7 @@ interface PanelContextValue {
 const PanelContext = createContext<PanelContextValue>({
   expandable: true,
   expanded: false,
-  onToggle: () => {},
+  onToggle: () => undefined,
 });
 
 if (process.env.NODE_ENV !== 'production') {

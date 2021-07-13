@@ -1,11 +1,12 @@
-import Layout from 'components/Layout/Layout';
 import styled from 'styled-components';
+import Layout from 'components/Layout/Layout';
 
 export const Header = styled.header`
   position: sticky;
   top: 0;
   height: 4rem;
   background-color: ${({ theme }) => theme.white};
+  z-index: 99;
 
   svg {
     padding: 0.5rem 0;
