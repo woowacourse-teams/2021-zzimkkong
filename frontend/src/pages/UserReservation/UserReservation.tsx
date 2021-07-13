@@ -8,7 +8,7 @@ import Button from 'components/Button/Button';
 import useInput from 'hooks/useInput';
 import { formatDate, formatTime } from 'utils/datetime';
 
-const UserReservation = () => {
+const UserReservation = (): JSX.Element => {
   const [name, onChangeName] = useInput('');
   const [description, onChangeDescription] = useInput('');
   const [date, onChangeDate] = useInput(formatDate(new Date()));
@@ -22,16 +22,27 @@ const UserReservation = () => {
         <Styled.ReservationForm>
           <Styled.Section>
             <Styled.PageHeader>회의실 1</Styled.PageHeader>
-            <Input label="이름" value={name} onChange={onChangeName} autoFocus required />
-            <Input label="사용 목적" value={description} onChange={onChangeDescription} required />
-            <Input
-              type="date"
-              label="날짜"
-              icon={<CalendarIcon />}
-              value={date}
-              onChange={onChangeDate}
-              required
-            />
+            <Styled.InputWrapper>
+              <Input label="이름" value={name} onChange={onChangeName} autoFocus required />
+            </Styled.InputWrapper>
+            <Styled.InputWrapper>
+              <Input
+                label="사용 목적"
+                value={description}
+                onChange={onChangeDescription}
+                required
+              />
+            </Styled.InputWrapper>
+            <Styled.InputWrapper>
+              <Input
+                type="date"
+                label="날짜"
+                icon={<CalendarIcon />}
+                value={date}
+                onChange={onChangeDate}
+                required
+              />
+            </Styled.InputWrapper>
             <Styled.InputWrapper>
               <Input
                 type="time"

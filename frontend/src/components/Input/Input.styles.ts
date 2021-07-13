@@ -49,7 +49,6 @@ export const Input = styled.input<Props>`
   padding: 0.75rem;
   width: 100%;
   font-size: 1.25rem;
-  line-height: 0.875rem;
   border: 1px solid ${({ theme }) => theme.black[400]};
   background: none;
   outline: none;
@@ -58,6 +57,10 @@ export const Input = styled.input<Props>`
   &:focus {
     border-color: ${({ theme }) => theme.primary[400]};
     box-shadow: inset 0px 0px 0px 1px ${({ theme }) => theme.primary[400]};
+  }
+
+  &::-webkit-calendar-picker-indicator {
+    display: none;
   }
 `;
 
