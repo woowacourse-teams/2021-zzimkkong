@@ -118,8 +118,6 @@ public class ReservationControllerTest extends AcceptanceTest {
     @DisplayName("예약을 등록한다.")
     @Test
     void save() {
-        //given
-
         //when
         ExtractableResponse<Response> response = saveReservation(reservationCreateUpdateRequestSameSpace);
 
@@ -156,9 +154,6 @@ public class ReservationControllerTest extends AcceptanceTest {
     @DisplayName("map id, space id, 특정 날짜가 주어질 때 해당 맵, 해당 공간, 해당 날짜에 속하는 예약들만 찾아온다")
     @Test
     void find() {
-        //given
-        be = spaceRepository.findById(1L).orElseThrow(NoSuchSpaceException::new);
-
         //when
         ExtractableResponse<Response> response = findReservations(1L, targetDateString);
         ReservationFindResponse actualResponse = response.as(ReservationFindResponse.class);
@@ -182,8 +177,6 @@ public class ReservationControllerTest extends AcceptanceTest {
     @DisplayName("map id와 특정 날짜가 주어질 때 해당 맵, 해당 날짜의 모든 공간에 대한 예약 조회")
     @Test
     void findAll() {
-        //given
-
         //when
         ExtractableResponse<Response> response = findAllReservations(targetDateString);
         ReservationFindAllResponse actualResponse = response.as(ReservationFindAllResponse.class);
@@ -208,8 +201,6 @@ public class ReservationControllerTest extends AcceptanceTest {
     @DisplayName("공간 변경 없는 새로운 예약 정보가 주어지면 예약을 업데이트 한다")
     @Test
     void update_sameSpace() {
-        //given
-
         //when
         ExtractableResponse<Response> updateResponse = updateReservation(reservationCreateUpdateRequestSameSpace);
         ExtractableResponse<Response> findResponse = findReservations(
@@ -243,8 +234,6 @@ public class ReservationControllerTest extends AcceptanceTest {
     @DisplayName("공간 변경 있는 새로운 예약 정보가 주어지면 공간을 이동한 채로 예약을 업데이트 한다")
     @Test
     void update_spaceUpdate() {
-        //given
-
         //when
         ExtractableResponse<Response> updateResponse = updateReservation(reservationCreateUpdateRequestDifferentSpace);
         ExtractableResponse<Response> findResponse = findReservations(
@@ -277,8 +266,6 @@ public class ReservationControllerTest extends AcceptanceTest {
     @DisplayName("예약 할 수 없는 조건의 정보가 주어지면 400 에러를 반환한다")
     @Test
     void update_fail() {
-        //given
-
         //when
         ExtractableResponse<Response> updateResponse = updateReservation(reservationCreateUpdateRequestForFail);
 
