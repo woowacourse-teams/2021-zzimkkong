@@ -89,7 +89,7 @@ public class ReservationService {
 
     public ReservationResponse findReservation(final Long mapId, final Long reservationId, final ReservationPasswordAuthenticationRequest reservationPasswordAuthenticationRequest) {
         validateMapExistence(mapId);
-        Reservation reservation = getReservation(reservationId, reservationPasswordAuthenticationRequest);
+        Reservation reservation = getReservation(reservationId, reservationPasswordAuthenticationRequest.getPassword());
         return ReservationResponse.of(reservation);
     }
 
@@ -103,8 +103,7 @@ public class ReservationService {
 
         Space space = spaceRepository.findById(reservationCreateUpdateRequest.getSpaceId())
                 .orElseThrow(NoSuchSpaceException::new);
-        Reservation reservation = reservationRepository.findById(reservationId)
-                .orElseThrow(NoSuchReservationException::new);
+        Reservation reservation = getReservation(reservationId, reservationCreateUpdateRequest.getPassword());
         validateAvailability(space, reservationCreateUpdateRequest, reservation);
 
         reservation.update(reservationCreateUpdateRequest, space);
@@ -162,12 +161,12 @@ public class ReservationService {
         }
     }
 
-    private Reservation getReservation(final Long reservationId, final ReservationPasswordAuthenticationRequest reservationPasswordAuthenticationRequest) {
+    private Reservation getReservation(final Long reservationId, final String password) {
         Reservation reservation = reservationRepository
                 .findById(reservationId)
                 .orElseThrow(NoSuchReservationException::new);
 
-        if (reservation.isWrongPassword(reservationPasswordAuthenticationRequest.getPassword())) {
+        if (reservation.isWrongPassword(password)) {
             throw new ReservationPasswordException();
         }
         return reservation;
