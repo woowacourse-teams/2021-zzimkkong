@@ -29,6 +29,14 @@ public class Member {
         this.organization = organization;
     }
 
+    public Member(
+            final Long id,
+            final String email,
+            final String password,
+            final String organization) {
+        this(email, password, organization);
+        this.id = id;
+    }
     public Long getId() {
         return id;
     }

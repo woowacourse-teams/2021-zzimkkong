@@ -26,7 +26,7 @@ public class MemberService {
                 memberSaveRequest.getOrganization()
         );
         Member saveMember = memberRepository.save(member);
-        return new MemberSaveResponse(saveMember.getId());
+        return MemberSaveResponse.of(saveMember);
     }
 
     @Transactional(readOnly = true)

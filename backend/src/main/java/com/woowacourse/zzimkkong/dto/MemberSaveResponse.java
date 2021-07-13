@@ -1,5 +1,7 @@
 package com.woowacourse.zzimkkong.dto;
 
+import com.woowacourse.zzimkkong.domain.Member;
+
 public class MemberSaveResponse {
     private Long id;
 
@@ -7,8 +9,12 @@ public class MemberSaveResponse {
 
     }
 
-    public MemberSaveResponse(final Long id) {
+    private MemberSaveResponse(final Long id) {
         this.id = id;
+    }
+
+    public static MemberSaveResponse of(Member member) {
+        return new MemberSaveResponse(member.getId());
     }
 
     public Long getId() {
