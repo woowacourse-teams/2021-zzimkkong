@@ -6,6 +6,7 @@ export const Header = styled.header`
   top: 0;
   height: 4rem;
   background-color: ${({ theme }) => theme.white};
+  z-index: 99;
 
   svg {
     padding: 0.5rem 0;

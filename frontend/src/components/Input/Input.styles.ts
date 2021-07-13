@@ -36,16 +36,12 @@ export const LabelText = styled.span`
 
 export const Icon = styled.div`
   position: absolute;
-  display: inline-flex;
-  padding: 0 0.5rem;
+  display: flex;
+  width: 3rem;
   height: 100%;
   justify-content: center;
   align-items: center;
-
-  svg,
-  img {
-    height: 70%;
-  }
+  padding: 0.75rem 0.5rem;
 `;
 
 export const Input = styled.input<Props>`
@@ -54,6 +50,7 @@ export const Input = styled.input<Props>`
   font-size: 1.25rem;
   line-height: 0.875rem;
   border: 1px solid ${({ theme }) => theme.black[400]};
+  background: none;
   outline: none;
   ${({ icon }) => (icon ? 'padding-left: 3rem' : '')};
 
