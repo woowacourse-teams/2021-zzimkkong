@@ -1,3 +1,4 @@
+import { AxiosResponse } from 'axios';
 import { QueryFunction } from 'react-query';
 import api from './api';
 
@@ -10,9 +11,9 @@ interface JoinParams {
 export const queryValidateEmail: QueryFunction = ({ queryKey }) => {
   const [, email] = queryKey;
 
-  return api.get(`/members/?email=${email}`);
+  return api.get(`/members/?email=${email as string}`);
 };
 
-export const postJoin = ({ email, password, organization }: JoinParams) => {
+export const postJoin = ({ email, password, organization }: JoinParams): Promise<AxiosResponse> => {
   return api.post('/members', { email, password, organization });
 };

@@ -1,5 +1,8 @@
-import { postJoin, queryValidateEmail } from 'api/join';
 import { AxiosError } from 'axios';
+import { FormEventHandler, useEffect, useState } from 'react';
+import { useMutation, useQuery } from 'react-query';
+import { useHistory } from 'react-router-dom';
+import { postJoin, queryValidateEmail } from 'api/join';
 import Button from 'components/Button/Button';
 import Header from 'components/Header/Header';
 import Input from 'components/Input/Input';
@@ -8,9 +11,6 @@ import MESSAGE from 'constants/message';
 import PATH from 'constants/path';
 import REGEXP from 'constants/regexp';
 import useInput from 'hooks/useInput';
-import { FormEventHandler, useEffect, useState } from 'react';
-import { useMutation, useQuery } from 'react-query';
-import { useHistory } from 'react-router-dom';
 import * as Styled from './Join.styles';
 
 const Join = (): JSX.Element => {
@@ -35,8 +35,8 @@ const Join = (): JSX.Element => {
       setEmailMessage(MESSAGE.JOIN.VALID_EMAIL);
     },
 
-    onError: (error: AxiosError) => {
-      setEmailMessage(error.response?.data.message);
+    onError: (error: AxiosError<Error>) => {
+      setEmailMessage(error.response?.data.message ?? '');
     },
   });
 
@@ -91,7 +91,6 @@ const Join = (): JSX.Element => {
             <Input
               type="email"
               label="이메일"
-              autoFocus
               value={email}
               onChange={onChangeEmail}
               onBlur={handleValidateEmail}
