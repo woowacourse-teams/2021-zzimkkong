@@ -1,5 +1,6 @@
-package com.woowacourse.zzimkkong.exception;
+package com.woowacourse.zzimkkong.exception.member;
 
+import com.woowacourse.zzimkkong.exception.member.MemberException;
 import org.springframework.http.HttpStatus;
 
 public class NoSuchMemberException extends MemberException {

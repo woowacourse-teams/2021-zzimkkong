@@ -2,6 +2,7 @@ package com.woowacourse.zzimkkong.domain;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 
 @Entity
 public class Reservation {
@@ -32,6 +33,7 @@ public class Reservation {
     }
 
     protected Reservation(Builder builder) {
+        this.id = builder.id;
         this.startTime = builder.startTime;
         this.endTime = builder.endTime;
         this.password = builder.password;
@@ -41,16 +43,15 @@ public class Reservation {
     }
 
     public boolean hasConflictWith(final LocalDateTime startDateTime, final LocalDateTime endDateTime) {
-        if (contains(startDateTime, endDateTime)
+        return contains(startDateTime, endDateTime)
                 || intersects(startDateTime, endDateTime)
-                || equals(startDateTime, endDateTime)) {
-            return true;
-        }
-        return false;
+                || equals(startDateTime, endDateTime);
     }
 
     private boolean contains(final LocalDateTime startDateTime, final LocalDateTime endDateTime) {
-        return startDateTime.isAfter(startTime) && endDateTime.isBefore(endTime);
+        return (startDateTime.isAfter(startTime) && endDateTime.isBefore(endTime))
+                || (startDateTime.isEqual(startTime) && endDateTime.isBefore(endTime))
+                || (startDateTime.isAfter(startTime) && endDateTime.isEqual(endTime));
     }
 
     private boolean intersects(final LocalDateTime startDateTime, final LocalDateTime endDateTime) {
@@ -63,23 +64,29 @@ public class Reservation {
     }
 
     public static class Builder {
-
+        private Long id = null;
         private LocalDateTime startTime = null;
         private LocalDateTime endTime = null;
         private String password = null;
         private String userName = null;
         private String description = null;
         private Space space = null;
+
         public Builder() {
         }
 
+        public Builder id(Long inputId) {
+            id = inputId;
+            return this;
+        }
+
         public Builder startTime(LocalDateTime inputStartTime) {
-            startTime = inputStartTime;
+            startTime = inputStartTime.truncatedTo(ChronoUnit.SECONDS);
             return this;
         }
 
         public Builder endTime(LocalDateTime inputEndTime) {
-            endTime = inputEndTime;
+            endTime = inputEndTime.truncatedTo(ChronoUnit.SECONDS);
             return this;
         }
 

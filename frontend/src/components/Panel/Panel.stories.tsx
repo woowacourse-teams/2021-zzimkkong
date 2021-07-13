@@ -1,6 +1,6 @@
 import { Story } from '@storybook/react';
-import PALETTE from 'constants/palette';
 import { PropsWithChildren } from 'react';
+import PALETTE from 'constants/palette';
 import Panel, { Props } from './Panel';
 
 export default {

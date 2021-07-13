@@ -1,5 +1,5 @@
-import Layout from 'components/Layout/Layout';
 import styled from 'styled-components';
+import Layout from 'components/Layout/Layout';
 
 export const Header = styled.header`
   position: sticky;

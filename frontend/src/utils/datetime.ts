@@ -8,7 +8,7 @@ export const formatDate = (date: Date) => {
 };
 
 // Note: HH:MM 형태로 변환함
-export const formatTime = (time: Date) => {
+export const formatTime = (time: Date): string => {
   const hour = time.getHours();
   const minute = time.getMinutes();
 
