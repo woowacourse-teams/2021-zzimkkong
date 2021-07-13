@@ -1,6 +1,6 @@
 import { Story } from '@storybook/react';
-import { ReactComponent as LogoIcon } from 'assets/svg/logo.svg';
 import { ReactComponent as CalendarIcon } from 'assets/svg/calendar.svg';
+import { ReactComponent as LogoIcon } from 'assets/svg/logo.svg';
 import Input, { Props } from './Input';
 
 export default {

@@ -1,12 +1,12 @@
+import { ReactComponent as CalendarIcon } from 'assets/svg/calendar.svg';
+import Button from 'components/Button/Button';
 import Header from 'components/Header/Header';
 import Input from 'components/Input/Input';
 import Layout from 'components/Layout/Layout';
-import * as Styled from './UserReservation.styles';
-import { ReactComponent as CalendarIcon } from 'assets/svg/calendar.svg';
 import ReservationListItem from 'components/ReservationListItem/ReservationListItem';
-import Button from 'components/Button/Button';
 import useInput from 'hooks/useInput';
 import { formatDate, formatTime } from 'utils/datetime';
+import * as Styled from './UserReservation.styles';
 
 const UserReservation = (): JSX.Element => {
   const [name, onChangeName] = useInput('');
