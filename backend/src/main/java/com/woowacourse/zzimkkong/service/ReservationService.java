@@ -38,17 +38,11 @@ public class ReservationService {
     public ReservationCreateResponse saveReservation(Long mapId, ReservationCreateUpdateRequest reservationCreateUpdateRequest) {
         validateMapExistence(mapId);
 
-        LocalDateTime startDateTime = reservationCreateUpdateRequest.getStartDateTime();
-        LocalDateTime endDateTime = reservationCreateUpdateRequest.getEndDateTime();
-
-        validateTime(startDateTime, endDateTime);
+        validateTime(reservationCreateUpdateRequest);
 
         Space space = spaceRepository.findById(reservationCreateUpdateRequest.getSpaceId())
                 .orElseThrow(NoSuchSpaceException::new);
-        List<Reservation> reservations = getReservations(
-                Collections.singletonList(space.getId()),
-                startDateTime.toLocalDate());
-        validateAvailability(reservations, startDateTime, endDateTime);
+        validateAvailability(space, reservationCreateUpdateRequest);
 
         Reservation reservation = reservationRepository.save(
                 new Reservation.Builder()
@@ -105,29 +99,22 @@ public class ReservationService {
             final ReservationCreateUpdateRequest reservationCreateUpdateRequest) {
         validateMapExistence(mapId);
 
-        LocalDateTime startDateTime = reservationCreateUpdateRequest.getStartDateTime();
-        LocalDateTime endDateTime = reservationCreateUpdateRequest.getEndDateTime();
-
-        validateTime(startDateTime, endDateTime);
+        validateTime(reservationCreateUpdateRequest);
 
         Space space = spaceRepository.findById(reservationCreateUpdateRequest.getSpaceId())
                 .orElseThrow(NoSuchSpaceException::new);
-        List<Reservation> reservations = getReservations(
-                Collections.singletonList(space.getId()),
-                startDateTime.toLocalDate());
-
         Reservation reservation = reservationRepository.findById(reservationId)
                 .orElseThrow(NoSuchReservationException::new);
-        if (reservation.getSpace().equals(space)) {
-            reservations.remove(reservation);
-        }
-        validateAvailability(reservations, startDateTime, endDateTime);
+        validateAvailability(space, reservationCreateUpdateRequest, reservation);
 
         reservation.update(reservationCreateUpdateRequest, space);
         reservationRepository.save(reservation);
     }
 
-    private void validateTime(final LocalDateTime startDateTime, final LocalDateTime endDateTime) {
+    private void validateTime(final ReservationCreateUpdateRequest reservationCreateUpdateRequest) {
+        LocalDateTime startDateTime = reservationCreateUpdateRequest.getStartDateTime();
+        LocalDateTime endDateTime = reservationCreateUpdateRequest.getEndDateTime();
+
         if (startDateTime.isBefore(LocalDateTime.now())) {
             throw new ImpossibleStartTimeException();
         }
@@ -141,9 +128,35 @@ public class ReservationService {
         }
     }
 
-    private void validateAvailability(final List<Reservation> reservations, final LocalDateTime startDateTime, final LocalDateTime endDateTime) {
-        for (Reservation reservation : reservations) {
-            if (reservation.hasConflictWith(startDateTime, endDateTime)) {
+    private void validateAvailability(final Space space, final ReservationCreateUpdateRequest reservationCreateUpdateRequest) {
+        LocalDateTime startDateTime = reservationCreateUpdateRequest.getStartDateTime();
+        LocalDateTime endDateTime = reservationCreateUpdateRequest.getEndDateTime();
+
+        List<Reservation> reservationsOnDate = getReservations(
+                Collections.singletonList(space.getId()),
+                startDateTime.toLocalDate());
+
+        validateTimeConflicts(startDateTime, endDateTime, reservationsOnDate);
+    }
+
+    private void validateAvailability(final Space space, final ReservationCreateUpdateRequest reservationCreateUpdateRequest, final Reservation reservation) {
+        LocalDateTime startDateTime = reservationCreateUpdateRequest.getStartDateTime();
+        LocalDateTime endDateTime = reservationCreateUpdateRequest.getEndDateTime();
+
+        List<Reservation> reservationsOnDate = getReservations(
+                Collections.singletonList(space.getId()),
+                startDateTime.toLocalDate());
+
+        if (reservation.getSpace().equals(space)) {
+            reservationsOnDate.remove(reservation);
+        }
+
+        validateTimeConflicts(startDateTime, endDateTime, reservationsOnDate);
+    }
+
+    private void validateTimeConflicts(final LocalDateTime startDateTime, final LocalDateTime endDateTime, final List<Reservation> reservationsOnDate) {
+        for (Reservation existingReservation : reservationsOnDate) {
+            if (existingReservation.hasConflictWith(startDateTime, endDateTime)) {
                 throw new ImpossibleReservationTimeException();
             }
         }
