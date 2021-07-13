@@ -21,6 +21,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
 
 import static com.woowacourse.zzimkkong.DocumentUtils.*;
+import static com.woowacourse.zzimkkong.dto.Validator.DATE_FORMAT;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.restdocs.restassured3.RestAssuredRestDocumentation.document;
 
@@ -44,7 +45,7 @@ public class ReservationControllerTest extends AcceptanceTest {
     void setUp() {
         targetDate = LocalDate.now().plusDays(1L);
 
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern(DATE_FORMAT);
         targetDateString = targetDate.format(formatter);
 
         be = spaceRepository.findById(1L).orElseThrow(NoSuchSpaceException::new);

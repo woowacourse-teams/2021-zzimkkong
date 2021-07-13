@@ -38,7 +38,9 @@ public class ReservationService {
         this.reservationRepository = reservationRepository;
     }
 
-    public ReservationCreateResponse saveReservation(Long mapId, ReservationCreateUpdateRequest reservationCreateUpdateRequest) {
+    public ReservationCreateResponse saveReservation(
+            final Long mapId,
+            final ReservationCreateUpdateRequest reservationCreateUpdateRequest) {
         validateMapExistence(mapId);
 
         validateTime(reservationCreateUpdateRequest);
@@ -84,13 +86,19 @@ public class ReservationService {
         return ReservationFindAllResponse.of(reservations);
     }
 
-    public void deleteReservation(Long mapId, Long reservationId, ReservationPasswordAuthenticationRequest reservationPasswordAuthenticationRequest) {
+    public void deleteReservation(
+            final Long mapId,
+            final Long reservationId,
+            final ReservationPasswordAuthenticationRequest reservationPasswordAuthenticationRequest) {
         validateMapExistence(mapId);
         Reservation reservation = getReservation(reservationId, reservationPasswordAuthenticationRequest.getPassword());
         reservationRepository.delete(reservation);
     }
 
-    public ReservationResponse findReservation(final Long mapId, final Long reservationId, final ReservationPasswordAuthenticationRequest reservationPasswordAuthenticationRequest) {
+    public ReservationResponse findReservation(
+            final Long mapId,
+            final Long reservationId,
+            final ReservationPasswordAuthenticationRequest reservationPasswordAuthenticationRequest) {
         validateMapExistence(mapId);
         Reservation reservation = getReservation(reservationId, reservationPasswordAuthenticationRequest.getPassword());
         return ReservationResponse.of(reservation);
@@ -130,7 +138,9 @@ public class ReservationService {
         }
     }
 
-    private void validateAvailability(final Space space, final ReservationCreateUpdateRequest reservationCreateUpdateRequest) {
+    private void validateAvailability(
+            final Space space,
+            final ReservationCreateUpdateRequest reservationCreateUpdateRequest) {
         LocalDateTime startDateTime = reservationCreateUpdateRequest.getStartDateTime();
         LocalDateTime endDateTime = reservationCreateUpdateRequest.getEndDateTime();
 
@@ -141,7 +151,10 @@ public class ReservationService {
         validateTimeConflicts(startDateTime, endDateTime, reservationsOnDate);
     }
 
-    private void validateAvailability(final Space space, final ReservationCreateUpdateRequest reservationCreateUpdateRequest, final Reservation reservation) {
+    private void validateAvailability(
+            final Space space,
+            final ReservationCreateUpdateRequest reservationCreateUpdateRequest,
+            final Reservation reservation) {
         LocalDateTime startDateTime = reservationCreateUpdateRequest.getStartDateTime();
         LocalDateTime endDateTime = reservationCreateUpdateRequest.getEndDateTime();
 
@@ -156,7 +169,10 @@ public class ReservationService {
         validateTimeConflicts(startDateTime, endDateTime, reservationsOnDate);
     }
 
-    private void validateTimeConflicts(final LocalDateTime startDateTime, final LocalDateTime endDateTime, final List<Reservation> reservationsOnDate) {
+    private void validateTimeConflicts(
+            final LocalDateTime startDateTime,
+            final LocalDateTime endDateTime,
+            final List<Reservation> reservationsOnDate) {
         for (Reservation existingReservation : reservationsOnDate) {
             if (existingReservation.hasConflictWith(startDateTime, endDateTime)) {
                 throw new ImpossibleReservationTimeException();
