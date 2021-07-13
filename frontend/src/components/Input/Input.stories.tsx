@@ -1,4 +1,5 @@
 import { Story } from '@storybook/react';
+import { ReactComponent as CalendarIcon } from 'assets/svg/calendar.svg';
 import { ReactComponent as LogoIcon } from 'assets/svg/logo.svg';
 import Input, { Props } from './Input';
 
@@ -17,6 +18,12 @@ Default.args = {
 export const Icon = Template.bind({});
 Icon.args = {
   icon: <LogoIcon />,
+  label: '이메일',
+};
+
+export const Icon2 = Template.bind({});
+Icon2.args = {
+  icon: <CalendarIcon />,
   label: '이메일',
 };
 

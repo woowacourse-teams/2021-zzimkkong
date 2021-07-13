@@ -21,6 +21,7 @@ const statusCSS = {
 export const Label = styled.label`
   display: block;
   position: relative;
+  margin-top: 0.5rem;
   margin-bottom: 1.625rem;
 `;
 
@@ -36,30 +37,30 @@ export const LabelText = styled.span`
 
 export const Icon = styled.div`
   position: absolute;
-  display: inline-flex;
-  padding: 0 0.5rem;
+  display: flex;
+  width: 3rem;
   height: 100%;
   justify-content: center;
   align-items: center;
-
-  svg,
-  img {
-    height: 70%;
-  }
+  padding: 0.75rem 0.5rem;
 `;
 
 export const Input = styled.input<Props>`
   padding: 0.75rem;
   width: 100%;
   font-size: 1.25rem;
-  line-height: 0.875rem;
   border: 1px solid ${({ theme }) => theme.black[400]};
+  background: none;
   outline: none;
   ${({ icon }) => (icon ? 'padding-left: 3rem' : '')};
 
   &:focus {
     border-color: ${({ theme }) => theme.primary[400]};
     box-shadow: inset 0px 0px 0px 1px ${({ theme }) => theme.primary[400]};
+  }
+
+  &::-webkit-calendar-picker-indicator {
+    display: none;
   }
 `;
 

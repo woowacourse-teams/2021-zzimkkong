@@ -1,10 +1,10 @@
 package com.woowacourse.zzimkkong.controller;
 
-import com.woowacourse.zzimkkong.dto.ReservationDeleteRequest;
-import com.woowacourse.zzimkkong.dto.ReservationFindAllResponse;
-import com.woowacourse.zzimkkong.dto.ReservationFindResponse;
-import com.woowacourse.zzimkkong.dto.ReservationSaveRequest;
-import com.woowacourse.zzimkkong.dto.ReservationSaveResponse;
+import com.woowacourse.zzimkkong.dto.reservation.ReservationDeleteRequest;
+import com.woowacourse.zzimkkong.dto.reservation.ReservationFindAllResponse;
+import com.woowacourse.zzimkkong.dto.reservation.ReservationFindResponse;
+import com.woowacourse.zzimkkong.dto.reservation.ReservationSaveRequest;
+import com.woowacourse.zzimkkong.dto.reservation.ReservationSaveResponse;
 import com.woowacourse.zzimkkong.service.ReservationService;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
@@ -13,6 +13,8 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 import java.net.URI;
 import java.time.LocalDate;
+
+import static com.woowacourse.zzimkkong.dto.Validator.DATE_FORMAT;
 
 @RestController
 @RequestMapping("/api/maps/{mapId}")
@@ -38,7 +40,7 @@ public class ReservationController {
     public ResponseEntity<ReservationFindResponse> find(
             @PathVariable Long mapId,
             @PathVariable Long spaceId,
-            @RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate date) {
+            @RequestParam @DateTimeFormat(pattern = DATE_FORMAT) LocalDate date) {
         ReservationFindResponse reservationFindResponse = reservationService.findReservations(mapId, spaceId, date);
         return ResponseEntity.ok().body(reservationFindResponse);
     }
@@ -46,7 +48,7 @@ public class ReservationController {
     @GetMapping("/reservations")
     public ResponseEntity<ReservationFindAllResponse> findAll(
             @PathVariable Long mapId,
-            @RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate date) {
+            @RequestParam @DateTimeFormat(pattern = DATE_FORMAT) LocalDate date) {
         ReservationFindAllResponse reservationFindAllResponse = reservationService.findAllReservations(mapId, date);
         return ResponseEntity.ok().body(reservationFindAllResponse);
     }
