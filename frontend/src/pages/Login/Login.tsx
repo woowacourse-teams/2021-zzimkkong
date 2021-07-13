@@ -10,9 +10,9 @@ import Input from 'components/Input/Input';
 import Layout from 'components/Layout/Layout';
 import MESSAGE from 'constants/message';
 import PATH from 'constants/path';
-import { TOKEN_KEY } from 'constants/storage';
+import { LOCAL_STORAGE_KEY } from 'constants/storage';
 import useInput from 'hooks/useInput';
-import tokenState from 'state/tokenState';
+import accessTokenState from 'state/accessTokenState';
 import { LoginSuccess } from 'types/response';
 import { setLocalStorageItem } from 'utils/localStorage';
 import * as Styled from './Login.styles';
@@ -22,15 +22,15 @@ const Login = (): JSX.Element => {
   const [password, onChangePassword] = useInput('');
   const [loginMessage, setLoginMessage] = useState('');
 
-  const setToken = useSetRecoilState(tokenState);
+  const setAccessToken = useSetRecoilState(accessTokenState);
   const history = useHistory();
 
   const login = useMutation(postLogin, {
     onSuccess: (response: AxiosResponse<LoginSuccess>) => {
       const { accessToken } = response.data;
 
-      setLocalStorageItem({ key: TOKEN_KEY, item: accessToken });
-      setToken(accessToken);
+      setLocalStorageItem({ key: LOCAL_STORAGE_KEY.ACCESS_TOKEN, item: accessToken });
+      setAccessToken(accessToken);
 
       history.push(PATH.HOME);
     },

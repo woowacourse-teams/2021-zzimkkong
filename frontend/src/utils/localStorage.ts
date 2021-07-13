@@ -4,7 +4,7 @@ export const getLocalStorageItem = ({
 }: {
   key: string;
   defaultValue: unknown;
-}) => {
+}): unknown => {
   const storedData = localStorage.getItem(key);
 
   if (!storedData) {
@@ -32,7 +32,7 @@ const getCircularReplacer = () => {
   };
 };
 
-export const setLocalStorageItem = ({ key, item }: { key: string; item: unknown }) => {
+export const setLocalStorageItem = ({ key, item }: { key: string; item: unknown }): void => {
   const data = JSON.stringify(item, getCircularReplacer());
 
   if (data === undefined) {
