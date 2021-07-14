@@ -30,4 +30,8 @@ public class ReservationSpaceResponse {
 
         return new ReservationSpaceResponse(reservationsPerSpace.getKey().getId(), reservations);
     }
+
+    public Long getSpaceId() {
+        return spaceId;
+    }
 }
