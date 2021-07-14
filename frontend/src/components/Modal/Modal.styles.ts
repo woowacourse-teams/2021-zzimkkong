@@ -24,12 +24,15 @@ export const Modal = styled.div`
   background-color: ${({ theme }) => theme.white};
 `;
 
-export const CloseButton = styled.div`
+export const CloseButton = styled.button`
   position: absolute;
+  padding: 0.5rem;
   top: 0.5rem;
-  right: 1rem;
+  right: 1.5rem;
   width: 1rem;
   cursor: pointer;
+  border: none;
+  background: none;
 
   &:hover {
     opacity: 0.7;
