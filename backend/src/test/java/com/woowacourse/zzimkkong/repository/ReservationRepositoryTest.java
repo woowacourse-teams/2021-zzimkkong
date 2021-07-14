@@ -18,7 +18,7 @@ import static com.woowacourse.zzimkkong.service.ReservationService.ONE_DAY;
 import static org.assertj.core.api.Assertions.assertThat;
 
 class ReservationRepositoryTest extends RepositoryTest {
-    private final LocalDate targetDate = LocalDate.of(2021, 7, 9);
+    private final LocalDate targetDate = LocalDate.now().plusDays(1L);
     private Space be;
     private Space fe1;
 

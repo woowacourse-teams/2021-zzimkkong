@@ -71,7 +71,7 @@ public class DataLoader implements CommandLineRunner {
             spaceRepository.save(space);
         }
 
-        LocalDate targetDate = LocalDate.of(2021, 7, 9);
+        LocalDate targetDate = LocalDate.now().plusDays(1L);
 
         Reservation reservationBackEndTargetDate0To1 = new Reservation.Builder()
                 .startTime(targetDate.atStartOfDay())

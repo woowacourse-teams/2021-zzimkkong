@@ -1,13 +1,12 @@
 package com.woowacourse.zzimkkong.dto.reservation;
 
 import org.springframework.format.annotation.DateTimeFormat;
-
 import javax.validation.constraints.*;
 import java.time.LocalDateTime;
 
 import static com.woowacourse.zzimkkong.dto.Validator.*;
 
-public class ReservationSaveRequest {
+public class ReservationCreateUpdateRequest {
     @NotNull(message = EMPTY_MESSAGE)
     private Long spaceId;
 
@@ -31,10 +30,10 @@ public class ReservationSaveRequest {
     @Size(max = 100, message = DESCRIPTION_MESSAGE)
     private String description;
 
-    public ReservationSaveRequest() {
+    public ReservationCreateUpdateRequest() {
     }
 
-    public ReservationSaveRequest(
+    public ReservationCreateUpdateRequest(
             final Long spaceId,
             final LocalDateTime startDateTime,
             final LocalDateTime endDateTime,

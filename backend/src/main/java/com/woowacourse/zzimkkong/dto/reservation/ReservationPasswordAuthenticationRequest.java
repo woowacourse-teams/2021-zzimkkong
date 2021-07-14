@@ -5,15 +5,15 @@ import javax.validation.constraints.Pattern;
 
 import static com.woowacourse.zzimkkong.dto.Validator.*;
 
-public class ReservationDeleteRequest {
+public class ReservationPasswordAuthenticationRequest {
     @NotBlank(message = EMPTY_MESSAGE)
     @Pattern(regexp = RESERVATION_PASSWORD_FORMAT, message = MEMBER_PASSWORD_MESSAGE)
     private String password;
 
-    public ReservationDeleteRequest() {
+    public ReservationPasswordAuthenticationRequest() {
     }
 
-    public ReservationDeleteRequest(final String password) {
+    public ReservationPasswordAuthenticationRequest(final String password) {
         this.password = password;
     }
 
