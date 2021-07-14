@@ -16,7 +16,7 @@ import java.time.LocalDate;
 import java.util.List;
 
 @Component
-@Profile({"local", "test"})
+@Profile({"local"})
 public class DataLoader implements CommandLineRunner {
     private final MemberRepository memberRepository;
     private final MapRepository mapRepository;

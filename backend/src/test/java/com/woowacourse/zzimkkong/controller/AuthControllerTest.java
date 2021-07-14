@@ -11,16 +11,14 @@ import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 
+import static com.woowacourse.zzimkkong.CommonFixture.*;
 import static com.woowacourse.zzimkkong.controller.DocumentUtils.*;
+import static com.woowacourse.zzimkkong.controller.MemberControllerTest.saveMember;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.restdocs.restassured3.RestAssuredRestDocumentation.document;
 
 class AuthControllerTest extends AcceptanceTest {
-    public static final String EMAIL = "pobi@email.com";
-    public static final String PASSWORD = "test1234";
-    public static final String ORGANIZATION = "루터";
-
-    @DisplayName("유효한 정보의 로그인 요청이 오면 200 ok로 응답하며 토큰을 발급한다.")
+    @DisplayName("유효한 정보의 로그인 요청이 오면 토큰을 발급한다.")
     @Test
     void login() {
         // given
