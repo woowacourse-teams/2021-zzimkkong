@@ -1,17 +1,14 @@
 package com.woowacourse.zzimkkong.repository;
 
 import com.woowacourse.zzimkkong.domain.Reservation;
-import com.woowacourse.zzimkkong.domain.Space;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import java.time.LocalDateTime;
-import java.util.Collections;
 import java.util.List;
 
 import static com.woowacourse.zzimkkong.CommonFixture.*;
-import static com.woowacourse.zzimkkong.CommonFixture.FE1_ZERO_ONE;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 
@@ -60,7 +57,8 @@ class ReservationRepositoryTest extends RepositoryTest {
                 TOMORROW_START_TIME.plusHours(14));
 
         // then
-        assertThat(foundReservations).containsExactly(BE_AM_ZERO_ONE, BE_PM_ONE_TWO);
+        assertThat(foundReservations).usingRecursiveComparison()
+                .isEqualTo(List.of(BE_AM_ZERO_ONE, BE_PM_ONE_TWO));
     }
 
     @DisplayName("특정 시간에 부합하는 예약이 없으면 빈 리스트를 반환한다")
@@ -99,7 +97,8 @@ class ReservationRepositoryTest extends RepositoryTest {
                 TOMORROW_START_TIME.plusDays(1));
 
         // then
-        assertThat(foundReservations).containsExactly(BE_AM_ZERO_ONE, BE_PM_ONE_TWO, FE1_ZERO_ONE);
+        assertThat(foundReservations).usingRecursiveComparison()
+                .isEqualTo(List.of(BE_AM_ZERO_ONE, BE_PM_ONE_TWO, FE1_ZERO_ONE));
     }
 
     @Test

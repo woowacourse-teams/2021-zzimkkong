@@ -17,6 +17,17 @@ import static org.springframework.restdocs.restassured3.RestAssuredRestDocumenta
 class MemberControllerTest extends AcceptanceTest {
     private static final String INCORRECT_EMAIL = "pobi@naver.com";
 
+    protected static ExtractableResponse<Response> saveMember(final MemberSaveRequest memberSaveRequest) {
+        return RestAssured
+                .given(getRequestSpecification()).log().all()
+                .accept("application/json")
+                .filter(document("member/post", getRequestPreprocessor(), getResponsePreprocessor()))
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .body(memberSaveRequest)
+                .when().post("/api/members")
+                .then().log().all().extract();
+    }
+
     @DisplayName("정상적인 회원가입 입력이 들어오면 회원 정보를 저장한다.")
     @Test
     void join() {
@@ -38,17 +49,6 @@ class MemberControllerTest extends AcceptanceTest {
 
         //then
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
-    }
-
-    protected static ExtractableResponse<Response> saveMember(final MemberSaveRequest memberSaveRequest) {
-        return RestAssured
-                .given(getRequestSpecification()).log().all()
-                .accept("application/json")
-                .filter(document("member/post", getRequestPreprocessor(), getResponsePreprocessor()))
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(memberSaveRequest)
-                .when().post("/api/members")
-                .then().log().all().extract();
     }
 
     private ExtractableResponse<Response> validateDuplicateEmail(String email) {

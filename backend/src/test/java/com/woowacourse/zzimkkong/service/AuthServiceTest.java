@@ -11,16 +11,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.Optional;
 
+import static com.woowacourse.zzimkkong.CommonFixture.*;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.BDDMockito.given;
 
 class AuthServiceTest extends ServiceTest {
-    public static final String EMAIL = "pobi@email.com";
-    public static final String PASSWORD = "test1234";
-    public static final String ORGANIZATION = "루터";
-    public static final Member MEMBER = new Member(EMAIL, PASSWORD, ORGANIZATION);
 
     @Autowired
     private AuthService authService;
@@ -31,7 +28,7 @@ class AuthServiceTest extends ServiceTest {
         //given
         LoginRequest loginRequest = new LoginRequest(EMAIL, PASSWORD);
         given(members.findByEmail(anyString()))
-                .willReturn(Optional.of(MEMBER));
+                .willReturn(Optional.of(POBI));
 
         //when
         TokenResponse tokenResponse = authService.login(loginRequest);
@@ -64,7 +61,7 @@ class AuthServiceTest extends ServiceTest {
 
         //when
         given(members.findByEmail(anyString()))
-                .willReturn(Optional.of(new Member(EMAIL, "real_password", ORGANIZATION)));
+                .willReturn(Optional.of(new Member(EMAIL, "wrong_password", ORGANIZATION)));
 
         //then
         assertThatThrownBy(() -> authService.login(loginRequest))

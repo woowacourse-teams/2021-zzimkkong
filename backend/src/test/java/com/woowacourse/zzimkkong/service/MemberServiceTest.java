@@ -8,16 +8,13 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import static com.woowacourse.zzimkkong.CommonFixture.*;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 
 class MemberServiceTest extends ServiceTest {
-    public static final String EMAIL = "pobi@email.com";
-    public static final String PASSWORD = "test1234";
-    public static final String ORGANIZATION = "루터";
-
     @Autowired
     private MemberService memberService;
 

@@ -1,12 +1,9 @@
 package com.woowacourse.zzimkkong.service;
 
-import com.woowacourse.zzimkkong.domain.Map;
-import com.woowacourse.zzimkkong.domain.Member;
 import com.woowacourse.zzimkkong.domain.Reservation;
 import com.woowacourse.zzimkkong.domain.Space;
 import com.woowacourse.zzimkkong.dto.*;
 import com.woowacourse.zzimkkong.exception.*;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -14,12 +11,12 @@ import org.junit.jupiter.params.provider.CsvSource;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
+import static com.woowacourse.zzimkkong.CommonFixture.*;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
@@ -27,44 +24,37 @@ import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.BDDMockito.given;
 
 class ReservationServiceTest extends ServiceTest {
-    public static final Member MEMBER = new Member("Sally@gmail.com", "1234", "Sally");
-    public static final Map MAP = new Map("롯데몰", MEMBER);
-    public static final Space RESTAURANT = new Space("음식점", MAP);
-    public static final Space CAFE = new Space("카페", MAP);
-
-    protected ReservationSaveRequest reservationSaveRequest;
-    protected Reservation reservation;
+    public static final ReservationDeleteRequest RESERVATION_DELETE_REQUEST = new ReservationDeleteRequest("1234");
 
     @Autowired
     private ReservationService reservationService;
 
-    @BeforeEach
-    void setUp() {
-        reservationSaveRequest = new ReservationSaveRequest(
-                1L, //TODO: 나중에 인수테스트 전부 생기면 갖다 쓰기
-                LocalDateTime.now().plusDays(2).minusHours(2),
-                LocalDateTime.now().plusDays(2).minusHours(1),
-                "1234",
-                "bada",
-                "회의"
-        );
-        reservation = makeReservation(
-                reservationSaveRequest.getStartDateTime(),
-                reservationSaveRequest.getEndDateTime(),
-                RESTAURANT);
-    }
+    private ReservationSaveRequest reservationSaveRequest = new ReservationSaveRequest(
+            1L, //TODO: 나중에 인수테스트 전부 생기면 갖다 쓰기
+            TOMORROW_START_TIME.plusHours(3),
+            TOMORROW_START_TIME.plusHours(4),
+            "1234",
+            "bada",
+            "회의"
+    );
+
+    private final Reservation reservation = makeReservation(
+            reservationSaveRequest.getStartDateTime(),
+            reservationSaveRequest.getEndDateTime(),
+            BE);
 
     @Test
     @DisplayName("예약 생성 요청 시, mapId와 요청이 들어온다면 예약을 생성한다.")
     void save() {
-        //given, when
+        //given
         given(maps.existsById(anyLong()))
                 .willReturn(true);
         given(spaces.findById(anyLong()))
-                .willReturn(Optional.of(RESTAURANT));
+                .willReturn(Optional.of(BE));
         given(reservations.save(any(Reservation.class)))
                 .willReturn(reservation);
 
+        //when
         ReservationSaveResponse reservationSaveResponse = reservationService.saveReservation(1L, reservationSaveRequest);
 
         //then
@@ -78,7 +68,7 @@ class ReservationServiceTest extends ServiceTest {
         given(maps.existsById(2L))
                 .willReturn(false);
         given(spaces.findById(anyLong()))
-                .willReturn(Optional.of(RESTAURANT));
+                .willReturn(Optional.of(BE));
         given(reservations.save(any(Reservation.class)))
                 .willReturn(reservation);
 
@@ -149,11 +139,10 @@ class ReservationServiceTest extends ServiceTest {
     @DisplayName("예약 생성 요청 시, 시작 시간과 종료 시간이 같다면 예외가 발생한다.")
     void saveStartTimeEqualsEndTime() {
         //given
-        LocalDateTime startDateTime = LocalDateTime.now().plusHours(3);
         reservationSaveRequest = new ReservationSaveRequest(
                 1L,
-                startDateTime,
-                startDateTime,
+                TOMORROW_START_TIME,
+                TOMORROW_START_TIME,
                 "1234",
                 "bada",
                 "회의"
@@ -173,8 +162,8 @@ class ReservationServiceTest extends ServiceTest {
         //given
         reservationSaveRequest = new ReservationSaveRequest(
                 1L,
-                LocalDateTime.now().plusDays(2),
-                LocalDateTime.now().plusDays(3),
+                TOMORROW_START_TIME,
+                TOMORROW_START_TIME.plusDays(1),
                 "1234",
                 "bada",
                 "회의"
@@ -207,7 +196,7 @@ class ReservationServiceTest extends ServiceTest {
                         .password(reservationSaveRequest.getPassword())
                         .userName(reservationSaveRequest.getName())
                         .description(reservationSaveRequest.getDescription())
-                        .space(RESTAURANT)
+                        .space(BE)
                         .build()));
 
         //then
@@ -231,11 +220,11 @@ class ReservationServiceTest extends ServiceTest {
                         makeReservation(
                                 reservationSaveRequest.getStartDateTime().minusMinutes(conferenceTime),
                                 reservationSaveRequest.getEndDateTime().minusMinutes(conferenceTime),
-                                RESTAURANT),
+                                BE),
                         makeReservation(
                                 reservationSaveRequest.getStartDateTime().plusMinutes(conferenceTime),
                                 reservationSaveRequest.getEndDateTime().plusMinutes(conferenceTime),
-                                RESTAURANT)));
+                                BE)));
 
         //then
         ReservationSaveResponse reservationSaveResponse = reservationService.saveReservation(1L, reservationSaveRequest);
@@ -251,11 +240,11 @@ class ReservationServiceTest extends ServiceTest {
                 makeReservation(
                         reservationSaveRequest.getStartDateTime().minusMinutes(conferenceTime),
                         reservationSaveRequest.getEndDateTime().minusMinutes(conferenceTime),
-                        RESTAURANT),
+                        BE),
                 makeReservation(
                         reservationSaveRequest.getStartDateTime().plusMinutes(conferenceTime),
                         reservationSaveRequest.getEndDateTime().plusMinutes(conferenceTime),
-                        RESTAURANT));
+                        BE));
 
         //when
         given(maps.existsById(anyLong()))
@@ -272,7 +261,7 @@ class ReservationServiceTest extends ServiceTest {
 
         //then
         ReservationFindResponse reservationFindResponse = ReservationFindResponse.of(reservations);
-        assertThat(reservationService.findReservations(1L, 1L, LocalDate.now().plusDays(2)))
+        assertThat(reservationService.findReservations(1L, 1L, TOMORROW))
                 .usingRecursiveComparison()
                 .isEqualTo(reservationFindResponse);
     }
@@ -286,7 +275,7 @@ class ReservationServiceTest extends ServiceTest {
         given(spaces.existsById(anyLong()))
                 .willReturn(false);
         //then
-        assertThatThrownBy(() -> reservationService.findReservations(1L, 1L, LocalDate.now().plusDays(2)))
+        assertThatThrownBy(() -> reservationService.findReservations(1L, 1L, TOMORROW))
                 .isInstanceOf(NoSuchSpaceException.class);
     }
 
@@ -308,10 +297,10 @@ class ReservationServiceTest extends ServiceTest {
 
         //then
         ReservationFindResponse reservationFindResponse = ReservationFindResponse.of(Collections.emptyList());
-        assertThat(reservationService.findReservations(1L, 1L, LocalDate.now().plusDays(2)))
+        assertThat(reservationService.findReservations(1L, 1L, TOMORROW))
                 .usingRecursiveComparison()
                 .isEqualTo(reservationFindResponse);
-        assertThat(reservationService.findAllReservations(1L, LocalDate.now().plusDays(2)))
+        assertThat(reservationService.findAllReservations(1L, TOMORROW))
                 .usingRecursiveComparison()
                 .isEqualTo(ReservationFindAllResponse.of(Collections.emptyList()));
     }
@@ -322,40 +311,40 @@ class ReservationServiceTest extends ServiceTest {
     void findAllReservation() {
         //given
         int conferenceTime = 30;
-        List<Reservation> reservations = List.of(
+        List<Reservation> foundReservations = List.of(
                 makeReservation(
                         reservationSaveRequest.getStartDateTime().minusMinutes(conferenceTime),
                         reservationSaveRequest.getEndDateTime().minusMinutes(conferenceTime),
-                        RESTAURANT),
+                        BE),
                 makeReservation(
                         reservationSaveRequest.getStartDateTime().plusMinutes(conferenceTime),
                         reservationSaveRequest.getEndDateTime().plusMinutes(conferenceTime),
-                        RESTAURANT),
+                        BE),
                 makeReservation(
                         reservationSaveRequest.getStartDateTime().minusMinutes(conferenceTime),
                         reservationSaveRequest.getEndDateTime().minusMinutes(conferenceTime),
-                        CAFE),
+                        FE1),
                 makeReservation(
                         reservationSaveRequest.getStartDateTime().plusMinutes(conferenceTime),
                         reservationSaveRequest.getEndDateTime().plusMinutes(conferenceTime),
-                        CAFE));
+                        FE1));
 
         //when
         given(maps.existsById(anyLong()))
                 .willReturn(true);
         given(spaces.findAllByMapId(anyLong()))
-                .willReturn(List.of(RESTAURANT, CAFE));
-        given(this.reservations.findAllBySpaceIdInAndStartTimeIsBetweenAndEndTimeIsBetween(
+                .willReturn(List.of(BE, FE1));
+        given(reservations.findAllBySpaceIdInAndStartTimeIsBetweenAndEndTimeIsBetween(
                 anyList(),
                 any(LocalDateTime.class),
                 any(LocalDateTime.class),
                 any(LocalDateTime.class),
                 any(LocalDateTime.class)))
-                .willReturn(reservations);
+                .willReturn(foundReservations);
 
         //then
-        ReservationFindAllResponse reservationFindAllResponse = ReservationFindAllResponse.of(reservations);
-        assertThat(reservationService.findAllReservations(1L, LocalDate.now().plusDays(2)))
+        ReservationFindAllResponse reservationFindAllResponse = ReservationFindAllResponse.of(foundReservations);
+        assertThat(reservationService.findAllReservations(1L, TOMORROW))
                 .usingRecursiveComparison()
                 .isEqualTo(reservationFindAllResponse);
     }
@@ -364,36 +353,30 @@ class ReservationServiceTest extends ServiceTest {
     @Test
     @DisplayName("예약 삭제 요청이 옳다면 삭제한다.")
     void deleteReservation() {
-        //given
-        ReservationDeleteRequest reservationDeleteRequest = new ReservationDeleteRequest("1234");
-
-        //when
+        //given, when
         given(maps.existsById(anyLong()))
                 .willReturn(true);
         given(reservations.findById(anyLong()))
                 .willReturn(Optional.of(makeReservation(
-                        LocalDateTime.now().plusDays(2),
-                        LocalDateTime.now().plusDays(2).plusHours(2),
-                        RESTAURANT)));
+                        TOMORROW_START_TIME,
+                        TOMORROW_START_TIME.plusHours(2),
+                        BE)));
 
         //then
-        assertDoesNotThrow(() -> reservationService.deleteReservation(1L, 1L, reservationDeleteRequest));
+        assertDoesNotThrow(() -> reservationService.deleteReservation(1L, 1L, RESERVATION_DELETE_REQUEST));
     }
 
     @Test
     @DisplayName("예약 삭제 요청 시, 예약이 존재하지 않는다면 오류가 발생한다.")
     void deleteReservationException() {
-        //given
-        ReservationDeleteRequest reservationDeleteRequest = new ReservationDeleteRequest("1234");
-
-        //when
+        //given, when
         given(maps.existsById(anyLong()))
                 .willReturn(true);
         given(reservations.findById(anyLong()))
                 .willReturn(Optional.empty());
 
         //then
-        assertThatThrownBy(() -> reservationService.deleteReservation(1L, 1L, reservationDeleteRequest))
+        assertThatThrownBy(() -> reservationService.deleteReservation(1L, 1L, RESERVATION_DELETE_REQUEST))
                 .isInstanceOf(NoSuchReservationException.class);
     }
 
@@ -408,9 +391,9 @@ class ReservationServiceTest extends ServiceTest {
                 .willReturn(true);
         given(reservations.findById(anyLong()))
                 .willReturn(Optional.of(makeReservation(
-                        LocalDateTime.now().plusDays(2),
-                        LocalDateTime.now().plusDays(2).plusHours(2),
-                        RESTAURANT)));
+                        TOMORROW_START_TIME.plusHours(3),
+                        TOMORROW_START_TIME.plusHours(4),
+                        BE)));
 
         //then
         assertThatThrownBy(() -> reservationService.deleteReservation(1L, 1L, reservationDeleteRequest))
@@ -433,7 +416,7 @@ class ReservationServiceTest extends ServiceTest {
         given(maps.existsById(anyLong()))
                 .willReturn(true);
         given(spaces.findById(anyLong()))
-                .willReturn(Optional.of(RESTAURANT));
+                .willReturn(Optional.of(BE));
         given(reservations.save(any(Reservation.class)))
                 .willReturn(reservation);
     }

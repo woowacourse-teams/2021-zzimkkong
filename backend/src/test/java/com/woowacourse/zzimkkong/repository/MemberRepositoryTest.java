@@ -4,7 +4,6 @@ import com.woowacourse.zzimkkong.domain.Member;
 import com.woowacourse.zzimkkong.exception.NoSuchMemberException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 
 import static com.woowacourse.zzimkkong.CommonFixture.EMAIL;

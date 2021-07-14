@@ -20,6 +20,6 @@ class MemberTest {
     void checkWrongPassword() {
         Member member = new Member(EMAIL, PASSWORD, ORGANIZATION);
 
-        assertThat(member.checkPassword(PASSWORD+"%")).isFalse();
+        assertThat(member.checkPassword(PASSWORD + "%")).isFalse();
     }
 }
