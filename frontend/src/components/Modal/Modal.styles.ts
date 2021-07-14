@@ -32,13 +32,12 @@ export const CloseButton = styled.div`
 `;
 
 export const Inner = styled.div`
-  padding: 1rem;
+  padding: 0.5rem 1rem;
 `;
 
 export const Header = styled.h1`
   font-weight: 700;
-  padding: 1.125rem;
-  border-bottom: 1px solid ${({ theme }) => theme.gray[400]};
+  padding: 1rem;
 `;
 
 export const Content = styled.div``;
