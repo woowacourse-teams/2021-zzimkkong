@@ -4,18 +4,18 @@ import * as Styled from './Modal.styles';
 
 export interface Props {
   open?: boolean;
-  dimmed?: boolean;
+  isClosableDimmer?: boolean;
   showCloseButton?: boolean;
 }
 
 const Modal = ({
   open,
-  dimmed,
+  isClosableDimmer,
   showCloseButton,
   children,
 }: PropsWithChildren<Props>): JSX.Element => {
   const handleDimmedClick: MouseEventHandler<HTMLDivElement> = ({ target, currentTarget }) => {
-    if (dimmed && target === currentTarget) {
+    if (isClosableDimmer && target === currentTarget) {
       open = false;
     }
   };
