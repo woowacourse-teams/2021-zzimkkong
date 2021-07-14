@@ -15,17 +15,17 @@ import java.util.Map;
 @Service
 @Transactional
 public class AuthService {
-    private final MemberRepository memberRepository;
+    private final MemberRepository members;
     private final JwtUtils jwtUtils;
 
     public AuthService(final MemberRepository memberRepository, final JwtUtils jwtUtils) {
-        this.memberRepository = memberRepository;
+        this.members = memberRepository;
         this.jwtUtils = jwtUtils;
     }
 
     @Transactional(readOnly = true)
     public TokenResponse login(LoginRequest loginRequest) {
-        Member findMember = memberRepository.findByEmail(loginRequest.getEmail())
+        Member findMember = members.findByEmail(loginRequest.getEmail())
                 .orElseThrow(NoSuchMemberException::new);
 
         validatePassword(findMember, loginRequest.getPassword());

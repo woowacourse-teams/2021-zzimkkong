@@ -32,26 +32,26 @@ public class ReservationControllerTest extends AcceptanceTest {
     private static final String SALLY_DESCRIPTION = "집 가고 싶은 회의";
 
     @Autowired
-    private MemberRepository memberRepository;
+    private MemberRepository members;
 
     @Autowired
-    private SpaceRepository spaceRepository;
+    private SpaceRepository spaces;
 
     @Autowired
-    private MapRepository mapRepository;
+    private MapRepository maps;
 
     @Autowired
-    private ReservationRepository reservationRepository;
+    private ReservationRepository reservations;
 
     private ReservationSaveRequest reservationSaveRequest;
     private Reservation savedReservation;
 
     @BeforeEach
     void setUp() {
-        memberRepository.save(POBI); //TODO: 관련 테스트메서드 생성 시 repository 안쓰도록 수정 - 샐리
-        mapRepository.save(LUTHER);
-        spaceRepository.save(BE);
-        spaceRepository.save(FE1);
+        members.save(POBI); //TODO: 관련 테스트메서드 생성 시 repository 안쓰도록 수정 - 샐리
+        maps.save(LUTHER);
+        spaces.save(BE);
+        spaces.save(FE1);
 
         reservationSaveRequest = new ReservationSaveRequest(
                 BE.getId(),
@@ -151,10 +151,10 @@ public class ReservationControllerTest extends AcceptanceTest {
     }
 
     private ExtractableResponse<Response> saveExampleReservations() {
-        reservationRepository.save(BE_AM_ZERO_ONE);
-        reservationRepository.save(BE_PM_ONE_TWO);
-        reservationRepository.save(BE_NEXT_DAY_PM_SIX_TWELVE);
-        reservationRepository.save(FE1_ZERO_ONE);
+        reservations.save(BE_AM_ZERO_ONE);
+        reservations.save(BE_PM_ONE_TWO);
+        reservations.save(BE_NEXT_DAY_PM_SIX_TWELVE);
+        reservations.save(FE1_ZERO_ONE);
 
         String api = "/api/maps/" + LUTHER.getId() + "/reservations";
         return saveReservation(api, reservationSaveRequest);

@@ -23,27 +23,27 @@ import java.util.stream.Collectors;
 public class ReservationService {
     public static final long ONE_DAY = 1L;
 
-    private final MapRepository mapRepository;
-    private final SpaceRepository spaceRepository;
-    private final ReservationRepository reservationRepository;
+    private final MapRepository maps;
+    private final SpaceRepository spaces;
+    private final ReservationRepository reservations;
 
     public ReservationService(
             final MapRepository mapRepository,
             final SpaceRepository spaceRepository,
             final ReservationRepository reservationRepository) {
-        this.mapRepository = mapRepository;
-        this.spaceRepository = spaceRepository;
-        this.reservationRepository = reservationRepository;
+        this.maps = mapRepository;
+        this.spaces = spaceRepository;
+        this.reservations = reservationRepository;
     }
 
     public ReservationSaveResponse saveReservation(Long mapId, ReservationSaveRequest reservationSaveRequest) {
         validateMapExistence(mapId);
 
-        Space space = spaceRepository.findById(reservationSaveRequest.getSpaceId())
+        Space space = spaces.findById(reservationSaveRequest.getSpaceId())
                 .orElseThrow(NoSuchSpaceException::new);
         validateReservation(reservationSaveRequest, space);
 
-        Reservation reservation = reservationRepository.save(
+        Reservation reservation = reservations.save(
                 new Reservation.Builder()
                         .startTime(reservationSaveRequest.getStartDateTime())
                         .endTime(reservationSaveRequest.getEndDateTime())
@@ -103,7 +103,7 @@ public class ReservationService {
     public ReservationFindAllResponse findAllReservations(final Long mapId, final LocalDate date) {
         validateMapExistence(mapId);
 
-        List<Long> spaceIds = spaceRepository.findAllByMapId(mapId)
+        List<Long> spaceIds = spaces.findAllByMapId(mapId)
                 .stream()
                 .map(Space::getId)
                 .collect(Collectors.toList());
@@ -115,21 +115,21 @@ public class ReservationService {
 
     public void deleteReservation(Long mapId, Long reservationId, ReservationDeleteRequest reservationDeleteRequest) {
         validateMapExistence(mapId);
-        Reservation reservation = reservationRepository
+        Reservation reservation = reservations
                 .findById(reservationId)
                 .orElseThrow(NoSuchReservationException::new);
 
         if (reservation.isWrongPassword(reservationDeleteRequest.getPassword())) {
             throw new ReservationPasswordException();
         }
-        reservationRepository.delete(reservation);
+        reservations.delete(reservation);
     }
 
     private List<Reservation> getReservations(final Collection<Long> spaceIds, final LocalDate date) {
         LocalDateTime minimumDateTime = date.atStartOfDay();
         LocalDateTime maximumDateTime = minimumDateTime.plusDays(ONE_DAY);
 
-        return reservationRepository.findAllBySpaceIdInAndStartTimeIsBetweenAndEndTimeIsBetween(
+        return reservations.findAllBySpaceIdInAndStartTimeIsBetweenAndEndTimeIsBetween(
                 spaceIds,
                 minimumDateTime,
                 maximumDateTime,
@@ -139,13 +139,13 @@ public class ReservationService {
     }
 
     private void validateMapExistence(final Long mapId) {
-        if (!mapRepository.existsById(mapId)) {
+        if (!maps.existsById(mapId)) {
             throw new NoSuchMapException();
         }
     }
 
     private void validateSpaceExistence(final Long spaceId) {
-        if (!spaceRepository.existsById(spaceId)) {
+        if (!spaces.existsById(spaceId)) {
             throw new NoSuchSpaceException();
         }
     }

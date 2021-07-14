@@ -58,11 +58,11 @@ class ReservationServiceTest extends ServiceTest {
     @DisplayName("예약 생성 요청 시, mapId와 요청이 들어온다면 예약을 생성한다.")
     void save() {
         //given, when
-        given(mapRepository.existsById(anyLong()))
+        given(maps.existsById(anyLong()))
                 .willReturn(true);
-        given(spaceRepository.findById(anyLong()))
+        given(spaces.findById(anyLong()))
                 .willReturn(Optional.of(RESTAURANT));
-        given(reservationRepository.save(any(Reservation.class)))
+        given(reservations.save(any(Reservation.class)))
                 .willReturn(reservation);
 
         ReservationSaveResponse reservationSaveResponse = reservationService.saveReservation(1L, reservationSaveRequest);
@@ -75,11 +75,11 @@ class ReservationServiceTest extends ServiceTest {
     @DisplayName("예약 생성 요청 시, mapId에 따른 map이 존재하지 않는다면 예외가 발생한다.")
     void saveNotExistMapException() {
         //given, when
-        given(mapRepository.existsById(2L))
+        given(maps.existsById(2L))
                 .willReturn(false);
-        given(spaceRepository.findById(anyLong()))
+        given(spaces.findById(anyLong()))
                 .willReturn(Optional.of(RESTAURANT));
-        given(reservationRepository.save(any(Reservation.class)))
+        given(reservations.save(any(Reservation.class)))
                 .willReturn(reservation);
 
         //then
@@ -91,11 +91,11 @@ class ReservationServiceTest extends ServiceTest {
     @DisplayName("예약 생성 요청 시, spaceId에 따른 space가 존재하지 않는다면 예외가 발생한다.")
     void saveNotExistSpaceException() {
         //given, when
-        given(mapRepository.existsById(anyLong()))
+        given(maps.existsById(anyLong()))
                 .willReturn(true);
-        given(spaceRepository.findById(anyLong()))
+        given(spaces.findById(anyLong()))
                 .willReturn(Optional.empty());
-        given(reservationRepository.save(any(Reservation.class)))
+        given(reservations.save(any(Reservation.class)))
                 .willReturn(reservation);
 
         //then
@@ -194,7 +194,7 @@ class ReservationServiceTest extends ServiceTest {
     void saveAvailabilityException(int startMinute, int endMinute) {
         //given, when
         saveMock();
-        given(reservationRepository.findAllBySpaceIdInAndStartTimeIsBetweenAndEndTimeIsBetween(
+        given(reservations.findAllBySpaceIdInAndStartTimeIsBetweenAndEndTimeIsBetween(
                 any(),
                 any(LocalDateTime.class),
                 any(LocalDateTime.class),
@@ -221,7 +221,7 @@ class ReservationServiceTest extends ServiceTest {
     void saveSameThresholdTime(int conferenceTime) {
         //given, when
         saveMock();
-        given(reservationRepository.findAllBySpaceIdInAndStartTimeIsBetweenAndEndTimeIsBetween(
+        given(reservations.findAllBySpaceIdInAndStartTimeIsBetweenAndEndTimeIsBetween(
                 anyList(),
                 any(LocalDateTime.class),
                 any(LocalDateTime.class),
@@ -258,11 +258,11 @@ class ReservationServiceTest extends ServiceTest {
                         RESTAURANT));
 
         //when
-        given(mapRepository.existsById(anyLong()))
+        given(maps.existsById(anyLong()))
                 .willReturn(true);
-        given(spaceRepository.existsById(anyLong()))
+        given(spaces.existsById(anyLong()))
                 .willReturn(true);
-        given(reservationRepository.findAllBySpaceIdInAndStartTimeIsBetweenAndEndTimeIsBetween(
+        given(this.reservations.findAllBySpaceIdInAndStartTimeIsBetweenAndEndTimeIsBetween(
                 anyList(),
                 any(LocalDateTime.class),
                 any(LocalDateTime.class),
@@ -281,9 +281,9 @@ class ReservationServiceTest extends ServiceTest {
     @DisplayName("특정 공간 예약 조회 요청 시, 해당하는 공간이 없으면 오류가 발생한다.")
     void findReservationsNotExistSpace() {
         //given, when
-        given(mapRepository.existsById(anyLong()))
+        given(maps.existsById(anyLong()))
                 .willReturn(true);
-        given(spaceRepository.existsById(anyLong()))
+        given(spaces.existsById(anyLong()))
                 .willReturn(false);
         //then
         assertThatThrownBy(() -> reservationService.findReservations(1L, 1L, LocalDate.now().plusDays(2)))
@@ -294,11 +294,11 @@ class ReservationServiceTest extends ServiceTest {
     @DisplayName("전체 예약이나 특정 공간 예약 조회 요청 시, 해당하는 예약이 없으면 빈 정보가 조회된다.")
     void findEmptyReservations() {
         //given, when
-        given(mapRepository.existsById(anyLong()))
+        given(maps.existsById(anyLong()))
                 .willReturn(true);
-        given(spaceRepository.existsById(anyLong()))
+        given(spaces.existsById(anyLong()))
                 .willReturn(true);
-        given(reservationRepository.findAllBySpaceIdInAndStartTimeIsBetweenAndEndTimeIsBetween(
+        given(reservations.findAllBySpaceIdInAndStartTimeIsBetweenAndEndTimeIsBetween(
                 anyList(),
                 any(LocalDateTime.class),
                 any(LocalDateTime.class),
@@ -341,11 +341,11 @@ class ReservationServiceTest extends ServiceTest {
                         CAFE));
 
         //when
-        given(mapRepository.existsById(anyLong()))
+        given(maps.existsById(anyLong()))
                 .willReturn(true);
-        given(spaceRepository.findAllByMapId(anyLong()))
+        given(spaces.findAllByMapId(anyLong()))
                 .willReturn(List.of(RESTAURANT, CAFE));
-        given(reservationRepository.findAllBySpaceIdInAndStartTimeIsBetweenAndEndTimeIsBetween(
+        given(this.reservations.findAllBySpaceIdInAndStartTimeIsBetweenAndEndTimeIsBetween(
                 anyList(),
                 any(LocalDateTime.class),
                 any(LocalDateTime.class),
@@ -368,9 +368,9 @@ class ReservationServiceTest extends ServiceTest {
         ReservationDeleteRequest reservationDeleteRequest = new ReservationDeleteRequest("1234");
 
         //when
-        given(mapRepository.existsById(anyLong()))
+        given(maps.existsById(anyLong()))
                 .willReturn(true);
-        given(reservationRepository.findById(anyLong()))
+        given(reservations.findById(anyLong()))
                 .willReturn(Optional.of(makeReservation(
                         LocalDateTime.now().plusDays(2),
                         LocalDateTime.now().plusDays(2).plusHours(2),
@@ -387,9 +387,9 @@ class ReservationServiceTest extends ServiceTest {
         ReservationDeleteRequest reservationDeleteRequest = new ReservationDeleteRequest("1234");
 
         //when
-        given(mapRepository.existsById(anyLong()))
+        given(maps.existsById(anyLong()))
                 .willReturn(true);
-        given(reservationRepository.findById(anyLong()))
+        given(reservations.findById(anyLong()))
                 .willReturn(Optional.empty());
 
         //then
@@ -404,9 +404,9 @@ class ReservationServiceTest extends ServiceTest {
         ReservationDeleteRequest reservationDeleteRequest = new ReservationDeleteRequest("1233");
 
         //when
-        given(mapRepository.existsById(anyLong()))
+        given(maps.existsById(anyLong()))
                 .willReturn(true);
-        given(reservationRepository.findById(anyLong()))
+        given(reservations.findById(anyLong()))
                 .willReturn(Optional.of(makeReservation(
                         LocalDateTime.now().plusDays(2),
                         LocalDateTime.now().plusDays(2).plusHours(2),
@@ -430,11 +430,11 @@ class ReservationServiceTest extends ServiceTest {
     }
 
     private void saveMock() {
-        given(mapRepository.existsById(anyLong()))
+        given(maps.existsById(anyLong()))
                 .willReturn(true);
-        given(spaceRepository.findById(anyLong()))
+        given(spaces.findById(anyLong()))
                 .willReturn(Optional.of(RESTAURANT));
-        given(reservationRepository.save(any(Reservation.class)))
+        given(reservations.save(any(Reservation.class)))
                 .willReturn(reservation);
     }
 }

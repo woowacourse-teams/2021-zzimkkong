@@ -14,14 +14,14 @@ import org.springframework.transaction.annotation.Transactional;
 @ActiveProfiles("test")
 public class ServiceTest {
     @MockBean
-    protected MemberRepository memberRepository;
+    protected MemberRepository members;
 
     @MockBean
-    protected ReservationRepository reservationRepository;
+    protected ReservationRepository reservations;
 
     @MockBean
-    protected MapRepository mapRepository;
+    protected MapRepository maps;
 
     @MockBean
-    protected SpaceRepository spaceRepository;
+    protected SpaceRepository spaces;
 }

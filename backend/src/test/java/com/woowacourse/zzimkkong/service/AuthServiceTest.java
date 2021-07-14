@@ -30,7 +30,7 @@ class AuthServiceTest extends ServiceTest {
     void login() {
         //given
         LoginRequest loginRequest = new LoginRequest(EMAIL, PASSWORD);
-        given(memberRepository.findByEmail(anyString()))
+        given(members.findByEmail(anyString()))
                 .willReturn(Optional.of(MEMBER));
 
         //when
@@ -47,7 +47,7 @@ class AuthServiceTest extends ServiceTest {
         LoginRequest loginRequest = new LoginRequest(EMAIL, PASSWORD);
 
         //when
-        given(memberRepository.findByEmail(anyString()))
+        given(members.findByEmail(anyString()))
                 .willReturn(Optional.empty());
 
         //then
@@ -63,7 +63,7 @@ class AuthServiceTest extends ServiceTest {
         LoginRequest loginRequest = new LoginRequest(EMAIL, PASSWORD);
 
         //when
-        given(memberRepository.findByEmail(anyString()))
+        given(members.findByEmail(anyString()))
                 .willReturn(Optional.of(new Member(EMAIL, "real_password", ORGANIZATION)));
 
         //then

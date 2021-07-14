@@ -39,7 +39,7 @@ class MemberServiceTest extends ServiceTest {
                 member.getPassword(),
                 member.getOrganization());
 
-        given(memberRepository.save(any(Member.class)))
+        given(members.save(any(Member.class)))
                 .willReturn(savedMember);
 
         //then
@@ -55,7 +55,7 @@ class MemberServiceTest extends ServiceTest {
         MemberSaveRequest memberSaveRequest = new MemberSaveRequest(EMAIL, PASSWORD, ORGANIZATION);
 
         //when
-        given(memberRepository.existsByEmail(any(String.class)))
+        given(members.existsByEmail(any(String.class)))
                 .willReturn(true);
 
         //then
