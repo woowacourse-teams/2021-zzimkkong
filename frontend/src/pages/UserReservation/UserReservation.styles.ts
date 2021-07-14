@@ -15,8 +15,10 @@ export const PageHeader = styled.h2`
 `;
 
 export const InputWrapper = styled.div`
+  position: relative;
   display: flex;
   gap: 1rem;
+  margin: 1.625rem 0;
 
   label {
     flex: 1;
@@ -37,7 +39,19 @@ export const ReservationList = styled.div`
 
 export const ButtonWrapper = styled.div`
   position: fixed;
-  width: 100%;
   bottom: 0;
   left: 0;
+  width: 100vw;
 `;
+
+export const TimeFormMessage = styled.p`
+  position: absolute;
+  left: 0.75rem;
+  bottom: -1.5rem;
+  height: 1.5rem;
+  line-height: 1.5rem;
+  font-size: 0.75rem;
+  color: ${({ theme }) => theme.red[500]};
+`;
+
+export const Message = styled.p``;
