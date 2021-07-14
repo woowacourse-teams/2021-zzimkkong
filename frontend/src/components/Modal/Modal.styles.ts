@@ -6,7 +6,7 @@ interface Props {
 
 export const Overlay = styled.div<Props>`
   display: ${({ open }) => (open ? 'flex' : 'none')};
-  width: 100%;
+  width: 100vw;
   height: 100vh;
   justify-content: center;
   align-items: center;
@@ -14,7 +14,9 @@ export const Overlay = styled.div<Props>`
 `;
 
 export const Modal = styled.div`
-  width: 90%;
+  width: 80%;
+  min-width: 320px;
+  max-width: 768px;
   position: relative;
   background-color: ${({ theme }) => theme.white};
 `;
