@@ -25,7 +25,7 @@ const Modal = ({
   };
 
   return (
-    <Styled.Overlay id="modal-overlay" open={open} onClick={handleDimmedClick}>
+    <Styled.Overlay open={open} onClick={handleDimmedClick}>
       <Styled.Modal>
         {showCloseButton && (
           <Styled.CloseButton onClick={handleClose}>
