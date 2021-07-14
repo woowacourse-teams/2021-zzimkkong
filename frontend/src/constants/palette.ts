@@ -57,8 +57,8 @@ const PALETTE = {
     900: '#18181B',
   },
 
+  OPACITY_GRAY: 'rgba(212, 212, 216, 0.3)',
   WHITE: '#fff',
-  MODAL_OVERLAY: 'rgba(196, 196, 196, 0.3)',
 };
 
 export default PALETTE;

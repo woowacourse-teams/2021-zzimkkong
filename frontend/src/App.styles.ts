@@ -8,7 +8,7 @@ export const theme: DefaultTheme = {
   black: PALETTE.BLACK,
   gray: PALETTE.GRAY,
   white: PALETTE.WHITE,
-  modalOverlay: PALETTE.MODAL_OVERLAY,
+  modalOverlay: PALETTE.OPACITY_GRAY,
 };
 
 const resetCSS = css`
