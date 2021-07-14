@@ -1,7 +1,5 @@
 package com.woowacourse.zzimkkong.repository;
 
-import com.woowacourse.zzimkkong.DataLoader;
-import org.junit.jupiter.api.BeforeEach;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.test.annotation.DirtiesContext;
@@ -13,25 +11,14 @@ import org.springframework.test.context.ActiveProfiles;
 public class RepositoryTest {
 
     @Autowired
-    protected ReservationRepository reservationRepository;
+    protected ReservationRepository reservations;
 
     @Autowired
-    protected SpaceRepository spaceRepository;
+    protected SpaceRepository spaces;
 
     @Autowired
-    protected MemberRepository memberRepository;
+    protected MemberRepository members;
 
     @Autowired
-    protected MapRepository mapRepository;
-
-    @BeforeEach
-    void setUp() {
-        DataLoader dataLoader = new DataLoader(
-                memberRepository,
-                mapRepository,
-                spaceRepository,
-                reservationRepository
-        );
-        dataLoader.run();
-    }
+    protected MapRepository maps;
 }

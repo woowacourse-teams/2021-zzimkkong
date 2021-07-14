@@ -114,8 +114,7 @@ public class ReservationControllerTest extends AcceptanceTest {
         ReservationFindResponse expectedResponse = ReservationFindResponse.of(
                 List.of(savedReservation,
                         BE_AM_ZERO_ONE,
-                        BE_PM_ONE_TWO,
-                        BE_PM_SIX_TWELVE));
+                        BE_PM_ONE_TWO));
 
         //then
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
@@ -141,7 +140,6 @@ public class ReservationControllerTest extends AcceptanceTest {
                 List.of(savedReservation,
                         BE_AM_ZERO_ONE,
                         BE_PM_ONE_TWO,
-                        BE_PM_SIX_TWELVE,
                         FE1_ZERO_ONE));
 
         //then
@@ -155,7 +153,7 @@ public class ReservationControllerTest extends AcceptanceTest {
     private ExtractableResponse<Response> saveExampleReservations() {
         reservationRepository.save(BE_AM_ZERO_ONE);
         reservationRepository.save(BE_PM_ONE_TWO);
-        reservationRepository.save(BE_PM_SIX_TWELVE);
+        reservationRepository.save(BE_NEXT_DAY_PM_SIX_TWELVE);
         reservationRepository.save(FE1_ZERO_ONE);
 
         String api = "/api/maps/" + LUTHER.getId() + "/reservations";

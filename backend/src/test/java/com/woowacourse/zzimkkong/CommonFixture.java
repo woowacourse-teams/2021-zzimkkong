@@ -11,7 +11,7 @@ import java.time.LocalDateTime;
 public class CommonFixture {
     public static final String EMAIL = "pobi@email.com";
     public static final String PASSWORD = "test1234";
-    public static final String ORGANIZATION = "루터";
+    public static final String ORGANIZATION = "우아한테크코스";
 
     public static final LocalDate TOMORROW = LocalDate.now().plusDays(1);
     public static final LocalDateTime TOMORROW_START_TIME = TOMORROW.atStartOfDay();
@@ -39,9 +39,9 @@ public class CommonFixture {
             .space(BE)
             .build();
 
-    public static Reservation BE_PM_SIX_TWELVE = new Reservation.Builder()
-            .startTime(TOMORROW.atTime(18, 0, 0))
-            .endTime(TOMORROW.atTime(23, 59, 59))
+    public static Reservation BE_NEXT_DAY_PM_SIX_TWELVE = new Reservation.Builder()
+            .startTime(TOMORROW.plusDays(1).atTime(18, 0, 0))
+            .endTime(TOMORROW.plusDays(1).atTime(23, 59, 59))
             .description("찜꽁 3차 회의")
             .userName("찜꽁")
             .password("6789")
