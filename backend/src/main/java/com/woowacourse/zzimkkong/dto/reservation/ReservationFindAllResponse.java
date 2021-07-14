@@ -24,7 +24,9 @@ public class ReservationFindAllResponse {
         Map<Space, List<Reservation>> reservationGroups = reservations.stream()
                 .collect(Collectors.groupingBy(Reservation::getSpace));
 
-        reservationGroups.values().forEach(each -> each.sort(Comparator.comparing(Reservation::getStartTime)));
+        for (final List<Reservation> each : reservationGroups.values()) {
+            each.sort(Comparator.comparing(Reservation::getStartTime));
+        }
 
         List<ReservationSpaceResponse> reservationSpaceResponses = reservationGroups.entrySet()
                 .stream()
