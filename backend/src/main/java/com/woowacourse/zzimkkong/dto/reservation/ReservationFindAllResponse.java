@@ -29,6 +29,7 @@ public class ReservationFindAllResponse {
         List<ReservationSpaceResponse> reservationSpaceResponses = reservationGroups.entrySet()
                 .stream()
                 .map(ReservationSpaceResponse::of)
+                .sorted(Comparator.comparing(ReservationSpaceResponse::getSpaceId))
                 .collect(Collectors.toList());
 
         return new ReservationFindAllResponse(reservationSpaceResponses);
