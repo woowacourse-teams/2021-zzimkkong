@@ -14,18 +14,18 @@ public class RepositoryTest {
     @Autowired
     protected ReservationRepository reservationRepository;
     @Autowired
-    protected SpaceRepository spaceRepository;
+    protected SpaceRepository spaces;
     @Autowired
-    protected MemberRepository memberRepository;
+    protected MemberRepository members;
     @Autowired
-    protected MapRepository mapRepository;
+    protected MapRepository maps;
 
     @BeforeEach
     void setUp() {
         DataLoader dataLoader = new DataLoader(
-                memberRepository,
-                mapRepository,
-                spaceRepository,
+                members,
+                maps,
+                spaces,
                 reservationRepository
         );
 

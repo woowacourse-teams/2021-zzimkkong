@@ -16,10 +16,10 @@ class MapRepositoryTest extends RepositoryTest {
     @DisplayName("id로부터 저장된 Map을 찾아올 수 있다.")
     void findById() {
         //given
-        Map savedMap = mapRepository.save(MAP);
+        Map savedMap = maps.save(MAP);
 
         //when
-        Map findMap = mapRepository.findById(savedMap.getId())
+        Map findMap = maps.findById(savedMap.getId())
                 .orElseThrow(NoSuchMapException::new);
 
         //then

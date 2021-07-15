@@ -41,8 +41,8 @@ class ReservationRepositoryTest extends RepositoryTest {
     void setUp() {
         super.setUp();
 
-        be = spaceRepository.findById(1L).orElseThrow(NoSuchSpaceException::new);
-        fe1 = spaceRepository.findById(2L).orElseThrow(NoSuchSpaceException::new);
+        be = spaces.findById(1L).orElseThrow(NoSuchSpaceException::new);
+        fe1 = spaces.findById(2L).orElseThrow(NoSuchSpaceException::new);
     }
 
     @DisplayName("map id, space id, 특정 날짜가 주어질 때, 해당 spaceId와 해당 날짜에 속하는 예약들만 찾아온다")
