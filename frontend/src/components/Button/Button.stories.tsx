@@ -15,6 +15,12 @@ Default.args = {
   children: 'Button Test',
 };
 
+export const Text = Template.bind({});
+Text.args = {
+  variant: 'text',
+  children: 'Button Test',
+};
+
 export const Primary = Template.bind({});
 Primary.args = {
   disabled: false,
