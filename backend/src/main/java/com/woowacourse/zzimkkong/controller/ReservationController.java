@@ -20,7 +20,7 @@ public class ReservationController {
     private final ReservationService reservationService;
     private final SlackService slackService;
 
-    public ReservationController(ReservationService reservationService, SlackService slackService) {
+    public ReservationController(final ReservationService reservationService, final SlackService slackService) {
         this.reservationService = reservationService;
         this.slackService = slackService;
     }

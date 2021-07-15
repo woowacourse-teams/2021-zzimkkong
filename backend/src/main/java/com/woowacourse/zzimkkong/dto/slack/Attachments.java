@@ -12,7 +12,7 @@ public class Attachments {
     public Attachments() {
     }
 
-    private Attachments(List<Attachment> attachments) {
+    private Attachments(final List<Attachment> attachments) {
         this.attachments = attachments;
     }
 

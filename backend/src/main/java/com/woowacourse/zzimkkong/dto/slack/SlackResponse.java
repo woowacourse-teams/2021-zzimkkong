@@ -13,7 +13,12 @@ public class SlackResponse {
     public SlackResponse() {
     }
 
-    private SlackResponse(String spaceName, String userName, LocalDateTime startTime, LocalDateTime endTime, String description) {
+    private SlackResponse(
+            final String spaceName,
+            final String userName,
+            final LocalDateTime startTime,
+            final LocalDateTime endTime,
+            final String description) {
         this.spaceName = "회의실명 : " + spaceName;
         this.userName = "예약자명 : " + userName;
         this.reservationTime = "예약시간 : " + startTime + " ~ " + endTime;
