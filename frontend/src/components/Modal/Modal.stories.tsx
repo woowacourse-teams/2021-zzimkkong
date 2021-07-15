@@ -66,7 +66,6 @@ PasswordInput.args = {
 const Box = styled.div`
   display: flex;
   flex-direction: column;
-  width: 80vw;
 `;
 
 const SelectButton = styled.button`
