@@ -9,8 +9,8 @@ export const Overlay = styled.div<Props>`
   position: fixed;
   top: 0;
   left: 0;
-  width: 100vw;
-  height: 100vh;
+  right: 0;
+  bottom: 0;
   justify-content: center;
   align-items: center;
   background-color: ${({ theme }) => theme.modalOverlay};
