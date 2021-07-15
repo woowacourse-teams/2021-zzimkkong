@@ -27,3 +27,13 @@ BgColor.args = {
   bgColor: PALETTE.ORANGE[500],
   children: <Panel.Title>패널 헤더 1</Panel.Title>,
 };
+
+export const BgColorWithInner = Template.bind({});
+BgColorWithInner.args = {
+  bgColor: PALETTE.ORANGE[500],
+  children: (
+    <Panel.Inner>
+      <Panel.Title>패널 헤더 1</Panel.Title>
+    </Panel.Inner>
+  ),
+};

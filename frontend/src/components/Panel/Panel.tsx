@@ -37,6 +37,8 @@ const Panel = ({
 
 Panel.Title = Styled.Title;
 
+Panel.Inner = Styled.Inner;
+
 Panel.Header = PanelHeader;
 
 Panel.Content = PanelContent;

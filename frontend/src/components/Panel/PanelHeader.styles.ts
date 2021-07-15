@@ -30,7 +30,6 @@ export const HeaderWrapper = styled.div<HeaderWrapperProps>`
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 0.8rem;
   cursor: ${({ expandable }) => (expandable ? 'pointer' : 'default')};
   gap: 1rem;
 
@@ -44,6 +43,7 @@ export const HeaderContent = styled.div`
 `;
 
 export const Toggle = styled.div<ToggleProps>`
+  margin-right: 0.8rem;
   background: none;
   border: none;
   line-height: 0;
