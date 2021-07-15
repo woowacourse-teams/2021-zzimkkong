@@ -7,6 +7,8 @@ import java.util.List;
 
 public class Attachments {
     private List<Attachment> attachments;
+    private static final String COLOR = "#FF7515";
+    private static final String TITLE_LINK = "https://zzimkkong.o-r.kr/";
 
     public Attachments() {
     }
@@ -18,10 +20,10 @@ public class Attachments {
     public static Attachments updateMessageFrom(Reservation reservation) {
         Attachment attachment = Attachment.of(
                 "✏️ 예약 수정 알림 ✏️",
-                "#FF7515",
+                COLOR,
                 "✏️ 예약이 수정되었습니다.",
                 "변경된 예약내용",
-                "https://zzimkkong.o-r.kr/",
+                TITLE_LINK,
                 Contents.from(reservation));
         return Attachments.from(attachment);
     }
@@ -29,10 +31,10 @@ public class Attachments {
     public static Attachments deleteMessageFrom(Reservation reservation) {
         Attachment attachment = Attachment.of(
                 "🗑 예약 삭제 알림 🗑",
-                "#FF7515",
+                COLOR,
                 "🗑 예약이 삭제되었습니다.",
                 "삭제된 예약내용",
-                "https://zzimkkong.o-r.kr/",
+                TITLE_LINK,
                 Contents.from(reservation));
         return Attachments.from(attachment);
     }
