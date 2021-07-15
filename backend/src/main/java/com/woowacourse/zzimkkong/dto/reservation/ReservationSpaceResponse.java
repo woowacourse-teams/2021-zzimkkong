@@ -11,14 +11,19 @@ import java.util.stream.Collectors;
 public class ReservationSpaceResponse {
     @JsonProperty
     private Long spaceId;
+
+    @JsonProperty
+    private String spaceName;
+
     @JsonProperty
     private List<ReservationResponse> reservations;
 
     public ReservationSpaceResponse() {
     }
 
-    private ReservationSpaceResponse(final Long spaceId, final List<ReservationResponse> reservations) {
+    private ReservationSpaceResponse(final Long spaceId, final String spaceName, final List<ReservationResponse> reservations) {
         this.spaceId = spaceId;
+        this.spaceName = spaceName;
         this.reservations = reservations;
     }
 
@@ -28,7 +33,7 @@ public class ReservationSpaceResponse {
                 .map(ReservationResponse::of)
                 .collect(Collectors.toList());
 
-        return new ReservationSpaceResponse(reservationsPerSpace.getKey().getId(), reservations);
+        return new ReservationSpaceResponse(reservationsPerSpace.getKey().getId(), reservationsPerSpace.getKey().getName(), reservations);
     }
 
     public Long getSpaceId() {
