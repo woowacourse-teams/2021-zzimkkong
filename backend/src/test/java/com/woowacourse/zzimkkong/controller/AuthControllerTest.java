@@ -62,7 +62,7 @@ class AuthControllerTest extends AcceptanceTest {
         TokenResponse responseBody = loginResponse.body().as(TokenResponse.class);
 
         //when
-        ExtractableResponse<Response> response = token(responseBody.getAccessToken());
+        ExtractableResponse<Response> response = token(responseBody.getAccessToken(), "success");
 
         //then
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
@@ -75,7 +75,7 @@ class AuthControllerTest extends AcceptanceTest {
         String invalidToken = "strangeTokenIsComing";
 
         //when
-        ExtractableResponse<Response> response = token(invalidToken);
+        ExtractableResponse<Response> response = token(invalidToken,"fail");
 
         //then
         assertThat(response.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
@@ -92,12 +92,12 @@ class AuthControllerTest extends AcceptanceTest {
                 .then().log().all().extract();
     }
 
-    private ExtractableResponse<Response> token(String token) {
+    private ExtractableResponse<Response> token(String token, String docName) {
         return RestAssured
                 .given(getRequestSpecification()).log().all()
                 .accept("application/json")
                 .header("Authorization", "Bearer " + token)
-                .filter(document("member/token", getRequestPreprocessor(), getResponsePreprocessor()))
+                .filter(document("member/token/" + docName, getRequestPreprocessor(), getResponsePreprocessor()))
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .when().post("/api/members/token")
                 .then().log().all().extract();
