@@ -14,7 +14,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.temporal.ChronoUnit;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
@@ -85,21 +84,14 @@ public class ReservationService {
         return ReservationFindAllResponse.of(reservations);
     }
 
-    public void deleteReservation(
-            final Long mapId,
-            final Long reservationId,
-            final ReservationPasswordAuthenticationRequest reservationPasswordAuthenticationRequest) {
-        validateMapExistence(mapId);
-        Reservation reservation = getReservation(reservationId, reservationPasswordAuthenticationRequest.getPassword());
-        reservations.delete(reservation);
-    }
-
+    @Transactional(readOnly = true)
     public ReservationResponse findReservation(
             final Long mapId,
             final Long reservationId,
             final ReservationPasswordAuthenticationRequest reservationPasswordAuthenticationRequest) {
         validateMapExistence(mapId);
-        Reservation reservation = getReservation(reservationId, reservationPasswordAuthenticationRequest.getPassword());
+        Reservation reservation = getReservation(reservationId);
+        checkCorrectPassword(reservation, reservationPasswordAuthenticationRequest.getPassword());
         return ReservationResponse.of(reservation);
     }
 
@@ -108,35 +100,28 @@ public class ReservationService {
             final Long reservationId,
             final ReservationCreateUpdateRequest reservationCreateUpdateRequest) {
         validateMapExistence(mapId);
-
         validateTime(reservationCreateUpdateRequest);
 
         Space space = spaces.findById(reservationCreateUpdateRequest.getSpaceId())
                 .orElseThrow(NoSuchSpaceException::new);
-        Reservation reservation = getReservation(reservationId, reservationCreateUpdateRequest.getPassword());
-        doDirtyCheck(reservation, reservationCreateUpdateRequest, space);
 
+        Reservation reservation = getReservation(reservationId);
+        checkCorrectPassword(reservation, reservationCreateUpdateRequest.getPassword());
+        doDirtyCheck(reservation, reservationCreateUpdateRequest, space);
         validateAvailability(space, reservationCreateUpdateRequest, reservation);
 
         reservation.update(reservationCreateUpdateRequest, space);
         reservations.save(reservation);
     }
 
-    private void doDirtyCheck(
-            final Reservation reservation,
-            final ReservationCreateUpdateRequest reservationCreateUpdateRequest,
-            final Space space) {
-        Reservation updatedReservation = new Reservation.Builder()
-                .startTime(reservationCreateUpdateRequest.getStartDateTime())
-                .endTime(reservationCreateUpdateRequest.getEndDateTime())
-                .userName(reservationCreateUpdateRequest.getName())
-                .description(reservationCreateUpdateRequest.getDescription())
-                .space(space)
-                .build();
-
-        if (reservation.hasSameData(updatedReservation)) {
-            throw new NoDataToUpdateException();
-        }
+    public void deleteReservation(
+            final Long mapId,
+            final Long reservationId,
+            final ReservationPasswordAuthenticationRequest reservationPasswordAuthenticationRequest) {
+        validateMapExistence(mapId);
+        Reservation reservation = getReservation(reservationId);
+        checkCorrectPassword(reservation, reservationPasswordAuthenticationRequest.getPassword());
+        reservations.delete(reservation);
     }
 
     private void validateTime(final ReservationCreateUpdateRequest reservationCreateUpdateRequest) {
@@ -198,15 +183,28 @@ public class ReservationService {
         }
     }
 
-    private Reservation getReservation(final Long reservationId, final String password) {
-        Reservation reservation = reservations
-                .findById(reservationId)
-                .orElseThrow(NoSuchReservationException::new);
+    private void validateMapExistence(final Long mapId) {
+        if (!maps.existsById(mapId)) {
+            throw new NoSuchMapException();
+        }
+    }
 
+    private void validateSpaceExistence(final Long spaceId) {
+        if (!spaces.existsById(spaceId)) {
+            throw new NoSuchSpaceException();
+        }
+    }
+
+    private void checkCorrectPassword(final Reservation reservation, final String password) {
         if (reservation.isWrongPassword(password)) {
             throw new ReservationPasswordException();
         }
-        return reservation;
+    }
+
+    private Reservation getReservation(final Long reservationId) {
+        return reservations
+                .findById(reservationId)
+                .orElseThrow(NoSuchReservationException::new);
     }
 
     private List<Reservation> getReservations(final Collection<Long> spaceIds, final LocalDate date) {
@@ -222,15 +220,20 @@ public class ReservationService {
         );
     }
 
-    private void validateMapExistence(final Long mapId) {
-        if (!maps.existsById(mapId)) {
-            throw new NoSuchMapException();
-        }
-    }
+    private void doDirtyCheck(
+            final Reservation reservation,
+            final ReservationCreateUpdateRequest reservationCreateUpdateRequest,
+            final Space space) {
+        Reservation updatedReservation = new Reservation.Builder()
+                .startTime(reservationCreateUpdateRequest.getStartDateTime())
+                .endTime(reservationCreateUpdateRequest.getEndDateTime())
+                .userName(reservationCreateUpdateRequest.getName())
+                .description(reservationCreateUpdateRequest.getDescription())
+                .space(space)
+                .build();
 
-    private void validateSpaceExistence(final Long spaceId) {
-        if (!spaces.existsById(spaceId)) {
-            throw new NoSuchSpaceException();
+        if (reservation.hasSameData(updatedReservation)) {
+            throw new NoDataToUpdateException();
         }
     }
 }

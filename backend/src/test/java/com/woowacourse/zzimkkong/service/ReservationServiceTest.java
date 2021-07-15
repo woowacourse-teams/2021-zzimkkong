@@ -28,24 +28,26 @@ import static org.mockito.BDDMockito.given;
 
 class ReservationServiceTest extends ServiceTest {
     public static final ReservationPasswordAuthenticationRequest RESERVATION_PASSWORD_AUTHENTICATION_REQUEST
-            = new ReservationPasswordAuthenticationRequest("1234");
+            = new ReservationPasswordAuthenticationRequest(RESERVATION_PASSWORD);
 
     @Autowired
     private ReservationService reservationService;
 
     private ReservationCreateUpdateRequest reservationCreateUpdateRequest = new ReservationCreateUpdateRequest(
-            1L, //TODO: 나중에 인수테스트 전부 생기면 갖다 쓰기
+            1L,
             TOMORROW_START_TIME.plusHours(3),
             TOMORROW_START_TIME.plusHours(4),
-            "1234",
-            "bada",
-            "회의"
+            RESERVATION_PASSWORD,
+            USER_NAME,
+            DESCRIPTION
     );
 
     private final Reservation reservation = makeReservation(
             reservationCreateUpdateRequest.getStartDateTime(),
             reservationCreateUpdateRequest.getEndDateTime(),
             BE);
+    public static final String CHANGED_NAME = "이름 변경";
+    public static final String CHANGED_DESCRIPTION = "회의명 변경";
 
     @Test
     @DisplayName("예약 생성 요청 시, mapId와 요청이 들어온다면 예약을 생성한다.")
@@ -105,9 +107,9 @@ class ReservationServiceTest extends ServiceTest {
                 1L,
                 LocalDateTime.now().minusHours(3),
                 LocalDateTime.now().plusHours(3),
-                "1234",
-                "bada",
-                "회의"
+                RESERVATION_PASSWORD,
+                USER_NAME,
+                DESCRIPTION
         );
 
         //when
@@ -126,9 +128,9 @@ class ReservationServiceTest extends ServiceTest {
                 1L,
                 LocalDateTime.now().plusHours(3),
                 LocalDateTime.now().minusHours(3),
-                "1234",
-                "bada",
-                "회의"
+                RESERVATION_PASSWORD,
+                USER_NAME,
+                DESCRIPTION
         );
 
         //when
@@ -147,9 +149,9 @@ class ReservationServiceTest extends ServiceTest {
                 1L,
                 TOMORROW_START_TIME,
                 TOMORROW_START_TIME,
-                "1234",
-                "bada",
-                "회의"
+                RESERVATION_PASSWORD,
+                USER_NAME,
+                DESCRIPTION
         );
 
         //when
@@ -168,9 +170,9 @@ class ReservationServiceTest extends ServiceTest {
                 1L,
                 TOMORROW_START_TIME,
                 TOMORROW_START_TIME.plusDays(1),
-                "1234",
-                "bada",
-                "회의"
+                RESERVATION_PASSWORD,
+                USER_NAME,
+                DESCRIPTION
         );
 
         //when
@@ -193,15 +195,10 @@ class ReservationServiceTest extends ServiceTest {
                 any(LocalDateTime.class),
                 any(LocalDateTime.class),
                 any(LocalDateTime.class)))
-                .willReturn(List.of(new Reservation.Builder()
-                        .id(1L)
-                        .startTime(reservationCreateUpdateRequest.getStartDateTime().minusMinutes(startMinute))
-                        .endTime(reservationCreateUpdateRequest.getEndDateTime().minusMinutes(endMinute))
-                        .password(reservationCreateUpdateRequest.getPassword())
-                        .userName(reservationCreateUpdateRequest.getName())
-                        .description(reservationCreateUpdateRequest.getDescription())
-                        .space(BE)
-                        .build()));
+                .willReturn(List.of(makeReservation(
+                        reservationCreateUpdateRequest.getStartDateTime().minusMinutes(startMinute),
+                        reservationCreateUpdateRequest.getEndDateTime().minusMinutes(endMinute),
+                        BE)));
 
         //then
         assertThatThrownBy(() -> reservationService.saveReservation(1L, reservationCreateUpdateRequest))
@@ -309,7 +306,6 @@ class ReservationServiceTest extends ServiceTest {
                 .isEqualTo(ReservationFindAllResponse.of(Collections.emptyList()));
     }
 
-
     @Test
     @DisplayName("전체 예약 조회 요청 시, 올바른 mapId, 날짜를 입력하면 해당 날짜에 존재하는 모든 예약 정보가 조회된다.")
     void findAllReservation() {
@@ -353,6 +349,212 @@ class ReservationServiceTest extends ServiceTest {
                 .isEqualTo(reservationFindAllResponse);
     }
 
+    @Test
+    @DisplayName("예약 수정 요청 시, 비밀번호가 일치하는지 확인하고 해당 예약을 반환한다.")
+    void findReservation() {
+        //given
+        given(maps.existsById(anyLong()))
+                .willReturn(true);
+        given(reservations.findById(anyLong()))
+                .willReturn(Optional.of(reservation));
+
+        //when
+        ReservationResponse actual = reservationService.findReservation(
+                1L,
+                this.reservation.getId(),
+                new ReservationPasswordAuthenticationRequest(this.reservation.getPassword()));
+
+        //then
+        assertThat(actual).usingRecursiveComparison()
+                .isEqualTo(ReservationResponse.of(reservation));
+    }
+
+    @Test
+    @DisplayName("예약 수정 요청 시, 해당 예약이 존재하지 않으면 에러가 발생한다.")
+    void findInvalidReservationException() {
+        //given, when
+        given(maps.existsById(anyLong()))
+                .willReturn(true);
+        given(reservations.findById(anyLong()))
+                .willReturn(Optional.empty());
+
+        //then
+        assertThatThrownBy(() -> reservationService.findReservation(
+                1L,
+                reservation.getId(),
+                new ReservationPasswordAuthenticationRequest("1111")))
+                .isInstanceOf(NoSuchReservationException.class);
+    }
+
+    @Test
+    @DisplayName("예약 수정 요청 시, 비밀번호가 일치하지 않으면 에러가 발생한다.")
+    void findWrongPasswordException() {
+        //given, when
+        given(maps.existsById(anyLong()))
+                .willReturn(true);
+        given(reservations.findById(anyLong()))
+                .willReturn(Optional.of(reservation));
+
+        //then
+        assertThatThrownBy(() -> reservationService.findReservation(
+                1L,
+                reservation.getId(),
+                new ReservationPasswordAuthenticationRequest("1111")))
+                .isInstanceOf(ReservationPasswordException.class);
+    }
+
+    @Test
+    @DisplayName("예약 수정 요청 시, 올바른 요청이 들어오면 예약이 수정된다.")
+    void update() {
+        //given
+        given(maps.existsById(anyLong()))
+                .willReturn(true);
+        given(spaces.findById(anyLong()))
+                .willReturn(Optional.of(BE));
+        given(reservations.findById(anyLong()))
+                .willReturn(Optional.of(reservation));
+
+        //when, then
+        assertDoesNotThrow(() -> reservationService.updateReservation(1L, reservation.getId(), new ReservationCreateUpdateRequest(
+                1L,
+                TOMORROW_START_TIME.plusHours(20),
+                TOMORROW_START_TIME.plusHours(21),
+                reservation.getPassword(),
+                CHANGED_NAME,
+                CHANGED_DESCRIPTION
+        )));
+        assertThat(reservation.getUserName()).isEqualTo(CHANGED_NAME);
+        assertThat(reservation.getDescription()).isEqualTo(CHANGED_DESCRIPTION);
+    }
+
+    @ParameterizedTest
+    @ValueSource(ints = {0, -1})
+    @DisplayName("예약 수정 요청 시, 끝 시간 입력이 옳지 않으면 에러가 발생한다.")
+    void updateInvalidEndTimeException(int endTime) {
+        //given
+        given(maps.existsById(anyLong()))
+                .willReturn(true);
+
+        //when
+        ReservationCreateUpdateRequest reservationCreateUpdateRequest = new ReservationCreateUpdateRequest(
+                1L,
+                LocalDateTime.now().plusHours(1),
+                LocalDateTime.now().plusHours(endTime),
+                reservation.getPassword(),
+                CHANGED_NAME,
+                CHANGED_DESCRIPTION
+        );
+
+        //then
+        assertThatThrownBy(() -> reservationService.updateReservation(1L, 1L, reservationCreateUpdateRequest))
+                .isInstanceOf(ImpossibleEndTimeException.class);
+    }
+
+    @Test
+    @DisplayName("예약 수정 요청 시, 시작 시간과 끝 시간이 같은 날짜가 아니면 에러가 발생한다.")
+    void updateInvalidDateException() {
+        //given
+        given(maps.existsById(anyLong()))
+                .willReturn(true);
+
+        //when
+        ReservationCreateUpdateRequest reservationCreateUpdateRequest = new ReservationCreateUpdateRequest(
+                1L,
+                LocalDateTime.now().plusDays(1),
+                LocalDateTime.now().plusDays(2),
+                reservation.getPassword(),
+                CHANGED_NAME,
+                CHANGED_DESCRIPTION
+        );
+
+        //then
+        assertThatThrownBy(() -> reservationService.updateReservation(1L, 1L, reservationCreateUpdateRequest))
+                .isInstanceOf(NonMatchingStartAndEndDateException.class);
+    }
+
+    @Test
+    @DisplayName("예약 수정 요청 시, 비밀번호가 일치하지 않으면 에러가 발생한다.")
+    void updateIncorrectPasswordException() {
+        //given
+        given(maps.existsById(anyLong()))
+                .willReturn(true);
+        given(spaces.findById(anyLong()))
+                .willReturn(Optional.of(BE));
+        given(reservations.findById(anyLong()))
+                .willReturn(Optional.of(reservation));
+
+        //when
+        ReservationCreateUpdateRequest reservationCreateUpdateRequest = new ReservationCreateUpdateRequest(
+                1L,
+                reservation.getStartTime(),
+                reservation.getEndTime(),
+                "1231",
+                CHANGED_NAME,
+                CHANGED_DESCRIPTION
+        );
+
+        //then
+        assertThatThrownBy(() -> reservationService.updateReservation(1L, 1L, reservationCreateUpdateRequest))
+                .isInstanceOf(ReservationPasswordException.class);
+    }
+
+    @Test
+    @DisplayName("예약 수정 요청 시, 변경 사항이 존재하지 않으면 에러가 발생한다.")
+    void updateNothingChangedException() {
+        //given
+        given(maps.existsById(anyLong()))
+                .willReturn(true);
+        given(spaces.findById(anyLong()))
+                .willReturn(Optional.of(BE));
+        given(reservations.findById(anyLong()))
+                .willReturn(Optional.of(reservation));
+
+        //when
+        ReservationCreateUpdateRequest reservationCreateUpdateRequest = new ReservationCreateUpdateRequest(
+                1L,
+                reservation.getStartTime(),
+                reservation.getEndTime(),
+                reservation.getPassword(),
+                reservation.getUserName(),
+                reservation.getDescription()
+        );
+
+        //then
+        assertThatThrownBy(() -> reservationService.updateReservation(1L, 1L, reservationCreateUpdateRequest))
+                .isInstanceOf(NoDataToUpdateException.class);
+    }
+
+    @ParameterizedTest
+    @CsvSource(value = {"0:2", "59: 70", "-10:10"}, delimiter = ':')
+    @DisplayName("예약 수정 요청 시, 해당 시간에 예약이 존재하면 에러가 발생한다.")
+    void updateImpossibleTimeException(int startTime, int endTime) {
+        //given
+        given(maps.existsById(anyLong()))
+                .willReturn(true);
+        given(spaces.findById(anyLong()))
+                .willReturn(Optional.of(BE));
+        given(reservations.findById(anyLong()))
+                .willReturn(Optional.of(reservation));
+        given(reservations.findAllBySpaceIdInAndStartTimeIsBetweenAndEndTimeIsBetween(anyList(), any(), any(), any(), any()))
+                .willReturn(Arrays.asList(
+                        BE_AM_ZERO_ONE,
+                        BE_PM_ONE_TWO
+                ));
+
+        //when
+        ReservationCreateUpdateRequest reservationCreateUpdateRequest = new ReservationCreateUpdateRequest(
+                1L,
+                BE_PM_ONE_TWO.getStartTime().plusMinutes(startTime),
+                BE_PM_ONE_TWO.getStartTime().plusMinutes(endTime),
+                reservation.getPassword(),
+                reservation.getUserName(),
+                reservation.getDescription()
+        );
+
+        //then
+        assertThatThrownBy(() -> reservationService.updateReservation(1L, 1L, reservationCreateUpdateRequest))
+                .isInstanceOf(ImpossibleReservationTimeException.class);
+    }
 
     @Test
     @DisplayName("예약 삭제 요청이 옳다면 삭제한다.")
