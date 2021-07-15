@@ -3,6 +3,7 @@ package com.woowacourse.zzimkkong.service;
 import com.woowacourse.zzimkkong.domain.Reservation;
 import com.woowacourse.zzimkkong.domain.Space;
 import com.woowacourse.zzimkkong.dto.reservation.*;
+import com.woowacourse.zzimkkong.dto.slack.SlackResponse;
 import com.woowacourse.zzimkkong.exception.map.NoSuchMapException;
 import com.woowacourse.zzimkkong.exception.reservation.*;
 import com.woowacourse.zzimkkong.exception.space.NoSuchSpaceException;
@@ -27,17 +28,14 @@ public class ReservationService {
     private final MapRepository mapRepository;
     private final SpaceRepository spaceRepository;
     private final ReservationRepository reservationRepository;
-    private final SlackService slackService;
 
     public ReservationService(
             final MapRepository mapRepository,
             final SpaceRepository spaceRepository,
-            final ReservationRepository reservationRepository,
-            final SlackService slackService) {
+            final ReservationRepository reservationRepository) {
         this.mapRepository = mapRepository;
         this.spaceRepository = spaceRepository;
         this.reservationRepository = reservationRepository;
-        this.slackService = slackService;
     }
 
     public ReservationCreateResponse saveReservation(
@@ -88,14 +86,14 @@ public class ReservationService {
         return ReservationFindAllResponse.of(reservations);
     }
 
-    public void deleteReservation(
+    public SlackResponse deleteReservation(
             final Long mapId,
             final Long reservationId,
             final ReservationPasswordAuthenticationRequest reservationPasswordAuthenticationRequest) {
         validateMapExistence(mapId);
         Reservation reservation = getReservation(reservationId, reservationPasswordAuthenticationRequest.getPassword());
         reservationRepository.delete(reservation);
-        slackService.sendDeleteMessage(reservation);
+        return SlackResponse.from(reservation);
     }
 
     public ReservationResponse findReservation(
@@ -107,12 +105,11 @@ public class ReservationService {
         return ReservationResponse.of(reservation);
     }
 
-    public void updateReservation(
+    public SlackResponse updateReservation(
             final Long mapId,
             final Long reservationId,
             final ReservationCreateUpdateRequest reservationCreateUpdateRequest) {
         validateMapExistence(mapId);
-
         validateTime(reservationCreateUpdateRequest);
 
         Space space = spaceRepository.findById(reservationCreateUpdateRequest.getSpaceId())
@@ -124,7 +121,7 @@ public class ReservationService {
 
         reservation.update(reservationCreateUpdateRequest, space);
         reservationRepository.save(reservation);
-        slackService.sendUpdateMessage(reservation);
+        return SlackResponse.from(reservation);
     }
 
     private void doDirtyCheck(

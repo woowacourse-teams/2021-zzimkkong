@@ -4,24 +4,24 @@ import com.woowacourse.zzimkkong.domain.Reservation;
 
 import java.time.LocalDateTime;
 
-public class Contents {
+public class SlackResponse {
     private String spaceName;
     private String userName;
     private String reservationTime;
     private String description;
 
-    public Contents() {
+    public SlackResponse() {
     }
 
-    private Contents(String spaceName, String userName, LocalDateTime startTime, LocalDateTime endTime, String description) {
+    private SlackResponse(String spaceName, String userName, LocalDateTime startTime, LocalDateTime endTime, String description) {
         this.spaceName = "회의실명 : " + spaceName;
         this.userName = "예약자명 : " + userName;
         this.reservationTime = "예약시간 : " + startTime + " ~ " + endTime;
         this.description = "예약내용 : " + description;
     }
 
-    public static Contents from(Reservation reservation) {
-        return new Contents(
+    public static SlackResponse from(Reservation reservation) {
+        return new SlackResponse(
                 reservation.getSpace().getName(),
                 reservation.getUserName(),
                 reservation.getStartTime(),

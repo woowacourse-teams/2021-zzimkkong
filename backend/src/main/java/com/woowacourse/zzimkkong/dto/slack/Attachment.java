@@ -6,7 +6,7 @@ public class Attachment {
     private String pretext;
     private String title;
     private String titleLink;
-    private Contents contents;
+    private SlackResponse slackResponse;
 
     public Attachment() {
     }
@@ -17,17 +17,17 @@ public class Attachment {
             final String pretext,
             final String title,
             final String titleLink,
-            final Contents contents) {
+            final SlackResponse slackResponse) {
         this.fallback = fallback;
         this.color = color;
         this.pretext = pretext;
         this.title = title;
         this.titleLink = titleLink;
-        this.contents = contents;
+        this.slackResponse = slackResponse;
     }
 
-    public static Attachment of(String fallback, String color, String pretext, String title, String titleLink, Contents contents) {
-        return new Attachment(fallback, color, pretext, title, titleLink, contents);
+    public static Attachment of(String fallback, String color, String pretext, String title, String titleLink, SlackResponse slackResponse) {
+        return new Attachment(fallback, color, pretext, title, titleLink, slackResponse);
     }
 
     @Override
@@ -38,7 +38,7 @@ public class Attachment {
                 ", \"pretext\" : \"" + pretext + "\"" +
                 ", \"title\" : \"" + title + "\"" +
                 ", \"title_link\" : \"" + titleLink + "\"" +
-                ", \"text\" : \"" + contents + "\"" +
+                ", \"text\" : \"" + slackResponse + "\"" +
                 "}";
     }
 }

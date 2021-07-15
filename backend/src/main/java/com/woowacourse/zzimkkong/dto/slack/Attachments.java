@@ -1,14 +1,13 @@
 package com.woowacourse.zzimkkong.dto.slack;
 
-import com.woowacourse.zzimkkong.domain.Reservation;
-
 import java.util.ArrayList;
 import java.util.List;
 
 public class Attachments {
-    private List<Attachment> attachments;
     private static final String COLOR = "#FF7515";
     private static final String TITLE_LINK = "https://zzimkkong.o-r.kr/";
+
+    private List<Attachment> attachments;
 
     public Attachments() {
     }
@@ -17,25 +16,25 @@ public class Attachments {
         this.attachments = attachments;
     }
 
-    public static Attachments updateMessageFrom(Reservation reservation) {
+    public static Attachments updateMessageFrom(SlackResponse slackResponse) {
         Attachment attachment = Attachment.of(
                 "✏️ 예약 수정 알림 ✏️",
                 COLOR,
                 "✏️ 예약이 수정되었습니다.",
                 "변경된 예약내용",
                 TITLE_LINK,
-                Contents.from(reservation));
+                slackResponse);
         return Attachments.from(attachment);
     }
 
-    public static Attachments deleteMessageFrom(Reservation reservation) {
+    public static Attachments deleteMessageFrom(SlackResponse slackResponse) {
         Attachment attachment = Attachment.of(
                 "🗑 예약 삭제 알림 🗑",
                 COLOR,
                 "🗑 예약이 삭제되었습니다.",
                 "삭제된 예약내용",
                 TITLE_LINK,
-                Contents.from(reservation));
+                slackResponse);
         return Attachments.from(attachment);
     }
 
