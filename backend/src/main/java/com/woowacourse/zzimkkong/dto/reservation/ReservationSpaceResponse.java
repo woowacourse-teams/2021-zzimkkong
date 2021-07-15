@@ -33,7 +33,8 @@ public class ReservationSpaceResponse {
                 .map(ReservationResponse::of)
                 .collect(Collectors.toList());
 
-        return new ReservationSpaceResponse(reservationsPerSpace.getKey().getId(), reservationsPerSpace.getKey().getName(), reservations);
+        Space space = reservationsPerSpace.getKey();
+        return new ReservationSpaceResponse(space.getId(), space.getName(), reservations);
     }
 
     public Long getSpaceId() {
