@@ -27,14 +27,17 @@ public class ReservationService {
     private final MapRepository mapRepository;
     private final SpaceRepository spaceRepository;
     private final ReservationRepository reservationRepository;
+    private final SlackService slackService;
 
     public ReservationService(
             final MapRepository mapRepository,
             final SpaceRepository spaceRepository,
-            final ReservationRepository reservationRepository) {
+            final ReservationRepository reservationRepository,
+            final SlackService slackService) {
         this.mapRepository = mapRepository;
         this.spaceRepository = spaceRepository;
         this.reservationRepository = reservationRepository;
+        this.slackService = slackService;
     }
 
     public ReservationCreateResponse saveReservation(
@@ -92,6 +95,7 @@ public class ReservationService {
         validateMapExistence(mapId);
         Reservation reservation = getReservation(reservationId, reservationPasswordAuthenticationRequest.getPassword());
         reservationRepository.delete(reservation);
+        slackService.sendDeleteMessage(reservation);
     }
 
     public ReservationResponse findReservation(
@@ -120,6 +124,7 @@ public class ReservationService {
 
         reservation.update(reservationCreateUpdateRequest, space);
         reservationRepository.save(reservation);
+        slackService.sendUpdateMessage(reservation);
     }
 
     private void doDirtyCheck(
