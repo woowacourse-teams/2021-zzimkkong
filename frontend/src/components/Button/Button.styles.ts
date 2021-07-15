@@ -11,10 +11,19 @@ const variantCSS = {
     background: ${({ theme }) => theme.primary[400]};
     color: ${({ theme }) => theme.white};
     border: none;
+
+    &:disabled {
+      background: ${({ theme }) => theme.primary[100]};
+    }
   `,
   default: css`
     background: ${({ theme }) => theme.white};
     border: 1px solid ${({ theme }) => theme.black[400]};
+
+    &:disabled {
+      color: ${({ theme }) => theme.gray[400]};
+      border: 1px solid ${({ theme }) => theme.gray[400]};
+    }
   `,
 };
 
