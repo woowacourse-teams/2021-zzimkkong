@@ -18,3 +18,10 @@ include::{snippets}/member/login/http-request.adoc[]
 ==== Response
 include::{snippets}/member/login/http-response.adoc[]
 
+=== 토큰 유효성 검증
+==== Request
+include::{snippets}/member/token/success/http-request.adoc[]
+==== Success Response
+include::{snippets}/member/token/success/http-response.adoc[]
+==== Fail Response
+include::{snippets}/member/token/fail/http-response.adoc[]
