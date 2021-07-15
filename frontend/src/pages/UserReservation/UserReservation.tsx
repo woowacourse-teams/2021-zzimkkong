@@ -125,7 +125,7 @@ const UserReservation = (): JSX.Element => {
             </Styled.InputWrapper>
           </Styled.Section>
           <Styled.Section>
-            <Styled.PageHeader>오늘의 예약 목록</Styled.PageHeader>
+            <Styled.PageHeader>{date}의 예약 목록</Styled.PageHeader>
             {getReservations.isLoading && <Styled.Message>불러오는 중입니다...</Styled.Message>}
             {getReservations.isFetched && reservations.length === 0 && (
               <Styled.Message>오늘의 첫 예약을 잡아보세요!</Styled.Message>
