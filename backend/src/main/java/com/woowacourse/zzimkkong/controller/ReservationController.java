@@ -1,10 +1,6 @@
 package com.woowacourse.zzimkkong.controller;
 
-import com.woowacourse.zzimkkong.dto.reservation.ReservationDeleteRequest;
-import com.woowacourse.zzimkkong.dto.reservation.ReservationFindAllResponse;
-import com.woowacourse.zzimkkong.dto.reservation.ReservationFindResponse;
-import com.woowacourse.zzimkkong.dto.reservation.ReservationSaveRequest;
-import com.woowacourse.zzimkkong.dto.reservation.ReservationSaveResponse;
+import com.woowacourse.zzimkkong.dto.reservation.*;
 import com.woowacourse.zzimkkong.service.ReservationService;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
@@ -28,12 +24,37 @@ public class ReservationController {
     @PostMapping("/reservations")
     public ResponseEntity<Void> create(
             @PathVariable Long mapId,
-            @RequestBody @Valid ReservationSaveRequest reservationSaveRequest) {
-
-        ReservationSaveResponse reservationSaveResponse = reservationService.saveReservation(mapId, reservationSaveRequest);
+            @RequestBody @Valid ReservationCreateUpdateRequest reservationCreateUpdateRequest) {
+        ReservationCreateResponse reservationCreateResponse = reservationService.saveReservation(mapId, reservationCreateUpdateRequest);
         return ResponseEntity
-                .created(URI.create("/api/maps/" + mapId + "/reservations/" + reservationSaveResponse.getId()))
+                .created(URI.create("/api/maps/" + mapId + "/reservations/" + reservationCreateResponse.getId()))
                 .build();
+    }
+
+    @GetMapping("/reservations")
+    public ResponseEntity<ReservationFindAllResponse> findAll(
+            @PathVariable Long mapId,
+            @RequestParam @DateTimeFormat(pattern = DATE_FORMAT) LocalDate date) {
+        ReservationFindAllResponse reservationFindAllResponse = reservationService.findAllReservations(mapId, date);
+        return ResponseEntity.ok().body(reservationFindAllResponse);
+    }
+
+    @PutMapping("/reservations/{reservationId}")
+    public ResponseEntity<Void> update(
+            @PathVariable Long mapId,
+            @PathVariable Long reservationId,
+            @RequestBody @Valid ReservationCreateUpdateRequest reservationCreateUpdateRequest) {
+        reservationService.updateReservation(mapId, reservationId, reservationCreateUpdateRequest);
+        return ResponseEntity.ok().build();
+    }
+
+    @DeleteMapping("/reservations/{reservationId}")
+    public ResponseEntity<Void> delete(
+            @PathVariable Long mapId,
+            @PathVariable Long reservationId,
+            @RequestBody @Valid ReservationPasswordAuthenticationRequest reservationPasswordAuthenticationRequest) {
+        reservationService.deleteReservation(mapId, reservationId, reservationPasswordAuthenticationRequest);
+        return ResponseEntity.noContent().build();
     }
 
     @GetMapping("/spaces/{spaceId}/reservations")
@@ -45,20 +66,12 @@ public class ReservationController {
         return ResponseEntity.ok().body(reservationFindResponse);
     }
 
-    @GetMapping("/reservations")
-    public ResponseEntity<ReservationFindAllResponse> findAll(
-            @PathVariable Long mapId,
-            @RequestParam @DateTimeFormat(pattern = DATE_FORMAT) LocalDate date) {
-        ReservationFindAllResponse reservationFindAllResponse = reservationService.findAllReservations(mapId, date);
-        return ResponseEntity.ok().body(reservationFindAllResponse);
-    }
-
-    @DeleteMapping("/reservations/{reservationId}")
-    public ResponseEntity<Void> delete(
+    @PostMapping("/reservations/{reservationId}")
+    public ResponseEntity<ReservationResponse> findOne(
             @PathVariable Long mapId,
             @PathVariable Long reservationId,
-            @RequestBody @Valid ReservationDeleteRequest reservationDeleteRequest) {
-        reservationService.deleteReservation(mapId, reservationId, reservationDeleteRequest);
-        return ResponseEntity.noContent().build();
+            @RequestBody @Valid ReservationPasswordAuthenticationRequest reservationPasswordAuthenticationRequest) {
+        ReservationResponse reservationResponse = reservationService.findReservation(mapId, reservationId, reservationPasswordAuthenticationRequest);
+        return ResponseEntity.ok().body(reservationResponse);
     }
 }

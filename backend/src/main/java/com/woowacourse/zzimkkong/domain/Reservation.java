@@ -1,5 +1,7 @@
 package com.woowacourse.zzimkkong.domain;
 
+import com.woowacourse.zzimkkong.dto.reservation.ReservationCreateUpdateRequest;
+
 import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
@@ -63,6 +65,22 @@ public class Reservation {
         return startDateTime.isEqual(startTime) && endDateTime.isEqual(endTime);
     }
 
+    public boolean hasSameData(final Reservation updatedReservation) {
+        return this.startTime.equals(updatedReservation.startTime)
+                && this.endTime.equals(updatedReservation.endTime)
+                && this.userName.equals(updatedReservation.userName)
+                && this.description.equals(updatedReservation.description)
+                && this.space.equals(updatedReservation.space);
+    }
+
+    public void update(final ReservationCreateUpdateRequest reservationCreateUpdateRequest, final Space space) {
+        this.startTime = reservationCreateUpdateRequest.getStartDateTime();
+        this.endTime = reservationCreateUpdateRequest.getEndDateTime();
+        this.userName = reservationCreateUpdateRequest.getName();
+        this.description = reservationCreateUpdateRequest.getDescription();
+        this.space = space;
+    }
+
     public static class Builder {
         private Long id = null;
         private LocalDateTime startTime = null;
@@ -115,6 +133,7 @@ public class Reservation {
         }
 
     }
+
     public boolean isWrongPassword(String password) {
         return !this.password.equals(password);
     }

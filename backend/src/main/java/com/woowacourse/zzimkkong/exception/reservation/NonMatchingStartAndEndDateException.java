@@ -1,6 +1,5 @@
 package com.woowacourse.zzimkkong.exception.reservation;
 
-import com.woowacourse.zzimkkong.exception.reservation.ReservationException;
 import org.springframework.http.HttpStatus;
 
 public class NonMatchingStartAndEndDateException extends ReservationException {
