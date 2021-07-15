@@ -15,6 +15,8 @@ import javax.transaction.Transactional;
 @Service
 @Transactional
 public class SlackService {
+    private static final String URL_PREFIX = "https://hooks.slack.com/services/";
+
     public void sendUpdateMessage(Reservation reservation) {
         RestTemplate restTemplate = new RestTemplate();
         HttpHeaders headers = new HttpHeaders();
@@ -23,7 +25,7 @@ public class SlackService {
         Attachments attachments = Attachments.updateMessageFrom(reservation);
         HttpEntity<String> requestEntity = new HttpEntity<>(attachments.toString(), headers);
 
-        restTemplate.exchange(Channel.TEST.getUrl(), HttpMethod.POST, requestEntity, String.class);
+        restTemplate.exchange(URL_PREFIX + Channel.LOCAL.url(), HttpMethod.POST, requestEntity, String.class);
     }
 
     public void sendDeleteMessage(Reservation reservation) {
@@ -34,6 +36,6 @@ public class SlackService {
         Attachments attachments = Attachments.deleteMessageFrom(reservation);
         HttpEntity<String> requestEntity = new HttpEntity<>(attachments.toString(), headers);
 
-        restTemplate.exchange(Channel.TEST.getUrl(), HttpMethod.POST, requestEntity, String.class);
+        restTemplate.exchange(URL_PREFIX + Channel.LOCAL.url(), HttpMethod.POST, requestEntity, String.class);
     }
 }
