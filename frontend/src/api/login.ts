@@ -1,3 +1,4 @@
+import { AxiosResponse } from 'axios';
 import api from './api';
 
 interface LoginParams {
@@ -5,6 +6,6 @@ interface LoginParams {
   password: string;
 }
 
-export const postLogin = (loginData: LoginParams) => {
+export const postLogin = (loginData: LoginParams): Promise<AxiosResponse> => {
   return api.post('/login/token', loginData);
 };
