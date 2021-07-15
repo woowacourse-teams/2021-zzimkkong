@@ -1,8 +1,8 @@
 package com.woowacourse.zzimkkong.infrastructure;
 
-import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
+import com.woowacourse.zzimkkong.exception.authorization.InvalidTokenException;
+import com.woowacourse.zzimkkong.exception.authorization.TokenExpiredException;
+import io.jsonwebtoken.*;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
@@ -11,10 +11,16 @@ import java.util.Map;
 
 @Component
 public class JwtUtils {
-    @Value("${jwt.token.secret-key}")
-    private String secretKey;
-    @Value("${jwt.token.expire-length}")
-    private long validityInMilliseconds;
+    private final String secretKey;
+    private final long validityInMilliseconds;
+    private final JwtParser jwtParser;
+
+    public JwtUtils(@Value("${jwt.token.secret-key}") String secretKey,
+                    @Value("${jwt.token.expire-length}") long validityInMilliseconds) {
+        this.secretKey = secretKey;
+        this.validityInMilliseconds = validityInMilliseconds;
+        this.jwtParser = Jwts.parser().setSigningKey(secretKey);
+    }
 
     public String createToken(Map<String, Object> payload) {
         Claims claims = Jwts.claims(payload);
@@ -27,6 +33,16 @@ public class JwtUtils {
                 .setExpiration(validity)
                 .signWith(SignatureAlgorithm.HS256, secretKey)
                 .compact();
+    }
+
+    public void validateToken(String token) {
+        try {
+            jwtParser.parseClaimsJws(token);
+        } catch (ExpiredJwtException e) {
+            throw new TokenExpiredException();
+        } catch (JwtException e) {
+            throw new InvalidTokenException();
+        }
     }
 
     public static PayloadBuilder payloadBuilder() {

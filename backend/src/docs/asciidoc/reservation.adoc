@@ -23,3 +23,15 @@ include::{snippets}/reservation/get_all/http-response.adoc[]
 include::{snippets}/reservation/delete/http-request.adoc[]
 ==== Response
 include::{snippets}/reservation/delete/http-response.adoc[]
+
+=== 예약 비밀번호 확인
+==== Request
+include::{snippets}/reservation/post_for_update/http-request.adoc[]
+==== Response
+include::{snippets}/reservation/post_for_update/http-response.adoc[]
+
+=== 예약 수정
+==== Request
+include::{snippets}/reservation/put/http-request.adoc[]
+==== Response
+include::{snippets}/reservation/put/http-response.adoc[]

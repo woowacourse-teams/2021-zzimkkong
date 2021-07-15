@@ -1,7 +1,7 @@
 package com.woowacourse.zzimkkong.repository;
 
 import com.woowacourse.zzimkkong.domain.Map;
-import com.woowacourse.zzimkkong.exception.NoSuchMapException;
+import com.woowacourse.zzimkkong.exception.map.NoSuchMapException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 

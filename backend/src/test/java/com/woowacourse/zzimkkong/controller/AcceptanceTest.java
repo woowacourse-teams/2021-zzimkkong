@@ -14,7 +14,7 @@ import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
-import static com.woowacourse.zzimkkong.controller.DocumentUtils.setRequestSpecification;
+import static com.woowacourse.zzimkkong.DocumentUtils.setRequestSpecification;
 import static org.springframework.restdocs.restassured3.RestAssuredRestDocumentation.documentationConfiguration;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)

@@ -1,10 +1,10 @@
 package com.woowacourse.zzimkkong.service;
 
 import com.woowacourse.zzimkkong.domain.Member;
-import com.woowacourse.zzimkkong.dto.LoginRequest;
-import com.woowacourse.zzimkkong.dto.TokenResponse;
-import com.woowacourse.zzimkkong.exception.NoSuchMemberException;
-import com.woowacourse.zzimkkong.exception.PasswordMismatchException;
+import com.woowacourse.zzimkkong.dto.member.LoginRequest;
+import com.woowacourse.zzimkkong.dto.member.TokenResponse;
+import com.woowacourse.zzimkkong.exception.member.NoSuchMemberException;
+import com.woowacourse.zzimkkong.exception.member.PasswordMismatchException;
 import com.woowacourse.zzimkkong.infrastructure.JwtUtils;
 import com.woowacourse.zzimkkong.repository.MemberRepository;
 import org.springframework.stereotype.Service;
@@ -39,7 +39,7 @@ public class AuthService {
         Map<String, Object> payload = JwtUtils.payloadBuilder()
                 .setSubject(findMember.getEmail())
                 .build();
-        
+
         return jwtUtils.createToken(payload);
     }
 

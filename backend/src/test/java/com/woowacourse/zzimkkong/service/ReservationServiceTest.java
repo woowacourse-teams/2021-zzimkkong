@@ -2,8 +2,10 @@ package com.woowacourse.zzimkkong.service;
 
 import com.woowacourse.zzimkkong.domain.Reservation;
 import com.woowacourse.zzimkkong.domain.Space;
-import com.woowacourse.zzimkkong.dto.*;
-import com.woowacourse.zzimkkong.exception.*;
+import com.woowacourse.zzimkkong.dto.reservation.*;
+import com.woowacourse.zzimkkong.exception.map.NoSuchMapException;
+import com.woowacourse.zzimkkong.exception.reservation.*;
+import com.woowacourse.zzimkkong.exception.space.NoSuchSpaceException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -12,6 +14,7 @@ import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.time.LocalDateTime;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -24,12 +27,13 @@ import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.BDDMockito.given;
 
 class ReservationServiceTest extends ServiceTest {
-    public static final ReservationDeleteRequest RESERVATION_DELETE_REQUEST = new ReservationDeleteRequest("1234");
+    public static final ReservationPasswordAuthenticationRequest RESERVATION_PASSWORD_AUTHENTICATION_REQUEST
+            = new ReservationPasswordAuthenticationRequest("1234");
 
     @Autowired
     private ReservationService reservationService;
 
-    private ReservationSaveRequest reservationSaveRequest = new ReservationSaveRequest(
+    private ReservationCreateUpdateRequest reservationCreateUpdateRequest = new ReservationCreateUpdateRequest(
             1L, //TODO: 나중에 인수테스트 전부 생기면 갖다 쓰기
             TOMORROW_START_TIME.plusHours(3),
             TOMORROW_START_TIME.plusHours(4),
@@ -39,8 +43,8 @@ class ReservationServiceTest extends ServiceTest {
     );
 
     private final Reservation reservation = makeReservation(
-            reservationSaveRequest.getStartDateTime(),
-            reservationSaveRequest.getEndDateTime(),
+            reservationCreateUpdateRequest.getStartDateTime(),
+            reservationCreateUpdateRequest.getEndDateTime(),
             BE);
 
     @Test
@@ -55,10 +59,10 @@ class ReservationServiceTest extends ServiceTest {
                 .willReturn(reservation);
 
         //when
-        ReservationSaveResponse reservationSaveResponse = reservationService.saveReservation(1L, reservationSaveRequest);
+        ReservationCreateResponse reservationCreateResponse = reservationService.saveReservation(1L, reservationCreateUpdateRequest);
 
         //then
-        assertThat(reservationSaveResponse.getId()).isEqualTo(reservation.getId());
+        assertThat(reservationCreateResponse.getId()).isEqualTo(reservation.getId());
     }
 
     @Test
@@ -73,7 +77,7 @@ class ReservationServiceTest extends ServiceTest {
                 .willReturn(reservation);
 
         //then
-        assertThatThrownBy(() -> reservationService.saveReservation(1L, reservationSaveRequest))
+        assertThatThrownBy(() -> reservationService.saveReservation(1L, reservationCreateUpdateRequest))
                 .isInstanceOf(NoSuchMapException.class);
     }
 
@@ -89,7 +93,7 @@ class ReservationServiceTest extends ServiceTest {
                 .willReturn(reservation);
 
         //then
-        assertThatThrownBy(() -> reservationService.saveReservation(1L, reservationSaveRequest))
+        assertThatThrownBy(() -> reservationService.saveReservation(1L, reservationCreateUpdateRequest))
                 .isInstanceOf(NoSuchSpaceException.class);
     }
 
@@ -97,7 +101,7 @@ class ReservationServiceTest extends ServiceTest {
     @DisplayName("예약 생성 요청 시, 시작 시간이 현재 시간보다 빠르다면 예외가 발생한다.")
     void saveStartTimeBeforeNow() {
         //given
-        reservationSaveRequest = new ReservationSaveRequest(
+        reservationCreateUpdateRequest = new ReservationCreateUpdateRequest(
                 1L,
                 LocalDateTime.now().minusHours(3),
                 LocalDateTime.now().plusHours(3),
@@ -110,7 +114,7 @@ class ReservationServiceTest extends ServiceTest {
         saveMock();
 
         //then
-        assertThatThrownBy(() -> reservationService.saveReservation(1L, reservationSaveRequest))
+        assertThatThrownBy(() -> reservationService.saveReservation(1L, reservationCreateUpdateRequest))
                 .isInstanceOf(ImpossibleStartTimeException.class);
     }
 
@@ -118,7 +122,7 @@ class ReservationServiceTest extends ServiceTest {
     @DisplayName("예약 생성 요청 시, 종료 시간이 현재 시간보다 빠르다면 예외가 발생한다.")
     void saveEndTimeBeforeNow() {
         //given
-        reservationSaveRequest = new ReservationSaveRequest(
+        reservationCreateUpdateRequest = new ReservationCreateUpdateRequest(
                 1L,
                 LocalDateTime.now().plusHours(3),
                 LocalDateTime.now().minusHours(3),
@@ -131,7 +135,7 @@ class ReservationServiceTest extends ServiceTest {
         saveMock();
 
         //then
-        assertThatThrownBy(() -> reservationService.saveReservation(1L, reservationSaveRequest))
+        assertThatThrownBy(() -> reservationService.saveReservation(1L, reservationCreateUpdateRequest))
                 .isInstanceOf(ImpossibleEndTimeException.class);
     }
 
@@ -139,7 +143,7 @@ class ReservationServiceTest extends ServiceTest {
     @DisplayName("예약 생성 요청 시, 시작 시간과 종료 시간이 같다면 예외가 발생한다.")
     void saveStartTimeEqualsEndTime() {
         //given
-        reservationSaveRequest = new ReservationSaveRequest(
+        reservationCreateUpdateRequest = new ReservationCreateUpdateRequest(
                 1L,
                 TOMORROW_START_TIME,
                 TOMORROW_START_TIME,
@@ -152,7 +156,7 @@ class ReservationServiceTest extends ServiceTest {
         saveMock();
 
         //then
-        assertThatThrownBy(() -> reservationService.saveReservation(1L, reservationSaveRequest))
+        assertThatThrownBy(() -> reservationService.saveReservation(1L, reservationCreateUpdateRequest))
                 .isInstanceOf(ImpossibleEndTimeException.class);
     }
 
@@ -160,7 +164,7 @@ class ReservationServiceTest extends ServiceTest {
     @DisplayName("예약 생성 요청 시, 시작 시간과 종료 시간의 날짜가 다르다면 예외가 발생한다.")
     void saveStartTimeDateNotEqualsEndTimeDate() {
         //given
-        reservationSaveRequest = new ReservationSaveRequest(
+        reservationCreateUpdateRequest = new ReservationCreateUpdateRequest(
                 1L,
                 TOMORROW_START_TIME,
                 TOMORROW_START_TIME.plusDays(1),
@@ -173,7 +177,7 @@ class ReservationServiceTest extends ServiceTest {
         saveMock();
 
         //then
-        assertThatThrownBy(() -> reservationService.saveReservation(1L, reservationSaveRequest))
+        assertThatThrownBy(() -> reservationService.saveReservation(1L, reservationCreateUpdateRequest))
                 .isInstanceOf(NonMatchingStartAndEndDateException.class);
     }
 
@@ -191,16 +195,16 @@ class ReservationServiceTest extends ServiceTest {
                 any(LocalDateTime.class)))
                 .willReturn(List.of(new Reservation.Builder()
                         .id(1L)
-                        .startTime(reservationSaveRequest.getStartDateTime().minusMinutes(startMinute))
-                        .endTime(reservationSaveRequest.getEndDateTime().minusMinutes(endMinute))
-                        .password(reservationSaveRequest.getPassword())
-                        .userName(reservationSaveRequest.getName())
-                        .description(reservationSaveRequest.getDescription())
+                        .startTime(reservationCreateUpdateRequest.getStartDateTime().minusMinutes(startMinute))
+                        .endTime(reservationCreateUpdateRequest.getEndDateTime().minusMinutes(endMinute))
+                        .password(reservationCreateUpdateRequest.getPassword())
+                        .userName(reservationCreateUpdateRequest.getName())
+                        .description(reservationCreateUpdateRequest.getDescription())
                         .space(BE)
                         .build()));
 
         //then
-        assertThatThrownBy(() -> reservationService.saveReservation(1L, reservationSaveRequest))
+        assertThatThrownBy(() -> reservationService.saveReservation(1L, reservationCreateUpdateRequest))
                 .isInstanceOf(ImpossibleReservationTimeException.class);
     }
 
@@ -218,17 +222,17 @@ class ReservationServiceTest extends ServiceTest {
                 any(LocalDateTime.class)))
                 .willReturn(List.of(
                         makeReservation(
-                                reservationSaveRequest.getStartDateTime().minusMinutes(conferenceTime),
-                                reservationSaveRequest.getEndDateTime().minusMinutes(conferenceTime),
+                                reservationCreateUpdateRequest.getStartDateTime().minusMinutes(conferenceTime),
+                                reservationCreateUpdateRequest.getEndDateTime().minusMinutes(conferenceTime),
                                 BE),
                         makeReservation(
-                                reservationSaveRequest.getStartDateTime().plusMinutes(conferenceTime),
-                                reservationSaveRequest.getEndDateTime().plusMinutes(conferenceTime),
+                                reservationCreateUpdateRequest.getStartDateTime().plusMinutes(conferenceTime),
+                                reservationCreateUpdateRequest.getEndDateTime().plusMinutes(conferenceTime),
                                 BE)));
 
         //then
-        ReservationSaveResponse reservationSaveResponse = reservationService.saveReservation(1L, reservationSaveRequest);
-        assertThat(reservationSaveResponse.getId()).isEqualTo(reservation.getId());
+        ReservationCreateResponse reservationCreateResponse = reservationService.saveReservation(1L, reservationCreateUpdateRequest);
+        assertThat(reservationCreateResponse.getId()).isEqualTo(reservation.getId());
     }
 
     @Test
@@ -236,14 +240,14 @@ class ReservationServiceTest extends ServiceTest {
     void findReservations() {
         //given
         int conferenceTime = 30;
-        List<Reservation> reservations = List.of(
+        List<Reservation> foundReservations = Arrays.asList(
                 makeReservation(
-                        reservationSaveRequest.getStartDateTime().minusMinutes(conferenceTime),
-                        reservationSaveRequest.getEndDateTime().minusMinutes(conferenceTime),
+                        reservationCreateUpdateRequest.getStartDateTime().minusMinutes(conferenceTime),
+                        reservationCreateUpdateRequest.getEndDateTime().minusMinutes(conferenceTime),
                         BE),
                 makeReservation(
-                        reservationSaveRequest.getStartDateTime().plusMinutes(conferenceTime),
-                        reservationSaveRequest.getEndDateTime().plusMinutes(conferenceTime),
+                        reservationCreateUpdateRequest.getStartDateTime().plusMinutes(conferenceTime),
+                        reservationCreateUpdateRequest.getEndDateTime().plusMinutes(conferenceTime),
                         BE));
 
         //when
@@ -251,16 +255,16 @@ class ReservationServiceTest extends ServiceTest {
                 .willReturn(true);
         given(spaces.existsById(anyLong()))
                 .willReturn(true);
-        given(this.reservations.findAllBySpaceIdInAndStartTimeIsBetweenAndEndTimeIsBetween(
+        given(reservations.findAllBySpaceIdInAndStartTimeIsBetweenAndEndTimeIsBetween(
                 anyList(),
                 any(LocalDateTime.class),
                 any(LocalDateTime.class),
                 any(LocalDateTime.class),
                 any(LocalDateTime.class)))
-                .willReturn(reservations);
+                .willReturn(foundReservations);
 
         //then
-        ReservationFindResponse reservationFindResponse = ReservationFindResponse.of(reservations);
+        ReservationFindResponse reservationFindResponse = ReservationFindResponse.of(foundReservations);
         assertThat(reservationService.findReservations(1L, 1L, TOMORROW))
                 .usingRecursiveComparison()
                 .isEqualTo(reservationFindResponse);
@@ -313,20 +317,20 @@ class ReservationServiceTest extends ServiceTest {
         int conferenceTime = 30;
         List<Reservation> foundReservations = List.of(
                 makeReservation(
-                        reservationSaveRequest.getStartDateTime().minusMinutes(conferenceTime),
-                        reservationSaveRequest.getEndDateTime().minusMinutes(conferenceTime),
+                        reservationCreateUpdateRequest.getStartDateTime().minusMinutes(conferenceTime),
+                        reservationCreateUpdateRequest.getEndDateTime().minusMinutes(conferenceTime),
                         BE),
                 makeReservation(
-                        reservationSaveRequest.getStartDateTime().plusMinutes(conferenceTime),
-                        reservationSaveRequest.getEndDateTime().plusMinutes(conferenceTime),
+                        reservationCreateUpdateRequest.getStartDateTime().plusMinutes(conferenceTime),
+                        reservationCreateUpdateRequest.getEndDateTime().plusMinutes(conferenceTime),
                         BE),
                 makeReservation(
-                        reservationSaveRequest.getStartDateTime().minusMinutes(conferenceTime),
-                        reservationSaveRequest.getEndDateTime().minusMinutes(conferenceTime),
+                        reservationCreateUpdateRequest.getStartDateTime().minusMinutes(conferenceTime),
+                        reservationCreateUpdateRequest.getEndDateTime().minusMinutes(conferenceTime),
                         FE1),
                 makeReservation(
-                        reservationSaveRequest.getStartDateTime().plusMinutes(conferenceTime),
-                        reservationSaveRequest.getEndDateTime().plusMinutes(conferenceTime),
+                        reservationCreateUpdateRequest.getStartDateTime().plusMinutes(conferenceTime),
+                        reservationCreateUpdateRequest.getEndDateTime().plusMinutes(conferenceTime),
                         FE1));
 
         //when
@@ -363,7 +367,7 @@ class ReservationServiceTest extends ServiceTest {
                         BE)));
 
         //then
-        assertDoesNotThrow(() -> reservationService.deleteReservation(1L, 1L, RESERVATION_DELETE_REQUEST));
+        assertDoesNotThrow(() -> reservationService.deleteReservation(1L, 1L, RESERVATION_PASSWORD_AUTHENTICATION_REQUEST));
     }
 
     @Test
@@ -376,7 +380,7 @@ class ReservationServiceTest extends ServiceTest {
                 .willReturn(Optional.empty());
 
         //then
-        assertThatThrownBy(() -> reservationService.deleteReservation(1L, 1L, RESERVATION_DELETE_REQUEST))
+        assertThatThrownBy(() -> reservationService.deleteReservation(1L, 1L, RESERVATION_PASSWORD_AUTHENTICATION_REQUEST))
                 .isInstanceOf(NoSuchReservationException.class);
     }
 
@@ -384,7 +388,8 @@ class ReservationServiceTest extends ServiceTest {
     @DisplayName("예약 삭제 요청 시, 비밀번호가 일치하지 않는다면 오류가 발생한다.")
     void deleteReservationPasswordException() {
         //given
-        ReservationDeleteRequest reservationDeleteRequest = new ReservationDeleteRequest("1233");
+        ReservationPasswordAuthenticationRequest reservationPasswordAuthenticationRequest
+                = new ReservationPasswordAuthenticationRequest("1233");
 
         //when
         given(maps.existsById(anyLong()))
@@ -396,7 +401,7 @@ class ReservationServiceTest extends ServiceTest {
                         BE)));
 
         //then
-        assertThatThrownBy(() -> reservationService.deleteReservation(1L, 1L, reservationDeleteRequest))
+        assertThatThrownBy(() -> reservationService.deleteReservation(1L, 1L, reservationPasswordAuthenticationRequest))
                 .isInstanceOf(ReservationPasswordException.class);
     }
 
@@ -405,9 +410,9 @@ class ReservationServiceTest extends ServiceTest {
                 .id(1L)
                 .startTime(startTime)
                 .endTime(endTime)
-                .password(reservationSaveRequest.getPassword())
-                .userName(reservationSaveRequest.getName())
-                .description(reservationSaveRequest.getDescription())
+                .password(reservationCreateUpdateRequest.getPassword())
+                .userName(reservationCreateUpdateRequest.getName())
+                .description(reservationCreateUpdateRequest.getDescription())
                 .space(space)
                 .build();
     }

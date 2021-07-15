@@ -4,6 +4,8 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 
 import javax.validation.ConstraintViolationException;
 
+import static com.woowacourse.zzimkkong.dto.Validator.FORMAT_MESSAGE;
+
 public class ErrorResponse {
     private String message;
 
@@ -30,7 +32,7 @@ public class ErrorResponse {
     }
 
     public static ErrorResponse invalidFormat() {
-        return new ErrorResponse("날짜 및 시간 데이터 형식이 올바르지 않습니다.");
+        return new ErrorResponse(FORMAT_MESSAGE);
     }
 
     public String getMessage() {
