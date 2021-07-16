@@ -27,6 +27,8 @@ export const Table = styled.table`
   table-layout: fixed;
   border-collapse: collapse;
   border-spacing: 0;
+  table-layout: auto;
+  width: 100%;
 `;
 
 export const TableRow = styled.tr`
@@ -41,8 +43,9 @@ export const TableHead = styled.thead``;
 
 export const TableHeader = styled.th<TableHeaderCellProps>`
   padding: 1rem;
-  font-weight: 700;
   word-break: break-word;
+  vertical-align: middle;
+  font-weight: 700;
   border-bottom: 1px solid ${({ theme }) => theme.black[400]};
   ${wordWrapCSS};
   ${alignCSS};
@@ -53,6 +56,7 @@ export const TableBody = styled.tbody``;
 export const TableCell = styled.td<TableDataCellProps>`
   padding: 1rem;
   word-break: break-word;
+  vertical-align: middle;
   ${wordWrapCSS};
   ${alignCSS};
 `;
