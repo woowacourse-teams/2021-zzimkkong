@@ -18,7 +18,6 @@ import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.BDDMockito.given;
 
 class AuthServiceTest extends ServiceTest {
-
     @Autowired
     private AuthService authService;
 

@@ -17,9 +17,9 @@ public class CommonFixture {
     public static Map LUTHER = new Map("루터회관", POBI);
     public static Space BE = new Space("백엔드 강의실", LUTHER);
     public static Space FE1 = new Space("프론트엔드 강의실1", LUTHER);
+
     public static final LocalDate TOMORROW = LocalDate.now().plusDays(1);
     public static final LocalDateTime TOMORROW_START_TIME = TOMORROW.atStartOfDay();
-
     public static final String DESCRIPTION = "찜꽁 1차 회의";
     public static final String USER_NAME = "찜꽁";
     public static final String RESERVATION_PASSWORD = "1234";

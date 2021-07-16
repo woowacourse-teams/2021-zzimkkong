@@ -16,11 +16,11 @@ class MemberRepositoryTest extends RepositoryTest {
     @DisplayName("Member를 저장한다.")
     void save() {
         // given, when
-        Member expected = members.save(POBI);
+        Member savedMember = members.save(POBI);
 
         // then
-        assertThat(expected.getId()).isNotNull();
-        assertThat(expected).usingRecursiveComparison()
+        assertThat(savedMember.getId()).isNotNull();
+        assertThat(savedMember).usingRecursiveComparison()
                 .isEqualTo(POBI);
     }
 
@@ -28,14 +28,14 @@ class MemberRepositoryTest extends RepositoryTest {
     @DisplayName("저장된 멤버를 이메일을 통해 찾아올 수 있다.")
     void findByEmail() {
         // given
-        Member expected = members.save(POBI);
+        Member savedMember = members.save(POBI);
 
         // when
         Member findMember = members.findByEmail(EMAIL)
                 .orElseThrow(NoSuchMemberException::new);
 
         // then
-        assertThat(findMember).isEqualTo(expected);
+        assertThat(findMember).isEqualTo(savedMember);
     }
 
     @Test
@@ -44,11 +44,8 @@ class MemberRepositoryTest extends RepositoryTest {
         // given
         members.save(POBI);
 
-        // when
-        boolean actual = members.existsByEmail(EMAIL);
-
-        // then
-        assertThat(actual).isTrue();
+        // when, then
+        assertThat(members.existsByEmail(EMAIL)).isTrue();
     }
 
     @Test
