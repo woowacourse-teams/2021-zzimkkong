@@ -3,73 +3,35 @@ package com.woowacourse.zzimkkong.domain;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.Arguments;
-import org.junit.jupiter.params.provider.MethodSource;
+import org.junit.jupiter.params.provider.CsvSource;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.stream.Stream;
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 
+import static com.woowacourse.zzimkkong.CommonFixture.TOMORROW;
 import static org.assertj.core.api.Assertions.assertThat;
 
 class ReservationTest {
-    private static final LocalDate DATE = LocalDate.of(2021, 7, 9);
 
     private Reservation reservation;
 
     @BeforeEach
     void setUp() {
         reservation = new Reservation.Builder()
-                .startTime(DATE.atTime(8, 0, 0))
-                .endTime(DATE.atTime(9, 0, 0))
+                .startTime(TOMORROW.atTime(8, 0))
+                .endTime(TOMORROW.atTime(9, 0))
                 .build();
     }
 
     @DisplayName("겹치는 시간 정보가 주어지면 true, 예약 가능한 시간대면 false")
     @ParameterizedTest
-    @MethodSource("provideStartAndEndDateTime")
-    void hasConflictWith(LocalDateTime startTime, LocalDateTime endTime, Boolean result) {
-        assertThat(reservation.hasConflictWith(startTime, endTime)).isEqualTo(result);
-    }
-
-    private static Stream<Arguments> provideStartAndEndDateTime() {
-        return Stream.of(
-                Arguments.of(
-                        DATE.atTime(8, 1, 0),
-                        DATE.atTime(8, 59, 0),
-                        true),
-                Arguments.of(
-                        DATE.atTime(7, 59, 0),
-                        DATE.atTime(8, 1, 0),
-                        true),
-                Arguments.of(
-                        DATE.atTime(8, 59, 0),
-                        DATE.atTime(9, 1, 0),
-                        true),
-                Arguments.of(
-                        DATE.atTime(7, 59, 0),
-                        DATE.atTime(9, 1, 0),
-                        true),
-                Arguments.of(
-                        DATE.atTime(8, 0, 0),
-                        DATE.atTime(9, 0, 0),
-                        true),
-                Arguments.of(
-                        DATE.atTime(7, 59, 0),
-                        DATE.atTime(8, 0, 0),
-                        false),
-                Arguments.of(
-                        DATE.atTime(9, 0, 0),
-                        DATE.atTime(9, 1, 0),
-                        false),
-                Arguments.of(
-                        DATE.atTime(7, 0, 0),
-                        DATE.atTime(8, 0, 0),
-                        false),
-                Arguments.of(
-                        DATE.atTime(9, 0, 0),
-                        DATE.atTime(10, 0, 0),
-                        false)
-        );
+    @CsvSource(value = {"08:01+08:59+true", "07:59+08:01+true", "08:59+09:01+true",
+            "07:59+09:01+true", "08:00+09:00+true", "07:59+08:00+false",
+            "09:00+09:01+false", "07:00+08:00+false", "09:00+10:00+false"}, delimiter = '+')
+    void hasConflictWith(String startTime, String endTime, Boolean result) {
+        LocalDateTime start = TOMORROW.atTime(LocalTime.parse(startTime, DateTimeFormatter.ofPattern("HH:mm")));
+        LocalDateTime end = TOMORROW.atTime(LocalTime.parse(endTime, DateTimeFormatter.ofPattern("HH:mm")));
+        assertThat(reservation.hasConflictWith(start, end)).isEqualTo(result);
     }
 }

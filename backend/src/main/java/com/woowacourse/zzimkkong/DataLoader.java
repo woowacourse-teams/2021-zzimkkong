@@ -16,31 +16,31 @@ import java.time.LocalDate;
 import java.util.List;
 
 @Component
-@Profile({"local", "test"})
+@Profile({"local"})
 public class DataLoader implements CommandLineRunner {
-    private final MemberRepository memberRepository;
-    private final MapRepository mapRepository;
-    private final SpaceRepository spaceRepository;
-    private final ReservationRepository reservationRepository;
+    private final MemberRepository members;
+    private final MapRepository maps;
+    private final SpaceRepository spaces;
+    private final ReservationRepository reservations;
 
     public DataLoader(
             final MemberRepository memberRepository,
             final MapRepository mapRepository,
             final SpaceRepository spaceRepository,
             final ReservationRepository reservationRepository) {
-        this.memberRepository = memberRepository;
-        this.mapRepository = mapRepository;
-        this.spaceRepository = spaceRepository;
-        this.reservationRepository = reservationRepository;
+        this.members = memberRepository;
+        this.maps = mapRepository;
+        this.spaces = spaceRepository;
+        this.reservations = reservationRepository;
     }
 
     @Override
     public void run(String... args) {
-        Member pobi = memberRepository.save(
+        Member pobi = members.save(
                 new Member("pobi@woowa.com", "test1234", "woowacourse")
         );
 
-        Map luther = mapRepository.save(
+        Map luther = maps.save(
                 new Map("루터회관", pobi)
         );
 
@@ -68,7 +68,7 @@ public class DataLoader implements CommandLineRunner {
         );
 
         for (Space space : spaces) {
-            spaceRepository.save(space);
+            this.spaces.save(space);
         }
 
         LocalDate targetDate = LocalDate.now().plusDays(1L);
@@ -118,10 +118,10 @@ public class DataLoader implements CommandLineRunner {
                 .space(fe1)
                 .build();
 
-        reservationRepository.save(reservationBackEndTargetDate0To1);
-        reservationRepository.save(reservationBackEndTargetDate13To14);
-        reservationRepository.save(reservationBackEndTargetDate18To23);
-        reservationRepository.save(reservationBackEndTheDayAfterTargetDate);
-        reservationRepository.save(reservationFrontEnd1TargetDate0to1);
+        reservations.save(reservationBackEndTargetDate0To1);
+        reservations.save(reservationBackEndTargetDate13To14);
+        reservations.save(reservationBackEndTargetDate18To23);
+        reservations.save(reservationBackEndTheDayAfterTargetDate);
+        reservations.save(reservationFrontEnd1TargetDate0to1);
     }
 }

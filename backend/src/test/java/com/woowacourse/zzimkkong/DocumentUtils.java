@@ -12,12 +12,12 @@ public final class DocumentUtils {
     private DocumentUtils() {
     }
 
-    public static void setRequestSpecification(RequestSpecification preConfiguredRequestSpecification) {
-        DocumentUtils.preConfiguredRequestSpecification = preConfiguredRequestSpecification;
-    }
-
     public static RequestSpecification getRequestSpecification() {
         return preConfiguredRequestSpecification;
+    }
+
+    public static void setRequestSpecification(RequestSpecification preConfiguredRequestSpecification) {
+        DocumentUtils.preConfiguredRequestSpecification = preConfiguredRequestSpecification;
     }
 
     public static OperationRequestPreprocessor getRequestPreprocessor() {
