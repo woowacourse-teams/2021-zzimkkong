@@ -19,6 +19,7 @@ public class SpaceController {
 
     @GetMapping("/{spaceId}")
     public ResponseEntity<SpaceFindResponse> find(@PathVariable Long mapId, @PathVariable Long spaceId) {
-        return ResponseEntity.ok().body(spaceService.findSpace(mapId, spaceId));
+        SpaceFindResponse spaceFindResponse = spaceService.findSpace(mapId, spaceId);
+        return ResponseEntity.ok().body(spaceFindResponse);
     }
 }
