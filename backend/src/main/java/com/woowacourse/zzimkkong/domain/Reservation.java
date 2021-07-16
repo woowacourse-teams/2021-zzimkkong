@@ -45,9 +45,11 @@ public class Reservation {
     }
 
     public boolean hasConflictWith(final LocalDateTime startDateTime, final LocalDateTime endDateTime) {
-        return contains(startDateTime, endDateTime)
-                || intersects(startDateTime, endDateTime)
-                || equals(startDateTime, endDateTime);
+        boolean contains = contains(startDateTime, endDateTime);
+        boolean intersects = intersects(startDateTime, endDateTime);
+        boolean equals = equals(startDateTime, endDateTime);
+
+        return contains || intersects || equals;
     }
 
     private boolean contains(final LocalDateTime startDateTime, final LocalDateTime endDateTime) {

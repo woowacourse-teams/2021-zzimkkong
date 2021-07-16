@@ -35,15 +35,6 @@ public class ReservationController {
                 .build();
     }
 
-    @GetMapping("/spaces/{spaceId}/reservations")
-    public ResponseEntity<ReservationFindResponse> find(
-            @PathVariable Long mapId,
-            @PathVariable Long spaceId,
-            @RequestParam @DateTimeFormat(pattern = DATE_FORMAT) LocalDate date) {
-        ReservationFindResponse reservationFindResponse = reservationService.findReservations(mapId, spaceId, date);
-        return ResponseEntity.ok().body(reservationFindResponse);
-    }
-
     @GetMapping("/reservations")
     public ResponseEntity<ReservationFindAllResponse> findAll(
             @PathVariable Long mapId,
@@ -60,6 +51,15 @@ public class ReservationController {
         SlackResponse slackResponse = reservationService.deleteReservation(mapId, reservationId, reservationPasswordAuthenticationRequest);
         slackService.sendDeleteMessage(slackResponse);
         return ResponseEntity.noContent().build();
+    }
+
+    @GetMapping("/spaces/{spaceId}/reservations")
+    public ResponseEntity<ReservationFindResponse> find(
+            @PathVariable Long mapId,
+            @PathVariable Long spaceId,
+            @RequestParam @DateTimeFormat(pattern = DATE_FORMAT) LocalDate date) {
+        ReservationFindResponse reservationFindResponse = reservationService.findReservations(mapId, spaceId, date);
+        return ResponseEntity.ok().body(reservationFindResponse);
     }
 
     @PostMapping("/reservations/{reservationId}")

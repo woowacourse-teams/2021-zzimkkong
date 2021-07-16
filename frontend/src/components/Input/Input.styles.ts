@@ -1,9 +1,17 @@
 import { ReactNode } from 'react';
 import styled, { css } from 'styled-components';
 
-interface Props {
-  icon?: ReactNode;
-  status?: 'success' | 'error' | 'default';
+interface LabelProps {
+  hasMessage: boolean;
+  hasLabel: boolean;
+}
+
+interface InputProps {
+  icon: ReactNode;
+}
+
+interface MessageProps {
+  status: 'success' | 'error' | 'default';
 }
 
 const statusCSS = {
@@ -18,11 +26,11 @@ const statusCSS = {
   `,
 };
 
-export const Label = styled.label`
+export const Label = styled.label<LabelProps>`
   display: block;
   position: relative;
-  margin-top: 0.5rem;
-  margin-bottom: 1.625rem;
+  margin-top: ${({ hasLabel }) => (hasLabel ? '0.5rem' : '0')};
+  margin-bottom: ${({ hasMessage }) => (hasMessage ? '1.625rem' : '0')};
 `;
 
 export const LabelText = styled.span`
@@ -45,7 +53,7 @@ export const Icon = styled.div`
   padding: 0.75rem 0.5rem;
 `;
 
-export const Input = styled.input<Props>`
+export const Input = styled.input<InputProps>`
   padding: 0.75rem;
   width: 100%;
   font-size: 1.25rem;
@@ -58,13 +66,9 @@ export const Input = styled.input<Props>`
     border-color: ${({ theme }) => theme.primary[400]};
     box-shadow: inset 0px 0px 0px 1px ${({ theme }) => theme.primary[400]};
   }
-
-  &::-webkit-calendar-picker-indicator {
-    display: none;
-  }
 `;
 
-export const Message = styled.p<Props>`
+export const Message = styled.p<MessageProps>`
   ${({ status = 'default' }) => statusCSS[status]};
   font-size: 0.75rem;
   position: absolute;

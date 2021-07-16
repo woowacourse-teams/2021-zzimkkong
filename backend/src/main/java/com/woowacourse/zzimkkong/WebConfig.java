@@ -10,6 +10,6 @@ public class WebConfig implements WebMvcConfigurer {
     public void addCorsMappings(CorsRegistry registry) {
         registry.addMapping("/**")
                 .allowedMethods("*");
-//                .allowedOriginPatterns("http://localhost:3000/");
+//                .allowedOriginPatterns("https://zzimkkong-proxy.o-r.kr/");
     }
 }
