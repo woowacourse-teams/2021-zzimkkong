@@ -1,5 +1,4 @@
 import styled from 'styled-components';
-import calendarUrl from 'assets/svg/calendar.svg';
 
 export const PageHeader = styled.h2`
   font-size: 1.625rem;
