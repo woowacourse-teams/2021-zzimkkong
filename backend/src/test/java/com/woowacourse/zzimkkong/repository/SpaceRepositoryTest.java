@@ -28,6 +28,7 @@ class SpaceRepositoryTest extends RepositoryTest {
         List<Space> actual = spaces.findAllByMapId(LUTHER.getId());
 
         // then
-        assertThat(actual).isEqualTo(List.of(BE, FE1));
+        assertThat(actual).usingRecursiveComparison()
+                .isEqualTo(List.of(BE, FE1));
     }
 }
