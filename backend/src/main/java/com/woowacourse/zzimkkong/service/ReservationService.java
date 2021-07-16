@@ -24,17 +24,17 @@ import java.util.stream.Collectors;
 public class ReservationService {
     public static final long ONE_DAY = 1L;
 
-    private final MapRepository mapRepository;
-    private final SpaceRepository spaceRepository;
-    private final ReservationRepository reservationRepository;
+    private final MapRepository maps;
+    private final SpaceRepository spaces;
+    private final ReservationRepository reservations;
 
     public ReservationService(
             final MapRepository mapRepository,
             final SpaceRepository spaceRepository,
             final ReservationRepository reservationRepository) {
-        this.mapRepository = mapRepository;
-        this.spaceRepository = spaceRepository;
-        this.reservationRepository = reservationRepository;
+        this.maps = mapRepository;
+        this.spaces = spaceRepository;
+        this.reservations = reservationRepository;
     }
 
     public ReservationCreateResponse saveReservation(
@@ -43,12 +43,11 @@ public class ReservationService {
         validateMapExistence(mapId);
 
         validateTime(reservationCreateUpdateRequest);
-
-        Space space = spaceRepository.findById(reservationCreateUpdateRequest.getSpaceId())
+        Space space = spaces.findById(reservationCreateUpdateRequest.getSpaceId())
                 .orElseThrow(NoSuchSpaceException::new);
         validateAvailability(space, reservationCreateUpdateRequest);
 
-        Reservation reservation = reservationRepository.save(
+        Reservation reservation = reservations.save(
                 new Reservation.Builder()
                         .startTime(reservationCreateUpdateRequest.getStartDateTime())
                         .endTime(reservationCreateUpdateRequest.getEndDateTime())
@@ -75,7 +74,7 @@ public class ReservationService {
     public ReservationFindAllResponse findAllReservations(final Long mapId, final LocalDate date) {
         validateMapExistence(mapId);
 
-        List<Long> spaceIds = spaceRepository.findAllByMapId(mapId)
+        List<Long> spaceIds = spaces.findAllByMapId(mapId)
                 .stream()
                 .map(Space::getId)
                 .collect(Collectors.toList());
@@ -85,21 +84,15 @@ public class ReservationService {
         return ReservationFindAllResponse.of(reservations);
     }
 
-    public void deleteReservation(
-            final Long mapId,
-            final Long reservationId,
-            final ReservationPasswordAuthenticationRequest reservationPasswordAuthenticationRequest) {
-        validateMapExistence(mapId);
-        Reservation reservation = getReservation(reservationId, reservationPasswordAuthenticationRequest.getPassword());
-        reservationRepository.delete(reservation);
-    }
-
+    @Transactional(readOnly = true)
     public ReservationResponse findReservation(
             final Long mapId,
             final Long reservationId,
             final ReservationPasswordAuthenticationRequest reservationPasswordAuthenticationRequest) {
         validateMapExistence(mapId);
-        Reservation reservation = getReservation(reservationId, reservationPasswordAuthenticationRequest.getPassword());
+
+        Reservation reservation = getReservation(reservationId);
+        checkCorrectPassword(reservation, reservationPasswordAuthenticationRequest.getPassword());
         return ReservationResponse.of(reservation);
     }
 
@@ -108,35 +101,29 @@ public class ReservationService {
             final Long reservationId,
             final ReservationCreateUpdateRequest reservationCreateUpdateRequest) {
         validateMapExistence(mapId);
-
         validateTime(reservationCreateUpdateRequest);
 
-        Space space = spaceRepository.findById(reservationCreateUpdateRequest.getSpaceId())
+        Space space = spaces.findById(reservationCreateUpdateRequest.getSpaceId())
                 .orElseThrow(NoSuchSpaceException::new);
-        Reservation reservation = getReservation(reservationId, reservationCreateUpdateRequest.getPassword());
-        doDirtyCheck(reservation, reservationCreateUpdateRequest, space);
+        Reservation reservation = getReservation(reservationId);
 
+        checkCorrectPassword(reservation, reservationCreateUpdateRequest.getPassword());
+        doDirtyCheck(reservation, reservationCreateUpdateRequest, space);
         validateAvailability(space, reservationCreateUpdateRequest, reservation);
 
         reservation.update(reservationCreateUpdateRequest, space);
-        reservationRepository.save(reservation);
+        reservations.save(reservation);
     }
 
-    private void doDirtyCheck(
-            final Reservation reservation,
-            final ReservationCreateUpdateRequest reservationCreateUpdateRequest,
-            final Space space) {
-        Reservation updatedReservation = new Reservation.Builder()
-                .startTime(reservationCreateUpdateRequest.getStartDateTime())
-                .endTime(reservationCreateUpdateRequest.getEndDateTime())
-                .userName(reservationCreateUpdateRequest.getName())
-                .description(reservationCreateUpdateRequest.getDescription())
-                .space(space)
-                .build();
+    public void deleteReservation(
+            final Long mapId,
+            final Long reservationId,
+            final ReservationPasswordAuthenticationRequest reservationPasswordAuthenticationRequest) {
+        validateMapExistence(mapId);
 
-        if (reservation.hasSameData(updatedReservation)) {
-            throw new NoDataToUpdateException();
-        }
+        Reservation reservation = getReservation(reservationId);
+        checkCorrectPassword(reservation, reservationPasswordAuthenticationRequest.getPassword());
+        reservations.delete(reservation);
     }
 
     private void validateTime(final ReservationCreateUpdateRequest reservationCreateUpdateRequest) {
@@ -198,22 +185,35 @@ public class ReservationService {
         }
     }
 
-    private Reservation getReservation(final Long reservationId, final String password) {
-        Reservation reservation = reservationRepository
-                .findById(reservationId)
-                .orElseThrow(NoSuchReservationException::new);
+    private void validateMapExistence(final Long mapId) {
+        if (!maps.existsById(mapId)) {
+            throw new NoSuchMapException();
+        }
+    }
 
+    private void validateSpaceExistence(final Long spaceId) {
+        if (!spaces.existsById(spaceId)) {
+            throw new NoSuchSpaceException();
+        }
+    }
+
+    private void checkCorrectPassword(final Reservation reservation, final String password) {
         if (reservation.isWrongPassword(password)) {
             throw new ReservationPasswordException();
         }
-        return reservation;
+    }
+
+    private Reservation getReservation(final Long reservationId) {
+        return reservations
+                .findById(reservationId)
+                .orElseThrow(NoSuchReservationException::new);
     }
 
     private List<Reservation> getReservations(final Collection<Long> spaceIds, final LocalDate date) {
         LocalDateTime minimumDateTime = date.atStartOfDay();
         LocalDateTime maximumDateTime = minimumDateTime.plusDays(ONE_DAY);
 
-        return reservationRepository.findAllBySpaceIdInAndStartTimeIsBetweenAndEndTimeIsBetween(
+        return reservations.findAllBySpaceIdInAndStartTimeIsBetweenAndEndTimeIsBetween(
                 spaceIds,
                 minimumDateTime,
                 maximumDateTime,
@@ -222,15 +222,20 @@ public class ReservationService {
         );
     }
 
-    private void validateMapExistence(final Long mapId) {
-        if (!mapRepository.existsById(mapId)) {
-            throw new NoSuchMapException();
-        }
-    }
+    private void doDirtyCheck(
+            final Reservation reservation,
+            final ReservationCreateUpdateRequest reservationCreateUpdateRequest,
+            final Space space) {
+        Reservation updatedReservation = new Reservation.Builder()
+                .startTime(reservationCreateUpdateRequest.getStartDateTime())
+                .endTime(reservationCreateUpdateRequest.getEndDateTime())
+                .userName(reservationCreateUpdateRequest.getName())
+                .description(reservationCreateUpdateRequest.getDescription())
+                .space(space)
+                .build();
 
-    private void validateSpaceExistence(final Long spaceId) {
-        if (!spaceRepository.existsById(spaceId)) {
-            throw new NoSuchSpaceException();
+        if (reservation.hasSameData(updatedReservation)) {
+            throw new NoDataToUpdateException();
         }
     }
 }
