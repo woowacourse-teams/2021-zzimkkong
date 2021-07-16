@@ -9,7 +9,7 @@ public class SpaceFindResponse {
     private SpaceFindResponse() {
     }
 
-    private SpaceFindResponse(Long id, String name) {
+    private SpaceFindResponse(final Long id, final String name) {
         this.id = id;
         this.name = name;
     }
