@@ -1,7 +1,7 @@
-import { ReactComponent as CalendarIcon } from 'assets/svg/calendar.svg';
 import { ReactComponent as LinkIcon } from 'assets/svg/link.svg';
 import { ReactComponent as MoreIcon } from 'assets/svg/more.svg';
 import Button from 'components/Button/Button';
+import DateInput from 'components/DateInput/DateInput';
 import Header from 'components/Header/Header';
 import Layout from 'components/Layout/Layout';
 import Panel from 'components/Panel/Panel';
@@ -58,16 +58,15 @@ const ProviderReservationList = (): JSX.Element => {
         <Button size="small" variant="primary">
           <LinkIcon /> 공유 링크 복사
         </Button>
-        <Styled.DateWrapper>
-          <Styled.DateInput type="date" value="2021-06-28" />
-          <CalendarIcon />
-        </Styled.DateWrapper>
+        <DateInput value="2021-07-16" />
         <Styled.SpaceList>
           {data.map(({ spaceId, spaceName, spaceColor, reservations }, index) => (
             <Styled.SpaceListItem key={spaceId}>
               <Panel expandable initialExpanded={!index}>
                 <Panel.Header bgColor={spaceColor}>
-                  <Panel.Title>{spaceName}</Panel.Title>
+                  <Panel.Inner>
+                    <Panel.Title>{spaceName}</Panel.Title>
+                  </Panel.Inner>
                 </Panel.Header>
                 <Panel.Content>
                   {reservations.length === 0 ? (
