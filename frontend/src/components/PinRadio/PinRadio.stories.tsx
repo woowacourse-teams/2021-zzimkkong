@@ -22,14 +22,38 @@ const Template: Story<Props> = (args) => (
 
 export const Default = Template.bind({});
 Default.args = {
-  text: '백엔드 강의실',
+  text: '회의실',
+  name: 'luther',
+  coordinate: { x: 50, y: 50 },
+};
+
+export const TextRight = Template.bind({});
+TextRight.args = {
+  text: '회의실',
+  textPosition: 'right',
+  name: 'luther',
+  coordinate: { x: 50, y: 50 },
+};
+
+export const TextLeft = Template.bind({});
+TextLeft.args = {
+  text: '회의실',
+  textPosition: 'left',
+  name: 'luther',
+  coordinate: { x: 70, y: 50 },
+};
+
+export const TextTop = Template.bind({});
+TextTop.args = {
+  text: '회의실',
+  textPosition: 'top',
   name: 'luther',
   coordinate: { x: 50, y: 50 },
 };
 
 export const Checked = Template.bind({});
 Checked.args = {
-  text: '백엔드 강의실',
+  text: '회의실',
   name: 'luther',
   coordinate: { x: 50, y: 50 },
   checked: true,
@@ -37,7 +61,7 @@ Checked.args = {
 
 export const Disabled = Template.bind({});
 Disabled.args = {
-  text: '회의실 1',
+  text: '회의실',
   name: 'luther',
   coordinate: { x: 50, y: 50 },
   disabled: true,

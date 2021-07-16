@@ -8,8 +8,18 @@ import Panel from 'components/Panel/Panel';
 import PinRadio from 'components/PinRadio/PinRadio';
 import ReservationListItem from 'components/ReservationListItem/ReservationListItem';
 import PATH from 'constants/path';
-import { Reservation } from 'types/common';
+import { Coordinate, Reservation } from 'types/common';
+import { Color } from 'types/styled';
 import * as Styled from './UserMain.styles';
+
+// 임시
+interface Space {
+  id: number;
+  spaceName: string;
+  textPosition: 'left' | 'right' | 'top' | 'bottom';
+  color: Color;
+  coordinate: Coordinate;
+}
 
 const UserMain = (): JSX.Element => {
   const reservations: Reservation[] = [
@@ -36,10 +46,11 @@ const UserMain = (): JSX.Element => {
     },
   ];
 
-  const spaces = [
+  const spaces: Space[] = [
     {
       id: 1,
       spaceName: '백엔드 강의실',
+      textPosition: 'bottom',
       color: '#FED7D9',
       coordinate: {
         x: 100,
@@ -49,6 +60,7 @@ const UserMain = (): JSX.Element => {
     {
       id: 2,
       spaceName: '프론트 강의실1',
+      textPosition: 'bottom',
       color: '#FED7D9',
       coordinate: {
         x: 560,
@@ -58,6 +70,7 @@ const UserMain = (): JSX.Element => {
     {
       id: 3,
       spaceName: '프론트 강의실2',
+      textPosition: 'bottom',
       color: '#FED7D9',
       coordinate: {
         x: 560,
@@ -67,6 +80,7 @@ const UserMain = (): JSX.Element => {
     {
       id: 4,
       spaceName: '회의실1',
+      textPosition: 'bottom',
       color: '#FFE3AC',
       coordinate: {
         x: 29,
@@ -76,6 +90,7 @@ const UserMain = (): JSX.Element => {
     {
       id: 5,
       spaceName: '회의실2',
+      textPosition: 'bottom',
       color: '#FFE3AC',
       coordinate: {
         x: 88,
@@ -85,6 +100,7 @@ const UserMain = (): JSX.Element => {
     {
       id: 6,
       spaceName: '회의실3',
+      textPosition: 'bottom',
       color: '#FFE3AC',
       coordinate: {
         x: 510,
@@ -94,6 +110,7 @@ const UserMain = (): JSX.Element => {
     {
       id: 7,
       spaceName: '회의실4',
+      textPosition: 'bottom',
       color: '#FFE3AC',
       coordinate: {
         x: 584,
@@ -103,6 +120,7 @@ const UserMain = (): JSX.Element => {
     {
       id: 8,
       spaceName: '회의실5',
+      textPosition: 'bottom',
       color: '#FFE3AC',
       coordinate: {
         x: 668,
@@ -112,6 +130,7 @@ const UserMain = (): JSX.Element => {
     {
       id: 9,
       spaceName: '트랙방',
+      textPosition: 'bottom',
       color: '#D8FBCC',
       coordinate: {
         x: 259,
@@ -121,6 +140,7 @@ const UserMain = (): JSX.Element => {
     {
       id: 10,
       spaceName: '페어룸1',
+      textPosition: 'left',
       color: '#CCDFFB',
       coordinate: {
         x: 208,
@@ -130,6 +150,7 @@ const UserMain = (): JSX.Element => {
     {
       id: 11,
       spaceName: '페어룸2',
+      textPosition: 'left',
       color: '#CCDFFB',
       coordinate: {
         x: 208,
@@ -139,6 +160,7 @@ const UserMain = (): JSX.Element => {
     {
       id: 12,
       spaceName: '페어룸3',
+      textPosition: 'left',
       color: '#CCDFFB',
       coordinate: {
         x: 208,
@@ -148,6 +170,7 @@ const UserMain = (): JSX.Element => {
     {
       id: 13,
       spaceName: '페어룸4',
+      textPosition: 'left',
       color: '#CCDFFB',
       coordinate: {
         x: 208,
@@ -157,6 +180,7 @@ const UserMain = (): JSX.Element => {
     {
       id: 14,
       spaceName: '페어룸5',
+      textPosition: 'left',
       color: '#CCDFFB',
       coordinate: {
         x: 208,
@@ -174,8 +198,13 @@ const UserMain = (): JSX.Element => {
         <Styled.MapContainer>
           <Styled.Map>
             {spaces &&
-              spaces.map(({ id, spaceName, coordinate }) => (
-                <PinRadio name="luther" coordinate={coordinate} text={spaceName} />
+              spaces.map(({ spaceName, coordinate, textPosition }) => (
+                <PinRadio
+                  name="luther"
+                  coordinate={coordinate}
+                  text={spaceName}
+                  textPosition={textPosition}
+                />
               ))}
             <Luther />
           </Styled.Map>

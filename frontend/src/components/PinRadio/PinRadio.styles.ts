@@ -1,4 +1,4 @@
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
 import { Coordinate } from 'types/common';
 import { Color } from 'types/styled';
 
@@ -10,8 +10,11 @@ interface PinInputProps {
   color?: Color;
 }
 
+interface PinTextProps {
+  textPosition: 'left' | 'right' | 'top' | 'bottom';
+}
+
 export const Pin = styled.label<PinProps>`
-  cursor: pointer;
   position: absolute;
   top: ${({ coordinate }) => coordinate.y}px;
   left: ${({ coordinate }) => coordinate.x}px;
@@ -19,16 +22,32 @@ export const Pin = styled.label<PinProps>`
 `;
 
 export const PinContainer = styled.div`
-  display: flex;
-  flex-direction: column;
-  align-items: center;
+  position: relative;
 `;
 
-export const PinText = styled.p`
-  margin-top: 1.125rem;
+const PinTextCSS = {
+  left: css`
+    transform: translateX(calc(-100% - 1.125rem));
+  `,
+  right: css`
+    transform: translateX(1.25rem);
+  `,
+  top: css`
+    transform: translate(-50%, -1.5rem);
+  `,
+  bottom: css`
+    transform: translate(-50%, 1.5rem);
+  `,
+};
+
+export const PinText = styled.p<PinTextProps>`
+  text-align: center;
+  position: absolute;
+  top: -0.45rem;
   font-size: 0.875rem;
   font-weight: 700;
   white-space: nowrap;
+  ${({ textPosition }) => PinTextCSS[textPosition]}
 `;
 
 export const PinInput = styled.input<PinInputProps>`
@@ -36,6 +55,7 @@ export const PinInput = styled.input<PinInputProps>`
   cursor: pointer;
   position: relative;
   box-sizing: border-box;
+  display: block;
   margin: 0;
 
   &::before {
@@ -44,7 +64,6 @@ export const PinInput = styled.input<PinInputProps>`
     display: block;
     width: 1.5rem;
     height: 1.5rem;
-    padding: 0.125rem;
     border-radius: 50%;
     border: 2px solid ${({ color, theme }) => color ?? theme.primary[400]};
     background-color: ${({ theme }) => theme.white};
@@ -74,8 +93,11 @@ export const PinInput = styled.input<PinInputProps>`
     cursor: pointer;
   }
 
+  &:disabled {
+    cursor: default;
+  }
+
   &:disabled::before {
-    cursor: not-allowed;
     border: none;
     background-color: ${({ theme }) => theme.gray[400]};
   }
