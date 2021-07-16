@@ -52,12 +52,12 @@ public class DataLoader implements CommandLineRunner {
         Space meetingRoom3 = new Space("회의실3", "#FFE3AC", luther);
         Space meetingRoom4 = new Space("회의실4", "#FFE3AC", luther);
         Space meetingRoom5 = new Space("회의실5", "#FFE3AC", luther);
-        Space pairRoom1 = new Space("페어룸1", "#FFE3AC", luther);
-        Space pairRoom2 = new Space("페어룸2", "#FFE3AC", luther);
-        Space pairRoom3 = new Space("페어룸3", "#FFE3AC", luther);
-        Space pairRoom4 = new Space("페어룸4", "#FFE3AC", luther);
-        Space pairRoom5 = new Space("페어룸5", "#FFE3AC", luther);
-        Space trackRoom = new Space("트랙방", "#FFE3AC", luther);
+        Space pairRoom1 = new Space("페어룸1", "#CCDFFB", luther);
+        Space pairRoom2 = new Space("페어룸2", "#CCDFFB", luther);
+        Space pairRoom3 = new Space("페어룸3", "#CCDFFB", luther);
+        Space pairRoom4 = new Space("페어룸4", "#CCDFFB", luther);
+        Space pairRoom5 = new Space("페어룸5", "#CCDFFB", luther);
+        Space trackRoom = new Space("트랙방", "#D8FBCC", luther);
 
         List<Space> spaces = List.of(
                 be,
