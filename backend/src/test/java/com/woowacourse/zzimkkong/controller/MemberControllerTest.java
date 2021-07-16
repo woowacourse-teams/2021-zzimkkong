@@ -15,8 +15,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.restdocs.restassured3.RestAssuredRestDocumentation.document;
 
 class MemberControllerTest extends AcceptanceTest {
-    private static final String INCORRECT_EMAIL = "pobi@naver.com";
-
     @DisplayName("정상적인 회원가입 입력이 들어오면 회원 정보를 저장한다.")
     @Test
     void join() {
@@ -34,7 +32,7 @@ class MemberControllerTest extends AcceptanceTest {
     @Test
     void getMembers() {
         //given, when
-        ExtractableResponse<Response> response = validateDuplicateEmail(INCORRECT_EMAIL);
+        ExtractableResponse<Response> response = validateDuplicateEmail("pobi@naver.com");
 
         //then
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());

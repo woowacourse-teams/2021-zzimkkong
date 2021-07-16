@@ -90,6 +90,7 @@ public class ReservationService {
             final Long reservationId,
             final ReservationPasswordAuthenticationRequest reservationPasswordAuthenticationRequest) {
         validateMapExistence(mapId);
+
         Reservation reservation = getReservation(reservationId);
         checkCorrectPassword(reservation, reservationPasswordAuthenticationRequest.getPassword());
         return ReservationResponse.of(reservation);
@@ -104,8 +105,8 @@ public class ReservationService {
 
         Space space = spaces.findById(reservationCreateUpdateRequest.getSpaceId())
                 .orElseThrow(NoSuchSpaceException::new);
-
         Reservation reservation = getReservation(reservationId);
+
         checkCorrectPassword(reservation, reservationCreateUpdateRequest.getPassword());
         doDirtyCheck(reservation, reservationCreateUpdateRequest, space);
         validateAvailability(space, reservationCreateUpdateRequest, reservation);
@@ -119,6 +120,7 @@ public class ReservationService {
             final Long reservationId,
             final ReservationPasswordAuthenticationRequest reservationPasswordAuthenticationRequest) {
         validateMapExistence(mapId);
+
         Reservation reservation = getReservation(reservationId);
         checkCorrectPassword(reservation, reservationPasswordAuthenticationRequest.getPassword());
         reservations.delete(reservation);

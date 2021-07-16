@@ -9,7 +9,6 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 public class CommonFixture {
-    //member
     public static final String EMAIL = "pobi@email.com";
     public static final String PASSWORD = "test1234";
     public static final String ORGANIZATION = "우아한테크코스";

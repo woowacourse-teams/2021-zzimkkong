@@ -71,7 +71,7 @@ class ReservationServiceTest extends ServiceTest {
     @DisplayName("예약 생성 요청 시, mapId에 따른 map이 존재하지 않는다면 예외가 발생한다.")
     void saveNotExistMapException() {
         //given, when
-        given(maps.existsById(2L))
+        given(maps.existsById(anyLong()))
                 .willReturn(false);
         given(spaces.findById(anyLong()))
                 .willReturn(Optional.of(BE));
@@ -525,7 +525,7 @@ class ReservationServiceTest extends ServiceTest {
     }
 
     @ParameterizedTest
-    @CsvSource(value = {"0:2", "59: 70", "-10:10"}, delimiter = ':')
+    @CsvSource(value = {"0:2", "59:70", "-10:10"}, delimiter = ':')
     @DisplayName("예약 수정 요청 시, 해당 시간에 예약이 존재하면 에러가 발생한다.")
     void updateImpossibleTimeException(int startTime, int endTime) {
         //given

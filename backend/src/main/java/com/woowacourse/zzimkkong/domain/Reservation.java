@@ -48,9 +48,8 @@ public class Reservation {
         boolean contains = contains(startDateTime, endDateTime);
         boolean intersects = intersects(startDateTime, endDateTime);
         boolean equals = equals(startDateTime, endDateTime);
-        return contains
-                || intersects
-                || equals;
+
+        return contains || intersects || equals;
     }
 
     private boolean contains(final LocalDateTime startDateTime, final LocalDateTime endDateTime) {

@@ -12,6 +12,7 @@ import static com.woowacourse.zzimkkong.CommonFixture.*;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.BDDMockito.given;
 
 class MemberServiceTest extends ServiceTest {
@@ -52,7 +53,7 @@ class MemberServiceTest extends ServiceTest {
         MemberSaveRequest memberSaveRequest = new MemberSaveRequest(EMAIL, PASSWORD, ORGANIZATION);
 
         //when
-        given(members.existsByEmail(any(String.class)))
+        given(members.existsByEmail(anyString()))
                 .willReturn(true);
 
         //then
