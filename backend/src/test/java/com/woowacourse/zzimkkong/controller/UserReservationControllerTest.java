@@ -25,7 +25,7 @@ import static com.woowacourse.zzimkkong.dto.Validator.DATE_FORMAT;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.restdocs.restassured3.RestAssuredRestDocumentation.document;
 
-public class ReservationControllerTest extends AcceptanceTest {
+public class UserReservationControllerTest extends AcceptanceTest {
     @Autowired
     private SpaceRepository spaceRepository;
 

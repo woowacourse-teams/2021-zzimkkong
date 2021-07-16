@@ -4,6 +4,7 @@ import com.woowacourse.zzimkkong.dto.reservation.*;
 import com.woowacourse.zzimkkong.service.ReservationService;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -12,16 +13,16 @@ import java.time.LocalDate;
 
 import static com.woowacourse.zzimkkong.dto.Validator.DATE_FORMAT;
 
-@RestController
-@RequestMapping("/api/maps/{mapId}")
-public class ReservationController {
-    private final ReservationService reservationService;
+@Component
+public abstract class ReservationController {
+    protected ReservationService reservationService;
 
     public ReservationController(final ReservationService reservationService) {
         this.reservationService = reservationService;
     }
 
-    @PostMapping("/reservations")
+    //TODO: DTO 추상화 하기
+    @PostMapping("/maps/{mapId}/reservations")
     public ResponseEntity<Void> create(
             @PathVariable Long mapId,
             @RequestBody @Valid ReservationCreateUpdateRequest reservationCreateUpdateRequest) {
@@ -31,7 +32,7 @@ public class ReservationController {
                 .build();
     }
 
-    @GetMapping("/reservations")
+    @GetMapping("/maps/{mapId}/reservations")
     public ResponseEntity<ReservationFindAllResponse> findAll(
             @PathVariable Long mapId,
             @RequestParam @DateTimeFormat(pattern = DATE_FORMAT) LocalDate date) {
@@ -39,7 +40,7 @@ public class ReservationController {
         return ResponseEntity.ok().body(reservationFindAllResponse);
     }
 
-    @PutMapping("/reservations/{reservationId}")
+    @PutMapping("/maps/{mapId}/reservations/{reservationId}")
     public ResponseEntity<Void> update(
             @PathVariable Long mapId,
             @PathVariable Long reservationId,
@@ -48,7 +49,7 @@ public class ReservationController {
         return ResponseEntity.ok().build();
     }
 
-    @DeleteMapping("/reservations/{reservationId}")
+    @DeleteMapping("/maps/{mapId}/reservations/{reservationId}")
     public ResponseEntity<Void> delete(
             @PathVariable Long mapId,
             @PathVariable Long reservationId,
@@ -57,7 +58,7 @@ public class ReservationController {
         return ResponseEntity.noContent().build();
     }
 
-    @GetMapping("/spaces/{spaceId}/reservations")
+    @GetMapping("/maps/{mapId}/spaces/{spaceId}/reservations")
     public ResponseEntity<ReservationFindResponse> find(
             @PathVariable Long mapId,
             @PathVariable Long spaceId,
@@ -66,7 +67,7 @@ public class ReservationController {
         return ResponseEntity.ok().body(reservationFindResponse);
     }
 
-    @PostMapping("/reservations/{reservationId}")
+    @PostMapping("/maps/{mapId}/reservations/{reservationId}")
     public ResponseEntity<ReservationResponse> findOne(
             @PathVariable Long mapId,
             @PathVariable Long reservationId,

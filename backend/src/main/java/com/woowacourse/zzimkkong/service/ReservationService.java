@@ -9,7 +9,7 @@ import com.woowacourse.zzimkkong.exception.space.NoSuchSpaceException;
 import com.woowacourse.zzimkkong.repository.MapRepository;
 import com.woowacourse.zzimkkong.repository.ReservationRepository;
 import com.woowacourse.zzimkkong.repository.SpaceRepository;
-import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
@@ -19,16 +19,15 @@ import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
-@Service
-@Transactional
-public class ReservationService {
+@Component
+public abstract class ReservationService {
     public static final long ONE_DAY = 1L;
 
-    private final MapRepository mapRepository;
-    private final SpaceRepository spaceRepository;
-    private final ReservationRepository reservationRepository;
+    protected MapRepository mapRepository;
+    protected SpaceRepository spaceRepository;
+    protected ReservationRepository reservationRepository;
 
-    public ReservationService(
+    protected ReservationService(
             final MapRepository mapRepository,
             final SpaceRepository spaceRepository,
             final ReservationRepository reservationRepository) {
@@ -85,44 +84,23 @@ public class ReservationService {
         return ReservationFindAllResponse.of(reservations);
     }
 
-    public void deleteReservation(
+    @Transactional(readOnly = true)
+    public abstract ReservationResponse findReservation(
             final Long mapId,
             final Long reservationId,
-            final ReservationPasswordAuthenticationRequest reservationPasswordAuthenticationRequest) {
-        validateMapExistence(mapId);
-        Reservation reservation = getReservation(reservationId, reservationPasswordAuthenticationRequest.getPassword());
-        reservationRepository.delete(reservation);
-    }
+            final ReservationPasswordAuthenticationRequest reservationPasswordAuthenticationRequest);
 
-    public ReservationResponse findReservation(
+    public abstract void deleteReservation(
             final Long mapId,
             final Long reservationId,
-            final ReservationPasswordAuthenticationRequest reservationPasswordAuthenticationRequest) {
-        validateMapExistence(mapId);
-        Reservation reservation = getReservation(reservationId, reservationPasswordAuthenticationRequest.getPassword());
-        return ReservationResponse.of(reservation);
-    }
+            final ReservationPasswordAuthenticationRequest reservationPasswordAuthenticationRequest);
 
-    public void updateReservation(
+    public abstract void updateReservation(
             final Long mapId,
             final Long reservationId,
-            final ReservationCreateUpdateRequest reservationCreateUpdateRequest) {
-        validateMapExistence(mapId);
+            final ReservationCreateUpdateRequest reservationCreateUpdateRequest);
 
-        validateTime(reservationCreateUpdateRequest);
-
-        Space space = spaceRepository.findById(reservationCreateUpdateRequest.getSpaceId())
-                .orElseThrow(NoSuchSpaceException::new);
-        Reservation reservation = getReservation(reservationId, reservationCreateUpdateRequest.getPassword());
-        doDirtyCheck(reservation, reservationCreateUpdateRequest, space);
-
-        validateAvailability(space, reservationCreateUpdateRequest, reservation);
-
-        reservation.update(reservationCreateUpdateRequest, space);
-        reservationRepository.save(reservation);
-    }
-
-    private void doDirtyCheck(
+    protected void doDirtyCheck(
             final Reservation reservation,
             final ReservationCreateUpdateRequest reservationCreateUpdateRequest,
             final Space space) {
@@ -139,7 +117,7 @@ public class ReservationService {
         }
     }
 
-    private void validateTime(final ReservationCreateUpdateRequest reservationCreateUpdateRequest) {
+    protected void validateTime(final ReservationCreateUpdateRequest reservationCreateUpdateRequest) {
         LocalDateTime startDateTime = reservationCreateUpdateRequest.getStartDateTime();
         LocalDateTime endDateTime = reservationCreateUpdateRequest.getEndDateTime();
 
@@ -156,7 +134,7 @@ public class ReservationService {
         }
     }
 
-    private void validateAvailability(
+    protected void validateAvailability(
             final Space space,
             final ReservationCreateUpdateRequest reservationCreateUpdateRequest) {
         LocalDateTime startDateTime = reservationCreateUpdateRequest.getStartDateTime();
@@ -169,7 +147,7 @@ public class ReservationService {
         validateTimeConflicts(startDateTime, endDateTime, reservationsOnDate);
     }
 
-    private void validateAvailability(
+    protected void validateAvailability(
             final Space space,
             final ReservationCreateUpdateRequest reservationCreateUpdateRequest,
             final Reservation reservation) {
@@ -198,7 +176,7 @@ public class ReservationService {
         }
     }
 
-    private Reservation getReservation(final Long reservationId, final String password) {
+    protected Reservation getReservation(final Long reservationId, final String password) {
         Reservation reservation = reservationRepository
                 .findById(reservationId)
                 .orElseThrow(NoSuchReservationException::new);
@@ -209,7 +187,7 @@ public class ReservationService {
         return reservation;
     }
 
-    private List<Reservation> getReservations(final Collection<Long> spaceIds, final LocalDate date) {
+    protected List<Reservation> getReservations(final Collection<Long> spaceIds, final LocalDate date) {
         LocalDateTime minimumDateTime = date.atStartOfDay();
         LocalDateTime maximumDateTime = minimumDateTime.plusDays(ONE_DAY);
 
@@ -222,7 +200,7 @@ public class ReservationService {
         );
     }
 
-    private void validateMapExistence(final Long mapId) {
+    protected void validateMapExistence(final Long mapId) {
         if (!mapRepository.existsById(mapId)) {
             throw new NoSuchMapException();
         }
