@@ -31,21 +31,21 @@ public class ReservationController {
                 .build();
     }
 
-    @GetMapping("/spaces/{spaceId}/reservations")
-    public ResponseEntity<ReservationFindResponse> find(
-            @PathVariable Long mapId,
-            @PathVariable Long spaceId,
-            @RequestParam @DateTimeFormat(pattern = DATE_FORMAT) LocalDate date) {
-        ReservationFindResponse reservationFindResponse = reservationService.findReservations(mapId, spaceId, date);
-        return ResponseEntity.ok().body(reservationFindResponse);
-    }
-
     @GetMapping("/reservations")
     public ResponseEntity<ReservationFindAllResponse> findAll(
             @PathVariable Long mapId,
             @RequestParam @DateTimeFormat(pattern = DATE_FORMAT) LocalDate date) {
         ReservationFindAllResponse reservationFindAllResponse = reservationService.findAllReservations(mapId, date);
         return ResponseEntity.ok().body(reservationFindAllResponse);
+    }
+
+    @PutMapping("/reservations/{reservationId}")
+    public ResponseEntity<Void> update(
+            @PathVariable Long mapId,
+            @PathVariable Long reservationId,
+            @RequestBody @Valid ReservationCreateUpdateRequest reservationCreateUpdateRequest) {
+        reservationService.updateReservation(mapId, reservationId, reservationCreateUpdateRequest);
+        return ResponseEntity.ok().build();
     }
 
     @DeleteMapping("/reservations/{reservationId}")
@@ -57,6 +57,15 @@ public class ReservationController {
         return ResponseEntity.noContent().build();
     }
 
+    @GetMapping("/spaces/{spaceId}/reservations")
+    public ResponseEntity<ReservationFindResponse> find(
+            @PathVariable Long mapId,
+            @PathVariable Long spaceId,
+            @RequestParam @DateTimeFormat(pattern = DATE_FORMAT) LocalDate date) {
+        ReservationFindResponse reservationFindResponse = reservationService.findReservations(mapId, spaceId, date);
+        return ResponseEntity.ok().body(reservationFindResponse);
+    }
+
     @PostMapping("/reservations/{reservationId}")
     public ResponseEntity<ReservationResponse> findOne(
             @PathVariable Long mapId,
@@ -64,14 +73,5 @@ public class ReservationController {
             @RequestBody @Valid ReservationPasswordAuthenticationRequest reservationPasswordAuthenticationRequest) {
         ReservationResponse reservationResponse = reservationService.findReservation(mapId, reservationId, reservationPasswordAuthenticationRequest);
         return ResponseEntity.ok().body(reservationResponse);
-    }
-
-    @PutMapping("/reservations/{reservationId}")
-    public ResponseEntity<Void> update(
-            @PathVariable Long mapId,
-            @PathVariable Long reservationId,
-            @RequestBody @Valid ReservationCreateUpdateRequest reservationCreateUpdateRequest) {
-        reservationService.updateReservation(mapId, reservationId, reservationCreateUpdateRequest);
-        return ResponseEntity.ok().build();
     }
 }
