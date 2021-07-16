@@ -8,6 +8,7 @@ import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -37,6 +38,7 @@ public class SpaceControllerTest extends AcceptanceTest {
     }
 
     @Test
+    @DisplayName("spaceId를 받아 해당 공간에 대한 정보를 조회한다.")
     void find() {
         // when
         ExtractableResponse<Response> response = findSpace(LUTHER.getId(), BE.getId());
