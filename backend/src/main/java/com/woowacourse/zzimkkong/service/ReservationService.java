@@ -3,6 +3,7 @@ package com.woowacourse.zzimkkong.service;
 import com.woowacourse.zzimkkong.domain.Reservation;
 import com.woowacourse.zzimkkong.domain.Space;
 import com.woowacourse.zzimkkong.dto.reservation.*;
+import com.woowacourse.zzimkkong.dto.slack.SlackResponse;
 import com.woowacourse.zzimkkong.exception.map.NoSuchMapException;
 import com.woowacourse.zzimkkong.exception.reservation.*;
 import com.woowacourse.zzimkkong.exception.space.NoSuchSpaceException;
@@ -96,7 +97,7 @@ public class ReservationService {
         return ReservationResponse.of(reservation);
     }
 
-    public void updateReservation(
+    public SlackResponse updateReservation(
             final Long mapId,
             final Long reservationId,
             final ReservationCreateUpdateRequest reservationCreateUpdateRequest) {
@@ -113,9 +114,10 @@ public class ReservationService {
 
         reservation.update(reservationCreateUpdateRequest, space);
         reservations.save(reservation);
+        return SlackResponse.from(reservation);
     }
 
-    public void deleteReservation(
+    public SlackResponse deleteReservation(
             final Long mapId,
             final Long reservationId,
             final ReservationPasswordAuthenticationRequest reservationPasswordAuthenticationRequest) {
@@ -124,6 +126,7 @@ public class ReservationService {
         Reservation reservation = getReservation(reservationId);
         checkCorrectPassword(reservation, reservationPasswordAuthenticationRequest.getPassword());
         reservations.delete(reservation);
+        return SlackResponse.from(reservation);
     }
 
     private void validateTime(final ReservationCreateUpdateRequest reservationCreateUpdateRequest) {
