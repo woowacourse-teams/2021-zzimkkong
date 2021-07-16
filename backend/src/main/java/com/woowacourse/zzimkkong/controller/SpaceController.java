@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class SpaceController {
     private final SpaceService spaceService;
 
-    public SpaceController(SpaceService spaceService) {
+    public SpaceController(final SpaceService spaceService) {
         this.spaceService = spaceService;
     }
 
