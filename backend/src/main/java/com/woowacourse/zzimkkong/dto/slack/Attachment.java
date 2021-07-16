@@ -26,7 +26,13 @@ public class Attachment {
         this.slackResponse = slackResponse;
     }
 
-    public static Attachment of(String fallback, String color, String pretext, String title, String titleLink, SlackResponse slackResponse) {
+    public static Attachment of(
+            String fallback,
+            String color,
+            String pretext,
+            String title,
+            String titleLink,
+            SlackResponse slackResponse) {
         return new Attachment(fallback, color, pretext, title, titleLink, slackResponse);
     }
 
