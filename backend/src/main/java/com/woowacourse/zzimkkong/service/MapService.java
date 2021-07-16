@@ -7,9 +7,9 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 @Transactional
 public class MapService {
-    private final MapRepository mapRepository;
+    private final MapRepository maps;
 
     public MapService(final MapRepository mapRepository) {
-        this.mapRepository = mapRepository;
+        this.maps = mapRepository;
     }
 }

@@ -1,6 +1,5 @@
 package com.woowacourse.zzimkkong.controller;
 
-import com.woowacourse.zzimkkong.dto.ErrorResponse;
 import com.woowacourse.zzimkkong.dto.member.LoginRequest;
 import com.woowacourse.zzimkkong.dto.member.MemberSaveRequest;
 import com.woowacourse.zzimkkong.dto.member.TokenResponse;
@@ -12,16 +11,14 @@ import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 
+import static com.woowacourse.zzimkkong.CommonFixture.*;
 import static com.woowacourse.zzimkkong.DocumentUtils.*;
+import static com.woowacourse.zzimkkong.controller.MemberControllerTest.saveMember;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.restdocs.restassured3.RestAssuredRestDocumentation.document;
 
 class AuthControllerTest extends AcceptanceTest {
-    public static final String EMAIL = "pobi@email.com";
-    public static final String PASSWORD = "test1234";
-    public static final String ORGANIZATION = "루터";
-
-    @DisplayName("유효한 정보의 로그인 요청이 오면 200 ok로 응답하며 토큰을 발급한다.")
+    @DisplayName("유효한 정보의 로그인 요청이 오면 토큰을 발급한다.")
     @Test
     void login() {
         // given
@@ -35,20 +32,6 @@ class AuthControllerTest extends AcceptanceTest {
         // then
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
         assertThat(responseBody.getAccessToken()).isInstanceOf(String.class);
-    }
-
-    @DisplayName("유효하지 않은 정보의 로그인 요청이 오면 400 Bad Request를 응답한다.")
-    @Test
-    void loginWithInvalidInformation() {
-        // given
-        saveMember(new MemberSaveRequest(EMAIL, PASSWORD, ORGANIZATION));
-
-        // when
-        LoginRequest loginRequest = new LoginRequest(EMAIL, "WrongPassword1234");
-        ExtractableResponse<Response> response = login(loginRequest);
-
-        // then
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
     }
 
     @Test
@@ -75,7 +58,7 @@ class AuthControllerTest extends AcceptanceTest {
         String invalidToken = "strangeTokenIsComing";
 
         //when
-        ExtractableResponse<Response> response = token(invalidToken,"fail");
+        ExtractableResponse<Response> response = token(invalidToken, "fail");
 
         //then
         assertThat(response.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());

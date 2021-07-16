@@ -11,10 +11,10 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 @Transactional
 public class MemberService {
-    private final MemberRepository memberRepository;
+    private final MemberRepository members;
 
     public MemberService(final MemberRepository memberRepository) {
-        this.memberRepository = memberRepository;
+        this.members = memberRepository;
     }
 
     public MemberSaveResponse saveMember(final MemberSaveRequest memberSaveRequest) {
@@ -25,13 +25,13 @@ public class MemberService {
                 memberSaveRequest.getPassword(),
                 memberSaveRequest.getOrganization()
         );
-        Member saveMember = memberRepository.save(member);
-        return new MemberSaveResponse(saveMember.getId());
+        Member saveMember = members.save(member);
+        return MemberSaveResponse.of(saveMember);
     }
 
     @Transactional(readOnly = true)
     public void validateDuplicateEmail(final String email) {
-        if (memberRepository.existsByEmail(email)) {
+        if (members.existsByEmail(email)) {
             throw new DuplicateEmailException();
         }
     }

@@ -1,7 +1,9 @@
 package com.woowacourse.zzimkkong.controller;
 
 import com.woowacourse.zzimkkong.dto.reservation.*;
+import com.woowacourse.zzimkkong.dto.slack.SlackResponse;
 import com.woowacourse.zzimkkong.service.ReservationService;
+import com.woowacourse.zzimkkong.service.SlackService;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
@@ -16,9 +18,11 @@ import static com.woowacourse.zzimkkong.dto.Validator.DATE_FORMAT;
 @Component
 public abstract class ReservationController {
     protected ReservationService reservationService;
+    protected SlackService slackService;
 
-    public ReservationController(final ReservationService reservationService) {
+    public ReservationController(final ReservationService reservationService, final SlackService slackService) {
         this.reservationService = reservationService;
+        this.slackService = slackService;
     }
 
     //TODO: DTO 추상화 하기
@@ -40,21 +44,13 @@ public abstract class ReservationController {
         return ResponseEntity.ok().body(reservationFindAllResponse);
     }
 
-    @PutMapping("/maps/{mapId}/reservations/{reservationId}")
-    public ResponseEntity<Void> update(
-            @PathVariable Long mapId,
-            @PathVariable Long reservationId,
-            @RequestBody @Valid ReservationCreateUpdateRequest reservationCreateUpdateRequest) {
-        reservationService.updateReservation(mapId, reservationId, reservationCreateUpdateRequest);
-        return ResponseEntity.ok().build();
-    }
-
     @DeleteMapping("/maps/{mapId}/reservations/{reservationId}")
     public ResponseEntity<Void> delete(
             @PathVariable Long mapId,
             @PathVariable Long reservationId,
             @RequestBody @Valid ReservationPasswordAuthenticationRequest reservationPasswordAuthenticationRequest) {
-        reservationService.deleteReservation(mapId, reservationId, reservationPasswordAuthenticationRequest);
+        SlackResponse slackResponse = reservationService.deleteReservation(mapId, reservationId, reservationPasswordAuthenticationRequest);
+        slackService.sendDeleteMessage(slackResponse);
         return ResponseEntity.noContent().build();
     }
 
@@ -74,5 +70,15 @@ public abstract class ReservationController {
             @RequestBody @Valid ReservationPasswordAuthenticationRequest reservationPasswordAuthenticationRequest) {
         ReservationResponse reservationResponse = reservationService.findReservation(mapId, reservationId, reservationPasswordAuthenticationRequest);
         return ResponseEntity.ok().body(reservationResponse);
+    }
+
+    @PutMapping("/maps/{mapId}/reservations/{reservationId}")
+    public ResponseEntity<Void> update(
+            @PathVariable Long mapId,
+            @PathVariable Long reservationId,
+            @RequestBody @Valid ReservationCreateUpdateRequest reservationCreateUpdateRequest) {
+        SlackResponse slackResponse = reservationService.updateReservation(mapId, reservationId, reservationCreateUpdateRequest);
+        slackService.sendUpdateMessage(slackResponse);
+        return ResponseEntity.ok().build();
     }
 }
