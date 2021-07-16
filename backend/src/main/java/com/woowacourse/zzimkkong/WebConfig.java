@@ -11,4 +11,5 @@ public class WebConfig implements WebMvcConfigurer {
         registry.addMapping("/**")
                 .allowedMethods("*");
 //                .allowedOriginPatterns("https://zzimkkong-proxy.o-r.kr/");
+    }
 }
