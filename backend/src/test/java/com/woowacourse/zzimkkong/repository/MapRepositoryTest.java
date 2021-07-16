@@ -2,13 +2,20 @@ package com.woowacourse.zzimkkong.repository;
 
 import com.woowacourse.zzimkkong.domain.Map;
 import com.woowacourse.zzimkkong.exception.map.NoSuchMapException;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import static com.woowacourse.zzimkkong.CommonFixture.LUTHER;
+import static com.woowacourse.zzimkkong.CommonFixture.POBI;
 import static org.assertj.core.api.Assertions.assertThat;
 
 class MapRepositoryTest extends RepositoryTest {
+    @BeforeEach
+    void setUp() {
+        members.save(POBI);
+    }
+
     @Test
     @DisplayName("Map을 저장한다.")
     void save() {
