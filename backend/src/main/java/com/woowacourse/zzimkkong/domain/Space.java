@@ -11,6 +11,9 @@ public class Space {
     @Column(nullable = false, length = 20)
     private String name;
 
+    @Column(nullable = false, length = 24)
+    private String color;
+
     @ManyToOne
     @JoinColumn(name = "map_id", foreignKey = @ForeignKey(name = "fk_space_map"))
     private Map map;
@@ -18,8 +21,9 @@ public class Space {
     protected Space() {
     }
 
-    public Space(final String name, final Map map) {
+    public Space(final String name, final String color, final Map map) {
         this.name = name;
+        this.color = color;
         this.map = map;
     }
 
@@ -29,5 +33,9 @@ public class Space {
 
     public String getName() {
         return this.name;
+    }
+
+    public String getColor() {
+        return color;
     }
 }

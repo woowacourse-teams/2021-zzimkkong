@@ -31,14 +31,6 @@ public class ReservationController {
                 .build();
     }
 
-    @GetMapping("/reservations")
-    public ResponseEntity<ReservationFindAllResponse> findAll(
-            @PathVariable Long mapId,
-            @RequestParam @DateTimeFormat(pattern = DATE_FORMAT) LocalDate date) {
-        ReservationFindAllResponse reservationFindAllResponse = reservationService.findAllReservations(mapId, date);
-        return ResponseEntity.ok().body(reservationFindAllResponse);
-    }
-
     @PutMapping("/reservations/{reservationId}")
     public ResponseEntity<Void> update(
             @PathVariable Long mapId,
@@ -55,6 +47,14 @@ public class ReservationController {
             @RequestBody @Valid ReservationPasswordAuthenticationRequest reservationPasswordAuthenticationRequest) {
         reservationService.deleteReservation(mapId, reservationId, reservationPasswordAuthenticationRequest);
         return ResponseEntity.noContent().build();
+    }
+
+    @GetMapping("/reservations")
+    public ResponseEntity<ReservationFindAllResponse> findAll(
+            @PathVariable Long mapId,
+            @RequestParam @DateTimeFormat(pattern = DATE_FORMAT) LocalDate date) {
+        ReservationFindAllResponse reservationFindAllResponse = reservationService.findAllReservations(mapId, date);
+        return ResponseEntity.ok().body(reservationFindAllResponse);
     }
 
     @GetMapping("/spaces/{spaceId}/reservations")
