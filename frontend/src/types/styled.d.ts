@@ -23,5 +23,6 @@ declare module 'styled-components' {
     black: Palette;
     gray: Palette;
     white: Color;
+    modalOverlay: Color;
   }
 }

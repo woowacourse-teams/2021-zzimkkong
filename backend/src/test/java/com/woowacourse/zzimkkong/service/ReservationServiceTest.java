@@ -359,13 +359,13 @@ class ReservationServiceTest extends ServiceTest {
                 .willReturn(Optional.of(reservation));
 
         //when
-        ReservationResponse actual = reservationService.findReservation(
+        ReservationResponse actualResponse = reservationService.findReservation(
                 1L,
                 this.reservation.getId(),
                 new ReservationPasswordAuthenticationRequest(this.reservation.getPassword()));
 
         //then
-        assertThat(actual).usingRecursiveComparison()
+        assertThat(actualResponse).usingRecursiveComparison()
                 .isEqualTo(ReservationResponse.of(reservation));
     }
 

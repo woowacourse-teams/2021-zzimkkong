@@ -40,11 +40,11 @@ class ReservationRepositoryTest extends RepositoryTest {
                 .build();
 
         //when
-        final Reservation actual = reservations.save(be_two_three);
+        final Reservation savedReservation = reservations.save(be_two_three);
 
         //then
-        assertThat(actual.getId()).isNotNull();
-        assertThat(actual).isEqualTo(be_two_three);
+        assertThat(savedReservation.getId()).isNotNull();
+        assertThat(savedReservation).isEqualTo(be_two_three);
     }
 
     @DisplayName("map id, space id, 특정 시간이 주어질 때, 해당 spaceId와 해당 시간에 속하는 예약들만 찾아온다")

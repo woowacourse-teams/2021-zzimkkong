@@ -47,7 +47,7 @@ class MemberServiceTest extends ServiceTest {
     }
 
     @Test
-    @DisplayName("회원이 중복된 이메일로 저장을 요청하면 저장한다.")
+    @DisplayName("회원이 중복된 이메일로 저장을 요청하면 오류가 발생한다.")
     void saveMemberException() {
         //given
         MemberSaveRequest memberSaveRequest = new MemberSaveRequest(EMAIL, PASSWORD, ORGANIZATION);

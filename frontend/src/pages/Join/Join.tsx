@@ -22,10 +22,12 @@ const Join = (): JSX.Element => {
   const [emailMessage, setEmailMessage] = useState('');
   const [passwordMessage, setPasswordMessage] = useState('');
   const [passwordConfirmMessage, setPasswordConfirmMessage] = useState('');
+  const [organizationMessage, setOrganizationMessage] = useState('');
 
   const history = useHistory();
 
-  const isPassword = REGEXP.PASSWORD.test(password);
+  const isValidPassword = REGEXP.PASSWORD.test(password);
+  const isValidOrganization = REGEXP.ORGANIZATION.test(organization);
 
   const isValidEmail = useQuery(['isValidEmail', email], queryValidateEmail, {
     enabled: false,
@@ -68,10 +70,10 @@ const Join = (): JSX.Element => {
   useEffect(() => {
     if (!password) return;
 
-    !isPassword
+    !isValidPassword
       ? setPasswordMessage(MESSAGE.JOIN.INVALID_PASSWORD)
       : setPasswordMessage(MESSAGE.JOIN.VALID_PASSWORD);
-  }, [password, isPassword]);
+  }, [password, isValidPassword]);
 
   useEffect(() => {
     if (!password || !passwordConfirm) return;
@@ -80,6 +82,17 @@ const Join = (): JSX.Element => {
       ? setPasswordConfirmMessage(MESSAGE.JOIN.INVALID_PASSWORD_CONFIRM)
       : setPasswordConfirmMessage(MESSAGE.JOIN.VALID_PASSWORD_CONFIRM);
   }, [password, passwordConfirm]);
+
+  useEffect(() => {
+    if (!organization) {
+      setOrganizationMessage('');
+      return;
+    }
+
+    !isValidOrganization
+      ? setOrganizationMessage(MESSAGE.JOIN.INVALID_ORGANIZATION)
+      : setOrganizationMessage(MESSAGE.JOIN.VALID_ORGANIZATION);
+  }, [organization, isValidOrganization]);
 
   return (
     <>
@@ -105,7 +118,7 @@ const Join = (): JSX.Element => {
               value={password}
               onChange={onChangePassword}
               message={passwordMessage}
-              status={isPassword ? 'success' : 'error'}
+              status={isValidPassword ? 'success' : 'error'}
               required
             />
             <Input
@@ -124,6 +137,8 @@ const Join = (): JSX.Element => {
               minLength={1}
               value={organization}
               onChange={onChangeOrganization}
+              message={organizationMessage}
+              status={isValidOrganization ? 'success' : 'error'}
               required
             />
             <Button
