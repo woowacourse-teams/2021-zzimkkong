@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 
 @RestController
-@RequestMapping("/api/provider")
+@RequestMapping("/api/providers")
 public class ProviderReservationController extends ReservationController<ProviderReservationService> {
     public ProviderReservationController(final ProviderReservationService reservationService, final SlackService slackService) {
         super(reservationService, slackService);

@@ -5,6 +5,8 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
+import java.util.List;
+
 @Configuration
 public class AuthenticationPrincipalConfig implements WebMvcConfigurer {
     private final LoginInterceptor loginInterceptor;
@@ -15,7 +17,12 @@ public class AuthenticationPrincipalConfig implements WebMvcConfigurer {
 
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
+        List<String> interceptorPaths = List.of(
+                "/api/members/token",
+                "/api/providers/**"
+        );
+
         registry.addInterceptor(loginInterceptor)
-                .addPathPatterns("/api/members/token");
+                .addPathPatterns(interceptorPaths);
     }
 }
