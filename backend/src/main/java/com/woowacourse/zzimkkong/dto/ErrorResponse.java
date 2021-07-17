@@ -46,4 +46,12 @@ public class ErrorResponse {
     public static ErrorResponse invalidFormat() {
         return new ErrorResponse(FORMAT_MESSAGE);
     }
+
+    public String getMessage() {
+        return message;
+    }
+
+    public String getField() {
+        return field;
+    }
 }
