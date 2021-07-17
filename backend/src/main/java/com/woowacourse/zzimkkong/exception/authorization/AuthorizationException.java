@@ -5,6 +5,6 @@ import org.springframework.http.HttpStatus;
 
 public class AuthorizationException extends ZzimkkongException {
     public AuthorizationException(final String message, final HttpStatus httpStatus) {
-        super(message, httpStatus);
+        super(message, httpStatus, "accessToken");
     }
 }

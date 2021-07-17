@@ -6,6 +6,6 @@ public class ImpossibleReservationTimeException extends ReservationException {
     private static final String MESSAGE = "예약할 수 없는 시간입니다.";
 
     public ImpossibleReservationTimeException() {
-        super(MESSAGE, HttpStatus.BAD_REQUEST);
+        super(MESSAGE, HttpStatus.BAD_REQUEST, "startDateTime");
     }
 }
