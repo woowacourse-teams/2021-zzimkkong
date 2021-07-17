@@ -22,7 +22,7 @@ public class ReservationFindAllResponse {
         this.data = data;
     }
 
-    public static ReservationFindAllResponse of(List<Reservation> reservations) {
+    public static ReservationFindAllResponse from(final List<Reservation> reservations) {
         Map<Space, List<Reservation>> reservationGroups = reservations.stream()
                 .collect(Collectors.groupingBy(Reservation::getSpace));
 
@@ -32,7 +32,7 @@ public class ReservationFindAllResponse {
 
         List<ReservationSpaceResponse> reservationSpaceResponses = reservationGroups.entrySet()
                 .stream()
-                .map(ReservationSpaceResponse::of)
+                .map(ReservationSpaceResponse::from)
                 .sorted(Comparator.comparing(ReservationSpaceResponse::getSpaceId))
                 .collect(Collectors.toList());
 

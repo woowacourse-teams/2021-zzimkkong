@@ -261,7 +261,7 @@ class UserReservationServiceTest extends ServiceTest {
                 .willReturn(foundReservations);
 
         //then
-        ReservationFindResponse reservationFindResponse = ReservationFindResponse.of(foundReservations);
+        ReservationFindResponse reservationFindResponse = ReservationFindResponse.from(foundReservations);
         assertThat(userReservationService.findReservations(1L, 1L, TOMORROW))
                 .usingRecursiveComparison()
                 .isEqualTo(reservationFindResponse);
@@ -297,13 +297,13 @@ class UserReservationServiceTest extends ServiceTest {
                 .willReturn(Collections.emptyList());
 
         //then
-        ReservationFindResponse reservationFindResponse = ReservationFindResponse.of(Collections.emptyList());
+        ReservationFindResponse reservationFindResponse = ReservationFindResponse.from(Collections.emptyList());
         assertThat(userReservationService.findReservations(1L, 1L, TOMORROW))
                 .usingRecursiveComparison()
                 .isEqualTo(reservationFindResponse);
         assertThat(userReservationService.findAllReservations(1L, TOMORROW))
                 .usingRecursiveComparison()
-                .isEqualTo(ReservationFindAllResponse.of(Collections.emptyList()));
+                .isEqualTo(ReservationFindAllResponse.from(Collections.emptyList()));
     }
 
     @Test
@@ -343,8 +343,7 @@ class UserReservationServiceTest extends ServiceTest {
                 .willReturn(foundReservations);
 
         //then
-        // TODO: ReservationFindAllResponse 내부에서 spaceId로 sorting하는 로직이 있는데 test fixture에는 id가 없어서 NPE 발생
-        ReservationFindAllResponse reservationFindAllResponse = ReservationFindAllResponse.of(foundReservations);
+        ReservationFindAllResponse reservationFindAllResponse = ReservationFindAllResponse.from(foundReservations);
         assertThat(userReservationService.findAllReservations(1L, TOMORROW))
                 .usingRecursiveComparison()
                 .isEqualTo(reservationFindAllResponse);
@@ -367,7 +366,7 @@ class UserReservationServiceTest extends ServiceTest {
 
         //then
         assertThat(actualResponse).usingRecursiveComparison()
-                .isEqualTo(ReservationResponse.of(reservation));
+                .isEqualTo(ReservationResponse.from(reservation));
     }
 
     @Test

@@ -38,6 +38,6 @@ public class ProviderReservationService extends ReservationService {
         Reservation reservation = reservations
                 .findById(reservationId)
                 .orElseThrow(NoSuchReservationException::new);
-        return ReservationResponse.of(reservation);
+        return ReservationResponse.from(reservation);
     }
 }

@@ -26,7 +26,7 @@ public class MemberService {
                 memberSaveRequest.getOrganization()
         );
         Member saveMember = members.save(member);
-        return MemberSaveResponse.of(saveMember);
+        return MemberSaveResponse.from(saveMember);
     }
 
     @Transactional(readOnly = true)

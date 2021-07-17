@@ -10,6 +10,7 @@ import com.woowacourse.zzimkkong.exception.space.NoSuchSpaceException;
 import com.woowacourse.zzimkkong.repository.MapRepository;
 import com.woowacourse.zzimkkong.repository.ReservationRepository;
 import com.woowacourse.zzimkkong.repository.SpaceRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -28,6 +29,7 @@ public abstract class ReservationService {
     protected SpaceRepository spaces;
     protected ReservationRepository reservations;
 
+    @Autowired(required = false)
     public ReservationService(MapRepository maps, SpaceRepository spaces, ReservationRepository reservations) {
         this.maps = maps;
         this.spaces = spaces;
@@ -54,7 +56,7 @@ public abstract class ReservationService {
                         .space(space)
                         .build());
 
-        return ReservationCreateResponse.of(reservation);
+        return ReservationCreateResponse.from(reservation);
     }
 
     @Transactional(readOnly = true)
@@ -64,7 +66,7 @@ public abstract class ReservationService {
 
         List<Reservation> reservations = getReservations(Collections.singletonList(spaceId), date);
 
-        return ReservationFindResponse.of(reservations);
+        return ReservationFindResponse.from(reservations);
     }
 
     @Transactional(readOnly = true)
@@ -78,7 +80,7 @@ public abstract class ReservationService {
 
         List<Reservation> reservations = getReservations(spaceIds, date);
 
-        return ReservationFindAllResponse.of(reservations);
+        return ReservationFindAllResponse.from(reservations);
     }
 
     public SlackResponse updateReservation(

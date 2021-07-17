@@ -19,12 +19,12 @@ import java.time.LocalDate;
 import static com.woowacourse.zzimkkong.dto.Validator.DATE_FORMAT;
 
 @Component
-public abstract class ReservationController<S extends ReservationService> {
-    protected S reservationService;
+public abstract class ReservationController<Service extends ReservationService> {
+    protected Service reservationService;
     protected SlackService slackService;
 
     @Autowired(required = false)
-    public ReservationController(final S reservationService, final SlackService slackService) {
+    public ReservationController(final Service reservationService, final SlackService slackService) {
         this.reservationService = reservationService;
         this.slackService = slackService;
     }

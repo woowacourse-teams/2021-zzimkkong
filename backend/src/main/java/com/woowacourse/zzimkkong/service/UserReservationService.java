@@ -50,7 +50,7 @@ public class UserReservationService extends ReservationService {
                 .findById(reservationId)
                 .orElseThrow(NoSuchReservationException::new);
         checkCorrectPassword(reservation, reservationPasswordAuthenticationRequest.getPassword());
-        return ReservationResponse.of(reservation);
+        return ReservationResponse.from(reservation);
     }
 
     @Override
