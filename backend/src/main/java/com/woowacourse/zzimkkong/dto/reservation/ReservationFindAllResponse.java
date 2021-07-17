@@ -7,7 +7,6 @@ import com.woowacourse.zzimkkong.domain.Space;
 
 import java.util.*;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class ReservationFindAllResponse {
