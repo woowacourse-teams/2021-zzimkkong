@@ -7,6 +7,7 @@ import com.woowacourse.zzimkkong.dto.reservation.ReservationPasswordAuthenticati
 import com.woowacourse.zzimkkong.dto.reservation.ReservationResponse;
 import com.woowacourse.zzimkkong.dto.slack.SlackResponse;
 import com.woowacourse.zzimkkong.exception.reservation.NoSuchReservationException;
+import com.woowacourse.zzimkkong.exception.reservation.ReservationPasswordException;
 import com.woowacourse.zzimkkong.exception.space.NoSuchSpaceException;
 import com.woowacourse.zzimkkong.repository.MapRepository;
 import com.woowacourse.zzimkkong.repository.ReservationRepository;
@@ -18,13 +19,12 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional
 public class UserReservationService extends ReservationService {
     public UserReservationService(
-            final MapRepository mapRepository,
-            final SpaceRepository spaceRepository,
-            final ReservationRepository reservationRepository) {
-        super(mapRepository, spaceRepository, reservationRepository);
+            final MapRepository maps,
+            final SpaceRepository spaces,
+            final ReservationRepository reservations) {
+        super(maps, spaces, reservations);
     }
 
-    @Override
     public SlackResponse deleteReservation(
             final Long mapId,
             final Long reservationId,
@@ -39,7 +39,7 @@ public class UserReservationService extends ReservationService {
         return SlackResponse.from(reservation);
     }
 
-    @Override
+    @Transactional(readOnly = true)
     public ReservationResponse findReservation(
             final Long mapId,
             final Long reservationId,
@@ -74,5 +74,11 @@ public class UserReservationService extends ReservationService {
         reservation.update(reservationCreateUpdateRequest, space);
         reservations.save(reservation);
         return SlackResponse.from(reservation);
+    }
+
+    private void checkCorrectPassword(final Reservation reservation, final String password) {
+        if (reservation.isWrongPassword(password)) {
+            throw new ReservationPasswordException();
+        }
     }
 }

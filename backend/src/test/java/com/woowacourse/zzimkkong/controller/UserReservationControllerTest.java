@@ -46,7 +46,7 @@ public class UserReservationControllerTest extends AcceptanceTest {
     @MockBean
     private SlackService slackService;
 
-    private ReservationCreateUpdateRequest reservationCreateUpdateRequest;
+    private ReservationCreateUpdateWithPasswordRequest reservationCreateUpdateWithPasswordRequest;
     private Reservation savedReservation;
 
     @BeforeEach
@@ -56,7 +56,7 @@ public class UserReservationControllerTest extends AcceptanceTest {
         spaces.save(BE);
         spaces.save(FE1);
 
-        reservationCreateUpdateRequest = new ReservationCreateUpdateRequest(
+        reservationCreateUpdateWithPasswordRequest = new ReservationCreateUpdateWithPasswordRequest(
                 BE.getId(),
                 TOMORROW_START_TIME.plusHours(1),
                 TOMORROW_START_TIME.plusHours(2),
@@ -65,11 +65,11 @@ public class UserReservationControllerTest extends AcceptanceTest {
                 SALLY_DESCRIPTION);
 
         savedReservation = new Reservation.Builder()
-                .startTime(reservationCreateUpdateRequest.getStartDateTime())
-                .endTime(reservationCreateUpdateRequest.getEndDateTime())
-                .password(reservationCreateUpdateRequest.getPassword())
-                .userName(reservationCreateUpdateRequest.getName())
-                .description(reservationCreateUpdateRequest.getDescription())
+                .startTime(reservationCreateUpdateWithPasswordRequest.getStartDateTime())
+                .endTime(reservationCreateUpdateWithPasswordRequest.getEndDateTime())
+                .password(reservationCreateUpdateWithPasswordRequest.getPassword())
+                .userName(reservationCreateUpdateWithPasswordRequest.getName())
+                .description(reservationCreateUpdateWithPasswordRequest.getDescription())
                 .space(BE)
                 .build();
     }
@@ -79,7 +79,7 @@ public class UserReservationControllerTest extends AcceptanceTest {
     void save() {
         //given, when
         String api = "/api/maps/" + LUTHER.getId() + "/reservations";
-        ExtractableResponse<Response> response = saveReservation(api, reservationCreateUpdateRequest);
+        ExtractableResponse<Response> response = saveReservation(api, reservationCreateUpdateWithPasswordRequest);
 
         //then
         assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
@@ -90,7 +90,7 @@ public class UserReservationControllerTest extends AcceptanceTest {
     void delete() {
         //given
         String saveApi = "/api/maps/" + LUTHER.getId() + "/reservations";
-        ExtractableResponse<Response> saveResponse = saveReservation(saveApi, reservationCreateUpdateRequest);
+        ExtractableResponse<Response> saveResponse = saveReservation(saveApi, reservationCreateUpdateWithPasswordRequest);
         String api = saveResponse.header("location");
 
         //when
@@ -107,7 +107,7 @@ public class UserReservationControllerTest extends AcceptanceTest {
     void find() {
         //given
         ExtractableResponse<Response> saveResponse = saveExampleReservations();
-        String spaceId = String.valueOf(reservationCreateUpdateRequest.getSpaceId());
+        String spaceId = String.valueOf(reservationCreateUpdateWithPasswordRequest.getSpaceId());
         String api = saveResponse.header("location")
                 .replaceAll("/reservations/[0-9]", "/spaces/" + spaceId + "/reservations");
 
@@ -161,26 +161,26 @@ public class UserReservationControllerTest extends AcceptanceTest {
         ExtractableResponse<Response> saveResponse = saveExampleReservations();
         String api = saveResponse.header("location");
 
-        ReservationCreateUpdateRequest reservationCreateUpdateRequestSameSpace = new ReservationCreateUpdateRequest(
-                reservationCreateUpdateRequest.getSpaceId(),
+        ReservationCreateUpdateWithPasswordRequest reservationCreateUpdateWithPasswordRequestSameSpace = new ReservationCreateUpdateWithPasswordRequest(
+                reservationCreateUpdateWithPasswordRequest.getSpaceId(),
                 TOMORROW.atTime(1, 0, 0),
                 TOMORROW.atTime(2, 30, 0),
-                reservationCreateUpdateRequest.getPassword(),
+                reservationCreateUpdateWithPasswordRequest.getPassword(),
                 "sally",
                 "회의입니다."
         );
 
         //when
-        ExtractableResponse<Response> updateResponse = updateReservation(api, reservationCreateUpdateRequestSameSpace);
+        ExtractableResponse<Response> updateResponse = updateReservation(api, reservationCreateUpdateWithPasswordRequestSameSpace);
         ExtractableResponse<Response> findResponse = findReservation(api, new ReservationPasswordAuthenticationRequest(SALLY_PASSWORD));
 
         ReservationResponse actualResponse = findResponse.body().as(ReservationResponse.class);
         ReservationResponse expectedResponse = ReservationResponse.of(new Reservation.Builder()
-                .startTime(reservationCreateUpdateRequestSameSpace.getStartDateTime())
-                .endTime(reservationCreateUpdateRequestSameSpace.getEndDateTime())
-                .description(reservationCreateUpdateRequestSameSpace.getDescription())
-                .userName(reservationCreateUpdateRequestSameSpace.getName())
-                .password(reservationCreateUpdateRequestSameSpace.getPassword())
+                .startTime(reservationCreateUpdateWithPasswordRequestSameSpace.getStartDateTime())
+                .endTime(reservationCreateUpdateWithPasswordRequestSameSpace.getEndDateTime())
+                .description(reservationCreateUpdateWithPasswordRequestSameSpace.getDescription())
+                .userName(reservationCreateUpdateWithPasswordRequestSameSpace.getName())
+                .password(reservationCreateUpdateWithPasswordRequestSameSpace.getPassword())
                 .space(BE)
                 .build());
 
@@ -199,7 +199,7 @@ public class UserReservationControllerTest extends AcceptanceTest {
         ExtractableResponse<Response> saveResponse = saveExampleReservations();
         String api = saveResponse.header("location");
 
-        ReservationCreateUpdateRequest reservationCreateUpdateRequestDifferentSpace = new ReservationCreateUpdateRequest(
+        ReservationCreateUpdateWithPasswordRequest reservationCreateUpdateWithPasswordRequestDifferentSpace = new ReservationCreateUpdateWithPasswordRequest(
                 FE1.getId(),
                 TOMORROW.atTime(3, 30, 0),
                 TOMORROW.atTime(4, 30, 0),
@@ -209,7 +209,7 @@ public class UserReservationControllerTest extends AcceptanceTest {
         );
 
         //when
-        ExtractableResponse<Response> updateResponse = updateReservation(api, reservationCreateUpdateRequestDifferentSpace);
+        ExtractableResponse<Response> updateResponse = updateReservation(api, reservationCreateUpdateWithPasswordRequestDifferentSpace);
         ExtractableResponse<Response> findResponse = findReservations(
                 api.replaceAll("/reservations/[0-9]",
                         "/spaces/" + FE1.getId() + "/reservations"),
@@ -219,11 +219,11 @@ public class UserReservationControllerTest extends AcceptanceTest {
         ReservationFindResponse expectedResponse = ReservationFindResponse.of(
                 Arrays.asList(
                         new Reservation.Builder()
-                                .startTime(reservationCreateUpdateRequestDifferentSpace.getStartDateTime())
-                                .endTime(reservationCreateUpdateRequestDifferentSpace.getEndDateTime())
-                                .description(reservationCreateUpdateRequestDifferentSpace.getDescription())
-                                .userName(reservationCreateUpdateRequestDifferentSpace.getName())
-                                .password(reservationCreateUpdateRequestDifferentSpace.getPassword())
+                                .startTime(reservationCreateUpdateWithPasswordRequestDifferentSpace.getStartDateTime())
+                                .endTime(reservationCreateUpdateWithPasswordRequestDifferentSpace.getEndDateTime())
+                                .description(reservationCreateUpdateWithPasswordRequestDifferentSpace.getDescription())
+                                .userName(reservationCreateUpdateWithPasswordRequestDifferentSpace.getName())
+                                .password(reservationCreateUpdateWithPasswordRequestDifferentSpace.getPassword())
                                 .space(FE1)
                                 .build(),
                         FE1_ZERO_ONE
@@ -266,18 +266,18 @@ public class UserReservationControllerTest extends AcceptanceTest {
         reservations.save(FE1_ZERO_ONE);
 
         String api = "/api/maps/" + LUTHER.getId() + "/reservations";
-        return saveReservation(api, reservationCreateUpdateRequest);
+        return saveReservation(api, reservationCreateUpdateWithPasswordRequest);
     }
 
     private ExtractableResponse<Response> saveReservation(
             final String api,
-            final ReservationCreateUpdateRequest reservationCreateUpdateRequest) {
+            final ReservationCreateUpdateWithPasswordRequest reservationCreateUpdateWithPasswordRequest) {
         return RestAssured
                 .given(getRequestSpecification()).log().all()
                 .accept("application/json")
                 .filter(document("reservation/post", getRequestPreprocessor(), getResponsePreprocessor()))
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(reservationCreateUpdateRequest)
+                .body(reservationCreateUpdateWithPasswordRequest)
                 .when().post(api)
                 .then().log().all().extract();
     }
@@ -315,13 +315,13 @@ public class UserReservationControllerTest extends AcceptanceTest {
                 .then().log().all().extract();
     }
 
-    private ExtractableResponse<Response> updateReservation(final String api, final ReservationCreateUpdateRequest reservationCreateUpdateRequest) {
+    private ExtractableResponse<Response> updateReservation(final String api, final ReservationCreateUpdateWithPasswordRequest reservationCreateUpdateWithPasswordRequest) {
         return RestAssured
                 .given(getRequestSpecification()).log().all()
                 .accept("application/json")
                 .filter(document("reservation/put", getRequestPreprocessor(), getResponsePreprocessor()))
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(reservationCreateUpdateRequest)
+                .body(reservationCreateUpdateWithPasswordRequest)
                 .when().put(api)
                 .then().log().all().extract();
     }

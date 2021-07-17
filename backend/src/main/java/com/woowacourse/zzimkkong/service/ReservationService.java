@@ -28,10 +28,7 @@ public abstract class ReservationService {
     protected SpaceRepository spaces;
     protected ReservationRepository reservations;
 
-    protected ReservationService(
-            final MapRepository maps,
-            final SpaceRepository spaces,
-            final ReservationRepository reservations) {
+    public ReservationService(MapRepository maps, SpaceRepository spaces, ReservationRepository reservations) {
         this.maps = maps;
         this.spaces = spaces;
         this.reservations = reservations;
@@ -39,21 +36,21 @@ public abstract class ReservationService {
 
     public ReservationCreateResponse saveReservation(
             final Long mapId,
-            final ReservationCreateUpdateRequest reservationCreateUpdateRequest) {
+            final ReservationCreateUpdateWithPasswordRequest reservationCreateUpdateWithPasswordRequest) {
         validateMapExistence(mapId);
 
-        validateTime(reservationCreateUpdateRequest);
-        Space space = spaces.findById(reservationCreateUpdateRequest.getSpaceId())
+        validateTime(reservationCreateUpdateWithPasswordRequest);
+        Space space = spaces.findById(reservationCreateUpdateWithPasswordRequest.getSpaceId())
                 .orElseThrow(NoSuchSpaceException::new);
-        validateAvailability(space, reservationCreateUpdateRequest);
+        validateAvailability(space, reservationCreateUpdateWithPasswordRequest);
 
         Reservation reservation = reservations.save(
                 new Reservation.Builder()
-                        .startTime(reservationCreateUpdateRequest.getStartDateTime())
-                        .endTime(reservationCreateUpdateRequest.getEndDateTime())
-                        .password(reservationCreateUpdateRequest.getPassword())
-                        .userName(reservationCreateUpdateRequest.getName())
-                        .description(reservationCreateUpdateRequest.getDescription())
+                        .startTime(reservationCreateUpdateWithPasswordRequest.getStartDateTime())
+                        .endTime(reservationCreateUpdateWithPasswordRequest.getEndDateTime())
+                        .password(reservationCreateUpdateWithPasswordRequest.getPassword())
+                        .userName(reservationCreateUpdateWithPasswordRequest.getName())
+                        .description(reservationCreateUpdateWithPasswordRequest.getDescription())
                         .space(space)
                         .build());
 
@@ -84,21 +81,26 @@ public abstract class ReservationService {
         return ReservationFindAllResponse.of(reservations);
     }
 
-    @Transactional(readOnly = true)
-    public abstract ReservationResponse findReservation(
+    public SlackResponse updateReservation(
             final Long mapId,
             final Long reservationId,
-            final ReservationPasswordAuthenticationRequest reservationPasswordAuthenticationRequest);
+            final ReservationCreateUpdateRequest reservationCreateUpdateRequest) {
+        validateMapExistence(mapId);
+        validateTime(reservationCreateUpdateRequest);
 
-    public abstract SlackResponse deleteReservation(
-            final Long mapId,
-            final Long reservationId,
-            final ReservationPasswordAuthenticationRequest reservationPasswordAuthenticationRequest);
+        Space space = spaces.findById(reservationCreateUpdateRequest.getSpaceId())
+                .orElseThrow(NoSuchSpaceException::new);
+        Reservation reservation = reservations
+                .findById(reservationId)
+                .orElseThrow(NoSuchReservationException::new);
 
-    public abstract SlackResponse updateReservation(
-            final Long mapId,
-            final Long reservationId,
-            final ReservationCreateUpdateRequest reservationCreateUpdateRequest);
+        doDirtyCheck(reservation, reservationCreateUpdateRequest, space);
+        validateAvailability(space, reservationCreateUpdateRequest, reservation);
+
+        reservation.update(reservationCreateUpdateRequest, space);
+        reservations.save(reservation);
+        return SlackResponse.from(reservation);
+    }
 
     protected void validateTime(final ReservationCreateUpdateRequest reservationCreateUpdateRequest) {
         LocalDateTime startDateTime = reservationCreateUpdateRequest.getStartDateTime();
@@ -173,12 +175,6 @@ public abstract class ReservationService {
 
         if (reservation.hasSameData(updatedReservation)) {
             throw new NoDataToUpdateException();
-        }
-    }
-
-    protected void checkCorrectPassword(final Reservation reservation, final String password) {
-        if (reservation.isWrongPassword(password)) {
-            throw new ReservationPasswordException();
         }
     }
 

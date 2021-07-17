@@ -12,27 +12,23 @@ import static com.woowacourse.zzimkkong.dto.Validator.*;
 
 public class ReservationCreateUpdateRequest {
     @NotNull(message = EMPTY_MESSAGE)
-    private Long spaceId;
+    protected Long spaceId;
 
     @DateTimeFormat(pattern = DATETIME_FORMAT)
     @NotNull(message = EMPTY_MESSAGE)
-    private LocalDateTime startDateTime;
+    protected LocalDateTime startDateTime;
 
     @DateTimeFormat(pattern = DATETIME_FORMAT)
     @NotNull(message = EMPTY_MESSAGE)
-    private LocalDateTime endDateTime;
-
-    @NotBlank(message = EMPTY_MESSAGE)
-    @Pattern(regexp = RESERVATION_PASSWORD_FORMAT, message = RESERVATION_PASSWORD_MESSAGE)
-    private String password;
+    protected LocalDateTime endDateTime;
 
     @NotBlank(message = EMPTY_MESSAGE)
     @Pattern(regexp = NAMING_FORMAT, message = NAME_MESSAGE)
-    private String name;
+    protected String name;
 
     @NotBlank(message = EMPTY_MESSAGE)
     @Size(max = 100, message = DESCRIPTION_MESSAGE)
-    private String description;
+    protected String description;
 
     public ReservationCreateUpdateRequest() {
     }
@@ -41,13 +37,11 @@ public class ReservationCreateUpdateRequest {
             final Long spaceId,
             final LocalDateTime startDateTime,
             final LocalDateTime endDateTime,
-            final String password,
             final String name,
             final String description) {
         this.spaceId = spaceId;
         this.startDateTime = startDateTime;
         this.endDateTime = endDateTime;
-        this.password = password;
         this.name = name;
         this.description = description;
     }
@@ -64,12 +58,12 @@ public class ReservationCreateUpdateRequest {
         return endDateTime;
     }
 
-    public String getPassword() {
-        return password;
-    }
-
     public String getName() {
         return name;
+    }
+
+    public String getPassword() {
+        throw new UnsupportedOperationException();
     }
 
     public String getDescription() {
