@@ -115,7 +115,7 @@ public class ReservationControllerTest extends AcceptanceTest {
         ExtractableResponse<Response> response = findReservations(api, TOMORROW.toString());
 
         ReservationFindResponse actualResponse = response.as(ReservationFindResponse.class);
-        ReservationFindResponse expectedResponse = ReservationFindResponse.of(
+        ReservationFindResponse expectedResponse = ReservationFindResponse.from(
                 Arrays.asList(savedReservation,
                         BE_AM_ZERO_ONE,
                         BE_PM_ONE_TWO));
@@ -140,7 +140,7 @@ public class ReservationControllerTest extends AcceptanceTest {
         ExtractableResponse<Response> response = findAllReservations(api, TOMORROW.toString());
 
         ReservationFindAllResponse actualResponse = response.as(ReservationFindAllResponse.class);
-        ReservationFindAllResponse expectedResponse = ReservationFindAllResponse.of(
+        ReservationFindAllResponse expectedResponse = ReservationFindAllResponse.from(
                 List.of(savedReservation,
                         BE_AM_ZERO_ONE,
                         BE_PM_ONE_TWO,
@@ -175,7 +175,7 @@ public class ReservationControllerTest extends AcceptanceTest {
         ExtractableResponse<Response> findResponse = findReservation(api, new ReservationPasswordAuthenticationRequest(SALLY_PASSWORD));
 
         ReservationResponse actualResponse = findResponse.body().as(ReservationResponse.class);
-        ReservationResponse expectedResponse = ReservationResponse.of(new Reservation.Builder()
+        ReservationResponse expectedResponse = ReservationResponse.from(new Reservation.Builder()
                 .startTime(reservationCreateUpdateRequestSameSpace.getStartDateTime())
                 .endTime(reservationCreateUpdateRequestSameSpace.getEndDateTime())
                 .description(reservationCreateUpdateRequestSameSpace.getDescription())
@@ -216,7 +216,7 @@ public class ReservationControllerTest extends AcceptanceTest {
                 TOMORROW.toString());
 
         ReservationFindResponse actualResponse = findResponse.as(ReservationFindResponse.class);
-        ReservationFindResponse expectedResponse = ReservationFindResponse.of(
+        ReservationFindResponse expectedResponse = ReservationFindResponse.from(
                 Arrays.asList(
                         new Reservation.Builder()
                                 .startTime(reservationCreateUpdateRequestDifferentSpace.getStartDateTime())
@@ -250,7 +250,7 @@ public class ReservationControllerTest extends AcceptanceTest {
         ExtractableResponse<Response> response = findReservation(api, reservationPasswordAuthenticationRequest);
 
         ReservationResponse actualResponse = response.as(ReservationResponse.class);
-        ReservationResponse expectedResponse = ReservationResponse.of(savedReservation);
+        ReservationResponse expectedResponse = ReservationResponse.from(savedReservation);
 
         //then
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());

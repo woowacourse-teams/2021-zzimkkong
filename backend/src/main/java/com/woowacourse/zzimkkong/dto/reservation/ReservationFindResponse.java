@@ -18,11 +18,11 @@ public class ReservationFindResponse {
         this.reservations = reservations;
     }
 
-    public static ReservationFindResponse of(final List<Reservation> reservations) {
+    public static ReservationFindResponse from(final List<Reservation> reservations) {
         reservations.sort(Comparator.comparing(Reservation::getStartTime));
 
         List<ReservationResponse> reservationResponses = reservations.stream()
-                .map(ReservationResponse::of)
+                .map(ReservationResponse::from)
                 .collect(Collectors.toList());
 
         return new ReservationFindResponse(reservationResponses);

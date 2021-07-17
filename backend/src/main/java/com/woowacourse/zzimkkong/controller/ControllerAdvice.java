@@ -31,25 +31,25 @@ public class ControllerAdvice {
         logger.warn(exception.getMessage());
         return ResponseEntity
                 .status(exception.getStatus())
-                .body(ErrorResponse.of(exception));
+                .body(ErrorResponse.from(exception));
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<ErrorResponse> invalidArgumentHandler(final MethodArgumentNotValidException exception) {
         logger.warn(exception.getMessage());
-        return ResponseEntity.badRequest().body(ErrorResponse.of(exception));
+        return ResponseEntity.badRequest().body(ErrorResponse.from(exception));
     }
 
     @ExceptionHandler(ConstraintViolationException.class)
     public ResponseEntity<ErrorResponse> invalidParamHandler(final ConstraintViolationException exception) {
         logger.warn(exception.getMessage());
-        return ResponseEntity.badRequest().body(ErrorResponse.of(exception));
+        return ResponseEntity.badRequest().body(ErrorResponse.from(exception));
     }
 
     @ExceptionHandler(AuthorizationHeaderUninvolvedException.class)
     public ResponseEntity<ErrorResponse> invalidTokenHandler(final AuthorizationHeaderUninvolvedException exception) {
         logger.warn(exception.getMessage());
-        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(ErrorResponse.of(exception));
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(ErrorResponse.from(exception));
     }
 
     @ExceptionHandler(DataAccessException.class)

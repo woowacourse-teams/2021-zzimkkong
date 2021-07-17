@@ -27,12 +27,12 @@ public class Attachment {
     }
 
     public static Attachment of(
-            String fallback,
-            String color,
-            String pretext,
-            String title,
-            String titleLink,
-            SlackResponse slackResponse) {
+            final String fallback,
+            final String color,
+            final String pretext,
+            final String title,
+            final String titleLink,
+            final SlackResponse slackResponse) {
         return new Attachment(fallback, color, pretext, title, titleLink, slackResponse);
     }
 
