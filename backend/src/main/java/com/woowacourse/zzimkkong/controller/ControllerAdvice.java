@@ -35,15 +35,15 @@ public class ControllerAdvice {
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<ErrorResponse> invalidArgumentHandler(final MethodArgumentNotValidException exception) {
         logger.warn(exception.getMessage());
-        return ResponseEntity.badRequest().body(ErrorResponse.of(exception));
+        return ResponseEntity.badRequest().body(ErrorResponse.from(exception));
     }
 
     @ExceptionHandler(ConstraintViolationException.class)
     public ResponseEntity<ErrorResponse> invalidParamHandler(final ConstraintViolationException exception) {
         logger.warn(exception.getMessage());
-        return ResponseEntity.badRequest().body(ErrorResponse.of(exception));
+        return ResponseEntity.badRequest().body(ErrorResponse.from(exception));
     }
-
+  
     @ExceptionHandler(DataAccessException.class)
     public ResponseEntity<ErrorResponse> invalidDataAccessHandler() {
         logger.warn(SERVER_ERROR_MESSAGE);

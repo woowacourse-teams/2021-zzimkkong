@@ -27,10 +27,10 @@ public class ReservationSpaceResponse {
         this.reservations = reservations;
     }
 
-    public static ReservationSpaceResponse of(final Map.Entry<Space, List<Reservation>> reservationsPerSpace) {
+    public static ReservationSpaceResponse from(final Map.Entry<Space, List<Reservation>> reservationsPerSpace) {
         List<ReservationResponse> reservations = reservationsPerSpace.getValue()
                 .stream()
-                .map(ReservationResponse::of)
+                .map(ReservationResponse::from)
                 .collect(Collectors.toList());
 
         Space space = reservationsPerSpace.getKey();

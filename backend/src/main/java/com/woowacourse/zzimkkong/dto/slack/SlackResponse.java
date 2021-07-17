@@ -25,7 +25,7 @@ public class SlackResponse {
         this.description = "예약내용 : " + description;
     }
 
-    public static SlackResponse from(Reservation reservation) {
+    public static SlackResponse from(final Reservation reservation) {
         return new SlackResponse(
                 reservation.getSpace().getName(),
                 reservation.getUserName(),

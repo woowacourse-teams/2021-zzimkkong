@@ -27,17 +27,17 @@ public class ErrorResponse {
         return new ErrorResponse(exception.getMessage(), exception.getField());
     }
 
-    public static ErrorResponse of(final RuntimeException exception) {
+    public static ErrorResponse from(final RuntimeException exception) {
         return new ErrorResponse(exception.getMessage());
     }
 
-    public static ErrorResponse of(final MethodArgumentNotValidException exception) {
+    public static ErrorResponse from(final MethodArgumentNotValidException exception) {
         String message = exception.getBindingResult().getAllErrors().get(0).getDefaultMessage();
         String field = exception.getFieldErrors().get(0).getField();
         return new ErrorResponse(message, field);
     }
 
-    public static ErrorResponse of(final ConstraintViolationException exception) {
+    public static ErrorResponse from(final ConstraintViolationException exception) {
         String message = exception.getConstraintViolations().iterator().next().getMessage();
         return new ErrorResponse(message);
     }
