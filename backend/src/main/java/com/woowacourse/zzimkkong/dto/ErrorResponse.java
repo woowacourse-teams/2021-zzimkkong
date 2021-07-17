@@ -12,7 +12,6 @@ public class ErrorResponse {
     private String field;
 
     public ErrorResponse() {
-
     }
 
     private ErrorResponse(final String message) {
