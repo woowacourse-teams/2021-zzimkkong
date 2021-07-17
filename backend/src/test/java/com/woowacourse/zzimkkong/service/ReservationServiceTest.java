@@ -307,33 +307,36 @@ class ReservationServiceTest extends ServiceTest {
     }
 
     @Test
-    @DisplayName("전체 예약 조회 요청 시, 올바른 mapId, 날짜를 입력하면 해당 날짜에 존재하는 모든 예약 정보가 조회된다.")
+    @DisplayName("전체 예약 조회 요청 시, 올바른 mapId, 날짜를 입력하면 해당 날짜에 존재하는 모든 예약 정보가 공간의 Id를 기준으로 정렬되어 조회된다.")
     void findAllReservation() {
         //given
+        Space backEndLectureRoom = new Space(1L, "백엔드 강의실", LUTHER);
+        Space frontEndLectureRoom1 = new Space(2L, "프론트엔드 강의실1", LUTHER);
+
         int conferenceTime = 30;
         List<Reservation> foundReservations = List.of(
                 makeReservation(
                         reservationCreateUpdateRequest.getStartDateTime().minusMinutes(conferenceTime),
                         reservationCreateUpdateRequest.getEndDateTime().minusMinutes(conferenceTime),
-                        BE),
+                        backEndLectureRoom),
                 makeReservation(
                         reservationCreateUpdateRequest.getStartDateTime().plusMinutes(conferenceTime),
                         reservationCreateUpdateRequest.getEndDateTime().plusMinutes(conferenceTime),
-                        BE),
+                        backEndLectureRoom),
                 makeReservation(
                         reservationCreateUpdateRequest.getStartDateTime().minusMinutes(conferenceTime),
                         reservationCreateUpdateRequest.getEndDateTime().minusMinutes(conferenceTime),
-                        FE1),
+                        frontEndLectureRoom1),
                 makeReservation(
                         reservationCreateUpdateRequest.getStartDateTime().plusMinutes(conferenceTime),
                         reservationCreateUpdateRequest.getEndDateTime().plusMinutes(conferenceTime),
-                        FE1));
+                        frontEndLectureRoom1));
 
         //when
         given(maps.existsById(anyLong()))
                 .willReturn(true);
         given(spaces.findAllByMapId(anyLong()))
-                .willReturn(List.of(BE, FE1));
+                .willReturn(List.of(backEndLectureRoom, frontEndLectureRoom1));
         given(reservations.findAllBySpaceIdInAndStartTimeIsBetweenAndEndTimeIsBetween(
                 anyList(),
                 any(LocalDateTime.class),

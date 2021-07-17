@@ -23,6 +23,12 @@ public class Space {
         this.map = map;
     }
 
+    public Space(final Long id, final String name, final Map map) {
+        this.id = id;
+        this.name = name;
+        this.map = map;
+    }
+
     public Long getId() {
         return this.id;
     }
