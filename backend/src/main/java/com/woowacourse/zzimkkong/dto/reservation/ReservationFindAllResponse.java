@@ -20,7 +20,7 @@ public class ReservationFindAllResponse {
         this.data = data;
     }
 
-    public static ReservationFindAllResponse from(List<Reservation> reservations) {
+    public static ReservationFindAllResponse from(final List<Reservation> reservations) {
         Map<Space, List<Reservation>> reservationGroups = reservations.stream()
                 .collect(Collectors.groupingBy(Reservation::getSpace));
 

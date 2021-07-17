@@ -13,7 +13,7 @@ public class MemberSaveResponse {
         this.id = id;
     }
 
-    public static MemberSaveResponse from(Member member) {
+    public static MemberSaveResponse from(final Member member) {
         return new MemberSaveResponse(member.getId());
     }
 

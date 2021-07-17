@@ -13,7 +13,7 @@ public class ReservationCreateResponse {
         this.id = id;
     }
 
-    public static ReservationCreateResponse from(Reservation reservation) {
+    public static ReservationCreateResponse from(final Reservation reservation) {
         return new ReservationCreateResponse(reservation.getId());
     }
 
