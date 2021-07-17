@@ -23,7 +23,7 @@ public class ErrorResponse {
         this.field = field;
     }
 
-    public static ErrorResponse of(final ZzimkkongException exception) {
+    public static ErrorResponse from(final ZzimkkongException exception) {
         return new ErrorResponse(exception.getMessage(), exception.getField());
     }
 

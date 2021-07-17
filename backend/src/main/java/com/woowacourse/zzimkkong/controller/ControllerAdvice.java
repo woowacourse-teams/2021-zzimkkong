@@ -31,7 +31,7 @@ public class ControllerAdvice {
         logger.warn(exception.getMessage());
         return ResponseEntity
                 .status(exception.getStatus())
-                .body(ErrorResponse.of(exception));
+                .body(ErrorResponse.from(exception));
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
@@ -49,7 +49,7 @@ public class ControllerAdvice {
     @ExceptionHandler(AuthorizationHeaderUninvolvedException.class)
     public ResponseEntity<ErrorResponse> invalidTokenHandler(final AuthorizationHeaderUninvolvedException exception) {
         logger.warn(exception.getMessage());
-        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(ErrorResponse.of(exception));
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(ErrorResponse.from(exception));
     }
 
     @ExceptionHandler(DataAccessException.class)
