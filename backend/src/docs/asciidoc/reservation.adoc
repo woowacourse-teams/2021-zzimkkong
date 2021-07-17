@@ -1,37 +1,79 @@
 == Reservations(예약)
 
 === 예약 생성
-==== Request
-include::{snippets}/reservation/post/http-request.adoc[]
-==== Response
-include::{snippets}/reservation/post/http-response.adoc[]
+==== 공간 제공자
+===== Request
+include::{snippets}/reservation/provider/post/http-request.adoc[]
+===== Response
+include::{snippets}/reservation/provider/post/http-response.adoc[]
+
+==== 예약자
+===== Request
+include::{snippets}/reservation/user/post/http-request.adoc[]
+===== Response
+include::{snippets}/reservation/user/post/http-response.adoc[]
 
 === 특정 공간 예약 조회
-==== Request
-include::{snippets}/reservation/get/http-request.adoc[]
-==== Response
-include::{snippets}/reservation/get/http-response.adoc[]
+==== 공간 제공자
+===== Request
+include::{snippets}/reservation/provider/get/http-request.adoc[]
+===== Response
+include::{snippets}/reservation/provider/get/http-response.adoc[]
+
+==== 예약자
+===== Request
+include::{snippets}/reservation/user/get/http-request.adoc[]
+===== Response
+include::{snippets}/reservation/user/get/http-response.adoc[]
 
 === 전체 예약 조회
-==== Request
-include::{snippets}/reservation/get_all/http-request.adoc[]
-==== Response
-include::{snippets}/reservation/get_all/http-response.adoc[]
+==== 공간 제공자
+===== Request
+include::{snippets}/reservation/provider/get_all/http-request.adoc[]
+===== Response
+include::{snippets}/reservation/provider/get_all/http-response.adoc[]
+
+==== 예약자
+===== Request
+include::{snippets}/reservation/user/get_all/http-request.adoc[]
+===== Response
+include::{snippets}/reservation/user/get_all/http-response.adoc[]
 
 === 예약 삭제
-==== Request
-include::{snippets}/reservation/delete/http-request.adoc[]
-==== Response
-include::{snippets}/reservation/delete/http-response.adoc[]
+==== 공간 제공자
+===== Request
+include::{snippets}/reservation/provider/delete/http-request.adoc[]
+===== Response
+include::{snippets}/reservation/provider/delete/http-response.adoc[]
+
+==== 예약자
+===== Request
+include::{snippets}/reservation/user/delete/http-request.adoc[]
+===== Response
+include::{snippets}/reservation/user/delete/http-response.adoc[]
 
 === 예약 비밀번호 확인
-==== Request
-include::{snippets}/reservation/post_for_update/http-request.adoc[]
-==== Response
-include::{snippets}/reservation/post_for_update/http-response.adoc[]
+==== 공간 제공자
+===== Request
+include::{snippets}/reservation/provider/get_one/http-request.adoc[]
+===== Response
+include::{snippets}/reservation/provider/get_one/http-response.adoc[]
+
+==== 예약자
+===== Request
+include::{snippets}/reservation/user/post_for_update/http-request.adoc[]
+===== Response
+include::{snippets}/reservation/user/post_for_update/http-response.adoc[]
 
 === 예약 수정
-==== Request
-include::{snippets}/reservation/put/http-request.adoc[]
-==== Response
-include::{snippets}/reservation/put/http-response.adoc[]
+==== 공간 제공자
+===== Request
+include::{snippets}/reservation/provider/put/http-request.adoc[]
+===== Response
+include::{snippets}/reservation/provider/put/http-response.adoc[]
+
+==== 예약자
+===== Request
+include::{snippets}/reservation/user/put/http-request.adoc[]
+===== Response
+include::{snippets}/reservation/user/put/http-response.adoc[]

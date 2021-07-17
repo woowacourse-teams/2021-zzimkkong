@@ -3,6 +3,7 @@ package com.woowacourse.zzimkkong.service;
 import com.woowacourse.zzimkkong.domain.Reservation;
 import com.woowacourse.zzimkkong.domain.Space;
 import com.woowacourse.zzimkkong.dto.reservation.ReservationCreateUpdateRequest;
+import com.woowacourse.zzimkkong.dto.reservation.ReservationCreateUpdateWithPasswordRequest;
 import com.woowacourse.zzimkkong.dto.reservation.ReservationPasswordAuthenticationRequest;
 import com.woowacourse.zzimkkong.dto.reservation.ReservationResponse;
 import com.woowacourse.zzimkkong.dto.slack.SlackResponse;
@@ -53,25 +54,24 @@ public class UserReservationService extends ReservationService {
         return ReservationResponse.from(reservation);
     }
 
-    @Override
     public SlackResponse updateReservation(
             final Long mapId,
             final Long reservationId,
-            final ReservationCreateUpdateRequest reservationCreateUpdateRequest) {
+            final ReservationCreateUpdateWithPasswordRequest reservationCreateUpdateWithPasswordRequest) {
         validateMapExistence(mapId);
-        validateTime(reservationCreateUpdateRequest);
+        validateTime(reservationCreateUpdateWithPasswordRequest);
 
-        Space space = spaces.findById(reservationCreateUpdateRequest.getSpaceId())
+        Space space = spaces.findById(reservationCreateUpdateWithPasswordRequest.getSpaceId())
                 .orElseThrow(NoSuchSpaceException::new);
         Reservation reservation = reservations
                 .findById(reservationId)
                 .orElseThrow(NoSuchReservationException::new);
 
-        checkCorrectPassword(reservation, reservationCreateUpdateRequest.getPassword());
-        doDirtyCheck(reservation, reservationCreateUpdateRequest, space);
-        validateAvailability(space, reservationCreateUpdateRequest, reservation);
+        checkCorrectPassword(reservation, reservationCreateUpdateWithPasswordRequest.getPassword());
+        doDirtyCheck(reservation, reservationCreateUpdateWithPasswordRequest, space);
+        validateAvailability(space, reservationCreateUpdateWithPasswordRequest, reservation);
 
-        reservation.update(reservationCreateUpdateRequest, space);
+        reservation.update(reservationCreateUpdateWithPasswordRequest, space);
         reservations.save(reservation);
         return SlackResponse.from(reservation);
     }

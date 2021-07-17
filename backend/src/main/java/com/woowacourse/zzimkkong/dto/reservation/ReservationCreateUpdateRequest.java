@@ -62,10 +62,6 @@ public class ReservationCreateUpdateRequest {
         return name;
     }
 
-    public String getPassword() {
-        throw new UnsupportedOperationException();
-    }
-
     public String getDescription() {
         return description;
     }

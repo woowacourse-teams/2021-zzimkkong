@@ -64,7 +64,7 @@ class AuthControllerTest extends AcceptanceTest {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
     }
 
-    private ExtractableResponse<Response> login(final LoginRequest loginRequest) {
+    public static ExtractableResponse<Response> login(final LoginRequest loginRequest) {
         return RestAssured
                 .given(getRequestSpecification()).log().all()
                 .accept("application/json")

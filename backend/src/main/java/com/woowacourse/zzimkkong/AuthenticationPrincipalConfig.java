@@ -19,10 +19,11 @@ public class AuthenticationPrincipalConfig implements WebMvcConfigurer {
     public void addInterceptors(InterceptorRegistry registry) {
         List<String> interceptorPaths = List.of(
                 "/api/members/token",
-                "/api/providers/**"
+                "/api/providers/maps/*/reservations/*"
         );
 
         registry.addInterceptor(loginInterceptor)
-                .addPathPatterns(interceptorPaths);
+                .addPathPatterns(interceptorPaths)
+                .excludePathPatterns();
     }
 }

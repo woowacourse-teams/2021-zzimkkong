@@ -29,16 +29,6 @@ public abstract class ReservationController<Service extends ReservationService> 
         this.slackService = slackService;
     }
 
-    @PostMapping("/maps/{mapId}/reservations")
-    public ResponseEntity<Void> create(
-            @PathVariable Long mapId,
-            @RequestBody @Valid ReservationCreateUpdateWithPasswordRequest reservationCreateUpdateWithPasswordRequest) {
-        ReservationCreateResponse reservationCreateResponse = reservationService.saveReservation(mapId, reservationCreateUpdateWithPasswordRequest);
-        return ResponseEntity
-                .created(URI.create("/api/maps/" + mapId + "/reservations/" + reservationCreateResponse.getId()))
-                .build();
-    }
-
     @GetMapping("/maps/{mapId}/reservations")
     public ResponseEntity<ReservationFindAllResponse> findAll(
             @PathVariable Long mapId,
