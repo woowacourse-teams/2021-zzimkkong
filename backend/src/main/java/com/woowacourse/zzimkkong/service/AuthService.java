@@ -32,7 +32,7 @@ public class AuthService {
 
         String token = issueToken(findMember);
 
-        return TokenResponse.of(token);
+        return TokenResponse.from(token);
     }
 
     private String issueToken(Member findMember) {

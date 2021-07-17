@@ -41,7 +41,7 @@ class MemberServiceTest extends ServiceTest {
                 .willReturn(savedMember);
 
         //then
-        MemberSaveResponse memberSaveResponse = MemberSaveResponse.of(savedMember);
+        MemberSaveResponse memberSaveResponse = MemberSaveResponse.from(savedMember);
         assertThat(memberService.saveMember(memberSaveRequest)).usingRecursiveComparison()
                 .isEqualTo(memberSaveResponse);
     }
