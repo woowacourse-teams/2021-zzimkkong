@@ -1,9 +1,8 @@
+import { InputHTMLAttributes } from 'react';
 import { ReactComponent as CalendarIcon } from 'assets/svg/calendar.svg';
 import * as Styled from './DateInput.styles';
 
-export interface Props {
-  value: string;
-}
+export type Props = InputHTMLAttributes<HTMLInputElement>;
 
 const DateInput = ({ value }: Props): JSX.Element => {
   return (

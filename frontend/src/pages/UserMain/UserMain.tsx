@@ -197,15 +197,14 @@ const UserMain = (): JSX.Element => {
         <DateInput value="2021-07-16" />
         <Styled.MapContainer>
           <Styled.Map>
-            {spaces &&
-              spaces.map(({ spaceName, coordinate, textPosition }) => (
-                <PinRadio
-                  name="luther"
-                  coordinate={coordinate}
-                  text={spaceName}
-                  textPosition={textPosition}
-                />
-              ))}
+            {spaces?.map(({ spaceName, coordinate, textPosition }) => (
+              <PinRadio
+                name="luther"
+                coordinate={coordinate}
+                text={spaceName}
+                textPosition={textPosition}
+              />
+            ))}
             <Luther />
           </Styled.Map>
         </Styled.MapContainer>
@@ -217,7 +216,7 @@ const UserMain = (): JSX.Element => {
             </Panel.Header>
             <Panel.Content>
               {reservations && (
-                <Styled.ReservationList>
+                <Styled.ReservationList role="list">
                   {reservations.map((reservation: Reservation) => (
                     <ReservationListItem
                       key={reservation.id}

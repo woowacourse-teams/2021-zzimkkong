@@ -37,8 +37,8 @@ export const ReservationLink = styled(Link)`
   text-decoration: none;
 `;
 
-export const ReservationList = styled.ol`
-  & > * {
+export const ReservationList = styled.div`
+  & > [role='listitem'] {
     border-bottom: 1px solid ${({ theme }) => theme.black[400]};
 
     &:last-of-type {
