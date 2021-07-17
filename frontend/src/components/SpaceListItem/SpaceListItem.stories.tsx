@@ -9,9 +9,19 @@ export default {
 
 const Template: Story<Props> = (args) => <SpaceListItem {...args} />;
 
+const Container = styled.div`
+  display: flex;
+  gap: 0.375rem;
+  flex-wrap: wrap;
+`;
+
+const Wrapper = styled.div`
+  width: calc(50% - (0.375rem / 2));
+`;
+
 const thumbnail = {
   src: './images/luther.png',
-  alt: '루터회관 14F',
+  alt: '루터회관 14F 공간',
 };
 
 export const Default = Template.bind({});
@@ -20,41 +30,29 @@ Default.args = {
   title: '루터회관 14F',
 };
 
-const Container = styled.div`
-  display: flex;
-  gap: 0.375rem;
-`;
-
-const Wrapper = styled.div`
-  width: calc(50% - (0.375rem / 2));
-  margin-top: 0.5rem;
-`;
-
-export const SingleLineDouble: Story<Props> = () => (
+export const DoubleItem: Story<Props> = () => (
   <Container>
-    <SpaceListItem thumbnail={thumbnail} title="루터회관 14F" />
-    <SpaceListItem thumbnail={thumbnail} title="루터회관 14F" />
-  </Container>
-);
-
-export const SingleLineTriple: Story<Props> = () => (
-  <>
-    <Container>
-      <SpaceListItem thumbnail={thumbnail} title="루터회관 14F" />
-      <SpaceListItem thumbnail={thumbnail} title="루터회관 14F" />
-      <SpaceListItem thumbnail={thumbnail} title="루터회관 14F" />
-    </Container>
-  </>
-);
-
-export const MultiLine: Story<Props> = () => (
-  <>
-    <Container>
-      <SpaceListItem thumbnail={thumbnail} title="루터회관 14F" />
-      <SpaceListItem thumbnail={thumbnail} title="루터회관 14F" />
-    </Container>
     <Wrapper>
       <SpaceListItem thumbnail={thumbnail} title="루터회관 14F" />
     </Wrapper>
+    <Wrapper>
+      <SpaceListItem thumbnail={thumbnail} title="루터회관 14F" />
+    </Wrapper>
+  </Container>
+);
+
+export const TripleItem: Story<Props> = () => (
+  <>
+    <Container>
+      <Wrapper>
+        <SpaceListItem thumbnail={thumbnail} title="루터회관 14F" />
+      </Wrapper>
+      <Wrapper>
+        <SpaceListItem thumbnail={thumbnail} title="루터회관 14F" />
+      </Wrapper>
+      <Wrapper>
+        <SpaceListItem thumbnail={thumbnail} title="루터회관 14F" />
+      </Wrapper>
+    </Container>
   </>
 );
