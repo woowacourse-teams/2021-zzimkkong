@@ -35,12 +35,14 @@ public class ReservationController {
                 .build();
     }
 
-    @GetMapping("/reservations")
-    public ResponseEntity<ReservationFindAllResponse> findAll(
+    @PutMapping("/reservations/{reservationId}")
+    public ResponseEntity<Void> update(
             @PathVariable Long mapId,
-            @RequestParam @DateTimeFormat(pattern = DATE_FORMAT) LocalDate date) {
-        ReservationFindAllResponse reservationFindAllResponse = reservationService.findAllReservations(mapId, date);
-        return ResponseEntity.ok().body(reservationFindAllResponse);
+            @PathVariable Long reservationId,
+            @RequestBody @Valid ReservationCreateUpdateRequest reservationCreateUpdateRequest) {
+        SlackResponse slackResponse = reservationService.updateReservation(mapId, reservationId, reservationCreateUpdateRequest);
+        slackService.sendUpdateMessage(slackResponse);
+        return ResponseEntity.ok().build();
     }
 
     @DeleteMapping("/reservations/{reservationId}")
@@ -51,6 +53,14 @@ public class ReservationController {
         SlackResponse slackResponse = reservationService.deleteReservation(mapId, reservationId, reservationPasswordAuthenticationRequest);
         slackService.sendDeleteMessage(slackResponse);
         return ResponseEntity.noContent().build();
+    }
+
+    @GetMapping("/reservations")
+    public ResponseEntity<ReservationFindAllResponse> findAll(
+            @PathVariable Long mapId,
+            @RequestParam @DateTimeFormat(pattern = DATE_FORMAT) LocalDate date) {
+        ReservationFindAllResponse reservationFindAllResponse = reservationService.findAllReservations(mapId, date);
+        return ResponseEntity.ok().body(reservationFindAllResponse);
     }
 
     @GetMapping("/spaces/{spaceId}/reservations")
@@ -69,15 +79,5 @@ public class ReservationController {
             @RequestBody @Valid ReservationPasswordAuthenticationRequest reservationPasswordAuthenticationRequest) {
         ReservationResponse reservationResponse = reservationService.findReservation(mapId, reservationId, reservationPasswordAuthenticationRequest);
         return ResponseEntity.ok().body(reservationResponse);
-    }
-
-    @PutMapping("/reservations/{reservationId}")
-    public ResponseEntity<Void> update(
-            @PathVariable Long mapId,
-            @PathVariable Long reservationId,
-            @RequestBody @Valid ReservationCreateUpdateRequest reservationCreateUpdateRequest) {
-        SlackResponse slackResponse = reservationService.updateReservation(mapId, reservationId, reservationCreateUpdateRequest);
-        slackService.sendUpdateMessage(slackResponse);
-        return ResponseEntity.ok().build();
     }
 }

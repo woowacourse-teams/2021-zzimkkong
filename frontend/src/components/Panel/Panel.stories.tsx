@@ -57,3 +57,23 @@ Expandable.args = {
     </>
   ),
 };
+
+export const WithInner = Template.bind({});
+WithInner.args = {
+  expandable: false,
+  initialExpanded: false,
+  children: (
+    <>
+      <Panel.Header>
+        <Panel.Inner>
+          <Panel.Title>패널 헤더</Panel.Title>
+        </Panel.Inner>
+      </Panel.Header>
+      <Panel.Content>
+        <Panel.Inner>
+          <p>패널 내용</p>
+        </Panel.Inner>
+      </Panel.Content>
+    </>
+  ),
+};

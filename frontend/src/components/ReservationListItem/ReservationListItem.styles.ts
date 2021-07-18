@@ -3,7 +3,6 @@ import styled from 'styled-components';
 export const Item = styled.div`
   padding: 0.75rem 0.5rem;
   display: flex;
-  align-items: center;
   gap: 1rem;
 `;
 

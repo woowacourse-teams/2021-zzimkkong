@@ -9,3 +9,7 @@ export const Title = styled.p`
   font-weight: 700;
   font-size: 1.1rem;
 `;
+
+export const Inner = styled.div`
+  padding: 0.8rem;
+`;

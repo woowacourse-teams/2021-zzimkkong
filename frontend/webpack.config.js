@@ -6,6 +6,8 @@ module.exports = () => {
   const isDevelopment = process.env.NODE_ENV !== 'production';
 
   return {
+    mode: isDevelopment ? 'development' : 'production',
+    devtool: isDevelopment ? 'eval-source-map' : 'source-map',
     entry: './src/index.tsx',
     output: {
       filename: 'bundle.js',
@@ -14,16 +16,13 @@ module.exports = () => {
     },
     resolve: {
       extensions: ['.ts', '.tsx', '.js', '.jsx'],
+      plugins: [new TsconfigPathsPlugin({})],
     },
     devServer: {
       port: 3000,
+      open: true,
       hot: true,
       historyApiFallback: true,
-    },
-    devtool: isDevelopment ? 'eval-source-map' : 'source-map',
-    resolve: {
-      extensions: ['.ts', '.tsx', '.js', '.jsx'],
-      plugins: [new TsconfigPathsPlugin({})],
     },
     module: {
       rules: [
@@ -50,6 +49,7 @@ module.exports = () => {
     plugins: [
       new HtmlWebpackPlugin({
         template: 'public/index.html',
+        favicon: 'src/assets/images/logo.png',
       }),
     ],
   };
