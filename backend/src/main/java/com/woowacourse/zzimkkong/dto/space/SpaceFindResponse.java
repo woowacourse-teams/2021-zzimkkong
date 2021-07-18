@@ -12,7 +12,7 @@ public class SpaceFindResponse {
     private SpaceFindResponse() {
     }
 
-    private SpaceFindResponse(final Long id, final String name, String textPosition, String color, String coordinate) {
+    private SpaceFindResponse(final Long id, final String name, final String textPosition, final String color, final String coordinate) {
         this.id = id;
         this.name = name;
         this.textPosition = textPosition;
