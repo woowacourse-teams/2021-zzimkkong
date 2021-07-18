@@ -8,6 +8,7 @@ import Button from 'components/Button/Button';
 import Header from 'components/Header/Header';
 import Input from 'components/Input/Input';
 import Layout from 'components/Layout/Layout';
+import JOIN from 'constants/join';
 import MESSAGE from 'constants/message';
 import PATH from 'constants/path';
 import { LOCAL_STORAGE_KEY } from 'constants/storage';
@@ -66,7 +67,8 @@ const Login = (): JSX.Element => {
               type="password"
               label="비밀번호"
               value={password}
-              minLength={8}
+              minLength={JOIN.PASSWORD.MIN_LENGTH}
+              maxLength={JOIN.PASSWORD.MAX_LENGTH}
               onChange={onChangePassword}
               required
             />
