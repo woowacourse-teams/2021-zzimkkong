@@ -6,6 +6,6 @@ public class NoDataToUpdateException extends ReservationException {
     private static final String MESSAGE = "기존 예약 정보와 동일한 내용의 수정입니다.";
 
     public NoDataToUpdateException() {
-        super(MESSAGE, HttpStatus.BAD_REQUEST, START_DATE_TIME);
+        super(MESSAGE, HttpStatus.BAD_REQUEST, null);
     }
 }
