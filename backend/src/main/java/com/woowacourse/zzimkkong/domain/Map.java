@@ -23,6 +23,12 @@ public class Map {
         this.member = member;
     }
 
+    public Map(final Long id, final String name, final Member member) {
+        this.id = id;
+        this.name = name;
+        this.member = member;
+    }
+
     public Long getId() {
         return id;
     }
