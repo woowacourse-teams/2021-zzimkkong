@@ -16,7 +16,7 @@ public class Space {
     @Column(nullable = false, length = 6)
     private String textPosition;
 
-    @Column(nullable = false, length = 24)
+    @Column(nullable = false, length = 25)
     private String color;
 
     @Column(nullable = false)
