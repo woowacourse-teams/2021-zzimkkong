@@ -16,14 +16,31 @@ public class ReservationSpaceResponse {
     private String spaceName;
 
     @JsonProperty
+    private String textPosition;
+
+    @JsonProperty
+    private String spaceColor;
+
+    @JsonProperty
+    private CoordinateResponse coordinate;
+
+    @JsonProperty
     private List<ReservationResponse> reservations;
 
     public ReservationSpaceResponse() {
     }
 
-    private ReservationSpaceResponse(final Long spaceId, final String spaceName, final List<ReservationResponse> reservations) {
+    public ReservationSpaceResponse(final Long spaceId,
+                                    final String spaceName,
+                                    final String spaceColor,
+                                    final String textPosition,
+                                    final CoordinateResponse coordinateResponse,
+                                    final List<ReservationResponse> reservations) {
         this.spaceId = spaceId;
         this.spaceName = spaceName;
+        this.spaceColor = spaceColor;
+        this.textPosition = textPosition;
+        this.coordinate = coordinateResponse;
         this.reservations = reservations;
     }
 
@@ -34,10 +51,25 @@ public class ReservationSpaceResponse {
                 .collect(Collectors.toList());
 
         Space space = reservationsPerSpace.getKey();
-        return new ReservationSpaceResponse(space.getId(), space.getName(), reservations);
+        return new ReservationSpaceResponse(
+                space.getId(),
+                space.getName(),
+                space.getColor(),
+                space.getTextPosition(),
+                CoordinateResponse.from(space.getCoordinate()),
+                reservations
+        );
     }
 
     public Long getSpaceId() {
         return spaceId;
+    }
+
+    public String getSpaceName() {
+        return spaceName;
+    }
+
+    public String getSpaceColor() {
+        return spaceColor;
     }
 }

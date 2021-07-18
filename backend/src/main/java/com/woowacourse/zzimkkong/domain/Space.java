@@ -1,5 +1,7 @@
 package com.woowacourse.zzimkkong.domain;
 
+import com.woowacourse.zzimkkong.dto.reservation.CoordinateResponse;
+
 import javax.persistence.*;
 
 @Entity
@@ -11,6 +13,15 @@ public class Space {
     @Column(nullable = false, length = 20)
     private String name;
 
+    @Column(nullable = false, length = 6)
+    private String textPosition;
+
+    @Column(nullable = false, length = 25)
+    private String color;
+
+    @Column(nullable = false)
+    private String coordinate;
+
     @ManyToOne
     @JoinColumn(name = "map_id", foreignKey = @ForeignKey(name = "fk_space_map"))
     private Map map;
@@ -18,8 +29,29 @@ public class Space {
     protected Space() {
     }
 
-    public Space(final String name, final Map map) {
+    public Space(final String name,
+                 final String textPosition,
+                 final String color,
+                 final String coordinate,
+                 final Map map) {
         this.name = name;
+        this.textPosition = textPosition;
+        this.color = color;
+        this.coordinate = coordinate;
+        this.map = map;
+    }
+
+    public Space(final Long id,
+                 final String name,
+                 final String textPosition,
+                 final String color,
+                 final String coordinate,
+                 final Map map) {
+        this.id = id;
+        this.name = name;
+        this.textPosition = textPosition;
+        this.color = color;
+        this.coordinate = coordinate;
         this.map = map;
     }
 
@@ -29,5 +61,17 @@ public class Space {
 
     public String getName() {
         return this.name;
+    }
+
+    public String getTextPosition() {
+        return textPosition;
+    }
+
+    public String getColor() {
+        return color;
+    }
+
+    public String getCoordinate() {
+        return coordinate;
     }
 }

@@ -38,6 +38,7 @@ public abstract class ReservationController<Service extends ReservationService> 
     }
 
     @GetMapping("/maps/{mapId}/spaces/{spaceId}/reservations")
+
     public ResponseEntity<ReservationFindResponse> find(
             @PathVariable final Long mapId,
             @PathVariable final Long spaceId,

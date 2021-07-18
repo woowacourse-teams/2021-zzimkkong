@@ -192,7 +192,7 @@ public class UserReservationControllerTest extends AcceptanceTest {
                 .isEqualTo(expectedResponse);
     }
 
-    @DisplayName("공간 변경 있는 새로운 예약 정보가 주어지면 공간을 이동한 채로 예약을 업데이트 한다")
+    @DisplayName("공간 변경 있는 새로운 예약 정보가 주어지면 공간을 이동한 채로 예약을 업데이트 한다.")
     @Test
     void update_spaceUpdate() {
         //given
@@ -282,19 +282,6 @@ public class UserReservationControllerTest extends AcceptanceTest {
                 .then().log().all().extract();
     }
 
-    private ExtractableResponse<Response> deleteReservation(
-            final String api,
-            final ReservationPasswordAuthenticationRequest reservationPasswordAuthenticationRequest) {
-        return RestAssured
-                .given(getRequestSpecification()).log().all()
-                .accept("application/json")
-                .filter(document("reservation/user/delete", getRequestPreprocessor(), getResponsePreprocessor()))
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(reservationPasswordAuthenticationRequest)
-                .when().delete(api)
-                .then().log().all().extract();
-    }
-
     private ExtractableResponse<Response> findReservations(final String api, final String date) {
         return RestAssured
                 .given(getRequestSpecification()).log().all()
@@ -334,6 +321,19 @@ public class UserReservationControllerTest extends AcceptanceTest {
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body(reservationPasswordAuthenticationRequest)
                 .when().post(api)
+                .then().log().all().extract();
+    }
+
+    private ExtractableResponse<Response> deleteReservation(
+            final String api,
+            final ReservationPasswordAuthenticationRequest reservationPasswordAuthenticationRequest) {
+        return RestAssured
+                .given(getRequestSpecification()).log().all()
+                .accept("application/json")
+                .filter(document("reservation/user/delete", getRequestPreprocessor(), getResponsePreprocessor()))
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .body(reservationPasswordAuthenticationRequest)
+                .when().delete(api)
                 .then().log().all().extract();
     }
 }
