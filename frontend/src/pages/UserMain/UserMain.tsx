@@ -170,6 +170,8 @@ const UserMain = (): JSX.Element => {
   const location = useLocation<UserMainState>();
   const spaceId = location.state?.spaceId;
   const targetDate = location.state?.targetDate;
+  const now = new Date();
+  const todayDate = new Date(now.getFullYear(), now.getMonth(), now.getDate());
 
   const [date, onChangeDate] = useInput(formatDate(targetDate ?? new Date()));
   const [selectedSpaceId, onChangeSelectedSpaceId] = useInput(`${spaceId ?? spaceList[0].spaceId}`);
@@ -209,20 +211,24 @@ const UserMain = (): JSX.Element => {
         <Styled.PanelContainer>
           <Panel>
             <Panel.Header bgColor={selectedSpace.color}>
-              <Styled.ReservationLink
-                to={{
-                  pathname: PATH.RESERVATION,
-                  state: {
-                    mapId,
-                    spaceId: Number(selectedSpaceId),
-                    spaceName: selectedSpace.spaceName,
-                    selectedDate: date,
-                  },
-                }}
-              >
-                예약
-              </Styled.ReservationLink>
-              <Panel.Title>{selectedSpace.spaceName}</Panel.Title>
+              {new Date(date) > todayDate && (
+                <Styled.ReservationLink
+                  to={{
+                    pathname: PATH.RESERVATION,
+                    state: {
+                      mapId,
+                      spaceId: Number(selectedSpaceId),
+                      spaceName: selectedSpace.spaceName,
+                      selectedDate: date,
+                    },
+                  }}
+                >
+                  <Panel.Inner>예약</Panel.Inner>
+                </Styled.ReservationLink>
+              )}
+              <Panel.Inner>
+                <Panel.Title>{selectedSpace.spaceName}</Panel.Title>
+              </Panel.Inner>
             </Panel.Header>
             <Panel.Content>
               <>
