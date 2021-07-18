@@ -26,7 +26,7 @@
         <include resource="appenders/console-appender.xml"/>
         <include resource="appenders/file-appender-error.xml"/>
 
-        <root level="ERROR">
+        <root level="WARN">
             <appender-ref ref="CONSOLE_APPENDER" />
             <appender-ref ref="FILE_APPENDER_ERROR" />
         </root>
