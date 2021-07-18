@@ -4,7 +4,6 @@ import com.fasterxml.jackson.databind.exc.InvalidFormatException;
 import com.woowacourse.zzimkkong.dto.ErrorResponse;
 import com.woowacourse.zzimkkong.exception.ZzimkkongException;
 import com.woowacourse.zzimkkong.exception.authorization.AuthorizationException;
-import com.woowacourse.zzimkkong.exception.authorization.AuthorizationHeaderUninvolvedException;
 import com.woowacourse.zzimkkong.exception.map.MapException;
 import com.woowacourse.zzimkkong.exception.member.MemberException;
 import com.woowacourse.zzimkkong.exception.reservation.ReservationException;
@@ -12,7 +11,6 @@ import com.woowacourse.zzimkkong.exception.space.SpaceException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.dao.DataAccessException;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -46,13 +44,7 @@ public class ControllerAdvice {
         logger.warn(exception.getMessage());
         return ResponseEntity.badRequest().body(ErrorResponse.from(exception));
     }
-
-    @ExceptionHandler(AuthorizationHeaderUninvolvedException.class)
-    public ResponseEntity<ErrorResponse> invalidTokenHandler(final AuthorizationHeaderUninvolvedException exception) {
-        logger.warn(exception.getMessage());
-        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(ErrorResponse.from(exception));
-    }
-
+  
     @ExceptionHandler(DataAccessException.class)
     public ResponseEntity<ErrorResponse> invalidDataAccessHandler() {
         logger.warn(SERVER_ERROR_MESSAGE);

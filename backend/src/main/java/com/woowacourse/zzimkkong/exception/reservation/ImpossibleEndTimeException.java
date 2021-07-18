@@ -6,6 +6,6 @@ public class ImpossibleEndTimeException extends ReservationException {
     private static final String MESSAGE = "종료 시간을 확인해주세요.";
 
     public ImpossibleEndTimeException() {
-        super(MESSAGE, HttpStatus.BAD_REQUEST);
+        super(MESSAGE, HttpStatus.BAD_REQUEST, END_DATE_TIME);
     }
 }
