@@ -41,9 +41,17 @@ public class Space {
         this.map = map;
     }
 
-    public Space(final Long id, final String name, final Map map) {
+    public Space(final Long id,
+                 final String name,
+                 final String textPosition,
+                 final String color,
+                 final String coordinate,
+                 final Map map) {
         this.id = id;
         this.name = name;
+        this.textPosition = textPosition;
+        this.color = color;
+        this.coordinate = coordinate;
         this.map = map;
     }
 
