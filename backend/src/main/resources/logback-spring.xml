@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+    <timestamp key="DATE_FORMAT"
+               datePattern="yyyy-MM-dd"/>
+
+    <property name="LOG_PATTERN"
+              value="%highlight([%-5level]) %d{yyyy-MM-dd HH:mm:ss} %cyan([%thread]) %magenta([%logger{0}:%line]) - %message %n"/>
+
+    <property name="FILE_PATH"
+              value="${user.home}/logs"/>
+
+    <!--    Load Appender Configuration     -->
+    <include resource="appenders/console-appender.xml"/>
+    <include resource="appenders/file-appender-info.xml"/>
+    <include resource="appenders/file-appender-warn.xml"/>
+    <include resource="appenders/file-appender-error.xml"/>
+
+    <!--    Profile Setting   -->
+    <springProfile name="local">
+        <root level="DEBUG">
+            <appender-ref ref="CONSOLE_APPENDER" />
+        </root>
+    </springProfile>
+
+    <springProfile name="prod">
+        <root level="ERROR">
+            <appender-ref ref="CONSOLE_APPENDER" />
+            <appender-ref ref="FILE_APPENDER_ERROR" />
+        </root>
+    </springProfile>
+
+</configuration>
