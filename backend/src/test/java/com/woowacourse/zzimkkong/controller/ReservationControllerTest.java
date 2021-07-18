@@ -6,6 +6,7 @@ import com.woowacourse.zzimkkong.repository.MapRepository;
 import com.woowacourse.zzimkkong.repository.MemberRepository;
 import com.woowacourse.zzimkkong.repository.ReservationRepository;
 import com.woowacourse.zzimkkong.repository.SpaceRepository;
+import com.woowacourse.zzimkkong.service.SlackService;
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
@@ -13,6 +14,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 
@@ -40,6 +42,9 @@ public class ReservationControllerTest extends AcceptanceTest {
 
     @Autowired
     private ReservationRepository reservations;
+
+    @MockBean
+    private SlackService slackService;
 
     private ReservationCreateUpdateRequest reservationCreateUpdateRequest;
     private Reservation savedReservation;
@@ -80,7 +85,7 @@ public class ReservationControllerTest extends AcceptanceTest {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
     }
 
-    @DisplayName("공간 변경 없는 새로운 예약 정보가 주어지면 예약을 업데이트 한다")
+    @DisplayName("공간 변경 없는 새로운 예약 정보가 주어지면 예약을 업데이트 한다.")
     @Test
     void update_sameSpace() {
         //given
@@ -101,7 +106,7 @@ public class ReservationControllerTest extends AcceptanceTest {
         ExtractableResponse<Response> findResponse = findReservation(api, new ReservationPasswordAuthenticationRequest(SALLY_PASSWORD));
 
         ReservationResponse actualResponse = findResponse.body().as(ReservationResponse.class);
-        ReservationResponse expectedResponse = ReservationResponse.of(new Reservation.Builder()
+        ReservationResponse expectedResponse = ReservationResponse.from(new Reservation.Builder()
                 .startTime(reservationCreateUpdateRequestSameSpace.getStartDateTime())
                 .endTime(reservationCreateUpdateRequestSameSpace.getEndDateTime())
                 .description(reservationCreateUpdateRequestSameSpace.getDescription())
@@ -118,7 +123,7 @@ public class ReservationControllerTest extends AcceptanceTest {
                 .isEqualTo(expectedResponse);
     }
 
-    @DisplayName("공간 변경 있는 새로운 예약 정보가 주어지면 공간을 이동한 채로 예약을 업데이트 한다")
+    @DisplayName("공간 변경 있는 새로운 예약 정보가 주어지면 공간을 이동한 채로 예약을 업데이트 한다.")
     @Test
     void update_spaceUpdate() {
         //given
@@ -142,7 +147,7 @@ public class ReservationControllerTest extends AcceptanceTest {
                 TOMORROW.toString());
 
         ReservationFindResponse actualResponse = findResponse.as(ReservationFindResponse.class);
-        ReservationFindResponse expectedResponse = ReservationFindResponse.of(
+        ReservationFindResponse expectedResponse = ReservationFindResponse.from(
                 Arrays.asList(
                         new Reservation.Builder()
                                 .startTime(reservationCreateUpdateRequestDifferentSpace.getStartDateTime())
@@ -158,6 +163,28 @@ public class ReservationControllerTest extends AcceptanceTest {
 
         //then
         assertThat(updateResponse.statusCode()).isEqualTo(HttpStatus.OK.value());
+        assertThat(actualResponse).usingRecursiveComparison()
+                .ignoringExpectedNullFields()
+                .isEqualTo(expectedResponse);
+    }
+
+    @DisplayName("예약 수정 요청 시, 정확한 예약 비밀번호를 입력하면 해당 예약에 대한 정보를 반환한다.")
+    @Test
+    void findOne() {
+        //given
+        ExtractableResponse<Response> saveResponse = saveExampleReservations();
+        String api = saveResponse.header("location");
+        ReservationPasswordAuthenticationRequest reservationPasswordAuthenticationRequest
+                = new ReservationPasswordAuthenticationRequest(SALLY_PASSWORD);
+
+        //when
+        ExtractableResponse<Response> response = findReservation(api, reservationPasswordAuthenticationRequest);
+
+        ReservationResponse actualResponse = response.as(ReservationResponse.class);
+        ReservationResponse expectedResponse = ReservationResponse.from(savedReservation);
+
+        //then
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
         assertThat(actualResponse).usingRecursiveComparison()
                 .ignoringExpectedNullFields()
                 .isEqualTo(expectedResponse);
@@ -193,7 +220,7 @@ public class ReservationControllerTest extends AcceptanceTest {
         ExtractableResponse<Response> response = findReservations(api, TOMORROW.toString());
 
         ReservationFindResponse actualResponse = response.as(ReservationFindResponse.class);
-        ReservationFindResponse expectedResponse = ReservationFindResponse.of(
+        ReservationFindResponse expectedResponse = ReservationFindResponse.from(
                 Arrays.asList(savedReservation,
                         BE_AM_ZERO_ONE,
                         BE_PM_ONE_TWO));
@@ -218,7 +245,7 @@ public class ReservationControllerTest extends AcceptanceTest {
         ExtractableResponse<Response> response = findAllReservations(api, TOMORROW.toString());
 
         ReservationFindAllResponse actualResponse = response.as(ReservationFindAllResponse.class);
-        ReservationFindAllResponse expectedResponse = ReservationFindAllResponse.of(
+        ReservationFindAllResponse expectedResponse = ReservationFindAllResponse.from(
                 List.of(savedReservation,
                         BE_AM_ZERO_ONE,
                         BE_PM_ONE_TWO,
@@ -228,28 +255,6 @@ public class ReservationControllerTest extends AcceptanceTest {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
         assertThat(actualResponse).usingRecursiveComparison()
                 .ignoringCollectionOrder()
-                .ignoringExpectedNullFields()
-                .isEqualTo(expectedResponse);
-    }
-
-    @DisplayName("예약 수정 요청 시, 정확한 예약 비밀번호를 입력하면 해당 예약에 대한 정보를 반환한다")
-    @Test
-    void findOne() {
-        //given
-        ExtractableResponse<Response> saveResponse = saveExampleReservations();
-        String api = saveResponse.header("location");
-        ReservationPasswordAuthenticationRequest reservationPasswordAuthenticationRequest
-                = new ReservationPasswordAuthenticationRequest(SALLY_PASSWORD);
-
-        //when
-        ExtractableResponse<Response> response = findReservation(api, reservationPasswordAuthenticationRequest);
-
-        ReservationResponse actualResponse = response.as(ReservationResponse.class);
-        ReservationResponse expectedResponse = ReservationResponse.of(savedReservation);
-
-        //then
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
-        assertThat(actualResponse).usingRecursiveComparison()
                 .ignoringExpectedNullFields()
                 .isEqualTo(expectedResponse);
     }
@@ -277,6 +282,17 @@ public class ReservationControllerTest extends AcceptanceTest {
                 .then().log().all().extract();
     }
 
+    private ExtractableResponse<Response> updateReservation(final String api, final ReservationCreateUpdateRequest reservationCreateUpdateRequest) {
+        return RestAssured
+                .given(getRequestSpecification()).log().all()
+                .accept("application/json")
+                .filter(document("reservation/put", getRequestPreprocessor(), getResponsePreprocessor()))
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .body(reservationCreateUpdateRequest)
+                .when().put(api)
+                .then().log().all().extract();
+    }
+
     private ExtractableResponse<Response> deleteReservation(
             final String api,
             final ReservationPasswordAuthenticationRequest reservationPasswordAuthenticationRequest) {
@@ -287,17 +303,6 @@ public class ReservationControllerTest extends AcceptanceTest {
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body(reservationPasswordAuthenticationRequest)
                 .when().delete(api)
-                .then().log().all().extract();
-    }
-
-    private ExtractableResponse<Response> updateReservation(final String api, final ReservationCreateUpdateRequest reservationCreateUpdateRequest) {
-        return RestAssured
-                .given(getRequestSpecification()).log().all()
-                .accept("application/json")
-                .filter(document("reservation/put", getRequestPreprocessor(), getResponsePreprocessor()))
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(reservationCreateUpdateRequest)
-                .when().put(api)
                 .then().log().all().extract();
     }
 

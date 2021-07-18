@@ -9,7 +9,7 @@ export const Header = styled.header`
   z-index: 99;
 
   svg {
-    padding: 0.5rem 0;
+    padding: 0.875rem 0;
     height: 100%;
   }
 `;
@@ -24,6 +24,6 @@ export const HeaderLayout = styled(Layout)`
 export const Title = styled.h1`
   font-size: 1.625rem;
   font-weight: 700;
-  margin-left: 0.125rem;
+  margin-left: 0.375rem;
   transform: translateY(-0.125rem);
 `;
