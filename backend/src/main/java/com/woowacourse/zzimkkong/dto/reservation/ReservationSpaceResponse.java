@@ -51,7 +51,7 @@ public class ReservationSpaceResponse {
                 space.getName(),
                 space.getColor(),
                 space.getTextPosition(),
-                CoordinateResponse.of(space.getCoordinate()),
+                CoordinateResponse.from(space.getCoordinate()),
                 reservations
         );
     }

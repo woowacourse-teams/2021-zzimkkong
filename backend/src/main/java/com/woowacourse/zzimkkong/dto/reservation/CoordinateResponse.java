@@ -17,7 +17,7 @@ public class CoordinateResponse {
         this.y = y;
     }
 
-    public static CoordinateResponse of(String coordinate) {
+    public static CoordinateResponse from(String coordinate) {
         List<Integer> coordinateSet = Arrays.stream(coordinate.split(", "))
                 .map(Integer::parseInt)
                 .collect(Collectors.toList());
