@@ -25,7 +25,6 @@ import java.util.List;
 
 import static com.woowacourse.zzimkkong.CommonFixture.*;
 import static com.woowacourse.zzimkkong.DocumentUtils.*;
-import static com.woowacourse.zzimkkong.DocumentUtils.getResponsePreprocessor;
 import static com.woowacourse.zzimkkong.controller.AuthControllerTest.login;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.restdocs.restassured3.RestAssuredRestDocumentation.document;
