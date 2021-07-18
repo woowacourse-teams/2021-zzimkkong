@@ -43,7 +43,7 @@ export const HeaderContent = styled.div`
 `;
 
 export const Toggle = styled.div<ToggleProps>`
-  margin-right: 0.8rem;
+  margin-right: 0.75rem;
   background: none;
   border: none;
   line-height: 0;

@@ -11,5 +11,5 @@ export const Title = styled.p`
 `;
 
 export const Inner = styled.div`
-  padding: 0.8rem;
+  padding: 0.75rem;
 `;
