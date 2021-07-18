@@ -14,13 +14,13 @@ import javax.validation.Valid;
 import java.net.URI;
 
 @RestController
-@RequestMapping("/api")
+@RequestMapping("/api/maps/{mapId}")
 public class UserReservationController extends ReservationController<UserReservationService> {
     public UserReservationController(final UserReservationService reservationService, final SlackService slackService) {
         super(reservationService, slackService);
     }
 
-    @Override
+    @PostMapping("/reservations")
     public ResponseEntity<Void> create(
             @PathVariable final Long mapId,
             @RequestBody @Valid final ReservationCreateUpdateWithPasswordRequest reservationCreateUpdateWithPasswordRequest) {
@@ -30,7 +30,7 @@ public class UserReservationController extends ReservationController<UserReserva
                 .build();
     }
 
-    @PostMapping("/maps/{mapId}/reservations/{reservationId}")
+    @PostMapping("/reservations/{reservationId}")
     public ResponseEntity<ReservationResponse> findOne(
             @PathVariable final Long mapId,
             @PathVariable final Long reservationId,
@@ -39,7 +39,7 @@ public class UserReservationController extends ReservationController<UserReserva
         return ResponseEntity.ok().body(reservationResponse);
     }
 
-    @PutMapping("/maps/{mapId}/reservations/{reservationId}")
+    @PutMapping("/reservations/{reservationId}")
     public ResponseEntity<Void> update(
             @PathVariable final Long mapId,
             @PathVariable final Long reservationId,
@@ -49,7 +49,7 @@ public class UserReservationController extends ReservationController<UserReserva
         return ResponseEntity.ok().build();
     }
 
-    @DeleteMapping("/maps/{mapId}/reservations/{reservationId}")
+    @DeleteMapping("/reservations/{reservationId}")
     public ResponseEntity<Void> delete(
             @PathVariable final Long mapId,
             @PathVariable final Long reservationId,

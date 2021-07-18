@@ -1,6 +1,5 @@
 package com.woowacourse.zzimkkong.controller;
 
-import com.woowacourse.zzimkkong.dto.reservation.ReservationCreateUpdateWithPasswordRequest;
 import com.woowacourse.zzimkkong.dto.reservation.ReservationFindAllResponse;
 import com.woowacourse.zzimkkong.dto.reservation.ReservationFindResponse;
 import com.woowacourse.zzimkkong.service.ReservationService;
@@ -9,7 +8,6 @@ import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import java.time.LocalDate;
@@ -25,7 +23,7 @@ public abstract class ReservationController<Service extends ReservationService> 
         this.slackService = slackService;
     }
 
-    @GetMapping("/maps/{mapId}/reservations")
+    @GetMapping("/reservations")
     public ResponseEntity<ReservationFindAllResponse> findAll(
             @PathVariable final Long mapId,
             @RequestParam @DateTimeFormat(pattern = DATE_FORMAT) final LocalDate date) {
@@ -33,8 +31,7 @@ public abstract class ReservationController<Service extends ReservationService> 
         return ResponseEntity.ok().body(reservationFindAllResponse);
     }
 
-    @GetMapping("/maps/{mapId}/spaces/{spaceId}/reservations")
-
+    @GetMapping("/spaces/{spaceId}/reservations")
     public ResponseEntity<ReservationFindResponse> find(
             @PathVariable final Long mapId,
             @PathVariable final Long spaceId,
@@ -42,9 +39,4 @@ public abstract class ReservationController<Service extends ReservationService> 
         ReservationFindResponse reservationFindResponse = reservationService.findReservations(mapId, spaceId, date);
         return ResponseEntity.ok().body(reservationFindResponse);
     }
-
-    @PostMapping("/maps/{mapId}/reservations")
-    public abstract ResponseEntity<Void> create(
-            final Long mapId,
-            final ReservationCreateUpdateWithPasswordRequest reservationCreateUpdateWithPasswordRequest);
 }
