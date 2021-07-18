@@ -44,7 +44,7 @@ public class ControllerAdvice {
         logger.warn(exception.getMessage());
         return ResponseEntity.badRequest().body(ErrorResponse.from(exception));
     }
-  
+
     @ExceptionHandler(DataAccessException.class)
     public ResponseEntity<ErrorResponse> invalidDataAccessHandler() {
         logger.warn(SERVER_ERROR_MESSAGE);

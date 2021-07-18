@@ -1,7 +1,5 @@
 package com.woowacourse.zzimkkong.domain;
 
-import com.woowacourse.zzimkkong.dto.reservation.CoordinateResponse;
-
 import javax.persistence.*;
 
 @Entity

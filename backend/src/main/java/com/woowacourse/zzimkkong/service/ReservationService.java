@@ -9,8 +9,6 @@ import com.woowacourse.zzimkkong.exception.space.NoSuchSpaceException;
 import com.woowacourse.zzimkkong.repository.MapRepository;
 import com.woowacourse.zzimkkong.repository.ReservationRepository;
 import com.woowacourse.zzimkkong.repository.SpaceRepository;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
@@ -20,7 +18,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
-@Component
 public abstract class ReservationService {
     public static final long ONE_DAY = 1L;
 
@@ -28,8 +25,7 @@ public abstract class ReservationService {
     protected SpaceRepository spaces;
     protected ReservationRepository reservations;
 
-    @Autowired(required = false)
-    public ReservationService(MapRepository maps, SpaceRepository spaces, ReservationRepository reservations) {
+    protected ReservationService(MapRepository maps, SpaceRepository spaces, ReservationRepository reservations) {
         this.maps = maps;
         this.spaces = spaces;
         this.reservations = reservations;
