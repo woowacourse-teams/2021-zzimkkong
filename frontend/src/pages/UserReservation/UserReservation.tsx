@@ -1,7 +1,7 @@
 import { AxiosError } from 'axios';
 import { FormEventHandler } from 'react';
 import { useMutation } from 'react-query';
-import { useHistory } from 'react-router-dom';
+import { useHistory, useLocation } from 'react-router-dom';
 import { postReservation } from 'api/reservation';
 import { ReactComponent as CalendarIcon } from 'assets/svg/calendar.svg';
 import Button from 'components/Button/Button';
@@ -10,36 +10,54 @@ import Input from 'components/Input/Input';
 import Layout from 'components/Layout/Layout';
 import ReservationListItem from 'components/ReservationListItem/ReservationListItem';
 import MESSAGE from 'constants/message';
+import PATH from 'constants/path';
 import REGEXP from 'constants/regexp';
 import RESERVATION from 'constants/reservation';
 import useInput from 'hooks/useInput';
 import useReservations from 'hooks/useReservations';
+import { UserMainState } from 'pages/UserMain/UserMain';
+import { Space } from 'types/common';
 import { formatDate, formatTime } from 'utils/datetime';
 import * as Styled from './UserReservation.styles';
 
-const UserReservation = (): JSX.Element => {
-  // Note: 1번 맵의 1번 공간에 대해서만 예약되도록 임시 구현
-  const mapId = 1;
-  const spaceId = 1;
-  const spaceName = '회의실 1';
-  const now = new Date();
+interface UserReservationState {
+  mapId: number;
+  spaceId: Space['spaceId'];
+  spaceName: Space['spaceName'];
+  selectedDate: string;
+}
 
-  const history = useHistory();
+const UserReservation = (): JSX.Element => {
+  const location = useLocation<UserReservationState>();
+  const history = useHistory<UserMainState>();
+
+  const { mapId, spaceId, spaceName, selectedDate } = location.state;
+
+  if (!mapId || !spaceId || !spaceName) history.replace(PATH.USER_MAIN);
+
+  const now = new Date();
+  const initialStartTime = formatTime(now);
+  const initialEndTime = formatTime(new Date(new Date().getTime() + 1000 * 60 * 60));
 
   const [name, onChangeName] = useInput('');
   const [description, onChangeDescription] = useInput('');
-  const [date, onChangeDate] = useInput(formatDate(now));
-  const [startTime, onChangeStartTime] = useInput(formatTime(now));
-  const [endTime, onChangeEndTime] = useInput(formatTime(new Date(now.getTime() + 1000 * 60 * 60)));
+  const [date, onChangeDate] = useInput(selectedDate);
+  const [startTime, onChangeStartTime] = useInput(initialStartTime);
+  const [endTime, onChangeEndTime] = useInput(initialEndTime);
   const [password, onChangePassword] = useInput('');
 
-  const getReservations = useReservations({ mapId, spaceId, date });
+  const startDateTime = new Date(`${date}T${startTime}Z`);
+  const endDateTime = new Date(`${date}T${endTime}Z`);
 
+  const getReservations = useReservations({ mapId, spaceId, date });
   const reservations = getReservations.data?.data?.reservations ?? [];
 
   const createReservation = useMutation(postReservation, {
     onSuccess: () => {
-      history.push('/');
+      history.push(PATH.USER_MAIN, {
+        spaceId,
+        targetDate: startDateTime,
+      });
     },
     onError: (error: AxiosError<Error>) => {
       alert(error.response?.data.message ?? MESSAGE.RESERVATION.UNEXPECTED_ERROR);
@@ -51,12 +69,9 @@ const UserReservation = (): JSX.Element => {
 
     if (createReservation.isLoading) return;
 
-    const startDateTime = new Date(`${date}T${startTime}Z`);
-    const endDateTime = new Date(`${date}T${endTime}Z`);
-
     const mapId = 1;
     const reservation = {
-      spaceId: 1,
+      spaceId,
       name,
       description,
       password,
@@ -137,12 +152,24 @@ const UserReservation = (): JSX.Element => {
             </Styled.InputWrapper>
           </Styled.Section>
           <Styled.Section>
-            <Styled.PageHeader>{date}의 예약 목록</Styled.PageHeader>
-            {getReservations.isLoading && <Styled.Message>불러오는 중입니다...</Styled.Message>}
-            {getReservations.isFetched && reservations.length === 0 && (
+            <Styled.PageHeader>
+              {date}
+              {date && '의'} 예약 목록
+            </Styled.PageHeader>
+            {getReservations.isLoadingError && (
+              <Styled.Message>
+                예약 목록을 불러오는 데 문제가 생겼어요!
+                <br />
+                새로 고침으로 다시 시도해주세요.
+              </Styled.Message>
+            )}
+            {getReservations.isLoading && !getReservations.isLoadingError && (
+              <Styled.Message>불러오는 중입니다...</Styled.Message>
+            )}
+            {getReservations.isSuccess && reservations.length === 0 && (
               <Styled.Message>오늘의 첫 예약을 잡아보세요!</Styled.Message>
             )}
-            {getReservations.isFetched && reservations.length > 0 && (
+            {getReservations.isSuccess && reservations.length > 0 && (
               <Styled.ReservationList role="list">
                 {reservations?.map((reservation) => (
                   <ReservationListItem key={reservation.id} reservation={reservation} />

@@ -26,6 +26,7 @@ export const DateInput = styled.input`
   font-size: 1.5rem;
   color: ${({ theme }) => theme.gray[500]};
   border: none;
+  background: none;
   line-height: 1em;
 
   &::-webkit-calendar-picker-indicator {

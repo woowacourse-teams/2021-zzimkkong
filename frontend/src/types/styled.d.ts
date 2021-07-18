@@ -15,6 +15,14 @@ interface Palette {
   900?: Color;
 }
 
+interface BreakPoints {
+  sm?: number;
+  md?: number;
+  lg?: number;
+  xl?: number;
+  xxl?: number;
+}
+
 declare module 'styled-components' {
   export interface DefaultTheme {
     primary: Palette;
@@ -24,5 +32,6 @@ declare module 'styled-components' {
     gray: Palette;
     white: Color;
     modalOverlay: Color;
+    breakpoints: BreakPoints;
   }
 }

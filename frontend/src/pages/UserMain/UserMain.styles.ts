@@ -15,6 +15,10 @@ export const MapContainer = styled.div`
   overflow: auto;
   display: flex;
   justify-content: center;
+
+  @media (max-width: ${(props) => props.theme.breakpoints.md}px) {
+    height: auto;
+  }
 `;
 
 export const Map = styled.div`
@@ -28,13 +32,14 @@ export const PanelContainer = styled.div`
 `;
 
 export const ReservationLink = styled(Link)`
-  display: inline-block;
-  padding: 0.625rem 0.875rem;
+  display: block;
   background: ${({ theme }) => theme.primary[400]};
   color: ${({ theme }) => theme.white};
   border-right: 1px solid ${({ theme }) => theme.black[400]};
   margin-right: 1rem;
   text-decoration: none;
+  float: left;
+  line-height: 1.1em;
 `;
 
 export const ReservationList = styled.div`
@@ -46,3 +51,5 @@ export const ReservationList = styled.div`
     }
   }
 `;
+
+export const Message = styled.p``;
