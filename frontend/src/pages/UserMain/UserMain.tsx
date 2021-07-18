@@ -1,3 +1,4 @@
+import { useLocation } from 'react-router-dom';
 import { ReactComponent as Luther } from 'assets/svg/luther.svg';
 import { ReactComponent as More } from 'assets/svg/more.svg';
 import Button from 'components/Button/Button';
@@ -8,47 +9,21 @@ import Panel from 'components/Panel/Panel';
 import PinRadio from 'components/PinRadio/PinRadio';
 import ReservationListItem from 'components/ReservationListItem/ReservationListItem';
 import PATH from 'constants/path';
-import { Coordinate, Reservation } from 'types/common';
-import { Color } from 'types/styled';
+import useInput from 'hooks/useInput';
+import useReservations from 'hooks/useReservations';
+import { Reservation, Space } from 'types/common';
+import { formatDate } from 'utils/datetime';
 import * as Styled from './UserMain.styles';
 
-// 임시
-interface Space {
-  id: number;
-  spaceName: string;
-  textPosition: 'left' | 'right' | 'top' | 'bottom';
-  color: Color;
-  coordinate: Coordinate;
+export interface UserMainState {
+  spaceId?: Space['spaceId'];
+  targetDate?: Date;
 }
 
 const UserMain = (): JSX.Element => {
-  const reservations: Reservation[] = [
+  const spaceList: Space[] = [
     {
-      id: 5,
-      startDateTime: '2021-07-15T10:00:00',
-      endDateTime: '2021-07-15T11:00:00',
-      name: '찜꽁',
-      description: '찜꽁 5차 회의',
-    },
-    {
-      id: 1,
-      startDateTime: '2021-07-15T13:30:00',
-      endDateTime: '2021-07-15T14:30:00',
-      name: '샐리',
-      description: '회의입니다.',
-    },
-    {
-      id: 10,
-      name: '체프',
-      description: '맛있는 커피를 내리는 법',
-      startDateTime: '2021-07-15T20:00:00',
-      endDateTime: '2021-07-15T21:00:00',
-    },
-  ];
-
-  const spaces: Space[] = [
-    {
-      id: 1,
+      spaceId: 1,
       spaceName: '백엔드 강의실',
       textPosition: 'bottom',
       color: '#FED7D9',
@@ -58,7 +33,7 @@ const UserMain = (): JSX.Element => {
       },
     },
     {
-      id: 2,
+      spaceId: 2,
       spaceName: '프론트 강의실1',
       textPosition: 'bottom',
       color: '#FED7D9',
@@ -68,7 +43,7 @@ const UserMain = (): JSX.Element => {
       },
     },
     {
-      id: 3,
+      spaceId: 3,
       spaceName: '프론트 강의실2',
       textPosition: 'bottom',
       color: '#FED7D9',
@@ -78,7 +53,7 @@ const UserMain = (): JSX.Element => {
       },
     },
     {
-      id: 4,
+      spaceId: 4,
       spaceName: '회의실1',
       textPosition: 'bottom',
       color: '#FFE3AC',
@@ -88,7 +63,7 @@ const UserMain = (): JSX.Element => {
       },
     },
     {
-      id: 5,
+      spaceId: 5,
       spaceName: '회의실2',
       textPosition: 'bottom',
       color: '#FFE3AC',
@@ -98,7 +73,7 @@ const UserMain = (): JSX.Element => {
       },
     },
     {
-      id: 6,
+      spaceId: 6,
       spaceName: '회의실3',
       textPosition: 'bottom',
       color: '#FFE3AC',
@@ -108,7 +83,7 @@ const UserMain = (): JSX.Element => {
       },
     },
     {
-      id: 7,
+      spaceId: 7,
       spaceName: '회의실4',
       textPosition: 'bottom',
       color: '#FFE3AC',
@@ -118,7 +93,7 @@ const UserMain = (): JSX.Element => {
       },
     },
     {
-      id: 8,
+      spaceId: 8,
       spaceName: '회의실5',
       textPosition: 'bottom',
       color: '#FFE3AC',
@@ -128,7 +103,7 @@ const UserMain = (): JSX.Element => {
       },
     },
     {
-      id: 9,
+      spaceId: 9,
       spaceName: '트랙방',
       textPosition: 'bottom',
       color: '#D8FBCC',
@@ -138,7 +113,7 @@ const UserMain = (): JSX.Element => {
       },
     },
     {
-      id: 10,
+      spaceId: 10,
       spaceName: '페어룸1',
       textPosition: 'left',
       color: '#CCDFFB',
@@ -148,7 +123,7 @@ const UserMain = (): JSX.Element => {
       },
     },
     {
-      id: 11,
+      spaceId: 11,
       spaceName: '페어룸2',
       textPosition: 'left',
       color: '#CCDFFB',
@@ -158,7 +133,7 @@ const UserMain = (): JSX.Element => {
       },
     },
     {
-      id: 12,
+      spaceId: 12,
       spaceName: '페어룸3',
       textPosition: 'left',
       color: '#CCDFFB',
@@ -168,7 +143,7 @@ const UserMain = (): JSX.Element => {
       },
     },
     {
-      id: 13,
+      spaceId: 13,
       spaceName: '페어룸4',
       textPosition: 'left',
       color: '#CCDFFB',
@@ -178,7 +153,7 @@ const UserMain = (): JSX.Element => {
       },
     },
     {
-      id: 14,
+      spaceId: 14,
       spaceName: '페어룸5',
       textPosition: 'left',
       color: '#CCDFFB',
@@ -189,20 +164,43 @@ const UserMain = (): JSX.Element => {
     },
   ];
 
+  // Note: 루터회관 14층으로 상정하고 구현. 추후 useSpaces로 대체 필요
+  const mapId = 1;
+
+  const location = useLocation<UserMainState>();
+  const spaceId = location.state?.spaceId;
+  const targetDate = location.state?.targetDate;
+
+  const [date, onChangeDate] = useInput(formatDate(targetDate ?? new Date()));
+  const [selectedSpaceId, onChangeSelectedSpaceId] = useInput(`${spaceId ?? spaceList[0].spaceId}`);
+  const getReservations = useReservations({
+    mapId,
+    spaceId: Number(selectedSpaceId),
+    date: targetDate ? formatDate(targetDate) : date,
+  });
+  const reservations = getReservations.data?.data?.reservations ?? [];
+
+  const selectedSpace =
+    spaceList.find((space) => space.spaceId === Number(selectedSpaceId)) ?? spaceList[0];
+
   return (
     <>
       <Header />
       <Layout>
         <Styled.PageTitle>우아한테크코스 교육장</Styled.PageTitle>
-        <DateInput value="2021-07-16" />
+        <DateInput value={date} onChange={onChangeDate} />
         <Styled.MapContainer>
           <Styled.Map>
-            {spaces?.map(({ spaceName, coordinate, textPosition }) => (
+            {spaceList?.map(({ spaceId, spaceName, coordinate, textPosition }) => (
               <PinRadio
-                name="luther"
+                key={spaceId}
+                name={`map-${mapId}`}
                 coordinate={coordinate}
                 text={spaceName}
                 textPosition={textPosition}
+                value={spaceId}
+                checked={Number(selectedSpaceId) === spaceId}
+                onChange={onChangeSelectedSpaceId}
               />
             ))}
             <Luther />
@@ -210,26 +208,59 @@ const UserMain = (): JSX.Element => {
         </Styled.MapContainer>
         <Styled.PanelContainer>
           <Panel>
-            <Panel.Header bgColor="#FFEEC4">
-              <Styled.ReservationLink to={PATH.RESERVATION}>예약</Styled.ReservationLink>
-              <Panel.Title>회의실1</Panel.Title>
+            <Panel.Header bgColor={selectedSpace.color}>
+              <Styled.ReservationLink
+                to={{
+                  pathname: PATH.RESERVATION,
+                  state: {
+                    mapId,
+                    spaceId: Number(selectedSpaceId),
+                    spaceName: selectedSpace.spaceName,
+                    selectedDate: date,
+                  },
+                }}
+              >
+                예약
+              </Styled.ReservationLink>
+              <Panel.Title>{selectedSpace.spaceName}</Panel.Title>
             </Panel.Header>
             <Panel.Content>
-              {reservations && (
-                <Styled.ReservationList role="list">
-                  {reservations.map((reservation: Reservation) => (
-                    <ReservationListItem
-                      key={reservation.id}
-                      reservation={reservation}
-                      control={
-                        <Button variant="text" size="small">
-                          <More />
-                        </Button>
-                      }
-                    />
-                  ))}
-                </Styled.ReservationList>
-              )}
+              <>
+                {getReservations.isLoadingError && (
+                  <Panel.Inner>
+                    <Styled.Message>
+                      예약 목록을 불러오는 데 문제가 생겼어요!
+                      <br />
+                      새로 고침으로 다시 시도해주세요.
+                    </Styled.Message>
+                  </Panel.Inner>
+                )}
+                {getReservations.isLoading && !getReservations.isLoadingError && (
+                  <Panel.Inner>
+                    <Styled.Message>불러오는 중입니다...</Styled.Message>
+                  </Panel.Inner>
+                )}
+                {getReservations.isSuccess && reservations?.length === 0 && (
+                  <Panel.Inner>
+                    <Styled.Message>오늘의 첫 예약을 잡아보세요!</Styled.Message>
+                  </Panel.Inner>
+                )}
+                {getReservations.isSuccess && reservations.length > 0 && (
+                  <Styled.ReservationList role="list">
+                    {reservations.map((reservation: Reservation) => (
+                      <ReservationListItem
+                        key={reservation.id}
+                        reservation={reservation}
+                        control={
+                          <Button variant="text" size="small">
+                            <More />
+                          </Button>
+                        }
+                      />
+                    ))}
+                  </Styled.ReservationList>
+                )}
+              </>
             </Panel.Content>
           </Panel>
         </Styled.PanelContainer>
