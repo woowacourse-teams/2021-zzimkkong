@@ -44,15 +44,21 @@ public class ControllerAdvice {
         return ResponseEntity.badRequest().body(ErrorResponse.from(exception));
     }
   
-    @ExceptionHandler(DataAccessException.class)
-    public ResponseEntity<ErrorResponse> invalidDataAccessHandler() {
-        logger.warn(SERVER_ERROR_MESSAGE);
-        return ResponseEntity.internalServerError().build();
-    }
-
     @ExceptionHandler(InvalidFormatException.class)
     public ResponseEntity<ErrorResponse> invalidFormatHandler() {
         logger.warn(FORMAT_MESSAGE);
         return ResponseEntity.badRequest().body(ErrorResponse.invalidFormat());
+    }
+
+    @ExceptionHandler(DataAccessException.class)
+    public ResponseEntity<ErrorResponse> invalidDataAccessHandler(DataAccessException e) {
+        logger.error(SERVER_ERROR_MESSAGE, e);
+        return ResponseEntity.internalServerError().build();
+    }
+
+    @ExceptionHandler(Exception.class)
+    public ResponseEntity<ErrorResponse> unhandledExceptionHandler(Exception e) {
+        logger.error(e.getMessage(), e);
+        return ResponseEntity.internalServerError().build();
     }
 }
