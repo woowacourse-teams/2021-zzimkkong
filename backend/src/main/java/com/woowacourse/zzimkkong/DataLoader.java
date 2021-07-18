@@ -53,11 +53,11 @@ public class DataLoader implements CommandLineRunner {
         Space meetingRoom3 = new Space("회의실3", "bottom", "#FFE3AC", "510, 220", luther);
         Space meetingRoom4 = new Space("회의실4", "bottom", "#FFE3AC", "584, 220", luther);
         Space meetingRoom5 = new Space("회의실5", "bottom", "#FFE3AC", "668, 335", luther);
-        Space pairRoom1 = new Space("페어룸1", "bottom", "#CCDFFB", "208, 289", luther);
-        Space pairRoom2 = new Space("페어룸2", "bottom", "#CCDFFB", "208, 318", luther);
-        Space pairRoom3 = new Space("페어룸3", "bottom", "#CCDFFB", "208, 347", luther);
-        Space pairRoom4 = new Space("페어룸4", "bottom", "#CCDFFB", "208, 376", luther);
-        Space pairRoom5 = new Space("페어룸5", "bottom", "#CCDFFB", "208, 404", luther);
+        Space pairRoom1 = new Space("페어룸1", "left", "#CCDFFB", "208, 289", luther);
+        Space pairRoom2 = new Space("페어룸2", "left", "#CCDFFB", "208, 318", luther);
+        Space pairRoom3 = new Space("페어룸3", "left", "#CCDFFB", "208, 347", luther);
+        Space pairRoom4 = new Space("페어룸4", "left", "#CCDFFB", "208, 376", luther);
+        Space pairRoom5 = new Space("페어룸5", "left", "#CCDFFB", "208, 404", luther);
         Space trackRoom = new Space("트랙방", "bottom", "#D8FBCC", "259, 336", luther);
 
         List<Space> spaces = List.of(
