@@ -83,27 +83,6 @@ public abstract class ReservationService {
         return ReservationFindAllResponse.from(reservations);
     }
 
-    public SlackResponse updateReservation(
-            final Long mapId,
-            final Long reservationId,
-            final ReservationCreateUpdateRequest reservationCreateUpdateRequest) {
-        validateMapExistence(mapId);
-        validateTime(reservationCreateUpdateRequest);
-
-        Space space = spaces.findById(reservationCreateUpdateRequest.getSpaceId())
-                .orElseThrow(NoSuchSpaceException::new);
-        Reservation reservation = reservations
-                .findById(reservationId)
-                .orElseThrow(NoSuchReservationException::new);
-
-        doDirtyCheck(reservation, reservationCreateUpdateRequest, space);
-        validateAvailability(space, reservationCreateUpdateRequest, reservation);
-
-        reservation.update(reservationCreateUpdateRequest, space);
-        reservations.save(reservation);
-        return SlackResponse.from(reservation);
-    }
-
     protected void validateTime(final ReservationCreateUpdateRequest reservationCreateUpdateRequest) {
         LocalDateTime startDateTime = reservationCreateUpdateRequest.getStartDateTime();
         LocalDateTime endDateTime = reservationCreateUpdateRequest.getEndDateTime();

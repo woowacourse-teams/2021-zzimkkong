@@ -23,6 +23,10 @@ public class Map {
         this.member = member;
     }
 
+    public boolean hasId(final Long id) {
+        return this.id.equals(id);
+    }
+
     public Long getId() {
         return id;
     }

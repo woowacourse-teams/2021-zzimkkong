@@ -25,20 +25,6 @@ public class UserReservationService extends ReservationService {
         super(maps, spaces, reservations);
     }
 
-    public SlackResponse deleteReservation(
-            final Long mapId,
-            final Long reservationId,
-            final ReservationPasswordAuthenticationRequest reservationPasswordAuthenticationRequest) {
-        validateMapExistence(mapId);
-
-        Reservation reservation = reservations
-                .findById(reservationId)
-                .orElseThrow(NoSuchReservationException::new);
-        checkCorrectPassword(reservation, reservationPasswordAuthenticationRequest.getPassword());
-        reservations.delete(reservation);
-        return SlackResponse.from(reservation);
-    }
-
     @Transactional(readOnly = true)
     public ReservationResponse findReservation(
             final Long mapId,
@@ -72,6 +58,20 @@ public class UserReservationService extends ReservationService {
 
         reservation.update(reservationCreateUpdateWithPasswordRequest, space);
         reservations.save(reservation);
+        return SlackResponse.from(reservation);
+    }
+
+    public SlackResponse deleteReservation(
+            final Long mapId,
+            final Long reservationId,
+            final ReservationPasswordAuthenticationRequest reservationPasswordAuthenticationRequest) {
+        validateMapExistence(mapId);
+
+        Reservation reservation = reservations
+                .findById(reservationId)
+                .orElseThrow(NoSuchReservationException::new);
+        checkCorrectPassword(reservation, reservationPasswordAuthenticationRequest.getPassword());
+        reservations.delete(reservation);
         return SlackResponse.from(reservation);
     }
 

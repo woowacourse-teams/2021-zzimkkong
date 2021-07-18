@@ -1,5 +1,6 @@
 package com.woowacourse.zzimkkong.service;
 
+import com.woowacourse.zzimkkong.domain.Member;
 import com.woowacourse.zzimkkong.domain.Reservation;
 import com.woowacourse.zzimkkong.domain.Space;
 import com.woowacourse.zzimkkong.dto.reservation.*;
@@ -27,9 +28,10 @@ import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.BDDMockito.given;
 
 public class ProviderReservationServiceTest extends ServiceTest {
+    public static final String CHANGED_NAME = "이름 변경";
+    public static final String CHANGED_DESCRIPTION = "회의명 변경";
     @Autowired
     private ProviderReservationService providerReservationService;
-
     private ReservationCreateUpdateWithPasswordRequest reservationCreateUpdateWithPasswordRequest = new ReservationCreateUpdateWithPasswordRequest(
             1L,
             TOMORROW_START_TIME.plusHours(3),
@@ -38,13 +40,10 @@ public class ProviderReservationServiceTest extends ServiceTest {
             USER_NAME,
             DESCRIPTION
     );
-
     private final Reservation reservation = makeReservation(
             reservationCreateUpdateWithPasswordRequest.getStartDateTime(),
             reservationCreateUpdateWithPasswordRequest.getEndDateTime(),
             BE);
-    public static final String CHANGED_NAME = "이름 변경";
-    public static final String CHANGED_DESCRIPTION = "회의명 변경";
 
     @DisplayName("예약 생성 요청 시, mapId와 요청이 들어온다면 예약을 생성한다.")
     @Test
@@ -362,13 +361,16 @@ public class ProviderReservationServiceTest extends ServiceTest {
         //given
         given(maps.existsById(anyLong()))
                 .willReturn(true);
+        given(maps.findAllByMember(any(Member.class)))
+                .willReturn(Collections.singletonList(LUTHER));
         given(reservations.findById(anyLong()))
                 .willReturn(Optional.of(reservation));
 
         //when
         ReservationResponse actualResponse = providerReservationService.findReservation(
                 1L,
-                this.reservation.getId());
+                this.reservation.getId(),
+                POBI);
 
         //then
         assertThat(actualResponse).usingRecursiveComparison()
@@ -381,13 +383,16 @@ public class ProviderReservationServiceTest extends ServiceTest {
         //given, when
         given(maps.existsById(anyLong()))
                 .willReturn(true);
+        given(maps.findAllByMember(any(Member.class)))
+                .willReturn(Collections.singletonList(LUTHER));
         given(reservations.findById(anyLong()))
                 .willReturn(Optional.empty());
 
         //then
         assertThatThrownBy(() -> providerReservationService.findReservation(
                 1L,
-                reservation.getId()))
+                reservation.getId(),
+                POBI))
                 .isInstanceOf(NoSuchReservationException.class);
     }
 
@@ -397,6 +402,8 @@ public class ProviderReservationServiceTest extends ServiceTest {
         //given
         given(maps.existsById(anyLong()))
                 .willReturn(true);
+        given(maps.findAllByMember(any(Member.class)))
+                .willReturn(Collections.singletonList(LUTHER));
         given(spaces.findById(anyLong()))
                 .willReturn(Optional.of(BE));
         given(reservations.findById(anyLong()))
@@ -412,7 +419,11 @@ public class ProviderReservationServiceTest extends ServiceTest {
         );
 
         //then
-        assertDoesNotThrow(() -> providerReservationService.updateReservation(1L, reservation.getId(), reservationCreateUpdateRequest));
+        assertDoesNotThrow(() -> providerReservationService.updateReservation(
+                1L,
+                reservation.getId(),
+                reservationCreateUpdateRequest,
+                POBI));
         assertThat(reservation.getUserName()).isEqualTo(CHANGED_NAME);
         assertThat(reservation.getDescription()).isEqualTo(CHANGED_DESCRIPTION);
     }
@@ -424,6 +435,8 @@ public class ProviderReservationServiceTest extends ServiceTest {
         //given
         given(maps.existsById(anyLong()))
                 .willReturn(true);
+        given(maps.findAllByMember(any(Member.class)))
+                .willReturn(Collections.singletonList(LUTHER));
 
         //when
         ReservationCreateUpdateRequest reservationCreateUpdateRequest = new ReservationCreateUpdateRequest(
@@ -435,7 +448,11 @@ public class ProviderReservationServiceTest extends ServiceTest {
         );
 
         //then
-        assertThatThrownBy(() -> providerReservationService.updateReservation(1L, 1L, reservationCreateUpdateRequest))
+        assertThatThrownBy(() -> providerReservationService.updateReservation(
+                1L,
+                1L,
+                reservationCreateUpdateRequest,
+                POBI))
                 .isInstanceOf(ImpossibleEndTimeException.class);
     }
 
@@ -445,6 +462,8 @@ public class ProviderReservationServiceTest extends ServiceTest {
         //given
         given(maps.existsById(anyLong()))
                 .willReturn(true);
+        given(maps.findAllByMember(any(Member.class)))
+                .willReturn(Collections.singletonList(LUTHER));
 
         //when
         ReservationCreateUpdateRequest reservationCreateUpdateRequest = new ReservationCreateUpdateRequest(
@@ -456,7 +475,11 @@ public class ProviderReservationServiceTest extends ServiceTest {
         );
 
         //then
-        assertThatThrownBy(() -> providerReservationService.updateReservation(1L, 1L, reservationCreateUpdateRequest))
+        assertThatThrownBy(() -> providerReservationService.updateReservation(
+                1L,
+                1L,
+                reservationCreateUpdateRequest,
+                POBI))
                 .isInstanceOf(NonMatchingStartAndEndDateException.class);
     }
 
@@ -466,6 +489,8 @@ public class ProviderReservationServiceTest extends ServiceTest {
         //given
         given(maps.existsById(anyLong()))
                 .willReturn(true);
+        given(maps.findAllByMember(any(Member.class)))
+                .willReturn(Collections.singletonList(LUTHER));
         given(spaces.findById(anyLong()))
                 .willReturn(Optional.of(BE));
         given(reservations.findById(anyLong()))
@@ -481,7 +506,11 @@ public class ProviderReservationServiceTest extends ServiceTest {
         );
 
         //then
-        assertThatThrownBy(() -> providerReservationService.updateReservation(1L, 1L, reservationCreateUpdateRequest))
+        assertThatThrownBy(() -> providerReservationService.updateReservation(
+                1L,
+                1L,
+                reservationCreateUpdateRequest,
+                POBI))
                 .isInstanceOf(NoDataToUpdateException.class);
     }
 
@@ -492,6 +521,8 @@ public class ProviderReservationServiceTest extends ServiceTest {
         //given
         given(maps.existsById(anyLong()))
                 .willReturn(true);
+        given(maps.findAllByMember(any(Member.class)))
+                .willReturn(Collections.singletonList(LUTHER));
         given(spaces.findById(anyLong()))
                 .willReturn(Optional.of(BE));
         given(reservations.findById(anyLong()))
@@ -512,7 +543,10 @@ public class ProviderReservationServiceTest extends ServiceTest {
         );
 
         //then
-        assertThatThrownBy(() -> providerReservationService.updateReservation(1L, 1L, reservationCreateUpdateRequest))
+        assertThatThrownBy(() -> providerReservationService.updateReservation(
+                1L, 1L,
+                reservationCreateUpdateRequest,
+                POBI))
                 .isInstanceOf(ImpossibleReservationTimeException.class);
     }
 
@@ -524,13 +558,16 @@ public class ProviderReservationServiceTest extends ServiceTest {
                 TOMORROW_START_TIME,
                 TOMORROW_START_TIME.plusHours(2),
                 BE);
+
         given(maps.existsById(anyLong()))
                 .willReturn(true);
+        given(maps.findAllByMember(any(Member.class)))
+                .willReturn(Collections.singletonList(LUTHER));
         given(reservations.findById(anyLong()))
                 .willReturn(Optional.of(reservationToDelete));
 
         //then
-        assertDoesNotThrow(() -> providerReservationService.deleteReservation(1L, 1L));
+        assertDoesNotThrow(() -> providerReservationService.deleteReservation(1L, 1L, POBI));
     }
 
     @DisplayName("예약 삭제 요청 시, 예약이 존재하지 않는다면 오류가 발생한다.")
@@ -539,11 +576,13 @@ public class ProviderReservationServiceTest extends ServiceTest {
         //given, when
         given(maps.existsById(anyLong()))
                 .willReturn(true);
+        given(maps.findAllByMember(any(Member.class)))
+                .willReturn(Collections.singletonList(LUTHER));
         given(reservations.findById(anyLong()))
                 .willReturn(Optional.empty());
 
         //then
-        assertThatThrownBy(() -> providerReservationService.deleteReservation(1L, 1L))
+        assertThatThrownBy(() -> providerReservationService.deleteReservation(1L, 1L, POBI))
                 .isInstanceOf(NoSuchReservationException.class);
     }
 
