@@ -20,7 +20,7 @@ public class SpaceFindResponse {
         this.coordinate = coordinate;
     }
 
-    public static SpaceFindResponse from(Space space) {
+    public static SpaceFindResponse from(final Space space) {
         return new SpaceFindResponse(
                 space.getId(),
                 space.getName(),
