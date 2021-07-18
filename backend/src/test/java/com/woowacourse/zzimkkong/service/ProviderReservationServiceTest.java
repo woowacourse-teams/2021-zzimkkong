@@ -4,6 +4,7 @@ import com.woowacourse.zzimkkong.domain.Member;
 import com.woowacourse.zzimkkong.domain.Reservation;
 import com.woowacourse.zzimkkong.domain.Space;
 import com.woowacourse.zzimkkong.dto.reservation.*;
+import com.woowacourse.zzimkkong.exception.authorization.NoAuthorityOnMapException;
 import com.woowacourse.zzimkkong.exception.map.NoSuchMapException;
 import com.woowacourse.zzimkkong.exception.reservation.*;
 import com.woowacourse.zzimkkong.exception.space.NoSuchSpaceException;
@@ -377,6 +378,23 @@ public class ProviderReservationServiceTest extends ServiceTest {
                 .isEqualTo(ReservationResponse.from(reservation));
     }
 
+    @DisplayName("예약 수정을 위한 예약 조회 요청 시, 해당 맵에 대한 권한이 없으면 조회를 할 수 없다.")
+    @Test
+    void findReservation_NoAuthority() {
+        //given, when
+        given(maps.existsById(anyLong()))
+                .willReturn(true);
+        given(maps.findAllByMember(any(Member.class)))
+                .willReturn(Collections.emptyList());
+
+        //then
+        assertThatThrownBy(() -> providerReservationService.findReservation(
+                1L,
+                reservation.getId(),
+                POBI))
+                .isInstanceOf(NoAuthorityOnMapException.class);
+    }
+
     @DisplayName("예약 수정 요청 시, 해당 예약이 존재하지 않으면 에러가 발생한다.")
     @Test
     void findInvalidReservationException() {
@@ -426,6 +444,33 @@ public class ProviderReservationServiceTest extends ServiceTest {
                 POBI));
         assertThat(reservation.getUserName()).isEqualTo(CHANGED_NAME);
         assertThat(reservation.getDescription()).isEqualTo(CHANGED_DESCRIPTION);
+    }
+
+    @DisplayName("예약 수정 요청 시, 해당 맵에 대한 권한이 없으면 수정할 수 없다.")
+    @Test
+    void updateNoAuthorityException() {
+        //given
+        given(maps.existsById(anyLong()))
+                .willReturn(true);
+        given(maps.findAllByMember(any(Member.class)))
+                .willReturn(Collections.emptyList());
+
+        //when
+        ReservationCreateUpdateRequest reservationCreateUpdateRequest = new ReservationCreateUpdateRequest(
+                1L,
+                TOMORROW_START_TIME.plusHours(20),
+                TOMORROW_START_TIME.plusHours(21),
+                CHANGED_NAME,
+                CHANGED_DESCRIPTION
+        );
+
+        //then
+        assertThatThrownBy(() -> providerReservationService.updateReservation(
+                1L,
+                1L,
+                reservationCreateUpdateRequest,
+                POBI))
+                .isInstanceOf(NoAuthorityOnMapException.class);
     }
 
     @DisplayName("예약 수정 요청 시, 끝 시간 입력이 옳지 않으면 에러가 발생한다.")
@@ -568,6 +613,20 @@ public class ProviderReservationServiceTest extends ServiceTest {
 
         //then
         assertDoesNotThrow(() -> providerReservationService.deleteReservation(1L, 1L, POBI));
+    }
+
+    @DisplayName("예약 삭제 요청 시, 예약이 존재하지 않는다면 오류가 발생한다.")
+    @Test
+    void deleteNoAuthorityException() {
+        //given, when
+        given(maps.existsById(anyLong()))
+                .willReturn(true);
+        given(maps.findAllByMember(any(Member.class)))
+                .willReturn(Collections.emptyList());
+
+        //then
+        assertThatThrownBy(() -> providerReservationService.deleteReservation(1L, 1L, POBI))
+                .isInstanceOf(NoAuthorityOnMapException.class);
     }
 
     @DisplayName("예약 삭제 요청 시, 예약이 존재하지 않는다면 오류가 발생한다.")

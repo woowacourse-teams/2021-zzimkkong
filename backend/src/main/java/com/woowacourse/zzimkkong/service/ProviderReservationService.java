@@ -78,12 +78,12 @@ public class ProviderReservationService extends ReservationService {
 
     private void validateAuthorityOnMap(final Long mapId, final Member provider) {
         List<Map> providerMaps = maps.findAllByMember(provider);
-        if (noneMapsMatch(providerMaps, mapId)) {
+        if (noMapsMatch(providerMaps, mapId)) {
             throw new NoAuthorityOnMapException();
         }
     }
 
-    private boolean noneMapsMatch(final List<Map> providerMaps, final Long mapId) {
+    private boolean noMapsMatch(final List<Map> providerMaps, final Long mapId) {
         return providerMaps.stream().noneMatch(map -> map.hasId(mapId));
     }
 }
