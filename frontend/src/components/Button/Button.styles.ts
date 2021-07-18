@@ -1,7 +1,7 @@
 import styled, { css } from 'styled-components';
 
 interface Props {
-  variant: 'primary' | 'default';
+  variant: 'primary' | 'text' | 'default';
   size: 'small' | 'medium' | 'large';
   fullWidth: boolean;
 }
@@ -15,6 +15,10 @@ const variantCSS = {
     &:disabled {
       background: ${({ theme }) => theme.primary[100]};
     }
+  `,
+  text: css`
+    background: none;
+    border: none;
   `,
   default: css`
     background: ${({ theme }) => theme.white};
@@ -32,7 +36,7 @@ const sizeCSS = {
     padding: 0.25rem 0.5rem;
   `,
   medium: css`
-    padding: 0.5rem 0.75rem;
+    padding: 0.625rem 0.875rem;
   `,
   large: css`
     padding: 0.75rem 1rem;

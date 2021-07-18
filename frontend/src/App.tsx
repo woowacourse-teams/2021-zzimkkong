@@ -4,6 +4,7 @@ import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
 import { RecoilRoot } from 'recoil';
 import { ThemeProvider } from 'styled-components';
 import ProviderReservationList from 'pages/ProviderReservationList/ProviderReservationList';
+import UserMain from 'pages/UserMain/UserMain';
 import { GlobalStyle, theme } from './App.styles';
 import PATH from './constants/path';
 import Join from './pages/Join/Join';
@@ -24,6 +25,9 @@ const App = (): JSX.Element => (
             </Route>
             <Route path={PATH.JOIN}>
               <Join />
+            </Route>
+            <Route path={PATH.USER_MAIN}>
+              <UserMain />
             </Route>
             <Route path={PATH.RESERVATION}>
               <UserReservation />
