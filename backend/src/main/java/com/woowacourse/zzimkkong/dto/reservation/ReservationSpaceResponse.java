@@ -30,7 +30,12 @@ public class ReservationSpaceResponse {
     public ReservationSpaceResponse() {
     }
 
-    public ReservationSpaceResponse(Long spaceId, String spaceName, String spaceColor, String textPosition, CoordinateResponse coordinateResponse, List<ReservationResponse> reservations) {
+    public ReservationSpaceResponse(final Long spaceId,
+                                    final String spaceName,
+                                    final String spaceColor,
+                                    final String textPosition,
+                                    final CoordinateResponse coordinateResponse,
+                                    final List<ReservationResponse> reservations) {
         this.spaceId = spaceId;
         this.spaceName = spaceName;
         this.spaceColor = spaceColor;

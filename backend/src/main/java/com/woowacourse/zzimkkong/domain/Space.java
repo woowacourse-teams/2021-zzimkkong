@@ -29,7 +29,11 @@ public class Space {
     protected Space() {
     }
 
-    public Space(String name, String textPosition, String color, String coordinate, Map map) {
+    public Space(final String name,
+                 final String textPosition,
+                 final String color,
+                 final String coordinate,
+                 final Map map) {
         this.name = name;
         this.textPosition = textPosition;
         this.color = color;

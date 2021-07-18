@@ -12,7 +12,7 @@ public class CoordinateResponse {
 
     }
 
-    private CoordinateResponse(int x, int y) {
+    private CoordinateResponse(final int x, final int y) {
         this.x = x;
         this.y = y;
     }
