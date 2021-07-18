@@ -15,6 +15,10 @@ export const MapContainer = styled.div`
   overflow: auto;
   display: flex;
   justify-content: center;
+
+  @media (max-width: ${(props) => props.theme.breakpoints.md}px) {
+    height: auto;
+  }
 `;
 
 export const Map = styled.div`
@@ -46,3 +50,5 @@ export const ReservationList = styled.div`
     }
   }
 `;
+
+export const Message = styled.p``;
