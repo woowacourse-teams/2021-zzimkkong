@@ -1,13 +1,11 @@
 package com.woowacourse.zzimkkong.exception.space;
 
-import com.woowacourse.zzimkkong.exception.ExceptionField;
 import org.springframework.http.HttpStatus;
 
 public class NoSuchSpaceException extends SpaceException {
     private static final String MESSAGE = "해당 공간이 존재하지 않습니다.";
 
     public NoSuchSpaceException() {
-        super(MESSAGE, HttpStatus.BAD_REQUEST, ExceptionField.SPACE_ID.fieldName());
+        super(MESSAGE, HttpStatus.BAD_REQUEST, SPACE_ID);
     }
 }
-
