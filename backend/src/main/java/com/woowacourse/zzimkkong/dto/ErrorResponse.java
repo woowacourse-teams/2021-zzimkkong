@@ -1,5 +1,6 @@
 package com.woowacourse.zzimkkong.dto;
 
+import com.woowacourse.zzimkkong.exception.ZzimkkongException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 
 import javax.validation.ConstraintViolationException;
@@ -8,13 +9,22 @@ import static com.woowacourse.zzimkkong.dto.Validator.FORMAT_MESSAGE;
 
 public class ErrorResponse {
     private String message;
+    private String field;
 
     public ErrorResponse() {
-
     }
 
     private ErrorResponse(final String message) {
+        this(message, null);
+    }
+
+    private ErrorResponse(final String message, final String field) {
         this.message = message;
+        this.field = field;
+    }
+
+    public static ErrorResponse from(final ZzimkkongException exception) {
+        return new ErrorResponse(exception.getMessage(), exception.getField());
     }
 
     public static ErrorResponse from(final RuntimeException exception) {
@@ -23,7 +33,8 @@ public class ErrorResponse {
 
     public static ErrorResponse from(final MethodArgumentNotValidException exception) {
         String message = exception.getBindingResult().getAllErrors().get(0).getDefaultMessage();
-        return new ErrorResponse(message);
+        String field = exception.getFieldErrors().get(0).getField();
+        return new ErrorResponse(message, field);
     }
 
     public static ErrorResponse from(final ConstraintViolationException exception) {
@@ -37,5 +48,9 @@ public class ErrorResponse {
 
     public String getMessage() {
         return message;
+    }
+
+    public String getField() {
+        return field;
     }
 }

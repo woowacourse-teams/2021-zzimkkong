@@ -17,6 +17,7 @@ HTTP/1.1 400 Bad Request
 Content-Type: application/json
 
 {
-  "message": "예외 메시지"
+  "message": "예외 메시지",
+  "field": "예외발생 필드"
 }
 ----

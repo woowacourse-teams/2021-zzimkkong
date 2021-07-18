@@ -4,7 +4,9 @@ import com.woowacourse.zzimkkong.exception.ZzimkkongException;
 import org.springframework.http.HttpStatus;
 
 public class SpaceException extends ZzimkkongException {
-    public SpaceException(final String message, final HttpStatus status) {
-        super(message, status);
+    public static final String SPACE_ID = "spaceId";
+
+    public SpaceException(final String message, final HttpStatus status, final String field) {
+        super(message, status, field);
     }
 }
