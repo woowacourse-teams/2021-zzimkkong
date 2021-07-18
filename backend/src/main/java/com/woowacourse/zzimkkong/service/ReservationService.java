@@ -58,7 +58,7 @@ public class ReservationService {
                         .space(space)
                         .build());
 
-        return ReservationCreateResponse.of(reservation);
+        return ReservationCreateResponse.from(reservation);
     }
 
     @Transactional(readOnly = true)
@@ -68,7 +68,7 @@ public class ReservationService {
 
         List<Reservation> reservations = getReservations(Collections.singletonList(spaceId), date);
 
-        return ReservationFindResponse.of(reservations);
+        return ReservationFindResponse.from(reservations);
     }
 
     @Transactional(readOnly = true)
@@ -82,7 +82,7 @@ public class ReservationService {
 
         List<Reservation> reservations = getReservations(spaceIds, date);
 
-        return ReservationFindAllResponse.of(reservations);
+        return ReservationFindAllResponse.from(reservations);
     }
 
     @Transactional(readOnly = true)
@@ -94,7 +94,7 @@ public class ReservationService {
 
         Reservation reservation = getReservation(reservationId);
         checkCorrectPassword(reservation, reservationPasswordAuthenticationRequest.getPassword());
-        return ReservationResponse.of(reservation);
+        return ReservationResponse.from(reservation);
     }
 
     public SlackResponse updateReservation(

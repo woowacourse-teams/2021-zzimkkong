@@ -14,7 +14,7 @@ public class TokenResponse {
         return accessToken;
     }
 
-    public static TokenResponse of(String token) {
+    public static TokenResponse from(final String token) {
         return new TokenResponse(token);
     }
 }

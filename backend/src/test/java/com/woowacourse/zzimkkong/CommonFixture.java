@@ -4,6 +4,7 @@ import com.woowacourse.zzimkkong.domain.Map;
 import com.woowacourse.zzimkkong.domain.Member;
 import com.woowacourse.zzimkkong.domain.Reservation;
 import com.woowacourse.zzimkkong.domain.Space;
+import com.woowacourse.zzimkkong.dto.reservation.CoordinateResponse;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -15,8 +16,8 @@ public class CommonFixture {
     public static Member POBI = new Member(EMAIL, PASSWORD, ORGANIZATION);
 
     public static Map LUTHER = new Map("루터회관", POBI);
-    public static Space BE = new Space("백엔드 강의실", LUTHER);
-    public static Space FE1 = new Space("프론트엔드 강의실1", LUTHER);
+    public static Space BE = new Space("백엔드 강의실", "bottom", "#FED7D9", "100, 90", LUTHER);
+    public static Space FE1 = new Space("프론트엔드 강의실1", "bottom", "#FED7D9", "560, 40", LUTHER);
 
     public static final LocalDate TOMORROW = LocalDate.now().plusDays(1);
     public static final LocalDateTime TOMORROW_START_TIME = TOMORROW.atStartOfDay();

@@ -16,7 +16,7 @@ public class Attachments {
         this.attachments = attachments;
     }
 
-    public static Attachments updateMessageFrom(SlackResponse slackResponse) {
+    public static Attachments updateMessageFrom(final SlackResponse slackResponse) {
         Attachment attachment = Attachment.of(
                 "✏️ 예약 수정 알림 ✏️",
                 COLOR,
@@ -27,7 +27,7 @@ public class Attachments {
         return Attachments.from(attachment);
     }
 
-    public static Attachments deleteMessageFrom(SlackResponse slackResponse) {
+    public static Attachments deleteMessageFrom(final SlackResponse slackResponse) {
         Attachment attachment = Attachment.of(
                 "🗑 예약 삭제 알림 🗑",
                 COLOR,
@@ -38,7 +38,7 @@ public class Attachments {
         return Attachments.from(attachment);
     }
 
-    private static Attachments from(Attachment attachment) {
+    private static Attachments from(final Attachment attachment) {
         List<Attachment> attachments = new ArrayList<>();
         attachments.add(attachment);
         return new Attachments(attachments);

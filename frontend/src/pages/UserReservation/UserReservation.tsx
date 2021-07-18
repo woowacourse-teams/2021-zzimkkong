@@ -11,6 +11,7 @@ import Layout from 'components/Layout/Layout';
 import ReservationListItem from 'components/ReservationListItem/ReservationListItem';
 import MESSAGE from 'constants/message';
 import REGEXP from 'constants/regexp';
+import RESERVATION from 'constants/reservation';
 import useInput from 'hooks/useInput';
 import useReservations from 'hooks/useReservations';
 import { formatDate, formatTime } from 'utils/datetime';
@@ -74,13 +75,21 @@ const UserReservation = (): JSX.Element => {
           <Styled.Section>
             <Styled.PageHeader>{spaceName}</Styled.PageHeader>
             <Styled.InputWrapper>
-              <Input label="이름" value={name} onChange={onChangeName} autoFocus required />
+              <Input
+                label="이름"
+                value={name}
+                onChange={onChangeName}
+                maxLength={RESERVATION.NAME.MAX_LENGTH}
+                autoFocus
+                required
+              />
             </Styled.InputWrapper>
             <Styled.InputWrapper>
               <Input
                 label="사용 목적"
                 value={description}
                 onChange={onChangeDescription}
+                maxLength={RESERVATION.DESCRIPTION.MAX_LENGTH}
                 required
               />
             </Styled.InputWrapper>
@@ -118,7 +127,10 @@ const UserReservation = (): JSX.Element => {
                 label="비밀번호"
                 value={password}
                 onChange={onChangePassword}
+                minLength={RESERVATION.PASSWORD.MIN_LENGTH}
+                maxLength={RESERVATION.PASSWORD.MAX_LENGTH}
                 pattern={REGEXP.RESERVATION_PASSWORD.source}
+                inputMode="numeric"
                 message="숫자 4자리를 입력해주세요."
                 required
               />

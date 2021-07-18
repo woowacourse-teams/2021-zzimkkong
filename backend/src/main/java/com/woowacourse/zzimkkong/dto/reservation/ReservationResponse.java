@@ -36,7 +36,7 @@ public class ReservationResponse {
         this.description = description;
     }
 
-    public static ReservationResponse of(final Reservation reservation) {
+    public static ReservationResponse from(final Reservation reservation) {
         return new ReservationResponse(
                 reservation.getId(),
                 reservation.getStartTime(),

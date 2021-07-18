@@ -261,7 +261,7 @@ class ReservationServiceTest extends ServiceTest {
                 .willReturn(foundReservations);
 
         //then
-        ReservationFindResponse reservationFindResponse = ReservationFindResponse.of(foundReservations);
+        ReservationFindResponse reservationFindResponse = ReservationFindResponse.from(foundReservations);
         assertThat(reservationService.findReservations(1L, 1L, TOMORROW))
                 .usingRecursiveComparison()
                 .isEqualTo(reservationFindResponse);
@@ -297,13 +297,13 @@ class ReservationServiceTest extends ServiceTest {
                 .willReturn(Collections.emptyList());
 
         //then
-        ReservationFindResponse reservationFindResponse = ReservationFindResponse.of(Collections.emptyList());
+        ReservationFindResponse reservationFindResponse = ReservationFindResponse.from(Collections.emptyList());
         assertThat(reservationService.findReservations(1L, 1L, TOMORROW))
                 .usingRecursiveComparison()
                 .isEqualTo(reservationFindResponse);
         assertThat(reservationService.findAllReservations(1L, TOMORROW))
                 .usingRecursiveComparison()
-                .isEqualTo(ReservationFindAllResponse.of(Collections.emptyList()));
+                .isEqualTo(ReservationFindAllResponse.from(Collections.emptyList()));
     }
 
     @Test
@@ -342,7 +342,7 @@ class ReservationServiceTest extends ServiceTest {
                 .willReturn(foundReservations);
 
         //then
-        ReservationFindAllResponse reservationFindAllResponse = ReservationFindAllResponse.of(foundReservations);
+        ReservationFindAllResponse reservationFindAllResponse = ReservationFindAllResponse.from(foundReservations);
         assertThat(reservationService.findAllReservations(1L, TOMORROW))
                 .usingRecursiveComparison()
                 .isEqualTo(reservationFindAllResponse);
@@ -365,7 +365,7 @@ class ReservationServiceTest extends ServiceTest {
 
         //then
         assertThat(actualResponse).usingRecursiveComparison()
-                .isEqualTo(ReservationResponse.of(reservation));
+                .isEqualTo(ReservationResponse.from(reservation));
     }
 
     @Test
