@@ -178,7 +178,7 @@ const UserMain = (): JSX.Element => {
   const getReservations = useReservations({
     mapId,
     spaceId: Number(selectedSpaceId),
-    date: targetDate ? formatDate(targetDate) : date,
+    date,
   });
   const reservations = getReservations.data?.data?.reservations ?? [];
 
