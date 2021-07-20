@@ -25,10 +25,12 @@
     <springProfile name="prod">
         <include resource="appenders/console-appender.xml"/>
         <include resource="appenders/file-appender-error.xml"/>
+        <include resource="appenders/file-appender-warn.xml"/>
 
         <root level="WARN">
             <appender-ref ref="CONSOLE_APPENDER" />
             <appender-ref ref="FILE_APPENDER_ERROR" />
+            <appender-ref ref="FILE_APPENDER_WARN" />
         </root>
     </springProfile>
 </configuration>
