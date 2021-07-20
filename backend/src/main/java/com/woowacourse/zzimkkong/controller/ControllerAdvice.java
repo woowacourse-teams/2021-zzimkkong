@@ -26,7 +26,7 @@ public class ControllerAdvice {
 
     @ExceptionHandler({MemberException.class, MapException.class, SpaceException.class, ReservationException.class, AuthorizationException.class})
     public ResponseEntity<ErrorResponse> zzimkkongExceptionHandler(final ZzimkkongException exception) {
-        logger.warn(exception.getMessage());
+        logger.info(exception.getMessage());
         return ResponseEntity
                 .status(exception.getStatus())
                 .body(ErrorResponse.from(exception));
@@ -34,31 +34,31 @@ public class ControllerAdvice {
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<ErrorResponse> invalidArgumentHandler(final MethodArgumentNotValidException exception) {
-        logger.warn(exception.getMessage());
+        logger.info(exception.getMessage());
         return ResponseEntity.badRequest().body(ErrorResponse.from(exception));
     }
 
     @ExceptionHandler(ConstraintViolationException.class)
     public ResponseEntity<ErrorResponse> invalidParamHandler(final ConstraintViolationException exception) {
-        logger.warn(exception.getMessage());
+        logger.info(exception.getMessage());
         return ResponseEntity.badRequest().body(ErrorResponse.from(exception));
     }
   
     @ExceptionHandler(InvalidFormatException.class)
     public ResponseEntity<ErrorResponse> invalidFormatHandler() {
-        logger.warn(FORMAT_MESSAGE);
+        logger.info(FORMAT_MESSAGE);
         return ResponseEntity.badRequest().body(ErrorResponse.invalidFormat());
     }
 
     @ExceptionHandler(DataAccessException.class)
     public ResponseEntity<ErrorResponse> invalidDataAccessHandler(DataAccessException e) {
-        logger.error(SERVER_ERROR_MESSAGE, e);
+        logger.warn(SERVER_ERROR_MESSAGE, e);
         return ResponseEntity.internalServerError().build();
     }
 
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ErrorResponse> unhandledExceptionHandler(Exception e) {
-        logger.error(e.getMessage(), e);
+        logger.warn(e.getMessage(), e);
         return ResponseEntity.internalServerError().build();
     }
 }
