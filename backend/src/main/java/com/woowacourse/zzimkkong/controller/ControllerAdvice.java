@@ -51,8 +51,8 @@ public class ControllerAdvice {
     }
 
     @ExceptionHandler(DataAccessException.class)
-    public ResponseEntity<ErrorResponse> invalidDataAccessHandler(DataAccessException e) {
-        logger.warn(SERVER_ERROR_MESSAGE, e);
+    public ResponseEntity<ErrorResponse> invalidDataAccessHandler(final DataAccessException exception) {
+        logger.warn(SERVER_ERROR_MESSAGE, exception);
         return ResponseEntity.internalServerError().build();
     }
 
