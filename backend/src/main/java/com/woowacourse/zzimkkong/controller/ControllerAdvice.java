@@ -57,8 +57,8 @@ public class ControllerAdvice {
     }
 
     @ExceptionHandler(Exception.class)
-    public ResponseEntity<ErrorResponse> unhandledExceptionHandler(Exception e) {
-        logger.warn(e.getMessage(), e);
+    public ResponseEntity<ErrorResponse> unhandledExceptionHandler(final Exception exception) {
+        logger.warn(exception.getMessage(), exception);
         return ResponseEntity.internalServerError().build();
     }
 }
