@@ -24,8 +24,8 @@
     "prod": "cross-env NODE_ENV=production webpack serve",
     "start": "cross-env NODE_ENV=development webpack serve",
     "build": "cross-env NODE_ENV=production webpack",
-    "storybook": "start-storybook -p 6006",
-    "build-storybook": "build-storybook"
+    "storybook": "start-storybook -s ./src/assets -p 6006",
+    "build-storybook": "build-storybook -s ./src/assets"
   },
   "dependencies": {
     "axios": "^0.21.1",

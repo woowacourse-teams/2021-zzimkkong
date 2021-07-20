@@ -3,6 +3,7 @@ import { ReactQueryDevtools } from 'react-query/devtools';
 import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
 import { RecoilRoot } from 'recoil';
 import { ThemeProvider } from 'styled-components';
+import Main from 'pages/Main/Main';
 import ProviderReservationList from 'pages/ProviderReservationList/ProviderReservationList';
 import UserMain from 'pages/UserMain/UserMain';
 import { GlobalStyle, theme } from './App.styles';
@@ -20,6 +21,9 @@ const App = (): JSX.Element => (
         <GlobalStyle />
         <Router>
           <Switch>
+            <Route path={PATH.HOME}>
+              <Main />
+            </Route>
             <Route path={PATH.LOGIN}>
               <Login />
             </Route>
