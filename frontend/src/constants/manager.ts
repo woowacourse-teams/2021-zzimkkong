@@ -1,4 +1,4 @@
-const JOIN = {
+const MANAGER = {
   PASSWORD: {
     MIN_LENGTH: 8,
     MAX_LENGTH: 20,
@@ -8,4 +8,4 @@ const JOIN = {
   },
 };
 
-export default JOIN;
+export default MANAGER;
