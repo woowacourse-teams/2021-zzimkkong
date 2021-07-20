@@ -4,7 +4,9 @@ import com.woowacourse.zzimkkong.domain.Map;
 import com.woowacourse.zzimkkong.domain.Member;
 import com.woowacourse.zzimkkong.domain.Reservation;
 import com.woowacourse.zzimkkong.domain.Space;
+import com.woowacourse.zzimkkong.dto.reservation.ReservationCreateResponse;
 import com.woowacourse.zzimkkong.dto.reservation.ReservationCreateUpdateRequest;
+import com.woowacourse.zzimkkong.dto.reservation.ReservationCreateUpdateWithPasswordRequest;
 import com.woowacourse.zzimkkong.dto.reservation.ReservationResponse;
 import com.woowacourse.zzimkkong.dto.slack.SlackResponse;
 import com.woowacourse.zzimkkong.exception.authorization.NoAuthorityOnMapException;
@@ -23,6 +25,31 @@ import java.util.List;
 public class ProviderReservationService extends ReservationService {
     public ProviderReservationService(MapRepository maps, SpaceRepository spaces, ReservationRepository reservations) {
         super(maps, spaces, reservations);
+    }
+
+    public ReservationCreateResponse saveReservation(
+            final Long mapId,
+            final ReservationCreateUpdateWithPasswordRequest reservationCreateUpdateWithPasswordRequest,
+            final Member manager) {
+        validateMapExistence(mapId);
+        validateAuthorityOnMap(mapId, manager);
+
+        validateTime(reservationCreateUpdateWithPasswordRequest);
+        Space space = spaces.findById(reservationCreateUpdateWithPasswordRequest.getSpaceId())
+                .orElseThrow(NoSuchSpaceException::new);
+        validateAvailability(space, reservationCreateUpdateWithPasswordRequest);
+
+        Reservation reservation = reservations.save(
+                new Reservation.Builder()
+                        .startTime(reservationCreateUpdateWithPasswordRequest.getStartDateTime())
+                        .endTime(reservationCreateUpdateWithPasswordRequest.getEndDateTime())
+                        .password(reservationCreateUpdateWithPasswordRequest.getPassword())
+                        .userName(reservationCreateUpdateWithPasswordRequest.getName())
+                        .description(reservationCreateUpdateWithPasswordRequest.getDescription())
+                        .space(space)
+                        .build());
+
+        return ReservationCreateResponse.from(reservation);
     }
 
     @Transactional(readOnly = true)

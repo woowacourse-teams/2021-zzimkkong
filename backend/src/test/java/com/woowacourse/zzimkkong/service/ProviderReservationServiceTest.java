@@ -52,13 +52,18 @@ public class ProviderReservationServiceTest extends ServiceTest {
         //given
         given(maps.existsById(anyLong()))
                 .willReturn(true);
+        given(maps.findAllByMember(any(Member.class)))
+                .willReturn(Collections.singletonList(LUTHER));
         given(spaces.findById(anyLong()))
                 .willReturn(Optional.of(BE));
         given(reservations.save(any(Reservation.class)))
                 .willReturn(reservation);
 
         //when
-        ReservationCreateResponse reservationCreateResponse = providerReservationService.saveReservation(1L, reservationCreateUpdateWithPasswordRequest);
+        ReservationCreateResponse reservationCreateResponse = providerReservationService.saveReservation(
+                1L,
+                reservationCreateUpdateWithPasswordRequest,
+                POBI);
 
         //then
         assertThat(reservationCreateResponse.getId()).isEqualTo(reservation.getId());
@@ -70,14 +75,30 @@ public class ProviderReservationServiceTest extends ServiceTest {
         //given, when
         given(maps.existsById(anyLong()))
                 .willReturn(false);
-        given(spaces.findById(anyLong()))
-                .willReturn(Optional.of(BE));
-        given(reservations.save(any(Reservation.class)))
-                .willReturn(reservation);
 
         //then
-        assertThatThrownBy(() -> providerReservationService.saveReservation(1L, reservationCreateUpdateWithPasswordRequest))
+        assertThatThrownBy(() -> providerReservationService.saveReservation(
+                1L,
+                reservationCreateUpdateWithPasswordRequest,
+                POBI))
                 .isInstanceOf(NoSuchMapException.class);
+    }
+
+    @DisplayName("예약 생성 요청 시, map에 대한 권한이 없다면 예외가 발생한다.")
+    @Test
+    void saveNoAuthorityOnMapException() {
+        //given, when
+        given(maps.existsById(anyLong()))
+                .willReturn(true);
+        given(maps.findAllByMember(any(Member.class)))
+                .willReturn(Collections.emptyList());
+
+        //then
+        assertThatThrownBy(() -> providerReservationService.saveReservation(
+                1L,
+                reservationCreateUpdateWithPasswordRequest,
+                POBI))
+                .isInstanceOf(NoAuthorityOnMapException.class);
     }
 
     @DisplayName("예약 생성 요청 시, spaceId에 따른 space가 존재하지 않는다면 예외가 발생한다.")
@@ -86,13 +107,16 @@ public class ProviderReservationServiceTest extends ServiceTest {
         //given, when
         given(maps.existsById(anyLong()))
                 .willReturn(true);
+        given(maps.findAllByMember(any(Member.class)))
+                .willReturn(Collections.singletonList(LUTHER));
         given(spaces.findById(anyLong()))
                 .willReturn(Optional.empty());
-        given(reservations.save(any(Reservation.class)))
-                .willReturn(reservation);
 
         //then
-        assertThatThrownBy(() -> providerReservationService.saveReservation(1L, reservationCreateUpdateWithPasswordRequest))
+        assertThatThrownBy(() -> providerReservationService.saveReservation(
+                1L,
+                reservationCreateUpdateWithPasswordRequest,
+                POBI))
                 .isInstanceOf(NoSuchSpaceException.class);
     }
 
@@ -113,7 +137,10 @@ public class ProviderReservationServiceTest extends ServiceTest {
         saveMock();
 
         //then
-        assertThatThrownBy(() -> providerReservationService.saveReservation(1L, reservationCreateUpdateWithPasswordRequest))
+        assertThatThrownBy(() -> providerReservationService.saveReservation(
+                1L,
+                reservationCreateUpdateWithPasswordRequest,
+                POBI))
                 .isInstanceOf(ImpossibleStartTimeException.class);
     }
 
@@ -134,7 +161,10 @@ public class ProviderReservationServiceTest extends ServiceTest {
         saveMock();
 
         //then
-        assertThatThrownBy(() -> providerReservationService.saveReservation(1L, reservationCreateUpdateWithPasswordRequest))
+        assertThatThrownBy(() -> providerReservationService.saveReservation(
+                1L,
+                reservationCreateUpdateWithPasswordRequest,
+                POBI))
                 .isInstanceOf(ImpossibleEndTimeException.class);
     }
 
@@ -155,7 +185,10 @@ public class ProviderReservationServiceTest extends ServiceTest {
         saveMock();
 
         //then
-        assertThatThrownBy(() -> providerReservationService.saveReservation(1L, reservationCreateUpdateWithPasswordRequest))
+        assertThatThrownBy(() -> providerReservationService.saveReservation(
+                1L,
+                reservationCreateUpdateWithPasswordRequest,
+                POBI))
                 .isInstanceOf(ImpossibleEndTimeException.class);
     }
 
@@ -176,7 +209,10 @@ public class ProviderReservationServiceTest extends ServiceTest {
         saveMock();
 
         //then
-        assertThatThrownBy(() -> providerReservationService.saveReservation(1L, reservationCreateUpdateWithPasswordRequest))
+        assertThatThrownBy(() -> providerReservationService.saveReservation(
+                1L,
+                reservationCreateUpdateWithPasswordRequest,
+                POBI))
                 .isInstanceOf(NonMatchingStartAndEndDateException.class);
     }
 
@@ -198,7 +234,10 @@ public class ProviderReservationServiceTest extends ServiceTest {
                         BE)));
 
         //then
-        assertThatThrownBy(() -> providerReservationService.saveReservation(1L, reservationCreateUpdateWithPasswordRequest))
+        assertThatThrownBy(() -> providerReservationService.saveReservation(
+                1L,
+                reservationCreateUpdateWithPasswordRequest,
+                POBI))
                 .isInstanceOf(ImpossibleReservationTimeException.class);
     }
 
@@ -225,7 +264,10 @@ public class ProviderReservationServiceTest extends ServiceTest {
                                 BE)));
 
         //then
-        ReservationCreateResponse reservationCreateResponse = providerReservationService.saveReservation(1L, reservationCreateUpdateWithPasswordRequest);
+        ReservationCreateResponse reservationCreateResponse = providerReservationService.saveReservation(
+                1L,
+                reservationCreateUpdateWithPasswordRequest,
+                POBI);
         assertThat(reservationCreateResponse.getId()).isEqualTo(reservation.getId());
     }
 
@@ -660,6 +702,8 @@ public class ProviderReservationServiceTest extends ServiceTest {
     private void saveMock() {
         given(maps.existsById(anyLong()))
                 .willReturn(true);
+        given(maps.findAllByMember(any(Member.class)))
+                .willReturn(Collections.singletonList(LUTHER));
         given(spaces.findById(anyLong()))
                 .willReturn(Optional.of(BE));
         given(reservations.save(any(Reservation.class)))

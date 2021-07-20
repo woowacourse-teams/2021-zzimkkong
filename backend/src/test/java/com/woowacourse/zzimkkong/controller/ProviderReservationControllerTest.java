@@ -84,7 +84,7 @@ public class ProviderReservationControllerTest extends AcceptanceTest {
         token = responseBody.getAccessToken();
     }
 
-    @DisplayName("예약을 등록한다.")
+    @DisplayName("올바른 토큰이 주어질 때, 예약을 등록한다.")
     @Test
     void save() {
         //given, when
@@ -95,7 +95,18 @@ public class ProviderReservationControllerTest extends AcceptanceTest {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
     }
 
-    @DisplayName("올바른 토큰이 줘어질 때, 예약을 삭제한다.")
+    @DisplayName("토큰이 검증되지 않는다면, 예약을 등록할 수 없다.")
+    @Test
+    void save_invalidToken() {
+        //given, when
+        String api = "/api/providers/maps/" + LUTHER.getId() + "/reservations";
+        ExtractableResponse<Response> response = saveReservation(invalidToken, api, reservationCreateUpdateWithPasswordRequest);
+
+        //then
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
+    }
+
+    @DisplayName("올바른 토큰이 주어질 때, 예약을 삭제한다.")
     @Test
     void delete() {
         //given

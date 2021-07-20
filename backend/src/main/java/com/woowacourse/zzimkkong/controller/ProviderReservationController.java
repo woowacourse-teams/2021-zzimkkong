@@ -25,8 +25,12 @@ public class ProviderReservationController extends ReservationController<Provide
     @PostMapping("/reservations")
     public ResponseEntity<Void> create(
             @PathVariable final Long mapId,
-            @RequestBody @Valid final ReservationCreateUpdateWithPasswordRequest reservationCreateUpdateWithPasswordRequest) {
-        ReservationCreateResponse reservationCreateResponse = reservationService.saveReservation(mapId, reservationCreateUpdateWithPasswordRequest);
+            @RequestBody @Valid final ReservationCreateUpdateWithPasswordRequest reservationCreateUpdateWithPasswordRequest,
+            @Provider final Member provider) {
+        ReservationCreateResponse reservationCreateResponse = reservationService.saveReservation(
+                mapId,
+                reservationCreateUpdateWithPasswordRequest,
+                provider);
         return ResponseEntity
                 .created(URI.create("/api/providers/maps/" + mapId + "/reservations/" + reservationCreateResponse.getId()))
                 .build();

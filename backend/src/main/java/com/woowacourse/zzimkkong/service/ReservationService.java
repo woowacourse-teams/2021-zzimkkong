@@ -1,5 +1,6 @@
 package com.woowacourse.zzimkkong.service;
 
+import com.woowacourse.zzimkkong.domain.Member;
 import com.woowacourse.zzimkkong.domain.Reservation;
 import com.woowacourse.zzimkkong.domain.Space;
 import com.woowacourse.zzimkkong.dto.reservation.*;
@@ -19,7 +20,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 public abstract class ReservationService {
-    public static final long ONE_DAY = 1L;
+    private static final long ONE_DAY = 1L;
 
     protected MapRepository maps;
     protected SpaceRepository spaces;
@@ -29,29 +30,6 @@ public abstract class ReservationService {
         this.maps = maps;
         this.spaces = spaces;
         this.reservations = reservations;
-    }
-
-    public ReservationCreateResponse saveReservation(
-            final Long mapId,
-            final ReservationCreateUpdateWithPasswordRequest reservationCreateUpdateWithPasswordRequest) {
-        validateMapExistence(mapId);
-
-        validateTime(reservationCreateUpdateWithPasswordRequest);
-        Space space = spaces.findById(reservationCreateUpdateWithPasswordRequest.getSpaceId())
-                .orElseThrow(NoSuchSpaceException::new);
-        validateAvailability(space, reservationCreateUpdateWithPasswordRequest);
-
-        Reservation reservation = reservations.save(
-                new Reservation.Builder()
-                        .startTime(reservationCreateUpdateWithPasswordRequest.getStartDateTime())
-                        .endTime(reservationCreateUpdateWithPasswordRequest.getEndDateTime())
-                        .password(reservationCreateUpdateWithPasswordRequest.getPassword())
-                        .userName(reservationCreateUpdateWithPasswordRequest.getName())
-                        .description(reservationCreateUpdateWithPasswordRequest.getDescription())
-                        .space(space)
-                        .build());
-
-        return ReservationCreateResponse.from(reservation);
     }
 
     @Transactional(readOnly = true)
@@ -113,7 +91,7 @@ public abstract class ReservationService {
         validateTimeConflicts(startDateTime, endDateTime, reservationsOnDate);
     }
 
-    private void validateAvailability(
+    protected void validateAvailability(
             final Space space,
             final ReservationCreateUpdateRequest reservationCreateUpdateRequest) {
         LocalDateTime startDateTime = reservationCreateUpdateRequest.getStartDateTime();
