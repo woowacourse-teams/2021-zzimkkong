@@ -55,9 +55,9 @@ const Main = (): JSX.Element => {
         <Styled.PageHeader>우아한 형제들 공간 목록</Styled.PageHeader>
         <Styled.Container>
           {dummySpaceList.map((space) => (
-            <Styled.Wrapper>
+            <Styled.ItemWrapper>
               <SpaceListItem key={space.id} thumbnail={space.thumbnail} title={space.title} />
-            </Styled.Wrapper>
+            </Styled.ItemWrapper>
           ))}
         </Styled.Container>
       </Layout>

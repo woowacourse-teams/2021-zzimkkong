@@ -12,6 +12,6 @@ export const Container = styled.div`
   flex-wrap: wrap;
 `;
 
-export const Wrapper = styled.div`
+export const ItemWrapper = styled.div`
   width: calc(50% - (0.375rem / 2));
 `;
