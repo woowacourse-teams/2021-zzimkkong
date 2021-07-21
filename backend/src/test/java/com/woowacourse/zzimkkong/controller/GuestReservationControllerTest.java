@@ -275,7 +275,7 @@ public class GuestReservationControllerTest extends AcceptanceTest {
         return RestAssured
                 .given(getRequestSpecification()).log().all()
                 .accept("application/json")
-                .filter(document("reservation/user/post", getRequestPreprocessor(), getResponsePreprocessor()))
+                .filter(document("reservation/guest/post", getRequestPreprocessor(), getResponsePreprocessor()))
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body(reservationCreateUpdateWithPasswordRequest)
                 .when().post(api)
@@ -286,7 +286,7 @@ public class GuestReservationControllerTest extends AcceptanceTest {
         return RestAssured
                 .given(getRequestSpecification()).log().all()
                 .accept("*/*")
-                .filter(document("reservation/user/get", getRequestPreprocessor(), getResponsePreprocessor()))
+                .filter(document("reservation/guest/get", getRequestPreprocessor(), getResponsePreprocessor()))
                 .queryParams("date", date)
                 .when().get(api)
                 .then().log().all().extract();
@@ -296,7 +296,7 @@ public class GuestReservationControllerTest extends AcceptanceTest {
         return RestAssured
                 .given(getRequestSpecification()).log().all()
                 .accept("*/*")
-                .filter(document("reservation/user/get_all", getRequestPreprocessor(), getResponsePreprocessor()))
+                .filter(document("reservation/guest/get_all", getRequestPreprocessor(), getResponsePreprocessor()))
                 .queryParam("date", date)
                 .when().get(api)
                 .then().log().all().extract();
@@ -306,7 +306,7 @@ public class GuestReservationControllerTest extends AcceptanceTest {
         return RestAssured
                 .given(getRequestSpecification()).log().all()
                 .accept("application/json")
-                .filter(document("reservation/user/put", getRequestPreprocessor(), getResponsePreprocessor()))
+                .filter(document("reservation/guest/put", getRequestPreprocessor(), getResponsePreprocessor()))
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body(reservationCreateUpdateWithPasswordRequest)
                 .when().put(api)
@@ -317,7 +317,7 @@ public class GuestReservationControllerTest extends AcceptanceTest {
         return RestAssured
                 .given(getRequestSpecification()).log().all()
                 .accept("application/json")
-                .filter(document("reservation/user/post_for_update", getRequestPreprocessor(), getResponsePreprocessor()))
+                .filter(document("reservation/guest/post_for_update", getRequestPreprocessor(), getResponsePreprocessor()))
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body(reservationPasswordAuthenticationRequest)
                 .when().post(api)
@@ -330,7 +330,7 @@ public class GuestReservationControllerTest extends AcceptanceTest {
         return RestAssured
                 .given(getRequestSpecification()).log().all()
                 .accept("application/json")
-                .filter(document("reservation/user/delete", getRequestPreprocessor(), getResponsePreprocessor()))
+                .filter(document("reservation/guest/delete", getRequestPreprocessor(), getResponsePreprocessor()))
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body(reservationPasswordAuthenticationRequest)
                 .when().delete(api)

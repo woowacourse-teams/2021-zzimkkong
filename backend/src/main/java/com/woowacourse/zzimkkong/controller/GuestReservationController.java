@@ -5,7 +5,6 @@ import com.woowacourse.zzimkkong.dto.reservation.ReservationCreateUpdateWithPass
 import com.woowacourse.zzimkkong.dto.reservation.ReservationPasswordAuthenticationRequest;
 import com.woowacourse.zzimkkong.dto.reservation.ReservationResponse;
 import com.woowacourse.zzimkkong.service.GuestReservationService;
-import com.woowacourse.zzimkkong.service.SlackService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -15,8 +14,8 @@ import java.net.URI;
 @RestController
 @RequestMapping("/api/guests/maps/{mapId}")
 public class GuestReservationController extends ReservationController<GuestReservationService> {
-    public GuestReservationController(final GuestReservationService reservationService, final SlackService slackService) {
-        super(reservationService, slackService);
+    public GuestReservationController(final GuestReservationService reservationService) {
+        super(reservationService);
     }
 
     @PostMapping("/reservations")

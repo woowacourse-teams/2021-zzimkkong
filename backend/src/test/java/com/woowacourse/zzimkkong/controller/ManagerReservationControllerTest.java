@@ -373,7 +373,7 @@ public class ManagerReservationControllerTest extends AcceptanceTest {
                 .given(getRequestSpecification()).log().all()
                 .accept("application/json")
                 .header("Authorization", "Bearer " + token)
-                .filter(document("reservation/provider/post", getRequestPreprocessor(), getResponsePreprocessor()))
+                .filter(document("reservation/manager/post", getRequestPreprocessor(), getResponsePreprocessor()))
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body(reservationCreateUpdateWithPasswordRequest)
                 .when().post(api)
@@ -387,7 +387,7 @@ public class ManagerReservationControllerTest extends AcceptanceTest {
                 .given(getRequestSpecification()).log().all()
                 .accept("*/*")
                 .header("Authorization", "Bearer " + token)
-                .filter(document("reservation/provider/delete", getRequestPreprocessor(), getResponsePreprocessor()))
+                .filter(document("reservation/manager/delete", getRequestPreprocessor(), getResponsePreprocessor()))
                 .when().delete(api)
                 .then().log().all().extract();
     }
@@ -400,7 +400,7 @@ public class ManagerReservationControllerTest extends AcceptanceTest {
                 .given(getRequestSpecification()).log().all()
                 .accept("*/*")
                 .header("Authorization", "Bearer " + token)
-                .filter(document("reservation/provider/get", getRequestPreprocessor(), getResponsePreprocessor()))
+                .filter(document("reservation/manager/get", getRequestPreprocessor(), getResponsePreprocessor()))
                 .queryParams("date", date)
                 .when().get(api)
                 .then().log().all().extract();
@@ -414,7 +414,7 @@ public class ManagerReservationControllerTest extends AcceptanceTest {
                 .given(getRequestSpecification()).log().all()
                 .accept("*/*")
                 .header("Authorization", "Bearer " + token)
-                .filter(document("reservation/provider/get_all", getRequestPreprocessor(), getResponsePreprocessor()))
+                .filter(document("reservation/manager/get_all", getRequestPreprocessor(), getResponsePreprocessor()))
                 .queryParam("date", date)
                 .when().get(api)
                 .then().log().all().extract();
@@ -428,7 +428,7 @@ public class ManagerReservationControllerTest extends AcceptanceTest {
                 .given(getRequestSpecification()).log().all()
                 .accept("application/json")
                 .header("Authorization", "Bearer " + token)
-                .filter(document("reservation/provider/put", getRequestPreprocessor(), getResponsePreprocessor()))
+                .filter(document("reservation/manager/put", getRequestPreprocessor(), getResponsePreprocessor()))
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body(reservationCreateUpdateRequest)
                 .when().put(api)
@@ -442,7 +442,7 @@ public class ManagerReservationControllerTest extends AcceptanceTest {
                 .given(getRequestSpecification()).log().all()
                 .accept("*/*")
                 .header("Authorization", "Bearer " + token)
-                .filter(document("reservation/provider/get_one", getRequestPreprocessor(), getResponsePreprocessor()))
+                .filter(document("reservation/manager/get_one", getRequestPreprocessor(), getResponsePreprocessor()))
                 .when().get(api)
                 .then().log().all().extract();
     }

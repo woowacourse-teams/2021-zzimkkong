@@ -15,12 +15,10 @@ import java.time.LocalDate;
 import static com.woowacourse.zzimkkong.dto.Validator.DATE_FORMAT;
 
 public abstract class ReservationController<Service extends ReservationService> {
-    protected Service reservationService;
-    protected SlackService slackService;
+    protected final Service reservationService;
 
-    protected ReservationController(final Service reservationService, final SlackService slackService) {
+    protected ReservationController(final Service reservationService) {
         this.reservationService = reservationService;
-        this.slackService = slackService;
     }
 
     @GetMapping("/reservations")

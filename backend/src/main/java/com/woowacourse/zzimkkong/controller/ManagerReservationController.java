@@ -18,8 +18,11 @@ import java.net.URI;
 @RestController
 @RequestMapping("/api/managers/maps/{mapId}")
 public class ManagerReservationController extends ReservationController<ManagerReservationService> {
+    private final SlackService slackService;
+
     public ManagerReservationController(final ManagerReservationService reservationService, final SlackService slackService) {
-        super(reservationService, slackService);
+        super(reservationService);
+        this.slackService = slackService;
     }
 
     @PostMapping("/reservations")
