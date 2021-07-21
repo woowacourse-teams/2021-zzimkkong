@@ -4,7 +4,6 @@ import com.woowacourse.zzimkkong.dto.reservation.ReservationCreateResponse;
 import com.woowacourse.zzimkkong.dto.reservation.ReservationCreateUpdateWithPasswordRequest;
 import com.woowacourse.zzimkkong.dto.reservation.ReservationPasswordAuthenticationRequest;
 import com.woowacourse.zzimkkong.dto.reservation.ReservationResponse;
-import com.woowacourse.zzimkkong.dto.slack.SlackResponse;
 import com.woowacourse.zzimkkong.service.GuestReservationService;
 import com.woowacourse.zzimkkong.service.SlackService;
 import org.springframework.http.ResponseEntity;

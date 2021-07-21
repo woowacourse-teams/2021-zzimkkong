@@ -85,7 +85,6 @@ public class ManagerReservationService extends ReservationService {
         validateAvailability(space, reservationCreateUpdateRequest, reservation);
 
         reservation.update(reservationCreateUpdateRequest, space);
-        reservations.save(reservation);
         return SlackResponse.from(reservation);
     }
 
