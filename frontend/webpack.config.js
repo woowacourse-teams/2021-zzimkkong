@@ -51,7 +51,10 @@ module.exports = () => {
       new HtmlWebpackPlugin({
         template: 'public/index.html',
       }),
-      new FaviconsWebpackPlugin('src/assets/images/logo.png'),
+      new FaviconsWebpackPlugin({
+        logo: 'src/assets/images/logo.png',
+        manifest: 'public/manifest.json',
+      }),
     ],
   };
 };
