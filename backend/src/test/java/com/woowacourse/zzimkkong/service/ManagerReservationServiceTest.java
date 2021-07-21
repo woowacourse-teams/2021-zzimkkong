@@ -28,11 +28,11 @@ import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.BDDMockito.given;
 
-public class ProviderReservationServiceTest extends ServiceTest {
+public class ManagerReservationServiceTest extends ServiceTest {
     public static final String CHANGED_NAME = "이름 변경";
     public static final String CHANGED_DESCRIPTION = "회의명 변경";
     @Autowired
-    private ProviderReservationService providerReservationService;
+    private ManagerReservationService managerReservationService;
     private ReservationCreateUpdateWithPasswordRequest reservationCreateUpdateWithPasswordRequest = new ReservationCreateUpdateWithPasswordRequest(
             1L,
             TOMORROW_START_TIME.plusHours(3),
@@ -60,7 +60,7 @@ public class ProviderReservationServiceTest extends ServiceTest {
                 .willReturn(reservation);
 
         //when
-        ReservationCreateResponse reservationCreateResponse = providerReservationService.saveReservation(
+        ReservationCreateResponse reservationCreateResponse = managerReservationService.saveReservation(
                 1L,
                 reservationCreateUpdateWithPasswordRequest,
                 POBI);
@@ -77,7 +77,7 @@ public class ProviderReservationServiceTest extends ServiceTest {
                 .willReturn(false);
 
         //then
-        assertThatThrownBy(() -> providerReservationService.saveReservation(
+        assertThatThrownBy(() -> managerReservationService.saveReservation(
                 1L,
                 reservationCreateUpdateWithPasswordRequest,
                 POBI))
@@ -94,7 +94,7 @@ public class ProviderReservationServiceTest extends ServiceTest {
                 .willReturn(Collections.emptyList());
 
         //then
-        assertThatThrownBy(() -> providerReservationService.saveReservation(
+        assertThatThrownBy(() -> managerReservationService.saveReservation(
                 1L,
                 reservationCreateUpdateWithPasswordRequest,
                 POBI))
@@ -113,7 +113,7 @@ public class ProviderReservationServiceTest extends ServiceTest {
                 .willReturn(Optional.empty());
 
         //then
-        assertThatThrownBy(() -> providerReservationService.saveReservation(
+        assertThatThrownBy(() -> managerReservationService.saveReservation(
                 1L,
                 reservationCreateUpdateWithPasswordRequest,
                 POBI))
@@ -137,7 +137,7 @@ public class ProviderReservationServiceTest extends ServiceTest {
         saveMock();
 
         //then
-        assertThatThrownBy(() -> providerReservationService.saveReservation(
+        assertThatThrownBy(() -> managerReservationService.saveReservation(
                 1L,
                 reservationCreateUpdateWithPasswordRequest,
                 POBI))
@@ -161,7 +161,7 @@ public class ProviderReservationServiceTest extends ServiceTest {
         saveMock();
 
         //then
-        assertThatThrownBy(() -> providerReservationService.saveReservation(
+        assertThatThrownBy(() -> managerReservationService.saveReservation(
                 1L,
                 reservationCreateUpdateWithPasswordRequest,
                 POBI))
@@ -185,7 +185,7 @@ public class ProviderReservationServiceTest extends ServiceTest {
         saveMock();
 
         //then
-        assertThatThrownBy(() -> providerReservationService.saveReservation(
+        assertThatThrownBy(() -> managerReservationService.saveReservation(
                 1L,
                 reservationCreateUpdateWithPasswordRequest,
                 POBI))
@@ -209,7 +209,7 @@ public class ProviderReservationServiceTest extends ServiceTest {
         saveMock();
 
         //then
-        assertThatThrownBy(() -> providerReservationService.saveReservation(
+        assertThatThrownBy(() -> managerReservationService.saveReservation(
                 1L,
                 reservationCreateUpdateWithPasswordRequest,
                 POBI))
@@ -234,7 +234,7 @@ public class ProviderReservationServiceTest extends ServiceTest {
                         BE)));
 
         //then
-        assertThatThrownBy(() -> providerReservationService.saveReservation(
+        assertThatThrownBy(() -> managerReservationService.saveReservation(
                 1L,
                 reservationCreateUpdateWithPasswordRequest,
                 POBI))
@@ -264,7 +264,7 @@ public class ProviderReservationServiceTest extends ServiceTest {
                                 BE)));
 
         //then
-        ReservationCreateResponse reservationCreateResponse = providerReservationService.saveReservation(
+        ReservationCreateResponse reservationCreateResponse = managerReservationService.saveReservation(
                 1L,
                 reservationCreateUpdateWithPasswordRequest,
                 POBI);
@@ -301,7 +301,7 @@ public class ProviderReservationServiceTest extends ServiceTest {
 
         //then
         ReservationFindResponse reservationFindResponse = ReservationFindResponse.from(foundReservations);
-        assertThat(providerReservationService.findReservations(1L, 1L, TOMORROW))
+        assertThat(managerReservationService.findReservations(1L, 1L, TOMORROW))
                 .usingRecursiveComparison()
                 .isEqualTo(reservationFindResponse);
     }
@@ -313,7 +313,7 @@ public class ProviderReservationServiceTest extends ServiceTest {
         given(maps.existsById(anyLong()))
                 .willReturn(false);
         //then
-        assertThatThrownBy(() -> providerReservationService.findReservations(1L, 1L, TOMORROW))
+        assertThatThrownBy(() -> managerReservationService.findReservations(1L, 1L, TOMORROW))
                 .isInstanceOf(NoSuchMapException.class);
     }
 
@@ -326,7 +326,7 @@ public class ProviderReservationServiceTest extends ServiceTest {
         given(spaces.existsById(anyLong()))
                 .willReturn(false);
         //then
-        assertThatThrownBy(() -> providerReservationService.findReservations(1L, 1L, TOMORROW))
+        assertThatThrownBy(() -> managerReservationService.findReservations(1L, 1L, TOMORROW))
                 .isInstanceOf(NoSuchSpaceException.class);
     }
 
@@ -347,10 +347,10 @@ public class ProviderReservationServiceTest extends ServiceTest {
                 .willReturn(Collections.emptyList());
 
         //then
-        assertThat(providerReservationService.findReservations(1L, 1L, TOMORROW))
+        assertThat(managerReservationService.findReservations(1L, 1L, TOMORROW))
                 .usingRecursiveComparison()
                 .isEqualTo(ReservationFindResponse.from(Collections.emptyList()));
-        assertThat(providerReservationService.findAllReservations(1L, TOMORROW))
+        assertThat(managerReservationService.findAllReservations(1L, TOMORROW))
                 .usingRecursiveComparison()
                 .isEqualTo(ReservationFindAllResponse.from(Collections.emptyList()));
     }
@@ -393,7 +393,7 @@ public class ProviderReservationServiceTest extends ServiceTest {
 
         //then
         ReservationFindAllResponse reservationFindAllResponse = ReservationFindAllResponse.from(foundReservations);
-        assertThat(providerReservationService.findAllReservations(1L, TOMORROW))
+        assertThat(managerReservationService.findAllReservations(1L, TOMORROW))
                 .usingRecursiveComparison()
                 .isEqualTo(reservationFindAllResponse);
     }
@@ -410,7 +410,7 @@ public class ProviderReservationServiceTest extends ServiceTest {
                 .willReturn(Optional.of(reservation));
 
         //when
-        ReservationResponse actualResponse = providerReservationService.findReservation(
+        ReservationResponse actualResponse = managerReservationService.findReservation(
                 1L,
                 this.reservation.getId(),
                 POBI);
@@ -430,7 +430,7 @@ public class ProviderReservationServiceTest extends ServiceTest {
                 .willReturn(Collections.emptyList());
 
         //then
-        assertThatThrownBy(() -> providerReservationService.findReservation(
+        assertThatThrownBy(() -> managerReservationService.findReservation(
                 1L,
                 reservation.getId(),
                 POBI))
@@ -449,7 +449,7 @@ public class ProviderReservationServiceTest extends ServiceTest {
                 .willReturn(Optional.empty());
 
         //then
-        assertThatThrownBy(() -> providerReservationService.findReservation(
+        assertThatThrownBy(() -> managerReservationService.findReservation(
                 1L,
                 reservation.getId(),
                 POBI))
@@ -479,7 +479,7 @@ public class ProviderReservationServiceTest extends ServiceTest {
         );
 
         //then
-        assertDoesNotThrow(() -> providerReservationService.updateReservation(
+        assertDoesNotThrow(() -> managerReservationService.updateReservation(
                 1L,
                 reservation.getId(),
                 reservationCreateUpdateRequest,
@@ -507,7 +507,7 @@ public class ProviderReservationServiceTest extends ServiceTest {
         );
 
         //then
-        assertThatThrownBy(() -> providerReservationService.updateReservation(
+        assertThatThrownBy(() -> managerReservationService.updateReservation(
                 1L,
                 1L,
                 reservationCreateUpdateRequest,
@@ -535,7 +535,7 @@ public class ProviderReservationServiceTest extends ServiceTest {
         );
 
         //then
-        assertThatThrownBy(() -> providerReservationService.updateReservation(
+        assertThatThrownBy(() -> managerReservationService.updateReservation(
                 1L,
                 1L,
                 reservationCreateUpdateRequest,
@@ -562,7 +562,7 @@ public class ProviderReservationServiceTest extends ServiceTest {
         );
 
         //then
-        assertThatThrownBy(() -> providerReservationService.updateReservation(
+        assertThatThrownBy(() -> managerReservationService.updateReservation(
                 1L,
                 1L,
                 reservationCreateUpdateRequest,
@@ -593,7 +593,7 @@ public class ProviderReservationServiceTest extends ServiceTest {
         );
 
         //then
-        assertThatThrownBy(() -> providerReservationService.updateReservation(
+        assertThatThrownBy(() -> managerReservationService.updateReservation(
                 1L,
                 1L,
                 reservationCreateUpdateRequest,
@@ -630,7 +630,7 @@ public class ProviderReservationServiceTest extends ServiceTest {
         );
 
         //then
-        assertThatThrownBy(() -> providerReservationService.updateReservation(
+        assertThatThrownBy(() -> managerReservationService.updateReservation(
                 1L, 1L,
                 reservationCreateUpdateRequest,
                 POBI))
@@ -654,7 +654,7 @@ public class ProviderReservationServiceTest extends ServiceTest {
                 .willReturn(Optional.of(reservationToDelete));
 
         //then
-        assertDoesNotThrow(() -> providerReservationService.deleteReservation(1L, 1L, POBI));
+        assertDoesNotThrow(() -> managerReservationService.deleteReservation(1L, 1L, POBI));
     }
 
     @DisplayName("예약 삭제 요청 시, 예약이 존재하지 않는다면 오류가 발생한다.")
@@ -667,7 +667,7 @@ public class ProviderReservationServiceTest extends ServiceTest {
                 .willReturn(Collections.emptyList());
 
         //then
-        assertThatThrownBy(() -> providerReservationService.deleteReservation(1L, 1L, POBI))
+        assertThatThrownBy(() -> managerReservationService.deleteReservation(1L, 1L, POBI))
                 .isInstanceOf(NoAuthorityOnMapException.class);
     }
 
@@ -683,7 +683,7 @@ public class ProviderReservationServiceTest extends ServiceTest {
                 .willReturn(Optional.empty());
 
         //then
-        assertThatThrownBy(() -> providerReservationService.deleteReservation(1L, 1L, POBI))
+        assertThatThrownBy(() -> managerReservationService.deleteReservation(1L, 1L, POBI))
                 .isInstanceOf(NoSuchReservationException.class);
     }
 

@@ -1,16 +1,14 @@
 package com.woowacourse.zzimkkong.service;
 
-import com.woowacourse.zzimkkong.domain.Map;
-import com.woowacourse.zzimkkong.domain.Member;
 import com.woowacourse.zzimkkong.domain.Reservation;
 import com.woowacourse.zzimkkong.domain.Space;
 import com.woowacourse.zzimkkong.dto.reservation.ReservationCreateResponse;
-import com.woowacourse.zzimkkong.dto.reservation.ReservationCreateUpdateRequest;
 import com.woowacourse.zzimkkong.dto.reservation.ReservationCreateUpdateWithPasswordRequest;
+import com.woowacourse.zzimkkong.dto.reservation.ReservationPasswordAuthenticationRequest;
 import com.woowacourse.zzimkkong.dto.reservation.ReservationResponse;
 import com.woowacourse.zzimkkong.dto.slack.SlackResponse;
-import com.woowacourse.zzimkkong.exception.authorization.NoAuthorityOnMapException;
 import com.woowacourse.zzimkkong.exception.reservation.NoSuchReservationException;
+import com.woowacourse.zzimkkong.exception.reservation.ReservationPasswordException;
 import com.woowacourse.zzimkkong.exception.space.NoSuchSpaceException;
 import com.woowacourse.zzimkkong.repository.MapRepository;
 import com.woowacourse.zzimkkong.repository.ReservationRepository;
@@ -18,21 +16,20 @@ import com.woowacourse.zzimkkong.repository.SpaceRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
-
 @Service
 @Transactional
-public class ProviderReservationService extends ReservationService {
-    public ProviderReservationService(MapRepository maps, SpaceRepository spaces, ReservationRepository reservations) {
+public class GuestReservationService extends ReservationService {
+    public GuestReservationService(
+            final MapRepository maps,
+            final SpaceRepository spaces,
+            final ReservationRepository reservations) {
         super(maps, spaces, reservations);
     }
 
     public ReservationCreateResponse saveReservation(
             final Long mapId,
-            final ReservationCreateUpdateWithPasswordRequest reservationCreateUpdateWithPasswordRequest,
-            final Member manager) {
+            final ReservationCreateUpdateWithPasswordRequest reservationCreateUpdateWithPasswordRequest) {
         validateMapExistence(mapId);
-        validateAuthorityOnMap(mapId, manager);
 
         validateTime(reservationCreateUpdateWithPasswordRequest);
         Space space = spaces.findById(reservationCreateUpdateWithPasswordRequest.getSpaceId())
@@ -56,35 +53,34 @@ public class ProviderReservationService extends ReservationService {
     public ReservationResponse findReservation(
             final Long mapId,
             final Long reservationId,
-            final Member provider) {
+            final ReservationPasswordAuthenticationRequest reservationPasswordAuthenticationRequest) {
         validateMapExistence(mapId);
-        validateAuthorityOnMap(mapId, provider);
 
         Reservation reservation = reservations
                 .findById(reservationId)
                 .orElseThrow(NoSuchReservationException::new);
+        checkCorrectPassword(reservation, reservationPasswordAuthenticationRequest.getPassword());
         return ReservationResponse.from(reservation);
     }
 
     public SlackResponse updateReservation(
             final Long mapId,
             final Long reservationId,
-            final ReservationCreateUpdateRequest reservationCreateUpdateRequest,
-            final Member provider) {
+            final ReservationCreateUpdateWithPasswordRequest reservationCreateUpdateWithPasswordRequest) {
         validateMapExistence(mapId);
-        validateAuthorityOnMap(mapId, provider);
-        validateTime(reservationCreateUpdateRequest);
+        validateTime(reservationCreateUpdateWithPasswordRequest);
 
-        Space space = spaces.findById(reservationCreateUpdateRequest.getSpaceId())
+        Space space = spaces.findById(reservationCreateUpdateWithPasswordRequest.getSpaceId())
                 .orElseThrow(NoSuchSpaceException::new);
         Reservation reservation = reservations
                 .findById(reservationId)
                 .orElseThrow(NoSuchReservationException::new);
 
-        doDirtyCheck(reservation, reservationCreateUpdateRequest, space);
-        validateAvailability(space, reservationCreateUpdateRequest, reservation);
+        checkCorrectPassword(reservation, reservationCreateUpdateWithPasswordRequest.getPassword());
+        doDirtyCheck(reservation, reservationCreateUpdateWithPasswordRequest, space);
+        validateAvailability(space, reservationCreateUpdateWithPasswordRequest, reservation);
 
-        reservation.update(reservationCreateUpdateRequest, space);
+        reservation.update(reservationCreateUpdateWithPasswordRequest, space);
         reservations.save(reservation);
         return SlackResponse.from(reservation);
     }
@@ -92,25 +88,20 @@ public class ProviderReservationService extends ReservationService {
     public SlackResponse deleteReservation(
             final Long mapId,
             final Long reservationId,
-            final Member provider) {
+            final ReservationPasswordAuthenticationRequest reservationPasswordAuthenticationRequest) {
         validateMapExistence(mapId);
-        validateAuthorityOnMap(mapId, provider);
 
         Reservation reservation = reservations
                 .findById(reservationId)
                 .orElseThrow(NoSuchReservationException::new);
+        checkCorrectPassword(reservation, reservationPasswordAuthenticationRequest.getPassword());
         reservations.delete(reservation);
         return SlackResponse.from(reservation);
     }
 
-    private void validateAuthorityOnMap(final Long mapId, final Member provider) {
-        List<Map> providerMaps = maps.findAllByMember(provider);
-        if (noMapsMatch(providerMaps, mapId)) {
-            throw new NoAuthorityOnMapException();
+    private void checkCorrectPassword(final Reservation reservation, final String password) {
+        if (reservation.isWrongPassword(password)) {
+            throw new ReservationPasswordException();
         }
-    }
-
-    private boolean noMapsMatch(final List<Map> providerMaps, final Long mapId) {
-        return providerMaps.stream().noneMatch(map -> map.hasSameId(mapId));
     }
 }

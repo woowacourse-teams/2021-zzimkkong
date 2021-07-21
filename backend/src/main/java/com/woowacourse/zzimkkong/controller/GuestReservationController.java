@@ -5,8 +5,8 @@ import com.woowacourse.zzimkkong.dto.reservation.ReservationCreateUpdateWithPass
 import com.woowacourse.zzimkkong.dto.reservation.ReservationPasswordAuthenticationRequest;
 import com.woowacourse.zzimkkong.dto.reservation.ReservationResponse;
 import com.woowacourse.zzimkkong.dto.slack.SlackResponse;
+import com.woowacourse.zzimkkong.service.GuestReservationService;
 import com.woowacourse.zzimkkong.service.SlackService;
-import com.woowacourse.zzimkkong.service.UserReservationService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -14,9 +14,9 @@ import javax.validation.Valid;
 import java.net.URI;
 
 @RestController
-@RequestMapping("/api/maps/{mapId}")
-public class UserReservationController extends ReservationController<UserReservationService> {
-    public UserReservationController(final UserReservationService reservationService, final SlackService slackService) {
+@RequestMapping("/api/guests/maps/{mapId}")
+public class GuestReservationController extends ReservationController<GuestReservationService> {
+    public GuestReservationController(final GuestReservationService reservationService, final SlackService slackService) {
         super(reservationService, slackService);
     }
 
@@ -26,7 +26,7 @@ public class UserReservationController extends ReservationController<UserReserva
             @RequestBody @Valid final ReservationCreateUpdateWithPasswordRequest reservationCreateUpdateWithPasswordRequest) {
         ReservationCreateResponse reservationCreateResponse = reservationService.saveReservation(mapId, reservationCreateUpdateWithPasswordRequest);
         return ResponseEntity
-                .created(URI.create("/api/maps/" + mapId + "/reservations/" + reservationCreateResponse.getId()))
+                .created(URI.create("/api/guests/maps/" + mapId + "/reservations/" + reservationCreateResponse.getId()))
                 .build();
     }
 

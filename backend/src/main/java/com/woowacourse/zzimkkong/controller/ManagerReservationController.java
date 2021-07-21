@@ -1,13 +1,13 @@
 package com.woowacourse.zzimkkong.controller;
 
+import com.woowacourse.zzimkkong.domain.Manager;
 import com.woowacourse.zzimkkong.domain.Member;
-import com.woowacourse.zzimkkong.domain.Provider;
 import com.woowacourse.zzimkkong.dto.reservation.ReservationCreateResponse;
 import com.woowacourse.zzimkkong.dto.reservation.ReservationCreateUpdateRequest;
 import com.woowacourse.zzimkkong.dto.reservation.ReservationCreateUpdateWithPasswordRequest;
 import com.woowacourse.zzimkkong.dto.reservation.ReservationResponse;
 import com.woowacourse.zzimkkong.dto.slack.SlackResponse;
-import com.woowacourse.zzimkkong.service.ProviderReservationService;
+import com.woowacourse.zzimkkong.service.ManagerReservationService;
 import com.woowacourse.zzimkkong.service.SlackService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -16,9 +16,9 @@ import javax.validation.Valid;
 import java.net.URI;
 
 @RestController
-@RequestMapping("/api/providers/maps/{mapId}")
-public class ProviderReservationController extends ReservationController<ProviderReservationService> {
-    public ProviderReservationController(final ProviderReservationService reservationService, final SlackService slackService) {
+@RequestMapping("/api/managers/maps/{mapId}")
+public class ManagerReservationController extends ReservationController<ManagerReservationService> {
+    public ManagerReservationController(final ManagerReservationService reservationService, final SlackService slackService) {
         super(reservationService, slackService);
     }
 
@@ -26,13 +26,13 @@ public class ProviderReservationController extends ReservationController<Provide
     public ResponseEntity<Void> create(
             @PathVariable final Long mapId,
             @RequestBody @Valid final ReservationCreateUpdateWithPasswordRequest reservationCreateUpdateWithPasswordRequest,
-            @Provider final Member provider) {
+            @Manager final Member manager) {
         ReservationCreateResponse reservationCreateResponse = reservationService.saveReservation(
                 mapId,
                 reservationCreateUpdateWithPasswordRequest,
-                provider);
+                manager);
         return ResponseEntity
-                .created(URI.create("/api/providers/maps/" + mapId + "/reservations/" + reservationCreateResponse.getId()))
+                .created(URI.create("/api/managers/maps/" + mapId + "/reservations/" + reservationCreateResponse.getId()))
                 .build();
     }
 
@@ -40,8 +40,8 @@ public class ProviderReservationController extends ReservationController<Provide
     public ResponseEntity<ReservationResponse> findOne(
             @PathVariable final Long mapId,
             @PathVariable final Long reservationId,
-            @Provider final Member provider) {
-        ReservationResponse reservationResponse = reservationService.findReservation(mapId, reservationId, provider);
+            @Manager final Member manager) {
+        ReservationResponse reservationResponse = reservationService.findReservation(mapId, reservationId, manager);
         return ResponseEntity.ok().body(reservationResponse);
     }
 
@@ -50,12 +50,12 @@ public class ProviderReservationController extends ReservationController<Provide
             @PathVariable final Long mapId,
             @PathVariable final Long reservationId,
             @RequestBody @Valid final ReservationCreateUpdateRequest reservationCreateUpdateRequest,
-            @Provider final Member provider) {
+            @Manager final Member manager) {
         SlackResponse slackResponse = reservationService.updateReservation(
                 mapId,
                 reservationId,
                 reservationCreateUpdateRequest,
-                provider);
+                manager);
         slackService.sendUpdateMessage(slackResponse);
         return ResponseEntity.ok().build();
     }
@@ -64,8 +64,8 @@ public class ProviderReservationController extends ReservationController<Provide
     public ResponseEntity<Void> delete(
             @PathVariable final Long mapId,
             @PathVariable final Long reservationId,
-            @Provider final Member provider) {
-        SlackResponse slackResponse = reservationService.deleteReservation(mapId, reservationId, provider);
+            @Manager final Member manager) {
+        SlackResponse slackResponse = reservationService.deleteReservation(mapId, reservationId, manager);
         slackService.sendDeleteMessage(slackResponse);
         return ResponseEntity.noContent().build();
     }

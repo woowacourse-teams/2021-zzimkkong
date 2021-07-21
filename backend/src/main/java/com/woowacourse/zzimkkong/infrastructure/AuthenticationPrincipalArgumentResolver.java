@@ -1,6 +1,6 @@
 package com.woowacourse.zzimkkong.infrastructure;
 
-import com.woowacourse.zzimkkong.domain.Provider;
+import com.woowacourse.zzimkkong.domain.Manager;
 import com.woowacourse.zzimkkong.exception.member.NoSuchMemberException;
 import com.woowacourse.zzimkkong.repository.MemberRepository;
 import org.springframework.core.MethodParameter;
@@ -24,7 +24,7 @@ public class AuthenticationPrincipalArgumentResolver implements HandlerMethodArg
 
     @Override
     public boolean supportsParameter(MethodParameter parameter) {
-        return parameter.hasParameterAnnotation(Provider.class);
+        return parameter.hasParameterAnnotation(Manager.class);
     }
 
     @Override
