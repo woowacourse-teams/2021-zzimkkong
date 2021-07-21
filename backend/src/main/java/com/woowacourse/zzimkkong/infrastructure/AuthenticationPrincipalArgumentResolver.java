@@ -30,8 +30,6 @@ public class AuthenticationPrincipalArgumentResolver implements HandlerMethodArg
     @Override
     public Object resolveArgument(MethodParameter parameter, ModelAndViewContainer mavContainer, NativeWebRequest webRequest, WebDataBinderFactory binderFactory) {
         String token = AuthorizationExtractor.extractAccessToken((HttpServletRequest) webRequest.getNativeRequest());
-        jwtUtils.validateToken(token);
-
         String email = jwtUtils.getPayload(token);
         return members.findByEmail(email).orElseThrow(NoSuchMemberException::new);
     }

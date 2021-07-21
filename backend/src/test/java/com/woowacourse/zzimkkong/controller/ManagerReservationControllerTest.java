@@ -162,6 +162,22 @@ public class ManagerReservationControllerTest extends AcceptanceTest {
                 .isEqualTo(expectedResponse);
     }
 
+    @DisplayName("토큰이 검증되지 않는다면 해당 맵, 해당 공간, 해당 날짜에 속하는 예약들을 찾아올 수 없다.")
+    @Test
+    void find_invalidToken() {
+        //given
+        ExtractableResponse<Response> saveResponse = saveExampleReservations();
+        String spaceId = String.valueOf(reservationCreateUpdateWithPasswordRequest.getSpaceId());
+        String api = saveResponse.header("location")
+                .replaceAll("/reservations/[0-9]", "/spaces/" + spaceId + "/reservations");
+
+        //when
+        ExtractableResponse<Response> response = findReservations(invalidToken, api, TOMORROW.toString());
+
+        //then
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
+    }
+
     @DisplayName("map id와 특정 날짜가 주어질 때 해당 맵, 해당 날짜의 모든 공간에 대한 예약을 조회한다.")
     @Test
     void findAll() {
@@ -186,6 +202,21 @@ public class ManagerReservationControllerTest extends AcceptanceTest {
                 .ignoringCollectionOrder()
                 .ignoringExpectedNullFields()
                 .isEqualTo(expectedResponse);
+    }
+
+    @DisplayName("토큰이 검증되지 않는다면, 해당 날짜의 모든 공간에 대한 예약을 조회할 수 없다.")
+    @Test
+    void findAll_invalidToken() {
+        //given
+        ExtractableResponse<Response> saveResponse = saveExampleReservations();
+        String api = saveResponse.header("location")
+                .replaceAll("/reservations/[0-9]", "/reservations");
+
+        //when
+        ExtractableResponse<Response> response = findAllReservations(invalidToken, api, TOMORROW.toString());
+
+        //then
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
     }
 
     @DisplayName("공간 변경 없는 새로운 예약 정보가 주어지면 예약을 업데이트 한다")
@@ -310,7 +341,7 @@ public class ManagerReservationControllerTest extends AcceptanceTest {
                 .isEqualTo(expectedResponse);
     }
 
-    @DisplayName("올바르지 않은 토큰과 함께 예약 수정 요청 시, 예약에 대한 정보를 받을 수 없다.")
+    @DisplayName("올바르지 않은 토큰과 함께 예약 수정을 위한 예약 조회 요청 시, 예약에 대한 정보를 받을 수 없다.")
     @Test
     void findOne_invalidToken() {
         //given
