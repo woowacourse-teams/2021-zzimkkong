@@ -111,6 +111,6 @@ public class ProviderReservationService extends ReservationService {
     }
 
     private boolean noMapsMatch(final List<Map> providerMaps, final Long mapId) {
-        return providerMaps.stream().noneMatch(map -> map.hasId(mapId));
+        return providerMaps.stream().noneMatch(map -> map.hasSameId(mapId));
     }
 }
