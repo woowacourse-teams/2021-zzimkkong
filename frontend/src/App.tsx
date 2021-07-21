@@ -21,7 +21,7 @@ const App = (): JSX.Element => (
         <GlobalStyle />
         <Router>
           <Switch>
-            <Route path={PATH.HOME}>
+            <Route exact path={PATH.HOME}>
               <Main />
             </Route>
             <Route path={PATH.LOGIN}>
