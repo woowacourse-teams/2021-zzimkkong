@@ -23,7 +23,7 @@ import java.util.List;
 @Service
 @Transactional
 public class ManagerReservationService extends ReservationService {
-    public ManagerReservationService(MapRepository maps, SpaceRepository spaces, ReservationRepository reservations) {
+    public ManagerReservationService(final MapRepository maps, final SpaceRepository spaces, final ReservationRepository reservations) {
         super(maps, spaces, reservations);
     }
 

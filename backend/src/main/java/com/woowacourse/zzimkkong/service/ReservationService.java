@@ -85,11 +85,15 @@ public abstract class ReservationService {
                 Collections.singletonList(space.getId()),
                 startDateTime.toLocalDate());
 
+        excludeTargetReservation(space, reservation, reservationsOnDate);
+
+        validateTimeConflicts(startDateTime, endDateTime, reservationsOnDate);
+    }
+
+    private void excludeTargetReservation(final Space space, final Reservation reservation, final List<Reservation> reservationsOnDate) {
         if (reservation.getSpace().equals(space)) {
             reservationsOnDate.remove(reservation);
         }
-
-        validateTimeConflicts(startDateTime, endDateTime, reservationsOnDate);
     }
 
     protected void validateAvailability(
