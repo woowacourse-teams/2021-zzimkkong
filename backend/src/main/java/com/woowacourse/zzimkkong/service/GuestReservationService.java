@@ -63,7 +63,7 @@ public class GuestReservationService extends ReservationService {
         return ReservationResponse.from(reservation);
     }
 
-    public SlackResponse updateReservation(
+    public void updateReservation(
             final Long mapId,
             final Long reservationId,
             final ReservationCreateUpdateWithPasswordRequest reservationCreateUpdateWithPasswordRequest) {
@@ -81,11 +81,9 @@ public class GuestReservationService extends ReservationService {
         validateAvailability(space, reservationCreateUpdateWithPasswordRequest, reservation);
 
         reservation.update(reservationCreateUpdateWithPasswordRequest, space);
-        reservations.save(reservation);
-        return SlackResponse.from(reservation);
     }
 
-    public SlackResponse deleteReservation(
+    public void deleteReservation(
             final Long mapId,
             final Long reservationId,
             final ReservationPasswordAuthenticationRequest reservationPasswordAuthenticationRequest) {
@@ -96,7 +94,6 @@ public class GuestReservationService extends ReservationService {
                 .orElseThrow(NoSuchReservationException::new);
         checkCorrectPassword(reservation, reservationPasswordAuthenticationRequest.getPassword());
         reservations.delete(reservation);
-        return SlackResponse.from(reservation);
     }
 
     private void checkCorrectPassword(final Reservation reservation, final String password) {

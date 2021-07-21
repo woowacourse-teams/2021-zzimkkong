@@ -44,8 +44,7 @@ public class GuestReservationController extends ReservationController<GuestReser
             @PathVariable final Long mapId,
             @PathVariable final Long reservationId,
             @RequestBody @Valid final ReservationCreateUpdateWithPasswordRequest reservationCreateUpdateWithPasswordRequest) {
-        SlackResponse slackResponse = reservationService.updateReservation(mapId, reservationId, reservationCreateUpdateWithPasswordRequest);
-        slackService.sendUpdateMessage(slackResponse);
+        reservationService.updateReservation(mapId, reservationId, reservationCreateUpdateWithPasswordRequest);
         return ResponseEntity.ok().build();
     }
 
@@ -54,8 +53,7 @@ public class GuestReservationController extends ReservationController<GuestReser
             @PathVariable final Long mapId,
             @PathVariable final Long reservationId,
             @RequestBody @Valid ReservationPasswordAuthenticationRequest reservationPasswordAuthenticationRequest) {
-        SlackResponse slackResponse = reservationService.deleteReservation(mapId, reservationId, reservationPasswordAuthenticationRequest);
-        slackService.sendDeleteMessage(slackResponse);
+        reservationService.deleteReservation(mapId, reservationId, reservationPasswordAuthenticationRequest);
         return ResponseEntity.noContent().build();
     }
 }
