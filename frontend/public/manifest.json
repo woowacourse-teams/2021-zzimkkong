@@ -1,0 +1,15 @@
+{
+  "short_name": "찜꽁",
+  "name": "공간을 한 눈에, 예약은 한 번에! 찜꽁입니다.",
+  "icons": [
+    {
+      "src": "../src/assets/images/logo.png",
+      "sizes": "1024x1024",
+      "type": "image/png"
+    }
+  ],
+  "start_url": "./index.html",
+  "display": "browser",
+  "theme_color": "#ff7515",
+  "background_color": "#ffffff"
+}
