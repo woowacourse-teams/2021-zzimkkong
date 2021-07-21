@@ -3,7 +3,6 @@ package com.woowacourse.zzimkkong.controller;
 import com.woowacourse.zzimkkong.dto.reservation.ReservationFindAllResponse;
 import com.woowacourse.zzimkkong.dto.reservation.ReservationFindResponse;
 import com.woowacourse.zzimkkong.service.ReservationService;
-import com.woowacourse.zzimkkong.service.SlackService;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
