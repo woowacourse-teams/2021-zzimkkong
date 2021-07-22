@@ -44,20 +44,117 @@ public class DataLoader implements CommandLineRunner {
                 new Map("루터회관", pobi)
         );
 
-        Space be = new Space("백엔드 강의실", "bottom", "#FED7D9", "100, 90", luther);
-        Space fe1 = new Space("프론트엔드 강의실1", "bottom", "#FED7D9", "560, 40", luther);
-        Space fe2 = new Space("프론트엔드 강의실2", "bottom", "#FED7D9", "560, 140", luther);
-        Space meetingRoom1 = new Space("회의실1", "bottom", "#FFE3AC", "29, 229", luther);
-        Space meetingRoom2 = new Space("회의실2", "bottom", "#FFE3AC", "88, 229", luther);
-        Space meetingRoom3 = new Space("회의실3", "bottom", "#FFE3AC", "510, 220", luther);
-        Space meetingRoom4 = new Space("회의실4", "bottom", "#FFE3AC", "584, 220", luther);
-        Space meetingRoom5 = new Space("회의실5", "bottom", "#FFE3AC", "668, 335", luther);
-        Space pairRoom1 = new Space("페어룸1", "left", "#CCDFFB", "208, 289", luther);
-        Space pairRoom2 = new Space("페어룸2", "left", "#CCDFFB", "208, 318", luther);
-        Space pairRoom3 = new Space("페어룸3", "left", "#CCDFFB", "208, 347", luther);
-        Space pairRoom4 = new Space("페어룸4", "left", "#CCDFFB", "208, 376", luther);
-        Space pairRoom5 = new Space("페어룸5", "left", "#CCDFFB", "208, 404", luther);
-        Space trackRoom = new Space("트랙방", "bottom", "#D8FBCC", "259, 336", luther);
+        Space be = new Space.Builder()
+                .name("백엔드 강의실")
+                .color("bottom")
+                .color("#FED7D9")
+                .coordinate("100, 90")
+                .map(luther)
+                .build();
+
+        Space fe1 = new Space.Builder()
+                .name("프론트엔드 강의실1")
+                .color("bottom")
+                .color("#FED7D9")
+                .coordinate("560, 40")
+                .map(luther)
+                .build();
+
+        Space fe2 = new Space.Builder()
+                .name("프론트엔드 강의실2")
+                .color("bottom")
+                .color("#FED7D9")
+                .coordinate("560, 140")
+                .map(luther)
+                .build();
+
+        Space meetingRoom1 = new Space.Builder()
+                .name("회의실1")
+                .color("bottom")
+                .color("#FFE3AC")
+                .coordinate("29, 229")
+                .map(luther)
+                .build();
+
+        Space meetingRoom2 = new Space.Builder()
+                .name("회의실2")
+                .color("bottom")
+                .color("#FFE3AC")
+                .coordinate("88, 229")
+                .map(luther)
+                .build();
+
+        Space meetingRoom3 = new Space.Builder()
+                .name("회의실3")
+                .color("bottom")
+                .color("#FFE3AC")
+                .coordinate("510, 220")
+                .map(luther)
+                .build();
+
+        Space meetingRoom4 = new Space.Builder()
+                .name("회의실4")
+                .color("bottom")
+                .color("#FFE3AC")
+                .coordinate("584, 220")
+                .map(luther)
+                .build();
+
+        Space meetingRoom5 = new Space.Builder()
+                .name("회의실5")
+                .color("bottom")
+                .color("#FFE3AC")
+                .coordinate("668, 335")
+                .map(luther)
+                .build();
+
+        Space pairRoom1 = new Space.Builder()
+                .name("페어룸1")
+                .color("left")
+                .color("#CCDFFB")
+                .coordinate("208, 289")
+                .map(luther)
+                .build();
+
+        Space pairRoom2 = new Space.Builder()
+                .name("페어룸2")
+                .color("left")
+                .color("#CCDFFB")
+                .coordinate("208, 318")
+                .map(luther)
+                .build();
+
+        Space pairRoom3 = new Space.Builder()
+                .name("페어룸3")
+                .color("left")
+                .color("#CCDFFB")
+                .coordinate("208, 347")
+                .map(luther)
+                .build();
+
+        Space pairRoom4 = new Space.Builder()
+                .name("페어룸4")
+                .color("left")
+                .color("#CCDFFB")
+                .coordinate("208, 376")
+                .map(luther)
+                .build();
+
+        Space pairRoom5 = new Space.Builder()
+                .name("페어룸5")
+                .color("left")
+                .color("#CCDFFB")
+                .coordinate("208, 404")
+                .map(luther)
+                .build();
+
+        Space trackRoom = new Space.Builder()
+                .name("트랙방")
+                .color("bottom")
+                .color("#D8FBCC")
+                .coordinate("259, 336")
+                .map(luther)
+                .build();
 
         List<Space> spaces = List.of(
                 be,

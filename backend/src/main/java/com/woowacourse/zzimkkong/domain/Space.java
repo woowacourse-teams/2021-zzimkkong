@@ -1,7 +1,6 @@
 package com.woowacourse.zzimkkong.domain;
 
 import javax.persistence.*;
-import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.temporal.ChronoUnit;
 
@@ -81,47 +80,6 @@ public class Space {
         this.mapImage = builder.mapImage;
     }
 
-    public Space(final String name,
-                 final String textPosition,
-                 final String color,
-                 final String coordinate,
-                 final Map map) {
-        this(null, name, textPosition, color, coordinate, map, null, null, null, null, null, null, null, null, null);
-    }
-
-    public Space(
-            final Long id,
-            final String name,
-            final String textPosition,
-            final String color,
-            final String coordinate,
-            final Map map,
-            final String description,
-            final String area,
-            final LocalTime availableStartTime,
-            final LocalTime availableEndTime,
-            final Integer reservationMinimumTimeUnit,
-            final Integer reservationMaximumTimeUnit,
-            final Boolean reservationEnable,
-            final String disabledWeekdays,
-            final String mapImage) {
-        this.id = id;
-        this.name = name;
-        this.textPosition = textPosition;
-        this.color = color;
-        this.coordinate = coordinate;
-        this.map = map;
-        this.description = description;
-        this.area = area;
-        this.availableStartTime = availableStartTime;
-        this.availableEndTime = availableEndTime;
-        this.reservationMinimumTimeUnit = reservationMinimumTimeUnit;
-        this.reservationMaximumTimeUnit = reservationMaximumTimeUnit;
-        this.reservationEnable = reservationEnable;
-        this.disabledWeekdays = disabledWeekdays;
-        this.mapImage = mapImage;
-    }
-
     public static class Builder {
         private Long id = null;
         private String name = null;
@@ -184,12 +142,12 @@ public class Space {
         }
 
         public Space.Builder availableStartTime(LocalTime inputAvailableStartTime) {
-            availableStartTime = inputAvailableStartTime.truncatedTo(ChronoUnit.SECONDS);
+            availableStartTime = inputAvailableStartTime;
             return this;
         }
 
         public Space.Builder availableEndTime(LocalTime inputAvailableEndTime) {
-            availableEndTime = inputAvailableEndTime.truncatedTo(ChronoUnit.SECONDS);
+            availableEndTime = inputAvailableEndTime;
             return this;
         }
 
