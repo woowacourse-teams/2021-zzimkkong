@@ -7,6 +7,7 @@ import Button from 'components/Button/Button';
 import Header from 'components/Header/Header';
 import Input from 'components/Input/Input';
 import Layout from 'components/Layout/Layout';
+import MANAGER from 'constants/manager';
 import MESSAGE from 'constants/message';
 import PATH from 'constants/path';
 import REGEXP from 'constants/regexp';
@@ -114,7 +115,8 @@ const Join = (): JSX.Element => {
             <Input
               type="password"
               label="비밀번호"
-              minLength={8}
+              minLength={MANAGER.PASSWORD.MIN_LENGTH}
+              maxLength={MANAGER.PASSWORD.MAX_LENGTH}
               value={password}
               onChange={onChangePassword}
               message={passwordMessage}
@@ -124,7 +126,8 @@ const Join = (): JSX.Element => {
             <Input
               type="password"
               label="비밀번호 확인"
-              minLength={8}
+              minLength={MANAGER.PASSWORD.MIN_LENGTH}
+              maxLength={MANAGER.PASSWORD.MAX_LENGTH}
               value={passwordConfirm}
               onChange={onChangePasswordConfirm}
               message={passwordConfirmMessage}
@@ -134,7 +137,7 @@ const Join = (): JSX.Element => {
             <Input
               type="text"
               label="조직명"
-              minLength={1}
+              minLength={MANAGER.ORGANIZATION.MIN_LENGTH}
               value={organization}
               onChange={onChangeOrganization}
               message={organizationMessage}

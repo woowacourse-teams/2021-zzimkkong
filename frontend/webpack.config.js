@@ -1,5 +1,6 @@
 const path = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
+const FaviconsWebpackPlugin = require('favicons-webpack-plugin');
 const TsconfigPathsPlugin = require('tsconfig-paths-webpack-plugin');
 
 module.exports = () => {
@@ -49,7 +50,10 @@ module.exports = () => {
     plugins: [
       new HtmlWebpackPlugin({
         template: 'public/index.html',
-        favicon: 'src/assets/images/logo.png',
+      }),
+      new FaviconsWebpackPlugin({
+        logo: 'src/assets/images/logo.png',
+        manifest: 'public/manifest.json',
       }),
     ],
   };

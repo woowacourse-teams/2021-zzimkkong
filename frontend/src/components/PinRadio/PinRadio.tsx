@@ -3,7 +3,7 @@ import { Coordinate } from 'types/common';
 import { Color } from 'types/styled';
 import * as Styled from './PinRadio.styles';
 
-export interface Props extends InputHTMLAttributes<HTMLInputElement> {
+export interface Props extends Omit<InputHTMLAttributes<HTMLInputElement>, 'type'> {
   text: string;
   textPosition?: 'left' | 'right' | 'top' | 'bottom';
   coordinate: Coordinate;

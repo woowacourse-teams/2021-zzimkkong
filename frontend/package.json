@@ -24,8 +24,8 @@
     "prod": "cross-env NODE_ENV=production webpack serve",
     "start": "cross-env NODE_ENV=development webpack serve",
     "build": "cross-env NODE_ENV=production webpack",
-    "storybook": "start-storybook -p 6006",
-    "build-storybook": "build-storybook"
+    "storybook": "start-storybook -s ./src/assets -p 6006",
+    "build-storybook": "build-storybook -s ./src/assets"
   },
   "dependencies": {
     "axios": "^0.21.1",
@@ -64,6 +64,8 @@
     "eslint-plugin-prettier": "^3.4.0",
     "eslint-plugin-react": "^7.20.3",
     "eslint-plugin-react-hooks": "^4.0.8",
+    "favicons": "^6.2.2",
+    "favicons-webpack-plugin": "^5.0.2",
     "html-webpack-plugin": "^5.3.2",
     "prettier": "^2.3.2",
     "ts-loader": "^9.2.3",
