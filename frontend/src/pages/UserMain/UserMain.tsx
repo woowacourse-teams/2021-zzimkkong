@@ -145,6 +145,7 @@ const UserMain = (): JSX.Element => {
                 state: {
                   mapId,
                   spaceId: Number(selectedSpaceId),
+                  reservationId: selectedReservationId,
                   spaceName: selectedSpace.spaceName,
                   selectedDate: date,
                 },

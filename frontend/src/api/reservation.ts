@@ -1,6 +1,7 @@
 import { AxiosResponse } from 'axios';
 import { QueryFunction, QueryKey } from 'react-query';
 import { QueryReservationsSuccess } from 'types/response';
+import { Reservation } from './../types/common';
 import api from './api';
 
 export interface QueryReservationsParams {
@@ -9,7 +10,7 @@ export interface QueryReservationsParams {
   date: string;
 }
 
-interface PostReservationParams {
+interface ReservationParams {
   reservation: {
     spaceId: number;
     startDateTime: Date;
@@ -18,7 +19,15 @@ interface PostReservationParams {
     name: string;
     description: string;
   };
+}
+
+interface PostReservationParams extends ReservationParams {
   mapId: number;
+}
+
+interface PutReservationParams extends ReservationParams {
+  mapId: number;
+  reservationId: number;
 }
 
 export const queryReservations: QueryFunction<
@@ -36,3 +45,10 @@ export const postReservation = ({
   mapId,
 }: PostReservationParams): Promise<AxiosResponse<never>> =>
   api.post(`guests/maps/${mapId}/reservations`, reservation);
+
+export const putReservation = ({
+  reservation,
+  mapId,
+  reservationId,
+}: PutReservationParams): Promise<AxiosResponse<never>> =>
+  api.put(`guests/maps/${mapId}/reservations/${reservationId}`, reservation);

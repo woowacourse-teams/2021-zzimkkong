@@ -2,7 +2,7 @@ import { AxiosError } from 'axios';
 import { FormEventHandler } from 'react';
 import { useMutation } from 'react-query';
 import { useHistory, useLocation } from 'react-router-dom';
-import { postReservation } from 'api/reservation';
+import { putReservation } from 'api/reservation';
 import { ReactComponent as CalendarIcon } from 'assets/svg/calendar.svg';
 import Button from 'components/Button/Button';
 import Header from 'components/Header/Header';
@@ -20,20 +20,23 @@ import { Space } from 'types/common';
 import { formatDate, formatTime } from 'utils/datetime';
 import * as Styled from './UserReservationEdit.styles';
 
-interface UserReservationState {
+interface UserReservationEditState {
   mapId: number;
+  reservationId: number;
   spaceId: Space['spaceId'];
   spaceName: Space['spaceName'];
   selectedDate: string;
 }
 
 const UserReservationEdit = (): JSX.Element => {
-  const location = useLocation<UserReservationState>();
+  const location = useLocation<UserReservationEditState>();
   const history = useHistory<UserMainState>();
 
-  const { mapId, spaceId, spaceName, selectedDate } = location.state;
+  const { mapId, spaceId, reservationId, spaceName, selectedDate } = location.state;
 
-  if (!mapId || !spaceId || !spaceName) history.replace(PATH.USER_MAIN);
+  console.log(reservationId);
+
+  if (!mapId || !spaceId || !spaceName || !reservationId) history.replace(PATH.USER_MAIN);
 
   const now = new Date();
   const initialStartTime = formatTime(now);
@@ -52,7 +55,7 @@ const UserReservationEdit = (): JSX.Element => {
   const getReservations = useReservations({ mapId, spaceId, date });
   const reservations = getReservations.data?.data?.reservations ?? [];
 
-  const createReservation = useMutation(postReservation, {
+  const createReservation = useMutation(putReservation, {
     onSuccess: () => {
       history.push(PATH.USER_MAIN, {
         spaceId,
@@ -79,7 +82,7 @@ const UserReservationEdit = (): JSX.Element => {
       endDateTime,
     };
 
-    createReservation.mutate({ reservation, mapId });
+    createReservation.mutate({ reservation, mapId, reservationId });
   };
 
   return (
