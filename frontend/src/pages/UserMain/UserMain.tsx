@@ -136,10 +136,23 @@ const UserMain = (): JSX.Element => {
           </Panel>
         </Styled.PanelContainer>
       </Layout>
-      {/*  */}
       <Modal open={modalOpen} isClosableDimmer={true} setModalOpen={setModalOpen}>
         <Styled.SelectBox>
-          <Styled.SelectButton onClick={() => console.log('asd')}>수정하기</Styled.SelectButton>
+          <Styled.SelectButton
+            onClick={() =>
+              history.push({
+                pathname: PATH.RESERVATION_EDIT,
+                state: {
+                  mapId,
+                  spaceId: Number(selectedSpaceId),
+                  spaceName: selectedSpace.spaceName,
+                  selectedDate: date,
+                },
+              })
+            }
+          >
+            수정하기
+          </Styled.SelectButton>
           <Styled.SelectButton onClick={() => console.log('asd')}>삭제하기</Styled.SelectButton>
         </Styled.SelectBox>
       </Modal>
@@ -149,7 +162,6 @@ const UserMain = (): JSX.Element => {
           <Styled.SelectButton onClick={() => console.log('asd')}>삭제하기</Styled.SelectButton>
         </Styled.SelectBox>
       </Modal> */}
-      {/*  */}
     </>
   );
 };
