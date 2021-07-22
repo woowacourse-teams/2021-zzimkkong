@@ -1,5 +1,8 @@
-import React, { MouseEvent, MouseEventHandler, SyntheticEvent, useEffect, useState } from 'react';
+import { AxiosError } from 'axios';
+import { useState } from 'react';
+import { useMutation } from 'react-query';
 import { useHistory, useLocation } from 'react-router-dom';
+import { deleteReservation } from 'api/reservation';
 import { ReactComponent as Luther } from 'assets/svg/luther.svg';
 import { ReactComponent as More } from 'assets/svg/more.svg';
 import Button from 'components/Button/Button';
@@ -10,6 +13,7 @@ import Modal from 'components/Modal/Modal';
 import Panel from 'components/Panel/Panel';
 import PinRadio from 'components/PinRadio/PinRadio';
 import ReservationListItem from 'components/ReservationListItem/ReservationListItem';
+import MESSAGE from 'constants/message';
 import PATH from 'constants/path';
 import useInput from 'hooks/useInput';
 import useReservations from 'hooks/useReservations';
@@ -46,12 +50,30 @@ const UserMain = (): JSX.Element => {
   });
   const reservations = getReservations.data?.data?.reservations ?? [];
 
+  const removeReservation = useMutation(deleteReservation, {
+    onSuccess: () => {
+      window.alert('예약이 삭제 되었습니다.');
+      setModalOpen(false);
+    },
+
+    onError: (error: AxiosError<Error>) => {
+      alert(error.response?.data.message ?? MESSAGE.RESERVATION.UNEXPECTED_ERROR);
+    },
+  });
+
   const selectedSpace =
     spaceList.find((space) => space.spaceId === Number(selectedSpaceId)) ?? spaceList[0];
 
   const handleSelectModal = (reservationId: number) => {
     setModalOpen(true);
     setSelectedReservationId(reservationId);
+  };
+
+  const handleDeleteReservation = (): void => {
+    if (window.confirm('예약을 삭제하시겠습니까?')) {
+      const password = String(window.prompt('비밀번호 4자리를 입력해주세요.'));
+      removeReservation.mutate({ mapId, password, reservationId: selectedReservationId });
+    }
   };
 
   return (
@@ -154,15 +176,9 @@ const UserMain = (): JSX.Element => {
           >
             수정하기
           </Styled.SelectButton>
-          <Styled.SelectButton onClick={() => console.log('asd')}>삭제하기</Styled.SelectButton>
+          <Styled.SelectButton onClick={handleDeleteReservation}>삭제하기</Styled.SelectButton>
         </Styled.SelectBox>
       </Modal>
-      {/* <Modal open={modalOpen} isClosableDimmer={true} setModalOpen={setModalOpen}>
-        <Styled.SelectBox>
-          <Styled.SelectButton onClick={() => console.log('asd')}>수정하기</Styled.SelectButton>
-          <Styled.SelectButton onClick={() => console.log('asd')}>삭제하기</Styled.SelectButton>
-        </Styled.SelectBox>
-      </Modal> */}
     </>
   );
 };

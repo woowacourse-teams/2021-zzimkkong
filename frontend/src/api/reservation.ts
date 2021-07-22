@@ -1,7 +1,6 @@
 import { AxiosResponse } from 'axios';
 import { QueryFunction, QueryKey } from 'react-query';
 import { QueryReservationsSuccess } from 'types/response';
-import { Reservation } from './../types/common';
 import api from './api';
 
 export interface QueryReservationsParams {
@@ -29,6 +28,11 @@ interface PutReservationParams extends ReservationParams {
   mapId: number;
   reservationId: number;
 }
+interface DeleteReservationParams {
+  mapId: number;
+  reservationId: number;
+  password: string;
+}
 
 export const queryReservations: QueryFunction<
   AxiosResponse<QueryReservationsSuccess>,
@@ -52,3 +56,10 @@ export const putReservation = ({
   reservationId,
 }: PutReservationParams): Promise<AxiosResponse<never>> =>
   api.put(`guests/maps/${mapId}/reservations/${reservationId}`, reservation);
+
+export const deleteReservation = ({
+  mapId,
+  reservationId,
+  password,
+}: DeleteReservationParams): Promise<AxiosResponse<never>> =>
+  api.delete(`guests/maps/${mapId}/reservations/${reservationId}`, { data: { password } });

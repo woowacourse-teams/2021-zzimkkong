@@ -34,8 +34,6 @@ const UserReservationEdit = (): JSX.Element => {
 
   const { mapId, spaceId, reservationId, spaceName, selectedDate } = location.state;
 
-  console.log(reservationId);
-
   if (!mapId || !spaceId || !spaceName || !reservationId) history.replace(PATH.USER_MAIN);
 
   const now = new Date();
@@ -55,13 +53,14 @@ const UserReservationEdit = (): JSX.Element => {
   const getReservations = useReservations({ mapId, spaceId, date });
   const reservations = getReservations.data?.data?.reservations ?? [];
 
-  const createReservation = useMutation(putReservation, {
+  const editReservation = useMutation(putReservation, {
     onSuccess: () => {
       history.push(PATH.USER_MAIN, {
         spaceId,
         targetDate: startDateTime,
       });
     },
+
     onError: (error: AxiosError<Error>) => {
       alert(error.response?.data.message ?? MESSAGE.RESERVATION.UNEXPECTED_ERROR);
     },
@@ -70,7 +69,7 @@ const UserReservationEdit = (): JSX.Element => {
   const handleSubmit: FormEventHandler<HTMLFormElement> = (event) => {
     event.preventDefault();
 
-    if (createReservation.isLoading) return;
+    if (editReservation.isLoading) return;
 
     const mapId = 1;
     const reservation = {
@@ -82,7 +81,7 @@ const UserReservationEdit = (): JSX.Element => {
       endDateTime,
     };
 
-    createReservation.mutate({ reservation, mapId, reservationId });
+    editReservation.mutate({ reservation, mapId, reservationId });
   };
 
   return (
@@ -183,7 +182,7 @@ const UserReservationEdit = (): JSX.Element => {
 
           <Styled.ButtonWrapper>
             <Button fullWidth variant="primary" size="large">
-              예약하기
+              예약 수정하기
             </Button>
           </Styled.ButtonWrapper>
         </Styled.ReservationForm>
