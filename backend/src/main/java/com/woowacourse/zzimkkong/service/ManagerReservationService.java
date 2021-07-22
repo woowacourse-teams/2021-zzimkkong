@@ -10,6 +10,7 @@ import com.woowacourse.zzimkkong.dto.reservation.ReservationCreateUpdateWithPass
 import com.woowacourse.zzimkkong.dto.reservation.ReservationResponse;
 import com.woowacourse.zzimkkong.dto.slack.SlackResponse;
 import com.woowacourse.zzimkkong.exception.authorization.NoAuthorityOnMapException;
+import com.woowacourse.zzimkkong.exception.map.NoSuchMapException;
 import com.woowacourse.zzimkkong.exception.reservation.NoSuchReservationException;
 import com.woowacourse.zzimkkong.exception.space.NoSuchSpaceException;
 import com.woowacourse.zzimkkong.repository.MapRepository;
@@ -103,13 +104,14 @@ public class ManagerReservationService extends ReservationService {
     }
 
     private void validateAuthorityOnMap(final Long mapId, final Member provider) {
-        List<Map> providerMaps = maps.findAllByMember(provider);
-        if (noMapsMatch(providerMaps, mapId)) {
-            throw new NoAuthorityOnMapException();
-        }
+        Map map = maps.findById(mapId)
+                .orElseThrow(NoSuchMapException::new);
+        validateMangerOfMap(provider, map);
     }
 
-    private boolean noMapsMatch(final List<Map> providerMaps, final Long mapId) {
-        return providerMaps.stream().noneMatch(map -> map.hasSameId(mapId));
+    private void validateMangerOfMap(Member manager, Map map) {
+        if (!manager.equals(map.getMember())) {
+            throw new NoAuthorityOnMapException();
+        }
     }
 }
