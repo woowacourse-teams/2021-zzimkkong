@@ -1,10 +1,12 @@
-import { useLocation } from 'react-router-dom';
+import React, { MouseEvent, MouseEventHandler, SyntheticEvent, useEffect, useState } from 'react';
+import { useHistory, useLocation } from 'react-router-dom';
 import { ReactComponent as Luther } from 'assets/svg/luther.svg';
 import { ReactComponent as More } from 'assets/svg/more.svg';
 import Button from 'components/Button/Button';
 import DateInput from 'components/DateInput/DateInput';
 import Header from 'components/Header/Header';
 import Layout from 'components/Layout/Layout';
+import Modal from 'components/Modal/Modal';
 import Panel from 'components/Panel/Panel';
 import PinRadio from 'components/PinRadio/PinRadio';
 import ReservationListItem from 'components/ReservationListItem/ReservationListItem';
@@ -14,6 +16,7 @@ import useReservations from 'hooks/useReservations';
 import { Reservation, Space } from 'types/common';
 import { formatDate } from 'utils/datetime';
 import * as Styled from './UserMain.styles';
+import spaceList from './spaceList';
 
 export interface UserMainState {
   spaceId?: Space['spaceId'];
@@ -24,6 +27,10 @@ const UserMain = (): JSX.Element => {
   // Note: 루터회관 14층으로 상정하고 구현. 추후 useSpaces로 대체 필요
   const mapId = 1;
 
+  const [modalOpen, setModalOpen] = useState(false);
+  const [selectedReservationId, setSelectedReservationId] = useState(0);
+
+  const history = useHistory();
   const location = useLocation<UserMainState>();
   const spaceId = location.state?.spaceId;
   const targetDate = location.state?.targetDate;
@@ -41,6 +48,11 @@ const UserMain = (): JSX.Element => {
 
   const selectedSpace =
     spaceList.find((space) => space.spaceId === Number(selectedSpaceId)) ?? spaceList[0];
+
+  const handleSelectModal = (reservationId: number) => {
+    setModalOpen(true);
+    setSelectedReservationId(reservationId);
+  };
 
   return (
     <>
@@ -88,8 +100,6 @@ const UserMain = (): JSX.Element => {
             <Panel.Content>
               <>
                 {getReservations.isLoadingError && (
-                  <Panel.Inner>
-                    <Styled.Message>
                   <Styled.Message>
                     예약 목록을 불러오는 데 문제가 생겼어요!
                     <br />
@@ -97,13 +107,9 @@ const UserMain = (): JSX.Element => {
                   </Styled.Message>
                 )}
                 {getReservations.isLoading && !getReservations.isLoadingError && (
-                  <Panel.Inner>
-                    <Styled.Message>불러오는 중입니다...</Styled.Message>
                   <Styled.Message>불러오는 중입니다...</Styled.Message>
                 )}
                 {getReservations.isSuccess && reservations?.length === 0 && (
-                  <Panel.Inner>
-                    <Styled.Message>오늘의 첫 예약을 잡아보세요!</Styled.Message>
                   <Styled.Message>오늘의 첫 예약을 잡아보세요!</Styled.Message>
                 )}
                 {getReservations.isSuccess && reservations.length > 0 && (
@@ -113,7 +119,11 @@ const UserMain = (): JSX.Element => {
                         key={reservation.id}
                         reservation={reservation}
                         control={
-                          <Button variant="text" size="small">
+                          <Button
+                            variant="text"
+                            size="small"
+                            onClick={() => handleSelectModal(reservation.id)}
+                          >
                             <More />
                           </Button>
                         }
@@ -126,6 +136,20 @@ const UserMain = (): JSX.Element => {
           </Panel>
         </Styled.PanelContainer>
       </Layout>
+      {/*  */}
+      <Modal open={modalOpen} isClosableDimmer={true} setModalOpen={setModalOpen}>
+        <Styled.SelectBox>
+          <Styled.SelectButton onClick={() => console.log('asd')}>수정하기</Styled.SelectButton>
+          <Styled.SelectButton onClick={() => console.log('asd')}>삭제하기</Styled.SelectButton>
+        </Styled.SelectBox>
+      </Modal>
+      {/* <Modal open={modalOpen} isClosableDimmer={true} setModalOpen={setModalOpen}>
+        <Styled.SelectBox>
+          <Styled.SelectButton onClick={() => console.log('asd')}>수정하기</Styled.SelectButton>
+          <Styled.SelectButton onClick={() => console.log('asd')}>삭제하기</Styled.SelectButton>
+        </Styled.SelectBox>
+      </Modal> */}
+      {/*  */}
     </>
   );
 };

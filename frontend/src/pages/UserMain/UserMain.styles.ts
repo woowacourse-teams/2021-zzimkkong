@@ -52,4 +52,26 @@ export const ReservationList = styled.div`
   }
 `;
 
+export const SelectBox = styled.div`
+  display: flex;
+  flex-direction: column;
+`;
+
+export const SelectButton = styled.button`
+  border: none;
+  cursor: pointer;
+  background-color: white;
+  padding: 1rem 1.5rem;
+  text-align: left;
+  font-size: 1.25rem;
+
+  &:hover {
+    opacity: 0.7;
+  }
+
+  &:first-child {
+    border-bottom: 1px solid rgba(196, 196, 196, 0.3);
+  }
+`;
+
 export const Message = styled.p``;
