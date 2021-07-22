@@ -10,7 +10,11 @@ const PanelContent = ({ children }: PropsWithChildren<Props>): JSX.Element => {
   const { expandable = false, expanded = false } = useContext(PanelContext);
 
   return (
-    <>{(!expandable || (expandable && expanded)) && <Styled.Content>{children}</Styled.Content>}</>
+    <>
+      {(!expandable || (expandable && expanded)) && (
+        <Styled.Content expanded={expanded}>{children}</Styled.Content>
+      )}
+    </>
   );
 };
 
