@@ -2,6 +2,7 @@ package com.woowacourse.zzimkkong.domain;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.time.temporal.ChronoUnit;
 
 @Entity
@@ -34,10 +35,10 @@ public class Space {
     private String area;
 
     @Column(nullable = true)
-    private LocalDateTime availableStartTime;
+    private LocalTime availableStartTime;
 
     @Column(nullable = true)
-    private LocalDateTime availableEndTime;
+    private LocalTime availableEndTime;
 
     @Column(nullable = true)
     private Integer reservationMinimumTimeUnit;
@@ -93,8 +94,8 @@ public class Space {
             final Map map,
             final String description,
             final String area,
-            final LocalDateTime availableStartTime,
-            final LocalDateTime availableEndTime,
+            final LocalTime availableStartTime,
+            final LocalTime availableEndTime,
             final Integer reservationMinimumTimeUnit,
             final Integer reservationMaximumTimeUnit,
             final Boolean reservationEnable,
@@ -126,8 +127,8 @@ public class Space {
         private Map map = null;
         private String description = null;
         private String area = null;
-        private LocalDateTime availableStartTime = null;
-        private LocalDateTime availableEndTime = null;
+        private LocalTime availableStartTime = null;
+        private LocalTime availableEndTime = null;
         private Integer reservationMinimumTimeUnit = null;
         private Integer reservationMaximumTimeUnit = null;
         private Boolean reservationEnable = null;
@@ -177,12 +178,12 @@ public class Space {
             return this;
         }
 
-        public Space.Builder availableStartTime(LocalDateTime inputAvailableStartTime) {
+        public Space.Builder availableStartTime(LocalTime inputAvailableStartTime) {
             availableStartTime = inputAvailableStartTime.truncatedTo(ChronoUnit.SECONDS);
             return this;
         }
 
-        public Space.Builder availableEndTime(LocalDateTime inputAvailableEndTime) {
+        public Space.Builder availableEndTime(LocalTime inputAvailableEndTime) {
             availableEndTime = inputAvailableEndTime.truncatedTo(ChronoUnit.SECONDS);
             return this;
         }

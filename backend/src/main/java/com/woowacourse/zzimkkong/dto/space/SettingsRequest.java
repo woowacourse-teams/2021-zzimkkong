@@ -1,11 +1,10 @@
 package com.woowacourse.zzimkkong.dto.space;
 
-import java.time.LocalDateTime;
-import java.util.List;
+import java.time.LocalTime;
 
 public class SettingsRequest {
-    private LocalDateTime availableStartTime;
-    private LocalDateTime availableEndTime;
+    private LocalTime availableStartTime;
+    private LocalTime availableEndTime;
     private Integer reservationTimeUnit;
     private Integer reservationMinimumTimeUnit;
     private Integer reservationMaximumTimeUnit;
@@ -16,8 +15,8 @@ public class SettingsRequest {
     }
 
     public SettingsRequest(
-            final LocalDateTime availableStartTime,
-            final LocalDateTime availableEndTime,
+            final LocalTime availableStartTime,
+            final LocalTime availableEndTime,
             final Integer reservationTimeUnit,
             final Integer reservationMinimumTimeUnit,
             final Integer reservationMaximumTimeUnit,
@@ -32,11 +31,11 @@ public class SettingsRequest {
         this.disabledWeekdays = disabledWeekdays;
     }
 
-    public LocalDateTime getAvailableStartTime() {
+    public LocalTime getAvailableStartTime() {
         return availableStartTime;
     }
 
-    public LocalDateTime getAvailableEndTime() {
+    public LocalTime getAvailableEndTime() {
         return availableEndTime;
     }
 
