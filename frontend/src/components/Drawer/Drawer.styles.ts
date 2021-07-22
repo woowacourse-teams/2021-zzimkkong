@@ -8,25 +8,27 @@ interface ContainerProps {
 
 const placementCSS = {
   left: css`
-    transform: translate(-100%, 0%);
+    transform: translate(-105%, 0%);
     left: 0;
     top: 0;
     width: 80%;
     height: 100%;
     border-top-right-radius: 1rem;
     border-bottom-right-radius: 1rem;
+    box-shadow: 0.25rem 0 0.25rem 0 ${({ theme }) => theme.shadow};
   `,
   right: css`
-    transform: translate(100%, 0%);
+    transform: translate(105%, 0%);
     right: 0;
     top: 0;
     width: 80%;
     height: 100%;
     border-top-left-radius: 1rem;
     border-bottom-left-radius: 1rem;
+    box-shadow: -0.25rem 0 0.25rem 0 ${({ theme }) => theme.shadow};
   `,
   top: css`
-    transform: translate(0%, -100%);
+    transform: translate(0%, -105%);
     left: 0;
     right: 0;
     top: 0;
@@ -34,9 +36,10 @@ const placementCSS = {
     max-height: 70%;
     border-bottom-left-radius: 1rem;
     border-bottom-right-radius: 1rem;
+    box-shadow: 0 0.25rem 0.25rem 0 ${({ theme }) => theme.shadow};
   `,
   bottom: css`
-    transform: translate(0%, 100%);
+    transform: translate(0%, 105%);
     left: 0;
     right: 0;
     bottom: 0;
@@ -44,6 +47,7 @@ const placementCSS = {
     max-height: 70%;
     border-top-left-radius: 1rem;
     border-top-right-radius: 1rem;
+    box-shadow: 0 -0.25rem 0.25rem 0 ${({ theme }) => theme.shadow};
   `,
 };
 

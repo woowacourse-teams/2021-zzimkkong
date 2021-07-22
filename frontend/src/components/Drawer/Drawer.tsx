@@ -14,34 +14,34 @@ export interface Props {
 const transitionStyle = {
   left: {
     from: {
-      transform: 'translate(-100%, 0%)',
+      transform: 'translate(-105%, 0%)',
     },
     leave: {
-      transform: 'translate(-100%, 0%)',
+      transform: 'translate(-105%, 0%)',
     },
   },
   right: {
     from: {
-      transform: 'translate(100%, 0%)',
+      transform: 'translate(105%, 0%)',
     },
     leave: {
-      transform: 'translate(100%, 0%)',
+      transform: 'translate(105%, 0%)',
     },
   },
   top: {
     from: {
-      transform: 'translate(0%, -100%)',
+      transform: 'translate(0%, -105%)',
     },
     leave: {
-      transform: 'translate(0%, -100%)',
+      transform: 'translate(0%, -105%)',
     },
   },
   bottom: {
     from: {
-      transform: 'translate(0%, 100%)',
+      transform: 'translate(0%, 105%)',
     },
     leave: {
-      transform: 'translate(0%, 100%)',
+      transform: 'translate(0%, 105%)',
     },
   },
 };
