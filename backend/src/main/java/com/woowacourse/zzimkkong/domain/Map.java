@@ -29,6 +29,10 @@ public class Map {
         this.member = member;
     }
 
+    public boolean hasSameId(final Long id) {
+        return this.id.equals(id);
+    }
+
     public Long getId() {
         return id;
     }

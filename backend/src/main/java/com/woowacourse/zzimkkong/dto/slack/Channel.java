@@ -8,7 +8,7 @@ public enum Channel {
     private String urlEnd;
     private String name;
 
-    Channel(String urlStart, String urlEnd, String name) {
+    Channel(final String urlStart, final String urlEnd, final String name) {
         this.urlStart = urlStart;
         this.urlEnd = urlEnd;
         this.name = name;

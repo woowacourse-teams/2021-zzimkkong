@@ -1,6 +1,5 @@
 package com.woowacourse.zzimkkong.controller;
 
-import com.woowacourse.zzimkkong.dto.ErrorResponse;
 import com.woowacourse.zzimkkong.dto.member.LoginRequest;
 import com.woowacourse.zzimkkong.dto.member.MemberSaveRequest;
 import com.woowacourse.zzimkkong.dto.member.TokenResponse;
@@ -59,13 +58,13 @@ class AuthControllerTest extends AcceptanceTest {
         String invalidToken = "strangeTokenIsComing";
 
         //when
-        ExtractableResponse<Response> response = token(invalidToken,"fail");
+        ExtractableResponse<Response> response = token(invalidToken, "fail");
 
         //then
         assertThat(response.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
     }
 
-    private ExtractableResponse<Response> login(final LoginRequest loginRequest) {
+    public static ExtractableResponse<Response> login(final LoginRequest loginRequest) {
         return RestAssured
                 .given(getRequestSpecification()).log().all()
                 .accept("application/json")

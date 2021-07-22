@@ -45,6 +45,10 @@ public class JwtUtils {
         }
     }
 
+    public String getPayload(String token) {
+        return Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token).getBody().getSubject();
+    }
+
     public static PayloadBuilder payloadBuilder() {
         return new PayloadBuilder();
     }

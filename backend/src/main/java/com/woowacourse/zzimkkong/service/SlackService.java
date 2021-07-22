@@ -17,7 +17,7 @@ import org.springframework.web.client.RestTemplate;
 public class SlackService {
     private static final String URL_PREFIX = "https://hooks.slack.com/services/";
 
-    private ReservationRepository reservations;
+    private final ReservationRepository reservations;
 
     public SlackService(final ReservationRepository reservations) {
         this.reservations = reservations;

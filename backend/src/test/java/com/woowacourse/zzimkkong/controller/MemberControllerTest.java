@@ -9,8 +9,8 @@ import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 
-import static com.woowacourse.zzimkkong.DocumentUtils.*;
 import static com.woowacourse.zzimkkong.CommonFixture.*;
+import static com.woowacourse.zzimkkong.DocumentUtils.*;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.restdocs.restassured3.RestAssuredRestDocumentation.document;
 

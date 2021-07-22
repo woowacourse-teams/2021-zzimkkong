@@ -5,7 +5,9 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.woowacourse.zzimkkong.domain.Reservation;
 import com.woowacourse.zzimkkong.domain.Space;
 
-import java.util.*;
+import java.util.Comparator;
+import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @JsonIgnoreProperties(ignoreUnknown = true)

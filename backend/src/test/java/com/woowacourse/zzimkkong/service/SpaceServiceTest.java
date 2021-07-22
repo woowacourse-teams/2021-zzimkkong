@@ -28,7 +28,7 @@ class SpaceServiceTest extends ServiceTest {
                 .willReturn(Optional.of(BE));
 
         // when
-        SpaceFindResponse actual = spaceService.findSpace(1L,1L);
+        SpaceFindResponse actual = spaceService.findSpace(1L, 1L);
 
         // then
         assertThat(actual).usingRecursiveComparison()

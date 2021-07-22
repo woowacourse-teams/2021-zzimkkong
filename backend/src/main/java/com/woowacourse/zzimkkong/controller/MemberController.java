@@ -12,7 +12,8 @@ import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import java.net.URI;
 
-import static com.woowacourse.zzimkkong.dto.Validator.*;
+import static com.woowacourse.zzimkkong.dto.Validator.EMAIL_MESSAGE;
+import static com.woowacourse.zzimkkong.dto.Validator.EMPTY_MESSAGE;
 
 @RestController
 @RequestMapping("/api/members")
