@@ -80,33 +80,31 @@ const UserMain = (): JSX.Element => {
                     },
                   }}
                 >
-                  <Panel.Inner>예약</Panel.Inner>
+                  예약
                 </Styled.ReservationLink>
               )}
-              <Panel.Inner>
-                <Panel.Title>{selectedSpace.spaceName}</Panel.Title>
-              </Panel.Inner>
+              <Panel.Title>{selectedSpace.spaceName}</Panel.Title>
             </Panel.Header>
             <Panel.Content>
               <>
                 {getReservations.isLoadingError && (
                   <Panel.Inner>
                     <Styled.Message>
-                      예약 목록을 불러오는 데 문제가 생겼어요!
-                      <br />
-                      새로 고침으로 다시 시도해주세요.
-                    </Styled.Message>
-                  </Panel.Inner>
+                  <Styled.Message>
+                    예약 목록을 불러오는 데 문제가 생겼어요!
+                    <br />
+                    새로 고침으로 다시 시도해주세요.
+                  </Styled.Message>
                 )}
                 {getReservations.isLoading && !getReservations.isLoadingError && (
                   <Panel.Inner>
                     <Styled.Message>불러오는 중입니다...</Styled.Message>
-                  </Panel.Inner>
+                  <Styled.Message>불러오는 중입니다...</Styled.Message>
                 )}
                 {getReservations.isSuccess && reservations?.length === 0 && (
                   <Panel.Inner>
                     <Styled.Message>오늘의 첫 예약을 잡아보세요!</Styled.Message>
-                  </Panel.Inner>
+                  <Styled.Message>오늘의 첫 예약을 잡아보세요!</Styled.Message>
                 )}
                 {getReservations.isSuccess && reservations.length > 0 && (
                   <Styled.ReservationList role="list">
