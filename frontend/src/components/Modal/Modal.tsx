@@ -1,4 +1,4 @@
-import { MouseEventHandler, PropsWithChildren } from 'react';
+import { MouseEventHandler, PropsWithChildren, useState } from 'react';
 import { ReactComponent as CloseIcon } from 'assets/svg/close.svg';
 import * as Styled from './Modal.styles';
 
@@ -6,22 +6,24 @@ export interface Props {
   open?: boolean;
   isClosableDimmer?: boolean;
   showCloseButton?: boolean;
+  setModalOpen?: (open: boolean) => void;
 }
 
 const Modal = ({
   open,
   isClosableDimmer,
   showCloseButton,
+  setModalOpen,
   children,
 }: PropsWithChildren<Props>): JSX.Element => {
   const handleDimmedClick: MouseEventHandler<HTMLDivElement> = ({ target, currentTarget }) => {
     if (isClosableDimmer && target === currentTarget) {
-      open = false;
+      setModalOpen?.(false);
     }
   };
 
   const handleClose = () => {
-    open = false;
+    setModalOpen?.(false);
   };
 
   return (
