@@ -4,7 +4,7 @@ import com.woowacourse.zzimkkong.domain.Manager;
 import com.woowacourse.zzimkkong.domain.Member;
 import com.woowacourse.zzimkkong.dto.map.MapFindAllResponse;
 import com.woowacourse.zzimkkong.dto.map.MapFindResponse;
-import com.woowacourse.zzimkkong.dto.map.MapCreateRequest;
+import com.woowacourse.zzimkkong.dto.map.MapCreateUpdateRequest;
 import com.woowacourse.zzimkkong.dto.map.MapCreateResponse;
 import com.woowacourse.zzimkkong.service.MapService;
 import org.springframework.http.ResponseEntity;
@@ -21,6 +21,13 @@ public class MapController {
         this.mapService = mapService;
     }
 
+    @PostMapping
+    public ResponseEntity<Void> create(@Manager Member member, @RequestBody MapCreateUpdateRequest mapCreateUpdateRequest) {
+        MapCreateResponse mapCreateResponse = mapService.saveMap(member, mapCreateUpdateRequest);
+        return ResponseEntity.created(URI.create("/api/managers/maps/" + mapCreateResponse.getId()))
+                .build();
+    }
+
     @GetMapping("/{mapId}")
     public ResponseEntity<MapFindResponse> find(@Manager Member member, @PathVariable Long mapId) {
         MapFindResponse mapFindResponse = mapService.findMap(member, mapId);
@@ -33,11 +40,10 @@ public class MapController {
         return ResponseEntity.ok(mapFindAllResponse);
     }
 
-    @PostMapping
-    public ResponseEntity<Void> create(@Manager Member member, @RequestBody MapCreateRequest mapCreateRequest) {
-        MapCreateResponse mapCreateResponse = mapService.saveMap(member, mapCreateRequest);
-        return ResponseEntity.created(URI.create("/api/managers/maps/" + mapCreateResponse.getId()))
-                .build();
+    @PutMapping("/{mapId}")
+    public ResponseEntity<Void> update(@Manager Member member, @PathVariable Long mapId, @RequestBody MapCreateUpdateRequest mapCreateUpdateRequest) {
+        mapService.updateMap(member, mapId, mapCreateUpdateRequest);
+        return ResponseEntity.ok().build();
     }
 }
 

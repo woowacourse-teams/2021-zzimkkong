@@ -4,7 +4,7 @@ import javax.validation.constraints.NotBlank;
 
 import static com.woowacourse.zzimkkong.dto.Validator.*;
 
-public class MapCreateRequest {
+public class MapCreateUpdateRequest {
     @NotBlank(message = EMPTY_MESSAGE)
     private String mapName;
 
@@ -14,10 +14,10 @@ public class MapCreateRequest {
     @NotBlank(message = EMPTY_MESSAGE)
     private String mapImage;
 
-    public MapCreateRequest() {
+    public MapCreateUpdateRequest() {
     }
 
-    public MapCreateRequest(String mapName, String mapDrawing, String mapImage) {
+    public MapCreateUpdateRequest(String mapName, String mapDrawing, String mapImage) {
         this.mapName = mapName;
         this.mapDrawing = mapDrawing;
         this.mapImage = mapImage;

@@ -2,7 +2,7 @@ package com.woowacourse.zzimkkong.service;
 
 import com.woowacourse.zzimkkong.domain.Map;
 import com.woowacourse.zzimkkong.domain.Member;
-import com.woowacourse.zzimkkong.dto.map.MapCreateRequest;
+import com.woowacourse.zzimkkong.dto.map.MapCreateUpdateRequest;
 import com.woowacourse.zzimkkong.dto.map.MapCreateResponse;
 import com.woowacourse.zzimkkong.dto.map.MapFindAllResponse;
 import com.woowacourse.zzimkkong.dto.map.MapFindResponse;
@@ -23,11 +23,11 @@ public class MapService {
         this.maps = mapRepository;
     }
 
-    public MapCreateResponse saveMap(final Member member, final MapCreateRequest mapCreateRequest) {
+    public MapCreateResponse saveMap(final Member member, final MapCreateUpdateRequest mapCreateUpdateRequest) {
         Map saveMap = maps.save(new Map(
-                mapCreateRequest.getMapName(),
-                mapCreateRequest.getMapDrawing(),
-                mapCreateRequest.getMapImage(),
+                mapCreateUpdateRequest.getMapName(),
+                mapCreateUpdateRequest.getMapDrawing(),
+                mapCreateUpdateRequest.getMapImage(),
                 member));
         return MapCreateResponse.from(saveMap);
     }
@@ -47,7 +47,19 @@ public class MapService {
         return MapFindAllResponse.from(findMaps);
     }
 
-    private void validateManagerOfMap(Member manager, Map map) {
+    public void updateMap(final Member member, final Long mapId, MapCreateUpdateRequest mapCreateUpdateRequest) {
+        Map map = maps.findById(mapId)
+                .orElseThrow(NoSuchMapException::new);
+
+        validateManagerOfMap(member, map);
+
+        map.update(
+                mapCreateUpdateRequest.getMapName(),
+                mapCreateUpdateRequest.getMapDrawing(),
+                mapCreateUpdateRequest.getMapImage());
+    }
+
+    private void validateManagerOfMap(final Member manager,final Map map) {
         if(!manager.equals(map.getMember())) {   // TODO: ReservationService 와의 중복 제거 -김샐
             throw new NoAuthorityOnMapException();
         }
