@@ -58,6 +58,7 @@ const PALETTE = {
   },
 
   OPACITY_GRAY: 'rgba(212, 212, 216, 0.3)',
+  OPACITY_BLACK: 'rgba(0, 0, 0, 0.4)',
   WHITE: '#fff',
 };
 
