@@ -63,10 +63,8 @@ const ManagerMain = (): JSX.Element => {
           {data.map(({ spaceId, spaceName, spaceColor, reservations }, index) => (
             <Styled.SpaceListItem key={spaceId}>
               <Panel expandable initialExpanded={!index}>
-                <Panel.Header bgColor={spaceColor}>
-                  <Panel.Inner>
-                    <Panel.Title>{spaceName}</Panel.Title>
-                  </Panel.Inner>
+                <Panel.Header dotColor={spaceColor}>
+                  <Panel.Title>{spaceName}</Panel.Title>
                 </Panel.Header>
                 <Panel.Content>
                   {reservations.length === 0 ? (
