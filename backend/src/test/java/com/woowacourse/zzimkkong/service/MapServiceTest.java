@@ -18,7 +18,7 @@ class MapServiceTest extends ServiceTest {
     private MapService mapService;
 
     @Test
-    @DisplayName("맵을 생성한다.")
+    @DisplayName("맵 요청 시, 올바른 요청이 들어오면 맵을 생성한다.")
     void create() {
         //given
         MapCreateRequest mapCreateRequest = new MapCreateRequest(LUTHER.getName(), LUTHER.getMapDrawing(), LUTHER.getMapImage());

@@ -4,6 +4,7 @@ import com.woowacourse.zzimkkong.domain.Reservation;
 import com.woowacourse.zzimkkong.dto.member.LoginRequest;
 import com.woowacourse.zzimkkong.dto.member.TokenResponse;
 import com.woowacourse.zzimkkong.dto.reservation.*;
+import com.woowacourse.zzimkkong.infrastructure.AuthorizationExtractor;
 import com.woowacourse.zzimkkong.repository.MapRepository;
 import com.woowacourse.zzimkkong.repository.MemberRepository;
 import com.woowacourse.zzimkkong.repository.ReservationRepository;
@@ -372,7 +373,7 @@ public class ManagerReservationControllerTest extends AcceptanceTest {
         return RestAssured
                 .given(getRequestSpecification()).log().all()
                 .accept("application/json")
-                .header("Authorization", "Bearer " + token)
+                .header("Authorization", AuthorizationExtractor.AUTHENTICATION_TYPE + " " + token)
                 .filter(document("reservation/manager/post", getRequestPreprocessor(), getResponsePreprocessor()))
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body(reservationCreateUpdateWithPasswordRequest)
@@ -386,7 +387,7 @@ public class ManagerReservationControllerTest extends AcceptanceTest {
         return RestAssured
                 .given(getRequestSpecification()).log().all()
                 .accept("*/*")
-                .header("Authorization", "Bearer " + token)
+                .header("Authorization", AuthorizationExtractor.AUTHENTICATION_TYPE + " " + token)
                 .filter(document("reservation/manager/delete", getRequestPreprocessor(), getResponsePreprocessor()))
                 .when().delete(api)
                 .then().log().all().extract();
@@ -399,7 +400,7 @@ public class ManagerReservationControllerTest extends AcceptanceTest {
         return RestAssured
                 .given(getRequestSpecification()).log().all()
                 .accept("*/*")
-                .header("Authorization", "Bearer " + token)
+                .header("Authorization", AuthorizationExtractor.AUTHENTICATION_TYPE + " " + token)
                 .filter(document("reservation/manager/get", getRequestPreprocessor(), getResponsePreprocessor()))
                 .queryParams("date", date)
                 .when().get(api)
@@ -413,7 +414,7 @@ public class ManagerReservationControllerTest extends AcceptanceTest {
         return RestAssured
                 .given(getRequestSpecification()).log().all()
                 .accept("*/*")
-                .header("Authorization", "Bearer " + token)
+                .header("Authorization", AuthorizationExtractor.AUTHENTICATION_TYPE + " " + token)
                 .filter(document("reservation/manager/get_all", getRequestPreprocessor(), getResponsePreprocessor()))
                 .queryParam("date", date)
                 .when().get(api)
@@ -427,7 +428,7 @@ public class ManagerReservationControllerTest extends AcceptanceTest {
         return RestAssured
                 .given(getRequestSpecification()).log().all()
                 .accept("application/json")
-                .header("Authorization", "Bearer " + token)
+                .header("Authorization", AuthorizationExtractor.AUTHENTICATION_TYPE + " " + token)
                 .filter(document("reservation/manager/put", getRequestPreprocessor(), getResponsePreprocessor()))
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body(reservationCreateUpdateRequest)
@@ -441,7 +442,7 @@ public class ManagerReservationControllerTest extends AcceptanceTest {
         return RestAssured
                 .given(getRequestSpecification()).log().all()
                 .accept("*/*")
-                .header("Authorization", "Bearer " + token)
+                .header("Authorization", AuthorizationExtractor.AUTHENTICATION_TYPE + " " + token)
                 .filter(document("reservation/manager/get_one", getRequestPreprocessor(), getResponsePreprocessor()))
                 .when().get(api)
                 .then().log().all().extract();
