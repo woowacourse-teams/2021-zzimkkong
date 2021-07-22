@@ -6,6 +6,7 @@ import com.woowacourse.zzimkkong.dto.map.MapCreateResponse;
 import com.woowacourse.zzimkkong.dto.map.MapCreateUpdateRequest;
 import com.woowacourse.zzimkkong.dto.map.MapFindAllResponse;
 import com.woowacourse.zzimkkong.dto.map.MapFindResponse;
+import com.woowacourse.zzimkkong.exception.authorization.NoAuthorityOnMapException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,6 +16,7 @@ import java.util.Optional;
 
 import static com.woowacourse.zzimkkong.service.ServiceTestFixture.*;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
@@ -80,5 +82,22 @@ class MapServiceTest extends ServiceTest {
 
         //when, then
         assertDoesNotThrow(() -> mapService.updateMap(POBI, LUTHER.getId(), mapCreateUpdateRequest));
+    }
+
+    @Test
+    @DisplayName("권한이 없는 관리자가 맵을 수정하려고 할 경우 예외가 발생한다.")
+    void updateManagerException() {
+        //given
+        Member anotherMember = new Member("sally@email.com", "password", "organization");
+        Map map = new Map(3L, "sally's home", "mapDrawing", "mapImage", anotherMember);
+        MapCreateUpdateRequest mapCreateUpdateRequest = new MapCreateUpdateRequest("이름을 바꿔요", map.getMapDrawing(), map.getMapImage());
+
+
+        given(maps.findById(anyLong()))
+                .willReturn(Optional.of(map));
+
+        // when, then
+        assertThatThrownBy(() -> mapService.updateMap(POBI, map.getId(), mapCreateUpdateRequest))
+                .isInstanceOf(NoAuthorityOnMapException.class);
     }
 }
