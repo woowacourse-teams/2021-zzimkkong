@@ -41,6 +41,9 @@ public class Space {
     private LocalTime availableEndTime;
 
     @Column(nullable = true)
+    private Integer reservationTimeUnit;
+
+    @Column(nullable = true)
     private Integer reservationMinimumTimeUnit;
 
     @Column(nullable = true)
@@ -70,6 +73,7 @@ public class Space {
         this.area = builder.area;
         this.availableStartTime = builder.availableStartTime;
         this.availableEndTime = builder.availableEndTime;
+        this.reservationTimeUnit = builder.reservationTimeUnit;
         this.reservationMinimumTimeUnit = builder.reservationMinimumTimeUnit;
         this.reservationMaximumTimeUnit = builder.reservationMaximumTimeUnit;
         this.reservationEnable = builder.reservationEnable;
@@ -129,6 +133,7 @@ public class Space {
         private String area = null;
         private LocalTime availableStartTime = null;
         private LocalTime availableEndTime = null;
+        private Integer reservationTimeUnit = null;
         private Integer reservationMinimumTimeUnit = null;
         private Integer reservationMaximumTimeUnit = null;
         private Boolean reservationEnable = null;
@@ -185,6 +190,11 @@ public class Space {
 
         public Space.Builder availableEndTime(LocalTime inputAvailableEndTime) {
             availableEndTime = inputAvailableEndTime.truncatedTo(ChronoUnit.SECONDS);
+            return this;
+        }
+
+        public Space.Builder reservationTimeUnit(Integer inputReservationTimeUnit) {
+            reservationTimeUnit = inputReservationTimeUnit;
             return this;
         }
 

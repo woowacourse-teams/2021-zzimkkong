@@ -64,6 +64,7 @@ public class SpaceService {
                         .area(spaceCreateRequest.getArea())
                         .availableStartTime(settingsRequest.getAvailableStartTime())
                         .availableEndTime(settingsRequest.getAvailableEndTime())
+                        .reservationTimeUnit(settingsRequest.getReservationTimeUnit())
                         .reservationMinimumTimeUnit(settingsRequest.getReservationMinimumTimeUnit())
                         .reservationMaximumTimeUnit(settingsRequest.getReservationMaximumTimeUnit())
                         .reservationEnable(settingsRequest.getReservationEnable())
