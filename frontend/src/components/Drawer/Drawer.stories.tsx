@@ -95,6 +95,22 @@ Left.args = {
   children: <Drawer.Inner>내용을 입력해주세요</Drawer.Inner>,
 };
 
+export const LeftWithHeader = Template.bind({});
+LeftWithHeader.args = {
+  open: true,
+  placement: 'left',
+  onClose: () => null,
+  children: (
+    <Drawer.Inner>
+      <Drawer.Header>
+        <Drawer.HeaderText>헤더 제목</Drawer.HeaderText>
+        <Drawer.CloseButton />
+      </Drawer.Header>
+      내용은 여기에 작성합니다.
+    </Drawer.Inner>
+  ),
+};
+
 export const LeftWithMaxwidth = Template.bind({});
 LeftWithMaxwidth.args = {
   open: true,
