@@ -77,12 +77,8 @@ const Drawer = ({
     },
   });
 
-  const handleClose = () => {
-    onClose();
-  };
-
   const dimmer = dimmerTransition((style, flag) => {
-    return <>{flag && <Styled.Dimmer onClick={handleClose} style={style} />}</>;
+    return <>{flag && <Styled.Dimmer onClick={onClose} style={style} />}</>;
   });
 
   const container = containerTransition((style, flag) => {
@@ -99,7 +95,7 @@ const Drawer = ({
 
   const contextValue = {
     open,
-    onClose: handleClose,
+    onClose,
   };
 
   return (
