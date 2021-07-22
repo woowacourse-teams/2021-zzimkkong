@@ -1,0 +1,13 @@
+== Map (맵)
+
+=== 맵 생성
+==== Request
+include::{snippets}/map/post/http-request.adoc[]
+==== Response
+include::{snippets}/map/post/http-response.adoc[]
+
+=== 맵 조회
+==== Request
+include::{snippets}/map/get/http-request.adoc[]
+==== Response
+include::{snippets}/map/get/http-response.adoc[]
