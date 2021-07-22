@@ -28,11 +28,11 @@ export const queryReservations: QueryFunction<
   const [, data] = queryKey;
   const { mapId, spaceId, date } = data;
 
-  return api.get(`/maps/${mapId}/spaces/${spaceId}/reservations?date=${date}`);
+  return api.get(`guests/maps/${mapId}/spaces/${spaceId}/reservations?date=${date}`);
 };
 
 export const postReservation = ({
   reservation,
   mapId,
 }: PostReservationParams): Promise<AxiosResponse<never>> =>
-  api.post(`/maps/${mapId}/reservations`, reservation);
+  api.post(`guests/maps/${mapId}/reservations`, reservation);
