@@ -41,7 +41,8 @@ public class DataLoader implements CommandLineRunner {
         );
 
         Map luther = maps.save(
-                new Map("루터회관", pobi)
+                // todo 에디터로 만든 png 데이터를 넣기
+                new Map("루터회관", "mapDrawingData", "mapImageData", pobi)
         );
 
         Space be = new Space("백엔드 강의실", "bottom", "#FED7D9", "100, 90", luther);

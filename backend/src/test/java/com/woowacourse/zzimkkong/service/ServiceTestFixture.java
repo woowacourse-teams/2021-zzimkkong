@@ -14,7 +14,7 @@ public class ServiceTestFixture {
     public static final String ORGANIZATION = "우아한테크코스";
     public static Member POBI = new Member(1L, EMAIL, PASSWORD, ORGANIZATION);
 
-    public static Map LUTHER = new Map(1L, "루터회관", POBI);
+    public static Map LUTHER = new Map(1L, "루터회관", "mapDrawingData", "mapImageData", POBI);
     public static Space BE = new Space(1L, "백엔드 강의실", "bottom", "#FED7D9", "100, 90", LUTHER);
     public static Space FE1 = new Space(2L, "프론트엔드 강의실1", "bottom", "#FED7D9", "560, 40", LUTHER);
 
