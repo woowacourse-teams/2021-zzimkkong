@@ -6,8 +6,11 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+import java.util.List;
+
 import static com.woowacourse.zzimkkong.CommonFixture.LUTHER;
 import static com.woowacourse.zzimkkong.CommonFixture.POBI;
+import static com.woowacourse.zzimkkong.service.ServiceTestFixture.SMALL_HOUSE;
 import static org.assertj.core.api.Assertions.assertThat;
 
 class MapRepositoryTest extends RepositoryTest {
@@ -38,5 +41,19 @@ class MapRepositoryTest extends RepositoryTest {
 
         //then
         assertThat(findMap).isEqualTo(savedMap);
+    }
+
+    @Test
+    @DisplayName("Member의 모든 맵을 조회할 수 있다.")
+    void findAllByMember() {
+        //given
+        Map savedMap1 = maps.save(LUTHER);
+        Map savedMap2 = maps.save(SMALL_HOUSE);
+
+        //when
+        List<Map> actualMaps = maps.findAllByMember(POBI);
+
+        //then
+        assertThat(actualMaps).isEqualTo(List.of(savedMap1, savedMap2));
     }
 }

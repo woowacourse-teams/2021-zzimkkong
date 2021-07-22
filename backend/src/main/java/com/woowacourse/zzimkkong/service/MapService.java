@@ -4,12 +4,15 @@ import com.woowacourse.zzimkkong.domain.Map;
 import com.woowacourse.zzimkkong.domain.Member;
 import com.woowacourse.zzimkkong.dto.map.MapCreateRequest;
 import com.woowacourse.zzimkkong.dto.map.MapCreateResponse;
+import com.woowacourse.zzimkkong.dto.map.MapFindAllResponse;
 import com.woowacourse.zzimkkong.dto.map.MapFindResponse;
 import com.woowacourse.zzimkkong.exception.authorization.NoAuthorityOnMapException;
 import com.woowacourse.zzimkkong.exception.map.NoSuchMapException;
 import com.woowacourse.zzimkkong.repository.MapRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
 
 @Service
 @Transactional
@@ -36,6 +39,12 @@ public class MapService {
 
         validateManagerOfMap(member, map);
         return MapFindResponse.from(map);
+    }
+
+    @Transactional(readOnly = true)
+    public MapFindAllResponse findAllMaps(Member member) {
+        List<Map> findMaps = maps.findAllByMember(member);
+        return MapFindAllResponse.from(findMaps);
     }
 
     private void validateManagerOfMap(Member manager, Map map) {
