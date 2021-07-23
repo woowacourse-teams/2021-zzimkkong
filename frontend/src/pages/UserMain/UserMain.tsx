@@ -33,6 +33,7 @@ const UserMain = (): JSX.Element => {
 
   const [modalOpen, setModalOpen] = useState(false);
   const [selectedReservationId, setSelectedReservationId] = useState(0);
+  const [selectedReservation, setSelectedReservation] = useState({});
 
   const history = useHistory();
   const location = useLocation<UserMainState>();
@@ -64,9 +65,10 @@ const UserMain = (): JSX.Element => {
   const selectedSpace =
     spaceList.find((space) => space.spaceId === Number(selectedSpaceId)) ?? spaceList[0];
 
-  const handleSelectModal = (reservationId: number) => {
+  const handleSelectModal = (reservation: Reservation) => {
     setModalOpen(true);
-    setSelectedReservationId(reservationId);
+    setSelectedReservationId(reservation.id);
+    setSelectedReservation(reservation);
   };
 
   const handleDeleteReservation = (): void => {
@@ -144,7 +146,7 @@ const UserMain = (): JSX.Element => {
                           <Button
                             variant="text"
                             size="small"
-                            onClick={() => handleSelectModal(reservation.id)}
+                            onClick={() => handleSelectModal(reservation)}
                           >
                             <More />
                           </Button>
@@ -167,6 +169,7 @@ const UserMain = (): JSX.Element => {
                 state: {
                   mapId,
                   spaceId: Number(selectedSpaceId),
+                  reservation: selectedReservation,
                   reservationId: selectedReservationId,
                   spaceName: selectedSpace.spaceName,
                   selectedDate: date,

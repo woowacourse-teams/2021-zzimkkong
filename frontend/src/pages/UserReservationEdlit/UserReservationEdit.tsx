@@ -16,13 +16,13 @@ import RESERVATION from 'constants/reservation';
 import useInput from 'hooks/useInput';
 import useReservations from 'hooks/useReservations';
 import { UserMainState } from 'pages/UserMain/UserMain';
-import { Space } from 'types/common';
+import { Reservation, Space } from 'types/common';
 import { formatDate, formatTime } from 'utils/datetime';
 import * as Styled from './UserReservationEdit.styles';
 
 interface UserReservationEditState {
   mapId: number;
-  reservationId: number;
+  reservation: Reservation;
   spaceId: Space['spaceId'];
   spaceName: Space['spaceName'];
   selectedDate: string;
@@ -32,20 +32,18 @@ const UserReservationEdit = (): JSX.Element => {
   const location = useLocation<UserReservationEditState>();
   const history = useHistory<UserMainState>();
 
-  const { mapId, spaceId, reservationId, spaceName, selectedDate } = location.state;
+  const { mapId, spaceId, reservation, spaceName, selectedDate } = location.state;
 
-  if (!mapId || !spaceId || !spaceName || !reservationId) history.replace(PATH.USER_MAIN);
+  if (!mapId || !spaceId || !spaceName || !reservation) history.replace(PATH.USER_MAIN);
 
   const now = new Date();
-  const initialStartTime = formatTime(now);
-  const initialEndTime = formatTime(new Date(new Date().getTime() + 1000 * 60 * 60));
 
-  const [name, onChangeName] = useInput('');
-  const [description, onChangeDescription] = useInput('');
+  const [name, onChangeName] = useInput(reservation.name);
+  const [description, onChangeDescription] = useInput(reservation.description);
   const [date, onChangeDate] = useInput(selectedDate);
-  const [startTime, onChangeStartTime] = useInput(initialStartTime);
-  const [endTime, onChangeEndTime] = useInput(initialEndTime);
-  const [password, onChangePassword] = useInput('');
+  const [startTime, onChangeStartTime] = useInput(formatTime(new Date(reservation.startDateTime)));
+  const [endTime, onChangeEndTime] = useInput(formatTime(new Date(reservation.endDateTime)));
+  const [password, onChangePassword] = useInput();
 
   const startDateTime = new Date(`${date}T${startTime}Z`);
   const endDateTime = new Date(`${date}T${endTime}Z`);
@@ -72,7 +70,8 @@ const UserReservationEdit = (): JSX.Element => {
     if (editReservation.isLoading) return;
 
     const mapId = 1;
-    const reservation = {
+    const editReservationParams = {
+      id: reservation.id,
       spaceId,
       name,
       description,
@@ -81,7 +80,7 @@ const UserReservationEdit = (): JSX.Element => {
       endDateTime,
     };
 
-    editReservation.mutate({ reservation, mapId, reservationId });
+    editReservation.mutate({ reservation: editReservationParams, mapId });
   };
 
   return (
@@ -97,7 +96,6 @@ const UserReservationEdit = (): JSX.Element => {
                 value={name}
                 onChange={onChangeName}
                 maxLength={RESERVATION.NAME.MAX_LENGTH}
-                autoFocus
                 required
               />
             </Styled.InputWrapper>
@@ -179,7 +177,6 @@ const UserReservationEdit = (): JSX.Element => {
               </Styled.ReservationList>
             )}
           </Styled.Section>
-
           <Styled.ButtonWrapper>
             <Button fullWidth variant="primary" size="large">
               예약 수정하기

@@ -1,4 +1,4 @@
-import { MouseEventHandler, PropsWithChildren, useState } from 'react';
+import { MouseEventHandler, PropsWithChildren } from 'react';
 import { ReactComponent as CloseIcon } from 'assets/svg/close.svg';
 import * as Styled from './Modal.styles';
 
