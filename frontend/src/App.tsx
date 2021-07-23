@@ -1,6 +1,6 @@
 import { QueryClient, QueryClientProvider } from 'react-query';
 import { ReactQueryDevtools } from 'react-query/devtools';
-import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
+import { BrowserRouter as Router, Redirect, Route, Switch } from 'react-router-dom';
 import { RecoilRoot } from 'recoil';
 import { ThemeProvider } from 'styled-components';
 import { GlobalStyle, theme } from './App.styles';
@@ -38,6 +38,9 @@ const App = (): JSX.Element => (
             </Route>
             <Route exact path={PATH.PROVIDER_RESERVATION_LIST}>
               <ProviderReservationList />
+            </Route>
+            <Route path="*">
+              <Redirect to={PATH.USER_MAIN} />
             </Route>
           </Switch>
         </Router>
