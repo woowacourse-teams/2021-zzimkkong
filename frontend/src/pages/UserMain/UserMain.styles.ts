@@ -65,11 +65,12 @@ export const SelectButton = styled.button`
   background-color: white;
   padding: 1rem 1.5rem;
   text-align: left;
-  font-size: 1.25rem;
+  font-size: 1rem;
 
   svg {
     margin-top: 0.25rem;
     margin-right: 0.5rem;
+    fill: ${({ theme }) => theme.gray[400]};
   }
 
   &:hover {
@@ -83,7 +84,8 @@ export const SelectButton = styled.button`
 
 export const DeleteModalContainer = styled.div`
   display: flex;
-  justify-content: space-between;
+  justify-content: flex-end;
+  margin-top: 1.5rem;
 `;
 
 export const Message = styled.p``;

@@ -214,19 +214,12 @@ const UserMain = (): JSX.Element => {
               onChange={setPasswordInput}
             />
             <Styled.DeleteModalContainer>
-              <div />
-              <div>
-                <Button
-                  variant="text"
-                  type="button"
-                  onClick={() => setPasswordInputModalOpen(false)}
-                >
-                  취소
-                </Button>
-                <Button variant="text" type="submit">
-                  확인
-                </Button>
-              </div>
+              <Button variant="text" type="button" onClick={() => setPasswordInputModalOpen(false)}>
+                취소
+              </Button>
+              <Button variant="text" type="submit">
+                확인
+              </Button>
             </Styled.DeleteModalContainer>
           </form>
         </Modal.Inner>

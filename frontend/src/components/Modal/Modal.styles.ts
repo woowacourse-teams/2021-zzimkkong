@@ -22,6 +22,8 @@ export const Modal = styled.div`
   min-width: 320px;
   max-width: 768px;
   position: relative;
+  overflow: hidden;
+  border-radius: 4px;
   background-color: ${({ theme }) => theme.white};
 `;
 
@@ -47,6 +49,7 @@ export const Inner = styled.div`
 export const Header = styled.h1`
   font-weight: 700;
   padding: 1rem;
+  margin-bottom: 0.5rem;
 `;
 
 export const Content = styled.div``;
