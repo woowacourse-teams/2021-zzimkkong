@@ -1,9 +1,20 @@
 import styled from 'styled-components';
 
-export const PageHeader = styled.h2`
-  font-size: 1.625rem;
-  font-weight: 700;
-  margin: 0.75rem 0;
+export const PageHeader = styled.div`
+  padding: 0.75rem 0;
+  display: flex;
+  align-items: center;
+`;
+
+export const PageTitle = styled.h2`
+  font-size: 1.5rem;
+  font-weight: 500;
+  padding: 0 0.75rem;
+  flex-grow: 1;
+  text-align: center;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  white-space: nowrap;
 `;
 
 export const PanelMessage = styled.p`

@@ -1,6 +1,6 @@
 import { ReactComponent as LinkIcon } from 'assets/svg/link.svg';
+import { ReactComponent as MenuIcon } from 'assets/svg/menu.svg';
 import { ReactComponent as MoreIcon } from 'assets/svg/more.svg';
-import Button from 'components/Button/Button';
 import DateInput from 'components/DateInput/DateInput';
 import Header from 'components/Header/Header';
 import Layout from 'components/Layout/Layout';
@@ -54,10 +54,15 @@ const ManagerMain = (): JSX.Element => {
     <>
       <Header />
       <Layout>
-        <Styled.PageHeader>{mapName} 예약 관리</Styled.PageHeader>
-        <Button size="small" variant="primary">
-          <LinkIcon /> 공유 링크 복사
-        </Button>
+        <Styled.PageHeader>
+          <IconButton text="맵 목록">
+            <MenuIcon />
+          </IconButton>
+          <Styled.PageTitle>{mapName}</Styled.PageTitle>
+          <IconButton variant="primary" text="공유 링크">
+            <LinkIcon />
+          </IconButton>
+        </Styled.PageHeader>
         <DateInput value="2021-07-16" />
         <Styled.SpaceList>
           {data.map(({ spaceId, spaceName, spaceColor, reservations }, index) => (
