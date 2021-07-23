@@ -16,6 +16,8 @@ const MESSAGE = {
   },
   RESERVATION: {
     UNEXPECTED_ERROR: '예약하는 중에 문제가 발생했습니다. 잠시 후에 다시 시도해주세요.',
+    UNEXPECTED_DELETE_ERROR:
+      '예약을 삭제하는 중에 문제가 발생했습니다. 잠시 후에 다시 시도해주세요.',
   },
 };
 

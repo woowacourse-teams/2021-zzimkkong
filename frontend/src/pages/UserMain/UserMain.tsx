@@ -38,7 +38,7 @@ const UserMain = (): JSX.Element => {
   const [passwordInputModalOpen, setPasswordInputModalOpen] = useState(false);
   const [selectedReservation, setSelectedReservation] = useState<Reservation>();
 
-  const [passwordInput, setPasswordInput] = useInput('');
+  const [passwordInput, onChangePasswordInput] = useInput('');
 
   const history = useHistory();
   const location = useLocation<UserMainState>();
@@ -64,7 +64,7 @@ const UserMain = (): JSX.Element => {
     },
 
     onError: (error: AxiosError<Error>) => {
-      alert(error.response?.data.message ?? MESSAGE.RESERVATION.UNEXPECTED_ERROR);
+      alert(error.response?.data.message ?? MESSAGE.RESERVATION.UNEXPECTED_DELETE_ERROR);
     },
   });
 
@@ -211,7 +211,7 @@ const UserMain = (): JSX.Element => {
               minLength={4}
               maxLength={4}
               value={passwordInput}
-              onChange={setPasswordInput}
+              onChange={onChangePasswordInput}
             />
             <Styled.DeleteModalContainer>
               <Button variant="text" type="button" onClick={() => setPasswordInputModalOpen(false)}>
