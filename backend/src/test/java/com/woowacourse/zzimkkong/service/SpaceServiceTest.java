@@ -85,31 +85,45 @@ class SpaceServiceTest extends ServiceTest {
     @Test
     void find() {
         // given
-        given(maps.existsById(anyLong()))
-                .willReturn(true);
+        given(maps.findById(anyLong()))
+                .willReturn(Optional.of(LUTHER));
         given(spaces.findById(anyLong()))
                 .willReturn(Optional.of(BE));
 
         // when
-        SpaceFindResponse actual = spaceService.findSpace(1L, 1L);
+        SpaceFindDetailResponse actual = spaceService.findSpace(1L, 1L, POBI);
 
         // then
         assertThat(actual).usingRecursiveComparison()
-                .isEqualTo(SpaceFindResponse.from(BE));
+                .isEqualTo(SpaceFindDetailResponse.from(BE));
     }
 
     @DisplayName("공간 조회 시, spaceId에 맞는 공간이 없다면 예외를 발생시킨다.")
     @Test
-    void findFail() {
+    void findNoSuchSpace() {
         // given
-        given(maps.existsById(anyLong()))
-                .willReturn(true);
+        given(maps.findById(anyLong()))
+                .willReturn(Optional.of(LUTHER));
         given(spaces.findById(anyLong()))
                 .willReturn(Optional.empty());
 
         // when, then
-        assertThatThrownBy(() -> spaceService.findSpace(1L, 1L))
+        assertThatThrownBy(() -> spaceService.findSpace(1L, 1L, POBI))
                 .isInstanceOf(NoSuchSpaceException.class);
+    }
+
+    @DisplayName("공간 조회 시, 공간 관리자가 아니라면 예외를 발생시킨다.")
+    @Test
+    void findNoAuthorityOnMap() {
+        // given
+        given(maps.findById(anyLong()))
+                .willReturn(Optional.of(LUTHER));
+        given(spaces.findById(anyLong()))
+                .willReturn(Optional.of(BE));
+
+        // when, then
+        assertThatThrownBy(() -> spaceService.findSpace(1L, 1L, new Member("bada@bada.com", "test1234", "잠실")))
+                .isInstanceOf(NoAuthorityOnMapException.class);
     }
 
     @DisplayName("전체 공간을 조회한다.")
