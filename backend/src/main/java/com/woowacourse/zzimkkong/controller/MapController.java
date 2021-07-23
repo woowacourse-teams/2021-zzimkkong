@@ -45,5 +45,11 @@ public class MapController {
         mapService.updateMap(member, mapId, mapCreateUpdateRequest);
         return ResponseEntity.ok().build();
     }
+
+    @DeleteMapping("/{mapId}")
+    public ResponseEntity<Void> delete(@Manager Member member, @PathVariable Long mapId) {
+        mapService.deleteMap(member, mapId);
+        return ResponseEntity.noContent().build();
+    }
 }
 
