@@ -36,4 +36,12 @@ public class Map {
     public Long getId() {
         return id;
     }
+
+    public Member getMember() {
+        return member;
+    }
+
+    public boolean isNotOwnedBy(final Member manager) {
+        return !this.member.equals(manager);
+    }
 }
