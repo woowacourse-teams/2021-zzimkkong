@@ -4,6 +4,7 @@ import com.woowacourse.zzimkkong.dto.member.LoginRequest;
 import com.woowacourse.zzimkkong.dto.member.TokenResponse;
 import com.woowacourse.zzimkkong.dto.space.SettingsRequest;
 import com.woowacourse.zzimkkong.dto.space.SpaceCreateRequest;
+import com.woowacourse.zzimkkong.dto.space.SpaceFindAllResponse;
 import com.woowacourse.zzimkkong.dto.space.SpaceFindResponse;
 import com.woowacourse.zzimkkong.repository.MapRepository;
 import com.woowacourse.zzimkkong.repository.MemberRepository;
@@ -19,6 +20,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 
 import java.time.LocalTime;
+import java.util.List;
 
 import static com.woowacourse.zzimkkong.CommonFixture.*;
 import static com.woowacourse.zzimkkong.DocumentUtils.*;
@@ -44,6 +46,7 @@ public class SpaceControllerTest extends AcceptanceTest {
         members.save(POBI);
         maps.save(LUTHER);
         spaces.save(BE);
+        spaces.save(FE1);
 
         SettingsRequest settingsRequest = new SettingsRequest(
                 LocalTime.of(10, 0),
@@ -113,6 +116,30 @@ public class SpaceControllerTest extends AcceptanceTest {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
     }
 
+    @DisplayName("올바른 토큰이 주어질 때, 전체 공간에 대한 정보를 조회한다.")
+    @Test
+    void findAll() {
+        // given, when
+        ExtractableResponse<Response> response = findAllSpace(token, LUTHER.getId());
+        SpaceFindAllResponse actual = response.body().as(SpaceFindAllResponse.class);
+        SpaceFindAllResponse expected = SpaceFindAllResponse.from(List.of(BE, FE1));
+
+        // then
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
+        assertThat(actual).usingRecursiveComparison()
+                .isEqualTo(expected);
+    }
+
+    @DisplayName("토큰이 검증되지 않는다면, 전체 공간에 대한 정보를 조회할 수 없다.")
+    @Test
+    void findAll_invalidToken() {
+        // given, when
+        ExtractableResponse<Response> response = findAllSpace(invalidToken, LUTHER.getId());
+
+        // then
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
+    }
+
     private ExtractableResponse<Response> saveSpace(final String token, final Long mapId, final SpaceCreateRequest spaceCreateRequest) {
         return RestAssured
                 .given(getRequestSpecification()).log().all()
@@ -133,6 +160,17 @@ public class SpaceControllerTest extends AcceptanceTest {
                 .filter(document("space/get", getRequestPreprocessor(), getResponsePreprocessor()))
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .when().get("/api/managers/maps/" + mapId.toString() + "/spaces/" + spaceId.toString())
+                .then().log().all().extract();
+    }
+
+    private ExtractableResponse<Response> findAllSpace(final String token, final Long mapId) {
+        return RestAssured
+                .given(getRequestSpecification()).log().all()
+                .accept("application/json")
+                .header("Authorization", "Bearer " + token)
+                .filter(document("space/get_all", getRequestPreprocessor(), getResponsePreprocessor()))
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .when().get("/api/managers/maps/" + mapId.toString() + "/spaces/")
                 .then().log().all().extract();
     }
 }
