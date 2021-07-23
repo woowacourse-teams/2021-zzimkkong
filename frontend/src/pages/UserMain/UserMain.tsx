@@ -3,6 +3,8 @@ import { useState } from 'react';
 import { useMutation } from 'react-query';
 import { useHistory, useLocation } from 'react-router-dom';
 import { deleteReservation } from 'api/reservation';
+import { ReactComponent as Delete } from 'assets/svg/delete.svg';
+import { ReactComponent as Edit } from 'assets/svg/edit.svg';
 import { ReactComponent as Luther } from 'assets/svg/luther.svg';
 import { ReactComponent as More } from 'assets/svg/more.svg';
 import Button from 'components/Button/Button';
@@ -69,8 +71,22 @@ const UserMain = (): JSX.Element => {
     setSelectedReservation(reservation);
   };
 
-  const handleDeleteReservation = (): void => {
+  const handleSelectEdit = () => {
+    history.push({
+      pathname: PATH.RESERVATION_EDIT,
+      state: {
+        mapId,
+        spaceId: Number(selectedSpaceId),
+        reservation: selectedReservation,
+        spaceName: selectedSpace.spaceName,
+        selectedDate: date,
+      },
+    });
+  };
+
+  const handleSelectDelete = (): void => {
     const password = String(window.prompt('비밀번호 4자리를 입력해주세요.'));
+
     removeReservation.mutate({ mapId, password, reservationId: Number(selectedReservation?.id) });
   };
 
@@ -158,23 +174,14 @@ const UserMain = (): JSX.Element => {
       </Layout>
       <Modal open={modalOpen} isClosableDimmer={true} setModalOpen={setModalOpen}>
         <Styled.SelectBox>
-          <Styled.SelectButton
-            onClick={() =>
-              history.push({
-                pathname: PATH.RESERVATION_EDIT,
-                state: {
-                  mapId,
-                  spaceId: Number(selectedSpaceId),
-                  reservation: selectedReservation,
-                  spaceName: selectedSpace.spaceName,
-                  selectedDate: date,
-                },
-              })
-            }
-          >
+          <Styled.SelectButton onClick={handleSelectEdit}>
+            <Edit />
             수정하기
           </Styled.SelectButton>
-          <Styled.SelectButton onClick={handleDeleteReservation}>삭제하기</Styled.SelectButton>
+          <Styled.SelectButton onClick={handleSelectDelete}>
+            <Delete />
+            삭제하기
+          </Styled.SelectButton>
         </Styled.SelectBox>
       </Modal>
     </>

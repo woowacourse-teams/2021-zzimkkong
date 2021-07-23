@@ -58,12 +58,19 @@ export const SelectBox = styled.div`
 `;
 
 export const SelectButton = styled.button`
+  display: flex;
+  align-items: center;
   border: none;
   cursor: pointer;
   background-color: white;
   padding: 1rem 1.5rem;
   text-align: left;
   font-size: 1.25rem;
+
+  svg {
+    margin-top: 0.25rem;
+    margin-right: 0.5rem;
+  }
 
   &:hover {
     opacity: 0.7;

@@ -170,9 +170,6 @@ const UserReservationEdit = (): JSX.Element => {
             {getReservations.isLoading && !getReservations.isLoadingError && (
               <Styled.Message>불러오는 중입니다...</Styled.Message>
             )}
-            {getReservations.isSuccess && reservations.length === 0 && (
-              <Styled.Message>오늘의 첫 예약을 잡아보세요!</Styled.Message>
-            )}
             {getReservations.isSuccess && reservations.length > 0 && (
               <Styled.ReservationList role="list">
                 {reservations?.map((reservation) => (
