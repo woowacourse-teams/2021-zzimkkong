@@ -5,7 +5,7 @@ interface Props {
 }
 
 export const Overlay = styled.div<Props>`
-  display: ${({ open }) => (open === true ? 'flex' : 'none')};
+  display: ${({ open }) => (open ? 'flex' : 'none')};
   position: fixed;
   top: 0;
   left: 0;

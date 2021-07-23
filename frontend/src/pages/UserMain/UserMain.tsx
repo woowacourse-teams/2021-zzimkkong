@@ -185,7 +185,7 @@ const UserMain = (): JSX.Element => {
           </Panel>
         </Styled.PanelContainer>
       </Layout>
-      <Modal open={modalOpen} isClosableDimmer={true} setModalOpen={setModalOpen}>
+      <Modal open={modalOpen} isClosableDimmer={true} onClose={() => setModalOpen(false)}>
         <Styled.SelectBox>
           <Styled.SelectButton onClick={handleSelectEdit}>
             <Edit />
@@ -200,7 +200,7 @@ const UserMain = (): JSX.Element => {
       <Modal
         open={passwordInputModalOpen}
         isClosableDimmer={true}
-        setModalOpen={setPasswordInputModalOpen}
+        onClose={() => setModalOpen(false)}
       >
         <Modal.Header>예약시 사용하신 비밀번호를 입력해주세요.</Modal.Header>
         <Modal.Inner>
