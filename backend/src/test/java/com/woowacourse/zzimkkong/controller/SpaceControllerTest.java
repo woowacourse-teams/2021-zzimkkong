@@ -2,10 +2,7 @@ package com.woowacourse.zzimkkong.controller;
 
 import com.woowacourse.zzimkkong.dto.member.LoginRequest;
 import com.woowacourse.zzimkkong.dto.member.TokenResponse;
-import com.woowacourse.zzimkkong.dto.space.SettingsRequest;
-import com.woowacourse.zzimkkong.dto.space.SpaceCreateRequest;
-import com.woowacourse.zzimkkong.dto.space.SpaceFindAllResponse;
-import com.woowacourse.zzimkkong.dto.space.SpaceFindResponse;
+import com.woowacourse.zzimkkong.dto.space.*;
 import com.woowacourse.zzimkkong.repository.MapRepository;
 import com.woowacourse.zzimkkong.repository.MemberRepository;
 import com.woowacourse.zzimkkong.repository.SpaceRepository;
@@ -97,8 +94,8 @@ public class SpaceControllerTest extends AcceptanceTest {
     void find() {
         // given, when
         ExtractableResponse<Response> response = findSpace(token, LUTHER.getId(), BE.getId());
-        SpaceFindResponse actual = response.body().as(SpaceFindResponse.class);
-        SpaceFindResponse expected = SpaceFindResponse.from(BE);
+        SpaceFindDetailResponse actual = response.body().as(SpaceFindDetailResponse.class);
+        SpaceFindDetailResponse expected = SpaceFindDetailResponse.from(BE);
 
         // then
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
