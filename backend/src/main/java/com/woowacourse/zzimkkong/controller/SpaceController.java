@@ -4,6 +4,7 @@ import com.woowacourse.zzimkkong.domain.Manager;
 import com.woowacourse.zzimkkong.domain.Member;
 import com.woowacourse.zzimkkong.dto.space.SpaceCreateRequest;
 import com.woowacourse.zzimkkong.dto.space.SpaceCreateResponse;
+import com.woowacourse.zzimkkong.dto.space.SpaceFindAllResponse;
 import com.woowacourse.zzimkkong.dto.space.SpaceFindResponse;
 import com.woowacourse.zzimkkong.service.SpaceService;
 import org.springframework.http.ResponseEntity;
@@ -35,5 +36,11 @@ public class SpaceController {
     public ResponseEntity<SpaceFindResponse> find(@PathVariable final Long mapId, @PathVariable final Long spaceId) {
         SpaceFindResponse spaceFindResponse = spaceService.findSpace(mapId, spaceId);
         return ResponseEntity.ok().body(spaceFindResponse);
+    }
+
+    @GetMapping
+    public ResponseEntity<SpaceFindAllResponse> findAll(@PathVariable Long mapId, @Manager Member manager) {
+        SpaceFindAllResponse spaceFindAllResponse = spaceService.findAllSpace(mapId, manager);
+        return ResponseEntity.ok().body(spaceFindAllResponse);
     }
 }

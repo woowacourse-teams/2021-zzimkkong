@@ -80,11 +80,11 @@ public class Space {
     }
 
     public Long getId() {
-        return this.id;
+        return id;
     }
 
     public String getName() {
-        return this.name;
+        return name;
     }
 
     public String getTextPosition() {
@@ -97,6 +97,50 @@ public class Space {
 
     public String getCoordinate() {
         return coordinate;
+    }
+
+    public Map getMap() {
+        return map;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public String getArea() {
+        return area;
+    }
+
+    public LocalTime getAvailableStartTime() {
+        return availableStartTime;
+    }
+
+    public LocalTime getAvailableEndTime() {
+        return availableEndTime;
+    }
+
+    public Integer getReservationTimeUnit() {
+        return reservationTimeUnit;
+    }
+
+    public Integer getReservationMinimumTimeUnit() {
+        return reservationMinimumTimeUnit;
+    }
+
+    public Integer getReservationMaximumTimeUnit() {
+        return reservationMaximumTimeUnit;
+    }
+
+    public Boolean getReservationEnable() {
+        return reservationEnable;
+    }
+
+    public String getDisabledWeekdays() {
+        return disabledWeekdays;
+    }
+
+    public String getMapImage() {
+        return mapImage;
     }
 
     public static class Builder {
