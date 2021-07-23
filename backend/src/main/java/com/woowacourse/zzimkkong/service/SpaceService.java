@@ -71,12 +71,6 @@ public class SpaceService {
         return SpaceFindAllResponse.from(spaces);
     }
 
-    private void validateMapExistence(Long mapId) {
-        if (!maps.existsById(mapId)) {
-            throw new NoSuchMapException();
-        }
-    }
-
     private void validateAuthorityOnMap(final Member manager, final Map map) {
         if (map.isNotOwnedBy(manager)) {
             throw new NoAuthorityOnMapException();
