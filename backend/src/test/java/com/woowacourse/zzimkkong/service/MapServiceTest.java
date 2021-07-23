@@ -7,10 +7,12 @@ import com.woowacourse.zzimkkong.dto.map.MapCreateUpdateRequest;
 import com.woowacourse.zzimkkong.dto.map.MapFindAllResponse;
 import com.woowacourse.zzimkkong.dto.map.MapFindResponse;
 import com.woowacourse.zzimkkong.exception.authorization.NoAuthorityOnMapException;
+import com.woowacourse.zzimkkong.exception.space.ReservationExistOnSpaceException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -92,12 +94,46 @@ class MapServiceTest extends ServiceTest {
         Map map = new Map(3L, "sally's home", "mapDrawing", "mapImage", anotherMember);
         MapCreateUpdateRequest mapCreateUpdateRequest = new MapCreateUpdateRequest("이름을 바꿔요", map.getMapDrawing(), map.getMapImage());
 
-
         given(maps.findById(anyLong()))
                 .willReturn(Optional.of(map));
 
         // when, then
         assertThatThrownBy(() -> mapService.updateMap(POBI, map.getId(), mapCreateUpdateRequest))
                 .isInstanceOf(NoAuthorityOnMapException.class);
+    }
+
+    @Test
+    @DisplayName("맵 삭제 요청 시, 이후에 존재하는 예약이 없다면 삭제한다.")
+    void delete() {
+        //given
+        given(maps.findById(anyLong()))
+                .willReturn(Optional.of(LUTHER));
+
+        given(spaces.findAllByMapId(anyLong()))
+                .willReturn(List.of(BE, FE1));
+
+        given(reservations.existsBySpaceIdAndEndTimeAfter(anyLong(), any(LocalDateTime.class)))
+                .willReturn(false);
+
+        //when, then
+        assertDoesNotThrow(() -> mapService.deleteMap(POBI, LUTHER.getId()));
+    }
+
+    @Test
+    @DisplayName("맵 삭제 요청 시, 이후에 존재하는 예약이 있다면 예외가 발생한다.")
+    void deleteExistReservationException() {
+        //given
+        given(maps.findById(anyLong()))
+                .willReturn(Optional.of(LUTHER));
+
+        given(spaces.findAllByMapId(anyLong()))
+                .willReturn(List.of(BE, FE1));
+
+        given(reservations.existsBySpaceIdAndEndTimeAfter(anyLong(), any(LocalDateTime.class)))
+                .willReturn(true);
+
+        //when, then
+        assertThatThrownBy(() -> mapService.deleteMap(POBI, LUTHER.getId()))
+                .isInstanceOf(ReservationExistOnSpaceException.class);
     }
 }
