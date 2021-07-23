@@ -1,5 +1,5 @@
 import { AxiosError } from 'axios';
-import { useState } from 'react';
+import { FormEventHandler, useState } from 'react';
 import { useMutation } from 'react-query';
 import { useHistory, useLocation } from 'react-router-dom';
 import { deleteReservation } from 'api/reservation';
@@ -10,6 +10,7 @@ import { ReactComponent as More } from 'assets/svg/more.svg';
 import Button from 'components/Button/Button';
 import DateInput from 'components/DateInput/DateInput';
 import Header from 'components/Header/Header';
+import Input from 'components/Input/Input';
 import Layout from 'components/Layout/Layout';
 import Modal from 'components/Modal/Modal';
 import Panel from 'components/Panel/Panel';
@@ -34,7 +35,10 @@ const UserMain = (): JSX.Element => {
   const mapId = 1;
 
   const [modalOpen, setModalOpen] = useState(false);
+  const [passwordInputModalOpen, setPasswordInputModalOpen] = useState(false);
   const [selectedReservation, setSelectedReservation] = useState<Reservation>();
+
+  const [passwordInput, setPasswordInput] = useInput('');
 
   const history = useHistory();
   const location = useLocation<UserMainState>();
@@ -56,6 +60,7 @@ const UserMain = (): JSX.Element => {
     onSuccess: () => {
       window.alert('예약이 삭제 되었습니다.');
       setModalOpen(false);
+      setPasswordInputModalOpen(false);
     },
 
     onError: (error: AxiosError<Error>) => {
@@ -85,9 +90,17 @@ const UserMain = (): JSX.Element => {
   };
 
   const handleSelectDelete = (): void => {
-    const password = String(window.prompt('비밀번호 4자리를 입력해주세요.'));
+    setPasswordInputModalOpen(true);
+  };
 
-    removeReservation.mutate({ mapId, password, reservationId: Number(selectedReservation?.id) });
+  const handleDeleteReservation: FormEventHandler<HTMLFormElement> = (event) => {
+    event.preventDefault();
+
+    removeReservation.mutate({
+      mapId,
+      password: passwordInput,
+      reservationId: Number(selectedReservation?.id),
+    });
   };
 
   return (
@@ -183,6 +196,40 @@ const UserMain = (): JSX.Element => {
             삭제하기
           </Styled.SelectButton>
         </Styled.SelectBox>
+      </Modal>
+      <Modal
+        open={passwordInputModalOpen}
+        isClosableDimmer={true}
+        setModalOpen={setPasswordInputModalOpen}
+      >
+        <Modal.Header>예약시 사용하신 비밀번호를 입력해주세요.</Modal.Header>
+        <Modal.Inner>
+          <form onSubmit={handleDeleteReservation}>
+            <Input
+              type="password"
+              label="비밀번호"
+              minLength={4}
+              maxLength={4}
+              value={passwordInput}
+              onChange={setPasswordInput}
+            />
+            <Styled.DeleteModalContainer>
+              <div />
+              <div>
+                <Button
+                  variant="text"
+                  type="button"
+                  onClick={() => setPasswordInputModalOpen(false)}
+                >
+                  취소
+                </Button>
+                <Button variant="text" type="submit">
+                  확인
+                </Button>
+              </div>
+            </Styled.DeleteModalContainer>
+          </form>
+        </Modal.Inner>
       </Modal>
     </>
   );

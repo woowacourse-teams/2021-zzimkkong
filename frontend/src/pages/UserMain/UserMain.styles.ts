@@ -81,4 +81,9 @@ export const SelectButton = styled.button`
   }
 `;
 
+export const DeleteModalContainer = styled.div`
+  display: flex;
+  justify-content: space-between;
+`;
+
 export const Message = styled.p``;
