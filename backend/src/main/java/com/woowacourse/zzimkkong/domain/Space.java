@@ -2,7 +2,6 @@ package com.woowacourse.zzimkkong.domain;
 
 import javax.persistence.*;
 import java.time.LocalTime;
-import java.time.temporal.ChronoUnit;
 
 @Entity
 public class Space {
@@ -78,6 +77,26 @@ public class Space {
         this.reservationEnable = builder.reservationEnable;
         this.disabledWeekdays = builder.disabledWeekdays;
         this.mapImage = builder.mapImage;
+    }
+
+    public Long getId() {
+        return this.id;
+    }
+
+    public String getName() {
+        return this.name;
+    }
+
+    public String getTextPosition() {
+        return textPosition;
+    }
+
+    public String getColor() {
+        return color;
+    }
+
+    public String getCoordinate() {
+        return coordinate;
     }
 
     public static class Builder {
@@ -185,25 +204,5 @@ public class Space {
             return new Space(this);
         }
 
-    }
-
-    public Long getId() {
-        return this.id;
-    }
-
-    public String getName() {
-        return this.name;
-    }
-
-    public String getTextPosition() {
-        return textPosition;
-    }
-
-    public String getColor() {
-        return color;
-    }
-
-    public String getCoordinate() {
-        return coordinate;
     }
 }
