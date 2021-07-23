@@ -32,8 +32,7 @@ const UserMain = (): JSX.Element => {
   const mapId = 1;
 
   const [modalOpen, setModalOpen] = useState(false);
-  const [selectedReservationId, setSelectedReservationId] = useState(0);
-  const [selectedReservation, setSelectedReservation] = useState({});
+  const [selectedReservation, setSelectedReservation] = useState<Reservation>();
 
   const history = useHistory();
   const location = useLocation<UserMainState>();
@@ -67,15 +66,12 @@ const UserMain = (): JSX.Element => {
 
   const handleSelectModal = (reservation: Reservation) => {
     setModalOpen(true);
-    setSelectedReservationId(reservation.id);
     setSelectedReservation(reservation);
   };
 
   const handleDeleteReservation = (): void => {
-    if (window.confirm('예약을 삭제하시겠습니까?')) {
-      const password = String(window.prompt('비밀번호 4자리를 입력해주세요.'));
-      removeReservation.mutate({ mapId, password, reservationId: selectedReservationId });
-    }
+    const password = String(window.prompt('비밀번호 4자리를 입력해주세요.'));
+    removeReservation.mutate({ mapId, password, reservationId: Number(selectedReservation?.id) });
   };
 
   return (
@@ -170,7 +166,6 @@ const UserMain = (): JSX.Element => {
                   mapId,
                   spaceId: Number(selectedSpaceId),
                   reservation: selectedReservation,
-                  reservationId: selectedReservationId,
                   spaceName: selectedSpace.spaceName,
                   selectedDate: date,
                 },

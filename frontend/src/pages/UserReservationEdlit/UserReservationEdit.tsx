@@ -70,8 +70,8 @@ const UserReservationEdit = (): JSX.Element => {
     if (editReservation.isLoading) return;
 
     const mapId = 1;
+
     const editReservationParams = {
-      id: reservation.id,
       spaceId,
       name,
       description,
@@ -80,7 +80,11 @@ const UserReservationEdit = (): JSX.Element => {
       endDateTime,
     };
 
-    editReservation.mutate({ reservation: editReservationParams, mapId });
+    editReservation.mutate({
+      reservation: editReservationParams,
+      mapId,
+      reservationId: reservation.id,
+    });
   };
 
   return (

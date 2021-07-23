@@ -11,7 +11,6 @@ export interface QueryReservationsParams {
 
 interface ReservationParams {
   reservation: {
-    id: number;
     spaceId: number;
     startDateTime: Date;
     endDateTime: Date;
@@ -27,6 +26,7 @@ interface PostReservationParams extends ReservationParams {
 
 interface PutReservationParams extends ReservationParams {
   mapId: number;
+  reservationId: number;
 }
 interface DeleteReservationParams {
   mapId: number;
@@ -53,8 +53,9 @@ export const postReservation = ({
 export const putReservation = ({
   reservation,
   mapId,
+  reservationId,
 }: PutReservationParams): Promise<AxiosResponse<never>> =>
-  api.put(`guests/maps/${mapId}/reservations/${reservation.id}`, reservation);
+  api.put(`guests/maps/${mapId}/reservations/${reservationId}`, reservation);
 
 export const deleteReservation = ({
   mapId,
