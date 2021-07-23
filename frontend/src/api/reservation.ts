@@ -28,6 +28,7 @@ interface PutReservationParams extends ReservationParams {
   mapId: number;
   reservationId: number;
 }
+
 interface DeleteReservationParams {
   mapId: number;
   reservationId: number;
@@ -41,25 +42,25 @@ export const queryReservations: QueryFunction<
   const [, data] = queryKey;
   const { mapId, spaceId, date } = data;
 
-  return api.get(`guests/maps/${mapId}/spaces/${spaceId}/reservations?date=${date}`);
+  return api.get(`/guests/maps/${mapId}/spaces/${spaceId}/reservations?date=${date}`);
 };
 
 export const postReservation = ({
   reservation,
   mapId,
 }: PostReservationParams): Promise<AxiosResponse<never>> =>
-  api.post(`guests/maps/${mapId}/reservations`, reservation);
+  api.post(`/guests/maps/${mapId}/reservations`, reservation);
 
 export const putReservation = ({
   reservation,
   mapId,
   reservationId,
 }: PutReservationParams): Promise<AxiosResponse<never>> =>
-  api.put(`guests/maps/${mapId}/reservations/${reservationId}`, reservation);
+  api.put(`/guests/maps/${mapId}/reservations/${reservationId}`, reservation);
 
 export const deleteReservation = ({
   mapId,
   reservationId,
   password,
 }: DeleteReservationParams): Promise<AxiosResponse<never>> =>
-  api.delete(`guests/maps/${mapId}/reservations/${reservationId}`, { data: { password } });
+  api.delete(`/guests/maps/${mapId}/reservations/${reservationId}`, { data: { password } });
