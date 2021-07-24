@@ -1,5 +1,10 @@
 import { Reservation, Space } from './common';
 
+export interface ErrorResponse {
+  message?: string;
+  field?: string;
+}
+
 export interface LoginSuccess {
   accessToken: string;
 }

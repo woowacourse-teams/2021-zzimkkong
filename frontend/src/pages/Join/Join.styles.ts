@@ -8,13 +8,32 @@ export const Container = styled.div`
 
 export const PageTitle = styled.h2`
   font-size: 1.5rem;
-  font-weight: 700;
+  font-weight: 400;
   text-align: center;
-  margin: 1.5rem auto;
+  margin: 2.125rem auto;
 `;
 
 export const Form = styled.form`
+  margin: 3.75rem 0;
+
   label {
-    margin: 2.5rem 0;
+    margin-bottom: 3rem;
+  }
+`;
+
+export const JoinLinkMessage = styled.p`
+  margin: 1rem 0;
+  text-align: center;
+  font-size: 0.75rem;
+  color: ${({ theme }) => theme.gray[500]};
+
+  a {
+    color: ${({ theme }) => theme.primary[400]};
+    text-decoration: none;
+    margin-left: 0.375rem;
+
+    &:hover {
+      font-weight: 700;
+    }
   }
 `;

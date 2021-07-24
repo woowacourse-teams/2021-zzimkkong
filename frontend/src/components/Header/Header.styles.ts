@@ -4,26 +4,26 @@ import Layout from 'components/Layout/Layout';
 export const Header = styled.header`
   position: sticky;
   top: 0;
-  height: 4rem;
+  height: 3rem;
   background-color: ${({ theme }) => theme.white};
+  box-shadow: 0 0.25rem 0.25rem 0 ${({ theme }) => theme.shadow};
   z-index: 99;
-
-  svg {
-    padding: 0.875rem 0;
-    height: 100%;
-  }
 `;
 
 export const HeaderLayout = styled(Layout)`
   display: flex;
   align-items: center;
-  height: inherit;
-  width: 100%;
+  height: 100%;
+`;
+
+export const Logo = styled.div`
+  width: 1.75rem;
 `;
 
 export const Title = styled.h1`
-  font-size: 1.625rem;
+  font-size: 1.5rem;
   font-weight: 700;
-  margin-left: 0.375rem;
+  margin-left: 0.5rem;
+  vertical-align: middle;
   transform: translateY(-0.125rem);
 `;
