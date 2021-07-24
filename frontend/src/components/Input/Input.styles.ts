@@ -36,11 +36,12 @@ export const Label = styled.label<LabelProps>`
 export const LabelText = styled.span`
   position: absolute;
   display: inline-block;
-  top: -0.5rem;
+  top: -0.375rem;
   left: 0.75rem;
   padding: 0 0.25rem;
-  font-size: 1rem;
+  font-size: 0.75rem;
   background-color: white;
+  color: ${({ theme }) => theme.gray[500]};
 `;
 
 export const Icon = styled.div`
@@ -56,8 +57,9 @@ export const Icon = styled.div`
 export const Input = styled.input<InputProps>`
   padding: 0.75rem;
   width: 100%;
-  font-size: 1.25rem;
-  border: 1px solid ${({ theme }) => theme.black[400]};
+  font-size: 1rem;
+  border: 1px solid ${({ theme }) => theme.gray[500]};
+  border-radius: 0.125rem;
   background: none;
   outline: none;
   ${({ icon }) => (icon ? 'padding-left: 3rem' : '')};
