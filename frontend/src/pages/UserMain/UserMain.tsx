@@ -44,7 +44,6 @@ const UserMain = (): JSX.Element => {
   const location = useLocation<UserMainState>();
   const spaceId = location.state?.spaceId;
   const targetDate = location.state?.targetDate;
-  targetDate && targetDate.setHours(targetDate.getHours() - 9);
 
   const now = new Date();
   const todayDate = new Date(now.getFullYear(), now.getMonth(), now.getDate());

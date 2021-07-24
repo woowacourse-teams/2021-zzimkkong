@@ -56,7 +56,7 @@ const UserReservation = (): JSX.Element => {
     onSuccess: () => {
       history.push(PATH.USER_MAIN, {
         spaceId,
-        targetDate: startDateTime,
+        targetDate: new Date(`${date}T${startTime}`),
       });
     },
     onError: (error: AxiosError<Error>) => {
