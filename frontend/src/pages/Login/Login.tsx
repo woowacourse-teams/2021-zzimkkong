@@ -52,8 +52,8 @@ const Login = (): JSX.Element => {
     <>
       <Header />
       <Layout>
-        <Styled.PageTitle>로그인</Styled.PageTitle>
         <Styled.Container>
+          <Styled.PageTitle>로그인</Styled.PageTitle>
           <Styled.Form onSubmit={handleSubmit}>
             <Input
               type="email"
@@ -76,11 +76,11 @@ const Login = (): JSX.Element => {
             <Button variant="primary" size="large" fullWidth>
               로그인
             </Button>
+            <Styled.JoinLinkMessage>
+              아직 회원이 아니신가요?
+              <Link to="/join">회원가입하기</Link>
+            </Styled.JoinLinkMessage>
           </Styled.Form>
-          <Styled.JoinLinkMessage>
-            아직 회원이 아니신가요?
-            <Link to="/join">회원가입하기</Link>
-          </Styled.JoinLinkMessage>
         </Styled.Container>
       </Layout>
     </>

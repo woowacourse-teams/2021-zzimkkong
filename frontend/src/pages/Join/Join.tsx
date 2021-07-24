@@ -1,7 +1,7 @@
 import { AxiosError } from 'axios';
 import { FormEventHandler, useEffect, useState } from 'react';
 import { useMutation, useQuery } from 'react-query';
-import { useHistory } from 'react-router-dom';
+import { Link, useHistory } from 'react-router-dom';
 import { postJoin, queryValidateEmail } from 'api/join';
 import Button from 'components/Button/Button';
 import Header from 'components/Header/Header';
@@ -99,8 +99,8 @@ const Join = (): JSX.Element => {
     <>
       <Header />
       <Layout>
-        <Styled.PageTitle>회원가입</Styled.PageTitle>
         <Styled.Container>
+          <Styled.PageTitle>회원가입</Styled.PageTitle>
           <Styled.Form onSubmit={handleSubmitJoinForm}>
             <Input
               type="email"
@@ -111,6 +111,7 @@ const Join = (): JSX.Element => {
               message={emailMessage}
               status={isValidEmail.isSuccess ? 'success' : 'error'}
               required
+              autoFocus
             />
             <Input
               type="password"
@@ -152,6 +153,10 @@ const Join = (): JSX.Element => {
             >
               회원가입
             </Button>
+            <Styled.JoinLinkMessage>
+              이미 회원이신가요?
+              <Link to="/login">로그인하기</Link>
+            </Styled.JoinLinkMessage>
           </Styled.Form>
         </Styled.Container>
       </Layout>
