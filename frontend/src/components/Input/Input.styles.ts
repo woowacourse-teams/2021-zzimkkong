@@ -22,7 +22,7 @@ const statusCSS = {
     color: ${({ theme }) => theme.red[500]};
   `,
   default: css`
-    color: inherit;
+    color: ${({ theme }) => theme.gray[500]};
   `,
 };
 
@@ -74,8 +74,5 @@ export const Message = styled.p<MessageProps>`
   ${({ status = 'default' }) => statusCSS[status]};
   font-size: 0.75rem;
   position: absolute;
-  bottom: -1.5rem;
-  left: 0.75rem;
-  height: 1.5rem;
-  line-height: 1.5rem;
+  margin: 0.25rem 0.75rem;
 `;
