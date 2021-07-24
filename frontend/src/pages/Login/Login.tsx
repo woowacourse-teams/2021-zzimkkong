@@ -14,14 +14,22 @@ import PATH from 'constants/path';
 import { LOCAL_STORAGE_KEY } from 'constants/storage';
 import useInput from 'hooks/useInput';
 import accessTokenState from 'state/accessTokenState';
-import { LoginSuccess } from 'types/response';
+import { ErrorResponse, LoginSuccess } from 'types/response';
 import { setLocalStorageItem } from 'utils/localStorage';
 import * as Styled from './Login.styles';
+
+interface ErrorMessage {
+  email?: string;
+  password?: string;
+}
 
 const Login = (): JSX.Element => {
   const [email, onChangeEmail] = useInput('');
   const [password, onChangePassword] = useInput('');
-  const [loginMessage, setLoginMessage] = useState('');
+  const [errorMessage, setErrorMessage] = useState<ErrorMessage>({
+    email: '',
+    password: '',
+  });
 
   const setAccessToken = useSetRecoilState(accessTokenState);
   const history = useHistory();
@@ -35,8 +43,16 @@ const Login = (): JSX.Element => {
 
       history.push(PATH.HOME);
     },
-    onError: (error: AxiosError<Error>) => {
-      setLoginMessage(error.response?.data.message ?? MESSAGE.LOGIN.UNEXPECTED_ERROR);
+    onError: (error: AxiosError<ErrorResponse>) => {
+      const field = error.response?.data.field;
+      const message = error.response?.data.message;
+
+      if (field && message) {
+        setErrorMessage({ [field]: message });
+        return;
+      }
+
+      setErrorMessage({ password: message ?? MESSAGE.LOGIN.UNEXPECTED_ERROR });
     },
   });
 
@@ -60,6 +76,8 @@ const Login = (): JSX.Element => {
               label="이메일"
               value={email}
               onChange={onChangeEmail}
+              message={errorMessage?.email}
+              status={errorMessage?.email ? 'error' : 'default'}
               autoFocus
               required
             />
@@ -70,9 +88,10 @@ const Login = (): JSX.Element => {
               minLength={MANAGER.PASSWORD.MIN_LENGTH}
               maxLength={MANAGER.PASSWORD.MAX_LENGTH}
               onChange={onChangePassword}
+              message={errorMessage?.password}
+              status={errorMessage?.password ? 'error' : 'default'}
               required
             />
-            <Styled.LoginErrorMessage>{loginMessage}</Styled.LoginErrorMessage>
             <Button variant="primary" size="large" fullWidth>
               로그인
             </Button>

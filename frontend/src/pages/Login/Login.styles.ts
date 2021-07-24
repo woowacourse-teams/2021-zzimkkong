@@ -19,15 +19,6 @@ export const Form = styled.form`
   label {
     margin-bottom: 3rem;
   }
-
-  label:nth-last-of-type(1) {
-    margin-bottom: 0;
-  }
-`;
-
-export const LoginErrorMessage = styled.p`
-  padding: 1.5rem 0;
-  color: ${({ theme }) => theme.red[500]};
 `;
 
 export const JoinLinkMessage = styled.p`
