@@ -8,6 +8,7 @@ import PATH from './constants/path';
 import Join from './pages/Join/Join';
 import Login from './pages/Login/Login';
 import Main from './pages/Main/Main';
+import NotFound from './pages/NotFound/NotFound';
 import ProviderReservationList from './pages/ProviderReservationList/ProviderReservationList';
 import UserMain from './pages/UserMain/UserMain';
 import UserReservation from './pages/UserReservation/UserReservation';
@@ -39,6 +40,7 @@ const App = (): JSX.Element => (
             <Route exact path={PATH.PROVIDER_RESERVATION_LIST}>
               <ProviderReservationList />
             </Route>
+            <Route component={NotFound} />
           </Switch>
         </Router>
       </ThemeProvider>
