@@ -10,7 +10,7 @@ const Main = (): JSX.Element => {
       <Header />
       <Layout>
         <Styled.Container>
-          <Styled.Image src={NotFoundImage} alt="Not Found Image" />
+          <Styled.Image src={NotFoundImage} alt="Not Found" />
           <Styled.PageHeader>해당 페이지를 찾지 못했습니다.</Styled.PageHeader>
           <Styled.HomeLink to={PATH.HOME}>홈으로 이동하기</Styled.HomeLink>
         </Styled.Container>
