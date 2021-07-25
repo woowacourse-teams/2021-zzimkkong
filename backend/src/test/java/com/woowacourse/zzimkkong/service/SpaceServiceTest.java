@@ -34,7 +34,7 @@ class SpaceServiceTest extends ServiceTest {
             "Monday, Tuesday"
     );
 
-    private SpaceCreateRequest spaceCreateRequest = new SpaceCreateRequest(
+    private SpaceCreateUpdateRequest spaceCreateUpdateRequest = new SpaceCreateUpdateRequest(
             "백엔드 강의실",
             "우리집",
             "프론트 화이팅",
@@ -51,7 +51,7 @@ class SpaceServiceTest extends ServiceTest {
         given(spaces.save(any(Space.class)))
                 .willReturn(BE);
 
-        SpaceCreateResponse spaceCreateResponse = spaceService.saveSpace(LUTHER.getId(), spaceCreateRequest, POBI);
+        SpaceCreateResponse spaceCreateResponse = spaceService.saveSpace(LUTHER.getId(), spaceCreateUpdateRequest, POBI);
         assertThat(spaceCreateResponse.getId()).isEqualTo(BE.getId());
     }
 
@@ -62,7 +62,7 @@ class SpaceServiceTest extends ServiceTest {
         given(maps.findById(anyLong()))
                 .willReturn(Optional.empty());
 
-        assertThatThrownBy(() -> spaceService.saveSpace(LUTHER.getId(), spaceCreateRequest, POBI))
+        assertThatThrownBy(() -> spaceService.saveSpace(LUTHER.getId(), spaceCreateUpdateRequest, POBI))
                 .isInstanceOf(NoSuchMapException.class);
     }
 
@@ -77,7 +77,7 @@ class SpaceServiceTest extends ServiceTest {
 
         Member sakjung = new Member(2L, "sakjung@naver.com", "test1234", "잠실킹");
 
-        assertThatThrownBy(() -> spaceService.saveSpace(LUTHER.getId(), spaceCreateRequest, sakjung))
+        assertThatThrownBy(() -> spaceService.saveSpace(LUTHER.getId(), spaceCreateUpdateRequest, sakjung))
                 .isInstanceOf(NoAuthorityOnMapException.class);
     }
 

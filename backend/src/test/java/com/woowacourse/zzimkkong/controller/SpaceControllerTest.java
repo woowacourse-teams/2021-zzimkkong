@@ -35,7 +35,7 @@ public class SpaceControllerTest extends AcceptanceTest {
     private SpaceRepository spaces;
     private String token;
 
-    private SpaceCreateRequest spaceCreateRequest;
+    private SpaceCreateUpdateRequest spaceCreateUpdateRequest;
 
     @BeforeEach
     void setUp() {
@@ -55,7 +55,7 @@ public class SpaceControllerTest extends AcceptanceTest {
                 "Monday, Tuesday"
         );
 
-        spaceCreateRequest = new SpaceCreateRequest(
+        spaceCreateUpdateRequest = new SpaceCreateUpdateRequest(
                 "잠실우리집",
                 "우리집",
                 "프론트 화이팅",
@@ -73,7 +73,7 @@ public class SpaceControllerTest extends AcceptanceTest {
     @Test
     void save() {
         // given, when
-        ExtractableResponse<Response> response = saveSpace(token, 1L, spaceCreateRequest);
+        ExtractableResponse<Response> response = saveSpace(token, 1L, spaceCreateUpdateRequest);
 
         // then
         assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
@@ -83,7 +83,7 @@ public class SpaceControllerTest extends AcceptanceTest {
     @Test
     void save_invalid() {
         // given, when
-        ExtractableResponse<Response> response = saveSpace(invalidToken, 1L, spaceCreateRequest);
+        ExtractableResponse<Response> response = saveSpace(invalidToken, 1L, spaceCreateUpdateRequest);
 
         // then
         assertThat(response.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
@@ -137,14 +137,14 @@ public class SpaceControllerTest extends AcceptanceTest {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
     }
 
-    private ExtractableResponse<Response> saveSpace(final String token, final Long mapId, final SpaceCreateRequest spaceCreateRequest) {
+    private ExtractableResponse<Response> saveSpace(final String token, final Long mapId, final SpaceCreateUpdateRequest spaceCreateUpdateRequest) {
         return RestAssured
                 .given(getRequestSpecification()).log().all()
                 .accept("application/json")
                 .header("Authorization", "Bearer " + token)
                 .filter(document("space/post", getRequestPreprocessor(), getResponsePreprocessor()))
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(spaceCreateRequest)
+                .body(spaceCreateUpdateRequest)
                 .when().post("/api/managers/maps/" + mapId.toString() + "/spaces")
                 .then().log().all().extract();
     }

@@ -1,5 +1,8 @@
 package com.woowacourse.zzimkkong.domain;
 
+import com.woowacourse.zzimkkong.dto.space.SettingsRequest;
+import com.woowacourse.zzimkkong.dto.space.SpaceCreateUpdateRequest;
+
 import javax.persistence.*;
 import java.time.LocalTime;
 
@@ -143,6 +146,43 @@ public class Space {
         return mapImage;
     }
 
+    public boolean hasSameData(final Space updatedSpace) {
+        return this.id.equals(updatedSpace.id)
+                && this.name.equals(updatedSpace.name)
+                && this.textPosition.equals(updatedSpace.textPosition)
+                && this.color.equals(updatedSpace.color)
+                && this.coordinate.equals(updatedSpace.coordinate)
+                && this.map.equals(updatedSpace.map)
+                && this.description.equals(updatedSpace.description)
+                && this.area.equals(updatedSpace.area)
+                && this.availableStartTime.equals(updatedSpace.availableStartTime)
+                && this.availableEndTime.equals(updatedSpace.availableEndTime)
+                && this.reservationTimeUnit.equals(updatedSpace.reservationTimeUnit)
+                && this.reservationMinimumTimeUnit.equals(updatedSpace.reservationMinimumTimeUnit)
+                && this.reservationMaximumTimeUnit.equals(updatedSpace.reservationMaximumTimeUnit)
+                && this.reservationEnable.equals(updatedSpace.reservationEnable)
+                && this.disabledWeekdays.equals(updatedSpace.disabledWeekdays)
+                && this.mapImage.equals(updatedSpace.mapImage);
+    }
+
+    public void update(final SpaceCreateUpdateRequest spaceCreateUpdateRequest, final Map map) {
+        this.name = spaceCreateUpdateRequest.getName();
+        this.map = map;
+        this.description = spaceCreateUpdateRequest.getDescription();
+        this.area = spaceCreateUpdateRequest.getArea();
+
+        SettingsRequest settingsRequest = spaceCreateUpdateRequest.getSettingsRequest();
+        this.availableStartTime = settingsRequest.getAvailableStartTime();
+        this.availableEndTime = settingsRequest.getAvailableEndTime();
+        this.reservationTimeUnit = settingsRequest.getReservationTimeUnit();
+        this.reservationMinimumTimeUnit = settingsRequest.getReservationMinimumTimeUnit();
+        this.reservationMaximumTimeUnit = settingsRequest.getReservationMaximumTimeUnit();
+        this.reservationEnable = settingsRequest.getReservationEnable();
+        this.disabledWeekdays = settingsRequest.getDisabledWeekdays();
+
+        this.mapImage = spaceCreateUpdateRequest.getMapImage();
+    }
+
     public static class Builder {
         private Long id = null;
         private String name = null;
@@ -159,7 +199,7 @@ public class Space {
         private Integer reservationMaximumTimeUnit = null;
         private Boolean reservationEnable = null;
         private String disabledWeekdays = null;
-        private String mapImage;
+        private String mapImage = null;
 
         public Builder() {
         }

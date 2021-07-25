@@ -1,30 +1,30 @@
 package com.woowacourse.zzimkkong.dto.space;
 
-public class SpaceCreateRequest {
-    private String spaceName;
+public class SpaceCreateUpdateRequest {
+    private String name;
     private String description;
     private String area;
     private SettingsRequest settingsRequest;
     private String mapImage;
 
-    public SpaceCreateRequest() {
+    public SpaceCreateUpdateRequest() {
     }
 
-    public SpaceCreateRequest(
-            final String spaceName,
+    public SpaceCreateUpdateRequest(
+            final String name,
             final String description,
             final String area,
             final SettingsRequest settingsRequest,
             final String mapImage) {
-        this.spaceName = spaceName;
+        this.name = name;
         this.description = description;
         this.area = area;
         this.settingsRequest = settingsRequest;
         this.mapImage = mapImage;
     }
 
-    public String getSpaceName() {
-        return spaceName;
+    public String getName() {
+        return name;
     }
 
     public String getDescription() {
