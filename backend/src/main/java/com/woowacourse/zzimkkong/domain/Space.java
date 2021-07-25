@@ -147,11 +147,7 @@ public class Space {
     }
 
     public boolean hasSameData(final Space updatedSpace) {
-        return this.id.equals(updatedSpace.id)
-                && this.name.equals(updatedSpace.name)
-                && this.textPosition.equals(updatedSpace.textPosition)
-                && this.color.equals(updatedSpace.color)
-                && this.coordinate.equals(updatedSpace.coordinate)
+        return this.name.equals(updatedSpace.name)
                 && this.map.equals(updatedSpace.map)
                 && this.description.equals(updatedSpace.description)
                 && this.area.equals(updatedSpace.area)
