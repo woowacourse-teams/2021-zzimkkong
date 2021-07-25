@@ -137,6 +137,53 @@ public class SpaceControllerTest extends AcceptanceTest {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
     }
 
+    @DisplayName("올바른 토큰이 주어질 때, 공간을 수정한다.")
+    @Test
+    void update() {
+        // given
+        saveSpace(token, LUTHER.getId(), spaceCreateUpdateRequest);
+
+        // when
+        SettingsRequest settingsRequest = new SettingsRequest(
+                LocalTime.of(10, 0),
+                LocalTime.of(22, 0),
+                40,
+                80,
+                130,
+                false,
+                "Monday, Tuesday"
+        );
+
+        SpaceCreateUpdateRequest updateSpaceCreateUpdateRequest = new SpaceCreateUpdateRequest(
+                "바다",
+                "장미아파트",
+                "장미",
+                settingsRequest,
+                "장미아파트 이미지"
+        );
+
+        ExtractableResponse<Response> response = updateSpace(token, LUTHER.getId(), BE.getId(), updateSpaceCreateUpdateRequest);
+
+        // then
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
+    }
+
+    private ExtractableResponse<Response> updateSpace(
+            final String token,
+            final Long mapId,
+            final Long spaceId,
+            final SpaceCreateUpdateRequest spaceCreateUpdateRequest) {
+        return RestAssured
+                .given(getRequestSpecification()).log().all()
+                .accept("application/json")
+                .header("Authorization", "Bearer " + token)
+                .filter(document("space/get_all", getRequestPreprocessor(), getResponsePreprocessor()))
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .body(spaceCreateUpdateRequest)
+                .when().put("/api/managers/maps/" + mapId.toString() + "/spaces/" + spaceId.toString())
+                .then().log().all().extract();
+    }
+
     private ExtractableResponse<Response> saveSpace(final String token, final Long mapId, final SpaceCreateUpdateRequest spaceCreateUpdateRequest) {
         return RestAssured
                 .given(getRequestSpecification()).log().all()
