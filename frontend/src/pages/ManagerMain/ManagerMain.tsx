@@ -3,6 +3,7 @@ import { ReactComponent as MenuIcon } from 'assets/svg/menu.svg';
 import { ReactComponent as MoreIcon } from 'assets/svg/more.svg';
 import DateInput from 'components/DateInput/DateInput';
 import Header from 'components/Header/Header';
+import IconButton from 'components/IconButton/IconButton';
 import Layout from 'components/Layout/Layout';
 import Panel from 'components/Panel/Panel';
 import Table from 'components/Table/Table';
@@ -63,7 +64,9 @@ const ManagerMain = (): JSX.Element => {
             <LinkIcon />
           </IconButton>
         </Styled.PageHeader>
-        <DateInput value="2021-07-16" />
+        <Styled.DateInputWrapper>
+          <DateInput value="2021-07-26" />
+        </Styled.DateInputWrapper>
         <Styled.SpaceList>
           {data.map(({ spaceId, spaceName, spaceColor, reservations }, index) => (
             <Styled.SpaceListItem key={spaceId}>
