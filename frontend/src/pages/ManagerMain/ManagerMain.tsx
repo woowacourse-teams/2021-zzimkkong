@@ -14,6 +14,7 @@ import Table from 'components/Table/Table';
 import * as Styled from './ManagerMain.styles';
 
 const ManagerMain = (): JSX.Element => {
+  const [date, setDate] = useState(new Date());
   const [open, setOpen] = useState(false);
 
   const onOpen = () => {
@@ -122,7 +123,7 @@ const ManagerMain = (): JSX.Element => {
           </IconButton>
         </Styled.PageHeader>
         <Styled.DateInputWrapper>
-          <DateInput value="2021-07-26" />
+          <DateInput date={date} setDate={setDate} />
         </Styled.DateInputWrapper>
         <Styled.SpaceList>
           {data.map(({ spaceId, spaceName, spaceColor, reservations }, index) => (

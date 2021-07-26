@@ -48,12 +48,12 @@ const GuestMain = (): JSX.Element => {
   const now = new Date();
   const todayDate = new Date(now.getFullYear(), now.getMonth(), now.getDate());
 
-  const [date, onChangeDate] = useInput(formatDate(targetDate ?? new Date()));
+  const [date, setDate] = useState(targetDate ? new Date(targetDate) : new Date());
   const [selectedSpaceId, onChangeSelectedSpaceId] = useInput(`${spaceId ?? spaceList[0].spaceId}`);
   const getReservations = useReservations({
     mapId,
     spaceId: Number(selectedSpaceId),
-    date,
+    date: formatDate(date),
   });
   const reservations = getReservations.data?.data?.reservations ?? [];
 
@@ -109,7 +109,7 @@ const GuestMain = (): JSX.Element => {
       <Header />
       <Layout>
         <Styled.PageTitle>우아한테크코스 교육장</Styled.PageTitle>
-        <DateInput value={date} onChange={onChangeDate} />
+        <DateInput date={date} setDate={setDate} />
         <Styled.MapContainer>
           <Styled.Map>
             {spaceList?.map(({ spaceId, spaceName, coordinate, textPosition }) => (

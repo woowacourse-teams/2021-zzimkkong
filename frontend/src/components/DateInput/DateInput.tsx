@@ -1,33 +1,40 @@
-import { ChangeEventHandler, InputHTMLAttributes, useState } from 'react';
+import { ChangeEventHandler, Dispatch, InputHTMLAttributes, SetStateAction } from 'react';
 import { ReactComponent as ArrowLeftIcon } from 'assets/svg/arrow-left.svg';
 import { ReactComponent as ArrowRightIcon } from 'assets/svg/arrow-right.svg';
 import { ReactComponent as CalendarIcon } from 'assets/svg/calendar.svg';
 import IconButton from 'components/IconButton/IconButton';
-import { formatDateWithDay } from 'utils/datetime';
+import { formatDate, formatDateWithDay } from 'utils/datetime';
 import * as Styled from './DateInput.styles';
 
-export type Props = Omit<InputHTMLAttributes<HTMLInputElement>, 'type'>;
+export interface Props extends Omit<InputHTMLAttributes<HTMLInputElement>, 'type' | 'value'> {
+  date: Date;
+  setDate: Dispatch<SetStateAction<Date>>;
+}
 
-const DateInput = ({ ...props }: Props): JSX.Element => {
-  const [dateText, setDateText] = useState<string>(
-    formatDateWithDay(new Date(props.value as string))
-  );
-
+const DateInput = ({ date, setDate, ...props }: Props): JSX.Element => {
   const onChange: ChangeEventHandler<HTMLInputElement> = (event) => {
-    setDateText(formatDateWithDay(new Date(event.target.value)));
+    setDate(new Date(event.target.value));
+  };
+
+  const onClickPrev = () => {
+    setDate(new Date(date.setDate(date.getDate() - 1)));
+  };
+
+  const onClickNext = () => {
+    setDate(new Date(date.setDate(date.getDate() + 1)));
   };
 
   return (
     <Styled.Container>
-      <IconButton variant="primary">
+      <IconButton variant="primary" onClick={onClickPrev}>
         <ArrowLeftIcon />
       </IconButton>
       <Styled.DateWrapper>
-        <Styled.DateText>{dateText}</Styled.DateText>
-        <Styled.DateInput type="date" onChange={onChange} {...props} />
+        <Styled.DateText>{formatDateWithDay(date)}</Styled.DateText>
+        <Styled.DateInput type="date" onChange={onChange} value={formatDate(date)} {...props} />
         <CalendarIcon />
       </Styled.DateWrapper>
-      <IconButton variant="primary">
+      <IconButton variant="primary" onClick={onClickNext}>
         <ArrowRightIcon />
       </IconButton>
     </Styled.Container>
