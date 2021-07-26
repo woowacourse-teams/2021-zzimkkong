@@ -3,6 +3,7 @@ import { ReactQueryDevtools } from 'react-query/devtools';
 import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
 import { RecoilRoot } from 'recoil';
 import { ThemeProvider } from 'styled-components';
+import UserReservationEdit from 'pages/UserReservationEdlit/UserReservationEdit';
 import { GlobalStyle, theme } from './App.styles';
 import PATH from './constants/path';
 import Join from './pages/Join/Join';
@@ -36,6 +37,9 @@ const App = (): JSX.Element => (
             </Route>
             <Route exact path={PATH.RESERVATION}>
               <UserReservation />
+            </Route>
+            <Route exact path={PATH.RESERVATION_EDIT}>
+              <UserReservationEdit />
             </Route>
             <Route exact path={PATH.PROVIDER_RESERVATION_LIST}>
               <ProviderReservationList />
