@@ -7,9 +7,14 @@ import com.woowacourse.zzimkkong.dto.map.MapFindResponse;
 import com.woowacourse.zzimkkong.dto.map.MapCreateUpdateRequest;
 import com.woowacourse.zzimkkong.dto.map.MapCreateResponse;
 import com.woowacourse.zzimkkong.service.MapService;
+import org.apache.batik.transcoder.TranscoderInput;
+import org.apache.batik.transcoder.TranscoderOutput;
+import org.apache.batik.transcoder.image.PNGTranscoder;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.net.URI;
 
 @RestController
@@ -43,6 +48,15 @@ public class MapController {
     @PutMapping("/{mapId}")
     public ResponseEntity<Void> update(@Manager Member member, @PathVariable Long mapId, @RequestBody MapCreateUpdateRequest mapCreateUpdateRequest) {
         mapService.updateMap(member, mapId, mapCreateUpdateRequest);
+        return ResponseEntity.ok().build();
+    }
+
+    @PutMapping("/{mapId}/practice")
+    public ResponseEntity<Void> practice(
+            @PathVariable final Long mapId,
+            @Manager final Member manager){
+
+        mapService.updateMapImage(manager, mapId);
         return ResponseEntity.ok().build();
     }
 
