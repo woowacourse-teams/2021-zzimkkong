@@ -22,19 +22,15 @@ const Modal = ({
     }
   };
 
-  const handleClose = () => {
-    onClose();
-  };
-
   return (
     <Styled.Overlay open={open} onClick={handleDimmedClick}>
       <Styled.Modal>
-        {showCloseButton && (
-          <Styled.CloseButton onClick={handleClose}>
+        {open && showCloseButton && (
+          <Styled.CloseButton onClick={onClose}>
             <CloseIcon />
           </Styled.CloseButton>
         )}
-        {children}
+        {open && children}
       </Styled.Modal>
     </Styled.Overlay>
   );
