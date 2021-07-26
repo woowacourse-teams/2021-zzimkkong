@@ -51,15 +51,6 @@ public class MapController {
         return ResponseEntity.ok().build();
     }
 
-    @PutMapping("/{mapId}/practice")
-    public ResponseEntity<Void> practice(
-            @PathVariable final Long mapId,
-            @Manager final Member manager){
-
-        mapService.updateMapImage(manager, mapId);
-        return ResponseEntity.ok().build();
-    }
-
     @DeleteMapping("/{mapId}")
     public ResponseEntity<Void> delete(@Manager Member member, @PathVariable Long mapId) {
         mapService.deleteMap(member, mapId);
