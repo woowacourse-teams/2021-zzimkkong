@@ -46,7 +46,7 @@ export const Inner = styled.div`
   padding: 0.5rem 1rem;
 `;
 
-export const Header = styled.h1`
+export const Header = styled.h2`
   font-weight: 700;
   padding: 1rem;
   margin-bottom: 0.5rem;
