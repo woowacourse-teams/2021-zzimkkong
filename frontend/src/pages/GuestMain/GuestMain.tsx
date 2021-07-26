@@ -129,7 +129,7 @@ const GuestMain = (): JSX.Element => {
         </Styled.MapContainer>
         <Styled.PanelContainer>
           <Panel>
-            <Panel.Header bgColor={selectedSpace.color}>
+            <Panel.Header dotColor={selectedSpace.color}>
               {new Date(date) > todayDate && (
                 <Styled.ReservationLink
                   to={{

@@ -172,8 +172,8 @@ const ManagerMain = (): JSX.Element => {
             <Drawer.CloseButton />
           </Drawer.Header>
           {dummySpaceList.map((space) => (
-            <Styled.SpaceWrapper>
-              <SpaceListItem key={space.id} thumbnail={space.thumbnail} title={space.title} />
+            <Styled.SpaceWrapper key={`map-${space.id}`}>
+              <SpaceListItem thumbnail={space.thumbnail} title={space.title} />
             </Styled.SpaceWrapper>
           ))}
         </Drawer.Inner>
