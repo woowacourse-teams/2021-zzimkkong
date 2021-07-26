@@ -10,6 +10,7 @@ import com.woowacourse.zzimkkong.dto.map.MapFindResponse;
 import com.woowacourse.zzimkkong.exception.authorization.NoAuthorityOnMapException;
 import com.woowacourse.zzimkkong.exception.map.NoSuchMapException;
 import com.woowacourse.zzimkkong.exception.space.ReservationExistOnSpaceException;
+import com.woowacourse.zzimkkong.infrastructure.S3Uploader;
 import com.woowacourse.zzimkkong.repository.MapRepository;
 import com.woowacourse.zzimkkong.repository.ReservationRepository;
 import com.woowacourse.zzimkkong.repository.SpaceRepository;
@@ -23,6 +24,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.io.*;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.UUID;
 
 @Service
 @Transactional
@@ -30,11 +32,13 @@ public class MapService {
     private final MapRepository maps;
     private final SpaceRepository spaces;
     private final ReservationRepository reservations;
+    private final S3Uploader s3Uploader;
 
-    public MapService(final MapRepository maps, final SpaceRepository spaces, final ReservationRepository reservations) {
+    public MapService(MapRepository maps, SpaceRepository spaces, ReservationRepository reservations, S3Uploader s3Uploader) {
         this.maps = maps;
         this.spaces = spaces;
         this.reservations = reservations;
+        this.s3Uploader = s3Uploader;
     }
 
     public MapCreateResponse saveMap(final Member member, final MapCreateUpdateRequest mapCreateUpdateRequest) {
@@ -43,7 +47,11 @@ public class MapService {
                 mapCreateUpdateRequest.getMapDrawing(),
                 mapCreateUpdateRequest.getMapImage(),
                 member));
-        convertSvgToPng(mapCreateUpdateRequest.getMapImage());
+        File pngFile = convertSvgToPng(mapCreateUpdateRequest.getMapImage());
+
+        //S3 upload
+        s3Uploader.upload(pngFile);
+
         return MapCreateResponse.from(saveMap);
     }
 
@@ -104,12 +112,13 @@ public class MapService {
         }
     }
 
-    public void convertSvgToPng(final String mapSvgData) {
+    public File convertSvgToPng(final String mapSvgData) {
         try {
+            String tmpFileName = UUID.randomUUID().toString();
             ByteArrayInputStream svgInput = new ByteArrayInputStream(mapSvgData.getBytes());
             TranscoderInput transcoderInput = new TranscoderInput(svgInput);
 
-            OutputStream outputStream = new FileOutputStream("/Users/yeonwoocho/Downloads/zzkk.png");
+            OutputStream outputStream = new FileOutputStream("src/main/resources/tmp/" + tmpFileName + ".png");
             TranscoderOutput transcoderOutput = new TranscoderOutput(outputStream);
 
             PNGTranscoder pngTranscoder = new PNGTranscoder();
@@ -117,8 +126,11 @@ public class MapService {
 
             outputStream.flush();
             outputStream.close();
+
+            return new File("src/main/resources/tmp/" + tmpFileName + ".png");
         } catch (TranscoderException | IOException e) {
             e.printStackTrace();
         }
+        throw new IllegalArgumentException("무언가 잘못됨");
     }
 }
