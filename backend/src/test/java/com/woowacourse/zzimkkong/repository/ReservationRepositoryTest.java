@@ -101,11 +101,21 @@ class ReservationRepositoryTest extends RepositoryTest {
                 .isEqualTo(List.of(BE_AM_ZERO_ONE, BE_PM_ONE_TWO, FE1_ZERO_ONE));
     }
 
-    @Test
     @DisplayName("예약을 삭제할 수 있다.")
+    @Test
     void delete() {
         //given, when, then
         assertDoesNotThrow(() -> reservations.delete(BE_NEXT_DAY_PM_SIX_TWELVE));
+    }
+
+    @DisplayName("해당 공간에 대한 예약 존재여부를 확인한다.")
+    @Test
+    void existsBySpace() {
+        // given, when, then
+        assertThat(reservations.existsBySpace(FE1)).isTrue();
+
+        reservations.delete(FE1_ZERO_ONE);
+        assertThat(reservations.existsBySpace(FE1)).isFalse();
     }
 
     private List<Reservation> getReservations(List<Long> spaceIds, LocalDateTime minimumDateTime, LocalDateTime maximumDateTime) {
