@@ -31,4 +31,8 @@ export const SpaceList = styled.ul`
   margin: 2.25rem 0;
 `;
 
-export const SpaceListItem = styled.li``;
+export const SpaceReservationWrapper = styled.div``;
+
+export const SpaceWrapper = styled.div`
+  margin: 2rem 0;
+`;

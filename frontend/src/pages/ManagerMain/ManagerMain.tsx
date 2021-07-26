@@ -1,16 +1,73 @@
+import { useState } from 'react';
+import LutherImage from 'assets/images/luther.png';
 import { ReactComponent as LinkIcon } from 'assets/svg/link.svg';
 import { ReactComponent as MenuIcon } from 'assets/svg/menu.svg';
 import { ReactComponent as MoreIcon } from 'assets/svg/more.svg';
 import DateInput from 'components/DateInput/DateInput';
+import Drawer from 'components/Drawer/Drawer';
 import Header from 'components/Header/Header';
 import IconButton from 'components/IconButton/IconButton';
 import Layout from 'components/Layout/Layout';
 import Panel from 'components/Panel/Panel';
+import SpaceListItem from 'components/SpaceListItem/SpaceListItem';
 import Table from 'components/Table/Table';
 import * as Styled from './ManagerMain.styles';
 
 const ManagerMain = (): JSX.Element => {
+  const [open, setOpen] = useState(false);
+
+  const onOpen = () => {
+    setOpen(true);
+  };
+
+  const onClose = () => {
+    setOpen(false);
+  };
+
   const mapName = '우테코 교육장';
+
+  const dummySpaceList = [
+    {
+      id: 1,
+      title: '루터회관 14F',
+      thumbnail: {
+        src: LutherImage,
+        alt: '루터회관 14F 공간',
+      },
+    },
+    {
+      id: 2,
+      title: '루터회관 14F',
+      thumbnail: {
+        src: LutherImage,
+        alt: '루터회관 14F 공간',
+      },
+    },
+    {
+      id: 3,
+      title: '루터회관 14F',
+      thumbnail: {
+        src: LutherImage,
+        alt: '루터회관 14F 공간',
+      },
+    },
+    {
+      id: 4,
+      title: '루터회관 14F',
+      thumbnail: {
+        src: LutherImage,
+        alt: '루터회관 14F 공간',
+      },
+    },
+    {
+      id: 5,
+      title: '루터회관 14F',
+      thumbnail: {
+        src: LutherImage,
+        alt: '루터회관 14F 공간',
+      },
+    },
+  ];
 
   const data = [
     {
@@ -56,7 +113,7 @@ const ManagerMain = (): JSX.Element => {
       <Header />
       <Layout>
         <Styled.PageHeader>
-          <IconButton text="맵 목록">
+          <IconButton text="맵 목록" onClick={onOpen}>
             <MenuIcon />
           </IconButton>
           <Styled.PageTitle>{mapName}</Styled.PageTitle>
@@ -69,7 +126,7 @@ const ManagerMain = (): JSX.Element => {
         </Styled.DateInputWrapper>
         <Styled.SpaceList>
           {data.map(({ spaceId, spaceName, spaceColor, reservations }, index) => (
-            <Styled.SpaceListItem key={spaceId}>
+            <Styled.SpaceReservationWrapper key={`space-${spaceId}`}>
               <Panel expandable initialExpanded={!index}>
                 <Panel.Header dotColor={spaceColor}>
                   <Panel.Title>{spaceName}</Panel.Title>
@@ -103,10 +160,24 @@ const ManagerMain = (): JSX.Element => {
                   )}
                 </Panel.Content>
               </Panel>
-            </Styled.SpaceListItem>
+            </Styled.SpaceReservationWrapper>
           ))}
         </Styled.SpaceList>
       </Layout>
+
+      <Drawer open={open} placement="left" onClose={onClose}>
+        <Drawer.Inner>
+          <Drawer.Header>
+            <Drawer.HeaderText>우아한형제들</Drawer.HeaderText>
+            <Drawer.CloseButton />
+          </Drawer.Header>
+          {dummySpaceList.map((space) => (
+            <Styled.SpaceWrapper>
+              <SpaceListItem key={space.id} thumbnail={space.thumbnail} title={space.title} />
+            </Styled.SpaceWrapper>
+          ))}
+        </Drawer.Inner>
+      </Drawer>
     </>
   );
 };
