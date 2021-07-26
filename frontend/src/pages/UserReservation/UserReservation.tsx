@@ -69,7 +69,6 @@ const UserReservation = (): JSX.Element => {
 
     if (createReservation.isLoading) return;
 
-    const mapId = 1;
     const reservation = {
       spaceId,
       name,

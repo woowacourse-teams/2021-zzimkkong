@@ -69,8 +69,6 @@ const UserReservationEdit = (): JSX.Element => {
 
     if (editReservation.isLoading) return;
 
-    const mapId = 1;
-
     const editReservationParams = {
       spaceId,
       name,
