@@ -79,16 +79,6 @@ public class SpaceControllerTest extends AcceptanceTest {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
     }
 
-    @DisplayName("토큰이 검증되지 않는다면, space를 저장할 수 없다")
-    @Test
-    void save_invalid() {
-        // given, when
-        ExtractableResponse<Response> response = saveSpace(invalidToken, 1L, spaceCreateUpdateRequest);
-
-        // then
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
-    }
-
     @DisplayName("올바른 토큰이 주어질 때, spaceId를 받아 해당 공간에 대한 정보를 조회한다.")
     @Test
     void find() {
@@ -103,16 +93,6 @@ public class SpaceControllerTest extends AcceptanceTest {
                 .isEqualTo(expected);
     }
 
-    @DisplayName("토큰이 검증되지 않는다면, 해당 공간에 대한 정보를 조회할 수 없다.")
-    @Test
-    void find_invalidToken() {
-        // given, when
-        ExtractableResponse<Response> response = findSpace(invalidToken, LUTHER.getId(), BE.getId());
-
-        // then
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
-    }
-
     @DisplayName("올바른 토큰이 주어질 때, 전체 공간에 대한 정보를 조회한다.")
     @Test
     void findAll() {
@@ -125,16 +105,6 @@ public class SpaceControllerTest extends AcceptanceTest {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
         assertThat(actual).usingRecursiveComparison()
                 .isEqualTo(expected);
-    }
-
-    @DisplayName("토큰이 검증되지 않는다면, 전체 공간에 대한 정보를 조회할 수 없다.")
-    @Test
-    void findAll_invalidToken() {
-        // given, when
-        ExtractableResponse<Response> response = findAllSpace(invalidToken, LUTHER.getId());
-
-        // then
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
     }
 
     @DisplayName("올바른 토큰이 주어질 때, 공간을 수정한다.")
@@ -179,19 +149,6 @@ public class SpaceControllerTest extends AcceptanceTest {
 
         // then
         assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
-    }
-
-    @DisplayName("토큰이 검증되지 않는다면 공간을 삭제할 수 없다.")
-    @Test
-    void delete_invalidToken() {
-        // given
-        saveSpace(token, LUTHER.getId(), spaceCreateUpdateRequest);
-
-        // when
-        ExtractableResponse<Response> response = deleteSpace(invalidToken, LUTHER.getId(), BE.getId());
-
-        // then
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
     }
 
     private ExtractableResponse<Response> saveSpace(final String token, final Long mapId, final SpaceCreateUpdateRequest spaceCreateUpdateRequest) {
