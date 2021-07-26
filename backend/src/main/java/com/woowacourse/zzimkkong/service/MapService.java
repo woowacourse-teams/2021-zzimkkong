@@ -128,9 +128,9 @@ public class MapService {
             outputStream.close();
 
             return new File("src/main/resources/tmp/" + tmpFileName + ".png");
-        } catch (TranscoderException | IOException e) {
+        } catch (Exception e) {
             e.printStackTrace();
+            throw new IllegalArgumentException(e.getMessage());
         }
-        throw new IllegalArgumentException("무언가 잘못됨");
     }
 }
