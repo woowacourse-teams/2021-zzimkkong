@@ -1,0 +1,32 @@
+package com.woowacourse.zzimkkong.controller;
+
+import com.woowacourse.zzimkkong.dto.SvgDto;
+import com.woowacourse.zzimkkong.infrastructure.S3Uploader;
+import com.woowacourse.zzimkkong.service.MapService;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+import java.io.File;
+import java.net.URI;
+
+@RestController
+@RequestMapping("/api")
+public class PracticeController {
+    private MapService mapService;
+    private S3Uploader s3Uploader;
+
+    public PracticeController(MapService mapService, S3Uploader s3Uploader) {
+        this.mapService = mapService;
+        this.s3Uploader = s3Uploader;
+    }
+
+    @PostMapping("/practice")
+    public ResponseEntity<Void> create(@RequestBody SvgDto svgDto) {
+        File file = mapService.convertSvgToPng(svgDto.getSvg());
+        String url = s3Uploader.upload(file);
+        return ResponseEntity.created(URI.create(url)).build();
+    }
+}
