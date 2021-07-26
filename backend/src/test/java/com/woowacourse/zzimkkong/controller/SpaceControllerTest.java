@@ -168,20 +168,30 @@ public class SpaceControllerTest extends AcceptanceTest {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
     }
 
-    private ExtractableResponse<Response> updateSpace(
-            final String token,
-            final Long mapId,
-            final Long spaceId,
-            final SpaceCreateUpdateRequest spaceCreateUpdateRequest) {
-        return RestAssured
-                .given(getRequestSpecification()).log().all()
-                .accept("application/json")
-                .header("Authorization", "Bearer " + token)
-                .filter(document("space/get_all", getRequestPreprocessor(), getResponsePreprocessor()))
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(spaceCreateUpdateRequest)
-                .when().put("/api/managers/maps/" + mapId.toString() + "/spaces/" + spaceId.toString())
-                .then().log().all().extract();
+    @DisplayName("올바른 토큰이 주어질 때, 공간을 삭제한다.")
+    @Test
+    void delete() {
+        // given
+        saveSpace(token, LUTHER.getId(), spaceCreateUpdateRequest);
+
+        // when
+        ExtractableResponse<Response> response = deleteSpace(token, LUTHER.getId(), BE.getId());
+
+        // then
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
+    }
+
+    @DisplayName("토큰이 검증되지 않는다면 공간을 삭제할 수 없다.")
+    @Test
+    void delete_invalidToken() {
+        // given
+        saveSpace(token, LUTHER.getId(), spaceCreateUpdateRequest);
+
+        // when
+        ExtractableResponse<Response> response = deleteSpace(invalidToken, LUTHER.getId(), BE.getId());
+
+        // then
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
     }
 
     private ExtractableResponse<Response> saveSpace(final String token, final Long mapId, final SpaceCreateUpdateRequest spaceCreateUpdateRequest) {
@@ -215,6 +225,36 @@ public class SpaceControllerTest extends AcceptanceTest {
                 .filter(document("space/get_all", getRequestPreprocessor(), getResponsePreprocessor()))
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .when().get("/api/managers/maps/" + mapId.toString() + "/spaces/")
+                .then().log().all().extract();
+    }
+
+    private ExtractableResponse<Response> updateSpace(
+            final String token,
+            final Long mapId,
+            final Long spaceId,
+            final SpaceCreateUpdateRequest spaceCreateUpdateRequest) {
+        return RestAssured
+                .given(getRequestSpecification()).log().all()
+                .accept("application/json")
+                .header("Authorization", "Bearer " + token)
+                .filter(document("space/update", getRequestPreprocessor(), getResponsePreprocessor()))
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .body(spaceCreateUpdateRequest)
+                .when().put("/api/managers/maps/" + mapId.toString() + "/spaces/" + spaceId.toString())
+                .then().log().all().extract();
+    }
+
+    private ExtractableResponse<Response> deleteSpace(
+            final String token,
+            final Long mapId,
+            final Long spaceId) {
+        return RestAssured
+                .given(getRequestSpecification()).log().all()
+                .accept("application/json")
+                .header("Authorization", "Bearer " + token)
+                .filter(document("space/delete", getRequestPreprocessor(), getResponsePreprocessor()))
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .when().delete("/api/managers/maps/" + mapId.toString() + "/spaces/" + spaceId.toString())
                 .then().log().all().extract();
     }
 }
