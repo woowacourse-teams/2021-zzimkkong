@@ -26,7 +26,7 @@ public class ServiceTestFixture {
             .description("우리집")
             .area("프론트 화이팅")
             .availableStartTime(LocalTime.of(10, 0))
-            .availableEndTime(LocalTime.of(22,0))
+            .availableEndTime(LocalTime.of(22, 0))
             .reservationTimeUnit(30)
             .reservationMinimumTimeUnit(60)
             .reservationMaximumTimeUnit(120)
