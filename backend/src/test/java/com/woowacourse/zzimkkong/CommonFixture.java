@@ -7,6 +7,7 @@ import com.woowacourse.zzimkkong.domain.Space;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 
 public class CommonFixture {
     public static final String EMAIL = "pobi@email.com";
@@ -21,6 +22,16 @@ public class CommonFixture {
             .color("#FED7D9")
             .coordinate("100, 90")
             .map(LUTHER)
+            .description("시니컬하네")
+            .area("area")
+            .availableStartTime(LocalTime.of(0,0))
+            .availableEndTime(LocalTime.of(23,59))
+            .reservationTimeUnit(10)
+            .reservationMinimumTimeUnit(10)
+            .reservationMaximumTimeUnit(1440)
+            .reservationEnable(true)
+            .disabledWeekdays(null)
+            .mapImage("이미지 입니다")
             .build();
 
     public static Space FE1 = new Space.Builder()
@@ -29,6 +40,16 @@ public class CommonFixture {
             .color("#FED7D9")
             .coordinate("560, 40")
             .map(LUTHER)
+            .description("시니컬하네")
+            .area("area")
+            .availableStartTime(LocalTime.of(0,0))
+            .availableEndTime(LocalTime.of(23,59))
+            .reservationTimeUnit(10)
+            .reservationMinimumTimeUnit(10)
+            .reservationMaximumTimeUnit(1440)
+            .reservationEnable(true)
+            .disabledWeekdays(null)
+            .mapImage("이미지 입니다")
             .build();
 
     public static final LocalDate TOMORROW = LocalDate.now().plusDays(1);

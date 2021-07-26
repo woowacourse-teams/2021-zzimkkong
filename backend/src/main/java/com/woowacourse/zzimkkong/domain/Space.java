@@ -1,8 +1,13 @@
 package com.woowacourse.zzimkkong.domain;
 
+import org.hibernate.annotations.DynamicInsert;
+import org.hibernate.annotations.DynamicUpdate;
+
 import javax.persistence.*;
 import java.time.LocalTime;
 
+@DynamicInsert
+@DynamicUpdate
 @Entity
 public class Space {
     @Id
@@ -29,31 +34,31 @@ public class Space {
     @Column(nullable = true)
     private String description;
 
-    @Column(nullable = true)
+    @Column(nullable = false)
     private String area;
 
-    @Column(nullable = true)
+    @Column(nullable = false)
     private LocalTime availableStartTime;
 
-    @Column(nullable = true)
+    @Column(nullable = false)
     private LocalTime availableEndTime;
 
-    @Column(nullable = true)
+    @Column(nullable = false)
     private Integer reservationTimeUnit;
 
-    @Column(nullable = true)
+    @Column(nullable = false)
     private Integer reservationMinimumTimeUnit;
 
-    @Column(nullable = true)
+    @Column(nullable = false)
     private Integer reservationMaximumTimeUnit;
 
-    @Column(nullable = true)
+    @Column(nullable = false)
     private Boolean reservationEnable;
 
     @Column(nullable = true)
     private String disabledWeekdays;
 
-    @Column(nullable = true)
+    @Column(nullable = false)
     private String mapImage;
 
     protected Space() {

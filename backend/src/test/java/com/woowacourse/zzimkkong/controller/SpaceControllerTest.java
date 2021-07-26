@@ -1,5 +1,6 @@
 package com.woowacourse.zzimkkong.controller;
 
+import com.woowacourse.zzimkkong.domain.Space;
 import com.woowacourse.zzimkkong.dto.member.LoginRequest;
 import com.woowacourse.zzimkkong.dto.member.TokenResponse;
 import com.woowacourse.zzimkkong.dto.space.SettingsRequest;
@@ -79,16 +80,6 @@ public class SpaceControllerTest extends AcceptanceTest {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
     }
 
-    @DisplayName("토큰이 검증되지 않는다면, space를 저장할 수 없다")
-    @Test
-    void save_invalid() {
-        // given, when
-        ExtractableResponse<Response> response = saveSpace(invalidToken, 1L, spaceCreateRequest);
-
-        // then
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
-    }
-
     @DisplayName("올바른 토큰이 주어질 때, spaceId를 받아 해당 공간에 대한 정보를 조회한다.")
     @Test
     void find() {
@@ -103,14 +94,56 @@ public class SpaceControllerTest extends AcceptanceTest {
                 .isEqualTo(expected);
     }
 
-    @DisplayName("토큰이 검증되지 않는다면, 해당 공간에 대한 정보를 조회할 수 없다.")
+    @DisplayName("올바른 토큰이 주어질 때, space 정보 중 주어지지 않은 필드를 디폴트 값으로 저장한다")
     @Test
-    void find_invalidToken() {
+    void save_default() {
         // given, when
-        ExtractableResponse<Response> response = findSpace(invalidToken, LUTHER.getId(), BE.getId());
+        SettingsRequest settingsRequest = new SettingsRequest(
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null
+        );
+
+        SpaceCreateRequest defaultSpaceCreateRequest = new SpaceCreateRequest(
+                "잠실우리집",
+                "우리집",
+                "프론트 화이팅",
+                settingsRequest,
+                "이미지 입니다"
+        );
+
+        Space defaultSpace = new Space.Builder()
+                .id(2L)
+                .name("잠실우리집")
+                .description("우리집")
+                .area("프론트 화이팅")
+                .availableStartTime(LocalTime.of(0, 0))
+                .availableEndTime(LocalTime.of(23, 59))
+                .reservationTimeUnit(10)
+                .reservationMinimumTimeUnit(10)
+                .reservationMaximumTimeUnit(1440)
+                .reservationEnable(true)
+                .disabledWeekdays(null)
+                .mapImage("이미지 입니다")
+                .build();
+
+        ExtractableResponse<Response> response = saveSpace(token, 1L, defaultSpaceCreateRequest);
 
         // then
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
+        String api = response.header("location");
+        String[] split = api.split("/");
+        Long mapId = Long.valueOf(split[4]);
+        Long spaceId = Long.valueOf(split[6]);
+
+        ExtractableResponse<Response> findResponse = findSpace(token, mapId, spaceId);
+        SpaceFindResponse actualSpaceFindResponse = findResponse.as(SpaceFindResponse.class);
+        SpaceFindResponse expectedSpaceFindResponse = SpaceFindResponse.from(defaultSpace);
+
+        assertThat(actualSpaceFindResponse).usingRecursiveComparison().isEqualTo(expectedSpaceFindResponse);
     }
 
     private ExtractableResponse<Response> saveSpace(final String token, final Long mapId, final SpaceCreateRequest spaceCreateRequest) {
