@@ -86,6 +86,18 @@ public class SpaceService {
         space.update(spaceCreateUpdateRequest, map);
     }
 
+    public void deleteSpace(
+            final Long mapId,
+            final Long spaceId,
+            final Member manager) {
+        Map map = maps.findById(mapId).orElseThrow(NoSuchMapException::new);
+        validateAuthorityOnMap(manager, map);
+
+        Space space = spaces.findById(spaceId)
+                .orElseThrow(NoSuchSpaceException::new);
+        spaces.delete(space);
+    }
+
     private void validateAuthorityOnMap(final Member manager, final Map map) {
         if (map.isNotOwnedBy(manager)) {
             throw new NoAuthorityOnMapException();
