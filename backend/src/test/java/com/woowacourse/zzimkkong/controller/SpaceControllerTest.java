@@ -28,7 +28,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.restdocs.restassured3.RestAssuredRestDocumentation.document;
 
 public class SpaceControllerTest extends AcceptanceTest {
-    private final String invalidToken = "rubbishToken";
     @Autowired
     private MemberRepository members;
     @Autowired
@@ -36,7 +35,6 @@ public class SpaceControllerTest extends AcceptanceTest {
     @Autowired
     private SpaceRepository spaces;
     private String token;
-
     private SpaceCreateRequest spaceCreateRequest;
 
     @BeforeEach
@@ -74,7 +72,7 @@ public class SpaceControllerTest extends AcceptanceTest {
     @Test
     void save() {
         // given, when
-        ExtractableResponse<Response> response = saveSpace(token, 1L, spaceCreateRequest);
+        ExtractableResponse<Response> response = saveSpace(1L, spaceCreateRequest);
 
         // then
         assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
@@ -84,7 +82,7 @@ public class SpaceControllerTest extends AcceptanceTest {
     @Test
     void find() {
         // given, when
-        ExtractableResponse<Response> response = findSpace(token, LUTHER.getId(), BE.getId());
+        ExtractableResponse<Response> response = findSpace(LUTHER.getId(), BE.getId());
         SpaceFindResponse actual = response.body().as(SpaceFindResponse.class);
         SpaceFindResponse expected = SpaceFindResponse.from(BE);
 
@@ -131,7 +129,7 @@ public class SpaceControllerTest extends AcceptanceTest {
                 .mapImage("이미지 입니다")
                 .build();
 
-        ExtractableResponse<Response> response = saveSpace(token, 1L, defaultSpaceCreateRequest);
+        ExtractableResponse<Response> response = saveSpace(1L, defaultSpaceCreateRequest);
 
         // then
         String api = response.header("location");
@@ -139,14 +137,14 @@ public class SpaceControllerTest extends AcceptanceTest {
         Long mapId = Long.valueOf(split[4]);
         Long spaceId = Long.valueOf(split[6]);
 
-        ExtractableResponse<Response> findResponse = findSpace(token, mapId, spaceId);
+        ExtractableResponse<Response> findResponse = findSpace(mapId, spaceId);
         SpaceFindResponse actualSpaceFindResponse = findResponse.as(SpaceFindResponse.class);
         SpaceFindResponse expectedSpaceFindResponse = SpaceFindResponse.from(defaultSpace);
 
         assertThat(actualSpaceFindResponse).usingRecursiveComparison().isEqualTo(expectedSpaceFindResponse);
     }
 
-    private ExtractableResponse<Response> saveSpace(final String token, final Long mapId, final SpaceCreateRequest spaceCreateRequest) {
+    private ExtractableResponse<Response> saveSpace(final Long mapId, final SpaceCreateRequest spaceCreateRequest) {
         return RestAssured
                 .given(getRequestSpecification()).log().all()
                 .accept("application/json")
@@ -158,7 +156,7 @@ public class SpaceControllerTest extends AcceptanceTest {
                 .then().log().all().extract();
     }
 
-    private ExtractableResponse<Response> findSpace(final String token, final Long mapId, final Long spaceId) {
+    private ExtractableResponse<Response> findSpace(final Long mapId, final Long spaceId) {
         return RestAssured
                 .given(getRequestSpecification()).log().all()
                 .accept("application/json")
