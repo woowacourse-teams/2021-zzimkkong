@@ -23,7 +23,7 @@ public class MapService {
         this.maps = mapRepository;
     }
 
-    public MapCreateResponse saveMap(final Member member, final MapCreateUpdateRequest mapCreateUpdateRequest) {
+    public MapCreateResponse saveMap(final MapCreateUpdateRequest mapCreateUpdateRequest, final Member member) {
         Map saveMap = maps.save(new Map(
                 mapCreateUpdateRequest.getMapName(),
                 mapCreateUpdateRequest.getMapDrawing(),
@@ -33,11 +33,11 @@ public class MapService {
     }
 
     @Transactional(readOnly = true)
-    public MapFindResponse findMap(final Member member, final Long mapId) {
+    public MapFindResponse findMap(final Long mapId, final Member manager) {
         Map map = maps.findById(mapId)
                 .orElseThrow(NoSuchMapException::new);
 
-        validateManagerOfMap(member, map);
+        validateManagerOfMap(map, manager);
         return MapFindResponse.from(map);
     }
 
@@ -51,15 +51,14 @@ public class MapService {
         Map map = maps.findById(mapId)
                 .orElseThrow(NoSuchMapException::new);
 
-        validateManagerOfMap(member, map);
+        validateManagerOfMap(map, member);
 
         map.update(
                 mapCreateUpdateRequest.getMapName(),
                 mapCreateUpdateRequest.getMapDrawing(),
                 mapCreateUpdateRequest.getMapImage());
     }
-
-    private void validateManagerOfMap(final Member manager,final Map map) {
+    private void validateManagerOfMap(final Map map, final Member manager) {
         if(!manager.equals(map.getMember())) {   // TODO: ReservationService 와의 중복 제거 -김샐
             throw new NoAuthorityOnMapException();
         }

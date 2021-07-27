@@ -45,7 +45,8 @@ class MapControllerTest extends AcceptanceTest {
     @DisplayName("특정 맵을 조회한다.")
     void find() {
         // given
-        String api = saveFixtureMap(new MapCreateUpdateRequest(LUTHER.getName(), LUTHER.getMapDrawing(), LUTHER.getMapImage()));
+        String api = saveMap("/api/managers/maps", new MapCreateUpdateRequest(LUTHER.getName(), LUTHER.getMapDrawing(), LUTHER.getMapImage()))
+                .header("location");
 
         // when
         ExtractableResponse<Response> response = findMap(api);
@@ -59,17 +60,12 @@ class MapControllerTest extends AcceptanceTest {
                 .isEqualTo(expectedResponse);
     }
 
-    private String saveFixtureMap(MapCreateUpdateRequest mapCreateUpdateRequest) {
-        ExtractableResponse<Response> savedMapResponse = saveMap("/api/managers/maps", mapCreateUpdateRequest);
-        return savedMapResponse.header("location");
-    }
-
     @Test
     @DisplayName("특정 멤버가 가진 모든 맵을 조회한다.")
     void findAll() {
         // given
-        saveFixtureMap(new MapCreateUpdateRequest(LUTHER.getName(), LUTHER.getMapDrawing(), LUTHER.getMapImage()));
-        saveFixtureMap(new MapCreateUpdateRequest(SMALL_HOUSE.getName(), SMALL_HOUSE.getMapDrawing(), SMALL_HOUSE.getMapImage()));
+        saveMap("/api/managers/maps", new MapCreateUpdateRequest(LUTHER.getName(), LUTHER.getMapDrawing(), LUTHER.getMapImage()));
+        saveMap("/api/managers/maps", new MapCreateUpdateRequest(SMALL_HOUSE.getName(), SMALL_HOUSE.getMapDrawing(), SMALL_HOUSE.getMapImage()));
 
         // when
         ExtractableResponse<Response> response = findAllMaps();
@@ -100,7 +96,8 @@ class MapControllerTest extends AcceptanceTest {
     @DisplayName("맵을 수정한다.")
     void update() {
         // given
-        String api = saveFixtureMap(new MapCreateUpdateRequest(LUTHER.getName(), LUTHER.getMapDrawing(), LUTHER.getMapImage()));
+        String api = saveMap("/api/managers/maps", new MapCreateUpdateRequest(LUTHER.getName(), LUTHER.getMapDrawing(), LUTHER.getMapImage()))
+                .header("location");
         MapCreateUpdateRequest mapCreateUpdateRequest = new MapCreateUpdateRequest("이름을 바꿔요", "맵의 메타데이터도 바꿔요", "이미지 url도 바꿔요");
 
         // when

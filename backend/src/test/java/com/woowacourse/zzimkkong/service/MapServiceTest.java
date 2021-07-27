@@ -37,7 +37,7 @@ class MapServiceTest extends ServiceTest {
                 .willReturn(LUTHER);
 
         //then
-        MapCreateResponse mapCreateResponse = mapService.saveMap(POBI, mapCreateUpdateRequest);
+        MapCreateResponse mapCreateResponse = mapService.saveMap(mapCreateUpdateRequest, POBI);
         assertThat(mapCreateResponse.getId()).isEqualTo(LUTHER.getId());
     }
 
@@ -49,7 +49,7 @@ class MapServiceTest extends ServiceTest {
                 .willReturn(Optional.of(LUTHER));
 
         //when
-        MapFindResponse mapFindResponse = mapService.findMap(POBI, LUTHER.getId());
+        MapFindResponse mapFindResponse = mapService.findMap(LUTHER.getId(), POBI);
 
         //then
         assertThat(mapFindResponse).usingRecursiveComparison()
