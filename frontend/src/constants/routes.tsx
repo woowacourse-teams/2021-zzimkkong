@@ -27,6 +27,10 @@ export const PUBLIC_ROUTES: Route[] = [
     component: <ManagerJoin />,
   },
   {
+    path: PATH.MANAGER_MAP_CREATE,
+    component: <ManagerMapCreate />,
+  },
+  {
     path: PATH.GUEST_MAIN,
     component: <GuestMain />,
   },
