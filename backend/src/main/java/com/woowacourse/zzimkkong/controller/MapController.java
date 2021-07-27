@@ -22,13 +22,13 @@ public class MapController {
     }
 
     @GetMapping("/{mapId}")
-    public ResponseEntity<MapFindResponse> find(@PathVariable Long mapId, @Manager Member manager) {
+    public ResponseEntity<MapFindResponse> find(@PathVariable final Long mapId, @Manager final Member manager) {
         MapFindResponse mapFindResponse = mapService.findMap(mapId, manager);
         return ResponseEntity.ok(mapFindResponse);
     }
 
     @PostMapping
-    public ResponseEntity<Void> create(@Valid @RequestBody MapCreateRequest mapCreateRequest, @Manager Member manager) {
+    public ResponseEntity<Void> create(@Valid @RequestBody final MapCreateRequest mapCreateRequest, @Manager final Member manager) {
         MapCreateResponse mapCreateResponse = mapService.saveMap(mapCreateRequest, manager);
         return ResponseEntity.created(URI.create("/api/managers/maps/" + mapCreateResponse.getId()))
                 .build();

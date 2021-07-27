@@ -57,9 +57,9 @@ public class ManagerReservationService extends ReservationService {
     public ReservationResponse findReservation(
             final Long mapId,
             final Long reservationId,
-            final Member provider) {
+            final Member manager) {
         validateMapExistence(mapId);
-        validateAuthorityOnMap(mapId, provider);
+        validateAuthorityOnMap(mapId, manager);
 
         Reservation reservation = reservations
                 .findById(reservationId)
@@ -71,9 +71,9 @@ public class ManagerReservationService extends ReservationService {
             final Long mapId,
             final Long reservationId,
             final ReservationCreateUpdateRequest reservationCreateUpdateRequest,
-            final Member provider) {
+            final Member manager) {
         validateMapExistence(mapId);
-        validateAuthorityOnMap(mapId, provider);
+        validateAuthorityOnMap(mapId, manager);
         validateTime(reservationCreateUpdateRequest);
 
         Space space = spaces.findById(reservationCreateUpdateRequest.getSpaceId())
@@ -92,9 +92,9 @@ public class ManagerReservationService extends ReservationService {
     public SlackResponse deleteReservation(
             final Long mapId,
             final Long reservationId,
-            final Member provider) {
+            final Member manager) {
         validateMapExistence(mapId);
-        validateAuthorityOnMap(mapId, provider);
+        validateAuthorityOnMap(mapId, manager);
 
         Reservation reservation = reservations
                 .findById(reservationId)
@@ -103,14 +103,14 @@ public class ManagerReservationService extends ReservationService {
         return SlackResponse.from(reservation);
     }
 
-    private void validateAuthorityOnMap(final Long mapId, final Member provider) {
+    private void validateAuthorityOnMap(final Long mapId, final Member manager) {
         Map map = maps.findById(mapId)
                 .orElseThrow(NoSuchMapException::new);
-        validateMangerOfMap(provider, map);
+        validateMangerOfMap(manager, map);
     }
 
     private void validateMangerOfMap(Member manager, Map map) {
-        if (!manager.equals(map.getMember())) {
+        if (map.isNotOwnedBy(manager)) {
             throw new NoAuthorityOnMapException();
         }
     }
