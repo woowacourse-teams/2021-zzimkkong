@@ -17,20 +17,20 @@ import Panel from 'components/Panel/Panel';
 import PinRadio from 'components/PinRadio/PinRadio';
 import ReservationListItem from 'components/ReservationListItem/ReservationListItem';
 import MESSAGE from 'constants/message';
-import PATH from 'constants/path';
+import { PATH } from 'constants/routes';
 import useInput from 'hooks/useInput';
 import useReservations from 'hooks/useReservations';
 import { Reservation, Space } from 'types/common';
 import { formatDate } from 'utils/datetime';
-import * as Styled from './UserMain.styles';
+import * as Styled from './GuestMain.styles';
 import spaceList from './spaceList';
 
-export interface UserMainState {
+export interface GuestMainState {
   spaceId?: Space['spaceId'];
   targetDate?: Date;
 }
 
-const UserMain = (): JSX.Element => {
+const GuestMain = (): JSX.Element => {
   // Note: 루터회관 14층으로 상정하고 구현. 추후 useSpaces로 대체 필요
   const mapId = 1;
 
@@ -41,7 +41,7 @@ const UserMain = (): JSX.Element => {
   const [passwordInput, onChangePasswordInput] = useInput('');
 
   const history = useHistory();
-  const location = useLocation<UserMainState>();
+  const location = useLocation<GuestMainState>();
   const spaceId = location.state?.spaceId;
   const targetDate = location.state?.targetDate;
 
@@ -79,7 +79,7 @@ const UserMain = (): JSX.Element => {
 
   const handleSelectEdit = () => {
     history.push({
-      pathname: PATH.RESERVATION_EDIT,
+      pathname: PATH.GUEST_RESERVATION_EDIT,
       state: {
         mapId,
         spaceId: Number(selectedSpaceId),
@@ -133,7 +133,7 @@ const UserMain = (): JSX.Element => {
               {new Date(date) > todayDate && (
                 <Styled.ReservationLink
                   to={{
-                    pathname: PATH.RESERVATION,
+                    pathname: PATH.GUEST_RESERVATION,
                     state: {
                       mapId,
                       spaceId: Number(selectedSpaceId),
@@ -229,4 +229,4 @@ const UserMain = (): JSX.Element => {
   );
 };
 
-export default UserMain;
+export default GuestMain;
