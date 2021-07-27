@@ -42,8 +42,11 @@ public class MapController {
     }
 
     @PutMapping("/{mapId}")
-    public ResponseEntity<Void> update(@Manager Member member, @PathVariable Long mapId, @RequestBody MapCreateUpdateRequest mapCreateUpdateRequest) {
-        mapService.updateMap(member, mapId, mapCreateUpdateRequest);
+    public ResponseEntity<Void> update(
+            @PathVariable final Long mapId,
+            @Valid @RequestBody final MapCreateUpdateRequest mapCreateUpdateRequest,
+            @Manager final Member manager) {
+        mapService.updateMap(mapId, mapCreateUpdateRequest, manager);
         return ResponseEntity.ok().build();
     }
 }

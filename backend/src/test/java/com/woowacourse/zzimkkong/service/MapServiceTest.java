@@ -81,7 +81,7 @@ class MapServiceTest extends ServiceTest {
                 .willReturn(Optional.of(LUTHER));
 
         //when, then
-        assertDoesNotThrow(() -> mapService.updateMap(POBI, LUTHER.getId(), mapCreateUpdateRequest));
+        assertDoesNotThrow(() -> mapService.updateMap(LUTHER.getId(), mapCreateUpdateRequest, POBI));
     }
 
     @Test
@@ -97,7 +97,7 @@ class MapServiceTest extends ServiceTest {
                 .willReturn(Optional.of(map));
 
         // when, then
-        assertThatThrownBy(() -> mapService.updateMap(POBI, map.getId(), mapCreateUpdateRequest))
+        assertThatThrownBy(() -> mapService.updateMap(map.getId(), mapCreateUpdateRequest, POBI))
                 .isInstanceOf(NoAuthorityOnMapException.class);
     }
 }
