@@ -2,7 +2,7 @@ import { AxiosError } from 'axios';
 import { FormEventHandler } from 'react';
 import { useMutation } from 'react-query';
 import { useHistory, useLocation } from 'react-router-dom';
-import { postReservation } from 'api/reservation';
+import { putReservation } from 'api/reservation';
 import { ReactComponent as CalendarIcon } from 'assets/svg/calendar.svg';
 import Button from 'components/Button/Button';
 import Header from 'components/Header/Header';
@@ -10,41 +10,40 @@ import Input from 'components/Input/Input';
 import Layout from 'components/Layout/Layout';
 import ReservationListItem from 'components/ReservationListItem/ReservationListItem';
 import MESSAGE from 'constants/message';
-import PATH from 'constants/path';
 import REGEXP from 'constants/regexp';
 import RESERVATION from 'constants/reservation';
+import { PATH } from 'constants/routes';
 import useInput from 'hooks/useInput';
 import useReservations from 'hooks/useReservations';
-import { UserMainState } from 'pages/UserMain/UserMain';
-import { Space } from 'types/common';
+import { GuestMainState } from 'pages/GuestMain/GuestMain';
+import { Reservation, Space } from 'types/common';
 import { formatDate, formatTime } from 'utils/datetime';
-import * as Styled from './UserReservation.styles';
+import * as Styled from './GuestReservationEdit.styles';
 
-interface UserReservationState {
+interface GuestReservationEditState {
   mapId: number;
+  reservation: Reservation;
   spaceId: Space['spaceId'];
   spaceName: Space['spaceName'];
   selectedDate: string;
 }
 
-const UserReservation = (): JSX.Element => {
-  const location = useLocation<UserReservationState>();
-  const history = useHistory<UserMainState>();
+const GuestReservationEdit = (): JSX.Element => {
+  const location = useLocation<GuestReservationEditState>();
+  const history = useHistory<GuestMainState>();
 
-  const { mapId, spaceId, spaceName, selectedDate } = location.state;
+  const { mapId, spaceId, reservation, spaceName, selectedDate } = location.state;
 
-  if (!mapId || !spaceId || !spaceName) history.replace(PATH.USER_MAIN);
+  if (!mapId || !spaceId || !spaceName || !reservation) history.replace(PATH.GUEST_MAIN);
 
   const now = new Date();
-  const initialStartTime = formatTime(now);
-  const initialEndTime = formatTime(new Date(new Date().getTime() + 1000 * 60 * 60));
 
-  const [name, onChangeName] = useInput('');
-  const [description, onChangeDescription] = useInput('');
+  const [name, onChangeName] = useInput(reservation.name);
+  const [description, onChangeDescription] = useInput(reservation.description);
   const [date, onChangeDate] = useInput(selectedDate);
-  const [startTime, onChangeStartTime] = useInput(initialStartTime);
-  const [endTime, onChangeEndTime] = useInput(initialEndTime);
-  const [password, onChangePassword] = useInput('');
+  const [startTime, onChangeStartTime] = useInput(formatTime(new Date(reservation.startDateTime)));
+  const [endTime, onChangeEndTime] = useInput(formatTime(new Date(reservation.endDateTime)));
+  const [password, onChangePassword] = useInput();
 
   const startDateTime = new Date(`${date}T${startTime}Z`);
   const endDateTime = new Date(`${date}T${endTime}Z`);
@@ -52,13 +51,14 @@ const UserReservation = (): JSX.Element => {
   const getReservations = useReservations({ mapId, spaceId, date });
   const reservations = getReservations.data?.data?.reservations ?? [];
 
-  const createReservation = useMutation(postReservation, {
+  const editReservation = useMutation(putReservation, {
     onSuccess: () => {
-      history.push(PATH.USER_MAIN, {
+      history.push(PATH.GUEST_MAIN, {
         spaceId,
         targetDate: new Date(`${date}T${startTime}`),
       });
     },
+
     onError: (error: AxiosError<Error>) => {
       alert(error.response?.data.message ?? MESSAGE.RESERVATION.UNEXPECTED_ERROR);
     },
@@ -67,9 +67,9 @@ const UserReservation = (): JSX.Element => {
   const handleSubmit: FormEventHandler<HTMLFormElement> = (event) => {
     event.preventDefault();
 
-    if (createReservation.isLoading) return;
+    if (editReservation.isLoading) return;
 
-    const reservation = {
+    const editReservationParams = {
       spaceId,
       name,
       description,
@@ -78,7 +78,11 @@ const UserReservation = (): JSX.Element => {
       endDateTime,
     };
 
-    createReservation.mutate({ reservation, mapId });
+    editReservation.mutate({
+      reservation: editReservationParams,
+      mapId,
+      reservationId: reservation.id,
+    });
   };
 
   return (
@@ -94,7 +98,6 @@ const UserReservation = (): JSX.Element => {
                 value={name}
                 onChange={onChangeName}
                 maxLength={RESERVATION.NAME.MAX_LENGTH}
-                autoFocus
                 required
               />
             </Styled.InputWrapper>
@@ -145,7 +148,7 @@ const UserReservation = (): JSX.Element => {
                 maxLength={RESERVATION.PASSWORD.MAX_LENGTH}
                 pattern={REGEXP.RESERVATION_PASSWORD.source}
                 inputMode="numeric"
-                message="숫자 4자리를 입력해주세요."
+                message="예약하실 때 사용하신 비밀번호 4자리를 입력해주세요."
                 required
               />
             </Styled.InputWrapper>
@@ -165,9 +168,6 @@ const UserReservation = (): JSX.Element => {
             {getReservations.isLoading && !getReservations.isLoadingError && (
               <Styled.Message>불러오는 중입니다...</Styled.Message>
             )}
-            {getReservations.isSuccess && reservations.length === 0 && (
-              <Styled.Message>오늘의 첫 예약을 잡아보세요!</Styled.Message>
-            )}
             {getReservations.isSuccess && reservations.length > 0 && (
               <Styled.ReservationList role="list">
                 {reservations?.map((reservation) => (
@@ -176,10 +176,9 @@ const UserReservation = (): JSX.Element => {
               </Styled.ReservationList>
             )}
           </Styled.Section>
-
           <Styled.ButtonWrapper>
             <Button fullWidth variant="primary" size="large">
-              예약하기
+              예약 수정하기
             </Button>
           </Styled.ButtonWrapper>
         </Styled.ReservationForm>
@@ -188,4 +187,4 @@ const UserReservation = (): JSX.Element => {
   );
 };
 
-export default UserReservation;
+export default GuestReservationEdit;
