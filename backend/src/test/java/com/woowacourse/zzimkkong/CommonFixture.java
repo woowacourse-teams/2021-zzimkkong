@@ -13,6 +13,7 @@ public class CommonFixture {
     public static final String PASSWORD = "test1234";
     public static final String ORGANIZATION = "우아한테크코스";
     public static Member POBI = new Member(EMAIL, PASSWORD, ORGANIZATION);
+    public static Member JASON = new Member("jason@test.com", PASSWORD, ORGANIZATION);
 
     public static Map LUTHER = new Map("루터회관", "mapDrawingData", "mapImageData", POBI);
     public static Map SMALL_HOUSE = new Map("작은집", "mapDrawingData", "mapImageData", POBI);

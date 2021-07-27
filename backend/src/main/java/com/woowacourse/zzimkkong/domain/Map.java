@@ -36,8 +36,8 @@ public class Map {
         this.member = member;
     }
 
-    public boolean hasSameId(final Long id) {
-        return this.id.equals(id);
+    public boolean isNotOwnedBy(final Member manager) {
+        return !this.member.equals(manager);
     }
 
     public Long getId() {

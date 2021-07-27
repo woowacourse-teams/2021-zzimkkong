@@ -49,5 +49,6 @@ export const Button = styled.button<Props>`
   ${({ variant }) => variantCSS[variant]}
   ${({ size }) => sizeCSS[size]}
   width: ${({ fullWidth }) => (fullWidth ? '100%' : 'auto')};
+  border-radius: 0.125rem;
   cursor: pointer;
 `;

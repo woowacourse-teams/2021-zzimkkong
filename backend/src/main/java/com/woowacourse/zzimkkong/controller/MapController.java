@@ -10,6 +10,7 @@ import com.woowacourse.zzimkkong.service.MapService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.net.URI;
 
 @RestController
@@ -17,13 +18,13 @@ import java.net.URI;
 public class MapController {
     private final MapService mapService;
 
-    public MapController(MapService mapService) {
+    public MapController(final MapService mapService) {
         this.mapService = mapService;
     }
 
     @GetMapping("/{mapId}")
-    public ResponseEntity<MapFindResponse> find(@Manager Member member, @PathVariable Long mapId) {
-        MapFindResponse mapFindResponse = mapService.findMap(member, mapId);
+    public ResponseEntity<MapFindResponse> find(@PathVariable final Long mapId, @Manager final Member manager) {
+        MapFindResponse mapFindResponse = mapService.findMap(mapId, manager);
         return ResponseEntity.ok(mapFindResponse);
     }
 
@@ -34,8 +35,8 @@ public class MapController {
     }
 
     @PostMapping
-    public ResponseEntity<Void> create(@Manager Member member, @RequestBody MapCreateRequest mapCreateRequest) {
-        MapCreateResponse mapCreateResponse = mapService.saveMap(member, mapCreateRequest);
+    public ResponseEntity<Void> create(@Valid @RequestBody final MapCreateRequest mapCreateRequest, @Manager final Member manager) {
+        MapCreateResponse mapCreateResponse = mapService.saveMap(mapCreateRequest, manager);
         return ResponseEntity.created(URI.create("/api/managers/maps/" + mapCreateResponse.getId()))
                 .build();
     }

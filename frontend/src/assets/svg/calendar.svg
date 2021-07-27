@@ -1,11 +1,6 @@
-<svg width="29" height="25" viewBox="0 0 29 25" fill="none" xmlns="http://www.w3.org/2000/svg">
-<rect x="0.5" y="2.77271" width="27.0303" height="21.7273" rx="1.5" fill="white" stroke="black"/>
-<rect x="4.28784" y="0.5" width="2.78788" height="5.06061" rx="1.39394" fill="white" stroke="black"/>
-<rect x="20.9548" y="0.5" width="2.78788" height="5.06061" rx="1.39394" fill="white" stroke="black"/>
-<rect x="3.78821" y="9.09106" width="5.30304" height="4.54546" rx="2" fill="#C4C4C4"/>
-<rect x="3.78809" y="16.6667" width="5.30304" height="4.54546" rx="2" fill="#C4C4C4"/>
-<rect x="11.3633" y="9.09106" width="5.30304" height="4.54546" rx="2" fill="#C4C4C4"/>
-<rect x="11.3633" y="16.6667" width="5.30304" height="4.54546" rx="2" fill="#C4C4C4"/>
-<rect x="18.9401" y="9.09106" width="5.30304" height="4.54546" rx="2" fill="#C4C4C4"/>
-<rect x="18.9401" y="16.6667" width="5.30304" height="4.54546" rx="2" fill="#C4C4C4"/>
+<svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="24px" height="24px" viewBox="0 0 24 24" fill="#333333">
+<g>
+	<path d="M21.368,2.908V0.872h-3.865v2.036H6.497V0.872H2.632v2.036h-2.07v20.22h22.877V2.908H21.368z M21.489,21.348H2.511V7.911h18.978V21.348z"/>
+	<polygon points="19.102,11.347 17.15,9.396 10.245,16.301 7.292,13.349 5.34,15.3 10.245,20.204 	"/>
+</g>
 </svg>
