@@ -6,7 +6,6 @@ import com.woowacourse.zzimkkong.dto.space.SpaceCreateRequest;
 import com.woowacourse.zzimkkong.dto.space.SpaceCreateResponse;
 import com.woowacourse.zzimkkong.dto.space.SpaceFindResponse;
 import com.woowacourse.zzimkkong.service.SpaceService;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 

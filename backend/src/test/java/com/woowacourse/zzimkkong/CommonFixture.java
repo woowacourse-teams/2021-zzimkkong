@@ -11,6 +11,7 @@ import java.time.LocalTime;
 
 public class CommonFixture {
     public static final String EMAIL = "pobi@email.com";
+    public static final String NEW_EMAIL = "sakjung@email.com";
     public static final String PASSWORD = "test1234";
     public static final String ORGANIZATION = "우아한테크코스";
     public static Member POBI = new Member(EMAIL, PASSWORD, ORGANIZATION);
@@ -24,8 +25,8 @@ public class CommonFixture {
             .map(LUTHER)
             .description("시니컬하네")
             .area("area")
-            .availableStartTime(LocalTime.of(0,0))
-            .availableEndTime(LocalTime.of(23,59))
+            .availableStartTime(LocalTime.of(0, 0))
+            .availableEndTime(LocalTime.of(23, 59))
             .reservationTimeUnit(10)
             .reservationMinimumTimeUnit(10)
             .reservationMaximumTimeUnit(1440)

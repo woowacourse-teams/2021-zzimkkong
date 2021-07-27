@@ -15,14 +15,16 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.restdocs.restassured3.RestAssuredRestDocumentation.document;
 
 class MemberControllerTest extends AcceptanceTest {
+    public static final MemberSaveRequest memberSaveRequest = new MemberSaveRequest(EMAIL, PASSWORD, ORGANIZATION);
+
     @DisplayName("정상적인 회원가입 입력이 들어오면 회원 정보를 저장한다.")
     @Test
     void join() {
         //given
-        MemberSaveRequest memberSaveRequest = new MemberSaveRequest(EMAIL, PASSWORD, ORGANIZATION);
+        MemberSaveRequest newMemberSaveRequest = new MemberSaveRequest(NEW_EMAIL, PASSWORD, ORGANIZATION);
 
-        //when
-        ExtractableResponse<Response> response = saveMember(memberSaveRequest);
+        // when
+        ExtractableResponse<Response> response = saveMember(newMemberSaveRequest);
 
         //then
         assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
@@ -38,7 +40,7 @@ class MemberControllerTest extends AcceptanceTest {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
     }
 
-    protected static ExtractableResponse<Response> saveMember(final MemberSaveRequest memberSaveRequest) {
+    static ExtractableResponse<Response> saveMember(final MemberSaveRequest memberSaveRequest) {
         return RestAssured
                 .given(getRequestSpecification()).log().all()
                 .accept("application/json")

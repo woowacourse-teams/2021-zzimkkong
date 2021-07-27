@@ -126,8 +126,8 @@ class GuestReservationServiceTest extends ServiceTest {
         //given
         reservationCreateUpdateWithPasswordRequest = new ReservationCreateUpdateWithPasswordRequest(
                 1L,
-                LocalDateTime.now().plusHours(3+TIMEZONE_OFFSET),
-                LocalDateTime.now().minusHours(3+TIMEZONE_OFFSET),
+                LocalDateTime.now().plusHours(3 + TIMEZONE_OFFSET),
+                LocalDateTime.now().minusHours(3 + TIMEZONE_OFFSET),
                 RESERVATION_PASSWORD,
                 USER_NAME,
                 DESCRIPTION
@@ -437,8 +437,8 @@ class GuestReservationServiceTest extends ServiceTest {
         //when
         ReservationCreateUpdateWithPasswordRequest reservationCreateUpdateWithPasswordRequest = new ReservationCreateUpdateWithPasswordRequest(
                 1L,
-                LocalDateTime.now().plusHours(1+TIMEZONE_OFFSET),
-                LocalDateTime.now().plusHours(endTime+TIMEZONE_OFFSET),
+                LocalDateTime.now().plusHours(1 + TIMEZONE_OFFSET),
+                LocalDateTime.now().plusHours(endTime + TIMEZONE_OFFSET),
                 reservation.getPassword(),
                 CHANGED_NAME,
                 CHANGED_DESCRIPTION
