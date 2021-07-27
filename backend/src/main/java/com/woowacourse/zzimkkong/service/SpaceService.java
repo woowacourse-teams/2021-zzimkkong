@@ -42,7 +42,8 @@ public class SpaceService {
     }
 
     public SpaceCreateResponse saveSpace(final Long mapId, final SpaceCreateRequest spaceCreateRequest, final Member manager) {
-        Map map = maps.findById(mapId).orElseThrow(NoSuchMapException::new);
+        Map map = maps.findById(mapId)
+                .orElseThrow(NoSuchMapException::new);
         if (map.isNotOwnedBy(manager)) {
             throw new NoAuthorityOnMapException();
         }

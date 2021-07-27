@@ -53,7 +53,10 @@ class SpaceServiceTest extends ServiceTest {
         given(spaces.save(any(Space.class)))
                 .willReturn(BE);
 
+        // when
         SpaceCreateResponse spaceCreateResponse = spaceService.saveSpace(LUTHER.getId(), spaceCreateRequest, POBI);
+
+        // then
         assertThat(spaceCreateResponse.getId()).isEqualTo(BE.getId());
     }
 
@@ -64,6 +67,7 @@ class SpaceServiceTest extends ServiceTest {
         given(maps.findById(anyLong()))
                 .willReturn(Optional.empty());
 
+        // when, then
         assertThatThrownBy(() -> spaceService.saveSpace(LUTHER.getId(), spaceCreateRequest, POBI))
                 .isInstanceOf(NoSuchMapException.class);
     }
@@ -76,9 +80,9 @@ class SpaceServiceTest extends ServiceTest {
                 .willReturn(Optional.of(LUTHER));
         given(spaces.save(any(Space.class)))
                 .willReturn(BE);
-
         Member sakjung = new Member(2L, "sakjung@naver.com", "test1234", "잠실킹");
 
+        // when, then
         assertThatThrownBy(() -> spaceService.saveSpace(LUTHER.getId(), spaceCreateRequest, sakjung))
                 .isInstanceOf(NoAuthorityOnMapException.class);
     }

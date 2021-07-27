@@ -37,6 +37,7 @@ public class Space {
     @Column(nullable = false)
     private String area;
 
+    // TODO: @EMBEDDABLE / @EMBEDDED 사용해서 필드 정리
     @Column(nullable = false)
     private LocalTime availableStartTime;
 
