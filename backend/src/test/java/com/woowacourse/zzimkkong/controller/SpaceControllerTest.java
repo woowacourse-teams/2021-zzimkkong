@@ -48,7 +48,8 @@ public class SpaceControllerTest extends AcceptanceTest {
                 settingsRequest,
                 "이미지 입니다"
         );
-        saveSpace(1L, spaceCreateRequest);
+        String saveSpaceApi = "/api/managers/maps/1/spaces";
+        saveSpace(saveSpaceApi, spaceCreateRequest);
     }
 
     @DisplayName("올바른 토큰이 주어질 때, space 정보가 들어오면 space를 저장한다")
@@ -74,7 +75,8 @@ public class SpaceControllerTest extends AcceptanceTest {
         );
 
         // when
-        ExtractableResponse<Response> response = saveSpace(1L, newSpaceCreateRequest);
+        String saveSpaceApi = "/api/managers/maps/1/spaces";
+        ExtractableResponse<Response> response = saveSpace(saveSpaceApi, newSpaceCreateRequest);
 
         // then
         assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
@@ -84,7 +86,8 @@ public class SpaceControllerTest extends AcceptanceTest {
     @Test
     void find() {
         // given, when
-        ExtractableResponse<Response> response = findSpace(1L, 1L);
+        String api = "/api/managers/maps/1/spaces/1";
+        ExtractableResponse<Response> response = findSpace(api);
         SpaceFindResponse actual = response.body().as(SpaceFindResponse.class);
         SpaceFindResponse expected = SpaceFindResponse.from(BE);
 
@@ -133,22 +136,22 @@ public class SpaceControllerTest extends AcceptanceTest {
                 .mapImage("이미지 입니다")
                 .build();
 
-        ExtractableResponse<Response> response = saveSpace(1L, defaultSpaceCreateRequest);
+        String saveSpaceApi = "/api/managers/maps/1/spaces";
+        ExtractableResponse<Response> response = saveSpace(saveSpaceApi, defaultSpaceCreateRequest);
 
         // then
         String api = response.header("location");
-        String[] split = api.split("/");
-        Long mapId = Long.valueOf(split[4]);
-        Long spaceId = Long.valueOf(split[6]);
 
-        ExtractableResponse<Response> findResponse = findSpace(mapId, spaceId);
+        ExtractableResponse<Response> findResponse = findSpace(api);
         SpaceFindResponse actualSpaceFindResponse = findResponse.as(SpaceFindResponse.class);
         SpaceFindResponse expectedSpaceFindResponse = SpaceFindResponse.from(defaultSpace);
 
-        assertThat(actualSpaceFindResponse).usingRecursiveComparison().isEqualTo(expectedSpaceFindResponse);
+        assertThat(actualSpaceFindResponse)
+                .usingRecursiveComparison()
+                .isEqualTo(expectedSpaceFindResponse);
     }
 
-    private ExtractableResponse<Response> saveSpace(final Long mapId, final SpaceCreateRequest spaceCreateRequest) {
+    private ExtractableResponse<Response> saveSpace(final String api, final SpaceCreateRequest spaceCreateRequest) {
         return RestAssured
                 .given(getRequestSpecification()).log().all()
                 .accept("application/json")
@@ -156,18 +159,18 @@ public class SpaceControllerTest extends AcceptanceTest {
                 .filter(document("space/post", getRequestPreprocessor(), getResponsePreprocessor()))
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body(spaceCreateRequest)
-                .when().post("/api/managers/maps/" + mapId.toString() + "/spaces")
+                .when().post(api)
                 .then().log().all().extract();
     }
 
-    private ExtractableResponse<Response> findSpace(final Long mapId, final Long spaceId) {
+    private ExtractableResponse<Response> findSpace(final String api) {
         return RestAssured
                 .given(getRequestSpecification()).log().all()
                 .accept("application/json")
                 .header("Authorization", AuthorizationExtractor.AUTHENTICATION_TYPE + " " + getToken())
                 .filter(document("space/get", getRequestPreprocessor(), getResponsePreprocessor()))
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .when().get("/api/managers/maps/" + mapId.toString() + "/spaces/" + spaceId.toString())
+                .when().get(api)
                 .then().log().all().extract();
     }
 }
