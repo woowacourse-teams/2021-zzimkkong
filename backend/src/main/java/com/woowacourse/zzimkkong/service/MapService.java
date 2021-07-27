@@ -20,7 +20,7 @@ public class MapService {
         this.maps = mapRepository;
     }
 
-    public MapCreateResponse saveMap(final Member member, final MapCreateRequest mapCreateRequest) {
+    public MapCreateResponse saveMap(final MapCreateRequest mapCreateRequest, final Member member) {
         Map saveMap = maps.save(new Map(
                 mapCreateRequest.getMapName(),
                 mapCreateRequest.getMapDrawing(),

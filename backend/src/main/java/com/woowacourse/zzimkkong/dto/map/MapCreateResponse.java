@@ -8,7 +8,7 @@ public class MapCreateResponse {
     public MapCreateResponse() {
     }
 
-    public MapCreateResponse(Long id) {
+    private MapCreateResponse(Long id) {
         this.id = id;
     }
 

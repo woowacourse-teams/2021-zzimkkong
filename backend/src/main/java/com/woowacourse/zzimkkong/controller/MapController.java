@@ -9,6 +9,7 @@ import com.woowacourse.zzimkkong.service.MapService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.net.URI;
 
 @RestController
@@ -16,7 +17,7 @@ import java.net.URI;
 public class MapController {
     private final MapService mapService;
 
-    public MapController(MapService mapService) {
+    public MapController(final MapService mapService) {
         this.mapService = mapService;
     }
 
@@ -27,8 +28,8 @@ public class MapController {
     }
 
     @PostMapping
-    public ResponseEntity<Void> create(@Manager Member member, @RequestBody MapCreateRequest mapCreateRequest) {
-        MapCreateResponse mapCreateResponse = mapService.saveMap(member, mapCreateRequest);
+    public ResponseEntity<Void> create(@Valid @RequestBody MapCreateRequest mapCreateRequest, @Manager Member manager) {
+        MapCreateResponse mapCreateResponse = mapService.saveMap(mapCreateRequest, manager);
         return ResponseEntity.created(URI.create("/api/managers/maps/" + mapCreateResponse.getId()))
                 .build();
     }
