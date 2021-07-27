@@ -76,7 +76,9 @@ public abstract class ReservationService {
 
     private void validateStartTimeInPast(final LocalDateTime startDateTime) {
         LocalDateTime localNow = LocalDateTime.now();
-        ZonedDateTime zonedLocal = localNow.atZone(ZoneId.of("Asia/Seoul"));
+        ZonedDateTime zonedLocal = localNow.atZone(ZoneId.of("UTC"))
+                .withZoneSameInstant(ZoneId.of("Asia/Seoul"));
+
         ZonedDateTime zonedStartDateTime = startDateTime.atZone(ZoneId.of("Asia/Seoul"));
 
         if (zonedStartDateTime.isBefore(zonedLocal)) {
