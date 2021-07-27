@@ -25,13 +25,13 @@ public class MapController {
     @GetMapping("/{mapId}")
     public ResponseEntity<MapFindResponse> find(@PathVariable final Long mapId, @Manager final Member manager) {
         MapFindResponse mapFindResponse = mapService.findMap(mapId, manager);
-        return ResponseEntity.ok(mapFindResponse);
+        return ResponseEntity.ok().body(mapFindResponse);
     }
 
     @GetMapping
     public ResponseEntity<MapFindAllResponse> findAll(@Manager Member member) {
         MapFindAllResponse mapFindAllResponse = mapService.findAllMaps(member);
-        return ResponseEntity.ok(mapFindAllResponse);
+        return ResponseEntity.ok().body(mapFindAllResponse);
     }
 
     @PostMapping

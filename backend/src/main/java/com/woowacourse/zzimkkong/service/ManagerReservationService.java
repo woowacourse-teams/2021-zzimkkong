@@ -32,7 +32,6 @@ public class ManagerReservationService extends ReservationService {
             final Long mapId,
             final ReservationCreateUpdateWithPasswordRequest reservationCreateUpdateWithPasswordRequest,
             final Member manager) {
-        validateMapExistence(mapId);
         validateAuthorityOnMap(mapId, manager);
 
         validateTime(reservationCreateUpdateWithPasswordRequest);
@@ -58,7 +57,6 @@ public class ManagerReservationService extends ReservationService {
             final Long mapId,
             final Long reservationId,
             final Member manager) {
-        validateMapExistence(mapId);
         validateAuthorityOnMap(mapId, manager);
 
         Reservation reservation = reservations
@@ -72,7 +70,6 @@ public class ManagerReservationService extends ReservationService {
             final Long reservationId,
             final ReservationCreateUpdateRequest reservationCreateUpdateRequest,
             final Member manager) {
-        validateMapExistence(mapId);
         validateAuthorityOnMap(mapId, manager);
         validateTime(reservationCreateUpdateRequest);
 
@@ -93,7 +90,6 @@ public class ManagerReservationService extends ReservationService {
             final Long mapId,
             final Long reservationId,
             final Member manager) {
-        validateMapExistence(mapId);
         validateAuthorityOnMap(mapId, manager);
 
         Reservation reservation = reservations

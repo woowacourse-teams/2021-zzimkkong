@@ -162,7 +162,6 @@ public abstract class ReservationService {
         );
     }
 
-    // todo 이 메소드 없애기 -김샐
     protected void validateMapExistence(final Long mapId) {
         if (!maps.existsById(mapId)) {
             throw new NoSuchMapException();

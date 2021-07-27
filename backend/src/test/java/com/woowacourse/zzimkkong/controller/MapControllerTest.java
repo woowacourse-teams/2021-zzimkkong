@@ -44,7 +44,8 @@ class MapControllerTest extends AcceptanceTest {
     @DisplayName("특정 맵을 조회한다.")
     void find() {
         // given
-        String api = saveFixtureMap(new MapCreateRequest(LUTHER.getName(), LUTHER.getMapDrawing(), LUTHER.getMapImage()));
+        String api = saveMap("/api/managers/maps", new MapCreateRequest(LUTHER.getName(), LUTHER.getMapDrawing(), LUTHER.getMapImage()))
+                .header("location");
 
         // when
         ExtractableResponse<Response> response = findMap(api);
@@ -58,17 +59,12 @@ class MapControllerTest extends AcceptanceTest {
                 .isEqualTo(expectedResponse);
     }
 
-    private String saveFixtureMap(MapCreateRequest mapCreateRequest) {
-        ExtractableResponse<Response> savedMapResponse = saveMap("/api/managers/maps", mapCreateRequest);
-        return savedMapResponse.header("location");
-    }
-
     @Test
     @DisplayName("특정 멤버가 가진 모든 맵을 조회한다.")
     void findAll() {
         // given
-        saveFixtureMap(new MapCreateRequest(LUTHER.getName(), LUTHER.getMapDrawing(), LUTHER.getMapImage()));
-        saveFixtureMap(new MapCreateRequest(SMALL_HOUSE.getName(), SMALL_HOUSE.getMapDrawing(), SMALL_HOUSE.getMapImage()));
+        saveMap("/api/managers/maps", new MapCreateRequest(LUTHER.getName(), LUTHER.getMapDrawing(), LUTHER.getMapImage()));
+        saveMap("/api/managers/maps", new MapCreateRequest(SMALL_HOUSE.getName(), SMALL_HOUSE.getMapDrawing(), SMALL_HOUSE.getMapImage()));
 
         // when
         ExtractableResponse<Response> response = findAllMaps();
