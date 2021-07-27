@@ -39,7 +39,7 @@ class MapServiceTest extends ServiceTest {
                 .willReturn(LUTHER);
 
         //then
-        MapCreateResponse mapCreateResponse = mapService.saveMap(POBI, mapCreateUpdateRequest);
+        MapCreateResponse mapCreateResponse = mapService.saveMap(mapCreateUpdateRequest, POBI);
         assertThat(mapCreateResponse.getId()).isEqualTo(LUTHER.getId());
     }
 
@@ -51,7 +51,7 @@ class MapServiceTest extends ServiceTest {
                 .willReturn(Optional.of(LUTHER));
 
         //when
-        MapFindResponse mapFindResponse = mapService.findMap(POBI, LUTHER.getId());
+        MapFindResponse mapFindResponse = mapService.findMap(LUTHER.getId(), POBI);
 
         //then
         assertThat(mapFindResponse).usingRecursiveComparison()
@@ -83,7 +83,7 @@ class MapServiceTest extends ServiceTest {
                 .willReturn(Optional.of(LUTHER));
 
         //when, then
-        assertDoesNotThrow(() -> mapService.updateMap(POBI, LUTHER.getId(), mapCreateUpdateRequest));
+        assertDoesNotThrow(() -> mapService.updateMap(LUTHER.getId(), mapCreateUpdateRequest, POBI));
     }
 
     @Test
@@ -98,7 +98,7 @@ class MapServiceTest extends ServiceTest {
                 .willReturn(Optional.of(map));
 
         // when, then
-        assertThatThrownBy(() -> mapService.updateMap(POBI, map.getId(), mapCreateUpdateRequest))
+        assertThatThrownBy(() -> mapService.updateMap(map.getId(), mapCreateUpdateRequest, POBI))
                 .isInstanceOf(NoAuthorityOnMapException.class);
     }
 
@@ -116,7 +116,7 @@ class MapServiceTest extends ServiceTest {
                 .willReturn(false);
 
         //when, then
-        assertDoesNotThrow(() -> mapService.deleteMap(POBI, LUTHER.getId()));
+        assertDoesNotThrow(() -> mapService.deleteMap(LUTHER.getId(), POBI));
     }
 
     @Test
@@ -133,7 +133,7 @@ class MapServiceTest extends ServiceTest {
                 .willReturn(true);
 
         //when, then
-        assertThatThrownBy(() -> mapService.deleteMap(POBI, LUTHER.getId()))
+        assertThatThrownBy(() -> mapService.deleteMap(LUTHER.getId(), POBI))
                 .isInstanceOf(ReservationExistOnSpaceException.class);
     }
 }

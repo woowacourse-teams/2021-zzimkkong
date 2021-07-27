@@ -8,7 +8,8 @@ export const theme: DefaultTheme = {
   black: PALETTE.BLACK,
   gray: PALETTE.GRAY,
   white: PALETTE.WHITE,
-  modalOverlay: PALETTE.OPACITY_GRAY,
+  modalOverlay: PALETTE.OPACITY_BLACK[400],
+  shadow: PALETTE.OPACITY_BLACK[200],
   breakpoints: {
     sm: 576,
     md: 768,

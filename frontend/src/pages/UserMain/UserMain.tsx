@@ -1,19 +1,29 @@
-import { useLocation } from 'react-router-dom';
+import { AxiosError } from 'axios';
+import { FormEventHandler, useState } from 'react';
+import { useMutation } from 'react-query';
+import { useHistory, useLocation } from 'react-router-dom';
+import { deleteReservation } from 'api/reservation';
+import { ReactComponent as Delete } from 'assets/svg/delete.svg';
+import { ReactComponent as Edit } from 'assets/svg/edit.svg';
 import { ReactComponent as Luther } from 'assets/svg/luther.svg';
 import { ReactComponent as More } from 'assets/svg/more.svg';
 import Button from 'components/Button/Button';
 import DateInput from 'components/DateInput/DateInput';
 import Header from 'components/Header/Header';
+import Input from 'components/Input/Input';
 import Layout from 'components/Layout/Layout';
+import Modal from 'components/Modal/Modal';
 import Panel from 'components/Panel/Panel';
 import PinRadio from 'components/PinRadio/PinRadio';
 import ReservationListItem from 'components/ReservationListItem/ReservationListItem';
+import MESSAGE from 'constants/message';
 import PATH from 'constants/path';
 import useInput from 'hooks/useInput';
 import useReservations from 'hooks/useReservations';
 import { Reservation, Space } from 'types/common';
 import { formatDate } from 'utils/datetime';
 import * as Styled from './UserMain.styles';
+import spaceList from './spaceList';
 
 export interface UserMainState {
   spaceId?: Space['spaceId'];
@@ -21,155 +31,20 @@ export interface UserMainState {
 }
 
 const UserMain = (): JSX.Element => {
-  const spaceList: Space[] = [
-    {
-      spaceId: 1,
-      spaceName: '백엔드 강의실',
-      textPosition: 'bottom',
-      color: '#FED7D9',
-      coordinate: {
-        x: 100,
-        y: 90,
-      },
-    },
-    {
-      spaceId: 2,
-      spaceName: '프론트 강의실1',
-      textPosition: 'bottom',
-      color: '#FED7D9',
-      coordinate: {
-        x: 560,
-        y: 40,
-      },
-    },
-    {
-      spaceId: 3,
-      spaceName: '프론트 강의실2',
-      textPosition: 'bottom',
-      color: '#FED7D9',
-      coordinate: {
-        x: 560,
-        y: 140,
-      },
-    },
-    {
-      spaceId: 4,
-      spaceName: '회의실1',
-      textPosition: 'bottom',
-      color: '#FFE3AC',
-      coordinate: {
-        x: 29,
-        y: 229,
-      },
-    },
-    {
-      spaceId: 5,
-      spaceName: '회의실2',
-      textPosition: 'bottom',
-      color: '#FFE3AC',
-      coordinate: {
-        x: 88,
-        y: 229,
-      },
-    },
-    {
-      spaceId: 6,
-      spaceName: '회의실3',
-      textPosition: 'bottom',
-      color: '#FFE3AC',
-      coordinate: {
-        x: 510,
-        y: 220,
-      },
-    },
-    {
-      spaceId: 7,
-      spaceName: '회의실4',
-      textPosition: 'bottom',
-      color: '#FFE3AC',
-      coordinate: {
-        x: 584,
-        y: 220,
-      },
-    },
-    {
-      spaceId: 8,
-      spaceName: '회의실5',
-      textPosition: 'bottom',
-      color: '#FFE3AC',
-      coordinate: {
-        x: 668,
-        y: 335,
-      },
-    },
-    {
-      spaceId: 9,
-      spaceName: '트랙방',
-      textPosition: 'bottom',
-      color: '#D8FBCC',
-      coordinate: {
-        x: 259,
-        y: 336,
-      },
-    },
-    {
-      spaceId: 10,
-      spaceName: '페어룸1',
-      textPosition: 'left',
-      color: '#CCDFFB',
-      coordinate: {
-        x: 208,
-        y: 289,
-      },
-    },
-    {
-      spaceId: 11,
-      spaceName: '페어룸2',
-      textPosition: 'left',
-      color: '#CCDFFB',
-      coordinate: {
-        x: 208,
-        y: 318,
-      },
-    },
-    {
-      spaceId: 12,
-      spaceName: '페어룸3',
-      textPosition: 'left',
-      color: '#CCDFFB',
-      coordinate: {
-        x: 208,
-        y: 347,
-      },
-    },
-    {
-      spaceId: 13,
-      spaceName: '페어룸4',
-      textPosition: 'left',
-      color: '#CCDFFB',
-      coordinate: {
-        x: 208,
-        y: 376,
-      },
-    },
-    {
-      spaceId: 14,
-      spaceName: '페어룸5',
-      textPosition: 'left',
-      color: '#CCDFFB',
-      coordinate: {
-        x: 208,
-        y: 404,
-      },
-    },
-  ];
-
   // Note: 루터회관 14층으로 상정하고 구현. 추후 useSpaces로 대체 필요
   const mapId = 1;
 
+  const [modalOpen, setModalOpen] = useState(false);
+  const [passwordInputModalOpen, setPasswordInputModalOpen] = useState(false);
+  const [selectedReservation, setSelectedReservation] = useState<Reservation>();
+
+  const [passwordInput, onChangePasswordInput] = useInput('');
+
+  const history = useHistory();
   const location = useLocation<UserMainState>();
   const spaceId = location.state?.spaceId;
   const targetDate = location.state?.targetDate;
+
   const now = new Date();
   const todayDate = new Date(now.getFullYear(), now.getMonth(), now.getDate());
 
@@ -182,8 +57,52 @@ const UserMain = (): JSX.Element => {
   });
   const reservations = getReservations.data?.data?.reservations ?? [];
 
+  const removeReservation = useMutation(deleteReservation, {
+    onSuccess: () => {
+      window.alert('예약이 삭제 되었습니다.');
+      setModalOpen(false);
+      setPasswordInputModalOpen(false);
+    },
+
+    onError: (error: AxiosError<Error>) => {
+      alert(error.response?.data.message ?? MESSAGE.RESERVATION.UNEXPECTED_DELETE_ERROR);
+    },
+  });
+
   const selectedSpace =
     spaceList.find((space) => space.spaceId === Number(selectedSpaceId)) ?? spaceList[0];
+
+  const handleSelectModal = (reservation: Reservation) => {
+    setModalOpen(true);
+    setSelectedReservation(reservation);
+  };
+
+  const handleSelectEdit = () => {
+    history.push({
+      pathname: PATH.RESERVATION_EDIT,
+      state: {
+        mapId,
+        spaceId: Number(selectedSpaceId),
+        reservation: selectedReservation,
+        spaceName: selectedSpace.spaceName,
+        selectedDate: date,
+      },
+    });
+  };
+
+  const handleSelectDelete = (): void => {
+    setPasswordInputModalOpen(true);
+  };
+
+  const handleDeleteReservation: FormEventHandler<HTMLFormElement> = (event) => {
+    event.preventDefault();
+
+    removeReservation.mutate({
+      mapId,
+      password: passwordInput,
+      reservationId: Number(selectedReservation?.id),
+    });
+  };
 
   return (
     <>
@@ -223,33 +142,25 @@ const UserMain = (): JSX.Element => {
                     },
                   }}
                 >
-                  <Panel.Inner>예약</Panel.Inner>
+                  예약
                 </Styled.ReservationLink>
               )}
-              <Panel.Inner>
-                <Panel.Title>{selectedSpace.spaceName}</Panel.Title>
-              </Panel.Inner>
+              <Panel.Title>{selectedSpace.spaceName}</Panel.Title>
             </Panel.Header>
             <Panel.Content>
               <>
                 {getReservations.isLoadingError && (
-                  <Panel.Inner>
-                    <Styled.Message>
-                      예약 목록을 불러오는 데 문제가 생겼어요!
-                      <br />
-                      새로 고침으로 다시 시도해주세요.
-                    </Styled.Message>
-                  </Panel.Inner>
+                  <Styled.Message>
+                    예약 목록을 불러오는 데 문제가 생겼어요!
+                    <br />
+                    새로 고침으로 다시 시도해주세요.
+                  </Styled.Message>
                 )}
                 {getReservations.isLoading && !getReservations.isLoadingError && (
-                  <Panel.Inner>
-                    <Styled.Message>불러오는 중입니다...</Styled.Message>
-                  </Panel.Inner>
+                  <Styled.Message>불러오는 중입니다...</Styled.Message>
                 )}
                 {getReservations.isSuccess && reservations?.length === 0 && (
-                  <Panel.Inner>
-                    <Styled.Message>오늘의 첫 예약을 잡아보세요!</Styled.Message>
-                  </Panel.Inner>
+                  <Styled.Message>오늘의 첫 예약을 잡아보세요!</Styled.Message>
                 )}
                 {getReservations.isSuccess && reservations.length > 0 && (
                   <Styled.ReservationList role="list">
@@ -258,7 +169,11 @@ const UserMain = (): JSX.Element => {
                         key={reservation.id}
                         reservation={reservation}
                         control={
-                          <Button variant="text" size="small">
+                          <Button
+                            variant="text"
+                            size="small"
+                            onClick={() => handleSelectModal(reservation)}
+                          >
                             <More />
                           </Button>
                         }
@@ -271,6 +186,45 @@ const UserMain = (): JSX.Element => {
           </Panel>
         </Styled.PanelContainer>
       </Layout>
+      <Modal open={modalOpen} isClosableDimmer={true} onClose={() => setModalOpen(false)}>
+        <Styled.SelectBox>
+          <Styled.SelectButton onClick={handleSelectEdit}>
+            <Edit />
+            수정하기
+          </Styled.SelectButton>
+          <Styled.SelectButton onClick={handleSelectDelete}>
+            <Delete />
+            삭제하기
+          </Styled.SelectButton>
+        </Styled.SelectBox>
+      </Modal>
+      <Modal
+        open={passwordInputModalOpen}
+        isClosableDimmer={true}
+        onClose={() => setModalOpen(false)}
+      >
+        <Modal.Header>예약시 사용하신 비밀번호를 입력해주세요.</Modal.Header>
+        <Modal.Inner>
+          <form onSubmit={handleDeleteReservation}>
+            <Input
+              type="password"
+              label="비밀번호"
+              minLength={4}
+              maxLength={4}
+              value={passwordInput}
+              onChange={onChangePasswordInput}
+            />
+            <Styled.DeleteModalContainer>
+              <Button variant="text" type="button" onClick={() => setPasswordInputModalOpen(false)}>
+                취소
+              </Button>
+              <Button variant="text" type="submit">
+                확인
+              </Button>
+            </Styled.DeleteModalContainer>
+          </form>
+        </Modal.Inner>
+      </Modal>
     </>
   );
 };

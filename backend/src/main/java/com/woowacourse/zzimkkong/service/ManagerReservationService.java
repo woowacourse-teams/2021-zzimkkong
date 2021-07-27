@@ -19,8 +19,6 @@ import com.woowacourse.zzimkkong.repository.SpaceRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
-
 @Service
 @Transactional
 public class ManagerReservationService extends ReservationService {
@@ -32,7 +30,6 @@ public class ManagerReservationService extends ReservationService {
             final Long mapId,
             final ReservationCreateUpdateWithPasswordRequest reservationCreateUpdateWithPasswordRequest,
             final Member manager) {
-        validateMapExistence(mapId);
         validateAuthorityOnMap(mapId, manager);
 
         validateTime(reservationCreateUpdateWithPasswordRequest);
@@ -57,9 +54,8 @@ public class ManagerReservationService extends ReservationService {
     public ReservationResponse findReservation(
             final Long mapId,
             final Long reservationId,
-            final Member provider) {
-        validateMapExistence(mapId);
-        validateAuthorityOnMap(mapId, provider);
+            final Member manager) {
+        validateAuthorityOnMap(mapId, manager);
 
         Reservation reservation = reservations
                 .findById(reservationId)
@@ -71,9 +67,8 @@ public class ManagerReservationService extends ReservationService {
             final Long mapId,
             final Long reservationId,
             final ReservationCreateUpdateRequest reservationCreateUpdateRequest,
-            final Member provider) {
-        validateMapExistence(mapId);
-        validateAuthorityOnMap(mapId, provider);
+            final Member manager) {
+        validateAuthorityOnMap(mapId, manager);
         validateTime(reservationCreateUpdateRequest);
 
         Space space = spaces.findById(reservationCreateUpdateRequest.getSpaceId())
@@ -92,9 +87,8 @@ public class ManagerReservationService extends ReservationService {
     public SlackResponse deleteReservation(
             final Long mapId,
             final Long reservationId,
-            final Member provider) {
-        validateMapExistence(mapId);
-        validateAuthorityOnMap(mapId, provider);
+            final Member manager) {
+        validateAuthorityOnMap(mapId, manager);
 
         Reservation reservation = reservations
                 .findById(reservationId)
@@ -103,14 +97,14 @@ public class ManagerReservationService extends ReservationService {
         return SlackResponse.from(reservation);
     }
 
-    private void validateAuthorityOnMap(final Long mapId, final Member provider) {
+    private void validateAuthorityOnMap(final Long mapId, final Member manager) {
         Map map = maps.findById(mapId)
                 .orElseThrow(NoSuchMapException::new);
-        validateMangerOfMap(provider, map);
+        validateMangerOfMap(manager, map);
     }
 
     private void validateMangerOfMap(Member manager, Map map) {
-        if (!manager.equals(map.getMember())) {
+        if (map.isNotOwnedBy(manager)) {
             throw new NoAuthorityOnMapException();
         }
     }
