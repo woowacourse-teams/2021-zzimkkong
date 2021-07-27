@@ -10,6 +10,7 @@ import com.woowacourse.zzimkkong.dto.reservation.ReservationCreateUpdateWithPass
 import com.woowacourse.zzimkkong.dto.reservation.ReservationResponse;
 import com.woowacourse.zzimkkong.dto.slack.SlackResponse;
 import com.woowacourse.zzimkkong.exception.authorization.NoAuthorityOnMapException;
+import com.woowacourse.zzimkkong.exception.map.NoSuchMapException;
 import com.woowacourse.zzimkkong.exception.reservation.NoSuchReservationException;
 import com.woowacourse.zzimkkong.exception.space.NoSuchSpaceException;
 import com.woowacourse.zzimkkong.repository.MapRepository;
@@ -56,9 +57,9 @@ public class ManagerReservationService extends ReservationService {
     public ReservationResponse findReservation(
             final Long mapId,
             final Long reservationId,
-            final Member provider) {
+            final Member manager) {
         validateMapExistence(mapId);
-        validateAuthorityOnMap(mapId, provider);
+        validateAuthorityOnMap(mapId, manager);
 
         Reservation reservation = reservations
                 .findById(reservationId)
@@ -70,9 +71,9 @@ public class ManagerReservationService extends ReservationService {
             final Long mapId,
             final Long reservationId,
             final ReservationCreateUpdateRequest reservationCreateUpdateRequest,
-            final Member provider) {
+            final Member manager) {
         validateMapExistence(mapId);
-        validateAuthorityOnMap(mapId, provider);
+        validateAuthorityOnMap(mapId, manager);
         validateTime(reservationCreateUpdateRequest);
 
         Space space = spaces.findById(reservationCreateUpdateRequest.getSpaceId())
@@ -91,9 +92,9 @@ public class ManagerReservationService extends ReservationService {
     public SlackResponse deleteReservation(
             final Long mapId,
             final Long reservationId,
-            final Member provider) {
+            final Member manager) {
         validateMapExistence(mapId);
-        validateAuthorityOnMap(mapId, provider);
+        validateAuthorityOnMap(mapId, manager);
 
         Reservation reservation = reservations
                 .findById(reservationId)
@@ -102,14 +103,15 @@ public class ManagerReservationService extends ReservationService {
         return SlackResponse.from(reservation);
     }
 
-    private void validateAuthorityOnMap(final Long mapId, final Member provider) {
-        List<Map> providerMaps = maps.findAllByMember(provider);
-        if (noMapsMatch(providerMaps, mapId)) {
-            throw new NoAuthorityOnMapException();
-        }
+    private void validateAuthorityOnMap(final Long mapId, final Member manager) {
+        Map map = maps.findById(mapId)
+                .orElseThrow(NoSuchMapException::new);
+        validateMangerOfMap(manager, map);
     }
 
-    private boolean noMapsMatch(final List<Map> providerMaps, final Long mapId) {
-        return providerMaps.stream().noneMatch(map -> map.hasSameId(mapId));
+    private void validateMangerOfMap(Member manager, Map map) {
+        if (map.isNotOwnedBy(manager)) {
+            throw new NoAuthorityOnMapException();
+        }
     }
 }
