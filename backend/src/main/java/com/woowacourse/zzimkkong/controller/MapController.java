@@ -29,8 +29,8 @@ public class MapController {
     }
 
     @GetMapping
-    public ResponseEntity<MapFindAllResponse> findAll(@Manager Member member) {
-        MapFindAllResponse mapFindAllResponse = mapService.findAllMaps(member);
+    public ResponseEntity<MapFindAllResponse> findAll(@Manager final Member manager) {
+        MapFindAllResponse mapFindAllResponse = mapService.findAllMaps(manager);
         return ResponseEntity.ok().body(mapFindAllResponse);
     }
 
