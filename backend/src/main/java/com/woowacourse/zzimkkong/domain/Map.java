@@ -46,6 +46,10 @@ public class Map {
         this.mapImage = mapImage;
     }
 
+    public void updateImage(String thumbnailUrl) {
+        this.mapImage = thumbnailUrl;
+    }
+
     public Long getId() {
         return id;
     }

@@ -1,7 +1,9 @@
 package com.woowacourse.zzimkkong.infrastructure;
 
+import com.amazonaws.AmazonClientException;
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.model.PutObjectRequest;
+import com.woowacourse.zzimkkong.exception.S3UploadException;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
@@ -19,7 +21,12 @@ public class S3Uploader {
 
     public String upload(final String directoryName, final File uploadFile) {
         String fileName = directoryName + "/" + uploadFile.getName();
-        return putS3(uploadFile, fileName);
+
+        try {
+            return putS3(uploadFile, fileName);
+        } catch (AmazonClientException e) {
+            throw new S3UploadException();
+        }
     }
 
     private String putS3(File uploadFile, String fileName) {

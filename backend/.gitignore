@@ -37,3 +37,6 @@ out/
 
 ### VS Code ###
 .vscode/
+
+### S3 resource ###
+*.png

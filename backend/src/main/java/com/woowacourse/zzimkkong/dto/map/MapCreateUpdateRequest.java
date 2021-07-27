@@ -12,15 +12,15 @@ public class MapCreateUpdateRequest {
     private String mapDrawing;
 
     @NotBlank(message = EMPTY_MESSAGE)
-    private String mapImage;
+    private String mapSvg;
 
     public MapCreateUpdateRequest() {
     }
 
-    public MapCreateUpdateRequest(String mapName, String mapDrawing, String mapImage) {
+    public MapCreateUpdateRequest(String mapName, String mapDrawing, String mapSvg) {
         this.mapName = mapName;
         this.mapDrawing = mapDrawing;
-        this.mapImage = mapImage;
+        this.mapSvg = mapSvg;
     }
 
     public String getMapName() {
@@ -31,7 +31,7 @@ public class MapCreateUpdateRequest {
         return mapDrawing;
     }
 
-    public String getMapImage() {
-        return mapImage;
+    public String getMapSvg() {
+        return mapSvg;
     }
 }

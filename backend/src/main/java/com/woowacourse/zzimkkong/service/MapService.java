@@ -15,17 +15,12 @@ import com.woowacourse.zzimkkong.infrastructure.SvgConverter;
 import com.woowacourse.zzimkkong.repository.MapRepository;
 import com.woowacourse.zzimkkong.repository.ReservationRepository;
 import com.woowacourse.zzimkkong.repository.SpaceRepository;
-import org.apache.batik.transcoder.TranscoderException;
-import org.apache.batik.transcoder.TranscoderInput;
-import org.apache.batik.transcoder.TranscoderOutput;
-import org.apache.batik.transcoder.image.PNGTranscoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.io.*;
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.UUID;
 
 @Service
 @Transactional
@@ -52,20 +47,14 @@ public class MapService {
         Map saveMap = maps.save(new Map(
                 mapCreateUpdateRequest.getMapName(),
                 mapCreateUpdateRequest.getMapDrawing(),
-                mapCreateUpdateRequest.getMapImage(),
+                mapCreateUpdateRequest.getMapSvg().substring(10),
                 member));
 
-        uploadPngToS3(saveMap.getId().toString(), mapCreateUpdateRequest.getMapImage());
+        String thumbnailUrl = uploadPngToS3(saveMap.getId().toString(), mapCreateUpdateRequest.getMapSvg());
+        saveMap.updateImage(thumbnailUrl);
 
         return MapCreateResponse.from(saveMap);
     }
-
-    private void uploadPngToS3(String mapId, String svg) {
-        File pngFile = svgConverter.convertSvgToPng(mapId, svg);
-        s3Uploader.upload("thumbnails", pngFile);
-        pngFile.delete();
-    }
-
 
     @Transactional(readOnly = true)
     public MapFindResponse findMap(final Member member, final Long mapId) {
@@ -88,12 +77,12 @@ public class MapService {
 
         validateManagerOfMap(member, map);
 
-        uploadPngToS3(map.getId().toString(), mapCreateUpdateRequest.getMapImage());
+        uploadPngToS3(map.getId().toString(), mapCreateUpdateRequest.getMapSvg());
 
         map.update(
                 mapCreateUpdateRequest.getMapName(),
                 mapCreateUpdateRequest.getMapDrawing(),
-                mapCreateUpdateRequest.getMapImage());
+                mapCreateUpdateRequest.getMapSvg());
     }
 
     public void deleteMap(final Member member, final Long mapId) {
@@ -122,5 +111,12 @@ public class MapService {
         if (!manager.equals(map.getMember())) {   // TODO: ReservationService 와의 중복 제거 -김샐
             throw new NoAuthorityOnMapException();
         }
+    }
+
+    private String uploadPngToS3(String fileName, String svg) {
+        File pngFile = svgConverter.convertSvgToPng(fileName, svg);
+        String thumbnailUrl = s3Uploader.upload("thumbnails", pngFile);
+        pngFile.delete();
+        return thumbnailUrl;
     }
 }
