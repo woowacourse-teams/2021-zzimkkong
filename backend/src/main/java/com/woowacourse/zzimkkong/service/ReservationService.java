@@ -8,7 +8,7 @@ import com.woowacourse.zzimkkong.dto.reservation.ReservationFindResponse;
 import com.woowacourse.zzimkkong.exception.map.NoSuchMapException;
 import com.woowacourse.zzimkkong.exception.reservation.*;
 import com.woowacourse.zzimkkong.exception.space.NoSuchSpaceException;
-import com.woowacourse.zzimkkong.infrastructure.TimeValidator;
+import com.woowacourse.zzimkkong.infrastructure.TimeConverter;
 import com.woowacourse.zzimkkong.repository.MapRepository;
 import com.woowacourse.zzimkkong.repository.ReservationRepository;
 import com.woowacourse.zzimkkong.repository.SpaceRepository;
@@ -16,6 +16,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.ZonedDateTime;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
@@ -27,17 +28,17 @@ public abstract class ReservationService {
     protected MapRepository maps;
     protected SpaceRepository spaces;
     protected ReservationRepository reservations;
-    protected TimeValidator timeValidator;
+    protected TimeConverter timeConverter;
 
     public ReservationService(
             final MapRepository maps,
             final SpaceRepository spaces,
             final ReservationRepository reservations,
-            final TimeValidator timeValidator) {
+            final TimeConverter timeConverter) {
         this.maps = maps;
         this.spaces = spaces;
         this.reservations = reservations;
-        this.timeValidator = timeValidator;
+        this.timeConverter = timeConverter;
     }
 
     @Transactional(readOnly = true)
@@ -68,7 +69,12 @@ public abstract class ReservationService {
         LocalDateTime startDateTime = reservationCreateUpdateRequest.getStartDateTime();
         LocalDateTime endDateTime = reservationCreateUpdateRequest.getEndDateTime();
 
-        validateStartTimeInPast(startDateTime);
+        ZonedDateTime zonedDateTime = timeConverter.convertTimeZone(startDateTime);
+        ZonedDateTime now = timeConverter.getNow();
+
+        if (zonedDateTime.isBefore(now)) {
+            throw new ImpossibleStartTimeException();
+        }
 
         if (endDateTime.isBefore(startDateTime) || startDateTime.equals(endDateTime)) {
             throw new ImpossibleEndTimeException();
@@ -77,10 +83,6 @@ public abstract class ReservationService {
         if (!startDateTime.toLocalDate().isEqual(endDateTime.toLocalDate())) {
             throw new NonMatchingStartAndEndDateException();
         }
-    }
-
-    protected void validateStartTimeInPast(final LocalDateTime startDateTime) {
-        timeValidator.validateStartTimeInPast(startDateTime);
     }
 
     protected void validateAvailability(
