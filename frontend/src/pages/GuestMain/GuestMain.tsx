@@ -57,7 +57,7 @@ const GuestMain = (): JSX.Element => {
   });
   const reservations = getReservations.data?.data?.reservations ?? [];
 
-  const hasReservationButton = new Date(date) > todayDate;
+  const reservationAvailable = new Date(date) > todayDate;
 
   const removeReservation = useMutation(deleteReservation, {
     onSuccess: () => {
@@ -110,7 +110,7 @@ const GuestMain = (): JSX.Element => {
     <>
       <Header />
       <Layout>
-        <Styled.PageWithBottomButton hasReservationButton={hasReservationButton}>
+        <Styled.PageWithBottomButton hasBottomButton={reservationAvailable}>
           <Styled.PageTitle>우아한테크코스 교육장</Styled.PageTitle>
           <DateInput date={date} setDate={setDate} />
           <Styled.MapContainer>
@@ -174,7 +174,7 @@ const GuestMain = (): JSX.Element => {
             </Panel>
           </Styled.PanelContainer>
         </Styled.PageWithBottomButton>
-        {hasReservationButton && (
+        {reservationAvailable && (
           <Styled.ReservationLink
             to={{
               pathname: PATH.GUEST_RESERVATION,

@@ -1,8 +1,8 @@
 import { Link } from 'react-router-dom';
 import styled from 'styled-components';
 
-export const PageWithBottomButton = styled.div<{ hasReservationButton: boolean }>`
-  margin-bottom: ${({ hasReservationButton }) => (hasReservationButton ? '5rem' : '2rem')};
+export const PageWithBottomButton = styled.div<{ hasBottomButton: boolean }>`
+  margin-bottom: ${({ hasBottomButton }) => (hasBottomButton ? '5rem' : '2rem')};
 `;
 
 export const PageTitle = styled.h2`
