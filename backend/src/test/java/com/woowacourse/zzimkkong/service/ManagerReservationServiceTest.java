@@ -1,6 +1,5 @@
 package com.woowacourse.zzimkkong.service;
 
-import com.woowacourse.zzimkkong.domain.Member;
 import com.woowacourse.zzimkkong.domain.Reservation;
 import com.woowacourse.zzimkkong.domain.Space;
 import com.woowacourse.zzimkkong.dto.reservation.*;
@@ -15,7 +14,6 @@ import org.junit.jupiter.params.provider.CsvSource;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.Collections;
@@ -149,12 +147,10 @@ public class ManagerReservationServiceTest extends ServiceTest {
     @Test
     void saveEndTimeBeforeNow() {
         //given
-        LocalDateTime thresholdDateTime = LocalDate.now().plusDays(1L).atTime(10, 0);
-
         reservationCreateUpdateWithPasswordRequest = new ReservationCreateUpdateWithPasswordRequest(
                 BE.getId(),
-                thresholdDateTime.minusHours(3+TIMEZONE_OFFSET),
-                thresholdDateTime.plusHours(3+TIMEZONE_OFFSET),
+                TOMORROW_START_TIME.minusHours(3 + TIMEZONE_OFFSET),
+                TOMORROW_START_TIME.plusHours(3 + TIMEZONE_OFFSET),
                 RESERVATION_PASSWORD,
                 USER_NAME,
                 DESCRIPTION
@@ -531,8 +527,8 @@ public class ManagerReservationServiceTest extends ServiceTest {
         //when
         ReservationCreateUpdateRequest reservationCreateUpdateRequest = new ReservationCreateUpdateRequest(
                 BE.getId(),
-                LocalDateTime.now().plusDays(1L).plusHours(1+TIMEZONE_OFFSET),
-                LocalDateTime.now().plusDays(1L).plusHours(endTime+TIMEZONE_OFFSET),
+                LocalDateTime.now().plusDays(1L).plusHours(1 + TIMEZONE_OFFSET),
+                LocalDateTime.now().plusDays(1L).plusHours(endTime + TIMEZONE_OFFSET),
                 CHANGED_NAME,
                 CHANGED_DESCRIPTION
         );

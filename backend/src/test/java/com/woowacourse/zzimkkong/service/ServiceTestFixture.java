@@ -21,7 +21,7 @@ public class ServiceTestFixture {
     public static Space FE1 = new Space(2L, "프론트엔드 강의실1", "bottom", "#FED7D9", "560, 40", LUTHER);
 
     public static final LocalDate TOMORROW = LocalDate.now().plusDays(1);
-    public static final LocalDateTime TOMORROW_START_TIME = TOMORROW.atStartOfDay();
+    public static final LocalDateTime TOMORROW_START_TIME = LocalDate.now().plusDays(2L).atTime(10, 0);
     public static final String DESCRIPTION = "찜꽁 1차 회의";
     public static final String USER_NAME = "찜꽁";
     public static final String RESERVATION_PASSWORD = "1234";

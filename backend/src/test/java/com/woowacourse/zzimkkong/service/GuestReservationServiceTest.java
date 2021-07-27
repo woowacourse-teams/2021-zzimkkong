@@ -125,12 +125,10 @@ class GuestReservationServiceTest extends ServiceTest {
     @DisplayName("예약 생성 요청 시, 종료 시간이 현재 시간보다 빠르다면 예외가 발생한다.")
     void saveEndTimeBeforeNow() {
         //given
-        LocalDateTime thresholdDateTime = LocalDate.now().plusDays(1L).atTime(10, 0);
-
         reservationCreateUpdateWithPasswordRequest = new ReservationCreateUpdateWithPasswordRequest(
                 1L,
-                thresholdDateTime.minusHours(3+TIMEZONE_OFFSET),
-                thresholdDateTime.plusHours(3+TIMEZONE_OFFSET),
+                TOMORROW_START_TIME.minusHours(3+TIMEZONE_OFFSET),
+                TOMORROW_START_TIME.plusHours(3+TIMEZONE_OFFSET),
                 RESERVATION_PASSWORD,
                 USER_NAME,
                 DESCRIPTION
