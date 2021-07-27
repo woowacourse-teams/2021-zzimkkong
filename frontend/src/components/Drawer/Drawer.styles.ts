@@ -1,5 +1,6 @@
 import { animated } from 'react-spring';
 import styled, { css } from 'styled-components';
+import { Z_INDEX } from 'constants/style';
 
 interface ContainerProps {
   placement: 'left' | 'right' | 'top' | 'bottom';
@@ -61,14 +62,14 @@ export const Dimmer = styled(animated.div)`
   right: 0;
   left: 0;
   bottom: 0;
-  z-index: 100;
+  z-index: ${Z_INDEX.DRAWER_DIMMER};
 `;
 
 export const Container = styled(animated.div)<ContainerProps>`
   margin: 0 auto;
   position: fixed;
   background: ${({ theme }) => theme.white};
-  z-index: 101;
+  z-index: ${Z_INDEX.DRAWER_CONTENT};
   overflow: auto;
   max-width: ${({ maxwidth }) => {
     if (!maxwidth) return '64rem';
