@@ -30,15 +30,15 @@ public class MapService {
     }
 
     @Transactional(readOnly = true)
-    public MapFindResponse findMap(final Member member, final Long mapId) {
+    public MapFindResponse findMap(final Long mapId, final Member manager) {
         Map map = maps.findById(mapId)
                 .orElseThrow(NoSuchMapException::new);
 
-        validateManagerOfMap(member, map);
+        validateManagerOfMap(map, manager);
         return MapFindResponse.from(map);
     }
 
-    private void validateManagerOfMap(Member manager, Map map) {
+    private void validateManagerOfMap(Map map, Member manager) {
         if(!manager.equals(map.getMember())) {   // TODO: ReservationService 와의 중복 제거 -김샐
             throw new NoAuthorityOnMapException();
         }
