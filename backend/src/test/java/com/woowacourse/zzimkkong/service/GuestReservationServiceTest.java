@@ -13,6 +13,7 @@ import org.junit.jupiter.params.provider.CsvSource;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.Collections;
@@ -124,10 +125,12 @@ class GuestReservationServiceTest extends ServiceTest {
     @DisplayName("예약 생성 요청 시, 종료 시간이 현재 시간보다 빠르다면 예외가 발생한다.")
     void saveEndTimeBeforeNow() {
         //given
+        LocalDateTime thresholdDateTime = LocalDate.now().plusDays(1L).atTime(10, 0);
+
         reservationCreateUpdateWithPasswordRequest = new ReservationCreateUpdateWithPasswordRequest(
                 1L,
-                LocalDateTime.now().plusHours(3+TIMEZONE_OFFSET),
-                LocalDateTime.now().minusHours(3+TIMEZONE_OFFSET),
+                thresholdDateTime.minusHours(3+TIMEZONE_OFFSET),
+                thresholdDateTime.plusHours(3+TIMEZONE_OFFSET),
                 RESERVATION_PASSWORD,
                 USER_NAME,
                 DESCRIPTION
@@ -437,8 +440,8 @@ class GuestReservationServiceTest extends ServiceTest {
         //when
         ReservationCreateUpdateWithPasswordRequest reservationCreateUpdateWithPasswordRequest = new ReservationCreateUpdateWithPasswordRequest(
                 1L,
-                LocalDateTime.now().plusHours(1+TIMEZONE_OFFSET),
-                LocalDateTime.now().plusHours(endTime+TIMEZONE_OFFSET),
+                LocalDateTime.now().plusDays(1L).plusHours(1+TIMEZONE_OFFSET),
+                LocalDateTime.now().plusDays(1L).plusHours(endTime+TIMEZONE_OFFSET),
                 reservation.getPassword(),
                 CHANGED_NAME,
                 CHANGED_DESCRIPTION
