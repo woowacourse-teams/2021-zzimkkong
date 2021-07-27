@@ -11,6 +11,12 @@ public class Map {
     @Column(nullable = false, length = 20)
     private String name;
 
+    @Column(nullable = false)
+    private String mapDrawing;
+
+    @Column(nullable = false)
+    private String mapImage;
+
     @ManyToOne
     @JoinColumn(name = "member_id", foreignKey = @ForeignKey(name = "fk_map_member"))
     private Member member;
@@ -18,14 +24,15 @@ public class Map {
     protected Map() {
     }
 
-    public Map(final String name, final Member member) {
-        this.name = name;
-        this.member = member;
+    public Map(Long id, String name, String mapDrawing, String mapImage, Member member) {
+        this(name, mapDrawing, mapImage, member);
+        this.id = id;
     }
 
-    public Map(final Long id, final String name, final Member member) {
-        this.id = id;
+    public Map(String name, String mapDrawing, String mapImage, Member member) {
         this.name = name;
+        this.mapDrawing = mapDrawing;
+        this.mapImage = mapImage;
         this.member = member;
     }
 
@@ -35,5 +42,21 @@ public class Map {
 
     public Long getId() {
         return id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public Member getMember() {
+        return member;
+    }
+
+    public String getMapDrawing() {
+        return mapDrawing;
+    }
+
+    public String getMapImage() {
+        return mapImage;
     }
 }
