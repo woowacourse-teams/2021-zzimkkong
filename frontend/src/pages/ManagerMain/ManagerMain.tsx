@@ -6,9 +6,9 @@ import Header from 'components/Header/Header';
 import Layout from 'components/Layout/Layout';
 import Panel from 'components/Panel/Panel';
 import Table from 'components/Table/Table';
-import * as Styled from './ProviderReservationList.styles';
+import * as Styled from './ManagerMain.styles';
 
-const ProviderReservationList = (): JSX.Element => {
+const ManagerMain = (): JSX.Element => {
   const mapName = '우테코 교육장';
 
   const data = [
@@ -105,4 +105,4 @@ const ProviderReservationList = (): JSX.Element => {
   );
 };
 
-export default ProviderReservationList;
+export default ManagerMain;
