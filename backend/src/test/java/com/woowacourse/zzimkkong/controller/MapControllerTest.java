@@ -40,6 +40,7 @@ class MapControllerTest extends AcceptanceTest {
     @Test
     @DisplayName("맵을 생성한다.")
     void create() {
+        // given
         MapCreateRequest mapCreateRequest = new MapCreateRequest(LUTHER.getName(), LUTHER.getMapDrawing(), LUTHER.getMapImage());
 
         // when

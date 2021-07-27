@@ -28,7 +28,7 @@ class MapServiceTest extends ServiceTest {
                 .willReturn(LUTHER);
 
         //then
-        MapCreateResponse mapCreateResponse = mapService.saveMap(POBI, mapCreateRequest);
+        MapCreateResponse mapCreateResponse = mapService.saveMap(mapCreateRequest, POBI);
         assertThat(mapCreateResponse.getId()).isEqualTo(LUTHER.getId());
     }
 }
