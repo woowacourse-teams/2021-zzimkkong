@@ -8,30 +8,24 @@ export const Container = styled.div`
 
 export const PageTitle = styled.h2`
   font-size: 1.5rem;
-  font-weight: 700;
+  font-weight: 400;
   text-align: center;
-  margin: 1.5rem auto;
+  margin: 2.125rem auto;
 `;
 
 export const Form = styled.form`
+  margin: 3.75rem 0;
+
   label {
-    margin: 2.5rem 0;
+    margin-bottom: 3rem;
   }
-
-  label:nth-last-of-type(1) {
-    margin: 0;
-  }
-`;
-
-export const LoginErrorMessage = styled.p`
-  height: 3rem;
-  padding: 1.25rem 0 0.75rem;
-  color: ${({ theme }) => theme.red[500]};
 `;
 
 export const JoinLinkMessage = styled.p`
   margin: 1rem 0;
   text-align: center;
+  font-size: 0.75rem;
+  color: ${({ theme }) => theme.gray[500]};
 
   a {
     color: ${({ theme }) => theme.primary[400]};

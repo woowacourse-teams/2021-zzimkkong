@@ -150,8 +150,8 @@ public class ManagerReservationServiceTest extends ServiceTest {
         //given
         reservationCreateUpdateWithPasswordRequest = new ReservationCreateUpdateWithPasswordRequest(
                 1L,
-                LocalDateTime.now().plusHours(3),
-                LocalDateTime.now().minusHours(3),
+                LocalDateTime.now().plusHours(3+TIMEZONE_OFFSET),
+                LocalDateTime.now().minusHours(3+TIMEZONE_OFFSET),
                 RESERVATION_PASSWORD,
                 USER_NAME,
                 DESCRIPTION
@@ -528,8 +528,8 @@ public class ManagerReservationServiceTest extends ServiceTest {
         //when
         ReservationCreateUpdateRequest reservationCreateUpdateRequest = new ReservationCreateUpdateRequest(
                 1L,
-                LocalDateTime.now().plusHours(1),
-                LocalDateTime.now().plusHours(endTime),
+                LocalDateTime.now().plusHours(1+TIMEZONE_OFFSET),
+                LocalDateTime.now().plusHours(endTime+TIMEZONE_OFFSET),
                 CHANGED_NAME,
                 CHANGED_DESCRIPTION
         );

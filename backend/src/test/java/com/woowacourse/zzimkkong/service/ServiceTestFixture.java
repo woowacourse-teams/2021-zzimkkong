@@ -13,9 +13,10 @@ public class ServiceTestFixture {
     public static final String EMAIL = "pobi@email.com";
     public static final String PASSWORD = "test1234";
     public static final String ORGANIZATION = "우아한테크코스";
+    public static final Integer TIMEZONE_OFFSET = 9;
     public static Member POBI = new Member(1L, EMAIL, PASSWORD, ORGANIZATION);
 
-    public static Map LUTHER = new Map(1L, "루터회관", POBI);
+    public static Map LUTHER = new Map(1L, "루터회관", "mapDrawingData", "mapImageData", POBI);
     public static Space BE = new Space.Builder()
             .id(1L)
             .name("백엔드 강의실")

@@ -15,6 +15,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
@@ -61,9 +63,7 @@ public abstract class ReservationService {
         LocalDateTime startDateTime = reservationCreateUpdateRequest.getStartDateTime();
         LocalDateTime endDateTime = reservationCreateUpdateRequest.getEndDateTime();
 
-        if (startDateTime.isBefore(LocalDateTime.now())) {
-            throw new ImpossibleStartTimeException();
-        }
+        validateStartTimeInPast(startDateTime);
 
         if (endDateTime.isBefore(startDateTime) || startDateTime.equals(endDateTime)) {
             throw new ImpossibleEndTimeException();
@@ -71,6 +71,18 @@ public abstract class ReservationService {
 
         if (!startDateTime.toLocalDate().isEqual(endDateTime.toLocalDate())) {
             throw new NonMatchingStartAndEndDateException();
+        }
+    }
+
+    private void validateStartTimeInPast(final LocalDateTime startDateTime) {
+        LocalDateTime localNow = LocalDateTime.now();
+        ZonedDateTime zonedLocal = localNow.atZone(ZoneId.of("UTC"))
+                .withZoneSameInstant(ZoneId.of("Asia/Seoul"));
+
+        ZonedDateTime zonedStartDateTime = startDateTime.atZone(ZoneId.of("Asia/Seoul"));
+
+        if (zonedStartDateTime.isBefore(zonedLocal)) {
+            throw new ImpossibleStartTimeException();
         }
     }
 

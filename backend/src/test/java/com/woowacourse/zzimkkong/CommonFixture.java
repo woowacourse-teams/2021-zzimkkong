@@ -15,7 +15,7 @@ public class CommonFixture {
     public static final String ORGANIZATION = "우아한테크코스";
     public static Member POBI = new Member(EMAIL, PASSWORD, ORGANIZATION);
 
-    public static Map LUTHER = new Map("루터회관", POBI);
+    public static Map LUTHER = new Map("루터회관", "mapDrawingData", "mapImageData", POBI);
     public static Space BE = new Space.Builder()
             .name("백엔드 강의실")
             .textPosition("bottom")
@@ -42,8 +42,8 @@ public class CommonFixture {
             .map(LUTHER)
             .description("시니컬하네")
             .area("area")
-            .availableStartTime(LocalTime.of(0,0))
-            .availableEndTime(LocalTime.of(23,59))
+            .availableStartTime(LocalTime.of(0, 0))
+            .availableEndTime(LocalTime.of(23, 59))
             .reservationTimeUnit(10)
             .reservationMinimumTimeUnit(10)
             .reservationMaximumTimeUnit(1440)

@@ -32,6 +32,7 @@ declare module 'styled-components' {
     gray: Palette;
     white: Color;
     modalOverlay: Color;
+    shadow: Color;
     breakpoints: BreakPoints;
   }
 }
