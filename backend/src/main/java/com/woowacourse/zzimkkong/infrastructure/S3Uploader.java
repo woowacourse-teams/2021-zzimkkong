@@ -10,22 +10,16 @@ import java.io.File;
 @Component
 public class S3Uploader {
     private final AmazonS3 amazonS3;
+    private final String bucket;
 
-    public S3Uploader(AmazonS3 amazonS3) {
+    public S3Uploader(final AmazonS3 amazonS3, @Value("${aws.s3.bucket_name}") final String bucket) {
         this.amazonS3 = amazonS3;
+        this.bucket = bucket;
     }
 
-    @Value("${aws.s3.bucket_name}")
-    private String bucket;
-
-
-    public String upload(File uploadFile) {
-        String fileName = "thumbnails/" + uploadFile.getName();
-        String uploadImageUrl = putS3(uploadFile, fileName);
-
-        uploadFile.delete();
-
-        return uploadImageUrl;
+    public String upload(final String directoryName, final File uploadFile) {
+        String fileName = directoryName + "/" + uploadFile.getName();
+        return putS3(uploadFile, fileName);
     }
 
     private String putS3(File uploadFile, String fileName) {

@@ -11,6 +11,7 @@ import com.woowacourse.zzimkkong.exception.authorization.NoAuthorityOnMapExcepti
 import com.woowacourse.zzimkkong.exception.map.NoSuchMapException;
 import com.woowacourse.zzimkkong.exception.space.ReservationExistOnSpaceException;
 import com.woowacourse.zzimkkong.infrastructure.S3Uploader;
+import com.woowacourse.zzimkkong.infrastructure.SvgConverter;
 import com.woowacourse.zzimkkong.repository.MapRepository;
 import com.woowacourse.zzimkkong.repository.ReservationRepository;
 import com.woowacourse.zzimkkong.repository.SpaceRepository;
@@ -33,12 +34,18 @@ public class MapService {
     private final SpaceRepository spaces;
     private final ReservationRepository reservations;
     private final S3Uploader s3Uploader;
+    private final SvgConverter svgConverter;
 
-    public MapService(MapRepository maps, SpaceRepository spaces, ReservationRepository reservations, S3Uploader s3Uploader) {
+    public MapService(final MapRepository maps,
+                      final SpaceRepository spaces,
+                      final ReservationRepository reservations,
+                      final S3Uploader s3Uploader,
+                      final SvgConverter svgConverter) {
         this.maps = maps;
         this.spaces = spaces;
         this.reservations = reservations;
         this.s3Uploader = s3Uploader;
+        this.svgConverter = svgConverter;
     }
 
     public MapCreateResponse saveMap(final Member member, final MapCreateUpdateRequest mapCreateUpdateRequest) {
@@ -47,13 +54,18 @@ public class MapService {
                 mapCreateUpdateRequest.getMapDrawing(),
                 mapCreateUpdateRequest.getMapImage(),
                 member));
-        File pngFile = convertSvgToPng(mapCreateUpdateRequest.getMapImage());
 
-        //S3 upload
-        s3Uploader.upload(pngFile);
+        uploadPngToS3(saveMap.getId().toString(), mapCreateUpdateRequest.getMapImage());
 
         return MapCreateResponse.from(saveMap);
     }
+
+    private void uploadPngToS3(String mapId, String svg) {
+        File pngFile = svgConverter.convertSvgToPng(mapId, svg);
+        s3Uploader.upload("thumbnails", pngFile);
+        pngFile.delete();
+    }
+
 
     @Transactional(readOnly = true)
     public MapFindResponse findMap(final Member member, final Long mapId) {
@@ -76,7 +88,7 @@ public class MapService {
 
         validateManagerOfMap(member, map);
 
-        convertSvgToPng(mapCreateUpdateRequest.getMapImage());
+        uploadPngToS3(map.getId().toString(), mapCreateUpdateRequest.getMapImage());
 
         map.update(
                 mapCreateUpdateRequest.getMapName(),
@@ -109,28 +121,6 @@ public class MapService {
     private void validateManagerOfMap(final Member manager, final Map map) {
         if (!manager.equals(map.getMember())) {   // TODO: ReservationService 와의 중복 제거 -김샐
             throw new NoAuthorityOnMapException();
-        }
-    }
-
-    public File convertSvgToPng(final String mapSvgData) {
-        try {
-            String tmpFileName = UUID.randomUUID().toString();
-            ByteArrayInputStream svgInput = new ByteArrayInputStream(mapSvgData.getBytes());
-            TranscoderInput transcoderInput = new TranscoderInput(svgInput);
-
-            OutputStream outputStream = new FileOutputStream("src/main/resources/tmp/" + tmpFileName + ".png");
-            TranscoderOutput transcoderOutput = new TranscoderOutput(outputStream);
-
-            PNGTranscoder pngTranscoder = new PNGTranscoder();
-            pngTranscoder.transcode(transcoderInput, transcoderOutput);
-
-            outputStream.flush();
-            outputStream.close();
-
-            return new File("src/main/resources/tmp/" + tmpFileName + ".png");
-        } catch (Exception e) {
-            e.printStackTrace();
-            throw new IllegalArgumentException(e.getMessage());
         }
     }
 }
