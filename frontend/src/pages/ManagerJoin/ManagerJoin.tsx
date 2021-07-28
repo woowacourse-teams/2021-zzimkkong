@@ -9,12 +9,12 @@ import Input from 'components/Input/Input';
 import Layout from 'components/Layout/Layout';
 import MANAGER from 'constants/manager';
 import MESSAGE from 'constants/message';
-import PATH from 'constants/path';
 import REGEXP from 'constants/regexp';
+import { PATH } from 'constants/routes';
 import useInput from 'hooks/useInput';
-import * as Styled from './Join.styles';
+import * as Styled from './ManagerJoin.styles';
 
-const Join = (): JSX.Element => {
+const ManagerJoin = (): JSX.Element => {
   const [email, onChangeEmail] = useInput('');
   const [password, onChangePassword] = useInput('');
   const [passwordConfirm, onChangePasswordConfirm] = useInput('');
@@ -43,10 +43,10 @@ const Join = (): JSX.Element => {
     },
   });
 
-  const joinUser = useMutation(postJoin, {
+  const join = useMutation(postJoin, {
     onSuccess: () => {
       alert(MESSAGE.JOIN.SUCCESS);
-      history.push(PATH.LOGIN);
+      history.push(PATH.MANAGER_LOGIN);
     },
 
     onError: () => {
@@ -65,7 +65,7 @@ const Join = (): JSX.Element => {
 
     if (!email || !password || !passwordConfirm || !organization) return;
 
-    joinUser.mutate({ email, password, organization });
+    join.mutate({ email, password, organization });
   };
 
   useEffect(() => {
@@ -155,7 +155,7 @@ const Join = (): JSX.Element => {
             </Button>
             <Styled.JoinLinkMessage>
               이미 회원이신가요?
-              <Link to={PATH.LOGIN}>로그인하기</Link>
+              <Link to={PATH.MANAGER_LOGIN}>로그인하기</Link>
             </Styled.JoinLinkMessage>
           </Styled.Form>
         </Styled.Container>
@@ -164,4 +164,4 @@ const Join = (): JSX.Element => {
   );
 };
 
-export default Join;
+export default ManagerJoin;

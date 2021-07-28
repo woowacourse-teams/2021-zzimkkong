@@ -10,5 +10,5 @@ const Template: Story<Props> = (args) => <DateInput {...args} />;
 
 export const Default = Template.bind({});
 Default.args = {
-  value: '2021-07-16',
+  date: new Date(),
 };

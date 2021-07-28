@@ -1,4 +1,5 @@
 import styled from 'styled-components';
+import { Z_INDEX } from 'constants/style';
 
 interface Props {
   open?: boolean;
@@ -11,7 +12,7 @@ export const Overlay = styled.div<Props>`
   left: 0;
   right: 0;
   bottom: 0;
-  z-index: 101;
+  z-index: ${Z_INDEX.MODAL_OVERLAY};
   justify-content: center;
   align-items: center;
   background-color: ${({ theme }) => theme.modalOverlay};

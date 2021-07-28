@@ -1,10 +1,22 @@
 // Note: YYYY-MM-DD 형식으로 변환함
-export const formatDate = (date: Date): string => {
-  const year = date.getFullYear();
-  const month = `${date.getMonth() + 1}`.padStart(2, '0');
-  const day = `${date.getDate()}`.padStart(2, '0');
+export const formatDate = (value: Date): string => {
+  const year = value.getFullYear();
+  const month = `${value.getMonth() + 1}`.padStart(2, '0');
+  const date = `${value.getDate()}`.padStart(2, '0');
 
-  return `${year}-${month}-${day}`;
+  return `${year}-${month}-${date}`;
+};
+
+const DAY = ['SUN', 'MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT'];
+
+// Note: YYYY/MM/DD (MON) 형식으로 변환함
+export const formatDateWithDay = (value: Date): string => {
+  const year = value.getFullYear();
+  const month = `${value.getMonth() + 1}`.padStart(2, '0');
+  const date = `${value.getDate()}`.padStart(2, '0');
+  const day = value.getDay();
+
+  return `${year}/${month}/${date} (${DAY[day]})`;
 };
 
 // Note: HH:MM 형태로 변환함

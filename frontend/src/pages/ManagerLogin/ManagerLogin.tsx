@@ -10,20 +10,20 @@ import Input from 'components/Input/Input';
 import Layout from 'components/Layout/Layout';
 import MANAGER from 'constants/manager';
 import MESSAGE from 'constants/message';
-import PATH from 'constants/path';
+import { PATH } from 'constants/routes';
 import { LOCAL_STORAGE_KEY } from 'constants/storage';
 import useInput from 'hooks/useInput';
 import accessTokenState from 'state/accessTokenState';
 import { ErrorResponse, LoginSuccess } from 'types/response';
 import { setLocalStorageItem } from 'utils/localStorage';
-import * as Styled from './Login.styles';
+import * as Styled from './ManagerLogin.styles';
 
 interface ErrorMessage {
   email?: string;
   password?: string;
 }
 
-const Login = (): JSX.Element => {
+const ManagerLogin = (): JSX.Element => {
   const [email, onChangeEmail] = useInput('');
   const [password, onChangePassword] = useInput('');
   const [errorMessage, setErrorMessage] = useState<ErrorMessage>({
@@ -41,7 +41,7 @@ const Login = (): JSX.Element => {
       setLocalStorageItem({ key: LOCAL_STORAGE_KEY.ACCESS_TOKEN, item: accessToken });
       setAccessToken(accessToken);
 
-      history.push(PATH.HOME);
+      history.push(PATH.MANAGER_MAIN);
     },
     onError: (error: AxiosError<ErrorResponse>) => {
       const field = error.response?.data.field;
@@ -97,7 +97,7 @@ const Login = (): JSX.Element => {
             </Button>
             <Styled.JoinLinkMessage>
               아직 회원이 아니신가요?
-              <Link to={PATH.JOIN}>회원가입하기</Link>
+              <Link to={PATH.MANAGER_JOIN}>회원가입하기</Link>
             </Styled.JoinLinkMessage>
           </Styled.Form>
         </Styled.Container>
@@ -106,4 +106,4 @@ const Login = (): JSX.Element => {
   );
 };
 
-export default Login;
+export default ManagerLogin;
