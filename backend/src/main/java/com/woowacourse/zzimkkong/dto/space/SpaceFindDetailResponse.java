@@ -1,18 +1,12 @@
 package com.woowacourse.zzimkkong.dto.space;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
 import com.woowacourse.zzimkkong.domain.Space;
 
 public class SpaceFindDetailResponse {
-    @JsonProperty
     private Long id;
-    @JsonProperty
     private String name;
-    @JsonProperty
     private String description;
-    @JsonProperty
     private String area;
-    @JsonProperty
     private SettingResponse settings;
 
     public SpaceFindDetailResponse() {
