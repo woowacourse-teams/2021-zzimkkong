@@ -2,6 +2,7 @@ package com.woowacourse.zzimkkong.controller;
 
 import com.woowacourse.zzimkkong.domain.Manager;
 import com.woowacourse.zzimkkong.domain.Member;
+import com.woowacourse.zzimkkong.dto.map.MapFindAllResponse;
 import com.woowacourse.zzimkkong.dto.map.MapFindResponse;
 import com.woowacourse.zzimkkong.dto.map.MapCreateRequest;
 import com.woowacourse.zzimkkong.dto.map.MapCreateResponse;
@@ -24,7 +25,13 @@ public class MapController {
     @GetMapping("/{mapId}")
     public ResponseEntity<MapFindResponse> find(@PathVariable final Long mapId, @Manager final Member manager) {
         MapFindResponse mapFindResponse = mapService.findMap(mapId, manager);
-        return ResponseEntity.ok(mapFindResponse);
+        return ResponseEntity.ok().body(mapFindResponse);
+    }
+
+    @GetMapping
+    public ResponseEntity<MapFindAllResponse> findAll(@Manager final Member manager) {
+        MapFindAllResponse mapFindAllResponse = mapService.findAllMaps(manager);
+        return ResponseEntity.ok().body(mapFindAllResponse);
     }
 
     @PostMapping
