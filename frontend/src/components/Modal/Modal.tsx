@@ -3,36 +3,34 @@ import { ReactComponent as CloseIcon } from 'assets/svg/close.svg';
 import * as Styled from './Modal.styles';
 
 export interface Props {
-  open?: boolean;
+  open: boolean;
   isClosableDimmer?: boolean;
   showCloseButton?: boolean;
+  onClose: () => void;
 }
 
 const Modal = ({
   open,
   isClosableDimmer,
   showCloseButton,
+  onClose,
   children,
 }: PropsWithChildren<Props>): JSX.Element => {
   const handleDimmedClick: MouseEventHandler<HTMLDivElement> = ({ target, currentTarget }) => {
     if (isClosableDimmer && target === currentTarget) {
-      open = false;
+      onClose();
     }
-  };
-
-  const handleClose = () => {
-    open = false;
   };
 
   return (
     <Styled.Overlay open={open} onClick={handleDimmedClick}>
       <Styled.Modal>
-        {showCloseButton && (
-          <Styled.CloseButton onClick={handleClose}>
+        {open && showCloseButton && (
+          <Styled.CloseButton onClick={onClose}>
             <CloseIcon />
           </Styled.CloseButton>
         )}
-        {children}
+        {open && children}
       </Styled.Modal>
     </Styled.Overlay>
   );

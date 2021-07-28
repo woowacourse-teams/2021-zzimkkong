@@ -51,7 +51,10 @@ class SpaceServiceTest extends ServiceTest {
         given(spaces.save(any(Space.class)))
                 .willReturn(BE);
 
+        // when
         SpaceCreateResponse spaceCreateResponse = spaceService.saveSpace(LUTHER.getId(), spaceCreateRequest, POBI);
+
+        // then
         assertThat(spaceCreateResponse.getId()).isEqualTo(BE.getId());
     }
 
@@ -62,6 +65,7 @@ class SpaceServiceTest extends ServiceTest {
         given(maps.findById(anyLong()))
                 .willReturn(Optional.empty());
 
+        // when, then
         assertThatThrownBy(() -> spaceService.saveSpace(LUTHER.getId(), spaceCreateRequest, POBI))
                 .isInstanceOf(NoSuchMapException.class);
     }
@@ -77,6 +81,7 @@ class SpaceServiceTest extends ServiceTest {
 
         Member sakjung = new Member(2L, "sakjung@naver.com", "test1234", "잠실킹");
 
+        // when, then
         assertThatThrownBy(() -> spaceService.saveSpace(LUTHER.getId(), spaceCreateRequest, sakjung))
                 .isInstanceOf(NoAuthorityOnMapException.class);
     }
@@ -100,7 +105,7 @@ class SpaceServiceTest extends ServiceTest {
 
     @DisplayName("공간 조회 시, spaceId에 맞는 공간이 없다면 예외를 발생시킨다.")
     @Test
-    void findNoSuchSpace() {
+    void findFail() {
         // given
         given(maps.findById(anyLong()))
                 .willReturn(Optional.of(LUTHER));

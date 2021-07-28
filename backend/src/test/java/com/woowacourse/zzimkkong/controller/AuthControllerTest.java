@@ -3,6 +3,7 @@ package com.woowacourse.zzimkkong.controller;
 import com.woowacourse.zzimkkong.dto.member.LoginRequest;
 import com.woowacourse.zzimkkong.dto.member.MemberSaveRequest;
 import com.woowacourse.zzimkkong.dto.member.TokenResponse;
+import com.woowacourse.zzimkkong.infrastructure.AuthorizationExtractor;
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
@@ -40,12 +41,10 @@ class AuthControllerTest extends AcceptanceTest {
         // given
         saveMember(new MemberSaveRequest(EMAIL, PASSWORD, ORGANIZATION));
 
-        LoginRequest loginRequest = new LoginRequest(EMAIL, PASSWORD);
-        ExtractableResponse<Response> loginResponse = login(loginRequest);
-        TokenResponse responseBody = loginResponse.body().as(TokenResponse.class);
+        String accessToken = getToken();
 
         //when
-        ExtractableResponse<Response> response = token(responseBody.getAccessToken(), "success");
+        ExtractableResponse<Response> response = token(accessToken, "success");
 
         //then
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
@@ -64,7 +63,15 @@ class AuthControllerTest extends AcceptanceTest {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
     }
 
-    public static ExtractableResponse<Response> login(final LoginRequest loginRequest) {
+    static String getToken() {
+        LoginRequest loginRequest = new LoginRequest(EMAIL, PASSWORD);
+        ExtractableResponse<Response> loginResponse = login(loginRequest);
+
+        TokenResponse responseBody = loginResponse.body().as(TokenResponse.class);
+        return responseBody.getAccessToken();
+    }
+
+    static ExtractableResponse<Response> login(final LoginRequest loginRequest) {
         return RestAssured
                 .given(getRequestSpecification()).log().all()
                 .accept("application/json")
@@ -79,7 +86,7 @@ class AuthControllerTest extends AcceptanceTest {
         return RestAssured
                 .given(getRequestSpecification()).log().all()
                 .accept("application/json")
-                .header("Authorization", "Bearer " + token)
+                .header("Authorization", AuthorizationExtractor.AUTHENTICATION_TYPE + " " + token)
                 .filter(document("member/token/" + docName, getRequestPreprocessor(), getResponsePreprocessor()))
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .when().post("/api/members/token")

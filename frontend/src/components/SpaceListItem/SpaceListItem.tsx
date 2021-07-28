@@ -10,7 +10,7 @@ export interface Props {
 
 const SpaceListItem = ({ thumbnail, title }: Props): JSX.Element => {
   return (
-    <Styled.Container>
+    <Styled.Container role="listitem">
       <Styled.ImageWrapper>
         <Styled.Image src={thumbnail.src} alt={thumbnail.alt} />
       </Styled.ImageWrapper>

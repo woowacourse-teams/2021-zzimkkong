@@ -18,4 +18,6 @@ public interface ReservationRepository extends JpaRepository<Reservation, Long> 
     Boolean existsBySpaceIdAndStartTimeBetween(Long spaceId, LocalDateTime startDateTime, LocalDateTime endDateTime);
 
     Boolean existsBySpaceIdAndEndTimeBetween(Long spaceId, LocalDateTime startDateTime, LocalDateTime endDateTime);
+
+    Boolean existsBySpaceIdAndEndTimeAfter(Long spaceId, LocalDateTime now);
 }

@@ -2,6 +2,8 @@ package com.woowacourse.zzimkkong.service;
 
 import com.woowacourse.zzimkkong.domain.Map;
 import com.woowacourse.zzimkkong.domain.Member;
+
+import com.woowacourse.zzimkkong.domain.Setting;
 import com.woowacourse.zzimkkong.domain.Space;
 import com.woowacourse.zzimkkong.dto.space.*;
 import com.woowacourse.zzimkkong.exception.authorization.NoAuthorityOnMapException;
@@ -31,6 +33,16 @@ public class SpaceService {
 
         SettingsRequest settingsRequest = spaceCreateRequest.getSettingsRequest();
 
+        Setting setting = new Setting.Builder()
+                .availableStartTime(settingsRequest.getAvailableStartTime())
+                .availableEndTime(settingsRequest.getAvailableEndTime())
+                .reservationTimeUnit(settingsRequest.getReservationTimeUnit())
+                .reservationMinimumTimeUnit(settingsRequest.getReservationMinimumTimeUnit())
+                .reservationMaximumTimeUnit(settingsRequest.getReservationMaximumTimeUnit())
+                .reservationEnable(settingsRequest.getReservationEnable())
+                .disabledWeekdays(settingsRequest.getDisabledWeekdays())
+                .build();
+
         Space space = spaces.save(
                 new Space.Builder()
                         .name(spaceCreateRequest.getSpaceName())
@@ -40,13 +52,7 @@ public class SpaceService {
                         .map(map)
                         .description(spaceCreateRequest.getDescription())
                         .area(spaceCreateRequest.getArea())
-                        .availableStartTime(settingsRequest.getAvailableStartTime())
-                        .availableEndTime(settingsRequest.getAvailableEndTime())
-                        .reservationTimeUnit(settingsRequest.getReservationTimeUnit())
-                        .reservationMinimumTimeUnit(settingsRequest.getReservationMinimumTimeUnit())
-                        .reservationMaximumTimeUnit(settingsRequest.getReservationMaximumTimeUnit())
-                        .reservationEnable(settingsRequest.getReservationEnable())
-                        .disabledWeekdays(settingsRequest.getDisabledWeekdays())
+                        .setting(setting)
                         .mapImage(spaceCreateRequest.getMapImage())
                         .build());
         return SpaceCreateResponse.from(space);
