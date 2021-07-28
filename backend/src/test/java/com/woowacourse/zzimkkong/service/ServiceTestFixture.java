@@ -1,9 +1,6 @@
 package com.woowacourse.zzimkkong.service;
 
-import com.woowacourse.zzimkkong.domain.Map;
-import com.woowacourse.zzimkkong.domain.Member;
-import com.woowacourse.zzimkkong.domain.Reservation;
-import com.woowacourse.zzimkkong.domain.Space;
+import com.woowacourse.zzimkkong.domain.*;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -18,6 +15,16 @@ public class ServiceTestFixture {
     public static Member JASON = new Member(2L, "jason@test.com", PASSWORD, ORGANIZATION);
 
     public static Map LUTHER = new Map(1L, "루터회관", "mapDrawingData", "mapImageData", POBI);
+    public static Setting BE_SETTING = new Setting.Builder()
+            .availableStartTime(LocalTime.of(10, 0))
+            .availableEndTime(LocalTime.of(22, 0))
+            .reservationTimeUnit(30)
+            .reservationMinimumTimeUnit(60)
+            .reservationMaximumTimeUnit(120)
+            .reservationEnable(true)
+            .disabledWeekdays("Monday, Tuesday")
+            .build();
+
     public static Space BE = new Space.Builder()
             .id(1L)
             .name("백엔드 강의실")
@@ -27,14 +34,18 @@ public class ServiceTestFixture {
             .map(LUTHER)
             .description("우리집")
             .area("프론트 화이팅")
-            .availableStartTime(LocalTime.of(10, 0))
-            .availableEndTime(LocalTime.of(22, 0))
-            .reservationTimeUnit(30)
-            .reservationMinimumTimeUnit(60)
-            .reservationMaximumTimeUnit(120)
-            .reservationEnable(true)
-            .disabledWeekdays("Monday, Tuesday")
+            .setting(BE_SETTING)
             .mapImage("이미지 입니다")
+            .build();
+
+    public static Setting FE_SETTING = new Setting.Builder()
+            .availableStartTime(LocalTime.of(0, 0))
+            .availableEndTime(LocalTime.of(23, 59))
+            .reservationTimeUnit(10)
+            .reservationMinimumTimeUnit(10)
+            .reservationMaximumTimeUnit(1440)
+            .reservationEnable(true)
+            .disabledWeekdays(null)
             .build();
 
     public static Space FE1 = new Space.Builder()
@@ -46,13 +57,7 @@ public class ServiceTestFixture {
             .map(LUTHER)
             .description("시니컬하네")
             .area("area")
-            .availableStartTime(LocalTime.of(0, 0))
-            .availableEndTime(LocalTime.of(23, 59))
-            .reservationTimeUnit(10)
-            .reservationMinimumTimeUnit(10)
-            .reservationMaximumTimeUnit(1440)
-            .reservationEnable(true)
-            .disabledWeekdays(null)
+            .setting(FE_SETTING)
             .mapImage("이미지 입니다")
             .build();
 

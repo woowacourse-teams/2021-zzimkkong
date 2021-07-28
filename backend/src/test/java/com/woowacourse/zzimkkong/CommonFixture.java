@@ -1,9 +1,6 @@
 package com.woowacourse.zzimkkong;
 
-import com.woowacourse.zzimkkong.domain.Map;
-import com.woowacourse.zzimkkong.domain.Member;
-import com.woowacourse.zzimkkong.domain.Reservation;
-import com.woowacourse.zzimkkong.domain.Space;
+import com.woowacourse.zzimkkong.domain.*;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -18,6 +15,16 @@ public class CommonFixture {
     public static Member JASON = new Member("jason@test.com", PASSWORD, ORGANIZATION);
 
     public static Map LUTHER = new Map("루터회관", "mapDrawingData", "mapImageData", POBI);
+    public static Setting BE_SETTING = new Setting.Builder()
+            .availableStartTime(LocalTime.of(0, 0))
+            .availableEndTime(LocalTime.of(23, 59))
+            .reservationTimeUnit(10)
+            .reservationMinimumTimeUnit(10)
+            .reservationMaximumTimeUnit(1440)
+            .reservationEnable(true)
+            .disabledWeekdays(null)
+            .build();
+
     public static Space BE = new Space.Builder()
             .name("백엔드 강의실")
             .textPosition("bottom")
@@ -26,6 +33,11 @@ public class CommonFixture {
             .map(LUTHER)
             .description("시니컬하네")
             .area("area")
+            .setting(BE_SETTING)
+            .mapImage("이미지 입니다")
+            .build();
+
+    public static Setting FE_SETTING = new Setting.Builder()
             .availableStartTime(LocalTime.of(0, 0))
             .availableEndTime(LocalTime.of(23, 59))
             .reservationTimeUnit(10)
@@ -33,7 +45,6 @@ public class CommonFixture {
             .reservationMaximumTimeUnit(1440)
             .reservationEnable(true)
             .disabledWeekdays(null)
-            .mapImage("이미지 입니다")
             .build();
 
     public static Space FE1 = new Space.Builder()
@@ -44,13 +55,7 @@ public class CommonFixture {
             .map(LUTHER)
             .description("시니컬하네")
             .area("area")
-            .availableStartTime(LocalTime.of(0, 0))
-            .availableEndTime(LocalTime.of(23, 59))
-            .reservationTimeUnit(10)
-            .reservationMinimumTimeUnit(10)
-            .reservationMaximumTimeUnit(1440)
-            .reservationEnable(true)
-            .disabledWeekdays(null)
+            .setting(FE_SETTING)
             .mapImage("이미지 입니다")
             .build();
 

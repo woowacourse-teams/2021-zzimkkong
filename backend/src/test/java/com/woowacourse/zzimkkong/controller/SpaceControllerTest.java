@@ -1,5 +1,6 @@
 package com.woowacourse.zzimkkong.controller;
 
+import com.woowacourse.zzimkkong.domain.Setting;
 import com.woowacourse.zzimkkong.domain.Space;
 import com.woowacourse.zzimkkong.dto.space.SettingsRequest;
 import com.woowacourse.zzimkkong.dto.space.SpaceCreateRequest;
@@ -121,11 +122,7 @@ public class SpaceControllerTest extends AcceptanceTest {
                 "이미지 입니다"
         );
 
-        Space defaultSpace = new Space.Builder()
-                .id(2L)
-                .name("잠실우리집")
-                .description("우리집")
-                .area("프론트 화이팅")
+        Setting defaultSetting = new Setting.Builder()
                 .availableStartTime(LocalTime.of(0, 0))
                 .availableEndTime(LocalTime.of(23, 59))
                 .reservationTimeUnit(10)
@@ -133,6 +130,14 @@ public class SpaceControllerTest extends AcceptanceTest {
                 .reservationMaximumTimeUnit(1440)
                 .reservationEnable(true)
                 .disabledWeekdays(null)
+                .build();
+
+        Space defaultSpace = new Space.Builder()
+                .id(2L)
+                .name("잠실우리집")
+                .description("우리집")
+                .area("프론트 화이팅")
+                .setting(defaultSetting)
                 .mapImage("이미지 입니다")
                 .build();
 
