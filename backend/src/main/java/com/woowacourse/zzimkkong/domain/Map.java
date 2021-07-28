@@ -50,12 +50,12 @@ public class Map {
         return id;
     }
 
-    public String getName() {
-        return name;
-    }
-
     public Member getMember() {
         return member;
+    }
+
+    public String getName() {
+        return name;
     }
 
     public String getMapDrawing() {
