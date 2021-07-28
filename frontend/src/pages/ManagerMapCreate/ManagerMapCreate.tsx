@@ -11,6 +11,7 @@ import IconButton from 'components/IconButton/IconButton';
 import Layout from 'components/Layout/Layout';
 import PALETTE from 'constants/palette';
 import useInput from 'hooks/useInput';
+import { Coordinate } from 'types/common';
 import { Mode } from 'types/editor';
 import * as Styled from './ManagerMapCreate.styles';
 
@@ -27,6 +28,8 @@ const ManagerMapCreate = (): JSX.Element => {
   const [dragOffsetX, setDragOffsetX] = useState(0);
   const [dragOffsetY, setDragOffsetY] = useState(0);
 
+  const [coordinate, setCoordinate] = useState<Coordinate>({ x: 0, y: 0 });
+
   const [widthValue, onChangeWidthValue] = useInput('800');
   const [heightValue, onChangeHeightValue] = useInput('600');
 
@@ -40,6 +43,27 @@ const ManagerMapCreate = (): JSX.Element => {
     y: 0,
     scale: 1,
   });
+
+  const getSVGCoordinate = (event: React.MouseEvent<SVGElement>) => {
+    const svg = (event.nativeEvent.target as SVGElement)?.ownerSVGElement;
+    if (!svg) return { svg: null, x: -1, y: -1 };
+
+    let point = svg.createSVGPoint();
+
+    point.x = event.nativeEvent.clientX;
+    point.y = event.nativeEvent.clientY;
+    point = point.matrixTransform(svg.getScreenCTM()?.inverse());
+
+    const x = (point.x - board.x) * (1 / board.scale);
+    const y = (point.y - board.y) * (1 / board.scale);
+
+    return { svg, x, y };
+  };
+
+  const handleMouseMove = (event: React.MouseEvent<SVGElement>) => {
+    const { x, y } = getSVGCoordinate(event);
+    setCoordinate({ x, y });
+  };
 
   const handleWheel = (event: React.WheelEvent<SVGElement>) => {
     const { offsetX, offsetY, deltaY } = event.nativeEvent;
@@ -190,7 +214,7 @@ const ManagerMapCreate = (): JSX.Element => {
                 tabIndex={0}
               >
                 <rect width="100%" height="100%" fill={PALETTE.GRAY[200]}></rect>
-                <svg xmlns="http://www.w3.org/2000/svg" version="1.1">
+                <svg xmlns="http://www.w3.org/2000/svg" version="1.1" onMouseMove={handleMouseMove}>
                   <defs>
                     <pattern
                       id="smallGrid"
@@ -201,7 +225,7 @@ const ManagerMapCreate = (): JSX.Element => {
                       <path
                         d={`M ${GRID_SIZE} 0 L 0 0 0 ${GRID_SIZE}`}
                         fill="none"
-                        stroke="gray"
+                        stroke={PALETTE.GRAY[500]}
                         strokeWidth="0.5"
                       />
                     </pattern>
@@ -219,7 +243,7 @@ const ManagerMapCreate = (): JSX.Element => {
                       <path
                         d={`M ${GRID_SIZE * 10} 0 L 0 0 0 ${GRID_SIZE * 10}`}
                         fill="none"
-                        stroke="gray"
+                        stroke={PALETTE.GRAY[500]}
                         strokeWidth="1"
                       />
                     </pattern>
@@ -234,6 +258,12 @@ const ManagerMapCreate = (): JSX.Element => {
                       width={`${width + 0.5}px`}
                       height={`${height + 0.5}px`}
                       fill="url(#grid)"
+                    />
+                    <circle
+                      cx={Math.round(coordinate.x / GRID_SIZE) * GRID_SIZE}
+                      cy={Math.round(coordinate.y / GRID_SIZE) * GRID_SIZE}
+                      r={4}
+                      fill={PALETTE.GRAY[500]}
                     />
                   </g>
                 </svg>
