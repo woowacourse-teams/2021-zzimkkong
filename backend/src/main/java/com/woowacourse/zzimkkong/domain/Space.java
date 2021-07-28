@@ -91,12 +91,16 @@ public class Space {
         return area;
     }
 
-    public LocalTime getAvailableStartTime() {
-        return setting.getAvailableStartTime();
+    public String getMapImage() {
+        return mapImage;
     }
 
     public LocalTime getAvailableEndTime() {
         return setting.getAvailableEndTime();
+    }
+
+    public LocalTime getAvailableStartTime() {
+        return setting.getAvailableStartTime();
     }
 
     public Integer getReservationTimeUnit() {
@@ -119,9 +123,6 @@ public class Space {
         return setting.getDisabledWeekdays();
     }
 
-    public String getMapImage() {
-        return mapImage;
-    }
 
     public static class Builder {
         private Long id = null;
@@ -191,6 +192,5 @@ public class Space {
         public Space build() {
             return new Space(this);
         }
-
     }
 }

@@ -3,6 +3,10 @@ package com.woowacourse.zzimkkong.controller;
 import com.woowacourse.zzimkkong.domain.Setting;
 import com.woowacourse.zzimkkong.domain.Space;
 import com.woowacourse.zzimkkong.dto.space.*;
+import com.woowacourse.zzimkkong.dto.space.SettingsRequest;
+import com.woowacourse.zzimkkong.dto.space.SpaceCreateRequest;
+import com.woowacourse.zzimkkong.dto.space.SpaceFindAllResponse;
+import com.woowacourse.zzimkkong.dto.space.SpaceFindResponse;
 import com.woowacourse.zzimkkong.infrastructure.AuthorizationExtractor;
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
@@ -82,6 +86,59 @@ public class SpaceControllerTest extends AcceptanceTest {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
     }
 
+    @DisplayName("올바른 토큰이 주어질 때, spaceId를 받아 해당 공간에 대한 정보를 조회한다.")
+    @Test
+    void find() {
+        // given, when
+        String api = "/api/managers/maps/1/spaces/1";
+        ExtractableResponse<Response> response = findSpace(api);
+        SpaceFindDetailResponse actual = response.body().as(SpaceFindDetailResponse.class);
+        SpaceFindDetailResponse expected = SpaceFindDetailResponse.from(BE);
+
+        // then
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
+        assertThat(actual).usingRecursiveComparison()
+                .ignoringActualNullFields()
+                .ignoringExpectedNullFields()
+                .isEqualTo(expected);
+    }
+
+    @DisplayName("올바른 토큰이 주어질 때, 전체 공간에 대한 정보를 조회한다.")
+    @Test
+    void findAll() {
+        // given
+        SettingsRequest feSettingsRequest = new SettingsRequest(
+                LocalTime.of(0, 0),
+                LocalTime.of(23, 59),
+                10,
+                10,
+                1440,
+                true,
+                null
+        );
+
+        SpaceCreateRequest feSpaceCreateRequest = new SpaceCreateRequest(
+                "프론트엔드 강의실1",
+                "시니컬하네",
+                "area",
+                feSettingsRequest,
+                "이미지 입니다"
+        );
+        String api = "/api/managers/maps/1/spaces";
+        saveSpace(api, feSpaceCreateRequest);
+
+        // when
+        ExtractableResponse<Response> response = findAllSpace(api);
+        SpaceFindAllResponse actual = response.body().as(SpaceFindAllResponse.class);
+        SpaceFindAllResponse expected = SpaceFindAllResponse.from(List.of(BE, FE1));
+
+        // then
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
+        assertThat(actual).usingRecursiveComparison()
+                .ignoringExpectedNullFields()
+                .isEqualTo(expected);
+    }
+
     @DisplayName("올바른 토큰이 주어질 때, space 정보 중 주어지지 않은 필드를 디폴트 값으로 저장한다")
     @Test
     void save_default() {
@@ -136,59 +193,6 @@ public class SpaceControllerTest extends AcceptanceTest {
         assertThat(actualSpaceFindDetailResponse)
                 .usingRecursiveComparison()
                 .isEqualTo(expectedSpaceFindDetailResponse);
-    }
-
-    @DisplayName("올바른 토큰이 주어질 때, spaceId를 받아 해당 공간에 대한 정보를 조회한다.")
-    @Test
-    void find() {
-        // given, when
-        String api = "/api/managers/maps/1/spaces/1";
-        ExtractableResponse<Response> response = findSpace(api);
-        SpaceFindDetailResponse actual = response.body().as(SpaceFindDetailResponse.class);
-        SpaceFindDetailResponse expected = SpaceFindDetailResponse.from(BE);
-
-        // then
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
-        assertThat(actual).usingRecursiveComparison()
-                .ignoringActualNullFields()
-                .ignoringExpectedNullFields()
-                .isEqualTo(expected);
-    }
-
-    @DisplayName("올바른 토큰이 주어질 때, 전체 공간에 대한 정보를 조회한다.")
-    @Test
-    void findAll() {
-        // given
-        SettingsRequest feSettingsRequest = new SettingsRequest(
-                LocalTime.of(0, 0),
-                LocalTime.of(23, 59),
-                10,
-                10,
-                1440,
-                true,
-                null
-        );
-
-        SpaceCreateRequest feSpaceCreateRequest = new SpaceCreateRequest(
-                "프론트엔드 강의실1",
-                "시니컬하네",
-                "area",
-                feSettingsRequest,
-                "이미지 입니다"
-        );
-        String api = "/api/managers/maps/1/spaces";
-        saveSpace(api, feSpaceCreateRequest);
-
-        // when
-        ExtractableResponse<Response> response = findAllSpace(api);
-        SpaceFindAllResponse actual = response.body().as(SpaceFindAllResponse.class);
-        SpaceFindAllResponse expected = SpaceFindAllResponse.from(List.of(BE, FE1));
-
-        // then
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
-        assertThat(actual).usingRecursiveComparison()
-                .ignoringExpectedNullFields()
-                .isEqualTo(expected);
     }
 
     private ExtractableResponse<Response> saveSpace(final String api, final SpaceCreateRequest spaceCreateRequest) {
