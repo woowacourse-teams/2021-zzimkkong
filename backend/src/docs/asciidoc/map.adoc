@@ -11,3 +11,15 @@ include::{snippets}/map/post/http-response.adoc[]
 include::{snippets}/map/get/http-request.adoc[]
 ==== Response
 include::{snippets}/map/get/http-response.adoc[]
+
+=== 모든 맵 조회
+==== Request
+include::{snippets}/map/getAll/http-request.adoc[]
+==== Response
+include::{snippets}/map/getAll/http-response.adoc[]
+
+=== 맵 수정
+==== Request
+include::{snippets}/map/put/http-request.adoc[]
+==== Response
+include::{snippets}/map/put/http-response.adoc[]

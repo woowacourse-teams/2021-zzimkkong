@@ -2,7 +2,7 @@ package com.woowacourse.zzimkkong.service;
 
 import com.woowacourse.zzimkkong.domain.Map;
 import com.woowacourse.zzimkkong.domain.Member;
-import com.woowacourse.zzimkkong.dto.map.MapCreateRequest;
+import com.woowacourse.zzimkkong.dto.map.MapCreateUpdateRequest;
 import com.woowacourse.zzimkkong.dto.map.MapCreateResponse;
 import com.woowacourse.zzimkkong.dto.map.MapFindAllResponse;
 import com.woowacourse.zzimkkong.dto.map.MapFindResponse;
@@ -23,12 +23,12 @@ public class MapService {
         this.maps = mapRepository;
     }
 
-    public MapCreateResponse saveMap(final MapCreateRequest mapCreateRequest, final Member member) {
+    public MapCreateResponse saveMap(final MapCreateUpdateRequest mapCreateUpdateRequest, final Member manager) {
         Map saveMap = maps.save(new Map(
-                mapCreateRequest.getMapName(),
-                mapCreateRequest.getMapDrawing(),
-                mapCreateRequest.getMapImage(),
-                member));
+                mapCreateUpdateRequest.getMapName(),
+                mapCreateUpdateRequest.getMapDrawing(),
+                mapCreateUpdateRequest.getMapImage(),
+                manager));
         return MapCreateResponse.from(saveMap);
     }
 
@@ -42,12 +42,24 @@ public class MapService {
     }
 
     @Transactional(readOnly = true)
-    public MapFindAllResponse findAllMaps(Member member) {
-        List<Map> findMaps = maps.findAllByMember(member);
+    public MapFindAllResponse findAllMaps(final Member manager) {
+        List<Map> findMaps = maps.findAllByMember(manager);
         return MapFindAllResponse.from(findMaps);
     }
 
-    private void validateManagerOfMap(Map map, Member manager) {
+    public void updateMap(final Long mapId, final MapCreateUpdateRequest mapCreateUpdateRequest, final Member manager) {
+        Map map = maps.findById(mapId)
+                .orElseThrow(NoSuchMapException::new);
+
+        validateManagerOfMap(map, manager);
+
+        map.update(
+                mapCreateUpdateRequest.getMapName(),
+                mapCreateUpdateRequest.getMapDrawing(),
+                mapCreateUpdateRequest.getMapImage());
+    }
+
+    private void validateManagerOfMap(final Map map, final Member manager) {
         if(!manager.equals(map.getMember())) {   // TODO: ReservationService 와의 중복 제거 -김샐
             throw new NoAuthorityOnMapException();
         }

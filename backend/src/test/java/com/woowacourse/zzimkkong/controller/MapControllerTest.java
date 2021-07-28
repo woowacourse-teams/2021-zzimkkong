@@ -1,6 +1,6 @@
 package com.woowacourse.zzimkkong.controller;
 
-import com.woowacourse.zzimkkong.dto.map.MapCreateRequest;
+import com.woowacourse.zzimkkong.dto.map.MapCreateUpdateRequest;
 import com.woowacourse.zzimkkong.dto.map.MapFindAllResponse;
 import com.woowacourse.zzimkkong.dto.map.MapFindResponse;
 import com.woowacourse.zzimkkong.dto.member.MemberSaveRequest;
@@ -18,6 +18,7 @@ import java.util.List;
 
 import static com.woowacourse.zzimkkong.CommonFixture.*;
 import static com.woowacourse.zzimkkong.DocumentUtils.*;
+import static com.woowacourse.zzimkkong.controller.AuthControllerTest.getToken;
 import static com.woowacourse.zzimkkong.controller.MemberControllerTest.saveMember;
 import static com.woowacourse.zzimkkong.service.ServiceTestFixture.SMALL_HOUSE;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -26,15 +27,14 @@ import static org.springframework.restdocs.restassured3.RestAssuredRestDocumenta
 class MapControllerTest extends AcceptanceTest {
     @BeforeEach
     void setUp() {
-        MemberSaveRequest memberSaveRequest = new MemberSaveRequest(EMAIL, PASSWORD, ORGANIZATION);
-        saveMember(memberSaveRequest);
+        saveMember(new MemberSaveRequest(EMAIL, PASSWORD, ORGANIZATION));
     }
 
     @Test
     @DisplayName("특정 맵을 조회한다.")
     void find() {
         // given
-        String api = saveMap("/api/managers/maps", new MapCreateRequest(LUTHER.getName(), LUTHER.getMapDrawing(), LUTHER.getMapImage()))
+        String api = saveMap("/api/managers/maps", new MapCreateUpdateRequest(LUTHER.getName(), LUTHER.getMapDrawing(), LUTHER.getMapImage()))
                 .header("location");
 
         // when
@@ -53,8 +53,8 @@ class MapControllerTest extends AcceptanceTest {
     @DisplayName("특정 멤버가 가진 모든 맵을 조회한다.")
     void findAll() {
         // given
-        saveMap("/api/managers/maps", new MapCreateRequest(LUTHER.getName(), LUTHER.getMapDrawing(), LUTHER.getMapImage()));
-        saveMap("/api/managers/maps", new MapCreateRequest(SMALL_HOUSE.getName(), SMALL_HOUSE.getMapDrawing(), SMALL_HOUSE.getMapImage()));
+        saveMap("/api/managers/maps", new MapCreateUpdateRequest(LUTHER.getName(), LUTHER.getMapDrawing(), LUTHER.getMapImage()));
+        saveMap("/api/managers/maps", new MapCreateUpdateRequest(SMALL_HOUSE.getName(), SMALL_HOUSE.getMapDrawing(), SMALL_HOUSE.getMapImage()));
 
         // when
         ExtractableResponse<Response> response = findAllMaps();
@@ -70,21 +70,40 @@ class MapControllerTest extends AcceptanceTest {
     @Test
     @DisplayName("맵을 생성한다.")
     void create() {
-        // given, when
-        ExtractableResponse<Response> response = saveMap("/api/managers/maps", mapCreateRequest);
+        // given
+        MapCreateUpdateRequest mapCreateUpdateRequest = new MapCreateUpdateRequest(LUTHER.getName(), LUTHER.getMapDrawing(), LUTHER.getMapImage());
+
+        // when
+        ExtractableResponse<Response> response = saveMap("/api/managers/maps", mapCreateUpdateRequest);
 
         // then
         assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
     }
 
-    static ExtractableResponse<Response> saveMap(String api, MapCreateRequest mapCreateRequest) {
+
+    @Test
+    @DisplayName("맵을 수정한다.")
+    void update() {
+        // given
+        String api = saveMap("/api/managers/maps", new MapCreateUpdateRequest(LUTHER.getName(), LUTHER.getMapDrawing(), LUTHER.getMapImage()))
+                .header("location");
+        MapCreateUpdateRequest mapCreateUpdateRequest = new MapCreateUpdateRequest("이름을 바꿔요", "맵의 메타데이터도 바꿔요", "이미지 url도 바꿔요");
+
+        // when
+        ExtractableResponse<Response> response = updateMap(api, mapCreateUpdateRequest);
+
+        // then
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
+    }
+
+    static ExtractableResponse<Response> saveMap(String api, MapCreateUpdateRequest mapCreateUpdateRequest) {
         return RestAssured
                 .given(getRequestSpecification()).log().all()
                 .accept("application/json")
                 .header("Authorization", AuthorizationExtractor.AUTHENTICATION_TYPE + " " + getToken())
                 .filter(document("map/post", getRequestPreprocessor(), getResponsePreprocessor()))
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(mapCreateRequest)
+                .body(mapCreateUpdateRequest)
                 .when().post(api)
                 .then().log().all().extract();
     }
@@ -108,6 +127,18 @@ class MapControllerTest extends AcceptanceTest {
                 .filter(document("map/getAll", getRequestPreprocessor(), getResponsePreprocessor()))
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .when().get("/api/managers/maps")
+                .then().log().all().extract();
+    }
+
+    private ExtractableResponse<Response> updateMap(String api, MapCreateUpdateRequest mapCreateUpdateRequest) {
+        return RestAssured
+                .given(getRequestSpecification()).log().all()
+                .accept("application/json")
+                .header("Authorization", AuthorizationExtractor.AUTHENTICATION_TYPE + " " + getToken())
+                .filter(document("map/put", getRequestPreprocessor(), getResponsePreprocessor()))
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .body(mapCreateUpdateRequest)
+                .when().put(api)
                 .then().log().all().extract();
     }
 }
