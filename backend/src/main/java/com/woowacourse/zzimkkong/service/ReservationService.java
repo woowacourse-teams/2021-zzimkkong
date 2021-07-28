@@ -8,6 +8,7 @@ import com.woowacourse.zzimkkong.dto.reservation.ReservationFindResponse;
 import com.woowacourse.zzimkkong.exception.map.NoSuchMapException;
 import com.woowacourse.zzimkkong.exception.reservation.*;
 import com.woowacourse.zzimkkong.exception.space.NoSuchSpaceException;
+import com.woowacourse.zzimkkong.infrastructure.TimeConverter;
 import com.woowacourse.zzimkkong.repository.MapRepository;
 import com.woowacourse.zzimkkong.repository.ReservationRepository;
 import com.woowacourse.zzimkkong.repository.SpaceRepository;
@@ -15,7 +16,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.util.Collection;
 import java.util.Collections;
@@ -28,11 +28,17 @@ public abstract class ReservationService {
     protected MapRepository maps;
     protected SpaceRepository spaces;
     protected ReservationRepository reservations;
+    protected TimeConverter timeConverter;
 
-    protected ReservationService(MapRepository maps, SpaceRepository spaces, ReservationRepository reservations) {
+    public ReservationService(
+            final MapRepository maps,
+            final SpaceRepository spaces,
+            final ReservationRepository reservations,
+            final TimeConverter timeConverter) {
         this.maps = maps;
         this.spaces = spaces;
         this.reservations = reservations;
+        this.timeConverter = timeConverter;
     }
 
     @Transactional(readOnly = true)
@@ -63,7 +69,12 @@ public abstract class ReservationService {
         LocalDateTime startDateTime = reservationCreateUpdateRequest.getStartDateTime();
         LocalDateTime endDateTime = reservationCreateUpdateRequest.getEndDateTime();
 
-        validateStartTimeInPast(startDateTime);
+        ZonedDateTime zonedDateTime = timeConverter.convertTimeZone(startDateTime);
+        ZonedDateTime now = timeConverter.getNow();
+
+        if (zonedDateTime.isBefore(now)) {
+            throw new ImpossibleStartTimeException();
+        }
 
         if (endDateTime.isBefore(startDateTime) || startDateTime.equals(endDateTime)) {
             throw new ImpossibleEndTimeException();
@@ -71,18 +82,6 @@ public abstract class ReservationService {
 
         if (!startDateTime.toLocalDate().isEqual(endDateTime.toLocalDate())) {
             throw new NonMatchingStartAndEndDateException();
-        }
-    }
-
-    private void validateStartTimeInPast(final LocalDateTime startDateTime) {
-        LocalDateTime localNow = LocalDateTime.now();
-        ZonedDateTime zonedLocal = localNow.atZone(ZoneId.of("UTC"))
-                .withZoneSameInstant(ZoneId.of("Asia/Seoul"));
-
-        ZonedDateTime zonedStartDateTime = startDateTime.atZone(ZoneId.of("Asia/Seoul"));
-
-        if (zonedStartDateTime.isBefore(zonedLocal)) {
-            throw new ImpossibleStartTimeException();
         }
     }
 

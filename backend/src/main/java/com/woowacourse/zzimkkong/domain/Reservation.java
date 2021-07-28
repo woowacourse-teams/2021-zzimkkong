@@ -44,6 +44,7 @@ public class Reservation {
         this.space = builder.space;
     }
 
+
     public boolean hasConflictWith(final LocalDateTime startDateTime, final LocalDateTime endDateTime) {
         boolean contains = contains(startDateTime, endDateTime);
         boolean intersects = intersects(startDateTime, endDateTime);

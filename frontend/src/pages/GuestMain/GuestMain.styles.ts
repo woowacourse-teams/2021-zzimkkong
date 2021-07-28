@@ -1,6 +1,10 @@
 import { Link } from 'react-router-dom';
 import styled from 'styled-components';
 
+export const PageWithBottomButton = styled.div<{ hasBottomButton: boolean }>`
+  margin-bottom: ${({ hasBottomButton }) => (hasBottomButton ? '5rem' : '2rem')};
+`;
+
 export const PageTitle = styled.h2`
   font-size: 1.5rem;
   font-weight: 700;
@@ -32,14 +36,19 @@ export const PanelContainer = styled.div`
 `;
 
 export const ReservationLink = styled(Link)`
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  width: 100vw;
+  text-align: center;
   display: block;
   background: ${({ theme }) => theme.primary[400]};
   color: ${({ theme }) => theme.white};
-  border-right: 1px solid ${({ theme }) => theme.black[400]};
-  margin-right: 1rem;
   text-decoration: none;
-  float: left;
-  line-height: 1.1em;
+  padding: 1rem;
+  font-size: 1.25rem;
+  font-weight: 700;
+  cursor: pointer;
 `;
 
 export const ReservationList = styled.div`
@@ -88,4 +97,6 @@ export const DeleteModalContainer = styled.div`
   margin-top: 1.5rem;
 `;
 
-export const Message = styled.p``;
+export const Message = styled.p`
+  padding: 1rem 0;
+`;

@@ -11,6 +11,7 @@ module.exports = () => {
     devtool: isDevelopment ? 'eval-source-map' : 'source-map',
     entry: './src/index.tsx',
     output: {
+      publicPath: '/',
       filename: 'bundle.js',
       path: path.resolve(__dirname, 'dist'),
       clean: true,
@@ -65,6 +66,7 @@ module.exports = () => {
       }),
       new FaviconsWebpackPlugin({
         logo: 'src/assets/images/logo.png',
+        publicPath: '/',
         manifest: 'public/manifest.json',
       }),
     ],

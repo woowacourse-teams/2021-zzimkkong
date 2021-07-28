@@ -91,7 +91,7 @@ public class MapService {
     }
 
     private void validateManagerOfMap(final Map map, final Member manager) {
-        if(!manager.equals(map.getMember())) {   // TODO: ReservationService 와의 중복 제거 -김샐
+        if (!manager.equals(map.getMember())) {   // TODO: ReservationService 와의 중복 제거 -김샐
             throw new NoAuthorityOnMapException();
         }
     }

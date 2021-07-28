@@ -1,45 +1,50 @@
 import styled, { css } from 'styled-components';
 import { Color } from 'types/styled';
-import { getTextColor } from 'utils/color';
 
-interface ResponsiveColorProps {
-  bgColor?: Color;
+interface HeaderWrapperProps {
+  expandable: boolean;
 }
 
-interface HeaderWrapperProps extends ResponsiveColorProps {
-  expandable: boolean;
+interface HeaderContentProps {
+  dotColor?: Color;
 }
 
 interface ToggleProps {
   expanded: boolean;
 }
 
-const responsiveTextColor = css<ResponsiveColorProps>`
-  color: ${({ theme, bgColor = 'transparent' }) =>
-    getTextColor(bgColor) === 'black' ? theme.black[500] : theme.white};
-`;
-
-const responsiveFill = css<ResponsiveColorProps>`
-  fill: ${({ theme, bgColor = 'transparent' }) =>
-    getTextColor(bgColor) === 'black' ? theme.black[500] : theme.white};
-`;
-
 export const HeaderWrapper = styled.div<HeaderWrapperProps>`
-  ${responsiveTextColor};
-  background-color: ${({ bgColor = 'transparent' }) => bgColor};
   display: flex;
   justify-content: space-between;
   align-items: center;
   cursor: ${({ expandable }) => (expandable ? 'pointer' : 'default')};
   gap: 1rem;
+  border-bottom: 1px solid ${({ theme }) => theme.black[400]};
+  padding: 1rem 0.75rem;
 
   path {
-    ${responsiveFill};
+    fill: ${({ theme }) => theme.gray[400]};
   }
 `;
 
-export const HeaderContent = styled.div`
+const dot = css<HeaderContentProps>`
+  &::before {
+    content: '';
+    display: block;
+    width: 1rem;
+    height: 1rem;
+    background-color: ${({ dotColor }) => dotColor};
+    border-radius: 50%;
+    margin-right: 0.75rem;
+  }
+`;
+
+export const HeaderContent = styled.div<HeaderContentProps>`
   flex: 1;
+  display: flex;
+  align-items: center;
+
+  ${({ dotColor }) => (dotColor ? dot : '')}
 `;
 
 export const Toggle = styled.div<ToggleProps>`

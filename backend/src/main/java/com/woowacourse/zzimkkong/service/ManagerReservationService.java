@@ -13,6 +13,7 @@ import com.woowacourse.zzimkkong.exception.authorization.NoAuthorityOnMapExcepti
 import com.woowacourse.zzimkkong.exception.map.NoSuchMapException;
 import com.woowacourse.zzimkkong.exception.reservation.NoSuchReservationException;
 import com.woowacourse.zzimkkong.exception.space.NoSuchSpaceException;
+import com.woowacourse.zzimkkong.infrastructure.TimeConverter;
 import com.woowacourse.zzimkkong.repository.MapRepository;
 import com.woowacourse.zzimkkong.repository.ReservationRepository;
 import com.woowacourse.zzimkkong.repository.SpaceRepository;
@@ -22,8 +23,12 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 @Transactional
 public class ManagerReservationService extends ReservationService {
-    public ManagerReservationService(final MapRepository maps, final SpaceRepository spaces, final ReservationRepository reservations) {
-        super(maps, spaces, reservations);
+    public ManagerReservationService(
+            final MapRepository maps,
+            final SpaceRepository spaces,
+            final ReservationRepository reservations,
+            final TimeConverter timeConverter) {
+        super(maps, spaces, reservations, timeConverter);
     }
 
     public ReservationCreateResponse saveReservation(

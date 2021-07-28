@@ -2,7 +2,7 @@ package com.woowacourse.zzimkkong.dto.map;
 
 import javax.validation.constraints.NotBlank;
 
-import static com.woowacourse.zzimkkong.dto.Validator.*;
+import static com.woowacourse.zzimkkong.dto.Validator.EMPTY_MESSAGE;
 
 public class MapCreateUpdateRequest {
     @NotBlank(message = EMPTY_MESSAGE)

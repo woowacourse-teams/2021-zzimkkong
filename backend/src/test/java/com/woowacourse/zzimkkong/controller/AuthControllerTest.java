@@ -41,12 +41,10 @@ class AuthControllerTest extends AcceptanceTest {
         // given
         saveMember(new MemberSaveRequest(EMAIL, PASSWORD, ORGANIZATION));
 
-        LoginRequest loginRequest = new LoginRequest(EMAIL, PASSWORD);
-        ExtractableResponse<Response> loginResponse = login(loginRequest);
-        TokenResponse responseBody = loginResponse.body().as(TokenResponse.class);
+        String accessToken = getToken();
 
         //when
-        ExtractableResponse<Response> response = token(responseBody.getAccessToken(), "success");
+        ExtractableResponse<Response> response = token(accessToken, "success");
 
         //then
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
@@ -63,6 +61,14 @@ class AuthControllerTest extends AcceptanceTest {
 
         //then
         assertThat(response.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
+    }
+
+    static String getToken() {
+        LoginRequest loginRequest = new LoginRequest(EMAIL, PASSWORD);
+        ExtractableResponse<Response> loginResponse = login(loginRequest);
+
+        TokenResponse responseBody = loginResponse.body().as(TokenResponse.class);
+        return responseBody.getAccessToken();
     }
 
     static ExtractableResponse<Response> login(final LoginRequest loginRequest) {

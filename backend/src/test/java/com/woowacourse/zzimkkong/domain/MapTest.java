@@ -3,15 +3,14 @@ package com.woowacourse.zzimkkong.domain;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import static com.woowacourse.zzimkkong.CommonFixture.*;
+import static com.woowacourse.zzimkkong.CommonFixture.LUTHER;
 import static org.assertj.core.api.Assertions.assertThat;
 
-class MapTest {
-    @DisplayName("맵의 주인이 일치하면 false, 불일치하면 true를 반환한다.")
+public class MapTest {
+    @DisplayName("맵의 관리자가 아니면 true, 맞으면 false")
     @Test
-    void checkOwnedBy() {
-        //given, when, then
-        assertThat(LUTHER.isNotOwnedBy(POBI)).isFalse();
-        assertThat(LUTHER.isNotOwnedBy(JASON)).isTrue();
+    void isNotOwnedBy() {
+        boolean result = LUTHER.isNotOwnedBy(new Member("삭정이", "test1234", "잠실"));
+        assertThat(result).isTrue();
     }
 }
