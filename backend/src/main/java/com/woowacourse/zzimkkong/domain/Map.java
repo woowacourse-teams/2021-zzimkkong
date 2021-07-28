@@ -36,6 +36,12 @@ public class Map {
         this.member = member;
     }
 
+    public void update(String mapName, String mapDrawing, String mapImage) {
+        this.name = mapName;
+        this.mapDrawing = mapDrawing;
+        this.mapImage = mapImage;
+    }
+
     public Long getId() {
         return id;
     }
