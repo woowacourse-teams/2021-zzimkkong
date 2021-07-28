@@ -1,4 +1,6 @@
 import styled from 'styled-components';
+import { ReactComponent as ArrowLeftIcon } from 'assets/svg/arrow-left.svg';
+import { ReactComponent as ArrowRightIcon } from 'assets/svg/arrow-right.svg';
 
 export const Container = styled.div`
   display: flex;
@@ -7,6 +9,14 @@ export const Container = styled.div`
   border-radius: 0.25rem;
   background-color: ${({ theme }) => theme.gray[100]};
   padding: 0.75rem 0.25rem;
+`;
+
+export const PrimaryArrowLeftIcon = styled(ArrowLeftIcon)`
+  fill: ${({ theme }) => theme.primary[400]};
+`;
+
+export const PrimaryArrowRightIcon = styled(ArrowRightIcon)`
+  fill: ${({ theme }) => theme.primary[400]};
 `;
 
 export const DateWrapper = styled.label`

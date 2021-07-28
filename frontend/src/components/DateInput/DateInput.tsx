@@ -1,6 +1,4 @@
 import { ChangeEventHandler, Dispatch, InputHTMLAttributes, SetStateAction } from 'react';
-import { ReactComponent as ArrowLeftIcon } from 'assets/svg/arrow-left.svg';
-import { ReactComponent as ArrowRightIcon } from 'assets/svg/arrow-right.svg';
 import { ReactComponent as CalendarIcon } from 'assets/svg/calendar.svg';
 import IconButton from 'components/IconButton/IconButton';
 import { formatDate, formatDateWithDay } from 'utils/datetime';
@@ -26,16 +24,16 @@ const DateInput = ({ date, setDate, ...props }: Props): JSX.Element => {
 
   return (
     <Styled.Container>
-      <IconButton variant="primary" onClick={onClickPrev}>
-        <ArrowLeftIcon />
+      <IconButton onClick={onClickPrev}>
+        <Styled.PrimaryArrowLeftIcon width="auto" height="auto" />
       </IconButton>
       <Styled.DateWrapper>
         <Styled.DateText>{formatDateWithDay(date)}</Styled.DateText>
         <Styled.DateInput type="date" onChange={onChange} value={formatDate(date)} {...props} />
         <CalendarIcon />
       </Styled.DateWrapper>
-      <IconButton variant="primary" onClick={onClickNext}>
-        <ArrowRightIcon />
+      <IconButton onClick={onClickNext}>
+        <Styled.PrimaryArrowRightIcon width="auto" height="auto" />
       </IconButton>
     </Styled.Container>
   );
