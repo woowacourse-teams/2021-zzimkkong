@@ -48,14 +48,16 @@ const GuestMain = (): JSX.Element => {
   const now = new Date();
   const todayDate = new Date(now.getFullYear(), now.getMonth(), now.getDate());
 
-  const [date, onChangeDate] = useInput(formatDate(targetDate ?? new Date()));
+  const [date, setDate] = useState(targetDate ? new Date(targetDate) : new Date());
   const [selectedSpaceId, onChangeSelectedSpaceId] = useInput(`${spaceId ?? spaceList[0].spaceId}`);
   const getReservations = useReservations({
     mapId,
     spaceId: Number(selectedSpaceId),
-    date,
+    date: formatDate(date),
   });
   const reservations = getReservations.data?.data?.reservations ?? [];
+
+  const reservationAvailable = new Date(date) > todayDate;
 
   const removeReservation = useMutation(deleteReservation, {
     onSuccess: () => {
@@ -85,7 +87,7 @@ const GuestMain = (): JSX.Element => {
         spaceId: Number(selectedSpaceId),
         reservation: selectedReservation,
         spaceName: selectedSpace.spaceName,
-        selectedDate: date,
+        selectedDate: formatDate(date),
       },
     });
   };
@@ -108,83 +110,85 @@ const GuestMain = (): JSX.Element => {
     <>
       <Header />
       <Layout>
-        <Styled.PageTitle>우아한테크코스 교육장</Styled.PageTitle>
-        <DateInput value={date} onChange={onChangeDate} />
-        <Styled.MapContainer>
-          <Styled.Map>
-            {spaceList?.map(({ spaceId, spaceName, coordinate, textPosition }) => (
-              <PinRadio
-                key={spaceId}
-                name={`map-${mapId}`}
-                coordinate={coordinate}
-                text={spaceName}
-                textPosition={textPosition}
-                value={spaceId}
-                checked={Number(selectedSpaceId) === spaceId}
-                onChange={onChangeSelectedSpaceId}
-              />
-            ))}
-            <Luther />
-          </Styled.Map>
-        </Styled.MapContainer>
-        <Styled.PanelContainer>
-          <Panel>
-            <Panel.Header bgColor={selectedSpace.color}>
-              {new Date(date) > todayDate && (
-                <Styled.ReservationLink
-                  to={{
-                    pathname: PATH.GUEST_RESERVATION,
-                    state: {
-                      mapId,
-                      spaceId: Number(selectedSpaceId),
-                      spaceName: selectedSpace.spaceName,
-                      selectedDate: date,
-                    },
-                  }}
-                >
-                  예약
-                </Styled.ReservationLink>
-              )}
-              <Panel.Title>{selectedSpace.spaceName}</Panel.Title>
-            </Panel.Header>
-            <Panel.Content>
-              <>
-                {getReservations.isLoadingError && (
-                  <Styled.Message>
-                    예약 목록을 불러오는 데 문제가 생겼어요!
-                    <br />
-                    새로 고침으로 다시 시도해주세요.
-                  </Styled.Message>
-                )}
-                {getReservations.isLoading && !getReservations.isLoadingError && (
-                  <Styled.Message>불러오는 중입니다...</Styled.Message>
-                )}
-                {getReservations.isSuccess && reservations?.length === 0 && (
-                  <Styled.Message>오늘의 첫 예약을 잡아보세요!</Styled.Message>
-                )}
-                {getReservations.isSuccess && reservations.length > 0 && (
-                  <Styled.ReservationList role="list">
-                    {reservations.map((reservation: Reservation) => (
-                      <ReservationListItem
-                        key={reservation.id}
-                        reservation={reservation}
-                        control={
-                          <Button
-                            variant="text"
-                            size="small"
-                            onClick={() => handleSelectModal(reservation)}
-                          >
-                            <More />
-                          </Button>
-                        }
-                      />
-                    ))}
-                  </Styled.ReservationList>
-                )}
-              </>
-            </Panel.Content>
-          </Panel>
-        </Styled.PanelContainer>
+        <Styled.PageWithBottomButton hasBottomButton={reservationAvailable}>
+          <Styled.PageTitle>우아한테크코스 교육장</Styled.PageTitle>
+          <DateInput date={date} setDate={setDate} />
+          <Styled.MapContainer>
+            <Styled.Map>
+              {spaceList?.map(({ spaceId, spaceName, coordinate, textPosition }) => (
+                <PinRadio
+                  key={spaceId}
+                  name={`map-${mapId}`}
+                  coordinate={coordinate}
+                  text={spaceName}
+                  textPosition={textPosition}
+                  value={spaceId}
+                  checked={Number(selectedSpaceId) === spaceId}
+                  onChange={onChangeSelectedSpaceId}
+                />
+              ))}
+              <Luther />
+            </Styled.Map>
+          </Styled.MapContainer>
+          <Styled.PanelContainer>
+            <Panel>
+              <Panel.Header dotColor={selectedSpace.color}>
+                <Panel.Title>{selectedSpace.spaceName}</Panel.Title>
+              </Panel.Header>
+              <Panel.Content>
+                <>
+                  {getReservations.isLoadingError && (
+                    <Styled.Message>
+                      예약 목록을 불러오는 데 문제가 생겼어요!
+                      <br />
+                      새로 고침으로 다시 시도해주세요.
+                    </Styled.Message>
+                  )}
+                  {getReservations.isLoading && !getReservations.isLoadingError && (
+                    <Styled.Message>불러오는 중입니다...</Styled.Message>
+                  )}
+                  {getReservations.isSuccess && reservations?.length === 0 && (
+                    <Styled.Message>오늘의 첫 예약을 잡아보세요!</Styled.Message>
+                  )}
+                  {getReservations.isSuccess && reservations.length > 0 && (
+                    <Styled.ReservationList role="list">
+                      {reservations.map((reservation: Reservation) => (
+                        <ReservationListItem
+                          key={reservation.id}
+                          reservation={reservation}
+                          control={
+                            <Button
+                              variant="text"
+                              size="small"
+                              onClick={() => handleSelectModal(reservation)}
+                            >
+                              <More />
+                            </Button>
+                          }
+                        />
+                      ))}
+                    </Styled.ReservationList>
+                  )}
+                </>
+              </Panel.Content>
+            </Panel>
+          </Styled.PanelContainer>
+        </Styled.PageWithBottomButton>
+        {reservationAvailable && (
+          <Styled.ReservationLink
+            to={{
+              pathname: PATH.GUEST_RESERVATION,
+              state: {
+                mapId,
+                spaceId: Number(selectedSpaceId),
+                spaceName: selectedSpace.spaceName,
+                selectedDate: formatDate(date),
+              },
+            }}
+          >
+            예약하기
+          </Styled.ReservationLink>
+        )}
       </Layout>
       <Modal open={modalOpen} isClosableDimmer={true} onClose={() => setModalOpen(false)}>
         <Styled.SelectBox>
