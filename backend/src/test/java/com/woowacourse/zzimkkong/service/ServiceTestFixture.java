@@ -62,7 +62,6 @@ public class ServiceTestFixture {
             .mapImage("이미지 입니다")
             .build();
 
-    public static Map SMALL_HOUSE = new Map(2L, "작은집", "mapDrawingData", "mapImageData", POBI);
     public static final LocalDate TOMORROW = LocalDate.now().plusDays(1);
     public static final LocalDateTime TOMORROW_START_TIME = LocalDate.now().plusDays(2L).atTime(10, 0);
     public static final String DESCRIPTION = "찜꽁 1차 회의";
