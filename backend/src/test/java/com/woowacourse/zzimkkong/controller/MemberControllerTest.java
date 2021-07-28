@@ -15,8 +15,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.restdocs.restassured3.RestAssuredRestDocumentation.document;
 
 class MemberControllerTest extends AcceptanceTest {
-    public static final MemberSaveRequest memberSaveRequest = new MemberSaveRequest(EMAIL, PASSWORD, ORGANIZATION);
-
     @DisplayName("정상적인 회원가입 입력이 들어오면 회원 정보를 저장한다.")
     @Test
     void join() {

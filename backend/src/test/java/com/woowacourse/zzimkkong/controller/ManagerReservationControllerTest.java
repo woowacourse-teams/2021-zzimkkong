@@ -28,10 +28,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.restdocs.restassured3.RestAssuredRestDocumentation.document;
 
 public class ManagerReservationControllerTest extends AcceptanceTest {
-    private static final String SALLY_PASSWORD = "1230";
-    private static final String SALLY_NAME = "샐리";
-    private static final String SALLY_DESCRIPTION = "집 가고 싶은 회의";
-
     @Autowired
     private MemberRepository members;
 
