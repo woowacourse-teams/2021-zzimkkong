@@ -10,7 +10,6 @@ public class ServiceTestFixture {
     public static final String EMAIL = "pobi@email.com";
     public static final String PASSWORD = "test1234";
     public static final String ORGANIZATION = "우아한테크코스";
-    public static final Integer TIMEZONE_OFFSET = 9;
     public static Member POBI = new Member(1L, EMAIL, PASSWORD, ORGANIZATION);
     public static Member JASON = new Member(2L, "jason@test.com", PASSWORD, ORGANIZATION);
 
@@ -62,7 +61,7 @@ public class ServiceTestFixture {
             .build();
 
     public static final LocalDate TOMORROW = LocalDate.now().plusDays(1);
-    public static final LocalDateTime TOMORROW_START_TIME = TOMORROW.atStartOfDay();
+    public static final LocalDateTime TOMORROW_START_TIME = LocalDate.now().plusDays(2L).atTime(10, 0);
     public static final String DESCRIPTION = "찜꽁 1차 회의";
     public static final String USER_NAME = "찜꽁";
     public static final String RESERVATION_PASSWORD = "1234";
