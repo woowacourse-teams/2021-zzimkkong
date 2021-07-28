@@ -1,4 +1,5 @@
 import styled from 'styled-components';
+import { ReactComponent as LinkIcon } from 'assets/svg/link.svg';
 
 export const PageHeader = styled.div`
   padding: 0.75rem 0;
@@ -9,12 +10,13 @@ export const PageHeader = styled.div`
 export const PageTitle = styled.h2`
   font-size: 1.5rem;
   font-weight: 500;
-  padding: 0 0.75rem;
+  padding: 0 0.5rem;
   flex-grow: 1;
   text-align: center;
-  text-overflow: ellipsis;
-  overflow: hidden;
-  white-space: nowrap;
+`;
+
+export const PrimaryLinkIcon = styled(LinkIcon)`
+  fill: ${({ theme }) => theme.primary[400]};
 `;
 
 export const DateInputWrapper = styled.div`

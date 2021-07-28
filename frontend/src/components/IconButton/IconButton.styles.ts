@@ -1,11 +1,6 @@
 import styled, { css } from 'styled-components';
 
-interface ButtonProps {
-  size: 'small' | 'medium' | 'large';
-  variant: 'primary' | 'gray' | 'default';
-}
-
-interface TextProps {
+interface Props {
   size: 'small' | 'medium' | 'large';
 }
 
@@ -17,33 +12,46 @@ export const Container = styled.div`
 
 const buttonSizeCSS = {
   small: css`
-    width: 1.25rem;
-    height: 1.25rem;
-    padding: 0;
+    min-width: 1.25rem;
   `,
   medium: css`
-    width: 1.625rem;
-    height: 1.625rem;
-    padding: 0.125rem;
+    min-width: 1.5rem;
+  `,
+  large: css`
+    min-width: 2.25rem;
+  `,
+};
+
+export const Button = styled.button<Props>`
+  border: none;
+  border-radius: 50%;
+  background-color: transparent;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  ${({ size }) => buttonSizeCSS[size]}
+`;
+
+const iconSizeCSS = {
+  small: css`
+    width: 1.25rem;
+    height: 1.25rem;
+  `,
+  medium: css`
+    width: 1.5rem;
+    height: 1.5rem;
   `,
   large: css`
     width: 2.25rem;
     height: 2.25rem;
-    padding: 0.25rem;
   `,
 };
 
-const buttonVariantCSS = {
-  default: css`
-    fill: ${({ theme }) => theme.black[400]};
-  `,
-  gray: css`
-    fill: ${({ theme }) => theme.gray[500]};
-  `,
-  primary: css`
-    fill: ${({ theme }) => theme.primary[400]};
-  `,
-};
+export const IconWrapper = styled.div<Props>`
+  ${({ size }) => iconSizeCSS[size]}
+`;
 
 const textSizeCSS = {
   small: css`
@@ -57,26 +65,9 @@ const textSizeCSS = {
   `,
 };
 
-export const Button = styled.button<ButtonProps>`
-  ${({ size }) => buttonSizeCSS[size]}
-  border: none;
-  border-radius: 50%;
-  background-color: transparent;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-
-  svg,
-  img {
-    ${({ variant }) => buttonVariantCSS[variant]};
-    width: 100%;
-    height: 100%;
-  }
-`;
-
-export const Text = styled.div<TextProps>`
+export const Text = styled.div<Props>`
   ${({ size }) => textSizeCSS[size]}
-  cursor: default;
   user-select: none;
+  white-space: nowrap;
+  text-align: center;
 `;

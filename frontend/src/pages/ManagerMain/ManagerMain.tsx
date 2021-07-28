@@ -1,6 +1,5 @@
 import { useState } from 'react';
 import LutherImage from 'assets/images/luther.png';
-import { ReactComponent as LinkIcon } from 'assets/svg/link.svg';
 import { ReactComponent as MenuIcon } from 'assets/svg/menu.svg';
 import { ReactComponent as MoreIcon } from 'assets/svg/more.svg';
 import DateInput from 'components/DateInput/DateInput';
@@ -140,11 +139,11 @@ const ManagerMain = (): JSX.Element => {
       <Layout>
         <Styled.PageHeader>
           <IconButton text="맵 목록" onClick={onOpen}>
-            <MenuIcon />
+            <MenuIcon width="auto" height="auto" />
           </IconButton>
           <Styled.PageTitle>{mapName}</Styled.PageTitle>
-          <IconButton variant="primary" text="공유 링크">
-            <LinkIcon />
+          <IconButton text="공유 링크">
+            <Styled.PrimaryLinkIcon width="auto" height="auto" />
           </IconButton>
         </Styled.PageHeader>
         <Styled.DateInputWrapper>
@@ -168,7 +167,7 @@ const ManagerMain = (): JSX.Element => {
                           reservation={reservation as Reservation}
                           control={
                             <IconButton>
-                              <MoreIcon />
+                              <MoreIcon width="auto" height="auto" />
                             </IconButton>
                           }
                         />

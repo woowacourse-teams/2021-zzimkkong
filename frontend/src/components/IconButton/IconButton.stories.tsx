@@ -20,40 +20,28 @@ WithText.args = {
   text: '삭제',
 };
 
-export const Primary = Template.bind({});
-Primary.args = {
-  children: <DeleteIcon />,
-  variant: 'primary',
-};
-
-export const Gray = Template.bind({});
-Gray.args = {
-  children: <DeleteIcon />,
-  variant: 'gray',
-};
-
 export const Small = Template.bind({});
 Small.args = {
-  children: <DeleteIcon />,
+  children: <DeleteIcon width="auto" height="auto" />,
   size: 'small',
 };
 
 export const SmallWithText = Template.bind({});
 SmallWithText.args = {
-  children: <DeleteIcon />,
+  children: <DeleteIcon width="auto" height="auto" />,
   size: 'small',
   text: '삭제',
 };
 
 export const Large = Template.bind({});
 Large.args = {
-  children: <DeleteIcon />,
+  children: <DeleteIcon width="auto" height="auto" />,
   size: 'large',
 };
 
 export const LargeWithText = Template.bind({});
 LargeWithText.args = {
-  children: <DeleteIcon />,
+  children: <DeleteIcon width="auto" height="auto" />,
   size: 'large',
   text: '삭제',
 };
