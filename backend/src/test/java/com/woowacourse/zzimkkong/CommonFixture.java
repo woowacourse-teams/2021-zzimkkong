@@ -15,6 +15,8 @@ public class CommonFixture {
     public static Member JASON = new Member("jason@test.com", PASSWORD, ORGANIZATION);
 
     public static Map LUTHER = new Map("루터회관", "mapDrawingData", "mapImageData", POBI);
+    public static Map SMALL_HOUSE = new Map("작은집", "mapDrawingData", "mapImageData", POBI);
+
     public static Setting BE_SETTING = new Setting.Builder()
             .availableStartTime(LocalTime.of(0, 0))
             .availableEndTime(LocalTime.of(23, 59))
@@ -36,7 +38,6 @@ public class CommonFixture {
             .setting(BE_SETTING)
             .mapImage("이미지 입니다")
             .build();
-    public static Map SMALL_HOUSE = new Map("작은집", "mapDrawingData", "mapImageData", POBI);
     public static Setting FE_SETTING = new Setting.Builder()
             .availableStartTime(LocalTime.of(0, 0))
             .availableEndTime(LocalTime.of(23, 59))

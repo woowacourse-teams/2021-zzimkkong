@@ -63,6 +63,14 @@ class AuthControllerTest extends AcceptanceTest {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
     }
 
+    static String getToken() {
+        LoginRequest loginRequest = new LoginRequest(EMAIL, PASSWORD);
+        ExtractableResponse<Response> loginResponse = login(loginRequest);
+
+        TokenResponse responseBody = loginResponse.body().as(TokenResponse.class);
+        return responseBody.getAccessToken();
+    }
+
     static ExtractableResponse<Response> login(final LoginRequest loginRequest) {
         return RestAssured
                 .given(getRequestSpecification()).log().all()
@@ -72,14 +80,6 @@ class AuthControllerTest extends AcceptanceTest {
                 .body(loginRequest)
                 .when().post("/api/login/token")
                 .then().log().all().extract();
-    }
-
-    static String getToken() {
-        LoginRequest loginRequest = new LoginRequest(EMAIL, PASSWORD);
-        ExtractableResponse<Response> loginResponse = login(loginRequest);
-
-        TokenResponse responseBody = loginResponse.body().as(TokenResponse.class);
-        return responseBody.getAccessToken();
     }
 
     private ExtractableResponse<Response> token(String token, String docName) {
