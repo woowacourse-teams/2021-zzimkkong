@@ -1,13 +1,9 @@
 package com.woowacourse.zzimkkong.controller;
 
 import com.woowacourse.zzimkkong.dto.map.MapCreateUpdateRequest;
-import com.woowacourse.zzimkkong.dto.member.LoginRequest;
 import com.woowacourse.zzimkkong.dto.member.MemberSaveRequest;
-import com.woowacourse.zzimkkong.dto.member.TokenResponse;
 import io.restassured.RestAssured;
 import io.restassured.builder.RequestSpecBuilder;
-import io.restassured.response.ExtractableResponse;
-import io.restassured.response.Response;
 import io.restassured.specification.RequestSpecification;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -22,7 +18,6 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import static com.woowacourse.zzimkkong.CommonFixture.*;
 import static com.woowacourse.zzimkkong.DocumentUtils.setRequestSpecification;
-import static com.woowacourse.zzimkkong.controller.AuthControllerTest.login;
 import static org.springframework.restdocs.restassured3.RestAssuredRestDocumentation.documentationConfiguration;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
@@ -31,7 +26,7 @@ import static org.springframework.restdocs.restassured3.RestAssuredRestDocumenta
 @AutoConfigureRestDocs
 @ActiveProfiles("test")
 public class AcceptanceTest {
-    protected final MapCreateUpdateRequest mapCreateRequest = new MapCreateUpdateRequest(LUTHER.getName(), LUTHER.getMapDrawing(), LUTHER.getMapImage());
+    protected final MapCreateUpdateRequest mapCreateRequest = new MapCreateUpdateRequest(LUTHER.getName(), LUTHER.getMapDrawing(), MAP_SVG);
     protected final MemberSaveRequest memberSaveRequest = new MemberSaveRequest(EMAIL, PASSWORD, ORGANIZATION);
     protected final String SALLY_PASSWORD = "1230";
     protected final String SALLY_NAME = "샐리";

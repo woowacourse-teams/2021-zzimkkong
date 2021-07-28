@@ -17,7 +17,7 @@ import org.springframework.http.MediaType;
 
 import java.time.LocalTime;
 
-import static com.woowacourse.zzimkkong.CommonFixture.BE;
+import static com.woowacourse.zzimkkong.CommonFixture.*;
 import static com.woowacourse.zzimkkong.DocumentUtils.*;
 import static com.woowacourse.zzimkkong.controller.AuthControllerTest.getToken;
 import static com.woowacourse.zzimkkong.controller.MapControllerTest.saveMap;
@@ -46,7 +46,7 @@ public class SpaceControllerTest extends AcceptanceTest {
                 "시니컬하네",
                 "area",
                 settingsRequest,
-                "이미지 입니다"
+                DUMMY_SPACE_SVG
         );
         String saveSpaceApi = "/api/managers/maps/1/spaces";
         saveSpace(saveSpaceApi, spaceCreateRequest);
@@ -71,7 +71,7 @@ public class SpaceControllerTest extends AcceptanceTest {
                 "우리집",
                 "프론트 화이팅",
                 newSettingsRequest,
-                "이미지 입니다"
+                DUMMY_SPACE_SVG
         );
 
         // when
@@ -118,7 +118,7 @@ public class SpaceControllerTest extends AcceptanceTest {
                 "우리집",
                 "프론트 화이팅",
                 settingsRequest,
-                "이미지 입니다"
+                DUMMY_SPACE_SVG
         );
 
         Setting defaultSetting = new Setting.Builder()
@@ -137,7 +137,7 @@ public class SpaceControllerTest extends AcceptanceTest {
                 .description("우리집")
                 .area("프론트 화이팅")
                 .setting(defaultSetting)
-                .mapImage("이미지 입니다")
+                .mapImage(DUMMY_SPACE_SVG)
                 .build();
 
         String saveSpaceApi = "/api/managers/maps/1/spaces";

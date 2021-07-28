@@ -44,7 +44,7 @@ public class MapService {
         Map saveMap = maps.save(new Map(
                 mapCreateUpdateRequest.getMapName(),
                 mapCreateUpdateRequest.getMapDrawing(),
-                mapCreateUpdateRequest.getMapSvg().substring(10),
+                mapCreateUpdateRequest.getMapSvg().substring(0, 10),
                 manager));
 
         String thumbnailUrl = uploadPngToS3(saveMap.getId().toString(), mapCreateUpdateRequest.getMapSvg());
@@ -74,12 +74,12 @@ public class MapService {
 
         validateManagerOfMap(map, manager);
 
-        uploadPngToS3(map.getId().toString(), mapCreateUpdateRequest.getMapSvg());
+        String thumbnailUrl = uploadPngToS3(map.getId().toString(), mapCreateUpdateRequest.getMapSvg());
 
         map.update(
                 mapCreateUpdateRequest.getMapName(),
                 mapCreateUpdateRequest.getMapDrawing(),
-                mapCreateUpdateRequest.getMapSvg());
+                thumbnailUrl);
     }
 
     private void validateManagerOfMap(final Map map, final Member manager) {
