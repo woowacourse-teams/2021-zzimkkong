@@ -27,7 +27,7 @@ public class PracticeController {
     @PostMapping("/practice")
     public ResponseEntity<Void> create(@RequestBody SvgDto svgDto) {
         File file = svgConverter.convertSvgToPng(svgDto.getName(), svgDto.getSvg());
-        String url = s3Uploader.upload("test/", file);
+        String url = s3Uploader.upload("practice", file);
         return ResponseEntity.created(URI.create(url)).build();
     }
 }

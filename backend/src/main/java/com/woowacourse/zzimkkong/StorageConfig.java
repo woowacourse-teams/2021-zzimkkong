@@ -24,7 +24,7 @@ public class StorageConfig {
     }
 
     @Bean(name = "amazonS3")
-    @Profile({"!prod"})
+    @Profile("!prod")
     public AmazonS3 amazonS3Local(@Value("${aws.access-key}") String accessKey,
                                     @Value("${aws.secret-key}") String secretKey) {
         BasicAWSCredentials basicAWSCredentials = new BasicAWSCredentials(accessKey, secretKey);
