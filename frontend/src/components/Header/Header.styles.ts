@@ -1,5 +1,6 @@
 import styled from 'styled-components';
 import Layout from 'components/Layout/Layout';
+import { Z_INDEX } from 'constants/style';
 
 export const Header = styled.header`
   position: sticky;
@@ -7,7 +8,7 @@ export const Header = styled.header`
   height: 3rem;
   background-color: ${({ theme }) => theme.white};
   box-shadow: 0 0.25rem 0.25rem 0 ${({ theme }) => theme.shadow};
-  z-index: 99;
+  z-index: ${Z_INDEX.HEADER};
 `;
 
 export const HeaderLayout = styled(Layout)`

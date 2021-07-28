@@ -54,6 +54,6 @@ class MapRepositoryTest extends RepositoryTest {
         List<Map> actualMaps = maps.findAllByMember(POBI);
 
         //then
-        assertThat(actualMaps).isEqualTo(List.of(savedMap1, savedMap2));
+        assertThat(actualMaps).containsExactlyInAnyOrderElementsOf(List.of(savedMap1, savedMap2));
     }
 }

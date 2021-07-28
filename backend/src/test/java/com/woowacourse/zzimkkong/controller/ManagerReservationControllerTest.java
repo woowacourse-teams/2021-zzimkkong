@@ -1,8 +1,6 @@
 package com.woowacourse.zzimkkong.controller;
 
 import com.woowacourse.zzimkkong.domain.Reservation;
-import com.woowacourse.zzimkkong.dto.member.LoginRequest;
-import com.woowacourse.zzimkkong.dto.member.TokenResponse;
 import com.woowacourse.zzimkkong.dto.reservation.*;
 import com.woowacourse.zzimkkong.infrastructure.AuthorizationExtractor;
 import com.woowacourse.zzimkkong.repository.MapRepository;
@@ -26,15 +24,11 @@ import java.util.List;
 
 import static com.woowacourse.zzimkkong.CommonFixture.*;
 import static com.woowacourse.zzimkkong.DocumentUtils.*;
-import static com.woowacourse.zzimkkong.controller.AuthControllerTest.login;
+import static com.woowacourse.zzimkkong.controller.AuthControllerTest.getToken;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.restdocs.restassured3.RestAssuredRestDocumentation.document;
 
 public class ManagerReservationControllerTest extends AcceptanceTest {
-    private static final String SALLY_PASSWORD = "1230";
-    private static final String SALLY_NAME = "샐리";
-    private static final String SALLY_DESCRIPTION = "집 가고 싶은 회의";
-
     @Autowired
     private MemberRepository members;
 
@@ -79,10 +73,7 @@ public class ManagerReservationControllerTest extends AcceptanceTest {
                 .space(BE)
                 .build();
 
-        LoginRequest pobiLoginRequest = new LoginRequest(POBI.getEmail(), POBI.getPassword());
-        ExtractableResponse<Response> loginResponse = login(pobiLoginRequest);
-        TokenResponse responseBody = loginResponse.body().as(TokenResponse.class);
-        token = responseBody.getAccessToken();
+        token = getToken();
     }
 
     @DisplayName("올바른 토큰이 주어질 때, 예약을 등록한다.")

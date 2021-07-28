@@ -17,8 +17,20 @@ class SpaceRepositoryTest extends RepositoryTest {
         maps.save(LUTHER);
     }
 
+    @DisplayName("공간을 저장한다.")
     @Test
+    void save() {
+        // given, when
+        Space savedSpace = spaces.save(BE);
+
+        // then
+        assertThat(savedSpace.getId()).isNotNull();
+        assertThat(savedSpace).usingRecursiveComparison()
+                .isEqualTo(BE);
+    }
+
     @DisplayName("맵의 Id를 이용해 모든 공간을 찾아온다.")
+    @Test
     void findAllByMapId() {
         // given
         spaces.save(BE);

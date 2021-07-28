@@ -1,4 +1,5 @@
 import styled from 'styled-components';
+import { Z_INDEX } from 'constants/style';
 
 interface Props {
   open?: boolean;
@@ -11,6 +12,7 @@ export const Overlay = styled.div<Props>`
   left: 0;
   right: 0;
   bottom: 0;
+  z-index: ${Z_INDEX.MODAL_OVERLAY};
   justify-content: center;
   align-items: center;
   background-color: ${({ theme }) => theme.modalOverlay};
@@ -21,6 +23,8 @@ export const Modal = styled.div`
   min-width: 320px;
   max-width: 768px;
   position: relative;
+  overflow: hidden;
+  border-radius: 4px;
   background-color: ${({ theme }) => theme.white};
 `;
 
@@ -43,9 +47,10 @@ export const Inner = styled.div`
   padding: 0.5rem 1rem;
 `;
 
-export const Header = styled.h1`
+export const Header = styled.h2`
   font-weight: 700;
   padding: 1rem;
+  margin-bottom: 0.5rem;
 `;
 
 export const Content = styled.div``;

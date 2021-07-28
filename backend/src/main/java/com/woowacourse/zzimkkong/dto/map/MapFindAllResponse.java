@@ -3,7 +3,6 @@ package com.woowacourse.zzimkkong.dto.map;
 import com.woowacourse.zzimkkong.domain.Map;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 import static java.util.stream.Collectors.collectingAndThen;
 import static java.util.stream.Collectors.toList;
@@ -14,11 +13,11 @@ public class MapFindAllResponse {
     public MapFindAllResponse() {
     }
 
-    public MapFindAllResponse(List<MapFindResponse> maps) {
+    private MapFindAllResponse(final List<MapFindResponse> maps) {
         this.maps = maps;
     }
 
-    public static MapFindAllResponse from(List<Map> findMaps) {
+    public static MapFindAllResponse from(final List<Map> findMaps) {
         return findMaps.stream()
                 .map(MapFindResponse::from)
                 .collect(collectingAndThen(toList(), MapFindAllResponse::new));

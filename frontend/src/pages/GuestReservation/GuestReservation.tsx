@@ -10,30 +10,30 @@ import Input from 'components/Input/Input';
 import Layout from 'components/Layout/Layout';
 import ReservationListItem from 'components/ReservationListItem/ReservationListItem';
 import MESSAGE from 'constants/message';
-import PATH from 'constants/path';
 import REGEXP from 'constants/regexp';
 import RESERVATION from 'constants/reservation';
+import { PATH } from 'constants/routes';
 import useInput from 'hooks/useInput';
 import useReservations from 'hooks/useReservations';
-import { UserMainState } from 'pages/UserMain/UserMain';
+import { GuestMainState } from 'pages/GuestMain/GuestMain';
 import { Space } from 'types/common';
 import { formatDate, formatTime } from 'utils/datetime';
-import * as Styled from './UserReservation.styles';
+import * as Styled from './GuestReservation.styles';
 
-interface UserReservationState {
+interface GuestReservationState {
   mapId: number;
   spaceId: Space['spaceId'];
   spaceName: Space['spaceName'];
   selectedDate: string;
 }
 
-const UserReservation = (): JSX.Element => {
-  const location = useLocation<UserReservationState>();
-  const history = useHistory<UserMainState>();
+const GuestReservation = (): JSX.Element => {
+  const location = useLocation<GuestReservationState>();
+  const history = useHistory<GuestMainState>();
 
   const { mapId, spaceId, spaceName, selectedDate } = location.state;
 
-  if (!mapId || !spaceId || !spaceName) history.replace(PATH.USER_MAIN);
+  if (!mapId || !spaceId || !spaceName) history.replace(PATH.GUEST_MAIN);
 
   const now = new Date();
   const initialStartTime = formatTime(now);
@@ -54,9 +54,9 @@ const UserReservation = (): JSX.Element => {
 
   const createReservation = useMutation(postReservation, {
     onSuccess: () => {
-      history.push(PATH.USER_MAIN, {
+      history.push(PATH.GUEST_MAIN, {
         spaceId,
-        targetDate: startDateTime,
+        targetDate: new Date(`${date}T${startTime}`),
       });
     },
     onError: (error: AxiosError<Error>) => {
@@ -69,7 +69,6 @@ const UserReservation = (): JSX.Element => {
 
     if (createReservation.isLoading) return;
 
-    const mapId = 1;
     const reservation = {
       spaceId,
       name,
@@ -189,4 +188,4 @@ const UserReservation = (): JSX.Element => {
   );
 };
 
-export default UserReservation;
+export default GuestReservation;

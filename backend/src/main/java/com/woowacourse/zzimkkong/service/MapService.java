@@ -2,14 +2,12 @@ package com.woowacourse.zzimkkong.service;
 
 import com.woowacourse.zzimkkong.domain.Map;
 import com.woowacourse.zzimkkong.domain.Member;
-import com.woowacourse.zzimkkong.domain.Space;
 import com.woowacourse.zzimkkong.dto.map.MapCreateResponse;
 import com.woowacourse.zzimkkong.dto.map.MapCreateUpdateRequest;
 import com.woowacourse.zzimkkong.dto.map.MapFindAllResponse;
 import com.woowacourse.zzimkkong.dto.map.MapFindResponse;
 import com.woowacourse.zzimkkong.exception.authorization.NoAuthorityOnMapException;
 import com.woowacourse.zzimkkong.exception.map.NoSuchMapException;
-import com.woowacourse.zzimkkong.exception.space.ReservationExistOnSpaceException;
 import com.woowacourse.zzimkkong.infrastructure.S3Uploader;
 import com.woowacourse.zzimkkong.infrastructure.SvgConverter;
 import com.woowacourse.zzimkkong.repository.MapRepository;
@@ -18,8 +16,7 @@ import com.woowacourse.zzimkkong.repository.SpaceRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.io.*;
-import java.time.LocalDateTime;
+import java.io.File;
 import java.util.List;
 
 @Service
@@ -43,12 +40,12 @@ public class MapService {
         this.svgConverter = svgConverter;
     }
 
-    public MapCreateResponse saveMap(final Member member, final MapCreateUpdateRequest mapCreateUpdateRequest) {
+    public MapCreateResponse saveMap(final MapCreateUpdateRequest mapCreateUpdateRequest, final Member manager) {
         Map saveMap = maps.save(new Map(
                 mapCreateUpdateRequest.getMapName(),
                 mapCreateUpdateRequest.getMapDrawing(),
                 mapCreateUpdateRequest.getMapSvg().substring(10),
-                member));
+                manager));
 
         String thumbnailUrl = uploadPngToS3(saveMap.getId().toString(), mapCreateUpdateRequest.getMapSvg());
         saveMap.updateImage(thumbnailUrl);
@@ -57,25 +54,25 @@ public class MapService {
     }
 
     @Transactional(readOnly = true)
-    public MapFindResponse findMap(final Member member, final Long mapId) {
+    public MapFindResponse findMap(final Long mapId, final Member manager) {
         Map map = maps.findById(mapId)
                 .orElseThrow(NoSuchMapException::new);
 
-        validateManagerOfMap(member, map);
+        validateManagerOfMap(map, manager);
         return MapFindResponse.from(map);
     }
 
     @Transactional(readOnly = true)
-    public MapFindAllResponse findAllMaps(Member member) {
-        List<Map> findMaps = maps.findAllByMember(member);
+    public MapFindAllResponse findAllMaps(final Member manager) {
+        List<Map> findMaps = maps.findAllByMember(manager);
         return MapFindAllResponse.from(findMaps);
     }
 
-    public void updateMap(final Member member, final Long mapId, MapCreateUpdateRequest mapCreateUpdateRequest) {
+    public void updateMap(final Long mapId, final MapCreateUpdateRequest mapCreateUpdateRequest, final Member manager) {
         Map map = maps.findById(mapId)
                 .orElseThrow(NoSuchMapException::new);
 
-        validateManagerOfMap(member, map);
+        validateManagerOfMap(map, manager);
 
         uploadPngToS3(map.getId().toString(), mapCreateUpdateRequest.getMapSvg());
 
@@ -85,29 +82,7 @@ public class MapService {
                 mapCreateUpdateRequest.getMapSvg());
     }
 
-    public void deleteMap(final Member member, final Long mapId) {
-        Map map = maps.findById(mapId)
-                .orElseThrow(NoSuchMapException::new);
-
-        validateManagerOfMap(member, map);
-
-        validateExistReservations(mapId);
-
-        maps.deleteById(mapId);
-    }
-
-    private void validateExistReservations(Long mapId) {
-        List<Space> findSpaces = spaces.findAllByMapId(mapId);
-
-        boolean isExistReservationInAnySpace = findSpaces.stream()
-                .anyMatch(space -> reservations.existsBySpaceIdAndEndTimeAfter(space.getId(), LocalDateTime.now()));
-
-        if (isExistReservationInAnySpace) {
-            throw new ReservationExistOnSpaceException();
-        }
-    }
-
-    private void validateManagerOfMap(final Member manager, final Map map) {
+    private void validateManagerOfMap(final Map map, final Member manager) {
         if (!manager.equals(map.getMember())) {   // TODO: ReservationService 와의 중복 제거 -김샐
             throw new NoAuthorityOnMapException();
         }

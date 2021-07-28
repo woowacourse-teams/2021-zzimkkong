@@ -36,8 +36,8 @@ public class Map {
         this.member = member;
     }
 
-    public boolean hasSameId(final Long id) {
-        return this.id.equals(id);
+    public boolean isNotOwnedBy(final Member manager) {
+        return !this.member.equals(manager);
     }
 
     public void update(String mapName, String mapDrawing, String mapImage) {
@@ -54,12 +54,12 @@ public class Map {
         return id;
     }
 
-    public String getName() {
-        return name;
-    }
-
     public Member getMember() {
         return member;
+    }
+
+    public String getName() {
+        return name;
     }
 
     public String getMapDrawing() {
