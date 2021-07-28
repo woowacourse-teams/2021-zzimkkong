@@ -87,7 +87,7 @@ const GuestMain = (): JSX.Element => {
         spaceId: Number(selectedSpaceId),
         reservation: selectedReservation,
         spaceName: selectedSpace.spaceName,
-        selectedDate: date,
+        selectedDate: formatDate(date),
       },
     });
   };
