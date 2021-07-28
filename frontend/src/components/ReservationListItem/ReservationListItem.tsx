@@ -1,4 +1,4 @@
-import { Attributes, ReactNode } from 'react';
+import { ReactNode } from 'react';
 import { Reservation } from 'types/common';
 import { formatTime } from 'utils/datetime';
 import * as Styled from './ReservationListItem.styles';

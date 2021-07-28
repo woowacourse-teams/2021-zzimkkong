@@ -10,5 +10,4 @@ export const Panel = styled.div<PanelProps>`
 
 export const Title = styled.p`
   display: inline-block;
-  font-weight: 500;
 `;
