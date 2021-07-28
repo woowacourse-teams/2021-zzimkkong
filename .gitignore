@@ -1,2 +1,3 @@
 ### IntelliJ IDEA
 .idea
+backend/src/main/resources/awsS3.properties
