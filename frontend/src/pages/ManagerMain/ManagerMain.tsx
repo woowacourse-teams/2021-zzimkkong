@@ -9,8 +9,9 @@ import Header from 'components/Header/Header';
 import IconButton from 'components/IconButton/IconButton';
 import Layout from 'components/Layout/Layout';
 import Panel from 'components/Panel/Panel';
+import ReservationListItem from 'components/ReservationListItem/ReservationListItem';
 import SpaceListItem from 'components/SpaceListItem/SpaceListItem';
-import Table from 'components/Table/Table';
+import { Reservation } from 'types/common';
 import * as Styled from './ManagerMain.styles';
 
 const ManagerMain = (): JSX.Element => {
@@ -74,37 +75,61 @@ const ManagerMain = (): JSX.Element => {
     {
       spaceId: 1,
       spaceName: '회의실 1',
-      spaceColor: '#FFE3AC',
+      spaceColor: '#ffc757',
       reservations: [
-        { id: 1, name: '썬', description: '태양을 피하는 방법', time: '12:00 - 13:00' },
-        { id: 2, name: '체프', description: '커피를 맛있게 마시는 방법', time: '13:00 - 15:00' },
-        { id: 3, name: '유조', description: 'Tailwind CSS 가이드', time: '15:00 - 16:00' },
+        {
+          id: 1,
+          name: '썬',
+          description: '태양을 피하는 방법',
+          startDateTime: '2021-07-23T12:00',
+          endDateTime: '2021-07-23T13:00',
+        },
+        {
+          id: 2,
+          name: '체프',
+          description: '커피를 맛있게 마시는 방법',
+          startDateTime: '2021-07-23T13:00',
+          endDateTime: '2021-07-23T15:00',
+        },
+        {
+          id: 3,
+          name: '유조',
+          description: 'Tailwind CSS 가이드',
+          startDateTime: '2021-07-23T15:00',
+          endDateTime: '2021-07-23T16:00',
+        },
       ],
     },
     {
       spaceId: 2,
       spaceName: '회의실 2',
-      spaceColor: '#FFE3AC',
+      spaceColor: '#ffc757',
       reservations: [],
     },
     {
       spaceId: 3,
       spaceName: '회의실 3',
-      spaceColor: '#FFE3AC',
+      spaceColor: '#ffc757',
       reservations: [],
     },
     {
       spaceId: 4,
       spaceName: '백엔드 강의장',
-      spaceColor: '#FED7D9',
+      spaceColor: '#fda3a7',
       reservations: [],
     },
     {
       spaceId: 5,
       spaceName: '프론트엔드 강의장',
-      spaceColor: '#FED7D9',
+      spaceColor: '#fda3a7',
       reservations: [
-        { id: 1, name: '체프', description: '핸드드립 내리는 방법', time: '13:00 - 15:00' },
+        {
+          id: 1,
+          name: '체프',
+          description: '핸드드립 내리는 방법',
+          startDateTime: '2021-07-23T15:00',
+          endDateTime: '2021-07-23T16:00',
+        },
       ],
     },
   ];
@@ -136,28 +161,19 @@ const ManagerMain = (): JSX.Element => {
                   {reservations.length === 0 ? (
                     <Styled.PanelMessage>등록된 예약이 없습니다</Styled.PanelMessage>
                   ) : (
-                    <Table>
-                      <Table.Head>
-                        <Table.Row>
-                          <Table.Header wordWrap>이름</Table.Header>
-                          <Table.Header wordWrap>주제</Table.Header>
-                          <Table.Header wordWrap>시간</Table.Header>
-                          <Table.Header wordWrap>관리</Table.Header>
-                        </Table.Row>
-                      </Table.Head>
-                      <Table.Body>
-                        {reservations.map(({ id, name, description, time }) => (
-                          <Table.Row key={id}>
-                            <Table.Cell wordWrap>{name}</Table.Cell>
-                            <Table.Cell>{description}</Table.Cell>
-                            <Table.Cell>{time}</Table.Cell>
-                            <Table.Cell>
+                    <>
+                      {reservations.map((reservation) => (
+                        <ReservationListItem
+                          key={`reservation-${reservation.id}`}
+                          reservation={reservation as Reservation}
+                          control={
+                            <IconButton>
                               <MoreIcon />
-                            </Table.Cell>
-                          </Table.Row>
-                        ))}
-                      </Table.Body>
-                    </Table>
+                            </IconButton>
+                          }
+                        />
+                      ))}
+                    </>
                   )}
                 </Panel.Content>
               </Panel>
@@ -166,7 +182,7 @@ const ManagerMain = (): JSX.Element => {
         </Styled.SpaceList>
       </Layout>
 
-      <Drawer open={open} placement="left" onClose={onClose}>
+      <Drawer open={open} placement="left" maxwidth="450px" onClose={onClose}>
         <Drawer.Inner>
           <Drawer.Header>
             <Drawer.HeaderText>우아한형제들</Drawer.HeaderText>

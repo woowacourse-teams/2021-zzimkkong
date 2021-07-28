@@ -16,8 +16,6 @@ export const DateWrapper = styled.label`
   width: 100%;
   max-width: 10.5rem;
   gap: 0.5rem;
-  padding: 1rem 0;
-  margin: 1.5rem 0;
 
   svg {
     position: absolute;
