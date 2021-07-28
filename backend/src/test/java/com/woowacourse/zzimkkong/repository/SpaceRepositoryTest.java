@@ -1,6 +1,7 @@
 package com.woowacourse.zzimkkong.repository;
 
 import com.woowacourse.zzimkkong.domain.Space;
+import org.assertj.core.api.AssertionsForClassTypes;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

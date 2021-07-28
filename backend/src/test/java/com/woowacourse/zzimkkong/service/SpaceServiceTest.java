@@ -2,18 +2,16 @@ package com.woowacourse.zzimkkong.service;
 
 import com.woowacourse.zzimkkong.domain.Member;
 import com.woowacourse.zzimkkong.domain.Space;
-import com.woowacourse.zzimkkong.dto.space.SettingsRequest;
-import com.woowacourse.zzimkkong.dto.space.SpaceCreateRequest;
-import com.woowacourse.zzimkkong.dto.space.SpaceCreateResponse;
-import com.woowacourse.zzimkkong.dto.space.SpaceFindResponse;
+
+import com.woowacourse.zzimkkong.dto.space.*;
 import com.woowacourse.zzimkkong.exception.authorization.NoAuthorityOnMapException;
 import com.woowacourse.zzimkkong.exception.map.NoSuchMapException;
 import com.woowacourse.zzimkkong.exception.space.NoSuchSpaceException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-
 import java.time.LocalTime;
+import java.util.List;
 import java.util.Optional;
 
 import static com.woowacourse.zzimkkong.service.ServiceTestFixture.*;
@@ -80,6 +78,7 @@ class SpaceServiceTest extends ServiceTest {
                 .willReturn(Optional.of(LUTHER));
         given(spaces.save(any(Space.class)))
                 .willReturn(BE);
+
         Member sakjung = new Member(2L, "sakjung@naver.com", "test1234", "잠실킹");
 
         // when, then
@@ -116,6 +115,35 @@ class SpaceServiceTest extends ServiceTest {
         // when, then
         assertThatThrownBy(() -> spaceService.findSpace(1L, 1L))
                 .isInstanceOf(NoSuchSpaceException.class);
+    }
+
+    @DisplayName("전체 공간을 조회한다.")
+    @Test
+    void findAll() {
+        // given
+        given(maps.findById(anyLong()))
+                .willReturn(Optional.of(LUTHER));
+        given(spaces.findAllByMapId(anyLong()))
+                .willReturn(List.of(BE, FE1));
+
+        // when
+        SpaceFindAllResponse actual = spaceService.findAllSpace(1L, POBI);
+
+        // then
+        assertThat(actual).usingRecursiveComparison()
+                .isEqualTo(SpaceFindAllResponse.from(List.of(BE, FE1)));
+    }
+
+    @DisplayName("공간 전체 조회시, 공간 관리자가 아니라면 예외를 발생시킨다.")
+    @Test
+    void findAllNoAuthorityOnMap() {
+        // given
+        given(maps.findById(anyLong()))
+                .willReturn(Optional.of(LUTHER));
+
+        // when, then
+        assertThatThrownBy(() -> spaceService.findAllSpace(1L, new Member("sakjung@email.com", "test1234", "잠실")))
+                .isInstanceOf(NoAuthorityOnMapException.class);
     }
 }
 
