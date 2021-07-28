@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect } from 'react';
+import { useState, useRef, useEffect, MouseEventHandler, WheelEventHandler } from 'react';
 import { ReactComponent as EditIcon } from 'assets/svg/edit.svg';
 import { ReactComponent as ItemsIcon } from 'assets/svg/items.svg';
 import { ReactComponent as LineIcon } from 'assets/svg/line.svg';
@@ -11,9 +11,20 @@ import IconButton from 'components/IconButton/IconButton';
 import Layout from 'components/Layout/Layout';
 import PALETTE from 'constants/palette';
 import useInput from 'hooks/useInput';
-import { Coordinate } from 'types/common';
+import { Coordinate, Color } from 'types/common';
 import { Mode } from 'types/editor';
 import * as Styled from './ManagerMapCreate.styles';
+
+interface DrawingStatus {
+  start?: Coordinate;
+  end?: Coordinate;
+}
+
+interface MapElement {
+  type: 'polyline';
+  stroke: Color;
+  points: string[];
+}
 
 const GRID_SIZE = 10;
 const SCALE_DELTA = 0.001;
@@ -29,6 +40,14 @@ const ManagerMapCreate = (): JSX.Element => {
   const [dragOffsetY, setDragOffsetY] = useState(0);
 
   const [coordinate, setCoordinate] = useState<Coordinate>({ x: 0, y: 0 });
+  const stickyCoordinate: Coordinate = {
+    x: Math.round(coordinate.x / GRID_SIZE) * GRID_SIZE,
+    y: Math.round(coordinate.y / GRID_SIZE) * GRID_SIZE,
+  };
+
+  const [color, setColor] = useState<Color>('#333333');
+  const [drawingStatus, setDrawingStatus] = useState<DrawingStatus>({});
+  const [mapElements, setMapElements] = useState<MapElement[]>([]);
 
   const [widthValue, onChangeWidthValue] = useInput('800');
   const [heightValue, onChangeHeightValue] = useInput('600');
@@ -60,23 +79,23 @@ const ManagerMapCreate = (): JSX.Element => {
     return { svg, x, y };
   };
 
-  const handleMouseMove = (event: React.MouseEvent<SVGElement>) => {
+  const handleMouseMove: MouseEventHandler<SVGElement> = (event) => {
     const { x, y } = getSVGCoordinate(event);
     setCoordinate({ x, y });
   };
 
-  const handleWheel = (event: React.WheelEvent<SVGElement>) => {
+  const handleWheel: WheelEventHandler<SVGElement> = (event) => {
     const { offsetX, offsetY, deltaY } = event.nativeEvent;
 
-    setBoard((prevBoard) => {
-      const { scale, x, y, width, height } = prevBoard;
+    setBoard((prevState) => {
+      const { scale, x, y, width, height } = prevState;
 
       const nextScale = scale - deltaY * SCALE_DELTA;
 
       if (nextScale <= MIN_SCALE || nextScale >= MAX_SCALE) {
         return {
-          ...prevBoard,
-          scale: prevBoard.scale,
+          ...prevState,
+          scale: prevState.scale,
         };
       }
 
@@ -90,7 +109,7 @@ const ManagerMapCreate = (): JSX.Element => {
       const nextY = nextScale > scale ? y - heightDiff : y + heightDiff;
 
       return {
-        ...prevBoard,
+        ...prevState,
         x: nextX,
         y: nextY,
         scale: nextScale,
@@ -98,20 +117,20 @@ const ManagerMapCreate = (): JSX.Element => {
     });
   };
 
-  const handleDragStart = (event: React.MouseEvent<SVGElement>) => {
+  const handleDragStart: MouseEventHandler<SVGElement> = (event) => {
     setDragOffsetX(event.nativeEvent.offsetX - board.x);
     setDragOffsetY(event.nativeEvent.offsetY - board.y);
 
     setDragging(true);
   };
 
-  const handleDrag = (event: React.MouseEvent<SVGElement>) => {
+  const handleDrag: MouseEventHandler<SVGElement> = (event) => {
     if (mode !== Mode.Move || !isDragging) return;
 
     const { offsetX, offsetY } = event.nativeEvent;
 
-    setBoard((prevBoard) => ({
-      ...prevBoard,
+    setBoard((prevState) => ({
+      ...prevState,
       x: offsetX - dragOffsetX,
       y: offsetY - dragOffsetY,
     }));
@@ -124,12 +143,41 @@ const ManagerMapCreate = (): JSX.Element => {
     setDragging(false);
   };
 
+  const handleDrawStart: MouseEventHandler<SVGElement> = (event) => {
+    if (mode !== Mode.Line) return;
+
+    setDrawingStatus((prevState) => ({
+      ...prevState,
+      start: stickyCoordinate,
+    }));
+  };
+
+  const handleDrawEnd: MouseEventHandler<SVGElement> = (event) => {
+    if (mode !== Mode.Line) return;
+
+    if (!drawingStatus || !drawingStatus.start) return;
+
+    const startPoint = `${drawingStatus.start.x},${drawingStatus.start.y}`;
+    const endPoint = `${stickyCoordinate.x},${stickyCoordinate.y}`;
+
+    setMapElements((prevState) => [
+      ...prevState,
+      {
+        type: 'polyline',
+        stroke: color,
+        points: [startPoint, endPoint],
+      },
+    ]);
+
+    setDrawingStatus({});
+  };
+
   useEffect(() => {
     const editorWidth = editorRef.current ? editorRef.current.offsetWidth : 0;
     const editorHeight = editorRef.current ? editorRef.current.offsetHeight : 0;
 
-    setBoard((prevBoard) => ({
-      ...prevBoard,
+    setBoard((prevState) => ({
+      ...prevState,
       x: (editorWidth - width) / 2,
       y: (editorHeight - height) / 2,
     }));
@@ -214,7 +262,13 @@ const ManagerMapCreate = (): JSX.Element => {
                 tabIndex={0}
               >
                 <rect width="100%" height="100%" fill={PALETTE.GRAY[200]}></rect>
-                <svg xmlns="http://www.w3.org/2000/svg" version="1.1" onMouseMove={handleMouseMove}>
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  version="1.1"
+                  onMouseMove={handleMouseMove}
+                  onMouseDown={handleDrawStart}
+                  onMouseUp={handleDrawEnd}
+                >
                   <defs>
                     <pattern
                       id="smallGrid"
@@ -225,7 +279,7 @@ const ManagerMapCreate = (): JSX.Element => {
                       <path
                         d={`M ${GRID_SIZE} 0 L 0 0 0 ${GRID_SIZE}`}
                         fill="none"
-                        stroke={PALETTE.GRAY[500]}
+                        stroke={PALETTE.GRAY[300]}
                         strokeWidth="0.5"
                       />
                     </pattern>
@@ -243,7 +297,7 @@ const ManagerMapCreate = (): JSX.Element => {
                       <path
                         d={`M ${GRID_SIZE * 10} 0 L 0 0 0 ${GRID_SIZE * 10}`}
                         fill="none"
-                        stroke={PALETTE.GRAY[500]}
+                        stroke={PALETTE.GRAY[300]}
                         strokeWidth="1"
                       />
                     </pattern>
@@ -260,11 +314,27 @@ const ManagerMapCreate = (): JSX.Element => {
                       fill="url(#grid)"
                     />
                     <circle
-                      cx={Math.round(coordinate.x / GRID_SIZE) * GRID_SIZE}
-                      cy={Math.round(coordinate.y / GRID_SIZE) * GRID_SIZE}
+                      cx={stickyCoordinate.x}
+                      cy={stickyCoordinate.y}
                       r={4}
-                      fill={PALETTE.GRAY[500]}
+                      fill={PALETTE.OPACITY_BLACK[700]}
                     />
+                    {mapElements.map((element, index) => (
+                      <polyline
+                        key={`polyline-${index}`}
+                        points={element.points.join(' ')}
+                        stroke={element.stroke}
+                        strokeWidth="2"
+                      />
+                    ))}
+                    {drawingStatus.start && (
+                      <polyline
+                        key="preview-line"
+                        points={`${drawingStatus.start.x},${drawingStatus.start.y} ${stickyCoordinate.x},${stickyCoordinate.y}`}
+                        stroke={PALETTE.OPACITY_BLACK[200]}
+                        strokeWidth="2"
+                      />
+                    )}
                   </g>
                 </svg>
               </Styled.BoardContainer>
