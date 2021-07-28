@@ -25,7 +25,7 @@ const DateInput = ({ date, setDate, ...props }: Props): JSX.Element => {
   return (
     <Styled.Container>
       <IconButton onClick={onClickPrev}>
-        <Styled.PrimaryArrowLeftIcon width="auto" height="auto" />
+        <Styled.PrimaryArrowLeftIcon width="100%" height="100%" />
       </IconButton>
       <Styled.DateWrapper>
         <Styled.DateText>{formatDateWithDay(date)}</Styled.DateText>
@@ -33,7 +33,7 @@ const DateInput = ({ date, setDate, ...props }: Props): JSX.Element => {
         <CalendarIcon />
       </Styled.DateWrapper>
       <IconButton onClick={onClickNext}>
-        <Styled.PrimaryArrowRightIcon width="auto" height="auto" />
+        <Styled.PrimaryArrowRightIcon width="100%" height="100%" />
       </IconButton>
     </Styled.Container>
   );

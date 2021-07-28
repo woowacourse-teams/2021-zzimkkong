@@ -139,11 +139,11 @@ const ManagerMain = (): JSX.Element => {
       <Layout>
         <Styled.PageHeader>
           <IconButton text="맵 목록" onClick={onOpen}>
-            <MenuIcon width="auto" height="auto" />
+            <MenuIcon width="100%" height="100%" />
           </IconButton>
           <Styled.PageTitle>{mapName}</Styled.PageTitle>
           <IconButton text="공유 링크">
-            <Styled.PrimaryLinkIcon width="auto" height="auto" />
+            <Styled.PrimaryLinkIcon width="100%" height="100%" />
           </IconButton>
         </Styled.PageHeader>
         <Styled.DateInputWrapper>
@@ -167,7 +167,7 @@ const ManagerMain = (): JSX.Element => {
                           reservation={reservation as Reservation}
                           control={
                             <IconButton>
-                              <MoreIcon width="auto" height="auto" />
+                              <MoreIcon width="100%" height="100%" />
                             </IconButton>
                           }
                         />

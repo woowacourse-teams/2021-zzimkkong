@@ -22,26 +22,26 @@ WithText.args = {
 
 export const Small = Template.bind({});
 Small.args = {
-  children: <DeleteIcon width="auto" height="auto" />,
+  children: <DeleteIcon width="100%" height="100%" />,
   size: 'small',
 };
 
 export const SmallWithText = Template.bind({});
 SmallWithText.args = {
-  children: <DeleteIcon width="auto" height="auto" />,
+  children: <DeleteIcon width="100%" height="100%" />,
   size: 'small',
   text: '삭제',
 };
 
 export const Large = Template.bind({});
 Large.args = {
-  children: <DeleteIcon width="auto" height="auto" />,
+  children: <DeleteIcon width="100%" height="100%" />,
   size: 'large',
 };
 
 export const LargeWithText = Template.bind({});
 LargeWithText.args = {
-  children: <DeleteIcon width="auto" height="auto" />,
+  children: <DeleteIcon width="100%" height="100%" />,
   size: 'large',
   text: '삭제',
 };
