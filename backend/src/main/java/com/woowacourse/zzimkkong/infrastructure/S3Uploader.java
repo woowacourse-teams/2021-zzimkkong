@@ -20,7 +20,7 @@ public class S3Uploader {
     }
 
     public String upload(final String directoryName, final File uploadFile) {
-        String fileName = directoryName + "/" + uploadFile.getName();
+        String fileName = directoryName + uploadFile.getName();
 
         try {
             return putS3(uploadFile, fileName);
