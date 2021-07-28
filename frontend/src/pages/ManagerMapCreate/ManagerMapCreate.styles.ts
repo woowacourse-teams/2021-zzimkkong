@@ -1,6 +1,22 @@
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
 import Button from 'components/Button/Button';
+import IconButton from 'components/IconButton/IconButton';
 import Input from 'components/Input/Input';
+
+interface ToolbarButtonProps {
+  selected?: boolean;
+}
+
+interface EditorProps {
+  isDraggable?: boolean;
+  isDragging?: boolean;
+}
+
+const primaryIconCSS = css`
+  svg {
+    fill: ${({ theme }) => theme.primary[400]};
+  }
+`;
 
 export const Container = styled.div`
   padding: 2rem 0;
@@ -9,8 +25,13 @@ export const Container = styled.div`
   height: calc(100vh - 3rem);
 `;
 
-export const EditButton = styled.button`
-  // TODO IconButton으로 대체
+export const ToolbarButton = styled(IconButton)<ToolbarButtonProps>`
+  background-color: ${({ theme, selected }) => (selected ? theme.gray[100] : 'none')};
+  border: 1px solid ${({ theme, selected }) => (selected ? theme.gray[400] : 'transparent')};
+  border-radius: 0;
+  box-sizing: content-box;
+
+  ${({ selected }) => selected && primaryIconCSS}
 `;
 
 export const EditorHeader = styled.div`
@@ -73,8 +94,20 @@ export const Toolbar = styled.div`
   gap: 1rem;
 `;
 
-export const Editor = styled.div`
+export const Editor = styled.div<EditorProps>`
   flex: 1;
+
+  cursor: ${({ isDraggable, isDragging }) => {
+    if (isDraggable) {
+      if (isDragging) return 'grabbing';
+      else return 'grab';
+    }
+    return 'default';
+  }};
+`;
+
+export const BoardContainer = styled.svg`
+  outline: none;
 `;
 
 export const InputWrapper = styled.div`
