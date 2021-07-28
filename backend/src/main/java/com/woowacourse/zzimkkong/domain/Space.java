@@ -1,8 +1,13 @@
 package com.woowacourse.zzimkkong.domain;
 
+import org.hibernate.annotations.DynamicInsert;
+import org.hibernate.annotations.DynamicUpdate;
+
 import javax.persistence.*;
 import java.time.LocalTime;
 
+@DynamicInsert
+@DynamicUpdate
 @Entity
 public class Space {
     @Id
@@ -29,35 +34,16 @@ public class Space {
     @Column(nullable = true)
     private String description;
 
-    @Column(nullable = true)
+    @Column(nullable = false)
     private String area;
 
-    @Column(nullable = true)
-    private LocalTime availableStartTime;
+    @Embedded
+    private Setting setting;
 
-    @Column(nullable = true)
-    private LocalTime availableEndTime;
-
-    @Column(nullable = true)
-    private Integer reservationTimeUnit;
-
-    @Column(nullable = true)
-    private Integer reservationMinimumTimeUnit;
-
-    @Column(nullable = true)
-    private Integer reservationMaximumTimeUnit;
-
-    @Column(nullable = true)
-    private Boolean reservationEnable;
-
-    @Column(nullable = true)
-    private String disabledWeekdays;
-
-    @Column(nullable = true)
+    @Column(nullable = false)
     private String mapImage;
 
     protected Space() {
-
     }
 
     protected Space(Builder builder) {
@@ -69,13 +55,7 @@ public class Space {
         this.map = builder.map;
         this.description = builder.description;
         this.area = builder.area;
-        this.availableStartTime = builder.availableStartTime;
-        this.availableEndTime = builder.availableEndTime;
-        this.reservationTimeUnit = builder.reservationTimeUnit;
-        this.reservationMinimumTimeUnit = builder.reservationMinimumTimeUnit;
-        this.reservationMaximumTimeUnit = builder.reservationMaximumTimeUnit;
-        this.reservationEnable = builder.reservationEnable;
-        this.disabledWeekdays = builder.disabledWeekdays;
+        this.setting = builder.setting;
         this.mapImage = builder.mapImage;
     }
 
@@ -111,37 +91,38 @@ public class Space {
         return area;
     }
 
-    public LocalTime getAvailableStartTime() {
-        return availableStartTime;
-    }
-
-    public LocalTime getAvailableEndTime() {
-        return availableEndTime;
-    }
-
-    public Integer getReservationTimeUnit() {
-        return reservationTimeUnit;
-    }
-
-    public Integer getReservationMinimumTimeUnit() {
-        return reservationMinimumTimeUnit;
-    }
-
-    public Integer getReservationMaximumTimeUnit() {
-        return reservationMaximumTimeUnit;
-    }
-
-    public Boolean getReservationEnable() {
-        return reservationEnable;
-    }
-
-    public String getDisabledWeekdays() {
-        return disabledWeekdays;
-    }
-
     public String getMapImage() {
         return mapImage;
     }
+
+    public LocalTime getAvailableStartTime() {
+        return setting.getAvailableStartTime();
+    }
+
+    public LocalTime getAvailableEndTime() {
+        return setting.getAvailableEndTime();
+    }
+
+    public Integer getReservationTimeUnit() {
+        return setting.getReservationTimeUnit();
+    }
+
+    public Integer getReservationMinimumTimeUnit() {
+        return setting.getReservationMinimumTimeUnit();
+    }
+
+    public Integer getReservationMaximumTimeUnit() {
+        return setting.getReservationMaximumTimeUnit();
+    }
+
+    public Boolean getReservationEnable() {
+        return setting.getReservationEnable();
+    }
+
+    public String getDisabledWeekdays() {
+        return setting.getDisabledWeekdays();
+    }
+
 
     public static class Builder {
         private Long id = null;
@@ -152,14 +133,8 @@ public class Space {
         private Map map = null;
         private String description = null;
         private String area = null;
-        private LocalTime availableStartTime = null;
-        private LocalTime availableEndTime = null;
-        private Integer reservationTimeUnit = null;
-        private Integer reservationMinimumTimeUnit = null;
-        private Integer reservationMaximumTimeUnit = null;
-        private Boolean reservationEnable = null;
-        private String disabledWeekdays = null;
-        private String mapImage;
+        private Setting setting = null;
+        private String mapImage = null;
 
         public Builder() {
         }
@@ -204,38 +179,8 @@ public class Space {
             return this;
         }
 
-        public Space.Builder availableStartTime(LocalTime inputAvailableStartTime) {
-            availableStartTime = inputAvailableStartTime;
-            return this;
-        }
-
-        public Space.Builder availableEndTime(LocalTime inputAvailableEndTime) {
-            availableEndTime = inputAvailableEndTime;
-            return this;
-        }
-
-        public Space.Builder reservationTimeUnit(Integer inputReservationTimeUnit) {
-            reservationTimeUnit = inputReservationTimeUnit;
-            return this;
-        }
-
-        public Space.Builder reservationMinimumTimeUnit(Integer inputReservationMinimumTimeUnit) {
-            reservationMinimumTimeUnit = inputReservationMinimumTimeUnit;
-            return this;
-        }
-
-        public Space.Builder reservationMaximumTimeUnit(Integer inputReservationMaximumTimeUnit) {
-            reservationMaximumTimeUnit = inputReservationMaximumTimeUnit;
-            return this;
-        }
-
-        public Space.Builder reservationEnable(Boolean inputReservationEnable) {
-            reservationEnable = inputReservationEnable;
-            return this;
-        }
-
-        public Space.Builder disabledWeekdays(String inputDisabledWeekdays) {
-            disabledWeekdays = inputDisabledWeekdays;
+        public Space.Builder setting(Setting inputSetting) {
+            setting = inputSetting;
             return this;
         }
 

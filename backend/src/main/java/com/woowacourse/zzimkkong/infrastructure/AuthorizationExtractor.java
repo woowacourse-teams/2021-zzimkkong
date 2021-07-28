@@ -6,9 +6,9 @@ import javax.servlet.http.HttpServletRequest;
 import java.util.Enumeration;
 
 public class AuthorizationExtractor {
-    private static final int TOKEN_INDEX = 1;
+    public static final String AUTHENTICATION_TYPE = "Bearer";
     private static final String AUTHORIZATION_HEADER_KEY = "Authorization";
-    private static final String AUTHENTICATION_TYPE = "Bearer";
+    private static final int TOKEN_INDEX = 1;
 
     public static String extractAccessToken(HttpServletRequest request) {
         Enumeration<String> headers = request.getHeaders(AUTHORIZATION_HEADER_KEY);

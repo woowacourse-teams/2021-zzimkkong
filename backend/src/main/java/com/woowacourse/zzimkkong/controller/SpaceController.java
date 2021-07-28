@@ -4,12 +4,14 @@ import com.woowacourse.zzimkkong.domain.Manager;
 import com.woowacourse.zzimkkong.domain.Member;
 import com.woowacourse.zzimkkong.dto.space.SpaceCreateRequest;
 import com.woowacourse.zzimkkong.dto.space.SpaceCreateResponse;
+
 import com.woowacourse.zzimkkong.dto.space.SpaceFindAllResponse;
 import com.woowacourse.zzimkkong.dto.space.SpaceFindResponse;
 import com.woowacourse.zzimkkong.service.SpaceService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.net.URI;
 
 @RestController
@@ -24,7 +26,7 @@ public class SpaceController {
     @PostMapping
     public ResponseEntity<Void> save(
             @PathVariable final Long mapId,
-            @RequestBody final SpaceCreateRequest spaceCreateRequest,
+            @RequestBody @Valid final SpaceCreateRequest spaceCreateRequest,
             @Manager Member manager) {
         SpaceCreateResponse spaceCreateResponse = spaceService.saveSpace(mapId, spaceCreateRequest, manager);
         return ResponseEntity

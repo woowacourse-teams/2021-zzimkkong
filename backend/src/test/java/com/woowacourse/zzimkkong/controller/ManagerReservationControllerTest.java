@@ -1,9 +1,8 @@
 package com.woowacourse.zzimkkong.controller;
 
 import com.woowacourse.zzimkkong.domain.Reservation;
-import com.woowacourse.zzimkkong.dto.member.LoginRequest;
-import com.woowacourse.zzimkkong.dto.member.TokenResponse;
 import com.woowacourse.zzimkkong.dto.reservation.*;
+import com.woowacourse.zzimkkong.infrastructure.AuthorizationExtractor;
 import com.woowacourse.zzimkkong.repository.MapRepository;
 import com.woowacourse.zzimkkong.repository.MemberRepository;
 import com.woowacourse.zzimkkong.repository.ReservationRepository;
@@ -25,15 +24,10 @@ import java.util.List;
 
 import static com.woowacourse.zzimkkong.CommonFixture.*;
 import static com.woowacourse.zzimkkong.DocumentUtils.*;
-import static com.woowacourse.zzimkkong.controller.AuthControllerTest.login;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.restdocs.restassured3.RestAssuredRestDocumentation.document;
 
 public class ManagerReservationControllerTest extends AcceptanceTest {
-    private static final String SALLY_PASSWORD = "1230";
-    private static final String SALLY_NAME = "샐리";
-    private static final String SALLY_DESCRIPTION = "집 가고 싶은 회의";
-
     @Autowired
     private MemberRepository members;
 
@@ -78,10 +72,7 @@ public class ManagerReservationControllerTest extends AcceptanceTest {
                 .space(BE)
                 .build();
 
-        LoginRequest pobiLoginRequest = new LoginRequest(POBI.getEmail(), POBI.getPassword());
-        ExtractableResponse<Response> loginResponse = login(pobiLoginRequest);
-        TokenResponse responseBody = loginResponse.body().as(TokenResponse.class);
-        token = responseBody.getAccessToken();
+        token = getToken();
     }
 
     @DisplayName("올바른 토큰이 주어질 때, 예약을 등록한다.")
@@ -372,7 +363,7 @@ public class ManagerReservationControllerTest extends AcceptanceTest {
         return RestAssured
                 .given(getRequestSpecification()).log().all()
                 .accept("application/json")
-                .header("Authorization", "Bearer " + token)
+                .header("Authorization", AuthorizationExtractor.AUTHENTICATION_TYPE + " " + token)
                 .filter(document("reservation/manager/post", getRequestPreprocessor(), getResponsePreprocessor()))
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body(reservationCreateUpdateWithPasswordRequest)
@@ -386,7 +377,7 @@ public class ManagerReservationControllerTest extends AcceptanceTest {
         return RestAssured
                 .given(getRequestSpecification()).log().all()
                 .accept("*/*")
-                .header("Authorization", "Bearer " + token)
+                .header("Authorization", AuthorizationExtractor.AUTHENTICATION_TYPE + " " + token)
                 .filter(document("reservation/manager/delete", getRequestPreprocessor(), getResponsePreprocessor()))
                 .when().delete(api)
                 .then().log().all().extract();
@@ -399,7 +390,7 @@ public class ManagerReservationControllerTest extends AcceptanceTest {
         return RestAssured
                 .given(getRequestSpecification()).log().all()
                 .accept("*/*")
-                .header("Authorization", "Bearer " + token)
+                .header("Authorization", AuthorizationExtractor.AUTHENTICATION_TYPE + " " + token)
                 .filter(document("reservation/manager/get", getRequestPreprocessor(), getResponsePreprocessor()))
                 .queryParams("date", date)
                 .when().get(api)
@@ -413,7 +404,7 @@ public class ManagerReservationControllerTest extends AcceptanceTest {
         return RestAssured
                 .given(getRequestSpecification()).log().all()
                 .accept("*/*")
-                .header("Authorization", "Bearer " + token)
+                .header("Authorization", AuthorizationExtractor.AUTHENTICATION_TYPE + " " + token)
                 .filter(document("reservation/manager/get_all", getRequestPreprocessor(), getResponsePreprocessor()))
                 .queryParam("date", date)
                 .when().get(api)
@@ -427,7 +418,7 @@ public class ManagerReservationControllerTest extends AcceptanceTest {
         return RestAssured
                 .given(getRequestSpecification()).log().all()
                 .accept("application/json")
-                .header("Authorization", "Bearer " + token)
+                .header("Authorization", AuthorizationExtractor.AUTHENTICATION_TYPE + " " + token)
                 .filter(document("reservation/manager/put", getRequestPreprocessor(), getResponsePreprocessor()))
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body(reservationCreateUpdateRequest)
@@ -441,7 +432,7 @@ public class ManagerReservationControllerTest extends AcceptanceTest {
         return RestAssured
                 .given(getRequestSpecification()).log().all()
                 .accept("*/*")
-                .header("Authorization", "Bearer " + token)
+                .header("Authorization", AuthorizationExtractor.AUTHENTICATION_TYPE + " " + token)
                 .filter(document("reservation/manager/get_one", getRequestPreprocessor(), getResponsePreprocessor()))
                 .when().get(api)
                 .then().log().all().extract();

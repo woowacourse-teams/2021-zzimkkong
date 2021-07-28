@@ -2,6 +2,7 @@ package com.woowacourse.zzimkkong.service;
 
 import com.woowacourse.zzimkkong.domain.Member;
 import com.woowacourse.zzimkkong.domain.Space;
+
 import com.woowacourse.zzimkkong.dto.space.*;
 import com.woowacourse.zzimkkong.exception.authorization.NoAuthorityOnMapException;
 import com.woowacourse.zzimkkong.exception.map.NoSuchMapException;
@@ -9,7 +10,6 @@ import com.woowacourse.zzimkkong.exception.space.NoSuchSpaceException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-
 import java.time.LocalTime;
 import java.util.List;
 import java.util.Optional;
@@ -51,7 +51,10 @@ class SpaceServiceTest extends ServiceTest {
         given(spaces.save(any(Space.class)))
                 .willReturn(BE);
 
+        // when
         SpaceCreateResponse spaceCreateResponse = spaceService.saveSpace(LUTHER.getId(), spaceCreateRequest, POBI);
+
+        // then
         assertThat(spaceCreateResponse.getId()).isEqualTo(BE.getId());
     }
 
@@ -62,6 +65,7 @@ class SpaceServiceTest extends ServiceTest {
         given(maps.findById(anyLong()))
                 .willReturn(Optional.empty());
 
+        // when, then
         assertThatThrownBy(() -> spaceService.saveSpace(LUTHER.getId(), spaceCreateRequest, POBI))
                 .isInstanceOf(NoSuchMapException.class);
     }
@@ -77,6 +81,7 @@ class SpaceServiceTest extends ServiceTest {
 
         Member sakjung = new Member(2L, "sakjung@naver.com", "test1234", "잠실킹");
 
+        // when, then
         assertThatThrownBy(() -> spaceService.saveSpace(LUTHER.getId(), spaceCreateRequest, sakjung))
                 .isInstanceOf(NoAuthorityOnMapException.class);
     }
