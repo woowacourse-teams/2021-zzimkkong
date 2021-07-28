@@ -17,7 +17,7 @@ const App = (): JSX.Element => (
         <Router>
           <Switch>
             {ROUTES.map(({ path, component }) => (
-              <Route exact path={path}>
+              <Route exact path={path} key={path}>
                 {component}
               </Route>
             ))}
