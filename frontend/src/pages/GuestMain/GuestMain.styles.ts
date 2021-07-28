@@ -45,7 +45,7 @@ export const ReservationLink = styled(Link)`
   background: ${({ theme }) => theme.primary[400]};
   color: ${({ theme }) => theme.white};
   text-decoration: none;
-  padding: 1rem 1rem;
+  padding: 1rem;
   font-size: 1.25rem;
   font-weight: 700;
   cursor: pointer;
