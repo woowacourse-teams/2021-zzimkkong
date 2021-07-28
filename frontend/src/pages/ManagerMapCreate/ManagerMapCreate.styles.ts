@@ -1,4 +1,4 @@
-import styled, { css } from 'styled-components';
+import styled, { createGlobalStyle, css } from 'styled-components';
 import Button from 'components/Button/Button';
 import IconButton from 'components/IconButton/IconButton';
 import Input from 'components/Input/Input';
@@ -7,10 +7,16 @@ interface ToolbarButtonProps {
   selected?: boolean;
 }
 
-interface EditorProps {
+interface BoardContainerProps {
   isDraggable?: boolean;
   isDragging?: boolean;
 }
+
+export const PageGlobalStyle = createGlobalStyle`
+  body {
+    overscroll-behavior: none;
+  }
+`;
 
 const primaryIconCSS = css`
   svg {
@@ -94,8 +100,12 @@ export const Toolbar = styled.div`
   gap: 1rem;
 `;
 
-export const Editor = styled.div<EditorProps>`
+export const Editor = styled.div`
   flex: 1;
+`;
+
+export const BoardContainer = styled.svg<BoardContainerProps>`
+  outline: none;
 
   cursor: ${({ isDraggable, isDragging }) => {
     if (isDraggable) {
@@ -104,10 +114,6 @@ export const Editor = styled.div<EditorProps>`
     }
     return 'default';
   }};
-`;
-
-export const BoardContainer = styled.svg`
-  outline: none;
 `;
 
 export const InputWrapper = styled.div`

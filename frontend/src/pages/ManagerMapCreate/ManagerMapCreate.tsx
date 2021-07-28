@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect, useCallback } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { ReactComponent as EditIcon } from 'assets/svg/edit.svg';
 import { ReactComponent as ItemsIcon } from 'assets/svg/items.svg';
 import { ReactComponent as LineIcon } from 'assets/svg/line.svg';
@@ -15,6 +15,9 @@ import { Mode } from 'types/editor';
 import * as Styled from './ManagerMapCreate.styles';
 
 const GRID_SIZE = 10;
+const SCALE_DELTA = 0.001;
+const MIN_SCALE = 0.5;
+const MAX_SCALE = 3.0;
 
 const ManagerMapCreate = (): JSX.Element => {
   const editorRef = useRef<HTMLDivElement | null>(null);
@@ -31,10 +34,71 @@ const ManagerMapCreate = (): JSX.Element => {
   const height = Number(heightValue);
 
   const [board, setBoard] = useState({
+    width,
+    height,
     x: 0,
     y: 0,
     scale: 1,
   });
+
+  const handleWheel = (event: React.WheelEvent<SVGElement>) => {
+    const { offsetX, offsetY, deltaY } = event.nativeEvent;
+
+    setBoard((prevBoard) => {
+      const { scale, x, y, width, height } = prevBoard;
+
+      const nextScale = scale - deltaY * SCALE_DELTA;
+
+      if (nextScale <= MIN_SCALE || nextScale >= MAX_SCALE) {
+        return {
+          ...prevBoard,
+          scale: prevBoard.scale,
+        };
+      }
+
+      const cursorX = (offsetX - x) / (width * scale);
+      const cursorY = (offsetY - y) / (height * scale);
+
+      const widthDiff = Math.abs(width * nextScale - width * scale) * cursorX;
+      const heightDiff = Math.abs(height * nextScale - height * scale) * cursorY;
+
+      const nextX = nextScale > scale ? x - widthDiff : x + widthDiff;
+      const nextY = nextScale > scale ? y - heightDiff : y + heightDiff;
+
+      return {
+        ...prevBoard,
+        x: nextX,
+        y: nextY,
+        scale: nextScale,
+      };
+    });
+  };
+
+  const handleDragStart = (event: React.MouseEvent<SVGElement>) => {
+    setDragOffsetX(event.nativeEvent.offsetX - board.x);
+    setDragOffsetY(event.nativeEvent.offsetY - board.y);
+
+    setDragging(true);
+  };
+
+  const handleDrag = (event: React.MouseEvent<SVGElement>) => {
+    if (mode !== Mode.Move || !isDragging) return;
+
+    const { offsetX, offsetY } = event.nativeEvent;
+
+    setBoard((prevBoard) => ({
+      ...prevBoard,
+      x: offsetX - dragOffsetX,
+      y: offsetY - dragOffsetY,
+    }));
+  };
+
+  const handleDragEnd = () => {
+    setDragOffsetX(0);
+    setDragOffsetY(0);
+
+    setDragging(false);
+  };
 
   useEffect(() => {
     const editorWidth = editorRef.current ? editorRef.current.offsetWidth : 0;
@@ -47,40 +111,9 @@ const ManagerMapCreate = (): JSX.Element => {
     }));
   }, [width, height]);
 
-  const handleDragStart = useCallback(
-    (event: React.MouseEvent<SVGElement>) => {
-      setDragOffsetX(event.nativeEvent.offsetX - board.x);
-      setDragOffsetY(event.nativeEvent.offsetY - board.y);
-
-      setDragging(true);
-    },
-    [board.x, board.y]
-  );
-
-  const handleDrag = useCallback(
-    (event: React.MouseEvent<SVGElement>) => {
-      if (mode !== Mode.Move || !isDragging) return;
-
-      const { offsetX, offsetY } = event.nativeEvent;
-
-      setBoard((prevBoard) => ({
-        ...prevBoard,
-        x: offsetX - dragOffsetX,
-        y: offsetY - dragOffsetY,
-      }));
-    },
-    [mode, isDragging, dragOffsetX, dragOffsetY]
-  );
-
-  const handleDragEnd = useCallback((event: React.MouseEvent<SVGElement>) => {
-    setDragOffsetX(0);
-    setDragOffsetY(0);
-
-    setDragging(false);
-  }, []);
-
   return (
     <>
+      <Styled.PageGlobalStyle />
       <Header />
       <Layout>
         <Styled.Container>
@@ -142,12 +175,15 @@ const ManagerMapCreate = (): JSX.Element => {
                 <ItemsIcon />
               </Styled.ToolbarButton>
             </Styled.Toolbar>
-            <Styled.Editor ref={editorRef} isDraggable={mode === Mode.Move} isDragging={isDragging}>
+            <Styled.Editor ref={editorRef}>
               <Styled.BoardContainer
                 xmlns="http://www.w3.org/2000/svg"
                 version="1.1"
                 width="100%"
                 height="100%"
+                isDragging={isDragging}
+                isDraggable={mode === Mode.Move}
+                onWheel={handleWheel}
                 onMouseDown={handleDragStart}
                 onMouseUp={handleDragEnd}
                 onMouseMoveCapture={handleDrag}
