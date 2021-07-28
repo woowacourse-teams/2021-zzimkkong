@@ -123,7 +123,6 @@ public class Space {
         return setting.getDisabledWeekdays();
     }
 
-
     public static class Builder {
         private Long id = null;
         private String name = null;
@@ -192,6 +191,5 @@ public class Space {
         public Space build() {
             return new Space(this);
         }
-
     }
 }

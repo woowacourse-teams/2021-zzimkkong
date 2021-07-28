@@ -27,7 +27,7 @@ public class SpaceController {
     public ResponseEntity<Void> save(
             @PathVariable final Long mapId,
             @RequestBody @Valid final SpaceCreateRequest spaceCreateRequest,
-            @Manager Member manager) {
+            @Manager final Member manager) {
         SpaceCreateResponse spaceCreateResponse = spaceService.saveSpace(mapId, spaceCreateRequest, manager);
         return ResponseEntity
                 .created(URI.create("/api/managers/maps/" + mapId + "/spaces/" + spaceCreateResponse.getId()))
@@ -41,7 +41,7 @@ public class SpaceController {
     }
 
     @GetMapping
-    public ResponseEntity<SpaceFindAllResponse> findAll(@PathVariable Long mapId, @Manager Member manager) {
+    public ResponseEntity<SpaceFindAllResponse> findAll(@PathVariable final Long mapId, @Manager final Member manager) {
         SpaceFindAllResponse spaceFindAllResponse = spaceService.findAllSpace(mapId, manager);
         return ResponseEntity.ok().body(spaceFindAllResponse);
     }
