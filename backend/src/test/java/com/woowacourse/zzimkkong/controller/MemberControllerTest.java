@@ -19,10 +19,10 @@ class MemberControllerTest extends AcceptanceTest {
     @Test
     void join() {
         //given
-        MemberSaveRequest memberSaveRequest = new MemberSaveRequest(EMAIL, PASSWORD, ORGANIZATION);
+        MemberSaveRequest newMemberSaveRequest = new MemberSaveRequest(NEW_EMAIL, PASSWORD, ORGANIZATION);
 
-        //when
-        ExtractableResponse<Response> response = saveMember(memberSaveRequest);
+        // when
+        ExtractableResponse<Response> response = saveMember(newMemberSaveRequest);
 
         //then
         assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
@@ -38,7 +38,7 @@ class MemberControllerTest extends AcceptanceTest {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
     }
 
-    protected static ExtractableResponse<Response> saveMember(final MemberSaveRequest memberSaveRequest) {
+    static ExtractableResponse<Response> saveMember(final MemberSaveRequest memberSaveRequest) {
         return RestAssured
                 .given(getRequestSpecification()).log().all()
                 .accept("application/json")

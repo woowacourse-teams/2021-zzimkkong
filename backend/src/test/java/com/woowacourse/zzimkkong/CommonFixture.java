@@ -1,25 +1,63 @@
 package com.woowacourse.zzimkkong;
 
-import com.woowacourse.zzimkkong.domain.Map;
-import com.woowacourse.zzimkkong.domain.Member;
-import com.woowacourse.zzimkkong.domain.Reservation;
-import com.woowacourse.zzimkkong.domain.Space;
+import com.woowacourse.zzimkkong.domain.*;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 
 public class CommonFixture {
     public static final String EMAIL = "pobi@email.com";
+    public static final String NEW_EMAIL = "sakjung@email.com";
     public static final String PASSWORD = "test1234";
     public static final String ORGANIZATION = "우아한테크코스";
     public static Member POBI = new Member(EMAIL, PASSWORD, ORGANIZATION);
     public static Member JASON = new Member("jason@test.com", PASSWORD, ORGANIZATION);
 
     public static Map LUTHER = new Map("루터회관", "mapDrawingData", "mapImageData", POBI);
-    public static Map SMALL_HOUSE = new Map("작은집", "mapDrawingData", "mapImageData", POBI);
+    public static Setting BE_SETTING = new Setting.Builder()
+            .availableStartTime(LocalTime.of(0, 0))
+            .availableEndTime(LocalTime.of(23, 59))
+            .reservationTimeUnit(10)
+            .reservationMinimumTimeUnit(10)
+            .reservationMaximumTimeUnit(1440)
+            .reservationEnable(true)
+            .disabledWeekdays(null)
+            .build();
 
-    public static Space BE = new Space("백엔드 강의실", "bottom", "#FED7D9", "100, 90", LUTHER);
-    public static Space FE1 = new Space("프론트엔드 강의실1", "bottom", "#FED7D9", "560, 40", LUTHER);
+    public static Space BE = new Space.Builder()
+            .name("백엔드 강의실")
+            .textPosition("bottom")
+            .color("#FED7D9")
+            .coordinate("100, 90")
+            .map(LUTHER)
+            .description("시니컬하네")
+            .area("area")
+            .setting(BE_SETTING)
+            .mapImage("이미지 입니다")
+            .build();
+    public static Map SMALL_HOUSE = new Map("작은집", "mapDrawingData", "mapImageData", POBI);
+    public static Setting FE_SETTING = new Setting.Builder()
+            .availableStartTime(LocalTime.of(0, 0))
+            .availableEndTime(LocalTime.of(23, 59))
+            .reservationTimeUnit(10)
+            .reservationMinimumTimeUnit(10)
+            .reservationMaximumTimeUnit(1440)
+            .reservationEnable(true)
+            .disabledWeekdays(null)
+            .build();
+
+    public static Space FE1 = new Space.Builder()
+            .name("프론트엔드 강의실1")
+            .textPosition("bottom")
+            .color("#FED7D9")
+            .coordinate("560, 40")
+            .map(LUTHER)
+            .description("시니컬하네")
+            .area("area")
+            .setting(FE_SETTING)
+            .mapImage("이미지 입니다")
+            .build();
 
     public static final LocalDate TOMORROW = LocalDate.now().plusDays(1);
     public static final LocalDateTime TOMORROW_START_TIME = TOMORROW.atStartOfDay();

@@ -1,7 +1,13 @@
 package com.woowacourse.zzimkkong.controller;
 
+import com.woowacourse.zzimkkong.dto.map.MapCreateRequest;
+import com.woowacourse.zzimkkong.dto.member.LoginRequest;
+import com.woowacourse.zzimkkong.dto.member.MemberSaveRequest;
+import com.woowacourse.zzimkkong.dto.member.TokenResponse;
 import io.restassured.RestAssured;
 import io.restassured.builder.RequestSpecBuilder;
+import io.restassured.response.ExtractableResponse;
+import io.restassured.response.Response;
 import io.restassured.specification.RequestSpecification;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -14,7 +20,10 @@ import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
+import static com.woowacourse.zzimkkong.CommonFixture.*;
+import static com.woowacourse.zzimkkong.CommonFixture.LUTHER;
 import static com.woowacourse.zzimkkong.DocumentUtils.setRequestSpecification;
+import static com.woowacourse.zzimkkong.controller.AuthControllerTest.login;
 import static org.springframework.restdocs.restassured3.RestAssuredRestDocumentation.documentationConfiguration;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
@@ -23,6 +32,12 @@ import static org.springframework.restdocs.restassured3.RestAssuredRestDocumenta
 @AutoConfigureRestDocs
 @ActiveProfiles("test")
 public class AcceptanceTest {
+    protected final MapCreateRequest mapCreateRequest = new MapCreateRequest(LUTHER.getName(), LUTHER.getMapDrawing(), LUTHER.getMapImage());
+    protected final MemberSaveRequest memberSaveRequest = new MemberSaveRequest(EMAIL, PASSWORD, ORGANIZATION);
+    protected final String SALLY_PASSWORD = "1230";
+    protected final String SALLY_NAME = "샐리";
+    protected final String SALLY_DESCRIPTION = "집 가고 싶은 회의";
+
     @LocalServerPort
     int port;
 
@@ -33,5 +48,13 @@ public class AcceptanceTest {
                 .addFilter(documentationConfiguration(restDocumentation))
                 .build();
         setRequestSpecification(spec);
+    }
+
+    protected static String getToken() {
+        LoginRequest loginRequest = new LoginRequest(EMAIL, PASSWORD);
+        ExtractableResponse<Response> response = login(loginRequest);
+
+        TokenResponse tokenResponse = response.body().as(TokenResponse.class);
+        return tokenResponse.getAccessToken();
     }
 }
