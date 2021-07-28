@@ -1,7 +1,14 @@
 import { useState, useRef, useEffect } from 'react';
 import { ReactComponent as EditIcon } from 'assets/svg/edit.svg';
+import { ReactComponent as ItemsIcon } from 'assets/svg/items.svg';
+import { ReactComponent as LineIcon } from 'assets/svg/line.svg';
+import { ReactComponent as MoveIcon } from 'assets/svg/move.svg';
+import { ReactComponent as PolylineIcon } from 'assets/svg/polyline.svg';
+import { ReactComponent as SelectIcon } from 'assets/svg/select.svg';
+
 import Button from 'components/Button/Button';
 import Header from 'components/Header/Header';
+import IconButton from 'components/IconButton/IconButton';
 import Layout from 'components/Layout/Layout';
 import PALETTE from 'constants/palette';
 import useInput from 'hooks/useInput';
@@ -62,10 +69,21 @@ const ManagerMapCreate = (): JSX.Element => {
           </Styled.EditorHeader>
           <Styled.EditorContent>
             <Styled.Toolbar>
-              <EditIcon />
-              <EditIcon />
-              <EditIcon />
-              <EditIcon />
+              <IconButton text="선택">
+                <SelectIcon />
+              </IconButton>
+              <IconButton text="이동">
+                <MoveIcon />
+              </IconButton>
+              <IconButton text="선">
+                <LineIcon />
+              </IconButton>
+              <IconButton text="다각선">
+                <PolylineIcon />
+              </IconButton>
+              <IconButton text="장식">
+                <ItemsIcon />
+              </IconButton>
             </Styled.Toolbar>
             <Styled.Editor ref={editorRef}>
               <svg xmlns="http://www.w3.org/2000/svg" version="1.1" width="100%" height="100%">

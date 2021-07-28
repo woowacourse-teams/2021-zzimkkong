@@ -31,12 +31,13 @@ export const TempSaveContainer = styled.div`
 export const TempSaveMessage = styled.p`
   display: inline;
   color: ${({ theme }) => theme.gray[400]};
+  font-size: 0.875rem;
 `;
 
 export const TempSaveButton = styled(Button)`
   padding: 0;
   margin-left: 0.5rem;
-  font-size: 1rem;
+  font-size: 0.875rem;
 `;
 
 export const MapNameInput = styled.input`
@@ -63,12 +64,13 @@ export const EditorContent = styled.div`
 `;
 
 export const Toolbar = styled.div`
-  padding: 1rem 0.75rem;
+  padding: 1rem 0.5rem;
   background-color: ${({ theme }) => theme.gray[100]};
   border-left: 1px solid ${({ theme }) => theme.gray[400]};
   border-right: 1px solid ${({ theme }) => theme.gray[400]};
   display: flex;
   flex-direction: column;
+  gap: 1rem;
 `;
 
 export const Editor = styled.div`
@@ -79,7 +81,7 @@ export const InputWrapper = styled.div`
   display: flex;
   align-items: center;
   gap: 0.5rem;
-  margin: 0.5rem 0;
+  margin: 0 0.25rem;
 `;
 
 export const SizeInput = styled(Input)`
