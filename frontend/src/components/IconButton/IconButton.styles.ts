@@ -51,6 +51,7 @@ const iconSizeCSS = {
 
 export const IconWrapper = styled.div<Props>`
   ${({ size }) => iconSizeCSS[size]}
+  overflow: hidden;
 `;
 
 const textSizeCSS = {
