@@ -1,6 +1,7 @@
 import { Story } from '@storybook/react';
 import { ReactComponent as DeleteIcon } from 'assets/svg/delete.svg';
 import { ReactComponent as EditIcon } from 'assets/svg/edit.svg';
+import IconButton from 'components/IconButton/IconButton';
 import ReservationListItem, { Props } from './ReservationListItem';
 
 export default {
@@ -32,8 +33,12 @@ Control.args = {
   },
   control: (
     <>
-      <EditIcon />
-      <DeleteIcon />
+      <IconButton size="small">
+        <EditIcon />
+      </IconButton>
+      <IconButton size="small">
+        <DeleteIcon />
+      </IconButton>
     </>
   ),
 };

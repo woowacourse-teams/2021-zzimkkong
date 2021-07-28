@@ -26,13 +26,13 @@ Default.args = {
   ),
 };
 
-export const BgColor = Template.bind({});
-BgColor.args = {
+export const DotColor = Template.bind({});
+DotColor.args = {
   expandable: false,
   initialExpanded: false,
   children: (
     <>
-      <Panel.Header bgColor={PALETTE.ORANGE[500]}>
+      <Panel.Header dotColor={PALETTE.ORANGE[500]}>
         <Panel.Title>패널 헤더</Panel.Title>
       </Panel.Header>
       <Panel.Content>
@@ -53,26 +53,6 @@ Expandable.args = {
       </Panel.Header>
       <Panel.Content>
         <p>패널 내용</p>
-      </Panel.Content>
-    </>
-  ),
-};
-
-export const WithInner = Template.bind({});
-WithInner.args = {
-  expandable: false,
-  initialExpanded: false,
-  children: (
-    <>
-      <Panel.Header>
-        <Panel.Inner>
-          <Panel.Title>패널 헤더</Panel.Title>
-        </Panel.Inner>
-      </Panel.Header>
-      <Panel.Content>
-        <Panel.Inner>
-          <p>패널 내용</p>
-        </Panel.Inner>
       </Panel.Content>
     </>
   ),
