@@ -28,7 +28,7 @@ public class Reservation {
     private String description;
 
     @ManyToOne
-    @JoinColumn(name = "space_id", foreignKey = @ForeignKey(name = "fk_reservation_space"))
+    @JoinColumn(name = "space_id", foreignKey = @ForeignKey(name = "fk_reservation_space"), nullable = false)
     private Space space;
 
     protected Reservation() {

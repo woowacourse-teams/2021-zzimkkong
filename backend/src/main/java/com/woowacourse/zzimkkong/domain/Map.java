@@ -20,7 +20,7 @@ public class Map {
     private String mapImageUrl;
 
     @ManyToOne
-    @JoinColumn(name = "member_id", foreignKey = @ForeignKey(name = "fk_map_member"))
+    @JoinColumn(name = "member_id", foreignKey = @ForeignKey(name = "fk_map_member"), nullable = false)
     private Member member;
 
     protected Map() {

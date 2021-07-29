@@ -28,7 +28,7 @@ public class Space {
     private String coordinate;
 
     @ManyToOne
-    @JoinColumn(name = "map_id", foreignKey = @ForeignKey(name = "fk_space_map"))
+    @JoinColumn(name = "map_id", foreignKey = @ForeignKey(name = "fk_space_map"), nullable = false)
     private Map map;
 
     @Column(nullable = true)
