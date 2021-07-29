@@ -36,7 +36,7 @@ public class MapService {
         Map saveMap = maps.save(new Map(
                 mapCreateUpdateRequest.getMapName(),
                 mapCreateUpdateRequest.getMapDrawing(),
-                mapCreateUpdateRequest.getMapImageUrl(),
+                mapCreateUpdateRequest.getMapImageSvg(),
                 manager));
         return MapCreateResponse.from(saveMap);
     }
@@ -65,7 +65,7 @@ public class MapService {
         map.update(
                 mapCreateUpdateRequest.getMapName(),
                 mapCreateUpdateRequest.getMapDrawing(),
-                mapCreateUpdateRequest.getMapImageUrl());
+                mapCreateUpdateRequest.getMapImageSvg());
     }
 
     public void deleteMap(final Long mapId, final Member manager) {
