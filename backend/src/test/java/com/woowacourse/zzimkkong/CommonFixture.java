@@ -38,7 +38,7 @@ public class CommonFixture {
             .coordinate("100, 90")
             .map(LUTHER)
             .description("시니컬하네")
-            .area("area")
+            .area(SPACE_SVG)
             .setting(BE_SETTING)
             .mapImage(MAP_IMAGE_URL)
             .build();
@@ -60,7 +60,7 @@ public class CommonFixture {
             .coordinate("560, 40")
             .map(LUTHER)
             .description("시니컬하네")
-            .area("area")
+            .area(SPACE_SVG)
             .setting(FE_SETTING)
             .mapImage(MAP_IMAGE_URL)
             .build();

@@ -44,9 +44,9 @@ public class SpaceControllerTest extends AcceptanceTest {
         SpaceCreateRequest spaceCreateRequest = new SpaceCreateRequest(
                 "백엔드 강의실",
                 "시니컬하네",
-                "area",
+                SPACE_SVG,
                 settingsRequest,
-                SPACE_SVG
+                "mapImage"
         );
         String saveSpaceApi = "/api/managers/maps/1/spaces";
         saveSpace(saveSpaceApi, spaceCreateRequest);
@@ -69,9 +69,9 @@ public class SpaceControllerTest extends AcceptanceTest {
         SpaceCreateRequest newSpaceCreateRequest = new SpaceCreateRequest(
                 "새로운공간",
                 "우리집",
-                "프론트 화이팅",
+                SPACE_SVG,
                 newSettingsRequest,
-                SPACE_SVG
+                "mapImage"
         );
 
         // when
@@ -116,9 +116,9 @@ public class SpaceControllerTest extends AcceptanceTest {
         SpaceCreateRequest defaultSpaceCreateRequest = new SpaceCreateRequest(
                 "잠실우리집",
                 "우리집",
-                "프론트 화이팅",
+                SPACE_SVG,
                 settingsRequest,
-                SPACE_SVG
+                "mapImage"
         );
 
         Setting defaultSetting = new Setting.Builder()
@@ -135,7 +135,7 @@ public class SpaceControllerTest extends AcceptanceTest {
                 .id(2L)
                 .name("잠실우리집")
                 .description("우리집")
-                .area("프론트 화이팅")
+                .area(SPACE_SVG)
                 .setting(defaultSetting)
                 .mapImage(MAP_IMAGE_URL)
                 .build();

@@ -27,6 +27,8 @@ public class ServiceTestFixture {
             .disabledWeekdays("Monday, Tuesday")
             .build();
 
+    public static final String SPACE_SVG = "<rect x=\"10\" y=\"10\" width=\"30\" height=\"30\"/>";
+
     public static Space BE = new Space.Builder()
             .id(1L)
             .name("백엔드 강의실")
@@ -35,7 +37,7 @@ public class ServiceTestFixture {
             .coordinate("100, 90")
             .map(LUTHER)
             .description("우리집")
-            .area("프론트 화이팅")
+            .area(SPACE_SVG)
             .setting(BE_SETTING)
             .mapImage(MAP_IMAGE_URL)
             .build();
@@ -50,8 +52,6 @@ public class ServiceTestFixture {
             .disabledWeekdays(null)
             .build();
 
-    public static final String SPACE_SVG = "<rect x=\"10\" y=\"10\" width=\"30\" height=\"30\"/>";
-
     public static Space FE1 = new Space.Builder()
             .id(2L)
             .name("프론트엔드 강의실1")
@@ -60,7 +60,7 @@ public class ServiceTestFixture {
             .coordinate("560, 40")
             .map(LUTHER)
             .description("시니컬하네")
-            .area("area")
+            .area(SPACE_SVG)
             .setting(FE_SETTING)
             .mapImage(MAP_IMAGE_URL)
             .build();
