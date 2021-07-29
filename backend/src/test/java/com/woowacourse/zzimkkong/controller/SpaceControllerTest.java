@@ -3,8 +3,9 @@ package com.woowacourse.zzimkkong.controller;
 import com.woowacourse.zzimkkong.domain.Setting;
 import com.woowacourse.zzimkkong.domain.Space;
 import com.woowacourse.zzimkkong.dto.space.SettingsRequest;
-import com.woowacourse.zzimkkong.dto.space.SpaceCreateRequest;
+import com.woowacourse.zzimkkong.dto.space.SpaceCreateUpdateRequest;
 import com.woowacourse.zzimkkong.dto.space.SpaceFindAllResponse;
+import com.woowacourse.zzimkkong.dto.space.SpaceFindDetailResponse;
 import com.woowacourse.zzimkkong.infrastructure.AuthorizationExtractor;
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
@@ -18,8 +19,7 @@ import org.springframework.http.MediaType;
 import java.time.LocalTime;
 import java.util.List;
 
-import static com.woowacourse.zzimkkong.CommonFixture.BE;
-import static com.woowacourse.zzimkkong.CommonFixture.FE1;
+import static com.woowacourse.zzimkkong.CommonFixture.*;
 import static com.woowacourse.zzimkkong.DocumentUtils.*;
 import static com.woowacourse.zzimkkong.controller.AuthControllerTest.getToken;
 import static com.woowacourse.zzimkkong.controller.MapControllerTest.saveMap;
@@ -43,15 +43,15 @@ public class SpaceControllerTest extends AcceptanceTest {
                 null
         );
 
-        SpaceCreateRequest spaceCreateRequest = new SpaceCreateRequest(
+        SpaceCreateUpdateRequest spaceCreateUpdateRequest = new SpaceCreateUpdateRequest(
                 "백엔드 강의실",
                 "시니컬하네",
-                "area",
+                SPACE_SVG,
                 settingsRequest,
-                "이미지 입니다"
+                MAP_SVG
         );
         String saveSpaceApi = "/api/managers/maps/1/spaces";
-        saveSpace(saveSpaceApi, spaceCreateRequest);
+        saveSpace(saveSpaceApi, spaceCreateUpdateRequest);
     }
 
     @DisplayName("올바른 토큰이 주어질 때, space 정보가 들어오면 space를 저장한다")
@@ -68,17 +68,17 @@ public class SpaceControllerTest extends AcceptanceTest {
                 "Monday, Tuesday"
         );
 
-        SpaceCreateRequest newSpaceCreateRequest = new SpaceCreateRequest(
+        SpaceCreateUpdateRequest newSpaceCreateUpdateRequest = new SpaceCreateUpdateRequest(
                 "새로운공간",
                 "우리집",
-                "프론트 화이팅",
+                SPACE_SVG,
                 newSettingsRequest,
-                "이미지 입니다"
+                MAP_SVG
         );
 
         // when
         String saveSpaceApi = "/api/managers/maps/1/spaces";
-        ExtractableResponse<Response> response = saveSpace(saveSpaceApi, newSpaceCreateRequest);
+        ExtractableResponse<Response> response = saveSpace(saveSpaceApi, newSpaceCreateUpdateRequest);
 
         // then
         assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
@@ -115,15 +115,15 @@ public class SpaceControllerTest extends AcceptanceTest {
                 null
         );
 
-        SpaceCreateRequest feSpaceCreateRequest = new SpaceCreateRequest(
+        SpaceCreateUpdateRequest feSpaceCreateUpdateRequest = new SpaceCreateUpdateRequest(
                 "프론트엔드 강의실1",
                 "시니컬하네",
-                "area",
+                SPACE_SVG,
                 feSettingsRequest,
-                "이미지 입니다"
+                MAP_SVG
         );
         String api = "/api/managers/maps/1/spaces";
-        saveSpace(api, feSpaceCreateRequest);
+        saveSpace(api, feSpaceCreateUpdateRequest);
 
         // when
         ExtractableResponse<Response> response = findAllSpace(api);
@@ -151,12 +151,12 @@ public class SpaceControllerTest extends AcceptanceTest {
                 null
         );
 
-        SpaceCreateRequest defaultSpaceCreateRequest = new SpaceCreateRequest(
+        SpaceCreateUpdateRequest defaultSpaceCreateUpdateRequest = new SpaceCreateUpdateRequest(
                 "잠실우리집",
                 "우리집",
-                "프론트 화이팅",
+                SPACE_SVG,
                 settingsRequest,
-                "이미지 입니다"
+                MAP_SVG
         );
 
         Setting defaultSetting = new Setting.Builder()
@@ -173,13 +173,13 @@ public class SpaceControllerTest extends AcceptanceTest {
                 .id(2L)
                 .name("잠실우리집")
                 .description("우리집")
-                .area("프론트 화이팅")
+                .area(SPACE_SVG)
                 .setting(defaultSetting)
-                .mapImage("이미지 입니다")
+                .mapImage(MAP_IMAGE_URL)
                 .build();
 
         String saveSpaceApi = "/api/managers/maps/1/spaces";
-        ExtractableResponse<Response> response = saveSpace(saveSpaceApi, defaultSpaceCreateRequest);
+        ExtractableResponse<Response> response = saveSpace(saveSpaceApi, defaultSpaceCreateUpdateRequest);
 
         // then
         String api = response.header("location");
@@ -193,14 +193,14 @@ public class SpaceControllerTest extends AcceptanceTest {
                 .isEqualTo(expectedSpaceFindDetailResponse);
     }
 
-    private ExtractableResponse<Response> saveSpace(final String api, final SpaceCreateRequest spaceCreateRequest) {
+    private ExtractableResponse<Response> saveSpace(final String api, final SpaceCreateUpdateRequest spaceCreateUpdateRequest) {
         return RestAssured
                 .given(getRequestSpecification()).log().all()
                 .accept("application/json")
                 .header("Authorization", AuthorizationExtractor.AUTHENTICATION_TYPE + " " + getToken())
                 .filter(document("space/post", getRequestPreprocessor(), getResponsePreprocessor()))
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(spaceCreateRequest)
+                .body(spaceCreateUpdateRequest)
                 .when().post(api)
                 .then().log().all().extract();
     }

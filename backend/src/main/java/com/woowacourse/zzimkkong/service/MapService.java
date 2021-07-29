@@ -2,12 +2,14 @@ package com.woowacourse.zzimkkong.service;
 
 import com.woowacourse.zzimkkong.domain.Map;
 import com.woowacourse.zzimkkong.domain.Member;
+import com.woowacourse.zzimkkong.domain.Space;
 import com.woowacourse.zzimkkong.dto.map.MapCreateResponse;
 import com.woowacourse.zzimkkong.dto.map.MapCreateUpdateRequest;
 import com.woowacourse.zzimkkong.dto.map.MapFindAllResponse;
 import com.woowacourse.zzimkkong.dto.map.MapFindResponse;
 import com.woowacourse.zzimkkong.exception.authorization.NoAuthorityOnMapException;
 import com.woowacourse.zzimkkong.exception.map.NoSuchMapException;
+import com.woowacourse.zzimkkong.exception.space.ReservationExistOnSpaceException;
 import com.woowacourse.zzimkkong.infrastructure.S3Uploader;
 import com.woowacourse.zzimkkong.infrastructure.SvgConverter;
 import com.woowacourse.zzimkkong.repository.MapRepository;
@@ -45,11 +47,11 @@ public class MapService {
         Map saveMap = maps.save(new Map(
                 mapCreateUpdateRequest.getMapName(),
                 mapCreateUpdateRequest.getMapDrawing(),
-                mapCreateUpdateRequest.getMapSvg().substring(0, 10),
+                mapCreateUpdateRequest.getMapImage().substring(0, 10),
                 manager));
 
-        String thumbnailUrl = uploadPngToS3(mapCreateUpdateRequest.getMapSvg(), saveMap.getId().toString());
-        saveMap.updateImage(thumbnailUrl);
+        String thumbnailUrl = uploadPngToS3(mapCreateUpdateRequest.getMapImage(), saveMap.getId().toString());
+        saveMap.updateImageUrl(thumbnailUrl);
 
         return MapCreateResponse.from(saveMap);
     }
@@ -75,29 +77,12 @@ public class MapService {
 
         validateManagerOfMap(map, manager);
 
-        String thumbnailUrl = uploadPngToS3(mapCreateUpdateRequest.getMapSvg(), map.getId().toString());
+        String thumbnailUrl = uploadPngToS3(mapCreateUpdateRequest.getMapImage(), map.getId().toString());
 
         map.update(
                 mapCreateUpdateRequest.getMapName(),
                 mapCreateUpdateRequest.getMapDrawing(),
                 thumbnailUrl);
-    }
-
-    private void validateManagerOfMap(final Map map, final Member manager) {
-        if (!manager.equals(map.getMember())) {   // TODO: ReservationService 와의 중복 제거 -김샐
-            throw new NoAuthorityOnMapException();
-        }
-    }
-
-    private String uploadPngToS3(String svgData, String fileName) {
-        File pngFile = svgConverter.convertSvgToPngFile(svgData, fileName);
-        String thumbnailUrl = s3Uploader.upload("thumbnails", pngFile);
-        pngFile.delete();
-        return thumbnailUrl;
-        map.update(
-                mapCreateUpdateRequest.getMapName(),
-                mapCreateUpdateRequest.getMapDrawing(),
-                mapCreateUpdateRequest.getMapImage());
     }
 
     public void deleteMap(final Long mapId, final Member manager) {
@@ -126,5 +111,12 @@ public class MapService {
         if (!manager.equals(map.getMember())) {   // TODO: ReservationService 와의 중복 제거 -김샐
             throw new NoAuthorityOnMapException();
         }
+    }
+
+    private String uploadPngToS3(String svgData, String fileName) {
+        File pngFile = svgConverter.convertSvgToPngFile(svgData, fileName);
+        String thumbnailUrl = s3Uploader.upload("thumbnails", pngFile);
+        pngFile.delete();
+        return thumbnailUrl;
     }
 }

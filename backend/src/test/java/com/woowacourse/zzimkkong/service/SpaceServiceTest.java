@@ -2,9 +2,7 @@ package com.woowacourse.zzimkkong.service;
 
 import com.woowacourse.zzimkkong.domain.Member;
 import com.woowacourse.zzimkkong.domain.Space;
-import com.woowacourse.zzimkkong.dto.space.SettingsRequest;
-import com.woowacourse.zzimkkong.dto.space.SpaceCreateRequest;
-import com.woowacourse.zzimkkong.dto.space.SpaceCreateResponse;
+import com.woowacourse.zzimkkong.dto.space.*;
 import com.woowacourse.zzimkkong.exception.authorization.NoAuthorityOnMapException;
 import com.woowacourse.zzimkkong.exception.map.NoSuchMapException;
 import com.woowacourse.zzimkkong.exception.space.NoSuchSpaceException;
@@ -16,9 +14,10 @@ import java.time.LocalTime;
 import java.util.List;
 import java.util.Optional;
 
-import static com.woowacourse.zzimkkong.CommonFixture.BE;
+import static com.woowacourse.zzimkkong.CommonFixture.*;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.BDDMockito.given;
 
@@ -35,7 +34,7 @@ class SpaceServiceTest extends ServiceTest {
             "Monday, Tuesday"
     );
 
-    private SpaceCreateRequest spaceCreateRequest = new SpaceCreateRequest(
+    private SpaceCreateUpdateRequest spaceCreateUpdateRequest = new SpaceCreateUpdateRequest(
             "백엔드 강의실",
             "우리집",
             "프론트 화이팅",
@@ -53,7 +52,7 @@ class SpaceServiceTest extends ServiceTest {
                 .willReturn(BE);
 
         // when
-        SpaceCreateResponse spaceCreateResponse = spaceService.saveSpace(LUTHER.getId(), spaceCreateRequest, POBI);
+        SpaceCreateResponse spaceCreateResponse = spaceService.saveSpace(LUTHER.getId(), spaceCreateUpdateRequest, POBI);
 
         // then
         assertThat(spaceCreateResponse.getId()).isEqualTo(BE.getId());
@@ -67,7 +66,7 @@ class SpaceServiceTest extends ServiceTest {
                 .willReturn(Optional.empty());
 
         // when, then
-        assertThatThrownBy(() -> spaceService.saveSpace(LUTHER.getId(), spaceCreateRequest, POBI))
+        assertThatThrownBy(() -> spaceService.saveSpace(LUTHER.getId(), spaceCreateUpdateRequest, POBI))
                 .isInstanceOf(NoSuchMapException.class);
     }
 
@@ -83,7 +82,7 @@ class SpaceServiceTest extends ServiceTest {
         Member sakjung = new Member(2L, "sakjung@naver.com", "test1234", "잠실킹");
 
         // when, then
-        assertThatThrownBy(() -> spaceService.saveSpace(LUTHER.getId(), spaceCreateRequest, sakjung))
+        assertThatThrownBy(() -> spaceService.saveSpace(LUTHER.getId(), spaceCreateUpdateRequest, sakjung))
                 .isInstanceOf(NoAuthorityOnMapException.class);
     }
 

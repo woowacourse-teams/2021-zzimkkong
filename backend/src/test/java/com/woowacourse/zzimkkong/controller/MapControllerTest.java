@@ -102,7 +102,7 @@ class MapControllerTest extends AcceptanceTest {
     @DisplayName("맵을 삭제한다.")
     void delete() {
         // given
-        String api = saveMap("/api/managers/maps", new MapCreateUpdateRequest(LUTHER.getName(), LUTHER.getMapDrawing(), LUTHER.getMapImageUrl()))
+        String api = saveMap("/api/managers/maps", new MapCreateUpdateRequest(LUTHER.getName(), LUTHER.getMapDrawing(), MAP_SVG))
                 .header("location");
 
         // when

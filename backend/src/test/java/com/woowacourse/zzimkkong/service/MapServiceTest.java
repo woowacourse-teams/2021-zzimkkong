@@ -32,7 +32,7 @@ class MapServiceTest extends ServiceTest {
     @DisplayName("맵 생성 요청 시, 올바른 요청이 들어오면 맵을 생성한다.")
     void create() {
         //given
-        MapCreateUpdateRequest mapCreateUpdateRequest = new MapCreateUpdateRequest(LUTHER.getName(), LUTHER.getMapDrawing(), LUTHER.getMapImageUrl());
+        MapCreateUpdateRequest mapCreateUpdateRequest = new MapCreateUpdateRequest(LUTHER.getName(), LUTHER.getMapDrawing(), MAP_SVG);
 
         //when
         given(maps.save(any(Map.class)))
@@ -91,7 +91,7 @@ class MapServiceTest extends ServiceTest {
     void updateManagerException() {
         //given
         Member anotherMember = new Member("sally@email.com", "password", "organization");
-        Map map = new Map(3L, "sally's home", "mapDrawing", "mapImage", anotherMember);
+        Map map = new Map(3L, "sally's home", MAP_DRAWING_DATA, MAP_IMAGE_URL, anotherMember);
         MapCreateUpdateRequest mapCreateUpdateRequest = new MapCreateUpdateRequest("이름을 바꿔요", map.getMapDrawing(), map.getMapImageUrl());
 
 
