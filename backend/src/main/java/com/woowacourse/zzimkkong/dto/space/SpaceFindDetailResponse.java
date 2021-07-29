@@ -3,7 +3,6 @@ package com.woowacourse.zzimkkong.dto.space;
 import com.woowacourse.zzimkkong.domain.Space;
 
 public class SpaceFindDetailResponse {
-    private Long id;
     private String name;
     private String description;
     private String area;
@@ -12,13 +11,11 @@ public class SpaceFindDetailResponse {
     public SpaceFindDetailResponse() {
     }
 
-    private SpaceFindDetailResponse(
-            final Long id,
+    protected SpaceFindDetailResponse(
             final String name,
             final String description,
             final String area,
             final SettingResponse settings) {
-        this.id = id;
         this.name = name;
         this.description = description;
         this.area = area;
@@ -29,15 +26,10 @@ public class SpaceFindDetailResponse {
         SettingResponse settingResponse = SettingResponse.from(space);
 
         return new SpaceFindDetailResponse(
-                space.getId(),
                 space.getName(),
                 space.getDescription(),
                 space.getArea(),
                 settingResponse);
-    }
-
-    public Long getId() {
-        return id;
     }
 
     public String getName() {

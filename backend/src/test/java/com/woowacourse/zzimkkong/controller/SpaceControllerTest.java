@@ -2,6 +2,7 @@ package com.woowacourse.zzimkkong.controller;
 
 import com.woowacourse.zzimkkong.domain.Setting;
 import com.woowacourse.zzimkkong.domain.Space;
+import com.woowacourse.zzimkkong.dto.space.*;
 import com.woowacourse.zzimkkong.dto.space.SettingsRequest;
 import com.woowacourse.zzimkkong.dto.space.SpaceCreateRequest;
 import com.woowacourse.zzimkkong.dto.space.SpaceFindAllResponse;
@@ -19,7 +20,8 @@ import org.springframework.http.MediaType;
 import java.time.LocalTime;
 import java.util.List;
 
-import static com.woowacourse.zzimkkong.CommonFixture.*;
+import static com.woowacourse.zzimkkong.CommonFixture.BE;
+import static com.woowacourse.zzimkkong.CommonFixture.FE1;
 import static com.woowacourse.zzimkkong.DocumentUtils.*;
 import static com.woowacourse.zzimkkong.controller.AuthControllerTest.getToken;
 import static com.woowacourse.zzimkkong.controller.MapControllerTest.saveMap;
@@ -90,8 +92,8 @@ public class SpaceControllerTest extends AcceptanceTest {
         // given, when
         String api = "/api/managers/maps/1/spaces/1";
         ExtractableResponse<Response> response = findSpace(api);
-        SpaceFindResponse actual = response.body().as(SpaceFindResponse.class);
-        SpaceFindResponse expected = SpaceFindResponse.from(BE);
+        SpaceFindDetailResponse actual = response.body().as(SpaceFindDetailResponse.class);
+        SpaceFindDetailResponse expected = SpaceFindDetailResponse.from(BE);
 
         // then
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
@@ -185,12 +187,12 @@ public class SpaceControllerTest extends AcceptanceTest {
         String api = response.header("location");
 
         ExtractableResponse<Response> findResponse = findSpace(api);
-        SpaceFindResponse actualSpaceFindResponse = findResponse.as(SpaceFindResponse.class);
-        SpaceFindResponse expectedSpaceFindResponse = SpaceFindResponse.from(defaultSpace);
+        SpaceFindDetailResponse actualSpaceFindDetailResponse = findResponse.as(SpaceFindDetailResponse.class);
+        SpaceFindDetailResponse expectedSpaceFindDetailResponse = SpaceFindDetailResponse.from(defaultSpace);
 
-        assertThat(actualSpaceFindResponse)
+        assertThat(actualSpaceFindDetailResponse)
                 .usingRecursiveComparison()
-                .isEqualTo(expectedSpaceFindResponse);
+                .isEqualTo(expectedSpaceFindDetailResponse);
     }
 
     private ExtractableResponse<Response> saveSpace(final String api, final SpaceCreateRequest spaceCreateRequest) {

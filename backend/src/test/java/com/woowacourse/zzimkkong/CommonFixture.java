@@ -38,6 +38,7 @@ public class CommonFixture {
             .setting(BE_SETTING)
             .mapImage("이미지 입니다")
             .build();
+
     public static Setting FE_SETTING = new Setting.Builder()
             .availableStartTime(LocalTime.of(0, 0))
             .availableEndTime(LocalTime.of(23, 59))

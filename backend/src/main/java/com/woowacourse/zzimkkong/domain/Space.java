@@ -95,12 +95,12 @@ public class Space {
         return mapImage;
     }
 
-    public LocalTime getAvailableStartTime() {
-        return setting.getAvailableStartTime();
-    }
-
     public LocalTime getAvailableEndTime() {
         return setting.getAvailableEndTime();
+    }
+
+    public LocalTime getAvailableStartTime() {
+        return setting.getAvailableStartTime();
     }
 
     public Integer getReservationTimeUnit() {
@@ -122,6 +122,7 @@ public class Space {
     public String getDisabledWeekdays() {
         return setting.getDisabledWeekdays();
     }
+
 
     public static class Builder {
         private Long id = null;

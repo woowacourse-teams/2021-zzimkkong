@@ -2,6 +2,7 @@ package com.woowacourse.zzimkkong.service;
 
 import com.woowacourse.zzimkkong.domain.Map;
 import com.woowacourse.zzimkkong.domain.Member;
+
 import com.woowacourse.zzimkkong.domain.Setting;
 import com.woowacourse.zzimkkong.domain.Space;
 import com.woowacourse.zzimkkong.dto.space.*;
@@ -24,21 +25,6 @@ public class SpaceService {
     public SpaceService(final MapRepository mapRepository, final SpaceRepository spaceRepository) {
         this.maps = mapRepository;
         this.spaces = spaceRepository;
-    }
-
-    @Transactional(readOnly = true)
-    public SpaceFindResponse findSpace(Long mapId, Long spaceId) {
-        validateMapExistence(mapId);
-
-        Space space = spaces.findById(spaceId)
-                .orElseThrow(NoSuchSpaceException::new);
-        return SpaceFindResponse.from(space);
-    }
-
-    private void validateMapExistence(Long mapId) {
-        if (!maps.existsById(mapId)) {
-            throw new NoSuchMapException();
-        }
     }
 
     public SpaceCreateResponse saveSpace(final Long mapId, final SpaceCreateRequest spaceCreateRequest, final Member manager) {
@@ -70,6 +56,17 @@ public class SpaceService {
                         .mapImage(spaceCreateRequest.getMapImage())
                         .build());
         return SpaceCreateResponse.from(space);
+    }
+
+    @Transactional(readOnly = true)
+    public SpaceFindDetailResponse findSpace(final Long mapId, final Long spaceId, final Member manager) {
+        Map map = maps.findById(mapId)
+                .orElseThrow(NoSuchMapException::new);
+        validateAuthorityOnMap(manager, map);
+
+        Space space = spaces.findById(spaceId)
+                .orElseThrow(NoSuchSpaceException::new);
+        return SpaceFindDetailResponse.from(space);
     }
 
     @Transactional(readOnly = true)
