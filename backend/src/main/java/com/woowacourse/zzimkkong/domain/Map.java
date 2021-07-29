@@ -38,10 +38,6 @@ public class Map {
         this.member = member;
     }
 
-    public boolean isNotOwnedBy(final Member manager) {
-        return !this.member.equals(manager);
-    }
-
     public void update(String mapName, String mapDrawing, String mapImage) {
         this.name = mapName;
         this.mapDrawing = mapDrawing;
@@ -54,6 +50,10 @@ public class Map {
 
     public Member getMember() {
         return member;
+    }
+
+    public boolean isNotOwnedBy(final Member manager) {
+        return !this.member.equals(manager);
     }
 
     public String getName() {
