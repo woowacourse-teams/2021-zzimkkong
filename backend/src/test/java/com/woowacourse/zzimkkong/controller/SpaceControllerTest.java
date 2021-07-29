@@ -251,7 +251,7 @@ public class SpaceControllerTest extends AcceptanceTest {
                 .given(getRequestSpecification()).log().all()
                 .accept("application/json")
                 .header("Authorization", AuthorizationExtractor.AUTHENTICATION_TYPE + " " + getToken())
-                .filter(document("space/get_all", getRequestPreprocessor(), getResponsePreprocessor()))
+                .filter(document("space/getAll", getRequestPreprocessor(), getResponsePreprocessor()))
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .when().get(api)
                 .then().log().all().extract();

@@ -26,7 +26,7 @@ import static org.mockito.BDDMockito.given;
 class SpaceServiceTest extends ServiceTest {
     @Autowired
     private SpaceService spaceService;
-    private SettingsRequest settingsRequest = new SettingsRequest(
+    private final SettingsRequest settingsRequest = new SettingsRequest(
             LocalTime.of(10, 0),
             LocalTime.of(22, 0),
             30,
@@ -36,11 +36,28 @@ class SpaceServiceTest extends ServiceTest {
             "Monday, Tuesday"
     );
 
-    private SpaceCreateUpdateRequest spaceCreateUpdateRequest = new SpaceCreateUpdateRequest(
+    private final SpaceCreateUpdateRequest spaceCreateUpdateRequest = new SpaceCreateUpdateRequest(
             "백엔드 강의실",
             "우리집",
             "프론트 화이팅",
             settingsRequest,
+            "이미지 입니다"
+    );
+
+    private final SettingsRequest updateSettingsRequest = new SettingsRequest(
+            LocalTime.of(10, 0),
+            LocalTime.of(22, 0),
+            40,
+            60,
+            120,
+            true,
+            "Monday, Wednesday"
+    );
+    private final SpaceCreateUpdateRequest updateSpaceCreateUpdateRequest = new SpaceCreateUpdateRequest(
+            "백엔드 강의실",
+            "우리집",
+            "프론트 화이팅",
+            updateSettingsRequest,
             "이미지 입니다"
     );
 
@@ -165,30 +182,11 @@ class SpaceServiceTest extends ServiceTest {
     @DisplayName("공간을 수정한다.")
     @Test
     void update() {
-        // given
+        // given, when
         given(maps.findById(anyLong()))
                 .willReturn(Optional.of(LUTHER));
         given(spaces.findById(anyLong()))
                 .willReturn(Optional.of(BE));
-
-        // when
-        SettingsRequest updateSettingsRequest = new SettingsRequest(
-                LocalTime.of(10, 0),
-                LocalTime.of(22, 0),
-                40,
-                60,
-                120,
-                true,
-                "Monday, Wednesday"
-        );
-
-        SpaceCreateUpdateRequest updateSpaceCreateUpdateRequest = new SpaceCreateUpdateRequest(
-                "백엔드 강의실",
-                "우리집",
-                "프론트 화이팅",
-                updateSettingsRequest,
-                "이미지 입니다"
-        );
 
         // then
         assertDoesNotThrow(() -> spaceService.updateSpace(
@@ -204,30 +202,11 @@ class SpaceServiceTest extends ServiceTest {
     @DisplayName("공간 수정 요청 시, 해당 공간에 대한 권한이 없으면 수정할 수 없다.")
     @Test
     void updateNoAuthorityException() {
-        // given
+        // given, when
         given(maps.findById(anyLong()))
                 .willReturn(Optional.of(LUTHER));
         given(spaces.findById(anyLong()))
                 .willReturn(Optional.of(BE));
-
-        // when
-        SettingsRequest updateSettingsRequest = new SettingsRequest(
-                LocalTime.of(10, 0),
-                LocalTime.of(22, 0),
-                40,
-                60,
-                120,
-                true,
-                "Monday, Wednesday"
-        );
-
-        SpaceCreateUpdateRequest updateSpaceCreateUpdateRequest = new SpaceCreateUpdateRequest(
-                "백엔드 강의실",
-                "우리집",
-                "프론트 화이팅",
-                updateSettingsRequest,
-                "이미지 입니다"
-        );
 
         // then
         assertThatThrownBy(() -> spaceService.updateSpace(
