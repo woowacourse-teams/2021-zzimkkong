@@ -1,4 +1,14 @@
-import { useState, useRef, useEffect, MouseEventHandler, WheelEventHandler } from 'react';
+import { AxiosError } from 'axios';
+import {
+  FormEventHandler,
+  MouseEventHandler,
+  useEffect,
+  useRef,
+  useState,
+  WheelEventHandler,
+} from 'react';
+import { useMutation } from 'react-query';
+import { postMap } from 'api/map';
 import { ReactComponent as EditIcon } from 'assets/svg/edit.svg';
 import { ReactComponent as ItemsIcon } from 'assets/svg/items.svg';
 import { ReactComponent as LineIcon } from 'assets/svg/line.svg';
@@ -11,8 +21,9 @@ import IconButton from 'components/IconButton/IconButton';
 import Layout from 'components/Layout/Layout';
 import PALETTE from 'constants/palette';
 import useInput from 'hooks/useInput';
-import { Coordinate, Color } from 'types/common';
+import { Color, Coordinate } from 'types/common';
 import { Mode } from 'types/editor';
+import { ErrorResponse } from 'types/response';
 import * as Styled from './ManagerMapCreate.styles';
 
 interface DrawingStatus {
@@ -21,6 +32,7 @@ interface DrawingStatus {
 }
 
 interface MapElement {
+  id: number;
   type: 'polyline';
   stroke: Color;
   points: string[];
@@ -33,6 +45,8 @@ const MAX_SCALE = 3.0;
 
 const ManagerMapCreate = (): JSX.Element => {
   const editorRef = useRef<HTMLDivElement | null>(null);
+
+  const [mapName, onChangeMapName] = useInput('');
 
   const [mode, setMode] = useState(Mode.Select);
   const [isDragging, setDragging] = useState(false);
@@ -48,6 +62,7 @@ const ManagerMapCreate = (): JSX.Element => {
   const [color, setColor] = useState<Color>('#333333');
   const [drawingStatus, setDrawingStatus] = useState<DrawingStatus>({});
   const [mapElements, setMapElements] = useState<MapElement[]>([]);
+  const nextId = Math.max(...mapElements.map(({ id }) => id), 1) + 1;
 
   const [widthValue, onChangeWidthValue] = useInput('800');
   const [heightValue, onChangeHeightValue] = useInput('600');
@@ -163,6 +178,7 @@ const ManagerMapCreate = (): JSX.Element => {
     setMapElements((prevState) => [
       ...prevState,
       {
+        id: nextId,
         type: 'polyline',
         stroke: color,
         points: [startPoint, endPoint],
@@ -170,6 +186,47 @@ const ManagerMapCreate = (): JSX.Element => {
     ]);
 
     setDrawingStatus({});
+  };
+
+  const createMap = useMutation(postMap, {
+    onSuccess: () => {
+      alert('맵 생성 완료');
+    },
+    onError: (error: AxiosError<ErrorResponse>) => {
+      console.error(error);
+    },
+  });
+
+  const handleSubmit: FormEventHandler<HTMLFormElement> = (event) => {
+    event.preventDefault();
+
+    const mapDrawing = JSON.stringify(mapElements);
+
+    const mapImageSvg = `
+      <svg
+        xmlns='http://www.w3.org/2000/svg'
+        version='1.1'
+        width='${width}px'
+        height='${height}px'
+        viewBox='0 0 ${width} ${height}'
+      >
+        ${mapElements
+          .map(
+            ({ points, stroke }) => `
+              <polyline
+                points='${points.join(' ')}'
+                stroke='${stroke}'
+                strokeWidth='2'
+              />
+            `
+          )
+          .join('')}
+      </svg>
+    `
+      .replace(/(\r\n\t|\n|\r\t|\s{1,})/gm, ' ')
+      .replace(/\s{2,}/g, ' ');
+
+    createMap.mutate({ mapName, mapDrawing, mapImageSvg });
   };
 
   useEffect(() => {
@@ -190,24 +247,32 @@ const ManagerMapCreate = (): JSX.Element => {
       <Layout>
         <Styled.Container>
           <Styled.EditorHeader>
-            <Styled.HeaderContent>
-              <Styled.MapNameContainer>
-                <Styled.MapName>루터회관 14층</Styled.MapName>
-                <IconButton>
-                  <EditIcon />
-                </IconButton>
-              </Styled.MapNameContainer>
-              <Styled.TempSaveContainer>
-                <Styled.TempSaveMessage>1분 전에 임시 저장되었습니다.</Styled.TempSaveMessage>
-                <Styled.TempSaveButton variant="primary-text">임시 저장</Styled.TempSaveButton>
-              </Styled.TempSaveContainer>
-            </Styled.HeaderContent>
-            <Styled.HeaderContent>
-              <Styled.ButtonContainer>
-                <Button variant="text">취소</Button>
-                <Button variant="primary">완료</Button>
-              </Styled.ButtonContainer>
-            </Styled.HeaderContent>
+            <Styled.Form onSubmit={handleSubmit}>
+              <Styled.HeaderContent>
+                <Styled.MapNameContainer>
+                  <Styled.MapNameInput
+                    placeholder="맵 이름을 입력해주세요"
+                    value={mapName}
+                    onChange={onChangeMapName}
+                  />
+                  <IconButton>
+                    <EditIcon />
+                  </IconButton>
+                </Styled.MapNameContainer>
+                <Styled.TempSaveContainer>
+                  <Styled.TempSaveMessage>1분 전에 임시 저장되었습니다.</Styled.TempSaveMessage>
+                  <Styled.TempSaveButton variant="primary-text">임시 저장</Styled.TempSaveButton>
+                </Styled.TempSaveContainer>
+              </Styled.HeaderContent>
+              <Styled.HeaderContent>
+                <Styled.ButtonContainer>
+                  <Button type="button" variant="text">
+                    취소
+                  </Button>
+                  <Button variant="primary">완료</Button>
+                </Styled.ButtonContainer>
+              </Styled.HeaderContent>
+            </Styled.Form>
           </Styled.EditorHeader>
           <Styled.EditorContent>
             <Styled.Toolbar>
@@ -319,9 +384,9 @@ const ManagerMapCreate = (): JSX.Element => {
                       r={4}
                       fill={PALETTE.OPACITY_BLACK[700]}
                     />
-                    {mapElements.map((element, index) => (
+                    {mapElements.map((element) => (
                       <polyline
-                        key={`polyline-${index}`}
+                        key={`polyline-${element.id}`}
                         points={element.points.join(' ')}
                         stroke={element.stroke}
                         strokeWidth="2"

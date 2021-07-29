@@ -40,7 +40,9 @@ export const ToolbarButton = styled(IconButton)<ToolbarButtonProps>`
   ${({ selected }) => selected && primaryIconCSS}
 `;
 
-export const EditorHeader = styled.div`
+export const EditorHeader = styled.div``;
+
+export const Form = styled.form`
   display: flex;
   justify-content: space-between;
   align-items: flex-end;
@@ -68,9 +70,10 @@ export const TempSaveButton = styled(Button)`
 `;
 
 export const MapNameInput = styled.input`
-  padding: 0.5rem;
+  border: none;
   border-radius: 0.125rem;
-  font-size: 1rem;
+  font-size: 1.5rem;
+  display: inline-block;
 `;
 
 export const MapName = styled.h3`
