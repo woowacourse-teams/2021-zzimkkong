@@ -3,3 +3,5 @@
 backend/src/main/resources/awsS3.properties
 
 .DS_Store
+
+backend/src/main/resources/config/awsS3.properties

@@ -12,7 +12,7 @@ import org.springframework.context.annotation.Profile;
 import org.springframework.context.annotation.PropertySource;
 
 @Configuration
-@PropertySource("classpath:awsS3.properties")
+@PropertySource("classpath:config/awsS3.properties")
 public class StorageConfig {
     @Bean
     @Profile("prod")
