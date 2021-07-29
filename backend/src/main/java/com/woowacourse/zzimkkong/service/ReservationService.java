@@ -8,6 +8,7 @@ import com.woowacourse.zzimkkong.dto.reservation.ReservationFindResponse;
 import com.woowacourse.zzimkkong.exception.map.NoSuchMapException;
 import com.woowacourse.zzimkkong.exception.reservation.*;
 import com.woowacourse.zzimkkong.exception.space.NoSuchSpaceException;
+import com.woowacourse.zzimkkong.infrastructure.TimeConverter;
 import com.woowacourse.zzimkkong.repository.MapRepository;
 import com.woowacourse.zzimkkong.repository.ReservationRepository;
 import com.woowacourse.zzimkkong.repository.SpaceRepository;
@@ -15,6 +16,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.ZonedDateTime;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
@@ -26,11 +28,17 @@ public abstract class ReservationService {
     protected MapRepository maps;
     protected SpaceRepository spaces;
     protected ReservationRepository reservations;
+    protected TimeConverter timeConverter;
 
-    protected ReservationService(MapRepository maps, SpaceRepository spaces, ReservationRepository reservations) {
+    public ReservationService(
+            final MapRepository maps,
+            final SpaceRepository spaces,
+            final ReservationRepository reservations,
+            final TimeConverter timeConverter) {
         this.maps = maps;
         this.spaces = spaces;
         this.reservations = reservations;
+        this.timeConverter = timeConverter;
     }
 
     @Transactional(readOnly = true)
@@ -61,7 +69,10 @@ public abstract class ReservationService {
         LocalDateTime startDateTime = reservationCreateUpdateRequest.getStartDateTime();
         LocalDateTime endDateTime = reservationCreateUpdateRequest.getEndDateTime();
 
-        if (startDateTime.isBefore(LocalDateTime.now())) {
+        ZonedDateTime zonedDateTime = timeConverter.convertTimeZone(startDateTime);
+        ZonedDateTime now = timeConverter.getNow();
+
+        if (zonedDateTime.isBefore(now)) {
             throw new ImpossibleStartTimeException();
         }
 
@@ -150,6 +161,7 @@ public abstract class ReservationService {
         );
     }
 
+    // todo 이 메소드 없애기 -김샐
     protected void validateMapExistence(final Long mapId) {
         if (!maps.existsById(mapId)) {
             throw new NoSuchMapException();

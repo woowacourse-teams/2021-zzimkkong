@@ -29,15 +29,13 @@ const Panel = ({
   };
 
   return (
-    <Styled.Panel>
+    <Styled.Panel expanded={expanded}>
       <PanelContext.Provider value={contextValue}>{children}</PanelContext.Provider>
     </Styled.Panel>
   );
 };
 
 Panel.Title = Styled.Title;
-
-Panel.Inner = Styled.Inner;
 
 Panel.Header = PanelHeader;
 

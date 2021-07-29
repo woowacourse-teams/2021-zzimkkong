@@ -20,7 +20,7 @@ public class SpaceFindDetailWithIdResponse extends SpaceFindDetailResponse {
         this.id = id;
     }
 
-    public static SpaceFindDetailWithIdResponse from(Space space) {
+    public static SpaceFindDetailWithIdResponse from(final Space space) {
         SettingResponse settingResponse = SettingResponse.from(space);
 
         return new SpaceFindDetailWithIdResponse(

@@ -11,6 +11,12 @@ public class Map {
     @Column(nullable = false, length = 20)
     private String name;
 
+    @Column(nullable = false)
+    private String mapDrawing;
+
+    @Column(nullable = false)
+    private String mapImage;
+
     @ManyToOne
     @JoinColumn(name = "member_id", foreignKey = @ForeignKey(name = "fk_map_member"))
     private Member member;
@@ -18,19 +24,22 @@ public class Map {
     protected Map() {
     }
 
-    public Map(final String name, final Member member) {
-        this.name = name;
-        this.member = member;
-    }
-
-    public Map(final Long id, final String name, final Member member) {
+    public Map(Long id, String name, String mapDrawing, String mapImage, Member member) {
+        this(name, mapDrawing, mapImage, member);
         this.id = id;
+    }
+
+    public Map(String name, String mapDrawing, String mapImage, Member member) {
         this.name = name;
+        this.mapDrawing = mapDrawing;
+        this.mapImage = mapImage;
         this.member = member;
     }
 
-    public boolean hasSameId(final Long id) {
-        return this.id.equals(id);
+    public void update(String mapName, String mapDrawing, String mapImage) {
+        this.name = mapName;
+        this.mapDrawing = mapDrawing;
+        this.mapImage = mapImage;
     }
 
     public Long getId() {
@@ -43,5 +52,17 @@ public class Map {
 
     public boolean isNotOwnedBy(final Member manager) {
         return !this.member.equals(manager);
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public String getMapDrawing() {
+        return mapDrawing;
+    }
+
+    public String getMapImage() {
+        return mapImage;
     }
 }

@@ -3,13 +3,13 @@ package com.woowacourse.zzimkkong.controller;
 import com.woowacourse.zzimkkong.domain.Manager;
 import com.woowacourse.zzimkkong.domain.Member;
 import com.woowacourse.zzimkkong.dto.space.SpaceCreateResponse;
-import com.woowacourse.zzimkkong.dto.space.SpaceCreateUpdateRequest;
 import com.woowacourse.zzimkkong.dto.space.SpaceFindAllResponse;
 import com.woowacourse.zzimkkong.dto.space.SpaceFindDetailResponse;
+import com.woowacourse.zzimkkong.dto.space.SpaceCreateUpdateRequest;
 import com.woowacourse.zzimkkong.service.SpaceService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
+import javax.validation.Valid;
 import java.net.URI;
 
 @RestController
@@ -24,27 +24,27 @@ public class SpaceController {
     @PostMapping
     public ResponseEntity<Void> save(
             @PathVariable final Long mapId,
-            @RequestBody final SpaceCreateUpdateRequest spaceCreateUpdateRequest,
-            @Manager Member manager) {
-        SpaceCreateResponse spaceCreateResponse = spaceService.saveSpace(mapId, spaceCreateUpdateRequest, manager);
+            @RequestBody @Valid final SpaceCreateUpdateRequest spaceCreateRequest,
+            @Manager final Member manager) {
+        SpaceCreateResponse spaceCreateResponse = spaceService.saveSpace(mapId, spaceCreateRequest, manager);
         return ResponseEntity
                 .created(URI.create("/api/managers/maps/" + mapId + "/spaces/" + spaceCreateResponse.getId()))
                 .build();
+    }
+
+    @GetMapping
+    public ResponseEntity<SpaceFindAllResponse> findAll(@PathVariable final Long mapId, @Manager final Member manager) {
+        SpaceFindAllResponse spaceFindAllResponse = spaceService.findAllSpace(mapId, manager);
+        return ResponseEntity.ok().body(spaceFindAllResponse);
     }
 
     @GetMapping("/{spaceId}")
     public ResponseEntity<SpaceFindDetailResponse> find(
             @PathVariable final Long mapId,
             @PathVariable final Long spaceId,
-            @Manager Member manager) {
+            @Manager final Member manager) {
         SpaceFindDetailResponse spaceFindDetailResponse = spaceService.findSpace(mapId, spaceId, manager);
         return ResponseEntity.ok().body(spaceFindDetailResponse);
-    }
-
-    @GetMapping
-    public ResponseEntity<SpaceFindAllResponse> findAll(@PathVariable Long mapId, @Manager Member manager) {
-        SpaceFindAllResponse spaceFindAllResponse = spaceService.findAllSpace(mapId, manager);
-        return ResponseEntity.ok().body(spaceFindAllResponse);
     }
 
     @PutMapping("/{spaceId}")

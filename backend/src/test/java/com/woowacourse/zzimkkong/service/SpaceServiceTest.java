@@ -10,8 +10,6 @@ import com.woowacourse.zzimkkong.exception.space.NoSuchSpaceException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.test.annotation.DirtiesContext;
-
 import java.time.LocalTime;
 import java.util.List;
 import java.util.Optional;
@@ -54,7 +52,10 @@ class SpaceServiceTest extends ServiceTest {
         given(spaces.save(any(Space.class)))
                 .willReturn(BE);
 
+        // when
         SpaceCreateResponse spaceCreateResponse = spaceService.saveSpace(LUTHER.getId(), spaceCreateUpdateRequest, POBI);
+
+        // then
         assertThat(spaceCreateResponse.getId()).isEqualTo(BE.getId());
     }
 
@@ -65,6 +66,7 @@ class SpaceServiceTest extends ServiceTest {
         given(maps.findById(anyLong()))
                 .willReturn(Optional.empty());
 
+        // when, then
         assertThatThrownBy(() -> spaceService.saveSpace(LUTHER.getId(), spaceCreateUpdateRequest, POBI))
                 .isInstanceOf(NoSuchMapException.class);
     }
@@ -80,6 +82,7 @@ class SpaceServiceTest extends ServiceTest {
 
         Member sakjung = new Member(2L, "sakjung@naver.com", "test1234", "잠실킹");
 
+        // when, then
         assertThatThrownBy(() -> spaceService.saveSpace(LUTHER.getId(), spaceCreateUpdateRequest, sakjung))
                 .isInstanceOf(NoAuthorityOnMapException.class);
     }
@@ -94,7 +97,7 @@ class SpaceServiceTest extends ServiceTest {
                 .willReturn(Optional.of(BE));
 
         // when
-        SpaceFindDetailResponse actual = spaceService.findSpace(1L, 1L, POBI);
+        SpaceFindDetailResponse actual = spaceService.findSpace(LUTHER.getId(), BE.getId(), POBI);
 
         // then
         assertThat(actual).usingRecursiveComparison()
@@ -103,7 +106,7 @@ class SpaceServiceTest extends ServiceTest {
 
     @DisplayName("공간 조회 시, spaceId에 맞는 공간이 없다면 예외를 발생시킨다.")
     @Test
-    void findNoSuchSpace() {
+    void findFail() {
         // given
         given(maps.findById(anyLong()))
                 .willReturn(Optional.of(LUTHER));
@@ -111,7 +114,7 @@ class SpaceServiceTest extends ServiceTest {
                 .willReturn(Optional.empty());
 
         // when, then
-        assertThatThrownBy(() -> spaceService.findSpace(1L, 1L, POBI))
+        assertThatThrownBy(() -> spaceService.findSpace(LUTHER.getId(), BE.getId(), POBI))
                 .isInstanceOf(NoSuchSpaceException.class);
     }
 
@@ -125,7 +128,7 @@ class SpaceServiceTest extends ServiceTest {
                 .willReturn(Optional.of(BE));
 
         // when, then
-        assertThatThrownBy(() -> spaceService.findSpace(1L, 1L, new Member("bada@bada.com", "test1234", "잠실")))
+        assertThatThrownBy(() -> spaceService.findSpace(LUTHER.getId(), BE.getId(), new Member("bada@bada.com", "test1234", "잠실")))
                 .isInstanceOf(NoAuthorityOnMapException.class);
     }
 
@@ -139,7 +142,7 @@ class SpaceServiceTest extends ServiceTest {
                 .willReturn(List.of(BE, FE1));
 
         // when
-        SpaceFindAllResponse actual = spaceService.findAllSpace(1L, POBI);
+        SpaceFindAllResponse actual = spaceService.findAllSpace(LUTHER.getId(), POBI);
 
         // then
         assertThat(actual).usingRecursiveComparison()
@@ -154,7 +157,7 @@ class SpaceServiceTest extends ServiceTest {
                 .willReturn(Optional.of(LUTHER));
 
         // when, then
-        assertThatThrownBy(() -> spaceService.findAllSpace(1L, new Member("sakjung@email.com", "test1234", "잠실")))
+        assertThatThrownBy(() -> spaceService.findAllSpace(LUTHER.getId(), new Member("sakjung@email.com", "test1234", "잠실")))
                 .isInstanceOf(NoAuthorityOnMapException.class);
     }
 
@@ -232,43 +235,6 @@ class SpaceServiceTest extends ServiceTest {
                 updateSpaceCreateUpdateRequest,
                 new Member("ara", "test1234", "hihi")))
                 .isInstanceOf(NoAuthorityOnMapException.class);
-    }
-
-
-    @DisplayName("공간 수정 요청 시, 변경 사항이 존재하지 않으면 에러가 발생한다.")
-    @Test
-    void updateNothingChangedException() {
-        // given, when
-        given(maps.findById(anyLong()))
-                .willReturn(Optional.of(LUTHER));
-        given(spaces.findById(anyLong()))
-                .willReturn(Optional.of(BE));
-
-        SettingsRequest sameSettingsRequest = new SettingsRequest(
-                BE.getAvailableStartTime(),
-                BE.getAvailableEndTime(),
-                BE.getReservationTimeUnit(),
-                BE.getReservationMinimumTimeUnit(),
-                BE.getReservationMaximumTimeUnit(),
-                BE.getReservationEnable(),
-                BE.getDisabledWeekdays()
-        );
-
-        SpaceCreateUpdateRequest sameSpaceCreateUpdateRequest = new SpaceCreateUpdateRequest(
-                BE.getName(),
-                BE.getDescription(),
-                BE.getArea(),
-                sameSettingsRequest,
-                BE.getMapImage()
-        );
-
-        // then
-        assertThatThrownBy(() -> spaceService.updateSpace(
-                LUTHER.getId(),
-                BE.getId(),
-                sameSpaceCreateUpdateRequest,
-                POBI))
-                .isInstanceOf(NoDataToUpdateException.class);
     }
 }
 

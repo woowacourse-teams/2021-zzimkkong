@@ -11,6 +11,7 @@ module.exports = () => {
     devtool: isDevelopment ? 'eval-source-map' : 'source-map',
     entry: './src/index.tsx',
     output: {
+      publicPath: '/',
       filename: 'bundle.js',
       path: path.resolve(__dirname, 'dist'),
       clean: true,
@@ -39,7 +40,19 @@ module.exports = () => {
         },
         {
           test: /\.svg$/,
-          use: ['@svgr/webpack', 'url-loader'],
+          use: [
+            {
+              loader: '@svgr/webpack',
+              options: {
+                svgoConfig: {
+                  plugins: {
+                    removeViewBox: false,
+                  },
+                },
+              },
+            },
+            'url-loader',
+          ],
         },
         {
           test: /\.png/,
@@ -53,6 +66,7 @@ module.exports = () => {
       }),
       new FaviconsWebpackPlugin({
         logo: 'src/assets/images/logo.png',
+        publicPath: '/',
         manifest: 'public/manifest.json',
       }),
     ],
