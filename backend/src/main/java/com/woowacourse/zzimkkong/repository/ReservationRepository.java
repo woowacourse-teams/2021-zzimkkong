@@ -1,7 +1,6 @@
 package com.woowacourse.zzimkkong.repository;
 
 import com.woowacourse.zzimkkong.domain.Reservation;
-import com.woowacourse.zzimkkong.domain.Space;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.time.LocalDateTime;
@@ -15,12 +14,6 @@ public interface ReservationRepository extends JpaRepository<Reservation, Long> 
             final LocalDateTime firstEndTime,
             final LocalDateTime secondStartTime,
             final LocalDateTime secondEndTime);
-
-    Boolean existsBySpaceIdAndStartTimeBetween(Long spaceId, LocalDateTime startDateTime, LocalDateTime endDateTime);
-
-    Boolean existsBySpaceIdAndEndTimeBetween(Long spaceId, LocalDateTime startDateTime, LocalDateTime endDateTime);
-
-    Boolean existsBySpace(Space space);
 
     Boolean existsBySpaceIdAndEndTimeAfter(Long spaceId, LocalDateTime now);
 }

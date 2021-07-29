@@ -9,6 +9,7 @@ import com.woowacourse.zzimkkong.exception.authorization.NoAuthorityOnMapExcepti
 import com.woowacourse.zzimkkong.exception.map.NoSuchMapException;
 import com.woowacourse.zzimkkong.exception.space.NoSuchSpaceException;
 import com.woowacourse.zzimkkong.exception.space.ReservationExistOnSpaceException;
+import com.woowacourse.zzimkkong.infrastructure.TimeConverter;
 import com.woowacourse.zzimkkong.repository.MapRepository;
 import com.woowacourse.zzimkkong.repository.ReservationRepository;
 import com.woowacourse.zzimkkong.repository.SpaceRepository;
@@ -23,14 +24,17 @@ public class SpaceService {
     private final MapRepository maps;
     private final SpaceRepository spaces;
     private final ReservationRepository reservations;
+    private TimeConverter timeConverter;
 
     public SpaceService(
             final MapRepository maps,
             final SpaceRepository spaces,
-            final ReservationRepository reservations) {
+            final ReservationRepository reservations,
+            final TimeConverter timeConverter) {
         this.maps = maps;
         this.spaces = spaces;
         this.reservations = reservations;
+        this.timeConverter = timeConverter;
     }
 
     public SpaceCreateResponse saveSpace(final Long mapId, final SpaceCreateUpdateRequest spaceCreateUpdateRequest, final Member manager) {
@@ -109,7 +113,7 @@ public class SpaceService {
         Space space = spaces.findById(spaceId)
                 .orElseThrow(NoSuchSpaceException::new);
 
-        validateReservationExistence(space);
+        validateReservationExistence(spaceId);
 
         spaces.delete(space);
     }
@@ -137,8 +141,8 @@ public class SpaceService {
                 .build();
     }
 
-    private void validateReservationExistence(final Space space) {
-        if (reservations.existsBySpace(space)) {
+    private void validateReservationExistence(final Long spaceId) {
+        if (reservations.existsBySpaceIdAndEndTimeAfter(spaceId, timeConverter.getNow())) {
             throw new ReservationExistOnSpaceException();
         }
     }

@@ -114,10 +114,10 @@ class ReservationRepositoryTest extends RepositoryTest {
     @Test
     void existsBySpace() {
         // given, when, then
-        assertThat(reservations.existsBySpace(FE1)).isTrue();
+        assertThat(reservations.existsBySpaceIdAndEndTimeAfter(FE1.getId(), LocalDateTime.now())).isTrue();
 
         reservations.delete(FE1_ZERO_ONE);
-        assertThat(reservations.existsBySpace(FE1)).isFalse();
+        assertThat(reservations.existsBySpaceIdAndEndTimeAfter(FE1.getId(), LocalDateTime.now())).isFalse();
     }
 
     private List<Reservation> getReservations(List<Long> spaceIds, LocalDateTime minimumDateTime, LocalDateTime maximumDateTime) {

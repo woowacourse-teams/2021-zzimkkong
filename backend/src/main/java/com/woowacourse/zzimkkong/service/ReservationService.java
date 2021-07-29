@@ -69,10 +69,7 @@ public abstract class ReservationService {
         LocalDateTime startDateTime = reservationCreateUpdateRequest.getStartDateTime();
         LocalDateTime endDateTime = reservationCreateUpdateRequest.getEndDateTime();
 
-        ZonedDateTime zonedDateTime = timeConverter.convertTimeZone(startDateTime);
-        ZonedDateTime now = timeConverter.getNow();
-
-        if (zonedDateTime.isBefore(now)) {
+        if (startDateTime.isBefore(timeConverter.getNow())) {
             throw new ImpossibleStartTimeException();
         }
 
