@@ -113,7 +113,7 @@ public class MapService {
         }
     }
 
-    private String uploadPngToS3(String svgData, String fileName) {
+    private String uploadPngToS3(final String svgData, final String fileName) {
         File pngFile = svgConverter.convertSvgToPngFile(svgData, fileName);
         String thumbnailUrl = s3Uploader.upload("thumbnails", pngFile);
         pngFile.delete();

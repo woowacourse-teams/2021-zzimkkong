@@ -5,7 +5,6 @@ import com.woowacourse.zzimkkong.domain.Space;
 import com.woowacourse.zzimkkong.dto.space.*;
 import com.woowacourse.zzimkkong.exception.authorization.NoAuthorityOnMapException;
 import com.woowacourse.zzimkkong.exception.map.NoSuchMapException;
-import com.woowacourse.zzimkkong.exception.reservation.NoDataToUpdateException;
 import com.woowacourse.zzimkkong.exception.space.NoSuchSpaceException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -15,7 +14,7 @@ import java.time.LocalTime;
 import java.util.List;
 import java.util.Optional;
 
-import static com.woowacourse.zzimkkong.CommonFixture.*;
+import static com.woowacourse.zzimkkong.service.ServiceTestFixture.*;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
@@ -26,6 +25,7 @@ import static org.mockito.BDDMockito.given;
 class SpaceServiceTest extends ServiceTest {
     @Autowired
     private SpaceService spaceService;
+
     private final SettingsRequest settingsRequest = new SettingsRequest(
             LocalTime.of(10, 0),
             LocalTime.of(22, 0),
@@ -39,9 +39,9 @@ class SpaceServiceTest extends ServiceTest {
     private SpaceCreateUpdateRequest spaceCreateUpdateRequest = new SpaceCreateUpdateRequest(
             "백엔드 강의실",
             "우리집",
-            "프론트 화이팅",
+            SPACE_SVG,
             settingsRequest,
-            "이미지 입니다"
+            MAP_SVG
     );
 
     private final SettingsRequest updateSettingsRequest = new SettingsRequest(
@@ -56,9 +56,9 @@ class SpaceServiceTest extends ServiceTest {
     private final SpaceCreateUpdateRequest updateSpaceCreateUpdateRequest = new SpaceCreateUpdateRequest(
             "백엔드 강의실",
             "우리집",
-            "프론트 화이팅",
+            SPACE_SVG,
             updateSettingsRequest,
-            "이미지 입니다"
+            MAP_SVG
     );
 
     @DisplayName("공간 생성 요청 시, 공간을 생성한다.")
