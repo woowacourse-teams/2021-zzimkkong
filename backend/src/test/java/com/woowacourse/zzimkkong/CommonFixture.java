@@ -11,11 +11,21 @@ public class CommonFixture {
     public static final String NEW_EMAIL = "sakjung@email.com";
     public static final String PASSWORD = "test1234";
     public static final String ORGANIZATION = "우아한테크코스";
+    public static final LocalDate TOMORROW = LocalDate.now().plusDays(1);
+    public static final LocalDateTime TOMORROW_START_TIME = TOMORROW.atStartOfDay();
+    public static final String DESCRIPTION = "찜꽁 1차 회의";
+    public static final String USER_NAME = "찜꽁";
+    public static final String RESERVATION_PASSWORD = "1234";
     public static Member POBI = new Member(EMAIL, PASSWORD, ORGANIZATION);
     public static Member JASON = new Member("jason@test.com", PASSWORD, ORGANIZATION);
 
-    public static Map LUTHER = new Map("루터회관", "mapDrawingData", "mapImageData", POBI);
-    public static Map SMALL_HOUSE = new Map("작은집", "mapDrawingData", "mapImageData", POBI);
+    public static String MAP_DRAWING_DATA =
+            "{'id': '1', 'type': 'polyline', 'fill': '', 'stroke': 'rgba(111, 111, 111, 1)', 'points': '['60,250', '1,231', '242,252']'," +
+                    "'d': '[]', 'transform': ''}";
+    public static String MAP_IMAGE_URL = "https://2021-zzimkkong-thumbnail.s3.ap-northeast-2.amazonaws.com/test/28.png";
+
+    public static Map LUTHER = new Map("루터회관", MAP_DRAWING_DATA, MAP_IMAGE_URL, POBI);
+    public static Map SMALL_HOUSE = new Map("작은집", MAP_DRAWING_DATA, MAP_IMAGE_URL, POBI);
 
     public static Setting BE_SETTING = new Setting.Builder()
             .availableStartTime(LocalTime.of(0, 0))
@@ -26,7 +36,6 @@ public class CommonFixture {
             .reservationEnable(true)
             .disabledWeekdays(null)
             .build();
-
     public static Space BE = new Space.Builder()
             .name("백엔드 강의실")
             .textPosition("bottom")
@@ -38,7 +47,6 @@ public class CommonFixture {
             .setting(BE_SETTING)
             .mapImage("이미지 입니다")
             .build();
-
     public static Setting FE_SETTING = new Setting.Builder()
             .availableStartTime(LocalTime.of(0, 0))
             .availableEndTime(LocalTime.of(23, 59))
@@ -48,7 +56,6 @@ public class CommonFixture {
             .reservationEnable(true)
             .disabledWeekdays(null)
             .build();
-
     public static Space FE1 = new Space.Builder()
             .name("프론트엔드 강의실1")
             .textPosition("bottom")
@@ -60,13 +67,6 @@ public class CommonFixture {
             .setting(FE_SETTING)
             .mapImage("이미지 입니다")
             .build();
-
-    public static final LocalDate TOMORROW = LocalDate.now().plusDays(1);
-    public static final LocalDateTime TOMORROW_START_TIME = TOMORROW.atStartOfDay();
-    public static final String DESCRIPTION = "찜꽁 1차 회의";
-    public static final String USER_NAME = "찜꽁";
-    public static final String RESERVATION_PASSWORD = "1234";
-
     public static Reservation BE_AM_ZERO_ONE = new Reservation.Builder()
             .startTime(TOMORROW_START_TIME)
             .endTime(TOMORROW_START_TIME.plusHours(1))

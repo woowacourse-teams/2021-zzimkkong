@@ -4,7 +4,7 @@ import javax.validation.constraints.NotBlank;
 
 import static com.woowacourse.zzimkkong.dto.Validator.EMPTY_MESSAGE;
 
-public class SpaceCreateRequest {
+public class SpaceCreateUpdateRequest {
     @NotBlank(message = EMPTY_MESSAGE)
     private String spaceName;
     @NotBlank(message = EMPTY_MESSAGE)
@@ -15,10 +15,10 @@ public class SpaceCreateRequest {
     @NotBlank(message = EMPTY_MESSAGE)
     private String mapImage;
 
-    public SpaceCreateRequest() {
+    public SpaceCreateUpdateRequest() {
     }
 
-    public SpaceCreateRequest(
+    public SpaceCreateUpdateRequest(
             final String spaceName,
             final String description,
             final String area,

@@ -28,7 +28,7 @@ public class Reservation {
     private String description;
 
     @ManyToOne
-    @JoinColumn(name = "space_id", foreignKey = @ForeignKey(name = "fk_reservation_space"))
+    @JoinColumn(name = "space_id", foreignKey = @ForeignKey(name = "fk_reservation_space"), nullable = false)
     private Space space;
 
     protected Reservation() {
@@ -66,14 +66,6 @@ public class Reservation {
 
     private boolean equals(final LocalDateTime startDateTime, final LocalDateTime endDateTime) {
         return startDateTime.isEqual(startTime) && endDateTime.isEqual(endTime);
-    }
-
-    public boolean hasSameData(final Reservation updatedReservation) {
-        return this.startTime.equals(updatedReservation.startTime)
-                && this.endTime.equals(updatedReservation.endTime)
-                && this.userName.equals(updatedReservation.userName)
-                && this.description.equals(updatedReservation.description)
-                && this.space.equals(updatedReservation.space);
     }
 
     public void update(final ReservationCreateUpdateRequest reservationCreateUpdateRequest, final Space space) {

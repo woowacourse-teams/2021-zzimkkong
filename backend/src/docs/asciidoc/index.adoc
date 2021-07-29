@@ -9,6 +9,7 @@
 include::member.adoc[]
 include::reservation.adoc[]
 include::map.adoc[]
+include::space.adoc[]
 
 # 예외처리
 ### Response

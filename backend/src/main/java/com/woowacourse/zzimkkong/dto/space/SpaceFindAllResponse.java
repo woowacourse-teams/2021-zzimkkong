@@ -8,18 +8,18 @@ import java.util.stream.Collectors;
 
 public class SpaceFindAllResponse {
     @JsonProperty
-    private List<SpaceFindDetailResponse> spaces;
+    private List<SpaceFindDetailWithIdResponse> spaces;
 
     public SpaceFindAllResponse() {
     }
 
-    private SpaceFindAllResponse(final List<SpaceFindDetailResponse> spaces) {
+    private SpaceFindAllResponse(final List<SpaceFindDetailWithIdResponse> spaces) {
         this.spaces = spaces;
     }
 
     public static SpaceFindAllResponse from(final List<Space> spaces) {
-        List<SpaceFindDetailResponse> spaceFindDetailResponses = spaces.stream()
-                .map(SpaceFindDetailResponse::from)
+        List<SpaceFindDetailWithIdResponse> spaceFindDetailResponses = spaces.stream()
+                .map(SpaceFindDetailWithIdResponse::from)
                 .collect(Collectors.toList());
 
         return new SpaceFindAllResponse(spaceFindDetailResponses);

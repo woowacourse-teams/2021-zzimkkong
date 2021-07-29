@@ -1,8 +1,7 @@
 package com.woowacourse.zzimkkong.dto.space;
 
-import com.fasterxml.jackson.annotation.JsonInclude;
-
 import java.time.LocalTime;
+import com.fasterxml.jackson.annotation.JsonInclude;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class SettingsRequest {
