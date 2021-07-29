@@ -32,7 +32,7 @@ class MapServiceTest extends ServiceTest {
     @DisplayName("맵 생성 요청 시, 올바른 요청이 들어오면 맵을 생성한다.")
     void create() {
         //given
-        MapCreateUpdateRequest mapCreateUpdateRequest = new MapCreateUpdateRequest(LUTHER.getName(), LUTHER.getMapDrawing(), LUTHER.getMapImage());
+        MapCreateUpdateRequest mapCreateUpdateRequest = new MapCreateUpdateRequest(LUTHER.getName(), LUTHER.getMapDrawing(), LUTHER.getMapImageUrl());
 
         //when
         given(maps.save(any(Map.class)))
@@ -78,7 +78,7 @@ class MapServiceTest extends ServiceTest {
     @DisplayName("맵 수정 요청이 들어오면 수정한다.")
     void update() {
         //given
-        MapCreateUpdateRequest mapCreateUpdateRequest = new MapCreateUpdateRequest("이름을 바꿔요", LUTHER.getMapDrawing(), LUTHER.getMapImage());
+        MapCreateUpdateRequest mapCreateUpdateRequest = new MapCreateUpdateRequest("이름을 바꿔요", LUTHER.getMapDrawing(), LUTHER.getMapImageUrl());
         given(maps.findById(anyLong()))
                 .willReturn(Optional.of(LUTHER));
 
@@ -92,7 +92,7 @@ class MapServiceTest extends ServiceTest {
         //given
         Member anotherMember = new Member("sally@email.com", "password", "organization");
         Map map = new Map(3L, "sally's home", "mapDrawing", "mapImage", anotherMember);
-        MapCreateUpdateRequest mapCreateUpdateRequest = new MapCreateUpdateRequest("이름을 바꿔요", map.getMapDrawing(), map.getMapImage());
+        MapCreateUpdateRequest mapCreateUpdateRequest = new MapCreateUpdateRequest("이름을 바꿔요", map.getMapDrawing(), map.getMapImageUrl());
 
         given(maps.findById(anyLong()))
                 .willReturn(Optional.of(map));
