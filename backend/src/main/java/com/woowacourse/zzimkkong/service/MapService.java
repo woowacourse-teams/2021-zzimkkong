@@ -17,6 +17,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.io.File;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
@@ -93,5 +94,37 @@ public class MapService {
         String thumbnailUrl = s3Uploader.upload("thumbnails", pngFile);
         pngFile.delete();
         return thumbnailUrl;
+        map.update(
+                mapCreateUpdateRequest.getMapName(),
+                mapCreateUpdateRequest.getMapDrawing(),
+                mapCreateUpdateRequest.getMapImage());
+    }
+
+    public void deleteMap(final Long mapId, final Member manager) {
+        Map map = maps.findById(mapId)
+                .orElseThrow(NoSuchMapException::new);
+
+        validateManagerOfMap(map, manager);
+
+        validateExistReservations(mapId);
+
+        maps.deleteById(mapId);
+    }
+
+    private void validateExistReservations(Long mapId) {
+        List<Space> findSpaces = spaces.findAllByMapId(mapId);
+
+        boolean isExistReservationInAnySpace = findSpaces.stream()
+                .anyMatch(space -> reservations.existsBySpaceIdAndEndTimeAfter(space.getId(), LocalDateTime.now()));
+
+        if (isExistReservationInAnySpace) {
+            throw new ReservationExistOnSpaceException();
+        }
+    }
+
+    private void validateManagerOfMap(final Map map, final Member manager) {
+        if (!manager.equals(map.getMember())) {   // TODO: ReservationService 와의 중복 제거 -김샐
+            throw new NoAuthorityOnMapException();
+        }
     }
 }

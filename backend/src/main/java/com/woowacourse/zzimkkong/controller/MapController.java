@@ -2,10 +2,10 @@ package com.woowacourse.zzimkkong.controller;
 
 import com.woowacourse.zzimkkong.domain.Manager;
 import com.woowacourse.zzimkkong.domain.Member;
+import com.woowacourse.zzimkkong.dto.map.MapCreateResponse;
+import com.woowacourse.zzimkkong.dto.map.MapCreateUpdateRequest;
 import com.woowacourse.zzimkkong.dto.map.MapFindAllResponse;
 import com.woowacourse.zzimkkong.dto.map.MapFindResponse;
-import com.woowacourse.zzimkkong.dto.map.MapCreateUpdateRequest;
-import com.woowacourse.zzimkkong.dto.map.MapCreateResponse;
 import com.woowacourse.zzimkkong.service.MapService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -48,6 +48,12 @@ public class MapController {
             @Manager final Member manager) {
         mapService.updateMap(mapId, mapCreateUpdateRequest, manager);
         return ResponseEntity.ok().build();
+    }
+
+    @DeleteMapping("/{mapId}")
+    public ResponseEntity<Void> delete(@PathVariable final Long mapId, @Manager final Member manager) {
+        mapService.deleteMap(mapId, manager);
+        return ResponseEntity.noContent().build();
     }
 }
 

@@ -4,7 +4,7 @@ import com.woowacourse.zzimkkong.domain.Setting;
 import com.woowacourse.zzimkkong.domain.Space;
 import com.woowacourse.zzimkkong.dto.space.SettingsRequest;
 import com.woowacourse.zzimkkong.dto.space.SpaceCreateRequest;
-import com.woowacourse.zzimkkong.dto.space.SpaceFindResponse;
+import com.woowacourse.zzimkkong.dto.space.SpaceFindAllResponse;
 import com.woowacourse.zzimkkong.infrastructure.AuthorizationExtractor;
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
@@ -16,8 +16,10 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 
 import java.time.LocalTime;
+import java.util.List;
 
-import static com.woowacourse.zzimkkong.CommonFixture.*;
+import static com.woowacourse.zzimkkong.CommonFixture.BE;
+import static com.woowacourse.zzimkkong.CommonFixture.FE1;
 import static com.woowacourse.zzimkkong.DocumentUtils.*;
 import static com.woowacourse.zzimkkong.controller.AuthControllerTest.getToken;
 import static com.woowacourse.zzimkkong.controller.MapControllerTest.saveMap;
@@ -44,9 +46,9 @@ public class SpaceControllerTest extends AcceptanceTest {
         SpaceCreateRequest spaceCreateRequest = new SpaceCreateRequest(
                 "백엔드 강의실",
                 "시니컬하네",
-                SPACE_SVG,
+                "area",
                 settingsRequest,
-                "mapImage"
+                "이미지 입니다"
         );
         String saveSpaceApi = "/api/managers/maps/1/spaces";
         saveSpace(saveSpaceApi, spaceCreateRequest);
@@ -69,9 +71,9 @@ public class SpaceControllerTest extends AcceptanceTest {
         SpaceCreateRequest newSpaceCreateRequest = new SpaceCreateRequest(
                 "새로운공간",
                 "우리집",
-                SPACE_SVG,
+                "프론트 화이팅",
                 newSettingsRequest,
-                "mapImage"
+                "이미지 입니다"
         );
 
         // when
@@ -88,13 +90,49 @@ public class SpaceControllerTest extends AcceptanceTest {
         // given, when
         String api = "/api/managers/maps/1/spaces/1";
         ExtractableResponse<Response> response = findSpace(api);
-        SpaceFindResponse actual = response.body().as(SpaceFindResponse.class);
-        SpaceFindResponse expected = SpaceFindResponse.from(BE);
+        SpaceFindDetailResponse actual = response.body().as(SpaceFindDetailResponse.class);
+        SpaceFindDetailResponse expected = SpaceFindDetailResponse.from(BE);
 
         // then
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
         assertThat(actual).usingRecursiveComparison()
                 .ignoringActualNullFields()
+                .ignoringExpectedNullFields()
+                .isEqualTo(expected);
+    }
+
+    @DisplayName("올바른 토큰이 주어질 때, 전체 공간에 대한 정보를 조회한다.")
+    @Test
+    void findAll() {
+        // given
+        SettingsRequest feSettingsRequest = new SettingsRequest(
+                LocalTime.of(0, 0),
+                LocalTime.of(23, 59),
+                10,
+                10,
+                1440,
+                true,
+                null
+        );
+
+        SpaceCreateRequest feSpaceCreateRequest = new SpaceCreateRequest(
+                "프론트엔드 강의실1",
+                "시니컬하네",
+                "area",
+                feSettingsRequest,
+                "이미지 입니다"
+        );
+        String api = "/api/managers/maps/1/spaces";
+        saveSpace(api, feSpaceCreateRequest);
+
+        // when
+        ExtractableResponse<Response> response = findAllSpace(api);
+        SpaceFindAllResponse actual = response.body().as(SpaceFindAllResponse.class);
+        SpaceFindAllResponse expected = SpaceFindAllResponse.from(List.of(BE, FE1));
+
+        // then
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
+        assertThat(actual).usingRecursiveComparison()
                 .ignoringExpectedNullFields()
                 .isEqualTo(expected);
     }
@@ -116,9 +154,9 @@ public class SpaceControllerTest extends AcceptanceTest {
         SpaceCreateRequest defaultSpaceCreateRequest = new SpaceCreateRequest(
                 "잠실우리집",
                 "우리집",
-                SPACE_SVG,
+                "프론트 화이팅",
                 settingsRequest,
-                "mapImage"
+                "이미지 입니다"
         );
 
         Setting defaultSetting = new Setting.Builder()
@@ -135,9 +173,9 @@ public class SpaceControllerTest extends AcceptanceTest {
                 .id(2L)
                 .name("잠실우리집")
                 .description("우리집")
-                .area(SPACE_SVG)
+                .area("프론트 화이팅")
                 .setting(defaultSetting)
-                .mapImage(MAP_IMAGE_URL)
+                .mapImage("이미지 입니다")
                 .build();
 
         String saveSpaceApi = "/api/managers/maps/1/spaces";
@@ -147,12 +185,12 @@ public class SpaceControllerTest extends AcceptanceTest {
         String api = response.header("location");
 
         ExtractableResponse<Response> findResponse = findSpace(api);
-        SpaceFindResponse actualSpaceFindResponse = findResponse.as(SpaceFindResponse.class);
-        SpaceFindResponse expectedSpaceFindResponse = SpaceFindResponse.from(defaultSpace);
+        SpaceFindDetailResponse actualSpaceFindDetailResponse = findResponse.as(SpaceFindDetailResponse.class);
+        SpaceFindDetailResponse expectedSpaceFindDetailResponse = SpaceFindDetailResponse.from(defaultSpace);
 
-        assertThat(actualSpaceFindResponse)
+        assertThat(actualSpaceFindDetailResponse)
                 .usingRecursiveComparison()
-                .isEqualTo(expectedSpaceFindResponse);
+                .isEqualTo(expectedSpaceFindDetailResponse);
     }
 
     private ExtractableResponse<Response> saveSpace(final String api, final SpaceCreateRequest spaceCreateRequest) {
@@ -164,6 +202,17 @@ public class SpaceControllerTest extends AcceptanceTest {
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body(spaceCreateRequest)
                 .when().post(api)
+                .then().log().all().extract();
+    }
+
+    private ExtractableResponse<Response> findAllSpace(final String api) {
+        return RestAssured
+                .given(getRequestSpecification()).log().all()
+                .accept("application/json")
+                .header("Authorization", AuthorizationExtractor.AUTHENTICATION_TYPE + " " + getToken())
+                .filter(document("space/get_all", getRequestPreprocessor(), getResponsePreprocessor()))
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .when().get(api)
                 .then().log().all().extract();
     }
 

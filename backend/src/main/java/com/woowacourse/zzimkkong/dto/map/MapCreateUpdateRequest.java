@@ -2,7 +2,7 @@ package com.woowacourse.zzimkkong.dto.map;
 
 import javax.validation.constraints.NotBlank;
 
-import static com.woowacourse.zzimkkong.dto.Validator.*;
+import static com.woowacourse.zzimkkong.dto.Validator.EMPTY_MESSAGE;
 
 public class MapCreateUpdateRequest {
     @NotBlank(message = EMPTY_MESSAGE)
@@ -12,15 +12,15 @@ public class MapCreateUpdateRequest {
     private String mapDrawing;
 
     @NotBlank(message = EMPTY_MESSAGE)
-    private String mapSvg;
+    private String mapImage;
 
     public MapCreateUpdateRequest() {
     }
 
-    public MapCreateUpdateRequest(String mapName, String mapDrawing, String mapSvg) {
+    public MapCreateUpdateRequest(String mapName, String mapDrawing, String mapImage) {
         this.mapName = mapName;
         this.mapDrawing = mapDrawing;
-        this.mapSvg = mapSvg;
+        this.mapImage = mapImage;
     }
 
     public String getMapName() {
@@ -31,7 +31,7 @@ public class MapCreateUpdateRequest {
         return mapDrawing;
     }
 
-    public String getMapSvg() {
-        return mapSvg;
+    public String getMapImage() {
+        return mapImage;
     }
 }
