@@ -4,6 +4,7 @@ import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
 
 import javax.persistence.*;
+import java.time.LocalTime;
 
 @DynamicInsert
 @DynamicUpdate
@@ -59,11 +60,11 @@ public class Space {
     }
 
     public Long getId() {
-        return this.id;
+        return id;
     }
 
     public String getName() {
-        return this.name;
+        return name;
     }
 
     public String getTextPosition() {
@@ -78,6 +79,51 @@ public class Space {
         return coordinate;
     }
 
+    public Map getMap() {
+        return map;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public String getArea() {
+        return area;
+    }
+
+    public String getMapImage() {
+        return mapImage;
+    }
+
+    public LocalTime getAvailableEndTime() {
+        return setting.getAvailableEndTime();
+    }
+
+    public LocalTime getAvailableStartTime() {
+        return setting.getAvailableStartTime();
+    }
+
+    public Integer getReservationTimeUnit() {
+        return setting.getReservationTimeUnit();
+    }
+
+    public Integer getReservationMinimumTimeUnit() {
+        return setting.getReservationMinimumTimeUnit();
+    }
+
+    public Integer getReservationMaximumTimeUnit() {
+        return setting.getReservationMaximumTimeUnit();
+    }
+
+    public Boolean getReservationEnable() {
+        return setting.getReservationEnable();
+    }
+
+    public String getDisabledWeekdays() {
+        return setting.getDisabledWeekdays();
+    }
+
+
     public static class Builder {
         private Long id = null;
         private String name = null;
@@ -88,7 +134,7 @@ public class Space {
         private String description = null;
         private String area = null;
         private Setting setting = null;
-        private String mapImage;
+        private String mapImage = null;
 
         public Builder() {
         }
@@ -146,6 +192,5 @@ public class Space {
         public Space build() {
             return new Space(this);
         }
-
     }
 }

@@ -12,6 +12,7 @@ public class Validator {
     public static final String SERVER_ERROR_MESSAGE = "예상치 못한 문제가 발생했습니다. 개발자에게 문의하세요.";
 
     public static final String DATE_FORMAT = "yyyy-MM-dd";
+    public static final String TIME_FORMAT = "HH:mm:ss";
     public static final String DATETIME_FORMAT = "yyyy-MM-dd'T'HH:mm:ss";
     public static final String MEMBER_PASSWORD_FORMAT = "^(?=.*[0-9])(?=.*[a-zA-Z]).{8,20}$";
     public static final String RESERVATION_PASSWORD_FORMAT = "^[0-9]{4}$";
