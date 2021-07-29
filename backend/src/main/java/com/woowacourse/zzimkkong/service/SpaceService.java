@@ -59,7 +59,7 @@ public class SpaceService {
     }
 
     @Transactional(readOnly = true)
-    public SpaceFindDetailResponse findSpace(Long mapId, Long spaceId, Member manager) {
+    public SpaceFindDetailResponse findSpace(final Long mapId, final Long spaceId, final Member manager) {
         Map map = maps.findById(mapId)
                 .orElseThrow(NoSuchMapException::new);
         validateAuthorityOnMap(manager, map);

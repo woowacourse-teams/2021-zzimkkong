@@ -40,7 +40,7 @@ public class SpaceController {
     public ResponseEntity<SpaceFindDetailResponse> find(
             @PathVariable final Long mapId,
             @PathVariable final Long spaceId,
-            @Manager Member manager) {
+            @Manager final Member manager) {
         SpaceFindDetailResponse spaceFindDetailResponse = spaceService.findSpace(mapId, spaceId, manager);
         return ResponseEntity.ok().body(spaceFindDetailResponse);
     }
