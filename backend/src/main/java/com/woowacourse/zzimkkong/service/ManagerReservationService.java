@@ -105,10 +105,10 @@ public class ManagerReservationService extends ReservationService {
     private void validateAuthorityOnMap(final Long mapId, final Member manager) {
         Map map = maps.findById(mapId)
                 .orElseThrow(NoSuchMapException::new);
-        validateMangerOfMap(manager, map);
+        validateManagerOfMap(manager, map);
     }
 
-    private void validateMangerOfMap(Member manager, Map map) {
+    private void validateManagerOfMap(Member manager, Map map) {
         if (map.isNotOwnedBy(manager)) {
             throw new NoAuthorityOnMapException();
         }
