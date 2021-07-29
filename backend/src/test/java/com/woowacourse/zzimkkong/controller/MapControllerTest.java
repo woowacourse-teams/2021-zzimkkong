@@ -34,7 +34,7 @@ class MapControllerTest extends AcceptanceTest {
     @DisplayName("특정 맵을 조회한다.")
     void find() {
         // given
-        String api = saveMap("/api/managers/maps", new MapCreateUpdateRequest(LUTHER.getName(), LUTHER.getMapDrawing(), LUTHER.getMapImage()))
+        String api = saveMap("/api/managers/maps", new MapCreateUpdateRequest(LUTHER.getName(), LUTHER.getMapDrawing(), LUTHER.getMapImageUrl()))
                 .header("location");
 
         // when
@@ -53,8 +53,8 @@ class MapControllerTest extends AcceptanceTest {
     @DisplayName("특정 멤버가 가진 모든 맵을 조회한다.")
     void findAll() {
         // given
-        saveMap("/api/managers/maps", new MapCreateUpdateRequest(LUTHER.getName(), LUTHER.getMapDrawing(), LUTHER.getMapImage()));
-        saveMap("/api/managers/maps", new MapCreateUpdateRequest(SMALL_HOUSE.getName(), SMALL_HOUSE.getMapDrawing(), SMALL_HOUSE.getMapImage()));
+        saveMap("/api/managers/maps", new MapCreateUpdateRequest(LUTHER.getName(), LUTHER.getMapDrawing(), LUTHER.getMapImageUrl()));
+        saveMap("/api/managers/maps", new MapCreateUpdateRequest(SMALL_HOUSE.getName(), SMALL_HOUSE.getMapDrawing(), SMALL_HOUSE.getMapImageUrl()));
 
         // when
         ExtractableResponse<Response> response = findAllMaps();
@@ -71,7 +71,7 @@ class MapControllerTest extends AcceptanceTest {
     @DisplayName("맵을 생성한다.")
     void create() {
         // given
-        MapCreateUpdateRequest mapCreateUpdateRequest = new MapCreateUpdateRequest(LUTHER.getName(), LUTHER.getMapDrawing(), LUTHER.getMapImage());
+        MapCreateUpdateRequest mapCreateUpdateRequest = new MapCreateUpdateRequest(LUTHER.getName(), LUTHER.getMapDrawing(), LUTHER.getMapImageUrl());
 
         // when
         ExtractableResponse<Response> response = saveMap("/api/managers/maps", mapCreateUpdateRequest);
@@ -85,7 +85,7 @@ class MapControllerTest extends AcceptanceTest {
     @DisplayName("맵을 수정한다.")
     void update() {
         // given
-        String api = saveMap("/api/managers/maps", new MapCreateUpdateRequest(LUTHER.getName(), LUTHER.getMapDrawing(), LUTHER.getMapImage()))
+        String api = saveMap("/api/managers/maps", new MapCreateUpdateRequest(LUTHER.getName(), LUTHER.getMapDrawing(), LUTHER.getMapImageUrl()))
                 .header("location");
         MapCreateUpdateRequest mapCreateUpdateRequest = new MapCreateUpdateRequest("이름을 바꿔요", "맵의 메타데이터도 바꿔요", "이미지 url도 바꿔요");
 
@@ -100,7 +100,7 @@ class MapControllerTest extends AcceptanceTest {
     @DisplayName("맵을 삭제한다.")
     void delete() {
         // given
-        String api = saveMap("/api/managers/maps", new MapCreateUpdateRequest(LUTHER.getName(), LUTHER.getMapDrawing(), LUTHER.getMapImage()))
+        String api = saveMap("/api/managers/maps", new MapCreateUpdateRequest(LUTHER.getName(), LUTHER.getMapDrawing(), LUTHER.getMapImageUrl()))
                 .header("location");
 
         // when
