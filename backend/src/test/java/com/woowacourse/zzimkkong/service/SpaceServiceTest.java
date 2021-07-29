@@ -95,7 +95,7 @@ class SpaceServiceTest extends ServiceTest {
                 .willReturn(Optional.of(BE));
 
         // when
-        SpaceFindDetailResponse actual = spaceService.findSpace(1L, 1L, POBI);
+        SpaceFindDetailResponse actual = spaceService.findSpace(LUTHER.getId(), BE.getId(), POBI);
 
         // then
         assertThat(actual).usingRecursiveComparison()
@@ -112,7 +112,7 @@ class SpaceServiceTest extends ServiceTest {
                 .willReturn(Optional.empty());
 
         // when, then
-        assertThatThrownBy(() -> spaceService.findSpace(1L, 1L, POBI))
+        assertThatThrownBy(() -> spaceService.findSpace(LUTHER.getId(), BE.getId(), POBI))
                 .isInstanceOf(NoSuchSpaceException.class);
     }
 
@@ -126,7 +126,7 @@ class SpaceServiceTest extends ServiceTest {
                 .willReturn(Optional.of(BE));
 
         // when, then
-        assertThatThrownBy(() -> spaceService.findSpace(1L, 1L, new Member("bada@bada.com", "test1234", "잠실")))
+        assertThatThrownBy(() -> spaceService.findSpace(LUTHER.getId(), BE.getId(), new Member("bada@bada.com", "test1234", "잠실")))
                 .isInstanceOf(NoAuthorityOnMapException.class);
     }
 
@@ -140,7 +140,7 @@ class SpaceServiceTest extends ServiceTest {
                 .willReturn(List.of(BE, FE1));
 
         // when
-        SpaceFindAllResponse actual = spaceService.findAllSpace(1L, POBI);
+        SpaceFindAllResponse actual = spaceService.findAllSpace(LUTHER.getId(), POBI);
 
         // then
         assertThat(actual).usingRecursiveComparison()
@@ -155,7 +155,7 @@ class SpaceServiceTest extends ServiceTest {
                 .willReturn(Optional.of(LUTHER));
 
         // when, then
-        assertThatThrownBy(() -> spaceService.findAllSpace(1L, new Member("sakjung@email.com", "test1234", "잠실")))
+        assertThatThrownBy(() -> spaceService.findAllSpace(LUTHER.getId(), new Member("sakjung@email.com", "test1234", "잠실")))
                 .isInstanceOf(NoAuthorityOnMapException.class);
     }
 }
