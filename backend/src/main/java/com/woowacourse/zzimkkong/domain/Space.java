@@ -1,7 +1,5 @@
 package com.woowacourse.zzimkkong.domain;
 
-import com.woowacourse.zzimkkong.dto.space.SettingsRequest;
-import com.woowacourse.zzimkkong.dto.space.SpaceCreateUpdateRequest;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
 
@@ -61,6 +59,15 @@ public class Space {
         this.mapImage = builder.mapImage;
     }
 
+    public void update(final Space updateSpace) {
+        this.name = updateSpace.name;
+        this.map = updateSpace.map;
+        this.description = updateSpace.description;
+        this.area = updateSpace.area;
+        this.setting = updateSpace.setting;
+        this.mapImage = updateSpace.mapImage;
+    }
+
     public Long getId() {
         return id;
     }
@@ -93,19 +100,6 @@ public class Space {
         return area;
     }
 
-    public void update(final Space updateSpace) {
-        this.name = updateSpace.name;
-        this.map = updateSpace.map;
-        this.description = updateSpace.description;
-        this.area = updateSpace.area;
-        this.setting = updateSpace.setting;
-        this.mapImage = updateSpace.mapImage;
-    }
-
-    public String getMapImage() {
-        return mapImage;
-    }
-
     public LocalTime getAvailableEndTime() {
         return setting.getAvailableEndTime();
     }
@@ -132,6 +126,10 @@ public class Space {
 
     public String getDisabledWeekdays() {
         return setting.getDisabledWeekdays();
+    }
+
+    public String getMapImage() {
+        return mapImage;
     }
 
     public static class Builder {
