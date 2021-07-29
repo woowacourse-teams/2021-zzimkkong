@@ -6,17 +6,17 @@ public class MapFindResponse {
     private Long mapId;
     private String mapName;
     private String mapDrawing;
-    private String mapImage;
+    private String mapImageUrl;
 
     public MapFindResponse() {
 
     }
 
-    private MapFindResponse(Long mapId, String mapName, String mapDrawing, String mapImage) {
+    private MapFindResponse(Long mapId, String mapName, String mapDrawing, String mapImageUrl) {
         this.mapId = mapId;
         this.mapName = mapName;
         this.mapDrawing = mapDrawing;
-        this.mapImage = mapImage;
+        this.mapImageUrl = mapImageUrl;
     }
 
     public static MapFindResponse from(Map map) {
@@ -40,7 +40,7 @@ public class MapFindResponse {
         return mapDrawing;
     }
 
-    public String getMapImage() {
-        return mapImage;
+    public String getMapImageUrl() {
+        return mapImageUrl;
     }
 }
