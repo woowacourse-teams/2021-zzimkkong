@@ -24,7 +24,7 @@ public class SpaceService {
     private final MapRepository maps;
     private final SpaceRepository spaces;
     private final ReservationRepository reservations;
-    private TimeConverter timeConverter;
+    private final TimeConverter timeConverter;
 
     public SpaceService(
             final MapRepository maps,
@@ -107,7 +107,8 @@ public class SpaceService {
             final Long mapId,
             final Long spaceId,
             final Member manager) {
-        Map map = maps.findById(mapId).orElseThrow(NoSuchMapException::new);
+        Map map = maps.findById(mapId)
+                .orElseThrow(NoSuchMapException::new);
         validateAuthorityOnMap(manager, map);
 
         Space space = spaces.findById(spaceId)
