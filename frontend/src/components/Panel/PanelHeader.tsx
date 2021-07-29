@@ -5,15 +5,15 @@ import PanelContext from './PanelContext';
 import * as Styled from './PanelHeader.styles';
 
 export interface Props {
-  bgColor?: Color;
+  dotColor?: Color;
 }
 
-const PanelHeader = ({ bgColor, children }: PropsWithChildren<Props>): JSX.Element => {
+const PanelHeader = ({ dotColor, children }: PropsWithChildren<Props>): JSX.Element => {
   const { expandable = false, expanded = false, onToggle } = useContext(PanelContext);
 
   return (
-    <Styled.HeaderWrapper bgColor={bgColor} expandable={expandable} onClick={onToggle}>
-      <Styled.HeaderContent>{children}</Styled.HeaderContent>
+    <Styled.HeaderWrapper expandable={expandable} onClick={onToggle}>
+      <Styled.HeaderContent dotColor={dotColor}>{children}</Styled.HeaderContent>
       {expandable && (
         <Styled.Toggle expanded={expanded}>
           <CaretDownIcon />

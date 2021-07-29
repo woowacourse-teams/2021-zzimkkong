@@ -4,6 +4,8 @@ import com.woowacourse.zzimkkong.domain.Reservation;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -126,5 +128,16 @@ class ReservationRepositoryTest extends RepositoryTest {
                 minimumDateTime,
                 maximumDateTime
         );
+    }
+
+    @ParameterizedTest
+    @CsvSource(value = {"0:false", "30:true"}, delimiter = ':')
+    @DisplayName("특정 시간 이후의 예약이 존재하는지 확인한다.")
+    void existsAllStartTimeAfter(int minusMinute, boolean expected) {
+        //given, when
+        Boolean actual = reservations.existsBySpaceIdAndEndTimeAfter(BE.getId(), BE_NEXT_DAY_PM_SIX_TWELVE.getEndTime().minusMinutes(minusMinute));
+
+        //then
+        assertThat(actual).isEqualTo(expected);
     }
 }

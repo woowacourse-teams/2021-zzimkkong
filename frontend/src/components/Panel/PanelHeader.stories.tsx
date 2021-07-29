@@ -18,22 +18,12 @@ const Template: Story<PropsWithChildren<Props>> = (args) => <Panel.Header {...ar
 
 export const Default = Template.bind({});
 Default.args = {
-  bgColor: '',
+  dotColor: '',
   children: <Panel.Title>패널 헤더 1</Panel.Title>,
 };
 
-export const BgColor = Template.bind({});
-BgColor.args = {
-  bgColor: PALETTE.ORANGE[500],
+export const DotColor = Template.bind({});
+DotColor.args = {
+  dotColor: PALETTE.ORANGE[500],
   children: <Panel.Title>패널 헤더 1</Panel.Title>,
-};
-
-export const BgColorWithInner = Template.bind({});
-BgColorWithInner.args = {
-  bgColor: PALETTE.ORANGE[500],
-  children: (
-    <Panel.Inner>
-      <Panel.Title>패널 헤더 1</Panel.Title>
-    </Panel.Inner>
-  ),
 };

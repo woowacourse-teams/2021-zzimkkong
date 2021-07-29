@@ -11,26 +11,37 @@ public class Map {
     @Column(nullable = false, length = 20)
     private String name;
 
+    @Column(nullable = false)
+    @Lob
+    private String mapDrawing;
+
+    @Column(nullable = false)
+    @Lob
+    private String mapImageUrl;
+
     @ManyToOne
-    @JoinColumn(name = "member_id", foreignKey = @ForeignKey(name = "fk_map_member"))
+    @JoinColumn(name = "member_id", foreignKey = @ForeignKey(name = "fk_map_member"), nullable = false)
     private Member member;
 
     protected Map() {
     }
 
-    public Map(final String name, final Member member) {
-        this.name = name;
-        this.member = member;
-    }
-
-    public Map(final Long id, final String name, final Member member) {
+    public Map(Long id, String name, String mapDrawing, String mapImageUrl, Member member) {
+        this(name, mapDrawing, mapImageUrl, member);
         this.id = id;
+    }
+
+    public Map(String name, String mapDrawing, String mapImageUrl, Member member) {
         this.name = name;
+        this.mapDrawing = mapDrawing;
+        this.mapImageUrl = mapImageUrl;
         this.member = member;
     }
 
-    public boolean hasSameId(final Long id) {
-        return this.id.equals(id);
+    public void update(String mapName, String mapDrawing, String mapImage) {
+        this.name = mapName;
+        this.mapDrawing = mapDrawing;
+        this.mapImageUrl = mapImage;
     }
 
     public Long getId() {
@@ -43,5 +54,17 @@ public class Map {
 
     public boolean isNotOwnedBy(final Member manager) {
         return !this.member.equals(manager);
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public String getMapDrawing() {
+        return mapDrawing;
+    }
+
+    public String getMapImageUrl() {
+        return mapImageUrl;
     }
 }

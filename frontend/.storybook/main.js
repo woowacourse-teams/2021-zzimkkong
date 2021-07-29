@@ -11,7 +11,18 @@ module.exports = {
   webpackFinal: (config) => {
     config.module.rules.unshift({
       test: /\.svg$/,
-      use: ['@svgr/webpack'],
+      use: [
+        {
+          loader: '@svgr/webpack',
+          options: {
+            svgoConfig: {
+              plugins: {
+                removeViewBox: false,
+              },
+            },
+          },
+        },
+      ],
     });
 
     config.resolve.plugins.push(new TsconfigPathsPlugin({}));

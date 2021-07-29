@@ -2,11 +2,11 @@ package com.woowacourse.zzimkkong.service;
 
 import com.woowacourse.zzimkkong.domain.Map;
 import com.woowacourse.zzimkkong.domain.Member;
+import com.woowacourse.zzimkkong.domain.Setting;
 import com.woowacourse.zzimkkong.domain.Space;
 import com.woowacourse.zzimkkong.dto.space.*;
 import com.woowacourse.zzimkkong.exception.authorization.NoAuthorityOnMapException;
 import com.woowacourse.zzimkkong.exception.map.NoSuchMapException;
-import com.woowacourse.zzimkkong.exception.reservation.NoDataToUpdateException;
 import com.woowacourse.zzimkkong.exception.space.NoSuchSpaceException;
 import com.woowacourse.zzimkkong.exception.space.ReservationExistOnSpaceException;
 import com.woowacourse.zzimkkong.repository.MapRepository;
@@ -39,30 +39,35 @@ public class SpaceService {
 
         SettingsRequest settingsRequest = spaceCreateUpdateRequest.getSettingsRequest();
 
+        Setting setting = new Setting.Builder()
+                .availableStartTime(settingsRequest.getAvailableStartTime())
+                .availableEndTime(settingsRequest.getAvailableEndTime())
+                .reservationTimeUnit(settingsRequest.getReservationTimeUnit())
+                .reservationMinimumTimeUnit(settingsRequest.getReservationMinimumTimeUnit())
+                .reservationMaximumTimeUnit(settingsRequest.getReservationMaximumTimeUnit())
+                .reservationEnable(settingsRequest.getReservationEnable())
+                .disabledWeekdays(settingsRequest.getDisabledWeekdays())
+                .build();
+
         Space space = spaces.save(
                 new Space.Builder()
-                        .name(spaceCreateUpdateRequest.getName())
+                        .name(spaceCreateUpdateRequest.getSpaceName())
                         .textPosition(null)
                         .color(null)
                         .coordinate(null)
                         .map(map)
                         .description(spaceCreateUpdateRequest.getDescription())
                         .area(spaceCreateUpdateRequest.getArea())
-                        .availableStartTime(settingsRequest.getAvailableStartTime())
-                        .availableEndTime(settingsRequest.getAvailableEndTime())
-                        .reservationTimeUnit(settingsRequest.getReservationTimeUnit())
-                        .reservationMinimumTimeUnit(settingsRequest.getReservationMinimumTimeUnit())
-                        .reservationMaximumTimeUnit(settingsRequest.getReservationMaximumTimeUnit())
-                        .reservationEnable(settingsRequest.getReservationEnable())
-                        .disabledWeekdays(settingsRequest.getDisabledWeekdays())
+                        .setting(setting)
                         .mapImage(spaceCreateUpdateRequest.getMapImage())
                         .build());
         return SpaceCreateResponse.from(space);
     }
 
     @Transactional(readOnly = true)
-    public SpaceFindDetailResponse findSpace(Long mapId, Long spaceId, Member manager) {
-        Map map = maps.findById(mapId).orElseThrow(NoSuchMapException::new);
+    public SpaceFindDetailResponse findSpace(final Long mapId, final Long spaceId, final Member manager) {
+        Map map = maps.findById(mapId)
+                .orElseThrow(NoSuchMapException::new);
         validateAuthorityOnMap(manager, map);
 
         Space space = spaces.findById(spaceId)
@@ -75,8 +80,8 @@ public class SpaceService {
         Map map = maps.findById(mapId).orElseThrow(NoSuchMapException::new);
         validateAuthorityOnMap(manager, map);
 
-        List<Space> spaces = this.spaces.findAllByMapId(mapId);
-        return SpaceFindAllResponse.from(spaces);
+        List<Space> findAllSpaces = spaces.findAllByMapId(mapId);
+        return SpaceFindAllResponse.from(findAllSpaces);
     }
 
     public void updateSpace(
@@ -89,8 +94,9 @@ public class SpaceService {
 
         Space space = spaces.findById(spaceId)
                 .orElseThrow(NoSuchSpaceException::new);
-        doDirtyCheck(space, spaceCreateUpdateRequest, map);
-        space.update(spaceCreateUpdateRequest, map);
+        Space updateSpace = getUpdateSpace(spaceCreateUpdateRequest, map);
+
+        space.update(updateSpace);
     }
 
     public void deleteSpace(
@@ -108,6 +114,29 @@ public class SpaceService {
         spaces.delete(space);
     }
 
+    private Space getUpdateSpace(final SpaceCreateUpdateRequest spaceCreateUpdateRequest, final Map map) {
+        SettingsRequest settingsRequest = spaceCreateUpdateRequest.getSettingsRequest();
+
+        Setting updateSetting = new Setting.Builder()
+                .availableStartTime(settingsRequest.getAvailableStartTime())
+                .availableEndTime(settingsRequest.getAvailableEndTime())
+                .reservationTimeUnit(settingsRequest.getReservationTimeUnit())
+                .reservationEnable(settingsRequest.getReservationEnable())
+                .reservationMinimumTimeUnit(settingsRequest.getReservationMinimumTimeUnit())
+                .reservationMaximumTimeUnit(settingsRequest.getReservationMaximumTimeUnit())
+                .disabledWeekdays(settingsRequest.getDisabledWeekdays())
+                .build();
+
+        return new Space.Builder()
+                .name(spaceCreateUpdateRequest.getSpaceName())
+                .map(map)
+                .description(spaceCreateUpdateRequest.getDescription())
+                .area(spaceCreateUpdateRequest.getArea())
+                .setting(updateSetting)
+                .mapImage(spaceCreateUpdateRequest.getMapImage())
+                .build();
+    }
+
     private void validateReservationExistence(final Space space) {
         if (reservations.existsBySpace(space)) {
             throw new ReservationExistOnSpaceException();
@@ -117,35 +146,6 @@ public class SpaceService {
     private void validateAuthorityOnMap(final Member manager, final Map map) {
         if (map.isNotOwnedBy(manager)) {
             throw new NoAuthorityOnMapException();
-        }
-    }
-
-    private void doDirtyCheck(
-            final Space space,
-            final SpaceCreateUpdateRequest spaceCreateUpdateRequest,
-            final Map map) {
-        SettingsRequest settingsRequest = spaceCreateUpdateRequest.getSettingsRequest();
-
-        Space updatedSpace = new Space.Builder()
-                .name(spaceCreateUpdateRequest.getName())
-                .textPosition(null)
-                .color(null)
-                .coordinate(null)
-                .map(map)
-                .description(spaceCreateUpdateRequest.getDescription())
-                .area(spaceCreateUpdateRequest.getArea())
-                .availableStartTime(settingsRequest.getAvailableStartTime())
-                .availableEndTime(settingsRequest.getAvailableEndTime())
-                .reservationTimeUnit(settingsRequest.getReservationTimeUnit())
-                .reservationMinimumTimeUnit(settingsRequest.getReservationMinimumTimeUnit())
-                .reservationMaximumTimeUnit(settingsRequest.getReservationMaximumTimeUnit())
-                .reservationEnable(settingsRequest.getReservationEnable())
-                .disabledWeekdays(settingsRequest.getDisabledWeekdays())
-                .mapImage(spaceCreateUpdateRequest.getMapImage())
-                .build();
-
-        if (space.hasSameData(updatedSpace)) {
-            throw new NoDataToUpdateException();
         }
     }
 }

@@ -2,15 +2,15 @@
 
 === 공간 생성
 ==== Request
-include::{snippets}/space/get/http-request.adoc[]
+include::{snippets}/space/post/http-request.adoc[]
 ==== Response
-include::{snippets}/space/get/http-response.adoc[]
+include::{snippets}/space/post/http-response.adoc[]
 
 === 공간 전체 조회
 ==== Request
-include::{snippets}/space/get_all/http-request.adoc[]
+include::{snippets}/space/getAll/http-request.adoc[]
 ==== Response
-include::{snippets}/space/get_all/http-response.adoc[]
+include::{snippets}/space/getAll/http-response.adoc[]
 
 === 특정 공간 조회
 ==== Request
@@ -20,9 +20,9 @@ include::{snippets}/space/get/http-response.adoc[]
 
 === 공간 수정
 ==== Request
-include::{snippets}/space/update/http-request.adoc[]
+include::{snippets}/space/put/http-request.adoc[]
 ==== Response
-include::{snippets}/space/update/http-response.adoc[]
+include::{snippets}/space/put/http-response.adoc[]
 
 === 공간 삭제
 ==== Request
