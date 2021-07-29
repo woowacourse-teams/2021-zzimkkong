@@ -12,7 +12,6 @@ public class ServiceTestFixture {
     public static final String ORGANIZATION = "우아한테크코스";
     public static Member POBI = new Member(1L, EMAIL, PASSWORD, ORGANIZATION);
     public static Member JASON = new Member(2L, "jason@test.com", PASSWORD, ORGANIZATION);
-
     public static Map LUTHER = new Map(1L, "루터회관", "mapDrawingData", "mapImageData", POBI);
     public static Map SMALL_HOUSE = new Map(2L, "작은집", "mapDrawingData", "mapImageData", POBI);
 
