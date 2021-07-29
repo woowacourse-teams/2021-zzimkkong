@@ -24,7 +24,7 @@ public class CommonFixture {
     public static final String MAP_DRAWING_DATA =
             "{'id': '1', 'type': 'polyline', 'fill': '', 'stroke': 'rgba(111, 111, 111, 1)', 'points': '['60,250', '1,231', '242,252']'," +
                     "'d': '[]', 'transform': ''}";
-    public static final String SPACE_SVG = "<rect x=\"10\" y=\"10\" width=\"30\" height=\"30\"/>";
+    public static final String SPACE_DRAWING = "{ \"id\":1\", \"type\" : \"rect\", \"x\" : 10, \"y\" : 10, \"width\": 30, \"height\": 30 }";
 
     public static Map LUTHER = new Map(1L, "루터회관", MAP_DRAWING_DATA, MAP_IMAGE_URL, POBI);
     public static Map SMALL_HOUSE = new Map(2L, "작은집", MAP_DRAWING_DATA, MAP_IMAGE_URL, POBI);
@@ -46,7 +46,7 @@ public class CommonFixture {
             .coordinate("100, 90")
             .map(LUTHER)
             .description("시니컬하네")
-            .area(SPACE_SVG)
+            .area(SPACE_DRAWING)
             .setting(BE_SETTING)
             .mapImage(MAP_IMAGE_URL)
             .build();
@@ -66,7 +66,7 @@ public class CommonFixture {
             .coordinate("560, 40")
             .map(LUTHER)
             .description("시니컬하네")
-            .area(SPACE_SVG)
+            .area(SPACE_DRAWING)
             .setting(FE_SETTING)
             .mapImage(MAP_IMAGE_URL)
             .build();

@@ -46,7 +46,7 @@ public class SpaceControllerTest extends AcceptanceTest {
         SpaceCreateUpdateRequest spaceCreateUpdateRequest = new SpaceCreateUpdateRequest(
                 "백엔드 강의실",
                 "시니컬하네",
-                SPACE_SVG,
+                SPACE_DRAWING,
                 settingsRequest,
                 MAP_SVG
         );
@@ -71,7 +71,7 @@ public class SpaceControllerTest extends AcceptanceTest {
         SpaceCreateUpdateRequest newSpaceCreateUpdateRequest = new SpaceCreateUpdateRequest(
                 "잠실우리집",
                 "우리집",
-                SPACE_SVG,
+                SPACE_DRAWING,
                 newSettingsRequest,
                 MAP_SVG
         );
@@ -101,7 +101,7 @@ public class SpaceControllerTest extends AcceptanceTest {
         SpaceCreateUpdateRequest defaultSpaceCreateUpdateRequest = new SpaceCreateUpdateRequest(
                 "잠실우리집",
                 "우리집",
-                SPACE_SVG,
+                SPACE_DRAWING,
                 settingsRequest,
                 MAP_SVG
         );
@@ -120,7 +120,7 @@ public class SpaceControllerTest extends AcceptanceTest {
                 .id(2L)
                 .name("잠실우리집")
                 .description("우리집")
-                .area(SPACE_SVG)
+                .area(SPACE_DRAWING)
                 .setting(defaultSetting)
                 .mapImage(MAP_SVG)
                 .build();
@@ -174,7 +174,7 @@ public class SpaceControllerTest extends AcceptanceTest {
         SpaceCreateUpdateRequest feSpaceCreateUpdateRequest = new SpaceCreateUpdateRequest(
                 "프론트엔드 강의실1",
                 "시니컬하네",
-                SPACE_SVG,
+                SPACE_DRAWING,
                 feSettingsRequest,
                 MAP_SVG
         );
@@ -210,7 +210,7 @@ public class SpaceControllerTest extends AcceptanceTest {
         SpaceCreateUpdateRequest updateSpaceCreateUpdateRequest = new SpaceCreateUpdateRequest(
                 "바다",
                 "장미아파트",
-                SPACE_SVG,
+                SPACE_DRAWING,
                 settingsRequest,
                 MAP_SVG
         );

@@ -39,7 +39,7 @@ class SpaceServiceTest extends ServiceTest {
     private SpaceCreateUpdateRequest spaceCreateUpdateRequest = new SpaceCreateUpdateRequest(
             "백엔드 강의실",
             "우리집",
-            SPACE_SVG,
+            SPACE_DRAWING,
             settingsRequest,
             MAP_SVG
     );
@@ -56,7 +56,7 @@ class SpaceServiceTest extends ServiceTest {
     private final SpaceCreateUpdateRequest updateSpaceCreateUpdateRequest = new SpaceCreateUpdateRequest(
             "백엔드 강의실",
             "우리집",
-            SPACE_SVG,
+            SPACE_DRAWING,
             updateSettingsRequest,
             MAP_SVG
     );
@@ -121,7 +121,7 @@ class SpaceServiceTest extends ServiceTest {
         assertThat(actual).usingRecursiveComparison()
                 .isEqualTo(SpaceFindDetailResponse.from(BE));
     }
-    
+
     @DisplayName("공간 조회 시, spaceId에 맞는 공간이 없다면 예외를 발생시킨다.")
     @Test
     void findFail() {
