@@ -69,10 +69,7 @@ public abstract class ReservationService {
         LocalDateTime startDateTime = reservationCreateUpdateRequest.getStartDateTime();
         LocalDateTime endDateTime = reservationCreateUpdateRequest.getEndDateTime();
 
-        ZonedDateTime zonedDateTime = timeConverter.convertTimeZone(startDateTime);
-        ZonedDateTime now = timeConverter.getNow();
-
-        if (zonedDateTime.isBefore(now)) {
+        if (startDateTime.isBefore(timeConverter.getNow())) {
             throw new ImpossibleStartTimeException();
         }
 
@@ -128,23 +125,6 @@ public abstract class ReservationService {
             if (existingReservation.hasConflictWith(startDateTime, endDateTime)) {
                 throw new ImpossibleReservationTimeException();
             }
-        }
-    }
-
-    protected void doDirtyCheck(
-            final Reservation reservation,
-            final ReservationCreateUpdateRequest reservationCreateUpdateRequest,
-            final Space space) {
-        Reservation updatedReservation = new Reservation.Builder()
-                .startTime(reservationCreateUpdateRequest.getStartDateTime())
-                .endTime(reservationCreateUpdateRequest.getEndDateTime())
-                .userName(reservationCreateUpdateRequest.getName())
-                .description(reservationCreateUpdateRequest.getDescription())
-                .space(space)
-                .build();
-
-        if (reservation.hasSameData(updatedReservation)) {
-            throw new NoDataToUpdateException();
         }
     }
 

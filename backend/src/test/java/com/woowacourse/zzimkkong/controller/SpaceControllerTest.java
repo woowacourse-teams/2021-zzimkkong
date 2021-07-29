@@ -19,8 +19,7 @@ import org.springframework.http.MediaType;
 import java.time.LocalTime;
 import java.util.List;
 
-import static com.woowacourse.zzimkkong.CommonFixture.BE;
-import static com.woowacourse.zzimkkong.CommonFixture.FE1;
+import static com.woowacourse.zzimkkong.CommonFixture.*;
 import static com.woowacourse.zzimkkong.DocumentUtils.*;
 import static com.woowacourse.zzimkkong.controller.AuthControllerTest.getToken;
 import static com.woowacourse.zzimkkong.controller.MapControllerTest.saveMap;
@@ -179,6 +178,7 @@ public class SpaceControllerTest extends AcceptanceTest {
                 feSettingsRequest,
                 "이미지 입니다"
         );
+
         String api = "/api/managers/maps/1/spaces";
         saveSpace(api, feSpaceCreateUpdateRequest);
 
@@ -216,21 +216,32 @@ public class SpaceControllerTest extends AcceptanceTest {
                 "장미아파트 이미지"
         );
 
-        String api = "/api/managers/maps/1/spaces/1";
+        String api = "/api/managers/maps/" + LUTHER.getId() + "/spaces/" + BE.getId();
         ExtractableResponse<Response> response = updateSpace(api, updateSpaceCreateUpdateRequest);
 
         // then
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
     }
 
-    private ExtractableResponse<Response> saveSpace(final String api, final SpaceCreateUpdateRequest spaceCreateRequest) {
+    @DisplayName("올바른 토큰이 주어질 때, 공간을 삭제한다.")
+    @Test
+    void delete() {
+        // given, when
+        String api = "/api/managers/maps/" + LUTHER.getId() + "/spaces/" + BE.getId();
+        ExtractableResponse<Response> response = deleteSpace(api);
+
+        // then
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
+    }
+
+    private ExtractableResponse<Response> saveSpace(final String api, final SpaceCreateUpdateRequest spaceCreateUpdateRequest) {
         return RestAssured
                 .given(getRequestSpecification()).log().all()
                 .accept("application/json")
                 .header("Authorization", AuthorizationExtractor.AUTHENTICATION_TYPE + " " + getToken())
                 .filter(document("space/post", getRequestPreprocessor(), getResponsePreprocessor()))
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(spaceCreateRequest)
+                .body(spaceCreateUpdateRequest)
                 .when().post(api)
                 .then().log().all().extract();
     }
@@ -268,6 +279,17 @@ public class SpaceControllerTest extends AcceptanceTest {
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body(spaceCreateUpdateRequest)
                 .when().put(api)
+                .then().log().all().extract();
+    }
+
+    private ExtractableResponse<Response> deleteSpace(final String api) {
+        return RestAssured
+                .given(getRequestSpecification()).log().all()
+                .accept("application/json")
+                .header("Authorization", AuthorizationExtractor.AUTHENTICATION_TYPE + " " + getToken())
+                .filter(document("space/delete", getRequestPreprocessor(), getResponsePreprocessor()))
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .when().delete(api)
                 .then().log().all().extract();
     }
 }

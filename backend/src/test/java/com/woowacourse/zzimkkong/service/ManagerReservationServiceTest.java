@@ -569,37 +569,6 @@ public class ManagerReservationServiceTest extends ServiceTest {
                 .isInstanceOf(NonMatchingStartAndEndDateException.class);
     }
 
-    @DisplayName("예약 수정 요청 시, 변경 사항이 존재하지 않으면 에러가 발생한다.")
-    @Test
-    void updateNothingChangedException() {
-        //given
-        given(maps.existsById(anyLong()))
-                .willReturn(true);
-        given(maps.findById(anyLong()))
-                .willReturn(Optional.of(LUTHER));
-        given(spaces.findById(anyLong()))
-                .willReturn(Optional.of(BE));
-        given(reservations.findById(anyLong()))
-                .willReturn(Optional.of(reservation));
-
-        //when
-        ReservationCreateUpdateRequest reservationCreateUpdateRequest = new ReservationCreateUpdateRequest(
-                BE.getId(),
-                reservation.getStartTime(),
-                reservation.getEndTime(),
-                reservation.getUserName(),
-                reservation.getDescription()
-        );
-
-        //then
-        assertThatThrownBy(() -> managerReservationService.updateReservation(
-                LUTHER.getId(),
-                1L,
-                reservationCreateUpdateRequest,
-                POBI))
-                .isInstanceOf(NoDataToUpdateException.class);
-    }
-
     @DisplayName("예약 수정 요청 시, 해당 시간에 예약이 존재하면 에러가 발생한다.")
     @ParameterizedTest
     @CsvSource(value = {"0:2", "59:70", "-10:10"}, delimiter = ':')

@@ -14,7 +14,6 @@ public class ServiceTestFixture {
     public static Member JASON = new Member(2L, "jason@test.com", PASSWORD, ORGANIZATION);
     public static Map LUTHER = new Map(1L, "루터회관", "mapDrawingData", "mapImageData", POBI);
     public static Map SMALL_HOUSE = new Map(2L, "작은집", "mapDrawingData", "mapImageData", POBI);
-
     public static Setting BE_SETTING = new Setting.Builder()
             .availableStartTime(LocalTime.of(10, 0))
             .availableEndTime(LocalTime.of(22, 0))
