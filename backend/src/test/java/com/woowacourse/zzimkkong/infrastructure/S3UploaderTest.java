@@ -16,8 +16,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 @SpringBootTest
 @ActiveProfiles("test")
 class S3UploaderTest {
-    private static final String urlRegex = "^(https?|ftp|file)://[-a-zA-Z0-9+&@#/%?=~_|!:,.;]*[-a-zA-Z0-9+&@#/%=~_|]";
-    private static final Pattern pattern = Pattern.compile(urlRegex);
+    private static final String URL_REGEX = "^(https?|ftp|file)://[-a-zA-Z0-9+&@#/%?=~_|!:,.;]*[-a-zA-Z0-9+&@#/%=~_|]";
+    private static final Pattern URL_PATTERN = Pattern.compile(URL_REGEX);
 
     @Autowired
     private S3Uploader s3Uploader;
@@ -37,7 +37,7 @@ class S3UploaderTest {
 
         // when
         String url = s3Uploader.upload("testDirectoryName", testImagePngFile);
-        Matcher matcher = pattern.matcher(url);
+        Matcher matcher = URL_PATTERN.matcher(url);
 
         // then
         assertThat(matcher.find()).isTrue();
