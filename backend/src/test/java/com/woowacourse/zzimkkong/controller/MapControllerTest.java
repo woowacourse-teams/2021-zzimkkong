@@ -20,7 +20,6 @@ import static com.woowacourse.zzimkkong.CommonFixture.*;
 import static com.woowacourse.zzimkkong.DocumentUtils.*;
 import static com.woowacourse.zzimkkong.controller.AuthControllerTest.getToken;
 import static com.woowacourse.zzimkkong.controller.MemberControllerTest.saveMember;
-import static com.woowacourse.zzimkkong.service.ServiceTestFixture.SMALL_HOUSE;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.restdocs.restassured3.RestAssuredRestDocumentation.document;
 
@@ -46,7 +45,7 @@ class MapControllerTest extends AcceptanceTest {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
         assertThat(actualResponse).usingRecursiveComparison()
                 .ignoringExpectedNullFields()
-                .ignoringFields("mapImage")
+                .ignoringFields("mapImageUrl")
                 .isEqualTo(expectedResponse);
     }
 
@@ -65,7 +64,7 @@ class MapControllerTest extends AcceptanceTest {
         // then
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
         assertThat(findMaps)
-                .usingElementComparatorIgnoringFields("mapImage")
+                .usingElementComparatorIgnoringFields("mapImageUrl")
                 .isEqualTo(expected);
     }
 

@@ -69,7 +69,7 @@ public class SpaceControllerTest extends AcceptanceTest {
         );
 
         SpaceCreateUpdateRequest newSpaceCreateUpdateRequest = new SpaceCreateUpdateRequest(
-                "새로운공간",
+                "잠실우리집",
                 "우리집",
                 SPACE_SVG,
                 newSettingsRequest,
@@ -82,6 +82,62 @@ public class SpaceControllerTest extends AcceptanceTest {
 
         // then
         assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
+    }
+
+    @DisplayName("올바른 토큰이 주어질 때, space 정보 중 주어지지 않은 필드를 디폴트 값으로 저장한다")
+    @Test
+    void save_default() {
+        // given, when
+        SettingsRequest settingsRequest = new SettingsRequest(
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null
+        );
+
+        SpaceCreateUpdateRequest defaultSpaceCreateUpdateRequest = new SpaceCreateUpdateRequest(
+                "잠실우리집",
+                "우리집",
+                SPACE_SVG,
+                settingsRequest,
+                MAP_SVG
+        );
+
+        Setting defaultSetting = new Setting.Builder()
+                .availableStartTime(LocalTime.of(0, 0))
+                .availableEndTime(LocalTime.of(23, 59))
+                .reservationTimeUnit(10)
+                .reservationMinimumTimeUnit(10)
+                .reservationMaximumTimeUnit(1440)
+                .reservationEnable(true)
+                .disabledWeekdays(null)
+                .build();
+
+        Space defaultSpace = new Space.Builder()
+                .id(2L)
+                .name("잠실우리집")
+                .description("우리집")
+                .area(SPACE_SVG)
+                .setting(defaultSetting)
+                .mapImage(MAP_SVG)
+                .build();
+
+        String saveSpaceApi = "/api/managers/maps/1/spaces";
+        ExtractableResponse<Response> response = saveSpace(saveSpaceApi, defaultSpaceCreateUpdateRequest);
+
+        // then
+        String api = response.header("location");
+
+        ExtractableResponse<Response> findResponse = findSpace(api);
+        SpaceFindDetailResponse actualSpaceFindDetailResponse = findResponse.as(SpaceFindDetailResponse.class);
+        SpaceFindDetailResponse expectedSpaceFindDetailResponse = SpaceFindDetailResponse.from(defaultSpace);
+
+        assertThat(actualSpaceFindDetailResponse)
+                .usingRecursiveComparison()
+                .isEqualTo(expectedSpaceFindDetailResponse);
     }
 
     @DisplayName("올바른 토큰이 주어질 때, spaceId를 받아 해당 공간에 대한 정보를 조회한다.")
@@ -137,70 +193,43 @@ public class SpaceControllerTest extends AcceptanceTest {
                 .isEqualTo(expected);
     }
 
-    @DisplayName("올바른 토큰이 주어질 때, space 정보 중 주어지지 않은 필드를 디폴트 값으로 저장한다")
+    @DisplayName("올바른 토큰이 주어질 때, 공간을 수정한다.")
     @Test
-    void save_default() {
+    void update() {
         // given, when
         SettingsRequest settingsRequest = new SettingsRequest(
-                null,
-                null,
-                null,
-                null,
-                null,
-                null,
-                null
+                LocalTime.of(10, 0),
+                LocalTime.of(22, 0),
+                40,
+                80,
+                130,
+                false,
+                "Monday, Tuesday"
         );
 
-        SpaceCreateUpdateRequest defaultSpaceCreateUpdateRequest = new SpaceCreateUpdateRequest(
-                "잠실우리집",
-                "우리집",
+        SpaceCreateUpdateRequest updateSpaceCreateUpdateRequest = new SpaceCreateUpdateRequest(
+                "바다",
+                "장미아파트",
                 SPACE_SVG,
                 settingsRequest,
                 MAP_SVG
         );
 
-        Setting defaultSetting = new Setting.Builder()
-                .availableStartTime(LocalTime.of(0, 0))
-                .availableEndTime(LocalTime.of(23, 59))
-                .reservationTimeUnit(10)
-                .reservationMinimumTimeUnit(10)
-                .reservationMaximumTimeUnit(1440)
-                .reservationEnable(true)
-                .disabledWeekdays(null)
-                .build();
-
-        Space defaultSpace = new Space.Builder()
-                .id(2L)
-                .name("잠실우리집")
-                .description("우리집")
-                .area(SPACE_SVG)
-                .setting(defaultSetting)
-                .mapImage(MAP_IMAGE_URL)
-                .build();
-
-        String saveSpaceApi = "/api/managers/maps/1/spaces";
-        ExtractableResponse<Response> response = saveSpace(saveSpaceApi, defaultSpaceCreateUpdateRequest);
+        String api = "/api/managers/maps/1/spaces/1";
+        ExtractableResponse<Response> response = updateSpace(api, updateSpaceCreateUpdateRequest);
 
         // then
-        String api = response.header("location");
-
-        ExtractableResponse<Response> findResponse = findSpace(api);
-        SpaceFindDetailResponse actualSpaceFindDetailResponse = findResponse.as(SpaceFindDetailResponse.class);
-        SpaceFindDetailResponse expectedSpaceFindDetailResponse = SpaceFindDetailResponse.from(defaultSpace);
-
-        assertThat(actualSpaceFindDetailResponse)
-                .usingRecursiveComparison()
-                .isEqualTo(expectedSpaceFindDetailResponse);
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
     }
 
-    private ExtractableResponse<Response> saveSpace(final String api, final SpaceCreateUpdateRequest spaceCreateUpdateRequest) {
+    private ExtractableResponse<Response> saveSpace(final String api, final SpaceCreateUpdateRequest spaceCreateRequest) {
         return RestAssured
                 .given(getRequestSpecification()).log().all()
                 .accept("application/json")
                 .header("Authorization", AuthorizationExtractor.AUTHENTICATION_TYPE + " " + getToken())
                 .filter(document("space/post", getRequestPreprocessor(), getResponsePreprocessor()))
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(spaceCreateUpdateRequest)
+                .body(spaceCreateRequest)
                 .when().post(api)
                 .then().log().all().extract();
     }
@@ -210,7 +239,7 @@ public class SpaceControllerTest extends AcceptanceTest {
                 .given(getRequestSpecification()).log().all()
                 .accept("application/json")
                 .header("Authorization", AuthorizationExtractor.AUTHENTICATION_TYPE + " " + getToken())
-                .filter(document("space/get_all", getRequestPreprocessor(), getResponsePreprocessor()))
+                .filter(document("space/getAll", getRequestPreprocessor(), getResponsePreprocessor()))
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .when().get(api)
                 .then().log().all().extract();
@@ -224,6 +253,20 @@ public class SpaceControllerTest extends AcceptanceTest {
                 .filter(document("space/get", getRequestPreprocessor(), getResponsePreprocessor()))
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .when().get(api)
+                .then().log().all().extract();
+    }
+
+    private ExtractableResponse<Response> updateSpace(
+            final String api,
+            final SpaceCreateUpdateRequest spaceCreateUpdateRequest) {
+        return RestAssured
+                .given(getRequestSpecification()).log().all()
+                .accept("application/json")
+                .header("Authorization", AuthorizationExtractor.AUTHENTICATION_TYPE + " " + getToken())
+                .filter(document("space/put", getRequestPreprocessor(), getResponsePreprocessor()))
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .body(spaceCreateUpdateRequest)
+                .when().put(api)
                 .then().log().all().extract();
     }
 }

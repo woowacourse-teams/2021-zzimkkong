@@ -5,6 +5,7 @@ import com.woowacourse.zzimkkong.domain.Space;
 import com.woowacourse.zzimkkong.dto.space.*;
 import com.woowacourse.zzimkkong.exception.authorization.NoAuthorityOnMapException;
 import com.woowacourse.zzimkkong.exception.map.NoSuchMapException;
+import com.woowacourse.zzimkkong.exception.reservation.NoDataToUpdateException;
 import com.woowacourse.zzimkkong.exception.space.NoSuchSpaceException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -17,6 +18,7 @@ import java.util.Optional;
 import static com.woowacourse.zzimkkong.CommonFixture.*;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.BDDMockito.given;
@@ -24,7 +26,7 @@ import static org.mockito.BDDMockito.given;
 class SpaceServiceTest extends ServiceTest {
     @Autowired
     private SpaceService spaceService;
-    private SettingsRequest settingsRequest = new SettingsRequest(
+    private final SettingsRequest settingsRequest = new SettingsRequest(
             LocalTime.of(10, 0),
             LocalTime.of(22, 0),
             30,
@@ -39,6 +41,23 @@ class SpaceServiceTest extends ServiceTest {
             "우리집",
             "프론트 화이팅",
             settingsRequest,
+            "이미지 입니다"
+    );
+
+    private final SettingsRequest updateSettingsRequest = new SettingsRequest(
+            LocalTime.of(10, 0),
+            LocalTime.of(22, 0),
+            40,
+            60,
+            120,
+            true,
+            "Monday, Wednesday"
+    );
+    private final SpaceCreateUpdateRequest updateSpaceCreateUpdateRequest = new SpaceCreateUpdateRequest(
+            "백엔드 강의실",
+            "우리집",
+            "프론트 화이팅",
+            updateSettingsRequest,
             "이미지 입니다"
     );
 
@@ -156,6 +175,44 @@ class SpaceServiceTest extends ServiceTest {
 
         // when, then
         assertThatThrownBy(() -> spaceService.findAllSpace(LUTHER.getId(), new Member("sakjung@email.com", "test1234", "잠실")))
+                .isInstanceOf(NoAuthorityOnMapException.class);
+    }
+
+    @DisplayName("공간을 수정한다.")
+    @Test
+    void update() {
+        // given, when
+        given(maps.findById(anyLong()))
+                .willReturn(Optional.of(LUTHER));
+        given(spaces.findById(anyLong()))
+                .willReturn(Optional.of(BE));
+
+        // then
+        assertDoesNotThrow(() -> spaceService.updateSpace(
+                LUTHER.getId(),
+                BE.getId(),
+                updateSpaceCreateUpdateRequest,
+                POBI));
+
+        assertThat(BE.getReservationTimeUnit()).isEqualTo(updateSettingsRequest.getReservationTimeUnit());
+        assertThat(BE.getDisabledWeekdays()).isEqualTo(updateSettingsRequest.getDisabledWeekdays());
+    }
+
+    @DisplayName("공간 수정 요청 시, 해당 공간에 대한 권한이 없으면 수정할 수 없다.")
+    @Test
+    void updateNoAuthorityException() {
+        // given, when
+        given(maps.findById(anyLong()))
+                .willReturn(Optional.of(LUTHER));
+        given(spaces.findById(anyLong()))
+                .willReturn(Optional.of(BE));
+
+        // then
+        assertThatThrownBy(() -> spaceService.updateSpace(
+                LUTHER.getId(),
+                BE.getId(),
+                updateSpaceCreateUpdateRequest,
+                new Member("ara", "test1234", "hihi")))
                 .isInstanceOf(NoAuthorityOnMapException.class);
     }
 }

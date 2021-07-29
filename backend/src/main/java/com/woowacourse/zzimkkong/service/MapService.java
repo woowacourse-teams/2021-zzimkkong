@@ -47,10 +47,10 @@ public class MapService {
         Map saveMap = maps.save(new Map(
                 mapCreateUpdateRequest.getMapName(),
                 mapCreateUpdateRequest.getMapDrawing(),
-                mapCreateUpdateRequest.getMapImage().substring(0, 10),
+                mapCreateUpdateRequest.getMapImageSvg().substring(0, 10),
                 manager));
 
-        String thumbnailUrl = uploadPngToS3(mapCreateUpdateRequest.getMapImage(), saveMap.getId().toString());
+        String thumbnailUrl = uploadPngToS3(mapCreateUpdateRequest.getMapImageSvg(), saveMap.getId().toString());
         saveMap.updateImageUrl(thumbnailUrl);
 
         return MapCreateResponse.from(saveMap);
@@ -77,7 +77,7 @@ public class MapService {
 
         validateManagerOfMap(map, manager);
 
-        String thumbnailUrl = uploadPngToS3(mapCreateUpdateRequest.getMapImage(), map.getId().toString());
+        String thumbnailUrl = uploadPngToS3(mapCreateUpdateRequest.getMapImageSvg(), map.getId().toString());
 
         map.update(
                 mapCreateUpdateRequest.getMapName(),
