@@ -106,6 +106,7 @@ class SpaceServiceTest extends ServiceTest {
     }
 
     @DisplayName("공간 조회 시, spaceId를 가진 공간이 있다면 조회한다.")
+    @Test
     void find() {
         // given
         given(maps.findById(anyLong()))
@@ -120,9 +121,9 @@ class SpaceServiceTest extends ServiceTest {
         assertThat(actual).usingRecursiveComparison()
                 .isEqualTo(SpaceFindDetailResponse.from(BE));
     }
-
-    @Test
+    
     @DisplayName("공간 조회 시, spaceId에 맞는 공간이 없다면 예외를 발생시킨다.")
+    @Test
     void findFail() {
         // given
         given(maps.findById(anyLong()))
