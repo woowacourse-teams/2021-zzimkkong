@@ -33,7 +33,6 @@ public class ServiceTestFixture {
             .disabledWeekdays("Monday, Tuesday")
             .build();
 
-
     public static Space BE = new Space.Builder()
             .id(1L)
             .name("백엔드 강의실")

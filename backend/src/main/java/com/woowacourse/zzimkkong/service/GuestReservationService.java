@@ -78,7 +78,6 @@ public class GuestReservationService extends ReservationService {
                 .orElseThrow(NoSuchReservationException::new);
 
         checkCorrectPassword(reservation, reservationCreateUpdateWithPasswordRequest.getPassword());
-        doDirtyCheck(reservation, reservationCreateUpdateWithPasswordRequest, space);
         validateAvailability(space, reservationCreateUpdateWithPasswordRequest, reservation);
 
         reservation.update(reservationCreateUpdateWithPasswordRequest, space);

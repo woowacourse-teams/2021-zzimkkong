@@ -10,6 +10,7 @@ import com.woowacourse.zzimkkong.dto.map.MapFindResponse;
 import com.woowacourse.zzimkkong.exception.authorization.NoAuthorityOnMapException;
 import com.woowacourse.zzimkkong.exception.map.NoSuchMapException;
 import com.woowacourse.zzimkkong.exception.space.ReservationExistOnSpaceException;
+import com.woowacourse.zzimkkong.infrastructure.TimeConverter;
 import com.woowacourse.zzimkkong.infrastructure.S3Uploader;
 import com.woowacourse.zzimkkong.infrastructure.SvgConverter;
 import com.woowacourse.zzimkkong.repository.MapRepository;
@@ -30,18 +31,7 @@ public class MapService {
     private final ReservationRepository reservations;
     private final S3Uploader s3Uploader;
     private final SvgConverter svgConverter;
-
-    public MapService(final MapRepository maps,
-                      final SpaceRepository spaces,
-                      final ReservationRepository reservations,
-                      final S3Uploader s3Uploader,
-                      final SvgConverter svgConverter) {
-        this.maps = maps;
-        this.spaces = spaces;
-        this.reservations = reservations;
-        this.s3Uploader = s3Uploader;
-        this.svgConverter = svgConverter;
-    }
+    private final TimeConverter timeConverter;
 
     public MapCreateResponse saveMap(final MapCreateUpdateRequest mapCreateUpdateRequest, final Member manager) {
         Map saveMap = maps.save(new Map(
@@ -100,7 +90,7 @@ public class MapService {
         List<Space> findSpaces = spaces.findAllByMapId(mapId);
 
         boolean isExistReservationInAnySpace = findSpaces.stream()
-                .anyMatch(space -> reservations.existsBySpaceIdAndEndTimeAfter(space.getId(), LocalDateTime.now()));
+                .anyMatch(space -> reservations.existsBySpaceIdAndEndTimeAfter(space.getId(), timeConverter.getNow()));
 
         if (isExistReservationInAnySpace) {
             throw new ReservationExistOnSpaceException();

@@ -8,9 +8,12 @@ import com.woowacourse.zzimkkong.dto.space.*;
 import com.woowacourse.zzimkkong.exception.authorization.NoAuthorityOnMapException;
 import com.woowacourse.zzimkkong.exception.map.NoSuchMapException;
 import com.woowacourse.zzimkkong.exception.space.NoSuchSpaceException;
+import com.woowacourse.zzimkkong.exception.space.ReservationExistOnSpaceException;
+import com.woowacourse.zzimkkong.infrastructure.TimeConverter;
 import com.woowacourse.zzimkkong.infrastructure.S3Uploader;
 import com.woowacourse.zzimkkong.infrastructure.SvgConverter;
 import com.woowacourse.zzimkkong.repository.MapRepository;
+import com.woowacourse.zzimkkong.repository.ReservationRepository;
 import com.woowacourse.zzimkkong.repository.SpaceRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -25,17 +28,8 @@ public class SpaceService {
     private final SpaceRepository spaces;
     private final S3Uploader s3Uploader;
     private final SvgConverter svgConverter;
-
-    public SpaceService(
-            final MapRepository maps,
-            final SpaceRepository spaces,
-            final S3Uploader s3Uploader,
-            final SvgConverter svgConverter) {
-        this.maps = maps;
-        this.spaces = spaces;
-        this.s3Uploader = s3Uploader;
-        this.svgConverter = svgConverter;
-    }
+    private final ReservationRepository reservations;
+    private final TimeConverter timeConverter;\
 
     public SpaceCreateResponse saveSpace(
             final Long mapId,
@@ -95,8 +89,8 @@ public class SpaceService {
         Map map = maps.findById(mapId).orElseThrow(NoSuchMapException::new);
         validateAuthorityOnMap(manager, map);
 
-        List<Space> spaces = this.spaces.findAllByMapId(mapId);
-        return SpaceFindAllResponse.from(spaces);
+        List<Space> findAllSpaces = spaces.findAllByMapId(mapId);
+        return SpaceFindAllResponse.from(findAllSpaces);
     }
 
     public void updateSpace(
@@ -113,6 +107,22 @@ public class SpaceService {
         Space updateSpace = getUpdateSpace(spaceCreateUpdateRequest, map);
 
         space.update(updateSpace);
+    }
+
+    public void deleteSpace(
+            final Long mapId,
+            final Long spaceId,
+            final Member manager) {
+        Map map = maps.findById(mapId)
+                .orElseThrow(NoSuchMapException::new);
+        validateAuthorityOnMap(manager, map);
+
+        Space space = spaces.findById(spaceId)
+                .orElseThrow(NoSuchSpaceException::new);
+
+        validateReservationExistence(spaceId);
+
+        spaces.delete(space);
     }
 
     private Space getUpdateSpace(
@@ -142,7 +152,13 @@ public class SpaceService {
                 .build();
     }
 
-    private void validateAuthorityOnMap(final Member manager, final Map map) {  // todo 전반적으로 퍼져있는 validateAuthorityOnMap, validateManagerOfMap 중복 제거
+    private void validateReservationExistence(final Long spaceId) {
+        if (reservations.existsBySpaceIdAndEndTimeAfter(spaceId, timeConverter.getNow())) {
+            throw new ReservationExistOnSpaceException();
+        }
+    }
+
+    private void validateAuthorityOnMap(final Member manager, final Map map) {
         if (map.isNotOwnedBy(manager)) {
             throw new NoAuthorityOnMapException();
         }

@@ -40,6 +40,34 @@ public class Setting {
         this.disabledWeekdays = builder.disabledWeekdays;
     }
 
+    public LocalTime getAvailableStartTime() {
+        return availableStartTime;
+    }
+
+    public LocalTime getAvailableEndTime() {
+        return availableEndTime;
+    }
+
+    public Integer getReservationTimeUnit() {
+        return reservationTimeUnit;
+    }
+
+    public Integer getReservationMinimumTimeUnit() {
+        return reservationMinimumTimeUnit;
+    }
+
+    public Integer getReservationMaximumTimeUnit() {
+        return reservationMaximumTimeUnit;
+    }
+
+    public Boolean getReservationEnable() {
+        return reservationEnable;
+    }
+
+    public String getDisabledWeekdays() {
+        return disabledWeekdays;
+    }
+
     public static class Builder {
         private LocalTime availableStartTime = null;
         private LocalTime availableEndTime = null;
@@ -90,33 +118,5 @@ public class Setting {
         public Setting build() {
             return new Setting(this);
         }
-    }
-
-    public LocalTime getAvailableStartTime() {
-        return availableStartTime;
-    }
-
-    public LocalTime getAvailableEndTime() {
-        return availableEndTime;
-    }
-
-    public Integer getReservationTimeUnit() {
-        return reservationTimeUnit;
-    }
-
-    public Integer getReservationMinimumTimeUnit() {
-        return reservationMinimumTimeUnit;
-    }
-
-    public Integer getReservationMaximumTimeUnit() {
-        return reservationMaximumTimeUnit;
-    }
-
-    public Boolean getReservationEnable() {
-        return reservationEnable;
-    }
-
-    public String getDisabledWeekdays() {
-        return disabledWeekdays;
     }
 }

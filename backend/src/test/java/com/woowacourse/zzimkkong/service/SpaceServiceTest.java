@@ -5,11 +5,14 @@ import com.woowacourse.zzimkkong.domain.Space;
 import com.woowacourse.zzimkkong.dto.space.*;
 import com.woowacourse.zzimkkong.exception.authorization.NoAuthorityOnMapException;
 import com.woowacourse.zzimkkong.exception.map.NoSuchMapException;
+import com.woowacourse.zzimkkong.exception.reservation.NoDataToUpdateException;
 import com.woowacourse.zzimkkong.exception.space.NoSuchSpaceException;
+import com.woowacourse.zzimkkong.exception.space.ReservationExistOnSpaceException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.List;
 import java.util.Optional;
@@ -35,6 +38,8 @@ class SpaceServiceTest extends ServiceTest {
             true,
             "Monday, Tuesday"
     );
+
+    private final SpaceCreateUpdateRequest spaceCreateUpdateRequest = new SpaceCreateUpdateRequest(
 
     private SpaceCreateUpdateRequest spaceCreateUpdateRequest = new SpaceCreateUpdateRequest(
             "백엔드 강의실",
@@ -215,6 +220,62 @@ class SpaceServiceTest extends ServiceTest {
                 updateSpaceCreateUpdateRequest,
                 new Member("ara", "test1234", "hihi")))
                 .isInstanceOf(NoAuthorityOnMapException.class);
+    }
+
+    @DisplayName("공간 삭제 요청이 옳다면 삭제한다.")
+    @Test
+    void deleteReservation() {
+        //given
+        given(maps.findById(anyLong()))
+                .willReturn(Optional.of(LUTHER));
+        given(spaces.findById(anyLong()))
+                .willReturn(Optional.of(BE));
+        given(reservations.existsBySpaceIdAndEndTimeAfter(anyLong(), any(LocalDateTime.class)))
+                .willReturn(false);
+
+        //then
+        assertDoesNotThrow(() -> spaceService.deleteSpace(LUTHER.getId(), BE.getId(), POBI));
+    }
+
+    @DisplayName("공간 삭제 요청 시, 해당 맵의 관리자가 아니라면 오류가 발생한다.")
+    @Test
+    void deleteNoAuthorityException() {
+        //given
+        given(maps.findById(anyLong()))
+                .willReturn(Optional.of(LUTHER));
+
+        //then
+        assertThatThrownBy(() -> spaceService.deleteSpace(LUTHER.getId(), BE.getId(), new Member("bada@bada.com", "test1234", "woowacourse")))
+                .isInstanceOf(NoAuthorityOnMapException.class);
+    }
+
+    @DisplayName("공간 삭제 요청 시, 공간이 존재하지 않는다면 오류가 발생한다.")
+    @Test
+    void deleteNoSuchSpaceException() {
+        //given
+        given(maps.findById(anyLong()))
+                .willReturn(Optional.of(LUTHER));
+        given(spaces.findById(anyLong()))
+                .willReturn(Optional.empty());
+
+        //then
+        assertThatThrownBy(() -> spaceService.deleteSpace(LUTHER.getId(), BE.getId(), POBI))
+                .isInstanceOf(NoSuchSpaceException.class);
+    }
+
+    @DisplayName("공간 삭제 요청 시, 해당 공간에 예약이 존재한다면 오류가 발생한다.")
+    @Test
+    void deleteReservationExistException() {
+        //given
+        given(maps.findById(anyLong()))
+                .willReturn(Optional.of(LUTHER));
+        given(spaces.findById(anyLong()))
+                .willReturn(Optional.of(BE));
+        given(reservations.existsBySpaceIdAndEndTimeAfter(anyLong(), any(LocalDateTime.class)))
+                .willReturn(true);
+
+        assertThatThrownBy(() -> spaceService.deleteSpace(LUTHER.getId(), BE.getId(), POBI))
+                .isInstanceOf(ReservationExistOnSpaceException.class);
     }
 }
 

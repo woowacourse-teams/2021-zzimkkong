@@ -497,32 +497,6 @@ class GuestReservationServiceTest extends ServiceTest {
                 .isInstanceOf(ReservationPasswordException.class);
     }
 
-    @Test
-    @DisplayName("예약 수정 요청 시, 변경 사항이 존재하지 않으면 에러가 발생한다.")
-    void updateNothingChangedException() {
-        //given
-        given(maps.existsById(anyLong()))
-                .willReturn(true);
-        given(spaces.findById(anyLong()))
-                .willReturn(Optional.of(BE));
-        given(reservations.findById(anyLong()))
-                .willReturn(Optional.of(reservation));
-
-        //when
-        ReservationCreateUpdateWithPasswordRequest reservationCreateUpdateWithPasswordRequest = new ReservationCreateUpdateWithPasswordRequest(
-                1L,
-                reservation.getStartTime(),
-                reservation.getEndTime(),
-                reservation.getPassword(),
-                reservation.getUserName(),
-                reservation.getDescription()
-        );
-
-        //then
-        assertThatThrownBy(() -> guestReservationService.updateReservation(1L, 1L, reservationCreateUpdateWithPasswordRequest))
-                .isInstanceOf(NoDataToUpdateException.class);
-    }
-
     @ParameterizedTest
     @CsvSource(value = {"0:2", "59:70", "-10:10"}, delimiter = ':')
     @DisplayName("예약 수정 요청 시, 해당 시간에 예약이 존재하면 에러가 발생한다.")
