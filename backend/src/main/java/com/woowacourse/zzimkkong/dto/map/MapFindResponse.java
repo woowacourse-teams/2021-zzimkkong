@@ -24,7 +24,7 @@ public class MapFindResponse {
                 map.getId(),
                 map.getName(),
                 map.getMapDrawing(),
-                map.getMapImage()
+                map.getMapImageUrl()
         );
     }
 

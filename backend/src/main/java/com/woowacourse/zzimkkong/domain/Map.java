@@ -17,7 +17,7 @@ public class Map {
 
     @Column(nullable = false)
     @Lob
-    private String mapImage;
+    private String mapImageUrl;
 
     @ManyToOne
     @JoinColumn(name = "member_id", foreignKey = @ForeignKey(name = "fk_map_member"))
@@ -26,15 +26,15 @@ public class Map {
     protected Map() {
     }
 
-    public Map(Long id, String name, String mapDrawing, String mapImage, Member member) {
-        this(name, mapDrawing, mapImage, member);
+    public Map(Long id, String name, String mapDrawing, String mapImageUrl, Member member) {
+        this(name, mapDrawing, mapImageUrl, member);
         this.id = id;
     }
 
-    public Map(String name, String mapDrawing, String mapImage, Member member) {
+    public Map(String name, String mapDrawing, String mapImageUrl, Member member) {
         this.name = name;
         this.mapDrawing = mapDrawing;
-        this.mapImage = mapImage;
+        this.mapImageUrl = mapImageUrl;
         this.member = member;
     }
 
@@ -45,7 +45,7 @@ public class Map {
     public void update(String mapName, String mapDrawing, String mapImage) {
         this.name = mapName;
         this.mapDrawing = mapDrawing;
-        this.mapImage = mapImage;
+        this.mapImageUrl = mapImage;
     }
 
     public Long getId() {
@@ -64,7 +64,7 @@ public class Map {
         return mapDrawing;
     }
 
-    public String getMapImage() {
-        return mapImage;
+    public String getMapImageUrl() {
+        return mapImageUrl;
     }
 }
