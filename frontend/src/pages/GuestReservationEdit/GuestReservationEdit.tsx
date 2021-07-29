@@ -12,7 +12,7 @@ import ReservationListItem from 'components/ReservationListItem/ReservationListI
 import MESSAGE from 'constants/message';
 import REGEXP from 'constants/regexp';
 import RESERVATION from 'constants/reservation';
-import { PATH } from 'constants/routes';
+import PATH from 'constants/path';
 import useInput from 'hooks/useInput';
 import useReservations from 'hooks/useReservations';
 import { GuestMainState } from 'pages/GuestMain/GuestMain';

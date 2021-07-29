@@ -1,7 +1,7 @@
 import NotFoundImage from 'assets/images/notFound.png';
 import Header from 'components/Header/Header';
 import Layout from 'components/Layout/Layout';
-import { PATH } from 'constants/routes';
+import PATH from 'constants/path';
 import * as Styled from './NotFound.styles';
 
 const Main = (): JSX.Element => {
