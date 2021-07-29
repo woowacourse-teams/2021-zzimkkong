@@ -2,7 +2,6 @@ package com.woowacourse.zzimkkong.service;
 
 import com.woowacourse.zzimkkong.domain.Map;
 import com.woowacourse.zzimkkong.domain.Member;
-
 import com.woowacourse.zzimkkong.domain.Setting;
 import com.woowacourse.zzimkkong.domain.Space;
 import com.woowacourse.zzimkkong.dto.space.*;
@@ -27,11 +26,11 @@ public class SpaceService {
         this.spaces = spaceRepository;
     }
 
-    public SpaceCreateResponse saveSpace(final Long mapId, final SpaceCreateRequest spaceCreateRequest, final Member manager) {
+    public SpaceCreateResponse saveSpace(final Long mapId, final SpaceCreateUpdateRequest spaceCreateUpdateRequest, final Member manager) {
         Map map = maps.findById(mapId).orElseThrow(NoSuchMapException::new);
         validateAuthorityOnMap(manager, map);
 
-        SettingsRequest settingsRequest = spaceCreateRequest.getSettingsRequest();
+        SettingsRequest settingsRequest = spaceCreateUpdateRequest.getSettingsRequest();
 
         Setting setting = new Setting.Builder()
                 .availableStartTime(settingsRequest.getAvailableStartTime())
@@ -45,15 +44,15 @@ public class SpaceService {
 
         Space space = spaces.save(
                 new Space.Builder()
-                        .name(spaceCreateRequest.getSpaceName())
+                        .name(spaceCreateUpdateRequest.getSpaceName())
                         .textPosition(null)
                         .color(null)
                         .coordinate(null)
                         .map(map)
-                        .description(spaceCreateRequest.getDescription())
-                        .area(spaceCreateRequest.getArea())
+                        .description(spaceCreateUpdateRequest.getDescription())
+                        .area(spaceCreateUpdateRequest.getArea())
                         .setting(setting)
-                        .mapImage(spaceCreateRequest.getMapImage())
+                        .mapImage(spaceCreateUpdateRequest.getMapImage())
                         .build());
         return SpaceCreateResponse.from(space);
     }
@@ -76,6 +75,44 @@ public class SpaceService {
 
         List<Space> spaces = this.spaces.findAllByMapId(mapId);
         return SpaceFindAllResponse.from(spaces);
+    }
+
+    public void updateSpace(
+            final Long mapId,
+            final Long spaceId,
+            final SpaceCreateUpdateRequest spaceCreateUpdateRequest,
+            final Member manager) {
+        Map map = maps.findById(mapId).orElseThrow(NoSuchMapException::new);
+        validateAuthorityOnMap(manager, map);
+
+        Space space = spaces.findById(spaceId)
+                .orElseThrow(NoSuchSpaceException::new);
+        Space updateSpace = getUpdateSpace(spaceCreateUpdateRequest, map);
+
+        space.update(updateSpace);
+    }
+
+    private Space getUpdateSpace(final SpaceCreateUpdateRequest spaceCreateUpdateRequest, final Map map) {
+        SettingsRequest settingsRequest = spaceCreateUpdateRequest.getSettingsRequest();
+
+        Setting updateSetting = new Setting.Builder()
+                .availableStartTime(settingsRequest.getAvailableStartTime())
+                .availableEndTime(settingsRequest.getAvailableEndTime())
+                .reservationTimeUnit(settingsRequest.getReservationTimeUnit())
+                .reservationEnable(settingsRequest.getReservationEnable())
+                .reservationMinimumTimeUnit(settingsRequest.getReservationMinimumTimeUnit())
+                .reservationMaximumTimeUnit(settingsRequest.getReservationMaximumTimeUnit())
+                .disabledWeekdays(settingsRequest.getDisabledWeekdays())
+                .build();
+
+        return new Space.Builder()
+                .name(spaceCreateUpdateRequest.getSpaceName())
+                .map(map)
+                .description(spaceCreateUpdateRequest.getDescription())
+                .area(spaceCreateUpdateRequest.getArea())
+                .setting(updateSetting)
+                .mapImage(spaceCreateUpdateRequest.getMapImage())
+                .build();
     }
 
     private void validateAuthorityOnMap(final Member manager, final Map map) {

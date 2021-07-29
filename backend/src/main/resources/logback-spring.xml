@@ -18,7 +18,7 @@
         <include resource="appenders/console-appender.xml"/>
 
         <root level="INFO">
-            <appender-ref ref="CONSOLE_APPENDER" />
+            <appender-ref ref="CONSOLE_APPENDER"/>
         </root>
     </springProfile>
 
@@ -28,9 +28,9 @@
         <include resource="appenders/file-appender-warn.xml"/>
 
         <root level="WARN">
-            <appender-ref ref="CONSOLE_APPENDER" />
-            <appender-ref ref="FILE_APPENDER_ERROR" />
-            <appender-ref ref="FILE_APPENDER_WARN" />
+            <appender-ref ref="CONSOLE_APPENDER"/>
+            <appender-ref ref="FILE_APPENDER_ERROR"/>
+            <appender-ref ref="FILE_APPENDER_WARN"/>
         </root>
     </springProfile>
 </configuration>

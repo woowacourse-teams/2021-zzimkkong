@@ -34,7 +34,7 @@ public class Space {
     @Column(nullable = true)
     private String description;
 
-    @Column(nullable = false)
+    @Column(nullable = true)
     private String area;
 
     @Embedded
@@ -57,6 +57,15 @@ public class Space {
         this.area = builder.area;
         this.setting = builder.setting;
         this.mapImage = builder.mapImage;
+    }
+
+    public void update(final Space updateSpace) {
+        this.name = updateSpace.name;
+        this.map = updateSpace.map;
+        this.description = updateSpace.description;
+        this.area = updateSpace.area;
+        this.setting = updateSpace.setting;
+        this.mapImage = updateSpace.mapImage;
     }
 
     public Long getId() {
@@ -91,10 +100,6 @@ public class Space {
         return area;
     }
 
-    public String getMapImage() {
-        return mapImage;
-    }
-
     public LocalTime getAvailableEndTime() {
         return setting.getAvailableEndTime();
     }
@@ -123,6 +128,9 @@ public class Space {
         return setting.getDisabledWeekdays();
     }
 
+    public String getMapImage() {
+        return mapImage;
+    }
 
     public static class Builder {
         private Long id = null;
