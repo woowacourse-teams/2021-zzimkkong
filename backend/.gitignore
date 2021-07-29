@@ -8,7 +8,7 @@ build/
 !**/src/test/**/build/
 
 # aws config
-**/src/main/resources/config/
+#**/src/main/resources/config/
 
 ### STS ###
 .apt_generated
