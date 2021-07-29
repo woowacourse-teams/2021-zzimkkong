@@ -241,7 +241,7 @@ class SpaceServiceTest extends ServiceTest {
                 .willReturn(Optional.of(LUTHER));
 
         //then
-        assertThatThrownBy(() -> spaceService.deleteSpace(LUTHER.getId(), BE.getId(), new Member("bada", "bada", "bada")))
+        assertThatThrownBy(() -> spaceService.deleteSpace(LUTHER.getId(), BE.getId(), new Member("bada@bada.com", "test1234", "woowacourse")))
                 .isInstanceOf(NoAuthorityOnMapException.class);
     }
 
