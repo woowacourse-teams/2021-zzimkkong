@@ -12,9 +12,11 @@ public class Map {
     private String name;
 
     @Column(nullable = false)
+    @Lob
     private String mapDrawing;
 
     @Column(nullable = false)
+    @Lob
     private String mapImage;
 
     @ManyToOne
