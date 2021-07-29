@@ -29,7 +29,21 @@ public class SpaceService {
     private final S3Uploader s3Uploader;
     private final SvgConverter svgConverter;
     private final ReservationRepository reservations;
-    private final TimeConverter timeConverter;\
+    private final TimeConverter timeConverter;
+
+    public SpaceService(final MapRepository maps,
+                        final SpaceRepository spaces,
+                        final ReservationRepository reservations,
+                        final S3Uploader s3Uploader,
+                        final SvgConverter svgConverter,
+                        final TimeConverter timeConverter) {
+        this.maps = maps;
+        this.spaces = spaces;
+        this.reservations = reservations;
+        this.s3Uploader = s3Uploader;
+        this.svgConverter = svgConverter;
+        this.timeConverter = timeConverter;
+    }
 
     public SpaceCreateResponse saveSpace(
             final Long mapId,

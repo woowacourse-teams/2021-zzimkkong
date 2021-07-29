@@ -2,6 +2,8 @@ package com.woowacourse.zzimkkong.dto.space;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 
+import java.time.LocalTime;
+
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class SettingsRequest {
     private LocalTime availableStartTime = LocalTime.of(0, 0);

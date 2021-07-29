@@ -40,8 +40,6 @@ class SpaceServiceTest extends ServiceTest {
     );
 
     private final SpaceCreateUpdateRequest spaceCreateUpdateRequest = new SpaceCreateUpdateRequest(
-
-    private SpaceCreateUpdateRequest spaceCreateUpdateRequest = new SpaceCreateUpdateRequest(
             "백엔드 강의실",
             "우리집",
             SPACE_DRAWING,
