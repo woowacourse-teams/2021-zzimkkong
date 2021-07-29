@@ -19,7 +19,7 @@ public class CommonFixture {
     public static Map LUTHER = new Map(1L, "루터회관", "mapDrawingData", MAP_IMAGE_URL, POBI);
     public static Map SMALL_HOUSE = new Map(2L, "작은집", "mapDrawingData", MAP_IMAGE_URL, POBI);
 
-    public static final String DUMMY_SPACE_SVG = "<rect x=\"10\" y=\"10\" width=\"30\" height=\"30\"/>";
+    public static final String SPACE_SVG = "<rect x=\"10\" y=\"10\" width=\"30\" height=\"30\"/>";
 
     public static Setting BE_SETTING = new Setting.Builder()
             .availableStartTime(LocalTime.of(0, 0))
@@ -40,7 +40,7 @@ public class CommonFixture {
             .description("시니컬하네")
             .area("area")
             .setting(BE_SETTING)
-            .mapImage("이미지 입니다")
+            .mapImage(MAP_IMAGE_URL)
             .build();
 
     public static Setting FE_SETTING = new Setting.Builder()
@@ -62,7 +62,7 @@ public class CommonFixture {
             .description("시니컬하네")
             .area("area")
             .setting(FE_SETTING)
-            .mapImage("이미지 입니다")
+            .mapImage(MAP_IMAGE_URL)
             .build();
 
     public static final LocalDate TOMORROW = LocalDate.now().plusDays(1);
