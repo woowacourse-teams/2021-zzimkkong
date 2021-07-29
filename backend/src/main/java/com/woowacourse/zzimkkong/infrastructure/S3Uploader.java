@@ -29,7 +29,7 @@ public class S3Uploader {
         }
     }
 
-    private String putS3(File uploadFile, String fileName) {
+    private String putS3(final File uploadFile, final String fileName) {
         amazonS3.putObject(new PutObjectRequest(bucket, fileName, uploadFile));
         return amazonS3.getUrl(bucket, fileName).toString();
     }
