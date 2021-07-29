@@ -87,27 +87,32 @@ public class SpaceService {
 
         Space space = spaces.findById(spaceId)
                 .orElseThrow(NoSuchSpaceException::new);
+        Space updateSpace = getUpdateSpace(spaceCreateUpdateRequest, map);
 
+        space.update(updateSpace);
+    }
+
+    private Space getUpdateSpace(final SpaceCreateUpdateRequest spaceCreateUpdateRequest, final Map map) {
         SettingsRequest settingsRequest = spaceCreateUpdateRequest.getSettingsRequest();
 
-        Space updateSpace = new Space.Builder()
+        Setting updateSetting = new Setting.Builder()
+                .availableStartTime(settingsRequest.getAvailableStartTime())
+                .availableEndTime(settingsRequest.getAvailableEndTime())
+                .reservationTimeUnit(settingsRequest.getReservationTimeUnit())
+                .reservationEnable(settingsRequest.getReservationEnable())
+                .reservationMinimumTimeUnit(settingsRequest.getReservationMinimumTimeUnit())
+                .reservationMaximumTimeUnit(settingsRequest.getReservationMaximumTimeUnit())
+                .disabledWeekdays(settingsRequest.getDisabledWeekdays())
+                .build();
+
+        return new Space.Builder()
                 .name(spaceCreateUpdateRequest.getSpaceName())
                 .map(map)
                 .description(spaceCreateUpdateRequest.getDescription())
                 .area(spaceCreateUpdateRequest.getArea())
-                .setting(new Setting.Builder()
-                        .availableStartTime(settingsRequest.getAvailableStartTime())
-                        .availableEndTime(settingsRequest.getAvailableEndTime())
-                        .reservationTimeUnit(settingsRequest.getReservationTimeUnit())
-                        .reservationEnable(settingsRequest.getReservationEnable())
-                        .reservationMinimumTimeUnit(settingsRequest.getReservationMinimumTimeUnit())
-                        .reservationMaximumTimeUnit(settingsRequest.getReservationMaximumTimeUnit())
-                        .disabledWeekdays(settingsRequest.getDisabledWeekdays())
-                        .build())
+                .setting(updateSetting)
                 .mapImage(spaceCreateUpdateRequest.getMapImage())
                 .build();
-
-        space.update(updateSpace);
     }
 
     private void validateAuthorityOnMap(final Member manager, final Map map) {
