@@ -17,7 +17,7 @@ import Panel from 'components/Panel/Panel';
 import PinRadio from 'components/PinRadio/PinRadio';
 import ReservationListItem from 'components/ReservationListItem/ReservationListItem';
 import MESSAGE from 'constants/message';
-import { PATH } from 'constants/routes';
+import PATH from 'constants/path';
 import useInput from 'hooks/useInput';
 import useReservations from 'hooks/useReservations';
 import { Reservation, Space } from 'types/common';

@@ -10,7 +10,7 @@ import Layout from 'components/Layout/Layout';
 import MANAGER from 'constants/manager';
 import MESSAGE from 'constants/message';
 import REGEXP from 'constants/regexp';
-import { PATH } from 'constants/routes';
+import PATH from 'constants/path';
 import useInput from 'hooks/useInput';
 import * as Styled from './ManagerJoin.styles';
 
