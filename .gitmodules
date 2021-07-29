@@ -1,4 +1,8 @@
 [submodule "backend/src/main/resources/config"]
 	path = backend/src/main/resources/config
-	url = https://github.com/Zzimkkong-team/config.git
+	url = https://github.com/sakjung/config.git
+	branch = main
+[submodule "backend/config"]
+	path = backend/config
+	url = https://github.com/sakjung/config.git
 	branch = main
