@@ -47,7 +47,7 @@ public class MapService {
                 mapCreateUpdateRequest.getMapSvg().substring(0, 10),
                 manager));
 
-        String thumbnailUrl = uploadPngToS3(saveMap.getId().toString(), mapCreateUpdateRequest.getMapSvg());
+        String thumbnailUrl = uploadPngToS3(mapCreateUpdateRequest.getMapSvg(), saveMap.getId().toString());
         saveMap.updateImage(thumbnailUrl);
 
         return MapCreateResponse.from(saveMap);
@@ -74,7 +74,7 @@ public class MapService {
 
         validateManagerOfMap(map, manager);
 
-        String thumbnailUrl = uploadPngToS3(map.getId().toString(), mapCreateUpdateRequest.getMapSvg());
+        String thumbnailUrl = uploadPngToS3(mapCreateUpdateRequest.getMapSvg(), map.getId().toString());
 
         map.update(
                 mapCreateUpdateRequest.getMapName(),
@@ -88,8 +88,8 @@ public class MapService {
         }
     }
 
-    private String uploadPngToS3(String fileName, String svg) {
-        File pngFile = svgConverter.convertSvgToPng(fileName, svg);
+    private String uploadPngToS3(String svgData, String fileName) {
+        File pngFile = svgConverter.convertSvgToPngFile(svgData, fileName);
         String thumbnailUrl = s3Uploader.upload("thumbnails", pngFile);
         pngFile.delete();
         return thumbnailUrl;

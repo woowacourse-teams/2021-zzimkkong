@@ -3,7 +3,6 @@ package com.woowacourse.zzimkkong.controller;
 import com.woowacourse.zzimkkong.dto.SvgDto;
 import com.woowacourse.zzimkkong.infrastructure.S3Uploader;
 import com.woowacourse.zzimkkong.infrastructure.SvgConverter;
-import com.woowacourse.zzimkkong.service.MapService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -26,7 +25,7 @@ public class PracticeController {
 
     @PostMapping("/practice")
     public ResponseEntity<Void> create(@RequestBody SvgDto svgDto) {
-        File file = svgConverter.convertSvgToPng(svgDto.getName(), svgDto.getSvg());
+        File file = svgConverter.convertSvgToPngFile(svgDto.getSvg(), svgDto.getName());
         String url = s3Uploader.upload("practice", file);
         return ResponseEntity.created(URI.create(url)).build();
     }

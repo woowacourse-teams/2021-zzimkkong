@@ -1,28 +1,25 @@
 package com.woowacourse.zzimkkong.infrastructure;
 
+import com.woowacourse.zzimkkong.exception.infrastructure.SvgToPngConvertException;
+import org.apache.batik.transcoder.TranscoderException;
 import org.apache.batik.transcoder.TranscoderInput;
 import org.apache.batik.transcoder.TranscoderOutput;
 import org.apache.batik.transcoder.image.PNGTranscoder;
 import org.springframework.stereotype.Component;
 
-import java.io.ByteArrayInputStream;
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.OutputStream;
-import java.util.UUID;
+import java.io.*;
 
 @Component
 public class SvgConverter {
+    public static final String TEMPORAL_SAVE_DIRECTORY_PATH = "src/main/resources/tmp/";
 
-    public File convertSvgToPng(final String fileName, final String mapSvgData) {
+    public File convertSvgToPngFile(final String mapSvgData, final String fileName) {
         try {
-//            String tmpFileName = UUID.randomUUID().toString();
-            String tempFileName = "src/main/resources/tmp/" + fileName + ".png";
-
             ByteArrayInputStream svgInput = new ByteArrayInputStream(mapSvgData.getBytes());
             TranscoderInput transcoderInput = new TranscoderInput(svgInput);
 
-            OutputStream outputStream = new FileOutputStream(tempFileName);
+            String targetFileName = TEMPORAL_SAVE_DIRECTORY_PATH + fileName + ".png";
+            OutputStream outputStream = new FileOutputStream(targetFileName);
             TranscoderOutput transcoderOutput = new TranscoderOutput(outputStream);
 
             PNGTranscoder pngTranscoder = new PNGTranscoder();
@@ -31,10 +28,9 @@ public class SvgConverter {
             outputStream.flush();
             outputStream.close();
 
-            return new File(tempFileName);
-        } catch (Exception e) {
-            e.printStackTrace();
-            throw new IllegalArgumentException(e.getMessage());
+            return new File(targetFileName);
+        } catch (IOException | TranscoderException e) {
+            throw new SvgToPngConvertException(e);
         }
     }
 }

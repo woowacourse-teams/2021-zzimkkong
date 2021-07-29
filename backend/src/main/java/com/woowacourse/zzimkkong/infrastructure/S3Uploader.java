@@ -3,7 +3,7 @@ package com.woowacourse.zzimkkong.infrastructure;
 import com.amazonaws.AmazonClientException;
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.model.PutObjectRequest;
-import com.woowacourse.zzimkkong.exception.S3UploadException;
+import com.woowacourse.zzimkkong.exception.infrastructure.S3UploadException;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 

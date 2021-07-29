@@ -1,5 +1,6 @@
-package com.woowacourse.zzimkkong.exception;
+package com.woowacourse.zzimkkong.exception.infrastructure;
 
+import com.woowacourse.zzimkkong.exception.ZzimkkongException;
 import org.springframework.http.HttpStatus;
 
 public class S3UploadException extends ZzimkkongException {
