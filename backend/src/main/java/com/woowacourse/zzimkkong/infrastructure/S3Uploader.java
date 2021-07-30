@@ -24,8 +24,8 @@ public class S3Uploader {
 
         try {
             return putS3(uploadFile, fileName);
-        } catch (AmazonClientException e) {
-            throw new S3UploadException();
+        } catch (AmazonClientException exception) {
+            throw new S3UploadException(exception);
         }
     }
 

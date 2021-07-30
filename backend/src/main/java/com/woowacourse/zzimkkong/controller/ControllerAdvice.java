@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.exc.InvalidFormatException;
 import com.woowacourse.zzimkkong.dto.ErrorResponse;
 import com.woowacourse.zzimkkong.exception.ZzimkkongException;
 import com.woowacourse.zzimkkong.exception.authorization.AuthorizationException;
+import com.woowacourse.zzimkkong.exception.infrastructure.S3UploadException;
 import com.woowacourse.zzimkkong.exception.infrastructure.SvgToPngConvertException;
 import com.woowacourse.zzimkkong.exception.map.MapException;
 import com.woowacourse.zzimkkong.exception.member.MemberException;
@@ -56,6 +57,12 @@ public class ControllerAdvice {
     public ResponseEntity<ErrorResponse> invalidSvgToConvertHandler(final SvgToPngConvertException exception) {
         logger.warn(exception.getMessage(), exception);
         return ResponseEntity.badRequest().body(ErrorResponse.from(exception));
+    }
+
+    @ExceptionHandler(S3UploadException.class)
+    public ResponseEntity<ErrorResponse> uploadFailureHandler(final S3UploadException exception) {
+        logger.warn(exception.getMessage(), exception);
+        return ResponseEntity.internalServerError().body(ErrorResponse.from(exception));
     }
 
     @ExceptionHandler(DataAccessException.class)
