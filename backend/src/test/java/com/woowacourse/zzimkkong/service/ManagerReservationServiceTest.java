@@ -34,8 +34,8 @@ public class ManagerReservationServiceTest extends ServiceTest {
     private ManagerReservationService managerReservationService;
     private ReservationCreateUpdateWithPasswordRequest reservationCreateUpdateWithPasswordRequest = new ReservationCreateUpdateWithPasswordRequest(
             BE.getId(),
-            TOMORROW_START_TIME.plusHours(3),
-            TOMORROW_START_TIME.plusHours(4),
+            THE_DAY_AFTER_TOMORROW_START_TIME.plusHours(3),
+            THE_DAY_AFTER_TOMORROW_START_TIME.plusHours(4),
             RESERVATION_PASSWORD,
             USER_NAME,
             DESCRIPTION
@@ -149,8 +149,8 @@ public class ManagerReservationServiceTest extends ServiceTest {
         //given
         reservationCreateUpdateWithPasswordRequest = new ReservationCreateUpdateWithPasswordRequest(
                 BE.getId(),
-                TOMORROW_START_TIME.plusHours(3),
-                TOMORROW_START_TIME.minusHours(3),
+                THE_DAY_AFTER_TOMORROW_START_TIME.plusHours(3),
+                THE_DAY_AFTER_TOMORROW_START_TIME.minusHours(3),
                 RESERVATION_PASSWORD,
                 USER_NAME,
                 DESCRIPTION
@@ -173,8 +173,8 @@ public class ManagerReservationServiceTest extends ServiceTest {
         //given
         reservationCreateUpdateWithPasswordRequest = new ReservationCreateUpdateWithPasswordRequest(
                 BE.getId(),
-                TOMORROW_START_TIME,
-                TOMORROW_START_TIME,
+                THE_DAY_AFTER_TOMORROW_START_TIME,
+                THE_DAY_AFTER_TOMORROW_START_TIME,
                 RESERVATION_PASSWORD,
                 USER_NAME,
                 DESCRIPTION
@@ -197,8 +197,8 @@ public class ManagerReservationServiceTest extends ServiceTest {
         //given
         reservationCreateUpdateWithPasswordRequest = new ReservationCreateUpdateWithPasswordRequest(
                 BE.getId(),
-                TOMORROW_START_TIME,
-                TOMORROW_START_TIME.plusDays(1),
+                THE_DAY_AFTER_TOMORROW_START_TIME,
+                THE_DAY_AFTER_TOMORROW_START_TIME.plusDays(1),
                 RESERVATION_PASSWORD,
                 USER_NAME,
                 DESCRIPTION
@@ -300,7 +300,7 @@ public class ManagerReservationServiceTest extends ServiceTest {
 
         //then
         ReservationFindResponse reservationFindResponse = ReservationFindResponse.from(foundReservations);
-        assertThat(managerReservationService.findReservations(LUTHER.getId(), BE.getId(), TOMORROW))
+        assertThat(managerReservationService.findReservations(LUTHER.getId(), BE.getId(), THE_DAY_AFTER_TOMORROW))
                 .usingRecursiveComparison()
                 .isEqualTo(reservationFindResponse);
     }
@@ -312,7 +312,7 @@ public class ManagerReservationServiceTest extends ServiceTest {
         given(maps.existsById(anyLong()))
                 .willReturn(false);
         //then
-        assertThatThrownBy(() -> managerReservationService.findReservations(LUTHER.getId(), BE.getId(), TOMORROW))
+        assertThatThrownBy(() -> managerReservationService.findReservations(LUTHER.getId(), BE.getId(), THE_DAY_AFTER_TOMORROW))
                 .isInstanceOf(NoSuchMapException.class);
     }
 
@@ -325,7 +325,7 @@ public class ManagerReservationServiceTest extends ServiceTest {
         given(spaces.existsById(anyLong()))
                 .willReturn(false);
         //then
-        assertThatThrownBy(() -> managerReservationService.findReservations(LUTHER.getId(), BE.getId(), TOMORROW))
+        assertThatThrownBy(() -> managerReservationService.findReservations(LUTHER.getId(), BE.getId(), THE_DAY_AFTER_TOMORROW))
                 .isInstanceOf(NoSuchSpaceException.class);
     }
 
@@ -346,10 +346,10 @@ public class ManagerReservationServiceTest extends ServiceTest {
                 .willReturn(Collections.emptyList());
 
         //then
-        assertThat(managerReservationService.findReservations(LUTHER.getId(), BE.getId(), TOMORROW))
+        assertThat(managerReservationService.findReservations(LUTHER.getId(), BE.getId(), THE_DAY_AFTER_TOMORROW))
                 .usingRecursiveComparison()
                 .isEqualTo(ReservationFindResponse.from(Collections.emptyList()));
-        assertThat(managerReservationService.findAllReservations(LUTHER.getId(), TOMORROW))
+        assertThat(managerReservationService.findAllReservations(LUTHER.getId(), THE_DAY_AFTER_TOMORROW))
                 .usingRecursiveComparison()
                 .isEqualTo(ReservationFindAllResponse.from(Collections.emptyList()));
     }
@@ -392,7 +392,7 @@ public class ManagerReservationServiceTest extends ServiceTest {
 
         //then
         ReservationFindAllResponse reservationFindAllResponse = ReservationFindAllResponse.from(foundReservations);
-        assertThat(managerReservationService.findAllReservations(LUTHER.getId(), TOMORROW))
+        assertThat(managerReservationService.findAllReservations(LUTHER.getId(), THE_DAY_AFTER_TOMORROW))
                 .usingRecursiveComparison()
                 .isEqualTo(reservationFindAllResponse);
     }
@@ -471,8 +471,8 @@ public class ManagerReservationServiceTest extends ServiceTest {
         // when
         ReservationCreateUpdateRequest reservationCreateUpdateRequest = new ReservationCreateUpdateRequest(
                 BE.getId(),
-                TOMORROW_START_TIME.plusHours(20),
-                TOMORROW_START_TIME.plusHours(21),
+                THE_DAY_AFTER_TOMORROW_START_TIME.plusHours(20),
+                THE_DAY_AFTER_TOMORROW_START_TIME.plusHours(21),
                 CHANGED_NAME,
                 CHANGED_DESCRIPTION
         );
@@ -499,8 +499,8 @@ public class ManagerReservationServiceTest extends ServiceTest {
         //when
         ReservationCreateUpdateRequest reservationCreateUpdateRequest = new ReservationCreateUpdateRequest(
                 BE.getId(),
-                TOMORROW_START_TIME.plusHours(20),
-                TOMORROW_START_TIME.plusHours(21),
+                THE_DAY_AFTER_TOMORROW_START_TIME.plusHours(20),
+                THE_DAY_AFTER_TOMORROW_START_TIME.plusHours(21),
                 CHANGED_NAME,
                 CHANGED_DESCRIPTION
         );
@@ -641,8 +641,8 @@ public class ManagerReservationServiceTest extends ServiceTest {
     void deleteReservation() {
         //given, when
         Reservation reservationToDelete = makeReservation(
-                TOMORROW_START_TIME,
-                TOMORROW_START_TIME.plusHours(2),
+                THE_DAY_AFTER_TOMORROW_START_TIME,
+                THE_DAY_AFTER_TOMORROW_START_TIME.plusHours(2),
                 BE);
 
         given(maps.existsById(anyLong()))

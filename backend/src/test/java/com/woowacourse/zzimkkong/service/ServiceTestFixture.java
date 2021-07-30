@@ -61,16 +61,16 @@ public class ServiceTestFixture {
             .mapImage("이미지 입니다")
             .build();
 
-    public static final LocalDate TOMORROW = LocalDate.now().plusDays(1);
-    public static final LocalDateTime TOMORROW_START_TIME = LocalDate.now().plusDays(2L).atTime(10, 0);
+    public static final LocalDate THE_DAY_AFTER_TOMORROW = LocalDate.now().plusDays(2L);
+    public static final LocalDateTime THE_DAY_AFTER_TOMORROW_START_TIME = LocalDate.now().plusDays(2L).atTime(10, 0);
     public static final String DESCRIPTION = "찜꽁 1차 회의";
     public static final String USER_NAME = "찜꽁";
     public static final String RESERVATION_PASSWORD = "1234";
 
     public static Reservation BE_AM_ZERO_ONE = new Reservation.Builder()
             .id(1L)
-            .startTime(TOMORROW_START_TIME)
-            .endTime(TOMORROW_START_TIME.plusHours(1))
+            .startTime(THE_DAY_AFTER_TOMORROW_START_TIME)
+            .endTime(THE_DAY_AFTER_TOMORROW_START_TIME.plusHours(1))
             .description(DESCRIPTION)
             .userName(USER_NAME)
             .password(RESERVATION_PASSWORD)
@@ -79,11 +79,31 @@ public class ServiceTestFixture {
 
     public static Reservation BE_PM_ONE_TWO = new Reservation.Builder()
             .id(2L)
-            .startTime(TOMORROW.atTime(13, 0, 0))
-            .endTime(TOMORROW.atTime(14, 0, 0))
+            .startTime(THE_DAY_AFTER_TOMORROW.atTime(13, 0, 0))
+            .endTime(THE_DAY_AFTER_TOMORROW.atTime(14, 0, 0))
             .description("찜꽁 2차 회의")
             .userName(USER_NAME)
             .password(RESERVATION_PASSWORD)
             .space(BE)
+            .build();
+
+    public static Reservation BE_NEXT_DAY_PM_SIX_TWELVE = new Reservation.Builder()
+            .id(3L)
+            .startTime(THE_DAY_AFTER_TOMORROW.plusDays(1).atTime(18, 0, 0))
+            .endTime(THE_DAY_AFTER_TOMORROW.plusDays(1).atTime(23, 59, 59))
+            .description("찜꽁 3차 회의")
+            .userName(USER_NAME)
+            .password("6789")
+            .space(BE)
+            .build();
+
+    public static Reservation FE1_ZERO_ONE = new Reservation.Builder()
+            .id(4L)
+            .startTime(THE_DAY_AFTER_TOMORROW.atStartOfDay())
+            .endTime(THE_DAY_AFTER_TOMORROW.atTime(1, 0, 0))
+            .description("찜꽁 5차 회의")
+            .userName(USER_NAME)
+            .password(RESERVATION_PASSWORD)
+            .space(FE1)
             .build();
 }

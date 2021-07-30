@@ -18,6 +18,11 @@ public class CoordinateResponse {
     }
 
     public static CoordinateResponse from(String coordinate) {
+        // todo 컬럼 삭제할 때 삭제하기
+        if (coordinate == null) {
+            return null;
+        }
+
         List<Integer> coordinateSet = Arrays.stream(coordinate.split(", "))
                 .map(Integer::parseInt)
                 .collect(Collectors.toList());

@@ -45,4 +45,24 @@ public class ReservationResponse {
                 reservation.getDescription()
         );
     }
+
+    public Long getId() {
+        return id;
+    }
+
+    public LocalDateTime getStartDateTime() {
+        return startDateTime;
+    }
+
+    public LocalDateTime getEndDateTime() {
+        return endDateTime;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public String getDescription() {
+        return description;
+    }
 }

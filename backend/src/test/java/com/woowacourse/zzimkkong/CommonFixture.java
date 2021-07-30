@@ -67,6 +67,7 @@ public class CommonFixture {
             .setting(FE_SETTING)
             .mapImage("이미지 입니다")
             .build();
+
     public static Reservation BE_AM_ZERO_ONE = new Reservation.Builder()
             .startTime(TOMORROW_START_TIME)
             .endTime(TOMORROW_START_TIME.plusHours(1))
