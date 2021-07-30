@@ -1,4 +1,4 @@
-import { Reservation, Space } from './common';
+import { Reservation, Space, SpaceReservation } from './common';
 
 export interface ErrorResponse {
   message?: string;
@@ -7,6 +7,10 @@ export interface ErrorResponse {
 
 export interface LoginSuccess {
   accessToken: string;
+}
+
+export interface QueryManagerReservationsSuccess {
+  data: SpaceReservation[];
 }
 
 export interface QueryReservationsSuccess {

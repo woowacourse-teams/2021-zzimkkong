@@ -16,7 +16,11 @@ export interface Reservation {
 export interface Space {
   spaceId: number;
   spaceName: string;
-  color: Color;
+  spaceColor: Color;
   textPosition: 'left' | 'right' | 'top' | 'bottom';
   coordinate: Coordinate;
+}
+
+export interface SpaceReservation extends Space {
+  reservations: Reservation[];
 }

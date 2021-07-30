@@ -10,12 +10,21 @@ import Layout from 'components/Layout/Layout';
 import Panel from 'components/Panel/Panel';
 import ReservationListItem from 'components/ReservationListItem/ReservationListItem';
 import SpaceListItem from 'components/SpaceListItem/SpaceListItem';
-import { Reservation } from 'types/common';
+import { Reservation, SpaceReservation } from 'types/common';
 import * as Styled from './ManagerMain.styles';
+import useManagerReservations from 'hooks/useManagerReservations';
+import { formatDate } from 'utils/datetime';
 
 const ManagerMain = (): JSX.Element => {
+  const mapId = 1;
   const [date, setDate] = useState(new Date());
   const [open, setOpen] = useState(false);
+
+  const getReservations = useManagerReservations({
+    mapId,
+    date: formatDate(date),
+  });
+  const reservations = getReservations.data?.data?.data ?? [];
 
   const onOpen = () => {
     setOpen(true);
@@ -70,69 +79,6 @@ const ManagerMain = (): JSX.Element => {
     },
   ];
 
-  const data = [
-    {
-      spaceId: 1,
-      spaceName: '회의실 1',
-      spaceColor: '#ffc757',
-      reservations: [
-        {
-          id: 1,
-          name: '썬',
-          description: '태양을 피하는 방법',
-          startDateTime: '2021-07-23T12:00',
-          endDateTime: '2021-07-23T13:00',
-        },
-        {
-          id: 2,
-          name: '체프',
-          description: '커피를 맛있게 마시는 방법',
-          startDateTime: '2021-07-23T13:00',
-          endDateTime: '2021-07-23T15:00',
-        },
-        {
-          id: 3,
-          name: '유조',
-          description: 'Tailwind CSS 가이드',
-          startDateTime: '2021-07-23T15:00',
-          endDateTime: '2021-07-23T16:00',
-        },
-      ],
-    },
-    {
-      spaceId: 2,
-      spaceName: '회의실 2',
-      spaceColor: '#ffc757',
-      reservations: [],
-    },
-    {
-      spaceId: 3,
-      spaceName: '회의실 3',
-      spaceColor: '#ffc757',
-      reservations: [],
-    },
-    {
-      spaceId: 4,
-      spaceName: '백엔드 강의장',
-      spaceColor: '#fda3a7',
-      reservations: [],
-    },
-    {
-      spaceId: 5,
-      spaceName: '프론트엔드 강의장',
-      spaceColor: '#fda3a7',
-      reservations: [
-        {
-          id: 1,
-          name: '체프',
-          description: '핸드드립 내리는 방법',
-          startDateTime: '2021-07-23T15:00',
-          endDateTime: '2021-07-23T16:00',
-        },
-      ],
-    },
-  ];
-
   return (
     <>
       <Header />
@@ -150,34 +96,40 @@ const ManagerMain = (): JSX.Element => {
           <DateInput date={date} setDate={setDate} />
         </Styled.DateInputWrapper>
         <Styled.SpaceList>
-          {data.map(({ spaceId, spaceName, spaceColor, reservations }, index) => (
-            <Styled.SpaceReservationWrapper key={`space-${spaceId}`}>
-              <Panel expandable initialExpanded={!index}>
-                <Panel.Header dotColor={spaceColor}>
-                  <Panel.Title>{spaceName}</Panel.Title>
-                </Panel.Header>
-                <Panel.Content>
-                  {reservations.length === 0 ? (
-                    <Styled.PanelMessage>등록된 예약이 없습니다</Styled.PanelMessage>
-                  ) : (
-                    <>
-                      {reservations.map((reservation) => (
-                        <ReservationListItem
-                          key={`reservation-${reservation.id}`}
-                          reservation={reservation as Reservation}
-                          control={
-                            <IconButton>
-                              <MoreIcon width="100%" height="100%" />
-                            </IconButton>
-                          }
-                        />
-                      ))}
-                    </>
-                  )}
-                </Panel.Content>
-              </Panel>
-            </Styled.SpaceReservationWrapper>
-          ))}
+          {reservations &&
+            reservations.map(
+              (
+                { spaceId, spaceName, spaceColor, reservations }: SpaceReservation,
+                index: number
+              ) => (
+                <Styled.SpaceReservationWrapper key={`space-${spaceId}`}>
+                  <Panel expandable initialExpanded={!index}>
+                    <Panel.Header dotColor={spaceColor}>
+                      <Panel.Title>{spaceName}</Panel.Title>
+                    </Panel.Header>
+                    <Panel.Content>
+                      {reservations.length === 0 ? (
+                        <Styled.PanelMessage>등록된 예약이 없습니다</Styled.PanelMessage>
+                      ) : (
+                        <>
+                          {reservations.map((reservation) => (
+                            <ReservationListItem
+                              key={`reservation-${reservation.id}`}
+                              reservation={reservation as Reservation}
+                              control={
+                                <IconButton>
+                                  <MoreIcon width="100%" height="100%" />
+                                </IconButton>
+                              }
+                            />
+                          ))}
+                        </>
+                      )}
+                    </Panel.Content>
+                  </Panel>
+                </Styled.SpaceReservationWrapper>
+              )
+            )}
         </Styled.SpaceList>
       </Layout>
 

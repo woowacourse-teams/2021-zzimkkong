@@ -132,7 +132,7 @@ const GuestMain = (): JSX.Element => {
           </Styled.MapContainer>
           <Styled.PanelContainer>
             <Panel>
-              <Panel.Header dotColor={selectedSpace.color}>
+              <Panel.Header dotColor={selectedSpace.spaceColor}>
                 <Panel.Title>{selectedSpace.spaceName}</Panel.Title>
               </Panel.Header>
               <Panel.Content>
