@@ -89,6 +89,10 @@ public abstract class ReservationService {
         LocalDateTime startDateTime = reservationCreateUpdateRequest.getStartDateTime();
         LocalDateTime endDateTime = reservationCreateUpdateRequest.getEndDateTime();
 
+        if (space.isBetweenAvailableTime(startDateTime, endDateTime)) {
+            throw new ConflictSpaceSettingException();
+        }
+
         List<Reservation> reservationsOnDate = getReservations(
                 Collections.singletonList(space.getId()),
                 startDateTime.toLocalDate());
@@ -96,12 +100,6 @@ public abstract class ReservationService {
         excludeTargetReservation(space, reservation, reservationsOnDate);
 
         validateTimeConflicts(startDateTime, endDateTime, reservationsOnDate);
-    }
-
-    private void excludeTargetReservation(final Space space, final Reservation reservation, final List<Reservation> reservationsOnDate) {
-        if (reservation.getSpace().equals(space)) {
-            reservationsOnDate.remove(reservation);
-        }
     }
 
     protected void validateAvailability(
@@ -119,6 +117,12 @@ public abstract class ReservationService {
                 startDateTime.toLocalDate());
 
         validateTimeConflicts(startDateTime, endDateTime, reservationsOnDate);
+    }
+
+    private void excludeTargetReservation(final Space space, final Reservation reservation, final List<Reservation> reservationsOnDate) {
+        if (reservation.getSpace().equals(space)) {
+            reservationsOnDate.remove(reservation);
+        }
     }
 
     private void validateTimeConflicts(
