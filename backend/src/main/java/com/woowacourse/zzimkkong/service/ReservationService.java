@@ -16,7 +16,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.ZonedDateTime;
+import java.time.LocalTime;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
@@ -109,6 +109,10 @@ public abstract class ReservationService {
             final ReservationCreateUpdateRequest reservationCreateUpdateRequest) {
         LocalDateTime startDateTime = reservationCreateUpdateRequest.getStartDateTime();
         LocalDateTime endDateTime = reservationCreateUpdateRequest.getEndDateTime();
+
+        if (space.isBetweenAvailableTime(startDateTime, endDateTime)) {
+            throw new ConflictSpaceSettingException();
+        }
 
         List<Reservation> reservationsOnDate = getReservations(
                 Collections.singletonList(space.getId()),
