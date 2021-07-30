@@ -1,5 +1,5 @@
 import { ReactElement } from 'react';
-import * as Styled from './SpaceListItem.styles';
+import * as Styled from './MapListItem.styles';
 
 export interface Props {
   thumbnail: {
@@ -10,7 +10,7 @@ export interface Props {
   control?: ReactElement;
 }
 
-const SpaceListItem = ({ thumbnail, title, control }: Props): JSX.Element => {
+const MapListItem = ({ thumbnail, title, control }: Props): JSX.Element => {
   return (
     <Styled.Container role="listitem">
       <Styled.ImageWrapper>
@@ -24,4 +24,4 @@ const SpaceListItem = ({ thumbnail, title, control }: Props): JSX.Element => {
   );
 };
 
-export default SpaceListItem;
+export default MapListItem;

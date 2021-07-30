@@ -1,14 +1,14 @@
 import { Story } from '@storybook/react';
 import { ReactComponent as MoreIcon } from 'assets/svg/more.svg';
 import IconButton from 'components/IconButton/IconButton';
-import SpaceListItem, { Props } from './SpaceListItem';
+import MapListItem, { Props } from './MapListItem';
 
 export default {
   title: 'shared/SpaceListItem',
-  component: SpaceListItem,
+  component: MapListItem,
 };
 
-const Template: Story<Props> = (args) => <SpaceListItem {...args} />;
+const Template: Story<Props> = (args) => <MapListItem {...args} />;
 
 const thumbnail = {
   src: './images/luther.png',
