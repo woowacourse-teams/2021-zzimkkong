@@ -37,7 +37,7 @@ class MapServiceTest extends ServiceTest {
         //when
         given(maps.save(any(Map.class)))
                 .willReturn(LUTHER);
-        given(s3Uploader.upload(anyString(), any(File.class)))
+        given(storageUploader.upload(anyString(), any(File.class)))
                 .willReturn(MAP_IMAGE_URL);
 
         //then
@@ -83,7 +83,7 @@ class MapServiceTest extends ServiceTest {
         MapCreateUpdateRequest mapCreateUpdateRequest = new MapCreateUpdateRequest("이름을 바꿔요", LUTHER.getMapDrawing(), MAP_SVG);
         given(maps.findById(anyLong()))
                 .willReturn(Optional.of(LUTHER));
-        given(s3Uploader.upload(anyString(), any(File.class)))
+        given(storageUploader.upload(anyString(), any(File.class)))
                 .willReturn(MAP_IMAGE_URL);
 
         //when, then

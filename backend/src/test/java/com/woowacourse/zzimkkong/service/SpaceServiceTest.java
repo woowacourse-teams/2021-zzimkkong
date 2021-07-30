@@ -73,7 +73,7 @@ class SpaceServiceTest extends ServiceTest {
                 .willReturn(Optional.of(LUTHER));
         given(spaces.save(any(Space.class)))
                 .willReturn(BE);
-        given(s3Uploader.upload(anyString(), any(File.class)))
+        given(storageUploader.upload(anyString(), any(File.class)))
                 .willReturn(MAP_IMAGE_URL);
 
         // when
@@ -193,7 +193,7 @@ class SpaceServiceTest extends ServiceTest {
                 .willReturn(Optional.of(LUTHER));
         given(spaces.findById(anyLong()))
                 .willReturn(Optional.of(BE));
-        given(s3Uploader.upload(anyString(), any(File.class)))
+        given(storageUploader.upload(anyString(), any(File.class)))
                 .willReturn(MAP_IMAGE_URL);
 
         // then

@@ -10,7 +10,7 @@ import org.springframework.stereotype.Component;
 import java.io.File;
 
 @Component
-public class S3Uploader {
+public class S3Uploader implements StorageUploader {
     private final AmazonS3 amazonS3;
     private final String bucket;
 

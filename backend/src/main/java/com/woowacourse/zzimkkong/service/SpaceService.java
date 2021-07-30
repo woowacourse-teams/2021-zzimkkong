@@ -9,7 +9,7 @@ import com.woowacourse.zzimkkong.exception.authorization.NoAuthorityOnMapExcepti
 import com.woowacourse.zzimkkong.exception.map.NoSuchMapException;
 import com.woowacourse.zzimkkong.exception.space.NoSuchSpaceException;
 import com.woowacourse.zzimkkong.exception.space.ReservationExistOnSpaceException;
-import com.woowacourse.zzimkkong.infrastructure.S3Uploader;
+import com.woowacourse.zzimkkong.infrastructure.StorageUploader;
 import com.woowacourse.zzimkkong.infrastructure.SvgConverter;
 import com.woowacourse.zzimkkong.infrastructure.TimeConverter;
 import com.woowacourse.zzimkkong.repository.MapRepository;
@@ -26,7 +26,7 @@ import java.util.List;
 public class SpaceService {
     private final MapRepository maps;
     private final SpaceRepository spaces;
-    private final S3Uploader s3Uploader;
+    private final StorageUploader storageUploader;
     private final SvgConverter svgConverter;
     private final ReservationRepository reservations;
     private final TimeConverter timeConverter;
@@ -35,13 +35,13 @@ public class SpaceService {
             final MapRepository maps,
             final SpaceRepository spaces,
             final ReservationRepository reservations,
-            final S3Uploader s3Uploader,
+            final StorageUploader storageUploader,
             final SvgConverter svgConverter,
             final TimeConverter timeConverter) {
         this.maps = maps;
         this.spaces = spaces;
         this.reservations = reservations;
-        this.s3Uploader = s3Uploader;
+        this.storageUploader = storageUploader;
         this.svgConverter = svgConverter;
         this.timeConverter = timeConverter;
     }
@@ -182,7 +182,7 @@ public class SpaceService {
 
     private String uploadSvgAsPngToS3(final String svgData, final String fileName) { // todo MapService와의 중복 제거
         File pngFile = svgConverter.convertSvgToPngFile(svgData, fileName);
-        String thumbnailUrl = s3Uploader.upload("thumbnails", pngFile);
+        String thumbnailUrl = storageUploader.upload("thumbnails", pngFile);
         pngFile.delete();
         return thumbnailUrl;
     }
