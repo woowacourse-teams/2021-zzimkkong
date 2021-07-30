@@ -128,7 +128,7 @@ public abstract class ReservationService {
         }
     }
 
-    private List<Reservation> getReservations(final Collection<Long> spaceIds, final LocalDate date) {
+    protected List<Reservation> getReservations(final Collection<Long> spaceIds, final LocalDate date) {
         LocalDateTime minimumDateTime = date.atStartOfDay();
         LocalDateTime maximumDateTime = minimumDateTime.plusDays(ONE_DAY);
 
@@ -148,7 +148,7 @@ public abstract class ReservationService {
         }
     }
 
-    private void validateSpaceExistence(final Long spaceId) {
+    protected void validateSpaceExistence(final Long spaceId) {
         if (!spaces.existsById(spaceId)) {
             throw new NoSuchSpaceException();
         }

@@ -305,55 +305,6 @@ public class ManagerReservationServiceTest extends ServiceTest {
                 .isEqualTo(reservationFindResponse);
     }
 
-    @DisplayName("특정 공간 예약 조회 요청 시, 해당하는 맵이 없으면 오류가 발생한다.")
-    @Test
-    void findReservationsNotExistMap() {
-        //given, when
-        given(maps.existsById(anyLong()))
-                .willReturn(false);
-        //then
-        assertThatThrownBy(() -> managerReservationService.findReservations(LUTHER.getId(), BE.getId(), TOMORROW))
-                .isInstanceOf(NoSuchMapException.class);
-    }
-
-    @DisplayName("특정 공간 예약 조회 요청 시, 해당하는 공간이 없으면 오류가 발생한다.")
-    @Test
-    void findReservationsNotExistSpace() {
-        //given, when
-        given(maps.existsById(anyLong()))
-                .willReturn(true);
-        given(spaces.existsById(anyLong()))
-                .willReturn(false);
-        //then
-        assertThatThrownBy(() -> managerReservationService.findReservations(LUTHER.getId(), BE.getId(), TOMORROW))
-                .isInstanceOf(NoSuchSpaceException.class);
-    }
-
-    @DisplayName("전체 예약이나 특정 공간 예약 조회 요청 시, 해당하는 예약이 없으면 빈 정보가 조회된다.")
-    @Test
-    void findEmptyReservations() {
-        //given, when
-        given(maps.existsById(anyLong()))
-                .willReturn(true);
-        given(spaces.existsById(anyLong()))
-                .willReturn(true);
-        given(reservations.findAllBySpaceIdInAndStartTimeIsBetweenAndEndTimeIsBetween(
-                anyList(),
-                any(LocalDateTime.class),
-                any(LocalDateTime.class),
-                any(LocalDateTime.class),
-                any(LocalDateTime.class)))
-                .willReturn(Collections.emptyList());
-
-        //then
-        assertThat(managerReservationService.findReservations(LUTHER.getId(), BE.getId(), TOMORROW))
-                .usingRecursiveComparison()
-                .isEqualTo(ReservationFindResponse.from(Collections.emptyList()));
-        assertThat(managerReservationService.findAllReservations(LUTHER.getId(), TOMORROW))
-                .usingRecursiveComparison()
-                .isEqualTo(ReservationFindAllResponse.from(Collections.emptyList()));
-    }
-
     @DisplayName("전체 예약 조회 요청 시, 올바른 mapId, 날짜를 입력하면 해당 날짜에 존재하는 모든 예약 정보가 조회된다.")
     @Test
     void findAllReservation() {
@@ -395,6 +346,99 @@ public class ManagerReservationServiceTest extends ServiceTest {
         assertThat(managerReservationService.findAllReservations(LUTHER.getId(), TOMORROW))
                 .usingRecursiveComparison()
                 .isEqualTo(reservationFindAllResponse);
+    }
+
+    @DisplayName("전체 예약 조회 요청 시, 맵의 소유자가 아니면 오류가 발생한다.")
+    @Test
+    void findAllReservationsNotOwner() {
+        //given, when
+        given(maps.findById(anyLong()))
+                .willReturn(Optional.of(LUTHER));
+        given(spaces.findAllByMapId(anyLong()))
+                .willReturn(List.of(BE, FE1));
+        given(reservations.findAllBySpaceIdInAndStartTimeIsBetweenAndEndTimeIsBetween(
+                anyList(),
+                any(LocalDateTime.class),
+                any(LocalDateTime.class),
+                any(LocalDateTime.class),
+                any(LocalDateTime.class)))
+                .willReturn(List.of(BE_AM_ZERO_ONE, BE_PM_ONE_TWO));
+
+        //then
+        assertThatThrownBy(() -> managerReservationService.findAllReservations(LUTHER.getId(), TOMORROW, JASON))
+                .isInstanceOf(NoAuthorityOnMapException.class);
+    }
+
+
+    @DisplayName("특정 날짜의 예약 조회 요청 시, 맵의 소유자가 아니면 오류가 발생한다.")
+    @Test
+    void findReservationsNotOwner() {
+        //given, when
+        given(maps.findById(anyLong()))
+                .willReturn(Optional.of(LUTHER));
+        given(spaces.existsById(anyLong()))
+                .willReturn(true);
+        given(reservations.findAllBySpaceIdInAndStartTimeIsBetweenAndEndTimeIsBetween(
+                anyList(),
+                any(LocalDateTime.class),
+                any(LocalDateTime.class),
+                any(LocalDateTime.class),
+                any(LocalDateTime.class)))
+                .willReturn(List.of(BE_AM_ZERO_ONE, BE_PM_ONE_TWO));
+
+        //then
+        assertThatThrownBy(() -> managerReservationService.findReservations(LUTHER.getId(), BE.getId(), TOMORROW, JASON))
+                .isInstanceOf(NoAuthorityOnMapException.class);
+    }
+
+    @DisplayName("특정 공간 예약 조회 요청 시, 해당하는 맵이 없으면 오류가 발생한다.")
+    @Test
+    void findReservationsNotExistMap() {
+        //given, when
+        given(maps.existsById(anyLong()))
+                .willReturn(false);
+
+        //then
+        assertThatThrownBy(() -> managerReservationService.findReservations(LUTHER.getId(), BE.getId(), TOMORROW))
+                .isInstanceOf(NoSuchMapException.class);
+    }
+
+    @DisplayName("특정 공간 예약 조회 요청 시, 해당하는 공간이 없으면 오류가 발생한다.")
+    @Test
+    void findReservationsNotExistSpace() {
+        //given, when
+        given(maps.existsById(anyLong()))
+                .willReturn(true);
+        given(spaces.existsById(anyLong()))
+                .willReturn(false);
+        //then
+        assertThatThrownBy(() -> managerReservationService.findReservations(LUTHER.getId(), BE.getId(), TOMORROW))
+                .isInstanceOf(NoSuchSpaceException.class);
+    }
+
+    @DisplayName("전체 예약이나 특정 공간 예약 조회 요청 시, 해당하는 예약이 없으면 빈 정보가 조회된다.")
+    @Test
+    void findEmptyReservations() {
+        //given, when
+        given(maps.existsById(anyLong()))
+                .willReturn(true);
+        given(spaces.existsById(anyLong()))
+                .willReturn(true);
+        given(reservations.findAllBySpaceIdInAndStartTimeIsBetweenAndEndTimeIsBetween(
+                anyList(),
+                any(LocalDateTime.class),
+                any(LocalDateTime.class),
+                any(LocalDateTime.class),
+                any(LocalDateTime.class)))
+                .willReturn(Collections.emptyList());
+
+        //then
+        assertThat(managerReservationService.findReservations(LUTHER.getId(), BE.getId(), TOMORROW))
+                .usingRecursiveComparison()
+                .isEqualTo(ReservationFindResponse.from(Collections.emptyList()));
+        assertThat(managerReservationService.findAllReservations(LUTHER.getId(), TOMORROW))
+                .usingRecursiveComparison()
+                .isEqualTo(ReservationFindAllResponse.from(Collections.emptyList()));
     }
 
     @DisplayName("예약 수정을 위한 예약 조회 요청 시, 해당 예약을 반환한다.")

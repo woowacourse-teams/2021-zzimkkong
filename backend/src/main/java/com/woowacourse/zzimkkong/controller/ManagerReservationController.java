@@ -2,18 +2,19 @@ package com.woowacourse.zzimkkong.controller;
 
 import com.woowacourse.zzimkkong.domain.Manager;
 import com.woowacourse.zzimkkong.domain.Member;
-import com.woowacourse.zzimkkong.dto.reservation.ReservationCreateResponse;
-import com.woowacourse.zzimkkong.dto.reservation.ReservationCreateUpdateRequest;
-import com.woowacourse.zzimkkong.dto.reservation.ReservationCreateUpdateWithPasswordRequest;
-import com.woowacourse.zzimkkong.dto.reservation.ReservationResponse;
+import com.woowacourse.zzimkkong.dto.reservation.*;
 import com.woowacourse.zzimkkong.dto.slack.SlackResponse;
 import com.woowacourse.zzimkkong.service.ManagerReservationService;
 import com.woowacourse.zzimkkong.service.SlackService;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.net.URI;
+import java.time.LocalDate;
+
+import static com.woowacourse.zzimkkong.dto.Validator.DATE_FORMAT;
 
 @RestController
 @RequestMapping("/api/managers/maps/{mapId}")
@@ -38,6 +39,26 @@ public class ManagerReservationController extends ReservationController<ManagerR
                 .created(URI.create("/api/managers/maps/" + mapId + "/reservations/" + reservationCreateResponse.getId()))
                 .build();
     }
+
+    @GetMapping("/reservations")
+    public ResponseEntity<ReservationFindAllResponse> findAll(
+            @PathVariable final Long mapId,
+            @RequestParam @DateTimeFormat(pattern = DATE_FORMAT) final LocalDate date,
+            @Manager final Member manager) {
+        ReservationFindAllResponse reservationFindAllResponse = reservationService.findAllReservations(mapId, date, manager);
+        return ResponseEntity.ok().body(reservationFindAllResponse);
+    }
+
+    @GetMapping("/spaces/{spaceId}/reservations")
+    public ResponseEntity<ReservationFindResponse> find(
+            @PathVariable final Long mapId,
+            @PathVariable final Long spaceId,
+            @RequestParam @DateTimeFormat(pattern = DATE_FORMAT) final LocalDate date,
+            @Manager final Member manager) {
+        ReservationFindResponse reservationFindResponse = reservationService.findReservations(mapId, spaceId, date, manager);
+        return ResponseEntity.ok().body(reservationFindResponse);
+    }
+
 
     @GetMapping("/reservations/{reservationId}")
     public ResponseEntity<ReservationResponse> findOne(

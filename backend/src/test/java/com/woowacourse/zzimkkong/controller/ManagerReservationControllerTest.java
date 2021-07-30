@@ -154,15 +154,44 @@ public class ManagerReservationControllerTest extends AcceptanceTest {
                 .isEqualTo(expectedResponse);
     }
 
-    @DisplayName("토큰이 검증되지 않는다면 해당 맵, 해당 공간, 해당 날짜에 속하는 예약들을 찾아올 수 없다.")
+    @DisplayName("토큰이 검증되지 않는다면 해당 맵에 속하는 예약들을 찾아올 수 없다.")
     @Test
-    void find_invalidToken() {
+    void findAllReservations_invalidToken() {
+        //given
+        ExtractableResponse<Response> saveResponse = saveExampleReservations();
+        String spaceId = String.valueOf(reservationCreateUpdateWithPasswordRequest.getSpaceId());
+        String api = saveResponse.header("location")
+                .replaceAll("/reservations/[0-9]", "/reservations");
+
+        //when
+        ExtractableResponse<Response> response = findAllReservations(invalidToken, api, TOMORROW.toString());
+
+        //then
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
+    }
+
+    @DisplayName("토큰이 검증되지 않는다면 해당 맵, 해당 날짜에 속하는 예약들을 찾아올 수 없다.")
+    @Test
+    void findReservations_invalidToken() {
         //given
         ExtractableResponse<Response> saveResponse = saveExampleReservations();
         String spaceId = String.valueOf(reservationCreateUpdateWithPasswordRequest.getSpaceId());
         String api = saveResponse.header("location")
                 .replaceAll("/reservations/[0-9]", "/spaces/" + spaceId + "/reservations");
 
+        //when
+        ExtractableResponse<Response> response = findReservations(invalidToken, api, TOMORROW.toString());
+
+        //then
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
+    }
+
+    @DisplayName("토큰이 검증되지 않는다면 해당하는 예약을 찾아올 수 없다.")
+    @Test
+    void findReservation_invalidToken() {
+        //given
+        ExtractableResponse<Response> saveResponse = saveExampleReservations();
+        String api = saveResponse.header("location");
         //when
         ExtractableResponse<Response> response = findReservations(invalidToken, api, TOMORROW.toString());
 
@@ -384,6 +413,20 @@ public class ManagerReservationControllerTest extends AcceptanceTest {
                 .then().log().all().extract();
     }
 
+    private ExtractableResponse<Response> findAllReservations(
+            final String token,
+            final String api,
+            final String date) {
+        return RestAssured
+                .given(getRequestSpecification()).log().all()
+                .accept("*/*")
+                .header("Authorization", AuthorizationExtractor.AUTHENTICATION_TYPE + " " + token)
+                .filter(document("reservation/manager/get_all", getRequestPreprocessor(), getResponsePreprocessor()))
+                .queryParam("date", date)
+                .when().get(api)
+                .then().log().all().extract();
+    }
+
     private ExtractableResponse<Response> findReservations(
             final String token,
             final String api,
@@ -398,16 +441,14 @@ public class ManagerReservationControllerTest extends AcceptanceTest {
                 .then().log().all().extract();
     }
 
-    private ExtractableResponse<Response> findAllReservations(
+    private ExtractableResponse<Response> findReservation(
             final String token,
-            final String api,
-            final String date) {
+            final String api) {
         return RestAssured
                 .given(getRequestSpecification()).log().all()
                 .accept("*/*")
                 .header("Authorization", AuthorizationExtractor.AUTHENTICATION_TYPE + " " + token)
-                .filter(document("reservation/manager/get_all", getRequestPreprocessor(), getResponsePreprocessor()))
-                .queryParam("date", date)
+                .filter(document("reservation/manager/get_one", getRequestPreprocessor(), getResponsePreprocessor()))
                 .when().get(api)
                 .then().log().all().extract();
     }
@@ -424,18 +465,6 @@ public class ManagerReservationControllerTest extends AcceptanceTest {
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body(reservationCreateUpdateRequest)
                 .when().put(api)
-                .then().log().all().extract();
-    }
-
-    private ExtractableResponse<Response> findReservation(
-            final String token,
-            final String api) {
-        return RestAssured
-                .given(getRequestSpecification()).log().all()
-                .accept("*/*")
-                .header("Authorization", AuthorizationExtractor.AUTHENTICATION_TYPE + " " + token)
-                .filter(document("reservation/manager/get_one", getRequestPreprocessor(), getResponsePreprocessor()))
-                .when().get(api)
                 .then().log().all().extract();
     }
 }

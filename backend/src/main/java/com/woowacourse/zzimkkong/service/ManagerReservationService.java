@@ -4,10 +4,7 @@ import com.woowacourse.zzimkkong.domain.Map;
 import com.woowacourse.zzimkkong.domain.Member;
 import com.woowacourse.zzimkkong.domain.Reservation;
 import com.woowacourse.zzimkkong.domain.Space;
-import com.woowacourse.zzimkkong.dto.reservation.ReservationCreateResponse;
-import com.woowacourse.zzimkkong.dto.reservation.ReservationCreateUpdateRequest;
-import com.woowacourse.zzimkkong.dto.reservation.ReservationCreateUpdateWithPasswordRequest;
-import com.woowacourse.zzimkkong.dto.reservation.ReservationResponse;
+import com.woowacourse.zzimkkong.dto.reservation.*;
 import com.woowacourse.zzimkkong.dto.slack.SlackResponse;
 import com.woowacourse.zzimkkong.exception.authorization.NoAuthorityOnMapException;
 import com.woowacourse.zzimkkong.exception.map.NoSuchMapException;
@@ -19,6 +16,11 @@ import com.woowacourse.zzimkkong.repository.ReservationRepository;
 import com.woowacourse.zzimkkong.repository.SpaceRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.time.LocalDate;
+import java.util.Collections;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @Transactional
@@ -53,6 +55,37 @@ public class ManagerReservationService extends ReservationService {
                         .build());
 
         return ReservationCreateResponse.from(reservation);
+    }
+
+    @Transactional(readOnly = true)
+    public ReservationFindAllResponse findAllReservations(
+            final Long mapId,
+            final LocalDate date,
+            final Member manager) {
+        validateAuthorityOnMap(mapId, manager);
+
+        List<Long> spaceIds = spaces.findAllByMapId(mapId)
+                .stream()
+                .map(Space::getId)
+                .collect(Collectors.toList());
+
+        List<Reservation> reservations = getReservations(spaceIds, date);
+
+        return ReservationFindAllResponse.from(reservations);
+    }
+
+    @Transactional(readOnly = true)
+    public ReservationFindResponse findReservations(
+            final Long mapId,
+            final Long spaceId,
+            final LocalDate date,
+            final Member manager) {
+        validateAuthorityOnMap(mapId, manager);
+        validateSpaceExistence(spaceId);
+
+        List<Reservation> reservations = getReservations(Collections.singletonList(spaceId), date);
+
+        return ReservationFindResponse.from(reservations);
     }
 
     @Transactional(readOnly = true)
