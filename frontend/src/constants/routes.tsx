@@ -12,11 +12,7 @@ interface Route {
   component: ReactNode;
 }
 
-const ROUTES: Route[] = [
-  {
-    path: PATH.MANAGER_MAIN,
-    component: <ManagerMain />,
-  },
+export const PUBLIC_ROUTES: Route[] = [
   {
     path: PATH.MANAGER_LOGIN,
     component: <ManagerLogin />,
@@ -39,4 +35,9 @@ const ROUTES: Route[] = [
   },
 ];
 
-export default ROUTES;
+export const PRIVATE_ROUTES = [
+  {
+    path: PATH.MANAGER_MAIN,
+    component: <ManagerMain />,
+  },
+];
