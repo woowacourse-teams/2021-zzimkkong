@@ -64,14 +64,11 @@ public class ManagerReservationService extends ReservationService {
             final Member manager) {
         validateAuthorityOnMap(mapId, manager);
 
-        List<Long> spaceIds = spaces.findAllByMapId(mapId)
-                .stream()
-                .map(Space::getId)
-                .collect(Collectors.toList());
+        List<Space> findSpaces = spaces.findAllByMapId(mapId);
 
-        List<Reservation> reservations = getReservations(spaceIds, date);
+        List<Reservation> reservations = getReservations(findSpaces, date);
 
-        return ReservationFindAllResponse.from(reservations);
+        return ReservationFindAllResponse.from(findSpaces, reservations);
     }
 
     @Transactional(readOnly = true)
@@ -81,9 +78,10 @@ public class ManagerReservationService extends ReservationService {
             final LocalDate date,
             final Member manager) {
         validateAuthorityOnMap(mapId, manager);
-        validateSpaceExistence(spaceId);
+        Space space = spaces.findById(spaceId)
+                .orElseThrow(NoSuchSpaceException::new);
 
-        List<Reservation> reservations = getReservations(Collections.singletonList(spaceId), date);
+        List<Reservation> reservations = getReservations(Collections.singletonList(space), date);
 
         return ReservationFindResponse.from(reservations);
     }

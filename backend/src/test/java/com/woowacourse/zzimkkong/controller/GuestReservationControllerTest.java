@@ -137,6 +137,7 @@ public class GuestReservationControllerTest extends AcceptanceTest {
 
         ReservationFindAllResponse actualResponse = response.as(ReservationFindAllResponse.class);
         ReservationFindAllResponse expectedResponse = ReservationFindAllResponse.from(
+                List.of(BE, FE1),
                 List.of(savedReservation,
                         BE_AM_ZERO_ONE,
                         BE_PM_ONE_TWO,

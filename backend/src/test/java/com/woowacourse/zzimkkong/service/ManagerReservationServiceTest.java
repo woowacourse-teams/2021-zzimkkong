@@ -288,8 +288,8 @@ public class ManagerReservationServiceTest extends ServiceTest {
         //when
         given(maps.existsById(anyLong()))
                 .willReturn(true);
-        given(spaces.existsById(anyLong()))
-                .willReturn(true);
+        given(spaces.findById(anyLong()))
+                .willReturn(Optional.of(BE));
         given(reservations.findAllBySpaceIdInAndStartTimeIsBetweenAndEndTimeIsBetween(
                 anyList(),
                 any(LocalDateTime.class),
@@ -327,12 +327,13 @@ public class ManagerReservationServiceTest extends ServiceTest {
                         reservationCreateUpdateWithPasswordRequest.getStartDateTime().plusMinutes(conferenceTime),
                         reservationCreateUpdateWithPasswordRequest.getEndDateTime().plusMinutes(conferenceTime),
                         FE1));
+        List<Space> findSpaces = List.of(BE, FE1);
 
         //when
         given(maps.existsById(anyLong()))
                 .willReturn(true);
-        given(spaces.findAllByMapId(anyLong()))
-                .willReturn(List.of(BE, FE1));
+        given(spaces.findById(anyLong()))
+                .willReturn(Optional.empty());
         given(reservations.findAllBySpaceIdInAndStartTimeIsBetweenAndEndTimeIsBetween(
                 anyList(),
                 any(LocalDateTime.class),
@@ -342,7 +343,7 @@ public class ManagerReservationServiceTest extends ServiceTest {
                 .willReturn(foundReservations);
 
         //then
-        ReservationFindAllResponse reservationFindAllResponse = ReservationFindAllResponse.from(foundReservations);
+        ReservationFindAllResponse reservationFindAllResponse = ReservationFindAllResponse.from(findSpaces, foundReservations);
         assertThat(managerReservationService.findAllReservations(LUTHER.getId(), TOMORROW))
                 .usingRecursiveComparison()
                 .isEqualTo(reservationFindAllResponse);
@@ -422,8 +423,10 @@ public class ManagerReservationServiceTest extends ServiceTest {
         //given, when
         given(maps.existsById(anyLong()))
                 .willReturn(true);
-        given(spaces.existsById(anyLong()))
-                .willReturn(true);
+        given(spaces.findById(anyLong()))
+                .willReturn(Optional.of(BE));
+        given(spaces.findAllByMapId(anyLong()))
+                .willReturn(List.of(BE, FE1));
         given(reservations.findAllBySpaceIdInAndStartTimeIsBetweenAndEndTimeIsBetween(
                 anyList(),
                 any(LocalDateTime.class),
@@ -438,7 +441,7 @@ public class ManagerReservationServiceTest extends ServiceTest {
                 .isEqualTo(ReservationFindResponse.from(Collections.emptyList()));
         assertThat(managerReservationService.findAllReservations(LUTHER.getId(), TOMORROW))
                 .usingRecursiveComparison()
-                .isEqualTo(ReservationFindAllResponse.from(Collections.emptyList()));
+                .isEqualTo(ReservationFindAllResponse.from(List.of(BE, FE1), Collections.emptyList()));
     }
 
     @DisplayName("예약 수정을 위한 예약 조회 요청 시, 해당 예약을 반환한다.")

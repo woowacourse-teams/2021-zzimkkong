@@ -251,8 +251,8 @@ class GuestReservationServiceTest extends ServiceTest {
         //when
         given(maps.existsById(anyLong()))
                 .willReturn(true);
-        given(spaces.existsById(anyLong()))
-                .willReturn(true);
+        given(spaces.findById(anyLong()))
+                .willReturn(Optional.of(BE));
         given(reservations.findAllBySpaceIdInAndStartTimeIsBetweenAndEndTimeIsBetween(
                 anyList(),
                 any(LocalDateTime.class),
@@ -263,7 +263,7 @@ class GuestReservationServiceTest extends ServiceTest {
 
         //then
         ReservationFindResponse reservationFindResponse = ReservationFindResponse.from(foundReservations);
-        assertThat(guestReservationService.findReservations(1L, 1L, TOMORROW))
+        assertThat(guestReservationService.findReservations(LUTHER.getId(), BE.getId(), TOMORROW))
                 .usingRecursiveComparison()
                 .isEqualTo(reservationFindResponse);
     }
@@ -274,8 +274,8 @@ class GuestReservationServiceTest extends ServiceTest {
         //given, when
         given(maps.existsById(anyLong()))
                 .willReturn(true);
-        given(spaces.existsById(anyLong()))
-                .willReturn(false);
+        given(spaces.findAllByMapId(anyLong()))
+                .willReturn(List.of(BE, FE1));
         //then
         assertThatThrownBy(() -> guestReservationService.findReservations(1L, 1L, TOMORROW))
                 .isInstanceOf(NoSuchSpaceException.class);
@@ -287,8 +287,10 @@ class GuestReservationServiceTest extends ServiceTest {
         //given, when
         given(maps.existsById(anyLong()))
                 .willReturn(true);
-        given(spaces.existsById(anyLong()))
-                .willReturn(true);
+        given(spaces.findAllByMapId(anyLong()))
+                .willReturn(List.of(BE, FE1));
+        given(spaces.findById(anyLong()))
+                .willReturn(Optional.of(BE));
         given(reservations.findAllBySpaceIdInAndStartTimeIsBetweenAndEndTimeIsBetween(
                 anyList(),
                 any(LocalDateTime.class),
@@ -299,12 +301,12 @@ class GuestReservationServiceTest extends ServiceTest {
 
         //then
         ReservationFindResponse reservationFindResponse = ReservationFindResponse.from(Collections.emptyList());
-        assertThat(guestReservationService.findReservations(1L, 1L, TOMORROW))
+        assertThat(guestReservationService.findReservations(LUTHER.getId(), BE.getId(), TOMORROW))
                 .usingRecursiveComparison()
                 .isEqualTo(reservationFindResponse);
-        assertThat(guestReservationService.findAllReservations(1L, TOMORROW))
+        assertThat(guestReservationService.findAllReservations(LUTHER.getId(), TOMORROW))
                 .usingRecursiveComparison()
-                .isEqualTo(ReservationFindAllResponse.from(Collections.emptyList()));
+                .isEqualTo(ReservationFindAllResponse.from(List.of(BE, FE1), Collections.emptyList()));
     }
 
     @Test
@@ -328,12 +330,14 @@ class GuestReservationServiceTest extends ServiceTest {
                         reservationCreateUpdateWithPasswordRequest.getStartDateTime().plusMinutes(conferenceTime),
                         reservationCreateUpdateWithPasswordRequest.getEndDateTime().plusMinutes(conferenceTime),
                         FE1));
+        List<Space> findSpaces = List.of(BE, FE1);
+
 
         //when
         given(maps.existsById(anyLong()))
                 .willReturn(true);
         given(spaces.findAllByMapId(anyLong()))
-                .willReturn(List.of(BE, FE1));
+                .willReturn(findSpaces);
         given(reservations.findAllBySpaceIdInAndStartTimeIsBetweenAndEndTimeIsBetween(
                 anyList(),
                 any(LocalDateTime.class),
@@ -343,7 +347,7 @@ class GuestReservationServiceTest extends ServiceTest {
                 .willReturn(foundReservations);
 
         //then
-        ReservationFindAllResponse reservationFindAllResponse = ReservationFindAllResponse.from(foundReservations);
+        ReservationFindAllResponse reservationFindAllResponse = ReservationFindAllResponse.from(findSpaces, foundReservations);
         assertThat(guestReservationService.findAllReservations(1L, TOMORROW))
                 .usingRecursiveComparison()
                 .isEqualTo(reservationFindAllResponse);

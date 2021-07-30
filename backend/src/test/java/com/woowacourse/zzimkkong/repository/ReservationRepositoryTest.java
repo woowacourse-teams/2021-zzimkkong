@@ -54,13 +54,13 @@ class ReservationRepositoryTest extends RepositoryTest {
     void findAllBySpaceIdAndStartTimeIsBetweenAndEndTimeIsBetween() {
         // given, when
         List<Reservation> foundReservations = getReservations(
-                List.of(BE.getId()),
+                List.of(BE.getId(), FE1.getId()),
                 TOMORROW_START_TIME,
                 TOMORROW_START_TIME.plusHours(14));
 
         // then
         assertThat(foundReservations).usingRecursiveComparison()
-                .isEqualTo(List.of(BE_AM_ZERO_ONE, BE_PM_ONE_TWO));
+                .isEqualTo(List.of(BE_AM_ZERO_ONE, BE_PM_ONE_TWO, FE1_ZERO_ONE));
     }
 
     @DisplayName("특정 시간에 부합하는 예약이 없으면 빈 리스트를 반환한다")

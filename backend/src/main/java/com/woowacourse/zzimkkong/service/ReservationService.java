@@ -44,9 +44,10 @@ public abstract class ReservationService {
     @Transactional(readOnly = true)
     public ReservationFindResponse findReservations(final Long mapId, final Long spaceId, final LocalDate date) {
         validateMapExistence(mapId);
-        validateSpaceExistence(spaceId);
+        Space space = spaces.findById(spaceId)
+                .orElseThrow(NoSuchSpaceException::new);
 
-        List<Reservation> reservations = getReservations(Collections.singletonList(spaceId), date);
+        List<Reservation> reservations = getReservations(Collections.singletonList(space), date);
 
         return ReservationFindResponse.from(reservations);
     }
@@ -55,14 +56,11 @@ public abstract class ReservationService {
     public ReservationFindAllResponse findAllReservations(final Long mapId, final LocalDate date) {
         validateMapExistence(mapId);
 
-        List<Long> spaceIds = spaces.findAllByMapId(mapId)
-                .stream()
-                .map(Space::getId)
-                .collect(Collectors.toList());
+        List<Space> findSpaces = spaces.findAllByMapId(mapId);
 
-        List<Reservation> reservations = getReservations(spaceIds, date);
+        List<Reservation> reservations = getReservations(findSpaces, date);
 
-        return ReservationFindAllResponse.from(reservations);
+        return ReservationFindAllResponse.from(findSpaces, reservations);
     }
 
     protected void validateTime(final ReservationCreateUpdateRequest reservationCreateUpdateRequest) {
@@ -90,7 +88,7 @@ public abstract class ReservationService {
         LocalDateTime endDateTime = reservationCreateUpdateRequest.getEndDateTime();
 
         List<Reservation> reservationsOnDate = getReservations(
-                Collections.singletonList(space.getId()),
+                Collections.singletonList(space),
                 startDateTime.toLocalDate());
 
         excludeTargetReservation(space, reservation, reservationsOnDate);
@@ -111,7 +109,7 @@ public abstract class ReservationService {
         LocalDateTime endDateTime = reservationCreateUpdateRequest.getEndDateTime();
 
         List<Reservation> reservationsOnDate = getReservations(
-                Collections.singletonList(space.getId()),
+                Collections.singletonList(space),
                 startDateTime.toLocalDate());
 
         validateTimeConflicts(startDateTime, endDateTime, reservationsOnDate);
@@ -128,9 +126,10 @@ public abstract class ReservationService {
         }
     }
 
-    protected List<Reservation> getReservations(final Collection<Long> spaceIds, final LocalDate date) {
+    protected List<Reservation> getReservations(final Collection<Space> findSpaces, final LocalDate date) {
         LocalDateTime minimumDateTime = date.atStartOfDay();
         LocalDateTime maximumDateTime = minimumDateTime.plusDays(ONE_DAY);
+        List<Long> spaceIds = findSpaces.stream().map(Space::getId).collect(Collectors.toList());
 
         return reservations.findAllBySpaceIdInAndStartTimeIsBetweenAndEndTimeIsBetween(
                 spaceIds,
