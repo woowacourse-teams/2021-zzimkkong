@@ -131,23 +131,6 @@ public abstract class ReservationService {
         }
     }
 
-    protected void doDirtyCheck(
-            final Reservation reservation,
-            final ReservationCreateUpdateRequest reservationCreateUpdateRequest,
-            final Space space) {
-        Reservation updatedReservation = new Reservation.Builder()
-                .startTime(reservationCreateUpdateRequest.getStartDateTime())
-                .endTime(reservationCreateUpdateRequest.getEndDateTime())
-                .userName(reservationCreateUpdateRequest.getName())
-                .description(reservationCreateUpdateRequest.getDescription())
-                .space(space)
-                .build();
-
-        if (reservation.hasSameData(updatedReservation)) {
-            throw new NoDataToUpdateException();
-        }
-    }
-
     private List<Reservation> getReservations(final Collection<Long> spaceIds, final LocalDate date) {
         LocalDateTime minimumDateTime = date.atStartOfDay();
         LocalDateTime maximumDateTime = minimumDateTime.plusDays(ONE_DAY);

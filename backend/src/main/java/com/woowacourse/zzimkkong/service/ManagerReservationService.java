@@ -82,7 +82,6 @@ public class ManagerReservationService extends ReservationService {
                 .findById(reservationId)
                 .orElseThrow(NoSuchReservationException::new);
 
-        doDirtyCheck(reservation, reservationCreateUpdateRequest, space);
         validateAvailability(space, reservationCreateUpdateRequest, reservation);
 
         reservation.update(reservationCreateUpdateRequest, space);
