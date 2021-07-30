@@ -1,5 +1,6 @@
 import { Story } from '@storybook/react';
-import styled from 'styled-components';
+import { ReactComponent as MoreIcon } from 'assets/svg/more.svg';
+import IconButton from 'components/IconButton/IconButton';
 import SpaceListItem, { Props } from './SpaceListItem';
 
 export default {
@@ -8,16 +9,6 @@ export default {
 };
 
 const Template: Story<Props> = (args) => <SpaceListItem {...args} />;
-
-const Container = styled.div`
-  display: flex;
-  gap: 0.375rem;
-  flex-wrap: wrap;
-`;
-
-const Wrapper = styled.div`
-  width: calc(50% - (0.375rem / 2));
-`;
 
 const thumbnail = {
   src: './images/luther.png',
@@ -30,29 +21,28 @@ Default.args = {
   title: '루터회관 14F',
 };
 
-export const DoubleItem: Story<Props> = () => (
-  <Container>
-    <Wrapper>
-      <SpaceListItem thumbnail={thumbnail} title="루터회관 14F" />
-    </Wrapper>
-    <Wrapper>
-      <SpaceListItem thumbnail={thumbnail} title="루터회관 14F" />
-    </Wrapper>
-  </Container>
-);
+export const WithControl = Template.bind({});
+WithControl.args = {
+  thumbnail,
+  title: '루터회관 14F',
+  control: (
+    <>
+      <IconButton size="small">
+        <MoreIcon width="100%" height="100%" />
+      </IconButton>
+    </>
+  ),
+};
 
-export const TripleItem: Story<Props> = () => (
-  <>
-    <Container>
-      <Wrapper>
-        <SpaceListItem thumbnail={thumbnail} title="루터회관 14F" />
-      </Wrapper>
-      <Wrapper>
-        <SpaceListItem thumbnail={thumbnail} title="루터회관 14F" />
-      </Wrapper>
-      <Wrapper>
-        <SpaceListItem thumbnail={thumbnail} title="루터회관 14F" />
-      </Wrapper>
-    </Container>
-  </>
-);
+export const LongTitleWithControl = Template.bind({});
+LongTitleWithControl.args = {
+  thumbnail,
+  title: '우아한현제들 우아한테크코스 교육장 루터회관 14F',
+  control: (
+    <>
+      <IconButton size="small">
+        <MoreIcon width="100%" height="100%" />
+      </IconButton>
+    </>
+  ),
+};
