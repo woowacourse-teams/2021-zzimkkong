@@ -1,6 +1,8 @@
+import { theme } from './../../App.styles';
 import styled from 'styled-components';
 import { ReactComponent as ArrowLeftIcon } from 'assets/svg/arrow-left.svg';
 import { ReactComponent as ArrowRightIcon } from 'assets/svg/arrow-right.svg';
+import { ReactComponent as CalendarIcon } from 'assets/svg/calendar.svg';
 
 export const Container = styled.div`
   display: flex;
@@ -19,6 +21,13 @@ export const PrimaryArrowRightIcon = styled(ArrowRightIcon)`
   fill: ${({ theme }) => theme.primary[400]};
 `;
 
+export const GrayCalendarIcon = styled(CalendarIcon)`
+  fill: ${({ theme }) => theme.gray[400]};
+  position: absolute;
+  right: 0;
+  pointer-events: none;
+`;
+
 export const DateWrapper = styled.label`
   position: relative;
   display: flex;
@@ -26,12 +35,6 @@ export const DateWrapper = styled.label`
   width: 100%;
   max-width: 10.5rem;
   gap: 0.5rem;
-
-  svg {
-    position: absolute;
-    right: 0;
-    pointer-events: none;
-  }
 `;
 
 export const DateText = styled.div``;
@@ -44,7 +47,12 @@ export const DateInput = styled.input`
   border: none;
   background: none;
   line-height: 1em;
-  padding: 0.25rem 0;
+  padding: 0.375rem 0;
+
+  &:focus {
+    outline: none;
+    border-bottom: 2px solid ${({ theme }) => theme.primary[400]};
+  }
 
   &::-webkit-calendar-picker-indicator {
     position: absolute;
