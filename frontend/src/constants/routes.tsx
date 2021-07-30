@@ -12,11 +12,11 @@ interface Route {
   component: ReactNode;
 }
 
-const ROUTES: Route[] = [
-  {
-    path: PATH.MANAGER_MAIN,
-    component: <ManagerMain />,
-  },
+interface PrivateRoute extends Route {
+  redirectPath: string;
+}
+
+export const PUBLIC_ROUTES: Route[] = [
   {
     path: PATH.MANAGER_LOGIN,
     component: <ManagerLogin />,
@@ -39,4 +39,10 @@ const ROUTES: Route[] = [
   },
 ];
 
-export default ROUTES;
+export const PRIVATE_ROUTES: PrivateRoute[] = [
+  {
+    path: PATH.MANAGER_MAIN,
+    component: <ManagerMain />,
+    redirectPath: PATH.MANAGER_LOGIN,
+  },
+];
