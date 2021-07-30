@@ -9,9 +9,9 @@ import com.woowacourse.zzimkkong.exception.authorization.NoAuthorityOnMapExcepti
 import com.woowacourse.zzimkkong.exception.map.NoSuchMapException;
 import com.woowacourse.zzimkkong.exception.space.NoSuchSpaceException;
 import com.woowacourse.zzimkkong.exception.space.ReservationExistOnSpaceException;
-import com.woowacourse.zzimkkong.infrastructure.TimeConverter;
 import com.woowacourse.zzimkkong.infrastructure.S3Uploader;
 import com.woowacourse.zzimkkong.infrastructure.SvgConverter;
+import com.woowacourse.zzimkkong.infrastructure.TimeConverter;
 import com.woowacourse.zzimkkong.repository.MapRepository;
 import com.woowacourse.zzimkkong.repository.ReservationRepository;
 import com.woowacourse.zzimkkong.repository.SpaceRepository;
@@ -31,12 +31,13 @@ public class SpaceService {
     private final ReservationRepository reservations;
     private final TimeConverter timeConverter;
 
-    public SpaceService(final MapRepository maps,
-                        final SpaceRepository spaces,
-                        final ReservationRepository reservations,
-                        final S3Uploader s3Uploader,
-                        final SvgConverter svgConverter,
-                        final TimeConverter timeConverter) {
+    public SpaceService(
+            final MapRepository maps,
+            final SpaceRepository spaces,
+            final ReservationRepository reservations,
+            final S3Uploader s3Uploader,
+            final SvgConverter svgConverter,
+            final TimeConverter timeConverter) {
         this.maps = maps;
         this.spaces = spaces;
         this.reservations = reservations;
@@ -100,7 +101,8 @@ public class SpaceService {
     public SpaceFindAllResponse findAllSpace(
             final Long mapId,
             final Member manager) {
-        Map map = maps.findById(mapId).orElseThrow(NoSuchMapException::new);
+        Map map = maps.findById(mapId)
+                .orElseThrow(NoSuchMapException::new);
         validateAuthorityOnMap(manager, map);
 
         List<Space> findAllSpaces = spaces.findAllByMapId(mapId);

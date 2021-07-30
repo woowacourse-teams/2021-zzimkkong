@@ -32,12 +32,13 @@ public class MapService {
     private final SvgConverter svgConverter;
     private final TimeConverter timeConverter;
 
-    public MapService(final MapRepository maps,
-                      final SpaceRepository spaces,
-                      final ReservationRepository reservations,
-                      final S3Uploader s3Uploader,
-                      final SvgConverter svgConverter,
-                      final TimeConverter timeConverter) {
+    public MapService(
+            final MapRepository maps,
+            final SpaceRepository spaces,
+            final ReservationRepository reservations,
+            final S3Uploader s3Uploader,
+            final SvgConverter svgConverter,
+            final TimeConverter timeConverter) {
         this.maps = maps;
         this.spaces = spaces;
         this.reservations = reservations;
