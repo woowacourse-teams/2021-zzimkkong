@@ -1,4 +1,6 @@
 import styled from 'styled-components';
+import { ReactComponent as DeleteIcon } from 'assets/svg/delete.svg';
+import { ReactComponent as EditIcon } from 'assets/svg/edit.svg';
 import { ReactComponent as LinkIcon } from 'assets/svg/link.svg';
 
 export const PageHeader = styled.div`
@@ -37,4 +39,20 @@ export const SpaceReservationWrapper = styled.div``;
 
 export const SpaceWrapper = styled.div`
   margin: 2rem 0;
+`;
+
+export const GrayEditIcon = styled(EditIcon)`
+  fill: ${({ theme }) => theme.gray[500]};
+
+  &:hover {
+    fill: ${({ theme }) => theme.primary[400]};
+  }
+`;
+
+export const GrayDeleteIcon = styled(DeleteIcon)`
+  fill: ${({ theme }) => theme.gray[500]};
+
+  &:hover {
+    fill: ${({ theme }) => theme.primary[400]};
+  }
 `;

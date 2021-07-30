@@ -118,7 +118,20 @@ const ManagerMain = (): JSX.Element => {
           </Drawer.Header>
           {maps.map(({ mapId, mapName, mapImageUrl }) => (
             <Styled.SpaceWrapper key={`map-${mapId}`}>
-              <SpaceListItem thumbnail={{ src: mapImageUrl, alt: mapName }} title={mapName} />
+              <SpaceListItem
+                thumbnail={{ src: mapImageUrl, alt: mapName }}
+                title={mapName}
+                control={
+                  <>
+                    <IconButton size="small">
+                      <Styled.GrayEditIcon width="100%" height="100%" />
+                    </IconButton>
+                    <IconButton size="small">
+                      <Styled.GrayDeleteIcon width="100%" height="100%" />
+                    </IconButton>
+                  </>
+                }
+              />
             </Styled.SpaceWrapper>
           ))}
         </Drawer.Inner>

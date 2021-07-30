@@ -9,8 +9,8 @@ import Input from 'components/Input/Input';
 import Layout from 'components/Layout/Layout';
 import MANAGER from 'constants/manager';
 import MESSAGE from 'constants/message';
-import REGEXP from 'constants/regexp';
 import PATH from 'constants/path';
+import REGEXP from 'constants/regexp';
 import useInput from 'hooks/useInput';
 import * as Styled from './ManagerJoin.styles';
 

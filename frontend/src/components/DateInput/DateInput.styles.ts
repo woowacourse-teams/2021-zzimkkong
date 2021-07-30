@@ -1,4 +1,3 @@
-import { theme } from './../../App.styles';
 import styled from 'styled-components';
 import { ReactComponent as ArrowLeftIcon } from 'assets/svg/arrow-left.svg';
 import { ReactComponent as ArrowRightIcon } from 'assets/svg/arrow-right.svg';
