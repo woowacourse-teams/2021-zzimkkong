@@ -63,7 +63,7 @@ class MapControllerTest extends AcceptanceTest {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
         assertThat(findMaps).usingRecursiveComparison()
                 .ignoringExpectedNullFields()
-                .isEqualTo(MapFindAllResponse.from(List.of(LUTHER, SMALL_HOUSE)));
+                .isEqualTo(MapFindAllResponse.from(List.of(LUTHER, SMALL_HOUSE), POBI));
     }
 
     @Test
