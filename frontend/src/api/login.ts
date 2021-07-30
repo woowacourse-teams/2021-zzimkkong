@@ -9,7 +9,3 @@ interface LoginParams {
 export const postLogin = (loginData: LoginParams): Promise<AxiosResponse> => {
   return api.post('/login/token', loginData);
 };
-
-export const postTokenValidation = (): Promise<AxiosResponse> => {
-  return api.post(`/members/token`);
-};

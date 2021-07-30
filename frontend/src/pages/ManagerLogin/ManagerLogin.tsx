@@ -3,7 +3,7 @@ import { FormEventHandler, useState } from 'react';
 import { useMutation } from 'react-query';
 import { Link, useHistory } from 'react-router-dom';
 import { useSetRecoilState } from 'recoil';
-import { postLogin } from 'api/auth';
+import { postLogin } from 'api/login';
 import Button from 'components/Button/Button';
 import Header from 'components/Header/Header';
 import Input from 'components/Input/Input';
