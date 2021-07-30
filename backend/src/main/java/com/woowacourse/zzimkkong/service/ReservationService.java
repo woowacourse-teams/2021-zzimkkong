@@ -41,27 +41,6 @@ public abstract class ReservationService {
         this.timeConverter = timeConverter;
     }
 
-    @Transactional(readOnly = true)
-    public ReservationFindResponse findReservations(final Long mapId, final Long spaceId, final LocalDate date) {
-        validateMapExistence(mapId);
-
-        Space space = spaces.findById(spaceId)
-                .orElseThrow(NoSuchSpaceException::new);
-        List<Reservation> reservations = getReservations(Collections.singletonList(space), date);
-
-        return ReservationFindResponse.from(reservations);
-    }
-
-    @Transactional(readOnly = true)
-    public ReservationFindAllResponse findAllReservations(final Long mapId, final LocalDate date) {
-        validateMapExistence(mapId);
-
-        List<Space> findSpaces = spaces.findAllByMapId(mapId);
-        List<Reservation> reservations = getReservations(findSpaces, date);
-
-        return ReservationFindAllResponse.from(findSpaces, reservations);
-    }
-
     protected void validateTime(final ReservationCreateUpdateRequest reservationCreateUpdateRequest) {
         LocalDateTime startDateTime = reservationCreateUpdateRequest.getStartDateTime();
         LocalDateTime endDateTime = reservationCreateUpdateRequest.getEndDateTime();

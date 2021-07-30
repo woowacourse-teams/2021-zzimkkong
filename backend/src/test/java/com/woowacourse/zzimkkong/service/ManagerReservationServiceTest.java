@@ -286,8 +286,8 @@ public class ManagerReservationServiceTest extends ServiceTest {
                         BE));
 
         //when
-        given(maps.existsById(anyLong()))
-                .willReturn(true);
+        given(maps.findById(anyLong()))
+                .willReturn(Optional.of(LUTHER));
         given(spaces.findById(anyLong()))
                 .willReturn(Optional.of(BE));
         given(reservations.findAllBySpaceIdInAndStartTimeIsBetweenAndEndTimeIsBetween(
@@ -300,7 +300,7 @@ public class ManagerReservationServiceTest extends ServiceTest {
 
         //then
         ReservationFindResponse reservationFindResponse = ReservationFindResponse.from(foundReservations);
-        assertThat(managerReservationService.findReservations(LUTHER.getId(), BE.getId(), TOMORROW))
+        assertThat(managerReservationService.findReservations(LUTHER.getId(), BE.getId(), TOMORROW, POBI))
                 .usingRecursiveComparison()
                 .isEqualTo(reservationFindResponse);
     }
@@ -330,10 +330,10 @@ public class ManagerReservationServiceTest extends ServiceTest {
         List<Space> findSpaces = List.of(BE, FE1);
 
         //when
-        given(maps.existsById(anyLong()))
-                .willReturn(true);
-        given(spaces.findById(anyLong()))
-                .willReturn(Optional.empty());
+        given(maps.findById(anyLong()))
+                .willReturn(Optional.of(LUTHER));
+        given(spaces.findAllByMapId(anyLong()))
+                .willReturn(findSpaces);
         given(reservations.findAllBySpaceIdInAndStartTimeIsBetweenAndEndTimeIsBetween(
                 anyList(),
                 any(LocalDateTime.class),
@@ -344,7 +344,7 @@ public class ManagerReservationServiceTest extends ServiceTest {
 
         //then
         ReservationFindAllResponse reservationFindAllResponse = ReservationFindAllResponse.from(findSpaces, foundReservations);
-        assertThat(managerReservationService.findAllReservations(LUTHER.getId(), TOMORROW))
+        assertThat(managerReservationService.findAllReservations(LUTHER.getId(), TOMORROW, POBI))
                 .usingRecursiveComparison()
                 .isEqualTo(reservationFindAllResponse);
     }
@@ -396,11 +396,11 @@ public class ManagerReservationServiceTest extends ServiceTest {
     @Test
     void findReservationsNotExistMap() {
         //given, when
-        given(maps.existsById(anyLong()))
-                .willReturn(false);
+        given(maps.findById(anyLong()))
+                .willReturn(Optional.empty());
 
         //then
-        assertThatThrownBy(() -> managerReservationService.findReservations(LUTHER.getId(), BE.getId(), TOMORROW))
+        assertThatThrownBy(() -> managerReservationService.findReservations(LUTHER.getId(), BE.getId(), TOMORROW, POBI))
                 .isInstanceOf(NoSuchMapException.class);
     }
 
@@ -408,12 +408,12 @@ public class ManagerReservationServiceTest extends ServiceTest {
     @Test
     void findReservationsNotExistSpace() {
         //given, when
-        given(maps.existsById(anyLong()))
-                .willReturn(true);
+        given(maps.findById(anyLong()))
+                .willReturn(Optional.of(LUTHER));
         given(spaces.existsById(anyLong()))
                 .willReturn(false);
         //then
-        assertThatThrownBy(() -> managerReservationService.findReservations(LUTHER.getId(), BE.getId(), TOMORROW))
+        assertThatThrownBy(() -> managerReservationService.findReservations(LUTHER.getId(), BE.getId(), TOMORROW, POBI))
                 .isInstanceOf(NoSuchSpaceException.class);
     }
 
@@ -421,8 +421,8 @@ public class ManagerReservationServiceTest extends ServiceTest {
     @Test
     void findEmptyReservations() {
         //given, when
-        given(maps.existsById(anyLong()))
-                .willReturn(true);
+        given(maps.findById(anyLong()))
+                .willReturn(Optional.of(LUTHER));
         given(spaces.findById(anyLong()))
                 .willReturn(Optional.of(BE));
         given(spaces.findAllByMapId(anyLong()))
@@ -436,10 +436,10 @@ public class ManagerReservationServiceTest extends ServiceTest {
                 .willReturn(Collections.emptyList());
 
         //then
-        assertThat(managerReservationService.findReservations(LUTHER.getId(), BE.getId(), TOMORROW))
+        assertThat(managerReservationService.findReservations(LUTHER.getId(), BE.getId(), TOMORROW, POBI))
                 .usingRecursiveComparison()
                 .isEqualTo(ReservationFindResponse.from(Collections.emptyList()));
-        assertThat(managerReservationService.findAllReservations(LUTHER.getId(), TOMORROW))
+        assertThat(managerReservationService.findAllReservations(LUTHER.getId(), TOMORROW, POBI))
                 .usingRecursiveComparison()
                 .isEqualTo(ReservationFindAllResponse.from(List.of(BE, FE1), Collections.emptyList()));
     }
@@ -448,8 +448,6 @@ public class ManagerReservationServiceTest extends ServiceTest {
     @Test
     void findReservation() {
         //given
-        given(maps.existsById(anyLong()))
-                .willReturn(true);
         given(maps.findById(anyLong()))
                 .willReturn(Optional.of(LUTHER));
         given(reservations.findById(anyLong()))
@@ -470,8 +468,6 @@ public class ManagerReservationServiceTest extends ServiceTest {
     @Test
     void findReservation_NoAuthority() {
         //given, when
-        given(maps.existsById(anyLong()))
-                .willReturn(true);
         given(maps.findById(anyLong()))
                 .willReturn(Optional.of(LUTHER));
 
@@ -487,8 +483,6 @@ public class ManagerReservationServiceTest extends ServiceTest {
     @Test
     void findInvalidReservationException() {
         //given, when
-        given(maps.existsById(anyLong()))
-                .willReturn(true);
         given(maps.findById(anyLong()))
                 .willReturn(Optional.of(LUTHER));
         given(reservations.findById(anyLong()))
@@ -506,8 +500,6 @@ public class ManagerReservationServiceTest extends ServiceTest {
     @Test
     void update() {
         //given
-        given(maps.existsById(anyLong()))
-                .willReturn(true);
         given(maps.findById(anyLong()))
                 .willReturn(Optional.of(LUTHER));
         given(spaces.findById(anyLong()))
@@ -538,8 +530,6 @@ public class ManagerReservationServiceTest extends ServiceTest {
     @Test
     void updateNoAuthorityException() {
         //given
-        given(maps.existsById(anyLong()))
-                .willReturn(true);
         given(maps.findById(anyLong()))
                 .willReturn(Optional.of(LUTHER));
 
@@ -566,8 +556,6 @@ public class ManagerReservationServiceTest extends ServiceTest {
     @ValueSource(ints = {0, -1})
     void updateInvalidEndTimeException(int endTime) {
         //given
-        given(maps.existsById(anyLong()))
-                .willReturn(true);
         given(maps.findById(anyLong()))
                 .willReturn(Optional.of(LUTHER));
 
@@ -593,8 +581,6 @@ public class ManagerReservationServiceTest extends ServiceTest {
     @Test
     void updateInvalidDateException() {
         //given
-        given(maps.existsById(anyLong()))
-                .willReturn(true);
         given(maps.findById(anyLong()))
                 .willReturn(Optional.of(LUTHER));
 
@@ -621,8 +607,6 @@ public class ManagerReservationServiceTest extends ServiceTest {
     @CsvSource(value = {"0:2", "59:70", "-10:10"}, delimiter = ':')
     void updateImpossibleTimeException(int startTime, int endTime) {
         //given
-        given(maps.existsById(anyLong()))
-                .willReturn(true);
         given(maps.findById(anyLong()))
                 .willReturn(Optional.of(LUTHER));
         given(spaces.findById(anyLong()))
@@ -661,8 +645,6 @@ public class ManagerReservationServiceTest extends ServiceTest {
                 TOMORROW_START_TIME.plusHours(2),
                 BE);
 
-        given(maps.existsById(anyLong()))
-                .willReturn(true);
         given(maps.findById(anyLong()))
                 .willReturn(Optional.of(LUTHER));
         given(reservations.findById(anyLong()))
@@ -676,8 +658,6 @@ public class ManagerReservationServiceTest extends ServiceTest {
     @Test
     void deleteNoAuthorityException() {
         //given, when
-        given(maps.existsById(anyLong()))
-                .willReturn(true);
         given(maps.findById(anyLong()))
                 .willReturn(Optional.of(LUTHER));
         given(reservations.findById(anyLong()))
@@ -692,8 +672,6 @@ public class ManagerReservationServiceTest extends ServiceTest {
     @Test
     void deleteReservationException() {
         //given, when
-        given(maps.existsById(anyLong()))
-                .willReturn(true);
         given(maps.findById(anyLong()))
                 .willReturn(Optional.of(LUTHER));
         given(reservations.findById(anyLong()))
@@ -717,8 +695,6 @@ public class ManagerReservationServiceTest extends ServiceTest {
     }
 
     private void saveMock() {
-        given(maps.existsById(anyLong()))
-                .willReturn(true);
         given(maps.findById(anyLong()))
                 .willReturn(Optional.of(LUTHER));
         given(spaces.findById(anyLong()))
