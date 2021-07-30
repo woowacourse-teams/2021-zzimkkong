@@ -30,7 +30,7 @@ import static org.springframework.restdocs.restassured3.RestAssuredRestDocumenta
 @AutoConfigureRestDocs
 @ActiveProfiles("test")
 public class AcceptanceTest {
-    protected final MapCreateUpdateRequest mapCreateRequest = new MapCreateUpdateRequest(LUTHER.getName(), LUTHER.getMapDrawing(), LUTHER.getMapImageUrl());
+    protected final MapCreateUpdateRequest mapCreateRequest = new MapCreateUpdateRequest(LUTHER.getName(), LUTHER.getMapDrawing(), MAP_SVG);
     protected final MemberSaveRequest memberSaveRequest = new MemberSaveRequest(EMAIL, PASSWORD, ORGANIZATION);
     protected final SettingsRequest beSettingsRequest = new SettingsRequest(
             LocalTime.of(0, 0),
@@ -45,9 +45,9 @@ public class AcceptanceTest {
     protected final SpaceCreateUpdateRequest beSpaceCreateUpdateRequest = new SpaceCreateUpdateRequest(
             "백엔드 강의실",
             "시니컬하네",
-            "area",
+            SPACE_DRAWING,
             beSettingsRequest,
-            "이미지 입니다"
+            MAP_SVG
     );
 
     protected final SettingsRequest feSettingsRequest = new SettingsRequest(
@@ -63,9 +63,9 @@ public class AcceptanceTest {
     protected final SpaceCreateUpdateRequest feSpaceCreateUpdateRequest = new SpaceCreateUpdateRequest(
             "프론트엔드 강의실1",
             "시니컬하네",
-            "area",
+            SPACE_DRAWING,
             feSettingsRequest,
-            "이미지 입니다"
+            MAP_SVG
     );
 
     protected final String SALLY_PASSWORD = "1230";

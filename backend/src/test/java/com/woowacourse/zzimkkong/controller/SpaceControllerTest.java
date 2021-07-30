@@ -19,8 +19,7 @@ import org.springframework.http.MediaType;
 import java.time.LocalTime;
 import java.util.List;
 
-import static com.woowacourse.zzimkkong.CommonFixture.BE;
-import static com.woowacourse.zzimkkong.CommonFixture.FE1;
+import static com.woowacourse.zzimkkong.CommonFixture.*;
 import static com.woowacourse.zzimkkong.DocumentUtils.*;
 import static com.woowacourse.zzimkkong.controller.AuthControllerTest.getToken;
 import static com.woowacourse.zzimkkong.controller.MapControllerTest.saveMap;
@@ -47,9 +46,9 @@ public class SpaceControllerTest extends AcceptanceTest {
         SpaceCreateUpdateRequest spaceCreateUpdateRequest = new SpaceCreateUpdateRequest(
                 "백엔드 강의실",
                 "시니컬하네",
-                "area",
+                SPACE_DRAWING,
                 settingsRequest,
-                "이미지 입니다"
+                MAP_SVG
         );
         String saveSpaceApi = "/api/managers/maps/1/spaces";
         saveSpace(saveSpaceApi, spaceCreateUpdateRequest);
@@ -72,9 +71,9 @@ public class SpaceControllerTest extends AcceptanceTest {
         SpaceCreateUpdateRequest newSpaceCreateUpdateRequest = new SpaceCreateUpdateRequest(
                 "잠실우리집",
                 "우리집",
-                "프론트 화이팅",
+                SPACE_DRAWING,
                 newSettingsRequest,
-                "이미지 입니다"
+                MAP_SVG
         );
 
         // when
@@ -102,9 +101,9 @@ public class SpaceControllerTest extends AcceptanceTest {
         SpaceCreateUpdateRequest defaultSpaceCreateUpdateRequest = new SpaceCreateUpdateRequest(
                 "잠실우리집",
                 "우리집",
-                "프론트 화이팅",
+                SPACE_DRAWING,
                 settingsRequest,
-                "이미지 입니다"
+                MAP_SVG
         );
 
         Setting defaultSetting = new Setting.Builder()
@@ -121,9 +120,9 @@ public class SpaceControllerTest extends AcceptanceTest {
                 .id(2L)
                 .name("잠실우리집")
                 .description("우리집")
-                .area("프론트 화이팅")
+                .area(SPACE_DRAWING)
                 .setting(defaultSetting)
-                .mapImage("이미지 입니다")
+                .mapImage(MAP_SVG)
                 .build();
 
         String saveSpaceApi = "/api/managers/maps/1/spaces";
@@ -175,10 +174,11 @@ public class SpaceControllerTest extends AcceptanceTest {
         SpaceCreateUpdateRequest feSpaceCreateUpdateRequest = new SpaceCreateUpdateRequest(
                 "프론트엔드 강의실1",
                 "시니컬하네",
-                "area",
+                SPACE_DRAWING,
                 feSettingsRequest,
-                "이미지 입니다"
+                MAP_SVG
         );
+
         String api = "/api/managers/maps/1/spaces";
         saveSpace(api, feSpaceCreateUpdateRequest);
 
@@ -211,16 +211,27 @@ public class SpaceControllerTest extends AcceptanceTest {
         SpaceCreateUpdateRequest updateSpaceCreateUpdateRequest = new SpaceCreateUpdateRequest(
                 "바다",
                 "장미아파트",
-                "장미",
+                SPACE_DRAWING,
                 settingsRequest,
-                "장미아파트 이미지"
+                MAP_SVG
         );
 
-        String api = "/api/managers/maps/1/spaces/1";
+        String api = "/api/managers/maps/" + LUTHER.getId() + "/spaces/" + BE.getId();
         ExtractableResponse<Response> response = updateSpace(api, updateSpaceCreateUpdateRequest);
 
         // then
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
+    }
+
+    @DisplayName("올바른 토큰이 주어질 때, 공간을 삭제한다.")
+    @Test
+    void delete() {
+        // given, when
+        String api = "/api/managers/maps/" + LUTHER.getId() + "/spaces/" + BE.getId();
+        ExtractableResponse<Response> response = deleteSpace(api);
+
+        // then
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
     }
 
     static ExtractableResponse<Response> saveSpace(final String api, final SpaceCreateUpdateRequest spaceCreateRequest) {
@@ -268,6 +279,17 @@ public class SpaceControllerTest extends AcceptanceTest {
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body(spaceCreateUpdateRequest)
                 .when().put(api)
+                .then().log().all().extract();
+    }
+
+    private ExtractableResponse<Response> deleteSpace(final String api) {
+        return RestAssured
+                .given(getRequestSpecification()).log().all()
+                .accept("application/json")
+                .header("Authorization", AuthorizationExtractor.AUTHENTICATION_TYPE + " " + getToken())
+                .filter(document("space/delete", getRequestPreprocessor(), getResponsePreprocessor()))
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .when().delete(api)
                 .then().log().all().extract();
     }
 }

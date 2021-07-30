@@ -12,6 +12,12 @@ public class ZzimkkongException extends RuntimeException {
         this.field = field;
     }
 
+    public ZzimkkongException(String message, Throwable cause, HttpStatus status, String field) {
+        super(message, cause);
+        this.status = status;
+        this.field = field;
+    }
+
     public HttpStatus getStatus() {
         return status;
     }

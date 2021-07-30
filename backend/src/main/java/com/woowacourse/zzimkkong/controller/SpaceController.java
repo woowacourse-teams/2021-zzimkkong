@@ -3,12 +3,13 @@ package com.woowacourse.zzimkkong.controller;
 import com.woowacourse.zzimkkong.domain.Manager;
 import com.woowacourse.zzimkkong.domain.Member;
 import com.woowacourse.zzimkkong.dto.space.SpaceCreateResponse;
+import com.woowacourse.zzimkkong.dto.space.SpaceCreateUpdateRequest;
 import com.woowacourse.zzimkkong.dto.space.SpaceFindAllResponse;
 import com.woowacourse.zzimkkong.dto.space.SpaceFindDetailResponse;
-import com.woowacourse.zzimkkong.dto.space.SpaceCreateUpdateRequest;
 import com.woowacourse.zzimkkong.service.SpaceService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
 import javax.validation.Valid;
 import java.net.URI;
 
@@ -55,5 +56,14 @@ public class SpaceController {
             @Manager final Member manager) {
         spaceService.updateSpace(mapId, spaceId, spaceCreateUpdateRequest, manager);
         return ResponseEntity.ok().build();
+    }
+
+    @DeleteMapping("/{spaceId}")
+    public ResponseEntity<Void> delete(
+            @PathVariable final Long mapId,
+            @PathVariable final Long spaceId,
+            @Manager final Member manager) {
+        spaceService.deleteSpace(mapId, spaceId, manager);
+        return ResponseEntity.noContent().build();
     }
 }

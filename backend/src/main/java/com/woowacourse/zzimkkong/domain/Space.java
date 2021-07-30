@@ -41,7 +41,7 @@ public class Space {
     private Setting setting;
 
     @Column(nullable = false)
-    private String mapImage;
+    private String mapImage;    // todo Map 엔티티의 mapImageUrl 과 중복되는 칼럼이므로 삭제
 
     protected Space() {
     }
