@@ -12,7 +12,7 @@ const SpaceListItem = ({ thumbnail, title }: Props): JSX.Element => {
   return (
     <Styled.Container role="listitem">
       <Styled.ImageWrapper>
-        <Styled.Image src={thumbnail.src} alt={thumbnail.alt} />
+        <Styled.Image src={thumbnail.src} alt={thumbnail.alt} loading="lazy" />
       </Styled.ImageWrapper>
       <Styled.Title>{title}</Styled.Title>
     </Styled.Container>

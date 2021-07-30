@@ -5,6 +5,13 @@ export interface Coordinate {
   y: number;
 }
 
+export interface Map {
+  mapId: number;
+  mapName: string;
+  mapDrawing: string;
+  mapImageUrl: string;
+}
+
 export interface Reservation {
   id: number;
   startDateTime: string;

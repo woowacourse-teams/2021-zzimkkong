@@ -1,7 +1,6 @@
 import { AxiosError } from 'axios';
 import { useState } from 'react';
 import { useHistory } from 'react-router-dom';
-import LutherImage from 'assets/images/luther.png';
 import { ReactComponent as MenuIcon } from 'assets/svg/menu.svg';
 import { ReactComponent as MoreIcon } from 'assets/svg/more.svg';
 import DateInput from 'components/DateInput/DateInput';
@@ -13,6 +12,8 @@ import Panel from 'components/Panel/Panel';
 import ReservationListItem from 'components/ReservationListItem/ReservationListItem';
 import SpaceListItem from 'components/SpaceListItem/SpaceListItem';
 import PATH from 'constants/path';
+import { LOCAL_STORAGE_KEY } from 'constants/storage';
+import useManagerMaps from 'hooks/useManagerMaps';
 import useManagerReservations from 'hooks/useManagerReservations';
 import { SpaceReservation } from 'types/common';
 import { formatDate } from 'utils/datetime';
@@ -25,19 +26,25 @@ const ManagerMain = (): JSX.Element => {
 
   const history = useHistory();
 
-  const onErrorGetReservations = (error: AxiosError<Error>) => {
+  const onRequestError = (error: AxiosError<Error>) => {
     alert(error.response?.data?.message);
 
     if (error.response?.status === 401) {
+      localStorage.removeItem(LOCAL_STORAGE_KEY.ACCESS_TOKEN);
       history.push(PATH.MANAGER_LOGIN);
     }
   };
+
+  const mapName = '우테코 교육장';
+  const getMaps = useManagerMaps({ onError: onRequestError });
+  const maps = getMaps.data?.data.maps ?? [];
+
   const getReservations = useManagerReservations(
     {
       mapId,
       date: formatDate(date),
     },
-    { onError: onErrorGetReservations }
+    { onError: onRequestError }
   );
   const reservations = getReservations.data?.data?.data ?? [];
 
@@ -48,51 +55,6 @@ const ManagerMain = (): JSX.Element => {
   const onCloseDrawer = () => {
     setOpen(false);
   };
-
-  const mapName = '우테코 교육장';
-
-  const dummySpaceList = [
-    {
-      id: 1,
-      title: '루터회관 14F',
-      thumbnail: {
-        src: LutherImage,
-        alt: '루터회관 14F 공간',
-      },
-    },
-    {
-      id: 2,
-      title: '루터회관 14F',
-      thumbnail: {
-        src: LutherImage,
-        alt: '루터회관 14F 공간',
-      },
-    },
-    {
-      id: 3,
-      title: '루터회관 14F',
-      thumbnail: {
-        src: LutherImage,
-        alt: '루터회관 14F 공간',
-      },
-    },
-    {
-      id: 4,
-      title: '루터회관 14F',
-      thumbnail: {
-        src: LutherImage,
-        alt: '루터회관 14F 공간',
-      },
-    },
-    {
-      id: 5,
-      title: '루터회관 14F',
-      thumbnail: {
-        src: LutherImage,
-        alt: '루터회관 14F 공간',
-      },
-    },
-  ];
 
   return (
     <>
@@ -154,9 +116,9 @@ const ManagerMain = (): JSX.Element => {
             <Drawer.HeaderText>우아한형제들</Drawer.HeaderText>
             <Drawer.CloseButton />
           </Drawer.Header>
-          {dummySpaceList.map((space) => (
-            <Styled.SpaceWrapper key={`map-${space.id}`}>
-              <SpaceListItem thumbnail={space.thumbnail} title={space.title} />
+          {maps.map(({ mapId, mapName, mapImageUrl }) => (
+            <Styled.SpaceWrapper key={`map-${mapId}`}>
+              <SpaceListItem thumbnail={{ src: mapImageUrl, alt: mapName }} title={mapName} />
             </Styled.SpaceWrapper>
           ))}
         </Drawer.Inner>
