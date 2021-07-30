@@ -65,7 +65,7 @@ public class SpaceService {
                 .disabledWeekdays(settingsRequest.getDisabledWeekdays())
                 .build();
 
-        String thumbnailUrl = uploadPngToS3(spaceCreateUpdateRequest.getMapImage(), map.getId().toString());
+        String thumbnailUrl = uploadSvgAsPngToS3(spaceCreateUpdateRequest.getMapImage(), map.getId().toString());
 
         Space space = spaces.save(
                 new Space.Builder()
@@ -154,7 +154,7 @@ public class SpaceService {
                 .disabledWeekdays(settingsRequest.getDisabledWeekdays())
                 .build();
 
-        String thumbnailUrl = uploadPngToS3(spaceCreateUpdateRequest.getMapImage(), map.getId().toString());
+        String thumbnailUrl = uploadSvgAsPngToS3(spaceCreateUpdateRequest.getMapImage(), map.getId().toString());
 
         return new Space.Builder()
                 .name(spaceCreateUpdateRequest.getSpaceName())
@@ -178,7 +178,7 @@ public class SpaceService {
         }
     }
 
-    private String uploadPngToS3(final String svgData, final String fileName) { // todo MapService와의 중복 제거
+    private String uploadSvgAsPngToS3(final String svgData, final String fileName) { // todo MapService와의 중복 제거
         File pngFile = svgConverter.convertSvgToPngFile(svgData, fileName);
         String thumbnailUrl = s3Uploader.upload("thumbnails", pngFile);
         pngFile.delete();
