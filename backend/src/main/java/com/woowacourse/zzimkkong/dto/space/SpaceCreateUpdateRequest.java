@@ -13,7 +13,7 @@ public class SpaceCreateUpdateRequest {
     private String area;
     private SettingsRequest settingsRequest;
     @NotBlank(message = EMPTY_MESSAGE)
-    private String mapImage;
+    private String mapImage;    // todo mapImageSvg로 칼럼명 통일
 
     public SpaceCreateUpdateRequest() {
     }

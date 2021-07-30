@@ -5,12 +5,14 @@ import com.woowacourse.zzimkkong.domain.Space;
 import com.woowacourse.zzimkkong.dto.space.*;
 import com.woowacourse.zzimkkong.exception.authorization.NoAuthorityOnMapException;
 import com.woowacourse.zzimkkong.exception.map.NoSuchMapException;
+import com.woowacourse.zzimkkong.exception.reservation.NoDataToUpdateException;
 import com.woowacourse.zzimkkong.exception.space.NoSuchSpaceException;
 import com.woowacourse.zzimkkong.exception.space.ReservationExistOnSpaceException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import java.io.File;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.List;
@@ -20,13 +22,13 @@ import static com.woowacourse.zzimkkong.service.ServiceTestFixture.*;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.BDDMockito.given;
 
 class SpaceServiceTest extends ServiceTest {
     @Autowired
     private SpaceService spaceService;
+
     private final SettingsRequest settingsRequest = new SettingsRequest(
             LocalTime.of(10, 0),
             LocalTime.of(22, 0),
@@ -40,9 +42,9 @@ class SpaceServiceTest extends ServiceTest {
     private final SpaceCreateUpdateRequest spaceCreateUpdateRequest = new SpaceCreateUpdateRequest(
             "백엔드 강의실",
             "우리집",
-            "프론트 화이팅",
+            SPACE_DRAWING,
             settingsRequest,
-            "이미지 입니다"
+            MAP_SVG
     );
 
     private final SettingsRequest updateSettingsRequest = new SettingsRequest(
@@ -54,12 +56,13 @@ class SpaceServiceTest extends ServiceTest {
             true,
             "Monday, Wednesday"
     );
+
     private final SpaceCreateUpdateRequest updateSpaceCreateUpdateRequest = new SpaceCreateUpdateRequest(
             "백엔드 강의실",
             "우리집",
-            "프론트 화이팅",
+            SPACE_DRAWING,
             updateSettingsRequest,
-            "이미지 입니다"
+            MAP_SVG
     );
 
     @DisplayName("공간 생성 요청 시, 공간을 생성한다.")
@@ -70,6 +73,8 @@ class SpaceServiceTest extends ServiceTest {
                 .willReturn(Optional.of(LUTHER));
         given(spaces.save(any(Space.class)))
                 .willReturn(BE);
+        given(storageUploader.upload(anyString(), any(File.class)))
+                .willReturn(MAP_IMAGE_URL);
 
         // when
         SpaceCreateResponse spaceCreateResponse = spaceService.saveSpace(LUTHER.getId(), spaceCreateUpdateRequest, POBI);
@@ -133,7 +138,7 @@ class SpaceServiceTest extends ServiceTest {
                 .willReturn(Optional.empty());
 
         // when, then
-        assertThatThrownBy(() -> spaceService.findSpace(1L, 1L, POBI))
+        assertThatThrownBy(() -> spaceService.findSpace(LUTHER.getId(), BE.getId(), POBI))
                 .isInstanceOf(NoSuchSpaceException.class);
     }
 
@@ -188,6 +193,8 @@ class SpaceServiceTest extends ServiceTest {
                 .willReturn(Optional.of(LUTHER));
         given(spaces.findById(anyLong()))
                 .willReturn(Optional.of(BE));
+        given(storageUploader.upload(anyString(), any(File.class)))
+                .willReturn(MAP_IMAGE_URL);
 
         // then
         assertDoesNotThrow(() -> spaceService.updateSpace(

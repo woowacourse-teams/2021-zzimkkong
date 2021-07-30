@@ -38,10 +38,18 @@ public class Map {
         this.member = member;
     }
 
-    public void update(String mapName, String mapDrawing, String mapImage) {
+    public void update(String mapName, String mapDrawing, String mapImageUrl) {
         this.name = mapName;
         this.mapDrawing = mapDrawing;
-        this.mapImageUrl = mapImage;
+        this.mapImageUrl = mapImageUrl;
+    }
+
+    public boolean isNotOwnedBy(final Member manager) {
+        return !this.member.equals(manager);
+    }
+
+    public void updateImageUrl(final String mapImageUrl) {
+        this.mapImageUrl = mapImageUrl;
     }
 
     public Long getId() {
@@ -50,10 +58,6 @@ public class Map {
 
     public Member getMember() {
         return member;
-    }
-
-    public boolean isNotOwnedBy(final Member manager) {
-        return !this.member.equals(manager);
     }
 
     public String getName() {
