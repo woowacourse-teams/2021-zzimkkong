@@ -5,20 +5,12 @@ import GuestReservationEdit from 'pages/GuestReservationEdit/GuestReservationEdi
 import ManagerJoin from 'pages/ManagerJoin/ManagerJoin';
 import ManagerLogin from 'pages/ManagerLogin/ManagerLogin';
 import ManagerMain from 'pages/ManagerMain/ManagerMain';
+import PATH from './path';
 
 interface Route {
   path: string;
   component: ReactNode;
 }
-
-export const PATH = {
-  MANAGER_MAIN: '/',
-  MANAGER_LOGIN: '/login',
-  MANAGER_JOIN: '/join',
-  GUEST_MAIN: '/guest',
-  GUEST_RESERVATION: '/guest/reservation',
-  GUEST_RESERVATION_EDIT: '/guest/reservation/edit',
-};
 
 const ROUTES: Route[] = [
   {

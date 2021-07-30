@@ -6,6 +6,7 @@ module.exports = {
   ignorePatterns: ['*.js'],
   extends: [
     'react-app',
+    'react-app/jest',
     'plugin:@typescript-eslint/recommended',
     'plugin:@typescript-eslint/recommended-requiring-type-checking',
     'plugin:prettier/recommended',

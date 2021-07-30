@@ -10,7 +10,7 @@ import Input from 'components/Input/Input';
 import Layout from 'components/Layout/Layout';
 import MANAGER from 'constants/manager';
 import MESSAGE from 'constants/message';
-import { PATH } from 'constants/routes';
+import PATH from 'constants/path';
 import { LOCAL_STORAGE_KEY } from 'constants/storage';
 import useInput from 'hooks/useInput';
 import accessTokenState from 'state/accessTokenState';
