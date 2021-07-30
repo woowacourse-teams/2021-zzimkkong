@@ -1,6 +1,6 @@
 import { AxiosError, AxiosResponse } from 'axios';
 import { QueryKey, useQuery, UseQueryOptions, UseQueryResult } from 'react-query';
-import { getManagerReservation, QueryMapReservationsParams } from 'api/reservation';
+import { queryManagerReservations, QueryMapReservationsParams } from 'api/reservation';
 import { QueryManagerReservationsSuccess } from 'types/response';
 
 const useManagerReservations = <TData = AxiosResponse<QueryManagerReservationsSuccess>>(
@@ -12,6 +12,6 @@ const useManagerReservations = <TData = AxiosResponse<QueryManagerReservationsSu
     [QueryKey, QueryMapReservationsParams]
   >
 ): UseQueryResult<TData, AxiosError<Error>> =>
-  useQuery(['getManagerReservations', { mapId, date }], getManagerReservation, options);
+  useQuery(['getManagerReservations', { mapId, date }], queryManagerReservations, options);
 
 export default useManagerReservations;

@@ -48,7 +48,7 @@ export const queryGuestReservations: QueryFunction<
   return api.get(`/guests/maps/${mapId}/spaces/${spaceId}/reservations?date=${date}`);
 };
 
-export const getManagerReservation: QueryFunction<
+export const queryManagerReservations: QueryFunction<
   AxiosResponse<QueryManagerReservationsSuccess>,
   [QueryKey, QueryMapReservationsParams]
 > = ({ queryKey }) => {
