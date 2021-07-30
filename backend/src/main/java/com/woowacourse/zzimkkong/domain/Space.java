@@ -133,12 +133,12 @@ public class Space {
         return mapImage;
     }
 
-    public boolean isBetweenAvailableTime(LocalDateTime startDateTime, LocalDateTime endDateTime) {
+    public boolean isNotBetweenAvailableTime(LocalDateTime startDateTime, LocalDateTime endDateTime) {
         boolean isEqualOrAfterStartTime = startDateTime.toLocalTime().equals(getAvailableStartTime()) ||
                 startDateTime.toLocalTime().isAfter(getAvailableStartTime());
         boolean isEqualOrBeforeEndTime = endDateTime.toLocalTime().equals(getAvailableEndTime()) ||
                 endDateTime.toLocalTime().isBefore(getAvailableEndTime());
-        return isEqualOrAfterStartTime && isEqualOrBeforeEndTime;
+        return !(isEqualOrAfterStartTime && isEqualOrBeforeEndTime);
     }
 
     public static class Builder {
