@@ -30,8 +30,8 @@ public class CommonFixture {
     public static Map SMALL_HOUSE = new Map(2L, "작은집", MAP_DRAWING_DATA, MAP_IMAGE_URL, POBI);
 
     public static Setting BE_SETTING = new Setting.Builder()
-            .availableStartTime(LocalTime.of(0, 0))
-            .availableEndTime(LocalTime.of(23, 59))
+            .availableStartTime(LocalTime.of(10, 0))
+            .availableEndTime(LocalTime.of(22, 0))
             .reservationTimeUnit(10)
             .reservationMinimumTimeUnit(10)
             .reservationMaximumTimeUnit(1440)
