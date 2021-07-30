@@ -1,6 +1,8 @@
 import { AxiosError } from 'axios';
 import { useState } from 'react';
+import { useMutation } from 'react-query';
 import { useHistory } from 'react-router-dom';
+import { deleteMap } from 'api/map';
 import { ReactComponent as DeleteIcon } from 'assets/svg/delete.svg';
 import { ReactComponent as EditIcon } from 'assets/svg/edit.svg';
 import { ReactComponent as MenuIcon } from 'assets/svg/menu.svg';
@@ -50,6 +52,20 @@ const ManagerMain = (): JSX.Element => {
     { onError: onRequestError }
   );
   const reservations = getReservations.data?.data?.data ?? [];
+
+  const removeMap = useMutation(deleteMap, {
+    onSuccess: () => {
+      alert('맵이 삭제 되었습니다.');
+    },
+
+    onError: (error: AxiosError<Error>) => {
+      alert(error.response?.data.message);
+    },
+  });
+
+  const handleDeleteMap = (mapId: number) => {
+    removeMap.mutate({ mapId });
+  };
 
   const onOpenDrawer = () => {
     setOpen(true);
@@ -129,7 +145,10 @@ const ManagerMain = (): JSX.Element => {
                     <Styled.MapListItemControlButton size="small">
                       <EditIcon width="100%" height="100%" />
                     </Styled.MapListItemControlButton>
-                    <Styled.MapListItemControlButton size="small">
+                    <Styled.MapListItemControlButton
+                      size="small"
+                      onClick={() => handleDeleteMap(mapId)}
+                    >
                       <DeleteIcon width="100%" height="100%" />
                     </Styled.MapListItemControlButton>
                   </>
