@@ -95,14 +95,13 @@ class MapServiceTest extends ServiceTest {
     void updateManagerException() {
         //given
         Member anotherMember = new Member("sally@email.com", "password", "organization");
-        Map map = new Map(3L, "sally's home", MAP_DRAWING_DATA, MAP_IMAGE_URL, anotherMember);
-        MapCreateUpdateRequest mapCreateUpdateRequest = new MapCreateUpdateRequest("이름을 바꿔요", map.getMapDrawing(), map.getMapImageUrl());
+        MapCreateUpdateRequest mapCreateUpdateRequest = new MapCreateUpdateRequest("이름을 바꿔요", LUTHER.getMapDrawing(), MAP_SVG);
 
         given(maps.findById(anyLong()))
-                .willReturn(Optional.of(map));
+                .willReturn(Optional.of(LUTHER));
 
         // when, then
-        assertThatThrownBy(() -> mapService.updateMap(map.getId(), mapCreateUpdateRequest, POBI))
+        assertThatThrownBy(() -> mapService.updateMap(LUTHER.getId(), mapCreateUpdateRequest, anotherMember))
                 .isInstanceOf(NoAuthorityOnMapException.class);
     }
 
