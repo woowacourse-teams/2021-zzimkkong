@@ -1,6 +1,5 @@
 package com.woowacourse.zzimkkong.infrastructure;
 
-import org.apache.commons.io.FilenameUtils;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -31,7 +30,7 @@ class SvgConverterTest {
         fileToDelete = actual;
 
         // then
-        assertThat(FilenameUtils.getExtension(actual.getName())).isEqualTo("png");
+        assertThat(actual).isEqualTo(new File(SvgConverter.SAVE_DIRECTORY_PATH + "testPngFileName.png"));
     }
 
     @AfterEach

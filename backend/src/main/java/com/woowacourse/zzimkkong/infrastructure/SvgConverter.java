@@ -11,14 +11,14 @@ import java.io.*;
 
 @Component
 public class SvgConverter {
-    public static final String TEMPORAL_SAVE_DIRECTORY_PATH = "src/main/resources/tmp/";
+    public static final String SAVE_DIRECTORY_PATH = "src/main/resources/tmp/";
 
     public File convertSvgToPngFile(final String mapSvgData, final String fileName) {
         try {
             ByteArrayInputStream svgInput = new ByteArrayInputStream(mapSvgData.getBytes());
             TranscoderInput transcoderInput = new TranscoderInput(svgInput);
 
-            String targetFileName = TEMPORAL_SAVE_DIRECTORY_PATH + fileName + ".png";
+            String targetFileName = SAVE_DIRECTORY_PATH + fileName + ".png";
             OutputStream outputStream = new FileOutputStream(targetFileName);
             TranscoderOutput transcoderOutput = new TranscoderOutput(outputStream);
 
