@@ -1,5 +1,6 @@
 package com.woowacourse.zzimkkong.service;
 
+import com.woowacourse.zzimkkong.infrastructure.S3Uploader;
 import com.woowacourse.zzimkkong.repository.MapRepository;
 import com.woowacourse.zzimkkong.repository.MemberRepository;
 import com.woowacourse.zzimkkong.repository.ReservationRepository;
@@ -24,4 +25,7 @@ public class ServiceTest {
 
     @MockBean
     protected SpaceRepository spaces;
+
+    @MockBean
+    protected S3Uploader s3Uploader;
 }
