@@ -41,11 +41,11 @@ const ManagerMain = (): JSX.Element => {
   );
   const reservations = getReservations.data?.data?.data ?? [];
 
-  const onOpen = () => {
+  const onOpenDrawer = () => {
     setOpen(true);
   };
 
-  const onClose = () => {
+  const onCloseDrawer = () => {
     setOpen(false);
   };
 
@@ -99,7 +99,7 @@ const ManagerMain = (): JSX.Element => {
       <Header />
       <Layout>
         <Styled.PageHeader>
-          <IconButton text="맵 목록" onClick={onOpen}>
+          <IconButton text="맵 목록" onClick={onOpenDrawer}>
             <MenuIcon width="100%" height="100%" />
           </IconButton>
           <Styled.PageTitle>{mapName}</Styled.PageTitle>
@@ -148,7 +148,7 @@ const ManagerMain = (): JSX.Element => {
         </Styled.SpaceList>
       </Layout>
 
-      <Drawer open={open} placement="left" maxwidth="450px" onClose={onClose}>
+      <Drawer open={open} placement="left" maxwidth="450px" onClose={onCloseDrawer}>
         <Drawer.Inner>
           <Drawer.Header>
             <Drawer.HeaderText>우아한형제들</Drawer.HeaderText>
