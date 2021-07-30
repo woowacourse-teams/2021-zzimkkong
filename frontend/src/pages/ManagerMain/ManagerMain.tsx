@@ -1,4 +1,6 @@
+import { AxiosError } from 'axios';
 import { useState } from 'react';
+import { useHistory } from 'react-router-dom';
 import LutherImage from 'assets/images/luther.png';
 import { ReactComponent as MenuIcon } from 'assets/svg/menu.svg';
 import { ReactComponent as MoreIcon } from 'assets/svg/more.svg';
@@ -10,20 +12,33 @@ import Layout from 'components/Layout/Layout';
 import Panel from 'components/Panel/Panel';
 import ReservationListItem from 'components/ReservationListItem/ReservationListItem';
 import SpaceListItem from 'components/SpaceListItem/SpaceListItem';
-import { Reservation, SpaceReservation } from 'types/common';
-import * as Styled from './ManagerMain.styles';
+import PATH from 'constants/path';
 import useManagerReservations from 'hooks/useManagerReservations';
+import { SpaceReservation } from 'types/common';
 import { formatDate } from 'utils/datetime';
+import * as Styled from './ManagerMain.styles';
 
 const ManagerMain = (): JSX.Element => {
   const mapId = 1;
   const [date, setDate] = useState(new Date());
   const [open, setOpen] = useState(false);
 
-  const getReservations = useManagerReservations({
-    mapId,
-    date: formatDate(date),
-  });
+  const history = useHistory();
+
+  const onErrorGetReservations = (error: AxiosError<Error>) => {
+    alert(error.response?.data?.message);
+
+    if (error.response?.status === 401) {
+      history.push(PATH.MANAGER_LOGIN);
+    }
+  };
+  const getReservations = useManagerReservations(
+    {
+      mapId,
+      date: formatDate(date),
+    },
+    { onError: onErrorGetReservations }
+  );
   const reservations = getReservations.data?.data?.data ?? [];
 
   const onOpen = () => {
@@ -115,7 +130,7 @@ const ManagerMain = (): JSX.Element => {
                           {reservations.map((reservation) => (
                             <ReservationListItem
                               key={`reservation-${reservation.id}`}
-                              reservation={reservation as Reservation}
+                              reservation={reservation}
                               control={
                                 <IconButton>
                                   <MoreIcon width="100%" height="100%" />
