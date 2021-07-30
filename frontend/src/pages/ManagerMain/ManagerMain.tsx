@@ -1,16 +1,19 @@
 import { AxiosError } from 'axios';
 import { useState } from 'react';
 import { useHistory } from 'react-router-dom';
+import { ReactComponent as DeleteIcon } from 'assets/svg/delete.svg';
+import { ReactComponent as EditIcon } from 'assets/svg/edit.svg';
 import { ReactComponent as MenuIcon } from 'assets/svg/menu.svg';
 import { ReactComponent as MoreIcon } from 'assets/svg/more.svg';
+import { ReactComponent as PlusIcon } from 'assets/svg/plus.svg';
 import DateInput from 'components/DateInput/DateInput';
 import Drawer from 'components/Drawer/Drawer';
 import Header from 'components/Header/Header';
 import IconButton from 'components/IconButton/IconButton';
 import Layout from 'components/Layout/Layout';
+import MapListItem from 'components/MapListItem/MapListItem';
 import Panel from 'components/Panel/Panel';
 import ReservationListItem from 'components/ReservationListItem/ReservationListItem';
-import SpaceListItem from 'components/SpaceListItem/SpaceListItem';
 import PATH from 'constants/path';
 import { LOCAL_STORAGE_KEY } from 'constants/storage';
 import useManagerMaps from 'hooks/useManagerMaps';
@@ -118,22 +121,28 @@ const ManagerMain = (): JSX.Element => {
           </Drawer.Header>
           {maps.map(({ mapId, mapName, mapImageUrl }) => (
             <Styled.SpaceWrapper key={`map-${mapId}`}>
-              <SpaceListItem
+              <MapListItem
                 thumbnail={{ src: mapImageUrl, alt: mapName }}
                 title={mapName}
                 control={
                   <>
-                    <IconButton size="small">
-                      <Styled.GrayEditIcon width="100%" height="100%" />
-                    </IconButton>
-                    <IconButton size="small">
-                      <Styled.GrayDeleteIcon width="100%" height="100%" />
-                    </IconButton>
+                    <Styled.MapListItemControlButton size="small">
+                      <EditIcon width="100%" height="100%" />
+                    </Styled.MapListItemControlButton>
+                    <Styled.MapListItemControlButton size="small">
+                      <DeleteIcon width="100%" height="100%" />
+                    </Styled.MapListItemControlButton>
                   </>
                 }
               />
             </Styled.SpaceWrapper>
           ))}
+          {
+            // TODO: 맵 추가 페이지 PATH로 변경
+          }
+          <Styled.CreateMapButton to="/">
+            <PlusIcon width="100%" height="100%" />
+          </Styled.CreateMapButton>
         </Drawer.Inner>
       </Drawer>
     </>

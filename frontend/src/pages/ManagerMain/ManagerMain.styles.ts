@@ -1,7 +1,7 @@
+import { Link } from 'react-router-dom';
 import styled from 'styled-components';
-import { ReactComponent as DeleteIcon } from 'assets/svg/delete.svg';
-import { ReactComponent as EditIcon } from 'assets/svg/edit.svg';
 import { ReactComponent as LinkIcon } from 'assets/svg/link.svg';
+import IconButton from 'components/IconButton/IconButton';
 
 export const PageHeader = styled.div`
   padding: 0.75rem 0;
@@ -32,27 +32,42 @@ export const PanelMessage = styled.p`
 `;
 
 export const SpaceList = styled.ul`
-  margin: 2.25rem 0;
+  margin: 3rem 0;
 `;
 
 export const SpaceReservationWrapper = styled.div``;
 
 export const SpaceWrapper = styled.div`
-  margin: 2rem 0;
+  margin: 2.5rem 0;
 `;
 
-export const GrayEditIcon = styled(EditIcon)`
-  fill: ${({ theme }) => theme.gray[500]};
+export const MapListItemControlButton = styled(IconButton)`
+  & > svg {
+    fill: ${({ theme }) => theme.gray[500]};
 
-  &:hover {
-    fill: ${({ theme }) => theme.primary[400]};
+    &:hover {
+      fill: ${({ theme }) => theme.primary[400]};
+    }
   }
 `;
 
-export const GrayDeleteIcon = styled(DeleteIcon)`
-  fill: ${({ theme }) => theme.gray[500]};
+export const CreateMapButton = styled(Link)`
+  display: flex;
+  justify-content: center;
+  width: 5rem;
+  height: 5rem;
+  padding: 1rem;
+  margin: 1rem auto;
+  background-color: ${({ theme }) => theme.gray[100]};
+  border-radius: 50%;
+
+  & > svg {
+    fill: ${({ theme }) => theme.gray[500]};
+  }
 
   &:hover {
-    fill: ${({ theme }) => theme.primary[400]};
+    & > svg {
+      fill: ${({ theme }) => theme.primary[400]};
+    }
   }
 `;
