@@ -6,7 +6,6 @@ import com.woowacourse.zzimkkong.domain.Member;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static java.util.stream.Collectors.collectingAndThen;
 import static java.util.stream.Collectors.toList;
 
 public class MapFindAllResponse {

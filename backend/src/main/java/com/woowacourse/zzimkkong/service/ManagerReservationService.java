@@ -20,7 +20,6 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDate;
 import java.util.Collections;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 @Transactional
@@ -65,7 +64,6 @@ public class ManagerReservationService extends ReservationService {
         validateAuthorityOnMap(mapId, manager);
 
         List<Space> findSpaces = spaces.findAllByMapId(mapId);
-
         List<Reservation> reservations = getReservations(findSpaces, date);
 
         return ReservationFindAllResponse.from(findSpaces, reservations);
@@ -78,9 +76,9 @@ public class ManagerReservationService extends ReservationService {
             final LocalDate date,
             final Member manager) {
         validateAuthorityOnMap(mapId, manager);
+
         Space space = spaces.findById(spaceId)
                 .orElseThrow(NoSuchSpaceException::new);
-
         List<Reservation> reservations = getReservations(Collections.singletonList(space), date);
 
         return ReservationFindResponse.from(reservations);

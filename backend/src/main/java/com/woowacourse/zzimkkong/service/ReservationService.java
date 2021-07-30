@@ -44,9 +44,9 @@ public abstract class ReservationService {
     @Transactional(readOnly = true)
     public ReservationFindResponse findReservations(final Long mapId, final Long spaceId, final LocalDate date) {
         validateMapExistence(mapId);
+
         Space space = spaces.findById(spaceId)
                 .orElseThrow(NoSuchSpaceException::new);
-
         List<Reservation> reservations = getReservations(Collections.singletonList(space), date);
 
         return ReservationFindResponse.from(reservations);
@@ -57,7 +57,6 @@ public abstract class ReservationService {
         validateMapExistence(mapId);
 
         List<Space> findSpaces = spaces.findAllByMapId(mapId);
-
         List<Reservation> reservations = getReservations(findSpaces, date);
 
         return ReservationFindAllResponse.from(findSpaces, reservations);
@@ -129,7 +128,9 @@ public abstract class ReservationService {
     protected List<Reservation> getReservations(final Collection<Space> findSpaces, final LocalDate date) {
         LocalDateTime minimumDateTime = date.atStartOfDay();
         LocalDateTime maximumDateTime = minimumDateTime.plusDays(ONE_DAY);
-        List<Long> spaceIds = findSpaces.stream().map(Space::getId).collect(Collectors.toList());
+        List<Long> spaceIds = findSpaces.stream()
+                .map(Space::getId)
+                .collect(Collectors.toList());
 
         return reservations.findAllBySpaceIdInAndStartTimeIsBetweenAndEndTimeIsBetween(
                 spaceIds,
@@ -144,12 +145,6 @@ public abstract class ReservationService {
     protected void validateMapExistence(final Long mapId) {
         if (!maps.existsById(mapId)) {
             throw new NoSuchMapException();
-        }
-    }
-
-    protected void validateSpaceExistence(final Long spaceId) {
-        if (!spaces.existsById(spaceId)) {
-            throw new NoSuchSpaceException();
         }
     }
 }
