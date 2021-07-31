@@ -45,3 +45,16 @@ LargeWithText.args = {
   size: 'large',
   text: '삭제',
 };
+
+export const XLarge = Template.bind({});
+XLarge.args = {
+  children: <DeleteIcon width="100%" height="100%" />,
+  size: 'xLarge',
+};
+
+export const XLargeWithText = Template.bind({});
+XLargeWithText.args = {
+  children: <DeleteIcon width="100%" height="100%" />,
+  size: 'xLarge',
+  text: '삭제',
+};
