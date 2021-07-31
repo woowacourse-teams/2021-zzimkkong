@@ -4,7 +4,7 @@ import IconButton from 'components/IconButton/IconButton';
 import MapListItem, { Props } from './MapListItem';
 
 export default {
-  title: 'shared/SpaceListItem',
+  title: 'shared/MapListItem',
   component: MapListItem,
 };
 
