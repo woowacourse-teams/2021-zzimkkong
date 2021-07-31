@@ -1,4 +1,4 @@
-import { Map, Reservation, Space, SpaceReservation } from './common';
+import { MapItem, Reservation, Space, SpaceReservation } from './common';
 
 export interface ErrorResponse {
   message?: string;
@@ -10,7 +10,7 @@ export interface LoginSuccess {
 }
 
 export interface QueryManagerMapsSuccess {
-  maps: Map[];
+  maps: MapItem[];
 }
 
 export interface QueryManagerReservationsSuccess {

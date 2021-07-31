@@ -114,7 +114,7 @@ const GuestMain = (): JSX.Element => {
           <Styled.PageTitle>우아한테크코스 교육장</Styled.PageTitle>
           <DateInput date={date} setDate={setDate} />
           <Styled.MapContainer>
-            <Styled.Map>
+            <Styled.MapItem>
               {spaceList?.map(({ spaceId, spaceName, coordinate, textPosition }) => (
                 <PinRadio
                   key={spaceId}
@@ -128,7 +128,7 @@ const GuestMain = (): JSX.Element => {
                 />
               ))}
               <Luther />
-            </Styled.Map>
+            </Styled.MapItem>
           </Styled.MapContainer>
           <Styled.PanelContainer>
             <Panel>

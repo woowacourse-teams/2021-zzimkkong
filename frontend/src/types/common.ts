@@ -5,7 +5,7 @@ export interface Coordinate {
   y: number;
 }
 
-export interface Map {
+export interface MapItem {
   mapId: number;
   mapName: string;
   mapDrawing: string;
