@@ -1,5 +1,5 @@
 import { css } from 'styled-components';
-import { Color } from 'types/styled';
+import { Color } from 'types/common';
 import { getTextColor } from './color';
 
 interface ResponsiveColorProps {

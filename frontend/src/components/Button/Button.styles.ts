@@ -1,7 +1,7 @@
 import styled, { css } from 'styled-components';
 
 interface Props {
-  variant: 'primary' | 'text' | 'default';
+  variant: 'primary' | 'primary-text' | 'text' | 'default';
   size: 'small' | 'medium' | 'large';
   fullWidth: boolean;
 }
@@ -15,6 +15,11 @@ const variantCSS = {
     &:disabled {
       background: ${({ theme }) => theme.primary[100]};
     }
+  `,
+  'primary-text': css`
+    background: none;
+    border: none;
+    color: ${({ theme }) => theme.primary[400]};
   `,
   text: css`
     background: none;

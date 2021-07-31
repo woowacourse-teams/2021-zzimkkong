@@ -202,18 +202,35 @@ public class GuestReservationControllerTest extends AcceptanceTest {
                 .isEqualTo(expectedResponse);
     }
 
-    @DisplayName("예약을 삭제한다.")
+    @DisplayName("올바른 비밀번호와 함께 예약을 삭제한다.")
     @Test
     void delete() {
         //given, when
-        ReservationPasswordAuthenticationRequest reservationPasswordAuthenticationRequest
-                = new ReservationPasswordAuthenticationRequest(SALLY_PASSWORD);
+        ReservationPasswordAuthenticationRequest reservationPasswordAuthenticationRequest = new ReservationPasswordAuthenticationRequest(SALLY_PASSWORD);
 
         String api = savedReservationApi.replaceAll("/spaces/[0-9]", "") + "/5";
 
         //then
         ExtractableResponse<Response> response = deleteReservation(api, reservationPasswordAuthenticationRequest);
         assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
+    }
+
+    @DisplayName("올바른 비밀번호와 함께 예약 수정을 위한 예약 조회 요청 시, 예약에 대한 정보를 반환한다")
+    @Test
+    void findOne() {
+        // given, when
+        ReservationPasswordAuthenticationRequest reservationPasswordAuthenticationRequest = new ReservationPasswordAuthenticationRequest(SALLY_PASSWORD);
+
+        ExtractableResponse<Response> response = findReservation(reservationApi + "/5", reservationPasswordAuthenticationRequest);
+
+        ReservationResponse actualResponse = response.as(ReservationResponse.class);
+        ReservationResponse expectedResponse = ReservationResponse.from(savedReservation);
+
+        // then
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
+        assertThat(actualResponse).usingRecursiveComparison()
+                .ignoringExpectedNullFields()
+                .isEqualTo(expectedResponse);
     }
 
     private ExtractableResponse<Response> saveExampleReservations() {
@@ -227,16 +244,16 @@ public class GuestReservationControllerTest extends AcceptanceTest {
 
         ReservationCreateUpdateWithPasswordRequest bePmOneTwoRequest = new ReservationCreateUpdateWithPasswordRequest(
                 1L,
-                THE_DAY_AFTER_TOMORROW.atTime(13, 0, 0),
-                THE_DAY_AFTER_TOMORROW.atTime(14, 0, 0),
+                THE_DAY_AFTER_TOMORROW.atTime(13, 0),
+                THE_DAY_AFTER_TOMORROW.atTime(14, 0),
                 RESERVATION_PASSWORD,
                 USER_NAME,
                 "찜꽁 2차 회의");
 
         ReservationCreateUpdateWithPasswordRequest beNextDayPmSixTwelveRequest = new ReservationCreateUpdateWithPasswordRequest(
                 1L,
-                THE_DAY_AFTER_TOMORROW.plusDays(1).atTime(18, 0, 0),
-                THE_DAY_AFTER_TOMORROW.plusDays(1).atTime(23, 59, 59),
+                THE_DAY_AFTER_TOMORROW.plusDays(1).atTime(6, 0),
+                THE_DAY_AFTER_TOMORROW.plusDays(1).atTime(12, 0),
                 "6789",
                 USER_NAME,
                 "찜꽁 3차 회의");
@@ -244,7 +261,7 @@ public class GuestReservationControllerTest extends AcceptanceTest {
         ReservationCreateUpdateWithPasswordRequest feZeroOneRequest = new ReservationCreateUpdateWithPasswordRequest(
                 2L,
                 THE_DAY_AFTER_TOMORROW.atStartOfDay(),
-                THE_DAY_AFTER_TOMORROW.atTime(1, 0, 0),
+                THE_DAY_AFTER_TOMORROW.atTime(1, 0),
                 RESERVATION_PASSWORD,
                 USER_NAME,
                 "찜꽁 5차 회의");

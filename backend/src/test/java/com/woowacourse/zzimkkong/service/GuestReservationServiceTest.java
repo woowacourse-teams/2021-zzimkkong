@@ -416,8 +416,8 @@ class GuestReservationServiceTest extends ServiceTest {
         //when, then
         assertDoesNotThrow(() -> guestReservationService.updateReservation(1L, reservation.getId(), new ReservationCreateUpdateWithPasswordRequest(
                 1L,
-                THE_DAY_AFTER_TOMORROW_START_TIME.plusHours(20),
-                THE_DAY_AFTER_TOMORROW_START_TIME.plusHours(21),
+                THE_DAY_AFTER_TOMORROW.atTime(10,0),
+                THE_DAY_AFTER_TOMORROW.atTime(11,0),
                 reservation.getPassword(),
                 CHANGED_NAME,
                 CHANGED_DESCRIPTION
