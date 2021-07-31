@@ -53,6 +53,7 @@ public class CommonFixture {
             .setting(BE_SETTING)
             .mapImage(MAP_IMAGE_URL)
             .build();
+
     public static Setting FE_SETTING = new Setting.Builder()
             .availableStartTime(LocalTime.of(0, 0))
             .availableEndTime(LocalTime.of(18, 0))
@@ -115,11 +116,11 @@ public class CommonFixture {
     public static final SettingsRequest beSettingsRequest = new SettingsRequest(
             LocalTime.of(0, 0),
             LocalTime.of(23, 59),
-            10,
-            10,
-            1440,
-            true,
-            null
+            BE_SETTING.getReservationTimeUnit(),
+            BE_SETTING.getReservationMinimumTimeUnit(),
+            BE_SETTING.getReservationMaximumTimeUnit(),
+            BE_SETTING.getReservationEnable(),
+            BE_SETTING.getDisabledWeekdays()
     );
 
     public static final SpaceCreateUpdateRequest beSpaceCreateUpdateRequest = new SpaceCreateUpdateRequest(
@@ -133,11 +134,11 @@ public class CommonFixture {
     public static final SettingsRequest feSettingsRequest = new SettingsRequest(
             LocalTime.of(0, 0),
             LocalTime.of(23, 59),
-            10,
-            10,
-            1440,
-            true,
-            null
+            FE_SETTING.getReservationTimeUnit(),
+            FE_SETTING.getReservationMinimumTimeUnit(),
+            FE_SETTING.getReservationMaximumTimeUnit(),
+            FE_SETTING.getReservationEnable(),
+            FE_SETTING.getDisabledWeekdays()
     );
 
     public static final SpaceCreateUpdateRequest feSpaceCreateUpdateRequest = new SpaceCreateUpdateRequest(
@@ -151,5 +152,4 @@ public class CommonFixture {
     public static final String SALLY_PASSWORD = "1230";
     public static final String SALLY_NAME = "샐리";
     public static final String SALLY_DESCRIPTION = "집 가고 싶은 회의";
-
 }
