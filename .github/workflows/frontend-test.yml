@@ -1,0 +1,30 @@
+name: FE Test
+
+on: [push, pull_request]
+
+jobs:
+  build:
+    name: Test
+    runs-on: ubuntu-latest
+    env:
+      working-directory: ./frontend
+
+    strategy:
+      matrix:
+        node-version: [14.16.x]
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Node Version ${{ matrix.node-version }}
+        uses: actions/setup-node@v1
+        with:
+          node-version: ${{ matrix.node-version }}
+
+      - name: yarn install
+        run: yarn install
+        working-directory: ${{ env.working-directory }}
+
+      - name: yarn test
+        run: yarn test:ci
+        working-directory: ${{ env.working-directory }}
