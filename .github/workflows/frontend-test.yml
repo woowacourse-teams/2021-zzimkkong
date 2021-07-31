@@ -1,8 +1,6 @@
 name: FE Test
 
-on:
-  pull_request:
-    branches: [main, dev]
+on: [pull_request]
 
 jobs:
   Check-Changed-File:
