@@ -52,7 +52,7 @@ public class SettingResponse {
                 space.getReservationMinimumTimeUnit(),
                 space.getReservationMaximumTimeUnit(),
                 space.getReservationEnable(),
-                space.getDisabledWeekdays()
+                space.getDisabledDayOfWeek()
         );
     }
 }

@@ -5,7 +5,6 @@ import com.woowacourse.zzimkkong.domain.Space;
 import com.woowacourse.zzimkkong.dto.space.*;
 import com.woowacourse.zzimkkong.exception.authorization.NoAuthorityOnMapException;
 import com.woowacourse.zzimkkong.exception.map.NoSuchMapException;
-import com.woowacourse.zzimkkong.exception.reservation.NoDataToUpdateException;
 import com.woowacourse.zzimkkong.exception.space.NoSuchSpaceException;
 import com.woowacourse.zzimkkong.exception.space.ReservationExistOnSpaceException;
 import org.junit.jupiter.api.DisplayName;
@@ -204,7 +203,7 @@ class SpaceServiceTest extends ServiceTest {
                 POBI));
 
         assertThat(BE.getReservationTimeUnit()).isEqualTo(updateSettingsRequest.getReservationTimeUnit());
-        assertThat(BE.getDisabledWeekdays()).isEqualTo(updateSettingsRequest.getDisabledWeekdays());
+        assertThat(BE.getDisabledDayOfWeek()).isEqualTo(updateSettingsRequest.getDisabledWeekdays());
     }
 
     @DisplayName("공간 수정 요청 시, 해당 공간에 대한 권한이 없으면 수정할 수 없다.")

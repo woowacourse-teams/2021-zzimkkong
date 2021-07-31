@@ -1,10 +1,16 @@
 package com.woowacourse.zzimkkong.domain;
 
+import com.woowacourse.zzimkkong.exception.space.NoSuchDayOfWeekException;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
 
 import javax.persistence.*;
+import java.time.DayOfWeek;
 import java.time.LocalTime;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @DynamicInsert
 @DynamicUpdate
@@ -124,12 +130,40 @@ public class Space {
         return setting.getReservationEnable();
     }
 
-    public String getDisabledWeekdays() {
-        return setting.getDisabledWeekdays();
+    public String getDisabledDayOfWeek() {
+        return setting.getDisabledDayOfWeek();
     }
 
     public String getMapImage() {
         return mapImage;
+    }
+
+    public boolean isUnableToReserve() {
+        return !getReservationEnable();
+    }
+
+    public boolean isClosedOn(final DayOfWeek dayOfWeek) {
+        return getDisabledDaysOfWeek().stream()
+                .anyMatch(disabledDayOfWeek -> disabledDayOfWeek.equals(dayOfWeek));
+    }
+
+    private List<DayOfWeek> getDisabledDaysOfWeek() {
+        String disabledDayOfWeekNames = getDisabledDayOfWeek();
+
+        if (disabledDayOfWeekNames == null) {
+            return Collections.emptyList();
+        }
+
+        return Arrays.stream(disabledDayOfWeekNames.split(", "))
+                .map(this::convertToDayOfWeek)
+                .collect(Collectors.toList());
+    }
+
+    private DayOfWeek convertToDayOfWeek(final String dayOfWeekName) {
+        return Arrays.stream(DayOfWeek.values())
+                .filter(dayOfWeek -> dayOfWeek.name().equals(dayOfWeekName.toUpperCase()))
+                .findAny()
+                .orElseThrow(NoSuchDayOfWeekException::new);
     }
 
     public static class Builder {

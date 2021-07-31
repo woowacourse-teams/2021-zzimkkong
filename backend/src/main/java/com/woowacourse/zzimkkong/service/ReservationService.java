@@ -7,6 +7,7 @@ import com.woowacourse.zzimkkong.dto.reservation.ReservationFindAllResponse;
 import com.woowacourse.zzimkkong.dto.reservation.ReservationFindResponse;
 import com.woowacourse.zzimkkong.exception.map.NoSuchMapException;
 import com.woowacourse.zzimkkong.exception.reservation.*;
+import com.woowacourse.zzimkkong.exception.reservation.IllegalSpaceToReserveException;
 import com.woowacourse.zzimkkong.exception.space.NoSuchSpaceException;
 import com.woowacourse.zzimkkong.infrastructure.TimeConverter;
 import com.woowacourse.zzimkkong.repository.MapRepository;
@@ -16,7 +17,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.ZonedDateTime;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
@@ -89,6 +89,9 @@ public abstract class ReservationService {
         LocalDateTime startDateTime = reservationCreateUpdateRequest.getStartDateTime();
         LocalDateTime endDateTime = reservationCreateUpdateRequest.getEndDateTime();
 
+        validateReservationEnabled(space);
+        validateDisabledDayOfWeek(space, startDateTime);
+
         List<Reservation> reservationsOnDate = getReservations(
                 Collections.singletonList(space.getId()),
                 startDateTime.toLocalDate());
@@ -110,11 +113,26 @@ public abstract class ReservationService {
         LocalDateTime startDateTime = reservationCreateUpdateRequest.getStartDateTime();
         LocalDateTime endDateTime = reservationCreateUpdateRequest.getEndDateTime();
 
+        validateReservationEnabled(space);
+        validateDisabledDayOfWeek(space, startDateTime);
+
         List<Reservation> reservationsOnDate = getReservations(
                 Collections.singletonList(space.getId()),
                 startDateTime.toLocalDate());
 
         validateTimeConflicts(startDateTime, endDateTime, reservationsOnDate);
+    }
+
+    private void validateReservationEnabled(final Space space) {
+        if (space.isUnableToReserve()) {
+            throw new IllegalSpaceToReserveException();
+        }
+    }
+
+    private void validateDisabledDayOfWeek(final Space space, final LocalDateTime startDateTime) {
+        if (space.isClosedOn(startDateTime.getDayOfWeek())) {
+            throw new IllegalDayOfWeekException();
+        }
     }
 
     private void validateTimeConflicts(
