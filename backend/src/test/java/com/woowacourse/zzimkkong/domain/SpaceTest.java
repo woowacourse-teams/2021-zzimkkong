@@ -14,7 +14,7 @@ public class SpaceTest {
     @DisplayName("예약하려는 시간이 공간의 예약 가능한 시간 내에 있다면 false를 반환한다")
     void isNotBetweenAvailableTime() {
         LocalDateTime startDateTime = TOMORROW.atTime(10,0);
-        LocalDateTime endDateTime = TOMORROW.atTime(22,0);
+        LocalDateTime endDateTime = TOMORROW.atTime(18,0);
         boolean actual = BE.isNotBetweenAvailableTime(startDateTime, endDateTime);
 
         assertThat(actual).isFalse();
@@ -24,7 +24,7 @@ public class SpaceTest {
     @DisplayName("예약하려는 시간이 공간의 예약 가능한 시간 외에 있다면 true를 반환한다")
     void isNotBetweenAvailableTimeFail() {
         LocalDateTime startDateTime = TOMORROW.atTime(9,59);
-        LocalDateTime endDateTime = TOMORROW.atTime(22,1);
+        LocalDateTime endDateTime = TOMORROW.atTime(18,1);
         boolean actual = BE.isNotBetweenAvailableTime(startDateTime, endDateTime);
 
         assertThat(actual).isTrue();

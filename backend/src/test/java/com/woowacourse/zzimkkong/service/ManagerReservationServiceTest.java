@@ -495,8 +495,8 @@ public class ManagerReservationServiceTest extends ServiceTest {
         // when
         ReservationCreateUpdateRequest reservationCreateUpdateRequest = new ReservationCreateUpdateRequest(
                 BE.getId(),
-                TOMORROW_START_TIME.plusHours(20),
-                TOMORROW_START_TIME.plusHours(21),
+                TOMORROW.atTime(10,0),
+                TOMORROW.atTime(11,0),
                 CHANGED_NAME,
                 CHANGED_DESCRIPTION
         );
@@ -645,7 +645,7 @@ public class ManagerReservationServiceTest extends ServiceTest {
         //when
         ReservationCreateUpdateRequest reservationCreateUpdateRequest = new ReservationCreateUpdateRequest(
                 BE.getId(),
-                TOMORROW.atTime(9,59),
+                TOMORROW.atTime(10,0),
                 TOMORROW.atTime(22,1),
                 CHANGED_NAME,
                 CHANGED_DESCRIPTION
