@@ -1,10 +1,14 @@
 package com.woowacourse.zzimkkong.domain;
 
+import com.woowacourse.zzimkkong.exception.InvalidConferenceTimeException;
+import com.woowacourse.zzimkkong.exception.InvalidTimeUnitException;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
 
 import javax.persistence.*;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.time.temporal.ChronoUnit;
 
 @DynamicInsert
 @DynamicUpdate
@@ -66,6 +70,28 @@ public class Space {
         this.area = updateSpace.area;
         this.setting = updateSpace.setting;
         this.mapImage = updateSpace.mapImage;
+    }
+
+    public void validateTimeUnit(final LocalDateTime startDateTime, final LocalDateTime endDateTime) {
+        long durationMinutes = ChronoUnit.MINUTES.between(startDateTime, endDateTime);
+
+        validateReservationTimeUnit(startDateTime.getMinute(), durationMinutes);
+        validateMinimumMaximumTimeUnit(durationMinutes);
+    }
+
+    private void validateMinimumMaximumTimeUnit(long durationMinutes) {
+        if(durationMinutes < getReservationMinimumTimeUnit() || durationMinutes > getReservationMaximumTimeUnit()) {
+            throw new InvalidConferenceTimeException();
+        }
+    }
+
+    private void validateReservationTimeUnit(int minute, long durationMinutes) {
+        if(minute != 0 && minute % this.getReservationTimeUnit() != 0) {
+            throw new InvalidTimeUnitException();
+        }
+        if (durationMinutes % this.getReservationTimeUnit() != 0) {
+            throw new InvalidTimeUnitException();
+        }
     }
 
     public Long getId() {

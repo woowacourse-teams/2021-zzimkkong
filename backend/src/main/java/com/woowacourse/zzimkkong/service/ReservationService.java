@@ -89,6 +89,8 @@ public abstract class ReservationService {
         LocalDateTime startDateTime = reservationCreateUpdateRequest.getStartDateTime();
         LocalDateTime endDateTime = reservationCreateUpdateRequest.getEndDateTime();
 
+        space.validateTimeUnit(startDateTime, endDateTime);
+
         List<Reservation> reservationsOnDate = getReservations(
                 Collections.singletonList(space.getId()),
                 startDateTime.toLocalDate());
@@ -109,6 +111,8 @@ public abstract class ReservationService {
             final ReservationCreateUpdateRequest reservationCreateUpdateRequest) {
         LocalDateTime startDateTime = reservationCreateUpdateRequest.getStartDateTime();
         LocalDateTime endDateTime = reservationCreateUpdateRequest.getEndDateTime();
+
+        space.validateTimeUnit(startDateTime, endDateTime);
 
         List<Reservation> reservationsOnDate = getReservations(
                 Collections.singletonList(space.getId()),

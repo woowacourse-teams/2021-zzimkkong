@@ -36,10 +36,11 @@ public class ManagerReservationService extends ReservationService {
             final ReservationCreateUpdateWithPasswordRequest reservationCreateUpdateWithPasswordRequest,
             final Member manager) {
         validateAuthorityOnMap(mapId, manager);
-
         validateTime(reservationCreateUpdateWithPasswordRequest);
+
         Space space = spaces.findById(reservationCreateUpdateWithPasswordRequest.getSpaceId())
                 .orElseThrow(NoSuchSpaceException::new);
+
         validateAvailability(space, reservationCreateUpdateWithPasswordRequest);
 
         Reservation reservation = reservations.save(
