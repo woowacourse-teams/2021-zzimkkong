@@ -58,8 +58,8 @@ public class ManagerReservationControllerTest extends AcceptanceTest {
 
         reservationCreateUpdateWithPasswordRequest = new ReservationCreateUpdateWithPasswordRequest(
                 BE.getId(),
-                TOMORROW_START_TIME.plusHours(1),
-                TOMORROW_START_TIME.plusHours(2),
+                TOMORROW.atTime(12,0),
+                TOMORROW.atTime(13,0),
                 SALLY_PASSWORD,
                 SALLY_NAME,
                 SALLY_DESCRIPTION);
@@ -87,17 +87,6 @@ public class ManagerReservationControllerTest extends AcceptanceTest {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
     }
 
-    @DisplayName("토큰이 검증되지 않는다면, 예약을 등록할 수 없다.")
-    @Test
-    void save_invalidToken() {
-        //given, when
-        String api = "/api/managers/maps/" + LUTHER.getId() + "/reservations";
-        ExtractableResponse<Response> response = saveReservation(invalidToken, api, reservationCreateUpdateWithPasswordRequest);
-
-        //then
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
-    }
-
     @DisplayName("올바른 토큰이 주어질 때, 예약을 삭제한다.")
     @Test
     void delete() {
@@ -111,21 +100,6 @@ public class ManagerReservationControllerTest extends AcceptanceTest {
 
         //then
         assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
-    }
-
-    @DisplayName("토큰이 검증되지 않는다면 예약을 삭제할 수 없다.")
-    @Test
-    void delete_invalidToken() {
-        //given
-        String saveApi = "/api/managers/maps/" + LUTHER.getId() + "/reservations";
-        ExtractableResponse<Response> saveResponse = saveReservation(token, saveApi, reservationCreateUpdateWithPasswordRequest);
-        String api = saveResponse.header("location");
-
-        //when
-        ExtractableResponse<Response> response = deleteReservation(invalidToken, api);
-
-        //then
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
     }
 
     @DisplayName("map id, space id, 특정 날짜가 주어질 때 해당 맵, 해당 공간, 해당 날짜에 속하는 예약들만 찾아온다")
@@ -154,22 +128,6 @@ public class ManagerReservationControllerTest extends AcceptanceTest {
                 .isEqualTo(expectedResponse);
     }
 
-    @DisplayName("토큰이 검증되지 않는다면 해당 맵, 해당 공간, 해당 날짜에 속하는 예약들을 찾아올 수 없다.")
-    @Test
-    void find_invalidToken() {
-        //given
-        ExtractableResponse<Response> saveResponse = saveExampleReservations();
-        String spaceId = String.valueOf(reservationCreateUpdateWithPasswordRequest.getSpaceId());
-        String api = saveResponse.header("location")
-                .replaceAll("/reservations/[0-9]", "/spaces/" + spaceId + "/reservations");
-
-        //when
-        ExtractableResponse<Response> response = findReservations(invalidToken, api, TOMORROW.toString());
-
-        //then
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
-    }
-
     @DisplayName("map id와 특정 날짜가 주어질 때 해당 맵, 해당 날짜의 모든 공간에 대한 예약을 조회한다.")
     @Test
     void findAll() {
@@ -194,21 +152,6 @@ public class ManagerReservationControllerTest extends AcceptanceTest {
                 .ignoringCollectionOrder()
                 .ignoringExpectedNullFields()
                 .isEqualTo(expectedResponse);
-    }
-
-    @DisplayName("토큰이 검증되지 않는다면, 해당 날짜의 모든 공간에 대한 예약을 조회할 수 없다.")
-    @Test
-    void findAll_invalidToken() {
-        //given
-        ExtractableResponse<Response> saveResponse = saveExampleReservations();
-        String api = saveResponse.header("location")
-                .replaceAll("/reservations/[0-9]", "/reservations");
-
-        //when
-        ExtractableResponse<Response> response = findAllReservations(invalidToken, api, TOMORROW.toString());
-
-        //then
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
     }
 
     @DisplayName("공간 변경 없는 새로운 예약 정보가 주어지면 예약을 업데이트 한다")
@@ -291,28 +234,6 @@ public class ManagerReservationControllerTest extends AcceptanceTest {
                 .isEqualTo(expectedResponse);
     }
 
-    @DisplayName("올바르지 않은 토큰과 함께 예약 수정 요청을 하면 예약을 수정할 수 없다.")
-    @Test
-    void update_invalidToken() {
-        //given
-        ExtractableResponse<Response> saveResponse = saveExampleReservations();
-        String api = saveResponse.header("location");
-
-        ReservationCreateUpdateRequest reservationCreateUpdateRequestSameSpace = new ReservationCreateUpdateRequest(
-                reservationCreateUpdateWithPasswordRequest.getSpaceId(),
-                TOMORROW.atTime(1, 0, 0),
-                TOMORROW.atTime(2, 30, 0),
-                "sally",
-                "회의입니다."
-        );
-
-        //when
-        ExtractableResponse<Response> updateResponse = updateReservation(invalidToken, api, reservationCreateUpdateRequestSameSpace);
-
-        //then
-        assertThat(updateResponse.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
-    }
-
     @DisplayName("올바른 토큰과 함께 예약 수정을 위한 예약 조회 요청 시, 예약에 대한 정보를 반환한다")
     @Test
     void findOne() {
@@ -331,20 +252,6 @@ public class ManagerReservationControllerTest extends AcceptanceTest {
         assertThat(actualResponse).usingRecursiveComparison()
                 .ignoringExpectedNullFields()
                 .isEqualTo(expectedResponse);
-    }
-
-    @DisplayName("올바르지 않은 토큰과 함께 예약 수정을 위한 예약 조회 요청 시, 예약에 대한 정보를 받을 수 없다.")
-    @Test
-    void findOne_invalidToken() {
-        //given
-        ExtractableResponse<Response> saveResponse = saveExampleReservations();
-        String api = saveResponse.header("location");
-
-        //when
-        ExtractableResponse<Response> response = findReservation(invalidToken, api);
-
-        //then
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
     }
 
     private ExtractableResponse<Response> saveExampleReservations() {
