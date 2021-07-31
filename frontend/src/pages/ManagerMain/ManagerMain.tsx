@@ -151,10 +151,8 @@ const ManagerMain = (): JSX.Element => {
               />
             </Styled.SpaceWrapper>
           ))}
-          {
-            // TODO: 맵 추가 페이지 PATH로 변경
-          }
-          <Styled.CreateMapButton to="/">
+
+          <Styled.CreateMapButton to={PATH.MANAGER_MAP_CREATE}>
             <Styled.PlusIcon width="100%" height="100%" />
           </Styled.CreateMapButton>
         </Drawer.Inner>
