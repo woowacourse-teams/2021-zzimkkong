@@ -73,25 +73,33 @@ public class Space {
     }
 
     public void validateTimeUnit(final LocalDateTime startDateTime, final LocalDateTime endDateTime) {
-        long durationMinutes = ChronoUnit.MINUTES.between(startDateTime, endDateTime);
+        int durationMinutes = (int) ChronoUnit.MINUTES.between(startDateTime, endDateTime);
 
-        validateReservationTimeUnit(startDateTime.getMinute(), durationMinutes);
+        validateStartTimeByTimeUnit(startDateTime.getMinute());
+        validateConferenceTimeByTimeUnit(durationMinutes);
         validateMinimumMaximumTimeUnit(durationMinutes);
     }
 
-    private void validateMinimumMaximumTimeUnit(long durationMinutes) {
+    private void validateStartTimeByTimeUnit(int minute) {
+        if (minute != 0 && isNotDivideBy(minute)) {
+            throw new InvalidTimeUnitException();
+        }
+    }
+
+    private void validateConferenceTimeByTimeUnit(int durationMinutes) {
+        if(isNotDivideBy(durationMinutes)) {
+            throw new InvalidTimeUnitException();
+        }
+    }
+
+    private void validateMinimumMaximumTimeUnit(int durationMinutes) {
         if(durationMinutes < getReservationMinimumTimeUnit() || durationMinutes > getReservationMaximumTimeUnit()) {
             throw new InvalidConferenceTimeException();
         }
     }
 
-    private void validateReservationTimeUnit(int minute, long durationMinutes) {
-        if(minute != 0 && minute % this.getReservationTimeUnit() != 0) {
-            throw new InvalidTimeUnitException();
-        }
-        if (durationMinutes % this.getReservationTimeUnit() != 0) {
-            throw new InvalidTimeUnitException();
-        }
+    private boolean isNotDivideBy(int minute) {
+        return minute % getReservationTimeUnit() != 0;
     }
 
     public Long getId() {
