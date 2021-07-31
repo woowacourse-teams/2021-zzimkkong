@@ -17,6 +17,7 @@ import useInput from 'hooks/useInput';
 import useReservations from 'hooks/useReservations';
 import { GuestMainState } from 'pages/GuestMain/GuestMain';
 import { Reservation, Space } from 'types/common';
+import { ErrorResponse } from 'types/response';
 import { formatDate, formatTime } from 'utils/datetime';
 import * as Styled from './GuestReservationEdit.styles';
 
@@ -59,7 +60,7 @@ const GuestReservationEdit = (): JSX.Element => {
       });
     },
 
-    onError: (error: AxiosError<Error>) => {
+    onError: (error: AxiosError<ErrorResponse>) => {
       alert(error.response?.data.message ?? MESSAGE.RESERVATION.UNEXPECTED_ERROR);
     },
   });

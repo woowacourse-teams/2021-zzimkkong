@@ -15,11 +15,13 @@ import Layout from 'components/Layout/Layout';
 import MapListItem from 'components/MapListItem/MapListItem';
 import Panel from 'components/Panel/Panel';
 import ReservationListItem from 'components/ReservationListItem/ReservationListItem';
+import MESSAGE from 'constants/message';
 import PATH from 'constants/path';
 import { LOCAL_STORAGE_KEY } from 'constants/storage';
 import useManagerMaps from 'hooks/useManagerMaps';
 import useManagerReservations from 'hooks/useManagerReservations';
 import { SpaceReservation } from 'types/common';
+import { ErrorResponse } from 'types/response';
 import { formatDate } from 'utils/datetime';
 import * as Styled from './ManagerMain.styles';
 
@@ -30,8 +32,8 @@ const ManagerMain = (): JSX.Element => {
 
   const history = useHistory();
 
-  const onRequestError = (error: AxiosError<Error>) => {
-    alert(error.response?.data?.message);
+  const onRequestError = (error: AxiosError<ErrorResponse>) => {
+    alert(error.response?.data?.message ?? MESSAGE.MANAGER_MAIN.UNEXPECTED_GET_DATA_ERROR);
 
     if (error.response?.status === 401) {
       localStorage.removeItem(LOCAL_STORAGE_KEY.ACCESS_TOKEN);
@@ -57,8 +59,8 @@ const ManagerMain = (): JSX.Element => {
       alert('맵이 삭제 되었습니다.');
     },
 
-    onError: (error: AxiosError<Error>) => {
-      alert(error.response?.data.message);
+    onError: (error: AxiosError<ErrorResponse>) => {
+      alert(error.response?.data.message ?? MESSAGE.MANAGER_MAIN.UNEXPECTED_MAP_DELETE_ERROR);
     },
   });
 

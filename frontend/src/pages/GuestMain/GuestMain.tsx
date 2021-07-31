@@ -21,6 +21,7 @@ import PATH from 'constants/path';
 import useInput from 'hooks/useInput';
 import useReservations from 'hooks/useReservations';
 import { Reservation, Space } from 'types/common';
+import { ErrorResponse } from 'types/response';
 import { formatDate } from 'utils/datetime';
 import * as Styled from './GuestMain.styles';
 import spaceList from './spaceList';
@@ -66,7 +67,7 @@ const GuestMain = (): JSX.Element => {
       setPasswordInputModalOpen(false);
     },
 
-    onError: (error: AxiosError<Error>) => {
+    onError: (error: AxiosError<ErrorResponse>) => {
       alert(error.response?.data.message ?? MESSAGE.RESERVATION.UNEXPECTED_DELETE_ERROR);
     },
   });
