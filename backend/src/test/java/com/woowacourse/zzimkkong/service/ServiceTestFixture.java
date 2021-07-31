@@ -101,7 +101,7 @@ public class ServiceTestFixture {
             .endTime(THE_DAY_AFTER_TOMORROW.plusDays(1).atTime(23, 59, 59))
             .description("찜꽁 3차 회의")
             .userName(USER_NAME)
-            .password("6789")
+            .password(RESERVATION_PASSWORD)
             .space(BE)
             .build();
 
