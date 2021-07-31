@@ -5,6 +5,13 @@ export interface Coordinate {
   y: number;
 }
 
+export interface MapItem {
+  mapId: number;
+  mapName: string;
+  mapDrawing: string;
+  mapImageUrl: string;
+}
+
 export interface Reservation {
   id: number;
   startDateTime: string;
@@ -16,7 +23,11 @@ export interface Reservation {
 export interface Space {
   spaceId: number;
   spaceName: string;
-  color: Color;
+  spaceColor: Color;
   textPosition: 'left' | 'right' | 'top' | 'bottom';
   coordinate: Coordinate;
+}
+
+export interface SpaceReservation extends Space {
+  reservations: Reservation[];
 }

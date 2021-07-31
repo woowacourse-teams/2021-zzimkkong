@@ -8,6 +8,7 @@ import {
   WheelEventHandler,
 } from 'react';
 import { useMutation } from 'react-query';
+import { useHistory } from 'react-router-dom';
 import { postMap } from 'api/map';
 import { ReactComponent as EditIcon } from 'assets/svg/edit.svg';
 import { ReactComponent as ItemsIcon } from 'assets/svg/items.svg';
@@ -20,6 +21,7 @@ import Header from 'components/Header/Header';
 import IconButton from 'components/IconButton/IconButton';
 import Layout from 'components/Layout/Layout';
 import PALETTE from 'constants/palette';
+import PATH from 'constants/path';
 import useInput from 'hooks/useInput';
 import { Color, Coordinate } from 'types/common';
 import { Mode } from 'types/editor';
@@ -45,6 +47,8 @@ const MAX_SCALE = 3.0;
 
 const ManagerMapCreate = (): JSX.Element => {
   const editorRef = useRef<HTMLDivElement | null>(null);
+
+  const history = useHistory();
 
   const [mapName, onChangeMapName] = useInput('');
 
@@ -189,8 +193,17 @@ const ManagerMapCreate = (): JSX.Element => {
   };
 
   const createMap = useMutation(postMap, {
-    onSuccess: () => {
-      alert('맵 생성 완료');
+    onSuccess: (response) => {
+      if (window.confirm('맵 생성 완료! 공간을 편집하러 가시겠어요?')) {
+        const headers = response.headers as { location: string };
+        const mapId = headers.location.split('/').pop() ?? '';
+
+        history.push(`/map/${mapId}/space/edit`);
+
+        return;
+      }
+
+      history.push(PATH.MANAGER_MAIN);
     },
     onError: (error: AxiosError<ErrorResponse>) => {
       console.error(error);

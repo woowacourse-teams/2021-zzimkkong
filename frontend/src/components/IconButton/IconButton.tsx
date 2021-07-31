@@ -2,7 +2,7 @@ import { ButtonHTMLAttributes } from 'react';
 import * as Styled from './IconButton.styles';
 
 export interface Props extends ButtonHTMLAttributes<HTMLButtonElement> {
-  size?: 'small' | 'medium' | 'large';
+  size?: 'small' | 'medium' | 'large' | 'xLarge';
   text?: string;
 }
 
