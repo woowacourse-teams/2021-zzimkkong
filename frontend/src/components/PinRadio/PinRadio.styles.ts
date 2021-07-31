@@ -1,6 +1,6 @@
 import styled, { css } from 'styled-components';
 import { Coordinate } from 'types/common';
-import { Color } from 'types/styled';
+import { Color } from 'types/common';
 
 interface PinProps {
   coordinate: Coordinate;

@@ -31,7 +31,7 @@ public class CommonFixture {
 
     public static Setting BE_SETTING = new Setting.Builder()
             .availableStartTime(LocalTime.of(0, 0))
-            .availableEndTime(LocalTime.of(23, 59))
+            .availableEndTime(LocalTime.of(18, 0))
             .reservationTimeUnit(10)
             .reservationMinimumTimeUnit(10)
             .reservationMaximumTimeUnit(1440)
@@ -51,7 +51,7 @@ public class CommonFixture {
             .build();
     public static Setting FE_SETTING = new Setting.Builder()
             .availableStartTime(LocalTime.of(0, 0))
-            .availableEndTime(LocalTime.of(23, 59))
+            .availableEndTime(LocalTime.of(18, 0))
             .reservationTimeUnit(10)
             .reservationMinimumTimeUnit(10)
             .reservationMaximumTimeUnit(1440)
@@ -88,8 +88,8 @@ public class CommonFixture {
             .build();
 
     public static Reservation BE_NEXT_DAY_PM_SIX_TWELVE = new Reservation.Builder()
-            .startTime(TOMORROW.plusDays(1).atTime(18, 0, 0))
-            .endTime(TOMORROW.plusDays(1).atTime(23, 59, 59))
+            .startTime(TOMORROW.plusDays(1).atTime(6, 0, 0))
+            .endTime(TOMORROW.plusDays(1).atTime(12, 0, 0))
             .description("찜꽁 3차 회의")
             .userName(USER_NAME)
             .password("6789")
@@ -97,7 +97,7 @@ public class CommonFixture {
             .build();
 
     public static Reservation FE1_ZERO_ONE = new Reservation.Builder()
-            .startTime(TOMORROW.atStartOfDay())
+            .startTime(TOMORROW_START_TIME)
             .endTime(TOMORROW.atTime(1, 0, 0))
             .description("찜꽁 5차 회의")
             .userName(USER_NAME)
