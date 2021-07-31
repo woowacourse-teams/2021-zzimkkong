@@ -20,7 +20,6 @@ import PATH from 'constants/path';
 import { LOCAL_STORAGE_KEY } from 'constants/storage';
 import useManagerMaps from 'hooks/useManagerMaps';
 import useManagerReservations from 'hooks/useManagerReservations';
-import { SpaceReservation } from 'types/common';
 import { ErrorResponse } from 'types/response';
 import { formatDate } from 'utils/datetime';
 import * as Styled from './ManagerMain.styles';
@@ -94,39 +93,34 @@ const ManagerMain = (): JSX.Element => {
         </Styled.DateInputWrapper>
         <Styled.SpaceList>
           {reservations &&
-            reservations.map(
-              (
-                { spaceId, spaceName, spaceColor, reservations }: SpaceReservation,
-                index: number
-              ) => (
-                <Styled.SpaceReservationWrapper key={`space-${spaceId}`}>
-                  <Panel expandable initialExpanded={!index}>
-                    <Panel.Header dotColor={spaceColor}>
-                      <Panel.Title>{spaceName}</Panel.Title>
-                    </Panel.Header>
-                    <Panel.Content>
-                      {reservations.length === 0 ? (
-                        <Styled.PanelMessage>등록된 예약이 없습니다</Styled.PanelMessage>
-                      ) : (
-                        <>
-                          {reservations.map((reservation) => (
-                            <ReservationListItem
-                              key={`reservation-${reservation.id}`}
-                              reservation={reservation}
-                              control={
-                                <IconButton>
-                                  <MoreIcon width="100%" height="100%" />
-                                </IconButton>
-                              }
-                            />
-                          ))}
-                        </>
-                      )}
-                    </Panel.Content>
-                  </Panel>
-                </Styled.SpaceReservationWrapper>
-              )
-            )}
+            reservations.map(({ spaceId, spaceName, spaceColor, reservations }, index) => (
+              <Styled.SpaceReservationWrapper key={`space-${spaceId}`}>
+                <Panel expandable initialExpanded={!index}>
+                  <Panel.Header dotColor={spaceColor}>
+                    <Panel.Title>{spaceName}</Panel.Title>
+                  </Panel.Header>
+                  <Panel.Content>
+                    {reservations.length === 0 ? (
+                      <Styled.PanelMessage>등록된 예약이 없습니다</Styled.PanelMessage>
+                    ) : (
+                      <>
+                        {reservations.map((reservation) => (
+                          <ReservationListItem
+                            key={`reservation-${reservation.id}`}
+                            reservation={reservation}
+                            control={
+                              <IconButton>
+                                <MoreIcon width="100%" height="100%" />
+                              </IconButton>
+                            }
+                          />
+                        ))}
+                      </>
+                    )}
+                  </Panel.Content>
+                </Panel>
+              </Styled.SpaceReservationWrapper>
+            ))}
         </Styled.SpaceList>
       </Layout>
 
