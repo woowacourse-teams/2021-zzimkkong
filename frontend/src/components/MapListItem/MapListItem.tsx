@@ -1,4 +1,4 @@
-import { ReactElement, useState } from 'react';
+import { ReactNode, useState } from 'react';
 import MapDefault from 'assets/images/map-default.jpg';
 import * as Styled from './MapListItem.styles';
 
@@ -8,7 +8,7 @@ export interface Props {
     alt: string;
   };
   title: string;
-  control?: ReactElement;
+  control?: ReactNode;
 }
 
 const MapListItem = ({ thumbnail, title, control }: Props): JSX.Element => {
