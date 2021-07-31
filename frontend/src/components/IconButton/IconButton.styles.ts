@@ -4,12 +4,6 @@ interface Props {
   size: 'small' | 'medium' | 'large';
 }
 
-export const Container = styled.div`
-  display: inline-flex;
-  flex-direction: column;
-  align-items: center;
-`;
-
 const buttonSizeCSS = {
   small: css`
     min-width: 1.25rem;
@@ -27,7 +21,7 @@ export const Button = styled.button<Props>`
   border-radius: 50%;
   background-color: transparent;
   cursor: pointer;
-  display: flex;
+  display: inline-flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
