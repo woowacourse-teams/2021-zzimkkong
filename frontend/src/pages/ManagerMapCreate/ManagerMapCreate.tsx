@@ -200,7 +200,7 @@ const ManagerMapCreate = (): JSX.Element => {
   const handleSubmit: FormEventHandler<HTMLFormElement> = (event) => {
     event.preventDefault();
 
-    const mapDrawing = JSON.stringify(mapElements);
+    const mapDrawing = JSON.stringify({ width, height, mapElements });
 
     const mapImageSvg = `
       <svg
