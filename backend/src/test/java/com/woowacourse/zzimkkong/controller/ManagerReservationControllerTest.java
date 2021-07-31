@@ -321,8 +321,7 @@ public class ManagerReservationControllerTest extends AcceptanceTest {
                 .given(getRequestSpecification()).log().all()
                 .accept("*/*")
                 .header("Authorization", AuthorizationExtractor.AUTHENTICATION_TYPE + " " + getToken())
-                // TODO: getAll로 고치기
-                .filter(document("reservation/manager/get_all", getRequestPreprocessor(), getResponsePreprocessor()))
+                .filter(document("reservation/manager/getAll", getRequestPreprocessor(), getResponsePreprocessor()))
                 .queryParam("date", date)
                 .when().get(api)
                 .then().log().all().extract();
@@ -345,7 +344,7 @@ public class ManagerReservationControllerTest extends AcceptanceTest {
                 .given(getRequestSpecification()).log().all()
                 .accept("*/*")
                 .header("Authorization", AuthorizationExtractor.AUTHENTICATION_TYPE + " " + getToken())
-                .filter(document("reservation/manager/get_for_update", getRequestPreprocessor(), getResponsePreprocessor()))
+                .filter(document("reservation/manager/getForUpdate", getRequestPreprocessor(), getResponsePreprocessor()))
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .when().get(api)
                 .then().log().all().extract();

@@ -313,8 +313,7 @@ public class GuestReservationControllerTest extends AcceptanceTest {
         return RestAssured
                 .given(getRequestSpecification()).log().all()
                 .accept("*/*")
-                // TODO: getAll로 고치기
-                .filter(document("reservation/guest/get_all", getRequestPreprocessor(), getResponsePreprocessor()))
+                .filter(document("reservation/guest/getAll", getRequestPreprocessor(), getResponsePreprocessor()))
                 .queryParam("date", date)
                 .when().get(api)
                 .then().log().all().extract();
@@ -335,7 +334,7 @@ public class GuestReservationControllerTest extends AcceptanceTest {
         return RestAssured
                 .given(getRequestSpecification()).log().all()
                 .accept("application/json")
-                .filter(document("reservation/guest/post_for_update", getRequestPreprocessor(), getResponsePreprocessor()))
+                .filter(document("reservation/guest/postForUpdate", getRequestPreprocessor(), getResponsePreprocessor()))
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body(reservationPasswordAuthenticationRequest)
                 .when().post(api)
