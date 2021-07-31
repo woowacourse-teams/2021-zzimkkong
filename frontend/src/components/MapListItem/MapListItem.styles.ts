@@ -6,10 +6,25 @@ export const Container = styled.div`
   border-radius: 0.25rem;
 `;
 
-export const ImageWrapper = styled.div``;
+export const ImageWrapper = styled.div`
+  width: 100%;
+  height: 0;
+  padding-bottom: 75%;
+  position: relative;
+`;
+
+export const ImageInner = styled.div`
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+`;
 
 export const Image = styled.img`
-  width: 100%;
+  max-width: 100%;
+  max-height: 100%;
 `;
 
 export const TitleWrapper = styled.div`
