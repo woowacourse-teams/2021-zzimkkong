@@ -1,5 +1,10 @@
+import { AxiosError } from 'axios';
 import { useState } from 'react';
-import LutherImage from 'assets/images/luther.png';
+import { useMutation } from 'react-query';
+import { useHistory } from 'react-router-dom';
+import { deleteMap } from 'api/map';
+import { ReactComponent as DeleteIcon } from 'assets/svg/delete.svg';
+import { ReactComponent as EditIcon } from 'assets/svg/edit.svg';
 import { ReactComponent as MenuIcon } from 'assets/svg/menu.svg';
 import { ReactComponent as MoreIcon } from 'assets/svg/more.svg';
 import DateInput from 'components/DateInput/DateInput';
@@ -7,138 +12,75 @@ import Drawer from 'components/Drawer/Drawer';
 import Header from 'components/Header/Header';
 import IconButton from 'components/IconButton/IconButton';
 import Layout from 'components/Layout/Layout';
+import MapListItem from 'components/MapListItem/MapListItem';
 import Panel from 'components/Panel/Panel';
 import ReservationListItem from 'components/ReservationListItem/ReservationListItem';
-import SpaceListItem from 'components/SpaceListItem/SpaceListItem';
-import { Reservation } from 'types/common';
+import MESSAGE from 'constants/message';
+import PATH from 'constants/path';
+import { LOCAL_STORAGE_KEY } from 'constants/storage';
+import useManagerMaps from 'hooks/useManagerMaps';
+import useManagerReservations from 'hooks/useManagerReservations';
+import { ErrorResponse } from 'types/response';
+import { formatDate } from 'utils/datetime';
 import * as Styled from './ManagerMain.styles';
 
 const ManagerMain = (): JSX.Element => {
+  const mapId = 1;
   const [date, setDate] = useState(new Date());
   const [open, setOpen] = useState(false);
 
-  const onOpen = () => {
-    setOpen(true);
-  };
+  const history = useHistory();
 
-  const onClose = () => {
-    setOpen(false);
+  const onRequestError = (error: AxiosError<ErrorResponse>) => {
+    alert(error.response?.data?.message ?? MESSAGE.MANAGER_MAIN.UNEXPECTED_GET_DATA_ERROR);
+
+    if (error.response?.status === 401) {
+      localStorage.removeItem(LOCAL_STORAGE_KEY.ACCESS_TOKEN);
+      history.push(PATH.MANAGER_LOGIN);
+    }
   };
 
   const mapName = '우테코 교육장';
+  const getMaps = useManagerMaps({ onError: onRequestError });
+  const maps = getMaps.data?.data.maps ?? [];
 
-  const dummySpaceList = [
+  const getReservations = useManagerReservations(
     {
-      id: 1,
-      title: '루터회관 14F',
-      thumbnail: {
-        src: LutherImage,
-        alt: '루터회관 14F 공간',
-      },
+      mapId,
+      date: formatDate(date),
     },
-    {
-      id: 2,
-      title: '루터회관 14F',
-      thumbnail: {
-        src: LutherImage,
-        alt: '루터회관 14F 공간',
-      },
-    },
-    {
-      id: 3,
-      title: '루터회관 14F',
-      thumbnail: {
-        src: LutherImage,
-        alt: '루터회관 14F 공간',
-      },
-    },
-    {
-      id: 4,
-      title: '루터회관 14F',
-      thumbnail: {
-        src: LutherImage,
-        alt: '루터회관 14F 공간',
-      },
-    },
-    {
-      id: 5,
-      title: '루터회관 14F',
-      thumbnail: {
-        src: LutherImage,
-        alt: '루터회관 14F 공간',
-      },
-    },
-  ];
+    { onError: onRequestError }
+  );
+  const reservations = getReservations.data?.data?.data ?? [];
 
-  const data = [
-    {
-      spaceId: 1,
-      spaceName: '회의실 1',
-      spaceColor: '#ffc757',
-      reservations: [
-        {
-          id: 1,
-          name: '썬',
-          description: '태양을 피하는 방법',
-          startDateTime: '2021-07-23T12:00',
-          endDateTime: '2021-07-23T13:00',
-        },
-        {
-          id: 2,
-          name: '체프',
-          description: '커피를 맛있게 마시는 방법',
-          startDateTime: '2021-07-23T13:00',
-          endDateTime: '2021-07-23T15:00',
-        },
-        {
-          id: 3,
-          name: '유조',
-          description: 'Tailwind CSS 가이드',
-          startDateTime: '2021-07-23T15:00',
-          endDateTime: '2021-07-23T16:00',
-        },
-      ],
+  const removeMap = useMutation(deleteMap, {
+    onSuccess: () => {
+      alert('맵이 삭제 되었습니다.');
     },
-    {
-      spaceId: 2,
-      spaceName: '회의실 2',
-      spaceColor: '#ffc757',
-      reservations: [],
+
+    onError: (error: AxiosError<ErrorResponse>) => {
+      alert(error.response?.data.message ?? MESSAGE.MANAGER_MAIN.UNEXPECTED_MAP_DELETE_ERROR);
     },
-    {
-      spaceId: 3,
-      spaceName: '회의실 3',
-      spaceColor: '#ffc757',
-      reservations: [],
-    },
-    {
-      spaceId: 4,
-      spaceName: '백엔드 강의장',
-      spaceColor: '#fda3a7',
-      reservations: [],
-    },
-    {
-      spaceId: 5,
-      spaceName: '프론트엔드 강의장',
-      spaceColor: '#fda3a7',
-      reservations: [
-        {
-          id: 1,
-          name: '체프',
-          description: '핸드드립 내리는 방법',
-          startDateTime: '2021-07-23T15:00',
-          endDateTime: '2021-07-23T16:00',
-        },
-      ],
-    },
-  ];
+  });
+
+  const handleDeleteMap = (mapId: number) => {
+    removeMap.mutate({ mapId });
+  };
+
+  const onOpenDrawer = () => {
+    setOpen(true);
+  };
+
+  const onCloseDrawer = () => {
+    setOpen(false);
+  };
 
   return (
     <>
       <Header />
       <Layout>
         <Styled.PageHeader>
-          <IconButton text="맵 목록" onClick={onOpen}>
+          <IconButton text="맵 목록" onClick={onOpenDrawer}>
             <MenuIcon width="100%" height="100%" />
           </IconButton>
           <Styled.PageTitle>{mapName}</Styled.PageTitle>
@@ -150,48 +92,69 @@ const ManagerMain = (): JSX.Element => {
           <DateInput date={date} setDate={setDate} />
         </Styled.DateInputWrapper>
         <Styled.SpaceList>
-          {data.map(({ spaceId, spaceName, spaceColor, reservations }, index) => (
-            <Styled.SpaceReservationWrapper key={`space-${spaceId}`}>
-              <Panel expandable initialExpanded={!index}>
-                <Panel.Header dotColor={spaceColor}>
-                  <Panel.Title>{spaceName}</Panel.Title>
-                </Panel.Header>
-                <Panel.Content>
-                  {reservations.length === 0 ? (
-                    <Styled.PanelMessage>등록된 예약이 없습니다</Styled.PanelMessage>
-                  ) : (
-                    <>
-                      {reservations.map((reservation) => (
-                        <ReservationListItem
-                          key={`reservation-${reservation.id}`}
-                          reservation={reservation as Reservation}
-                          control={
-                            <IconButton>
-                              <MoreIcon width="100%" height="100%" />
-                            </IconButton>
-                          }
-                        />
-                      ))}
-                    </>
-                  )}
-                </Panel.Content>
-              </Panel>
-            </Styled.SpaceReservationWrapper>
-          ))}
+          {reservations &&
+            reservations.map(({ spaceId, spaceName, spaceColor, reservations }, index) => (
+              <Styled.SpaceReservationWrapper key={`space-${spaceId}`}>
+                <Panel expandable initialExpanded={!index}>
+                  <Panel.Header dotColor={spaceColor}>
+                    <Panel.Title>{spaceName}</Panel.Title>
+                  </Panel.Header>
+                  <Panel.Content>
+                    {reservations.length === 0 ? (
+                      <Styled.PanelMessage>등록된 예약이 없습니다</Styled.PanelMessage>
+                    ) : (
+                      <>
+                        {reservations.map((reservation) => (
+                          <ReservationListItem
+                            key={`reservation-${reservation.id}`}
+                            reservation={reservation}
+                            control={
+                              <IconButton>
+                                <MoreIcon width="100%" height="100%" />
+                              </IconButton>
+                            }
+                          />
+                        ))}
+                      </>
+                    )}
+                  </Panel.Content>
+                </Panel>
+              </Styled.SpaceReservationWrapper>
+            ))}
         </Styled.SpaceList>
       </Layout>
 
-      <Drawer open={open} placement="left" maxwidth="450px" onClose={onClose}>
+      <Drawer open={open} placement="left" maxwidth="450px" onClose={onCloseDrawer}>
         <Drawer.Inner>
           <Drawer.Header>
             <Drawer.HeaderText>우아한형제들</Drawer.HeaderText>
             <Drawer.CloseButton />
           </Drawer.Header>
-          {dummySpaceList.map((space) => (
-            <Styled.SpaceWrapper key={`map-${space.id}`}>
-              <SpaceListItem thumbnail={space.thumbnail} title={space.title} />
+          {maps.map(({ mapId, mapName, mapImageUrl }) => (
+            <Styled.SpaceWrapper key={`map-${mapId}`}>
+              <MapListItem
+                thumbnail={{ src: mapImageUrl, alt: mapName }}
+                title={mapName}
+                control={
+                  <>
+                    <Styled.MapListItemControlButton size="small">
+                      <EditIcon width="100%" height="100%" />
+                    </Styled.MapListItemControlButton>
+                    <Styled.MapListItemControlButton
+                      size="small"
+                      onClick={() => handleDeleteMap(mapId)}
+                    >
+                      <DeleteIcon width="100%" height="100%" />
+                    </Styled.MapListItemControlButton>
+                  </>
+                }
+              />
             </Styled.SpaceWrapper>
           ))}
+
+          <Styled.CreateMapButton to={PATH.MANAGER_MAP_CREATE}>
+            <Styled.PlusIcon width="100%" height="100%" />
+          </Styled.CreateMapButton>
         </Drawer.Inner>
       </Drawer>
     </>

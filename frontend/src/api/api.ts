@@ -9,7 +9,6 @@ const api = axios.create({
   },
 });
 
-// TODO type관련하여 정의 후 개선할 수 있는 방법 찾아서 개선하기
 api.interceptors.request.use((config) => {
   const token = getLocalStorageItem({
     key: LOCAL_STORAGE_KEY.ACCESS_TOKEN,
