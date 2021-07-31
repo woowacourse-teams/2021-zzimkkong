@@ -29,7 +29,7 @@ class BatikConverterTest {
         this.testFile = batikConverter.convertSvgToPngFile(rawSvgData, "testPngFileName");
 
         // then
-        assertThat(testFile).isEqualTo(new File(batikConverter.saveDirectoryPath + "testPngFileName.png"));
+        assertThat(testFile).isEqualTo(new File(batikConverter.getSaveDirectoryPath() + "testPngFileName.png"));
     }
 
     @AfterEach

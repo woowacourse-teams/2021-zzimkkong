@@ -12,7 +12,7 @@ import java.io.*;
 
 @Component
 public class BatikConverter implements SvgConverter {
-    public final String saveDirectoryPath;
+    private final String saveDirectoryPath;
 
     public BatikConverter(
             @Value("${converter.temp.location}")
@@ -39,5 +39,9 @@ public class BatikConverter implements SvgConverter {
         } catch (IOException | TranscoderException e) {
             throw new SvgToPngConvertException(e);
         }
+    }
+
+    public String getSaveDirectoryPath() {
+        return saveDirectoryPath;
     }
 }
