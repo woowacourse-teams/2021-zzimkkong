@@ -2,7 +2,7 @@ import { ButtonHTMLAttributes, PropsWithChildren } from 'react';
 import * as Styled from './Button.styles';
 
 export interface Props extends ButtonHTMLAttributes<HTMLButtonElement> {
-  variant?: 'primary' | 'text' | 'default';
+  variant?: 'primary' | 'primary-text' | 'text' | 'default';
   size?: 'small' | 'medium' | 'large';
   fullWidth?: boolean;
 }

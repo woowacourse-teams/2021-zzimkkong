@@ -219,6 +219,30 @@ public class ManagerReservationServiceTest extends ServiceTest {
                 .isInstanceOf(NonMatchingStartAndEndDateException.class);
     }
 
+    @Test
+    @DisplayName("예약 생성 요청 시, 공간의 예약가능 시간이 아니라면 예외가 발생한다.")
+    void saveInvalidTimeSetting() {
+        //given
+        reservationCreateUpdateWithPasswordRequest = new ReservationCreateUpdateWithPasswordRequest(
+                BE.getId(),
+                TOMORROW.atTime(9,59),
+                TOMORROW.atTime(22,1),
+                RESERVATION_PASSWORD,
+                USER_NAME,
+                DESCRIPTION
+        );
+
+        //when
+        saveMock();
+
+        //then
+        assertThatThrownBy(() -> managerReservationService.saveReservation(
+                LUTHER.getId(),
+                reservationCreateUpdateWithPasswordRequest,
+                POBI))
+                .isInstanceOf(ConflictSpaceSettingException.class);
+    }
+
     @DisplayName("예약 생성 요청 시, 이미 겹치는 시간이 존재하면 예외가 발생한다.")
     @ParameterizedTest
     @CsvSource(value = {"-10:10", "2:0", "0:1", "60:59", "-59:-59"}, delimiter = ':')
@@ -546,8 +570,8 @@ public class ManagerReservationServiceTest extends ServiceTest {
         // when
         ReservationCreateUpdateRequest reservationCreateUpdateRequest = new ReservationCreateUpdateRequest(
                 BE.getId(),
-                TOMORROW_START_TIME.plusHours(20),
-                TOMORROW_START_TIME.plusHours(21),
+                TOMORROW.atTime(10,0),
+                TOMORROW.atTime(11,0),
                 CHANGED_NAME,
                 CHANGED_DESCRIPTION
         );
@@ -678,6 +702,37 @@ public class ManagerReservationServiceTest extends ServiceTest {
                 reservationCreateUpdateRequest,
                 POBI))
                 .isInstanceOf(ImpossibleReservationTimeException.class);
+    }
+
+    @DisplayName("예약 수정 요청 시, 공간의 예약가능 시간이 아니라면 에러가 발생한다.")
+    @Test
+    void updateInvalidTimeSetting() {
+        //given
+        given(maps.existsById(anyLong()))
+                .willReturn(true);
+        given(maps.findById(anyLong()))
+                .willReturn(Optional.of(LUTHER));
+        given(spaces.findById(anyLong()))
+                .willReturn(Optional.of(BE));
+        given(reservations.findById(anyLong()))
+                .willReturn(Optional.of(reservation));
+
+        //when
+        ReservationCreateUpdateRequest reservationCreateUpdateRequest = new ReservationCreateUpdateRequest(
+                BE.getId(),
+                TOMORROW.atTime(10,0),
+                TOMORROW.atTime(22,1),
+                CHANGED_NAME,
+                CHANGED_DESCRIPTION
+        );
+
+        //then
+        assertThatThrownBy(() -> managerReservationService.updateReservation(
+                LUTHER.getId(),
+                1L,
+                reservationCreateUpdateRequest,
+                POBI))
+                .isInstanceOf(ConflictSpaceSettingException.class);
     }
 
     @DisplayName("예약 삭제 요청이 옳다면 삭제한다.")
