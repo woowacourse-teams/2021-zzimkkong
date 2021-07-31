@@ -308,7 +308,7 @@ public class ManagerReservationServiceTest extends ServiceTest {
                 .willReturn(Optional.of(reservation));
 
         //then
-        LocalDateTime theDayAfterTomorrowTen = timeConverter.getNow().plusDays(2).plusHours(14).withMinute(0);
+        LocalDateTime theDayAfterTomorrowTen = timeConverter.getNow().plusDays(2).plusHours(10).withMinute(0);
         assertThatThrownBy(() -> managerReservationService.saveReservation(
                 LUTHER.getId(),
                 new ReservationCreateUpdateWithPasswordRequest(
