@@ -1,6 +1,7 @@
 import { Link } from 'react-router-dom';
 import styled from 'styled-components';
 import { ReactComponent as LinkIcon } from 'assets/svg/link.svg';
+import { ReactComponent as Plus } from 'assets/svg/plus.svg';
 import IconButton from 'components/IconButton/IconButton';
 
 export const PageHeader = styled.div`
@@ -51,22 +52,33 @@ export const MapListItemControlButton = styled(IconButton)`
   }
 `;
 
+export const PlusIcon = styled(Plus)`
+  position: absolute;
+  max-width: 4rem;
+  max-height: 4rem;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+`;
+
 export const CreateMapButton = styled(Link)`
   display: flex;
   justify-content: center;
-  width: 5rem;
-  height: 5rem;
-  padding: 1rem;
+  width: 100%;
+  height: 0;
+  padding-bottom: 75%;
   margin: 1rem auto;
-  background-color: ${({ theme }) => theme.gray[100]};
-  border-radius: 50%;
+  background-color: ${({ theme }) => theme.gray[50]};
+  border: 1px solid ${({ theme }) => theme.gray[400]};
+  border-radius: 0.25rem;
+  position: relative;
 
-  & > svg {
+  ${PlusIcon} {
     fill: ${({ theme }) => theme.gray[500]};
   }
 
   &:hover {
-    & > svg {
+    ${PlusIcon} {
       fill: ${({ theme }) => theme.primary[400]};
     }
   }

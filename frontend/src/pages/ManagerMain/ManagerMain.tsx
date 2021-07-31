@@ -7,7 +7,6 @@ import { ReactComponent as DeleteIcon } from 'assets/svg/delete.svg';
 import { ReactComponent as EditIcon } from 'assets/svg/edit.svg';
 import { ReactComponent as MenuIcon } from 'assets/svg/menu.svg';
 import { ReactComponent as MoreIcon } from 'assets/svg/more.svg';
-import { ReactComponent as PlusIcon } from 'assets/svg/plus.svg';
 import DateInput from 'components/DateInput/DateInput';
 import Drawer from 'components/Drawer/Drawer';
 import Header from 'components/Header/Header';
@@ -160,7 +159,7 @@ const ManagerMain = (): JSX.Element => {
             // TODO: 맵 추가 페이지 PATH로 변경
           }
           <Styled.CreateMapButton to="/">
-            <PlusIcon width="100%" height="100%" />
+            <Styled.PlusIcon width="100%" height="100%" />
           </Styled.CreateMapButton>
         </Drawer.Inner>
       </Drawer>
