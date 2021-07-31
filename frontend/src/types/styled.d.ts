@@ -1,6 +1,5 @@
 import 'styled-components';
-
-type Color = string;
+import { Color } from './common';
 
 interface Palette {
   50?: Color;

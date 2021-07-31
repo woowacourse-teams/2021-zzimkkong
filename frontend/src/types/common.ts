@@ -1,4 +1,4 @@
-import { Color } from './styled';
+export type Color = string;
 
 export interface Coordinate {
   x: number;
