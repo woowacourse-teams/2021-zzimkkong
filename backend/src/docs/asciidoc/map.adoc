@@ -23,3 +23,9 @@ include::{snippets}/map/getAll/http-response.adoc[]
 include::{snippets}/map/put/http-request.adoc[]
 ==== Response
 include::{snippets}/map/put/http-response.adoc[]
+
+=== 맵 삭제
+==== Request
+include::{snippets}/map/delete/http-request.adoc[]
+==== Response
+include::{snippets}/map/delete/http-response.adoc[]
