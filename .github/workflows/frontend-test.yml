@@ -1,10 +1,25 @@
 name: FE Test
 
-on: [pull_request]
+on:
+  pull_request:
+    branches: [main, dev]
 
 jobs:
-  build:
-    name: Test
+  Check-Changed-File:
+    runs-on: ubuntu-latest
+    outputs:
+      front-end: ${{ steps.filter.outputs.front-end }}
+    steps:
+      - name: check if front-end directory has changed
+        uses: dorny/paths-filter@v2
+        id: filter
+        with:
+          filters: |
+            front-end:
+              - 'front-end/**'
+  FE-Test:
+    needs: changes
+    if: ${{ needs.changes.outputs.front-end == 'true' }}
     runs-on: ubuntu-latest
     env:
       working-directory: ./frontend
