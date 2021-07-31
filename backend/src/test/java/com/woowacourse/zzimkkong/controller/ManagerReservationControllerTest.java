@@ -16,12 +16,20 @@ import org.springframework.http.MediaType;
 
 import java.util.Arrays;
 
+import static com.woowacourse.zzimkkong.CommonFixture.*;
 import static com.woowacourse.zzimkkong.DocumentUtils.*;
 import static com.woowacourse.zzimkkong.controller.AuthControllerTest.getToken;
 import static com.woowacourse.zzimkkong.controller.MapControllerTest.saveMap;
 import static com.woowacourse.zzimkkong.controller.MemberControllerTest.saveMember;
 import static com.woowacourse.zzimkkong.controller.SpaceControllerTest.saveSpace;
 import static com.woowacourse.zzimkkong.service.ServiceTestFixture.*;
+import static com.woowacourse.zzimkkong.service.ServiceTestFixture.BE;
+import static com.woowacourse.zzimkkong.service.ServiceTestFixture.BE_AM_ZERO_ONE;
+import static com.woowacourse.zzimkkong.service.ServiceTestFixture.BE_PM_ONE_TWO;
+import static com.woowacourse.zzimkkong.service.ServiceTestFixture.DESCRIPTION;
+import static com.woowacourse.zzimkkong.service.ServiceTestFixture.FE1;
+import static com.woowacourse.zzimkkong.service.ServiceTestFixture.FE1_ZERO_ONE;
+import static com.woowacourse.zzimkkong.service.ServiceTestFixture.RESERVATION_PASSWORD;
 import static com.woowacourse.zzimkkong.service.ServiceTestFixture.USER_NAME;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.restdocs.restassured3.RestAssuredRestDocumentation.document;

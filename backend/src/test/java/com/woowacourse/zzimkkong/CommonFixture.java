@@ -1,6 +1,10 @@
 package com.woowacourse.zzimkkong;
 
 import com.woowacourse.zzimkkong.domain.*;
+import com.woowacourse.zzimkkong.dto.map.MapCreateUpdateRequest;
+import com.woowacourse.zzimkkong.dto.member.MemberSaveRequest;
+import com.woowacourse.zzimkkong.dto.space.SettingsRequest;
+import com.woowacourse.zzimkkong.dto.space.SpaceCreateUpdateRequest;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -105,4 +109,47 @@ public class CommonFixture {
             .password(RESERVATION_PASSWORD)
             .space(FE1)
             .build();
+
+    public static final MapCreateUpdateRequest mapCreateRequest = new MapCreateUpdateRequest(LUTHER.getName(), LUTHER.getMapDrawing(), MAP_SVG);
+    public static final MemberSaveRequest memberSaveRequest = new MemberSaveRequest(EMAIL, PASSWORD, ORGANIZATION);
+    public static final SettingsRequest beSettingsRequest = new SettingsRequest(
+            LocalTime.of(0, 0),
+            LocalTime.of(23, 59),
+            10,
+            10,
+            1440,
+            true,
+            null
+    );
+
+    public static final SpaceCreateUpdateRequest beSpaceCreateUpdateRequest = new SpaceCreateUpdateRequest(
+            "백엔드 강의실",
+            "시니컬하네",
+            SPACE_DRAWING,
+            beSettingsRequest,
+            MAP_SVG
+    );
+
+    public static final SettingsRequest feSettingsRequest = new SettingsRequest(
+            LocalTime.of(0, 0),
+            LocalTime.of(23, 59),
+            10,
+            10,
+            1440,
+            true,
+            null
+    );
+
+    public static final SpaceCreateUpdateRequest feSpaceCreateUpdateRequest = new SpaceCreateUpdateRequest(
+            "프론트엔드 강의실1",
+            "시니컬하네",
+            SPACE_DRAWING,
+            feSettingsRequest,
+            MAP_SVG
+    );
+
+    public static final String SALLY_PASSWORD = "1230";
+    public static final String SALLY_NAME = "샐리";
+    public static final String SALLY_DESCRIPTION = "집 가고 싶은 회의";
+
 }
