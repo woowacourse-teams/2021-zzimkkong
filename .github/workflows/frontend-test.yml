@@ -18,7 +18,7 @@ jobs:
             front-end:
               - 'front-end/**'
   FE-Test:
-    needs: changes
+    needs: Check-Changed-File
     if: ${{ needs.changes.outputs.front-end == 'true' }}
     runs-on: ubuntu-latest
     env:
