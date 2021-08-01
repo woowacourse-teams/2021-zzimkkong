@@ -43,6 +43,7 @@ public class CommonFixture {
             .reservationEnable(true)
             .disabledWeekdays(null)
             .build();
+
     public static Space BE = new Space.Builder()
             .name("백엔드 강의실")
             .textPosition("bottom")
@@ -64,6 +65,7 @@ public class CommonFixture {
             .reservationEnable(true)
             .disabledWeekdays(null)
             .build();
+
     public static Space FE1 = new Space.Builder()
             .name("프론트엔드 강의실1")
             .textPosition("bottom")
