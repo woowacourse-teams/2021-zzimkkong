@@ -10,6 +10,8 @@ import com.woowacourse.zzimkkong.dto.map.MapFindResponse;
 import com.woowacourse.zzimkkong.exception.authorization.NoAuthorityOnMapException;
 import com.woowacourse.zzimkkong.exception.map.NoSuchMapException;
 import com.woowacourse.zzimkkong.exception.space.ReservationExistOnSpaceException;
+import com.woowacourse.zzimkkong.infrastructure.StorageUploader;
+import com.woowacourse.zzimkkong.infrastructure.SvgConverter;
 import com.woowacourse.zzimkkong.infrastructure.TimeConverter;
 import com.woowacourse.zzimkkong.repository.MapRepository;
 import com.woowacourse.zzimkkong.repository.ReservationRepository;
@@ -17,6 +19,7 @@ import com.woowacourse.zzimkkong.repository.SpaceRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.io.File;
 import java.util.List;
 
 @Service
@@ -25,16 +28,22 @@ public class MapService {
     private final MapRepository maps;
     private final SpaceRepository spaces;
     private final ReservationRepository reservations;
+    private final StorageUploader storageUploader;
+    private final SvgConverter svgConverter;
     private final TimeConverter timeConverter;
 
     public MapService(
             final MapRepository maps,
             final SpaceRepository spaces,
             final ReservationRepository reservations,
+            final StorageUploader storageUploader,
+            final SvgConverter svgConverter,
             final TimeConverter timeConverter) {
         this.maps = maps;
         this.spaces = spaces;
         this.reservations = reservations;
+        this.storageUploader = storageUploader;
+        this.svgConverter = svgConverter;
         this.timeConverter = timeConverter;
     }
 
@@ -42,8 +51,12 @@ public class MapService {
         Map saveMap = maps.save(new Map(
                 mapCreateUpdateRequest.getMapName(),
                 mapCreateUpdateRequest.getMapDrawing(),
-                mapCreateUpdateRequest.getMapImageSvg(),
+                mapCreateUpdateRequest.getMapImageSvg().substring(0, 10),
                 manager));
+
+        String thumbnailUrl = uploadPngToS3(mapCreateUpdateRequest.getMapImageSvg(), saveMap.getId().toString());
+        saveMap.updateImageUrl(thumbnailUrl);
+
         return MapCreateResponse.from(saveMap);
     }
 
@@ -68,10 +81,12 @@ public class MapService {
 
         validateManagerOfMap(map, manager);
 
+        String thumbnailUrl = uploadPngToS3(mapCreateUpdateRequest.getMapImageSvg(), map.getId().toString());
+
         map.update(
                 mapCreateUpdateRequest.getMapName(),
                 mapCreateUpdateRequest.getMapDrawing(),
-                mapCreateUpdateRequest.getMapImageSvg());
+                thumbnailUrl);
     }
 
     public void deleteMap(final Long mapId, final Member manager) {
@@ -87,6 +102,7 @@ public class MapService {
 
     private void validateExistReservations(Long mapId) {
         List<Space> findSpaces = spaces.findAllByMapId(mapId);
+
         boolean isExistReservationInAnySpace = findSpaces.stream()
                 .anyMatch(space -> reservations.existsBySpaceIdAndEndTimeAfter(space.getId(), timeConverter.getNow()));
 
@@ -99,5 +115,12 @@ public class MapService {
         if (!manager.equals(map.getMember())) {   // TODO: ReservationService 와의 중복 제거 -김샐
             throw new NoAuthorityOnMapException();
         }
+    }
+
+    private String uploadPngToS3(final String svgData, final String fileName) {
+        File pngFile = svgConverter.convertSvgToPngFile(svgData, fileName);
+        String thumbnailUrl = storageUploader.upload("thumbnails", pngFile);
+        pngFile.delete();
+        return thumbnailUrl;
     }
 }

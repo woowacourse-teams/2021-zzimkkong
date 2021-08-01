@@ -5,7 +5,7 @@ const spaceList: Space[] = [
     spaceId: 1,
     spaceName: '백엔드 강의실',
     textPosition: 'bottom',
-    color: '#FED7D9',
+    spaceColor: '#FED7D9',
     coordinate: {
       x: 100,
       y: 90,
@@ -15,7 +15,7 @@ const spaceList: Space[] = [
     spaceId: 2,
     spaceName: '프론트 강의실1',
     textPosition: 'bottom',
-    color: '#FED7D9',
+    spaceColor: '#FED7D9',
     coordinate: {
       x: 560,
       y: 40,
@@ -25,7 +25,7 @@ const spaceList: Space[] = [
     spaceId: 3,
     spaceName: '프론트 강의실2',
     textPosition: 'bottom',
-    color: '#FED7D9',
+    spaceColor: '#FED7D9',
     coordinate: {
       x: 560,
       y: 140,
@@ -35,7 +35,7 @@ const spaceList: Space[] = [
     spaceId: 4,
     spaceName: '회의실1',
     textPosition: 'bottom',
-    color: '#FFE3AC',
+    spaceColor: '#FFE3AC',
     coordinate: {
       x: 29,
       y: 229,
@@ -45,7 +45,7 @@ const spaceList: Space[] = [
     spaceId: 5,
     spaceName: '회의실2',
     textPosition: 'bottom',
-    color: '#FFE3AC',
+    spaceColor: '#FFE3AC',
     coordinate: {
       x: 88,
       y: 229,
@@ -55,7 +55,7 @@ const spaceList: Space[] = [
     spaceId: 6,
     spaceName: '회의실3',
     textPosition: 'bottom',
-    color: '#FFE3AC',
+    spaceColor: '#FFE3AC',
     coordinate: {
       x: 510,
       y: 220,
@@ -65,7 +65,7 @@ const spaceList: Space[] = [
     spaceId: 7,
     spaceName: '회의실4',
     textPosition: 'bottom',
-    color: '#FFE3AC',
+    spaceColor: '#FFE3AC',
     coordinate: {
       x: 584,
       y: 220,
@@ -75,7 +75,7 @@ const spaceList: Space[] = [
     spaceId: 8,
     spaceName: '회의실5',
     textPosition: 'bottom',
-    color: '#FFE3AC',
+    spaceColor: '#FFE3AC',
     coordinate: {
       x: 668,
       y: 335,
@@ -85,7 +85,7 @@ const spaceList: Space[] = [
     spaceId: 9,
     spaceName: '트랙방',
     textPosition: 'bottom',
-    color: '#D8FBCC',
+    spaceColor: '#D8FBCC',
     coordinate: {
       x: 259,
       y: 336,
@@ -95,7 +95,7 @@ const spaceList: Space[] = [
     spaceId: 10,
     spaceName: '페어룸1',
     textPosition: 'left',
-    color: '#CCDFFB',
+    spaceColor: '#CCDFFB',
     coordinate: {
       x: 208,
       y: 289,
@@ -105,7 +105,7 @@ const spaceList: Space[] = [
     spaceId: 11,
     spaceName: '페어룸2',
     textPosition: 'left',
-    color: '#CCDFFB',
+    spaceColor: '#CCDFFB',
     coordinate: {
       x: 208,
       y: 318,
@@ -115,7 +115,7 @@ const spaceList: Space[] = [
     spaceId: 12,
     spaceName: '페어룸3',
     textPosition: 'left',
-    color: '#CCDFFB',
+    spaceColor: '#CCDFFB',
     coordinate: {
       x: 208,
       y: 347,
@@ -125,7 +125,7 @@ const spaceList: Space[] = [
     spaceId: 13,
     spaceName: '페어룸4',
     textPosition: 'left',
-    color: '#CCDFFB',
+    spaceColor: '#CCDFFB',
     coordinate: {
       x: 208,
       y: 376,
@@ -135,7 +135,7 @@ const spaceList: Space[] = [
     spaceId: 14,
     spaceName: '페어룸5',
     textPosition: 'left',
-    color: '#CCDFFB',
+    spaceColor: '#CCDFFB',
     coordinate: {
       x: 208,
       y: 404,

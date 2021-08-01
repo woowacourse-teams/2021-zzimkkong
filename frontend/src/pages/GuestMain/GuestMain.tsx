@@ -21,6 +21,7 @@ import PATH from 'constants/path';
 import useInput from 'hooks/useInput';
 import useReservations from 'hooks/useReservations';
 import { Reservation, Space } from 'types/common';
+import { ErrorResponse } from 'types/response';
 import { formatDate } from 'utils/datetime';
 import * as Styled from './GuestMain.styles';
 import spaceList from './spaceList';
@@ -66,7 +67,7 @@ const GuestMain = (): JSX.Element => {
       setPasswordInputModalOpen(false);
     },
 
-    onError: (error: AxiosError<Error>) => {
+    onError: (error: AxiosError<ErrorResponse>) => {
       alert(error.response?.data.message ?? MESSAGE.RESERVATION.UNEXPECTED_DELETE_ERROR);
     },
   });
@@ -114,7 +115,7 @@ const GuestMain = (): JSX.Element => {
           <Styled.PageTitle>우아한테크코스 교육장</Styled.PageTitle>
           <DateInput date={date} setDate={setDate} />
           <Styled.MapContainer>
-            <Styled.Map>
+            <Styled.MapItem>
               {spaceList?.map(({ spaceId, spaceName, coordinate, textPosition }) => (
                 <PinRadio
                   key={spaceId}
@@ -128,11 +129,11 @@ const GuestMain = (): JSX.Element => {
                 />
               ))}
               <Luther />
-            </Styled.Map>
+            </Styled.MapItem>
           </Styled.MapContainer>
           <Styled.PanelContainer>
             <Panel>
-              <Panel.Header dotColor={selectedSpace.color}>
+              <Panel.Header dotColor={selectedSpace.spaceColor}>
                 <Panel.Title>{selectedSpace.spaceName}</Panel.Title>
               </Panel.Header>
               <Panel.Content>

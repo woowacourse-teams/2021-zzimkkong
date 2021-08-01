@@ -35,7 +35,7 @@ public class SpaceControllerTest extends AcceptanceTest {
 
         SettingsRequest settingsRequest = new SettingsRequest(
                 LocalTime.of(0, 0),
-                LocalTime.of(23, 59),
+                LocalTime.of(18, 0),
                 10,
                 10,
                 1440,
@@ -46,9 +46,9 @@ public class SpaceControllerTest extends AcceptanceTest {
         SpaceCreateUpdateRequest spaceCreateUpdateRequest = new SpaceCreateUpdateRequest(
                 "백엔드 강의실",
                 "시니컬하네",
-                "area",
+                SPACE_DRAWING,
                 settingsRequest,
-                "이미지 입니다"
+                MAP_SVG
         );
         String saveSpaceApi = "/api/managers/maps/1/spaces";
         saveSpace(saveSpaceApi, spaceCreateUpdateRequest);
@@ -71,9 +71,9 @@ public class SpaceControllerTest extends AcceptanceTest {
         SpaceCreateUpdateRequest newSpaceCreateUpdateRequest = new SpaceCreateUpdateRequest(
                 "잠실우리집",
                 "우리집",
-                "프론트 화이팅",
+                SPACE_DRAWING,
                 newSettingsRequest,
-                "이미지 입니다"
+                MAP_SVG
         );
 
         // when
@@ -89,8 +89,8 @@ public class SpaceControllerTest extends AcceptanceTest {
     void save_default() {
         // given, when
         SettingsRequest settingsRequest = new SettingsRequest(
-                null,
-                null,
+                LocalTime.of(0,0),
+                LocalTime.of(18,0),
                 null,
                 null,
                 null,
@@ -101,14 +101,14 @@ public class SpaceControllerTest extends AcceptanceTest {
         SpaceCreateUpdateRequest defaultSpaceCreateUpdateRequest = new SpaceCreateUpdateRequest(
                 "잠실우리집",
                 "우리집",
-                "프론트 화이팅",
+                SPACE_DRAWING,
                 settingsRequest,
-                "이미지 입니다"
+                MAP_SVG
         );
 
         Setting defaultSetting = new Setting.Builder()
                 .availableStartTime(LocalTime.of(0, 0))
-                .availableEndTime(LocalTime.of(23, 59))
+                .availableEndTime(LocalTime.of(18, 0))
                 .reservationTimeUnit(10)
                 .reservationMinimumTimeUnit(10)
                 .reservationMaximumTimeUnit(1440)
@@ -120,9 +120,9 @@ public class SpaceControllerTest extends AcceptanceTest {
                 .id(2L)
                 .name("잠실우리집")
                 .description("우리집")
-                .area("프론트 화이팅")
+                .area(SPACE_DRAWING)
                 .setting(defaultSetting)
-                .mapImage("이미지 입니다")
+                .mapImage(MAP_SVG)
                 .build();
 
         String saveSpaceApi = "/api/managers/maps/1/spaces";
@@ -163,7 +163,7 @@ public class SpaceControllerTest extends AcceptanceTest {
         // given
         SettingsRequest feSettingsRequest = new SettingsRequest(
                 LocalTime.of(0, 0),
-                LocalTime.of(23, 59),
+                LocalTime.of(18, 0),
                 10,
                 10,
                 1440,
@@ -174,9 +174,9 @@ public class SpaceControllerTest extends AcceptanceTest {
         SpaceCreateUpdateRequest feSpaceCreateUpdateRequest = new SpaceCreateUpdateRequest(
                 "프론트엔드 강의실1",
                 "시니컬하네",
-                "area",
+                SPACE_DRAWING,
                 feSettingsRequest,
-                "이미지 입니다"
+                MAP_SVG
         );
 
         String api = "/api/managers/maps/1/spaces";
@@ -211,12 +211,12 @@ public class SpaceControllerTest extends AcceptanceTest {
         SpaceCreateUpdateRequest updateSpaceCreateUpdateRequest = new SpaceCreateUpdateRequest(
                 "바다",
                 "장미아파트",
-                "장미",
+                SPACE_DRAWING,
                 settingsRequest,
-                "장미아파트 이미지"
+                MAP_SVG
         );
 
-        String api = "/api/managers/maps/" + LUTHER.getId() + "/spaces/" + BE.getId();
+        String api = "/api/managers/maps/" + LUTHER.getId() + "/spaces/1";
         ExtractableResponse<Response> response = updateSpace(api, updateSpaceCreateUpdateRequest);
 
         // then
@@ -227,7 +227,7 @@ public class SpaceControllerTest extends AcceptanceTest {
     @Test
     void delete() {
         // given, when
-        String api = "/api/managers/maps/" + LUTHER.getId() + "/spaces/" + BE.getId();
+        String api = "/api/managers/maps/" + LUTHER.getId() + "/spaces/1";
         ExtractableResponse<Response> response = deleteSpace(api);
 
         // then

@@ -5,6 +5,7 @@ import GuestReservationEdit from 'pages/GuestReservationEdit/GuestReservationEdi
 import ManagerJoin from 'pages/ManagerJoin/ManagerJoin';
 import ManagerLogin from 'pages/ManagerLogin/ManagerLogin';
 import ManagerMain from 'pages/ManagerMain/ManagerMain';
+import ManagerMapCreate from 'pages/ManagerMapCreate/ManagerMapCreate';
 import PATH from './path';
 
 interface Route {
@@ -12,11 +13,11 @@ interface Route {
   component: ReactNode;
 }
 
-const ROUTES: Route[] = [
-  {
-    path: PATH.MANAGER_MAIN,
-    component: <ManagerMain />,
-  },
+interface PrivateRoute extends Route {
+  redirectPath: string;
+}
+
+export const PUBLIC_ROUTES: Route[] = [
   {
     path: PATH.MANAGER_LOGIN,
     component: <ManagerLogin />,
@@ -24,6 +25,10 @@ const ROUTES: Route[] = [
   {
     path: PATH.MANAGER_JOIN,
     component: <ManagerJoin />,
+  },
+  {
+    path: PATH.MANAGER_MAP_CREATE,
+    component: <ManagerMapCreate />,
   },
   {
     path: PATH.GUEST_MAIN,
@@ -39,4 +44,15 @@ const ROUTES: Route[] = [
   },
 ];
 
-export default ROUTES;
+export const PRIVATE_ROUTES: PrivateRoute[] = [
+  {
+    path: PATH.MANAGER_MAIN,
+    component: <ManagerMain />,
+    redirectPath: PATH.MANAGER_LOGIN,
+  },
+  {
+    path: PATH.MANAGER_MAP_CREATE,
+    component: <ManagerMapCreate />,
+    redirectPath: PATH.MANAGER_LOGIN,
+  },
+];

@@ -52,8 +52,8 @@ public class ManagerReservationControllerTest extends AcceptanceTest {
 
         reservationCreateUpdateWithPasswordRequest = new ReservationCreateUpdateWithPasswordRequest(
                 BE.getId(),
-                TOMORROW_START_TIME.plusHours(1),
-                TOMORROW_START_TIME.plusHours(2),
+                TOMORROW.atTime(12,0),
+                TOMORROW.atTime(13,0),
                 SALLY_PASSWORD,
                 SALLY_NAME,
                 SALLY_DESCRIPTION);
