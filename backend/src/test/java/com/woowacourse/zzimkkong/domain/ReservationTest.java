@@ -9,7 +9,7 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 
-import static com.woowacourse.zzimkkong.CommonFixture.TOMORROW;
+import static com.woowacourse.zzimkkong.CommonFixture.THE_DAY_AFTER_TOMORROW;
 import static org.assertj.core.api.Assertions.assertThat;
 
 class ReservationTest {
@@ -19,8 +19,8 @@ class ReservationTest {
     @BeforeEach
     void setUp() {
         reservation = new Reservation.Builder()
-                .startTime(TOMORROW.atTime(8, 0))
-                .endTime(TOMORROW.atTime(9, 0))
+                .startTime(THE_DAY_AFTER_TOMORROW.atTime(8, 0))
+                .endTime(THE_DAY_AFTER_TOMORROW.atTime(9, 0))
                 .build();
     }
 
@@ -30,8 +30,8 @@ class ReservationTest {
             "07:59+09:01+true", "08:00+09:00+true", "07:59+08:00+false",
             "09:00+09:01+false", "07:00+08:00+false", "09:00+10:00+false"}, delimiter = '+')
     void hasConflictWith(String startTime, String endTime, Boolean result) {
-        LocalDateTime start = TOMORROW.atTime(LocalTime.parse(startTime, DateTimeFormatter.ofPattern("HH:mm")));
-        LocalDateTime end = TOMORROW.atTime(LocalTime.parse(endTime, DateTimeFormatter.ofPattern("HH:mm")));
+        LocalDateTime start = THE_DAY_AFTER_TOMORROW.atTime(LocalTime.parse(startTime, DateTimeFormatter.ofPattern("HH:mm")));
+        LocalDateTime end = THE_DAY_AFTER_TOMORROW.atTime(LocalTime.parse(endTime, DateTimeFormatter.ofPattern("HH:mm")));
         assertThat(reservation.hasConflictWith(start, end)).isEqualTo(result);
     }
 }

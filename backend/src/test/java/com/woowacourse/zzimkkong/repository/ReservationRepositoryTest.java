@@ -33,8 +33,8 @@ class ReservationRepositoryTest extends RepositoryTest {
     void save() {
         //given
         Reservation be_two_three = new Reservation.Builder()
-                .startTime(TOMORROW_START_TIME.plusHours(2))
-                .endTime(TOMORROW_START_TIME.plusHours(3))
+                .startTime(THE_DAY_AFTER_TOMORROW_START_TIME.plusHours(2))
+                .endTime(THE_DAY_AFTER_TOMORROW_START_TIME.plusHours(3))
                 .description("찜꽁 4차 회의")
                 .userName("찜꽁")
                 .password("1234")
@@ -55,8 +55,8 @@ class ReservationRepositoryTest extends RepositoryTest {
         // given, when
         List<Reservation> foundReservations = getReservations(
                 List.of(BE.getId(), FE1.getId()),
-                TOMORROW_START_TIME,
-                TOMORROW_START_TIME.plusHours(14));
+                THE_DAY_AFTER_TOMORROW_START_TIME,
+                THE_DAY_AFTER_TOMORROW_START_TIME.plusHours(14));
 
         // then
         assertThat(foundReservations).usingRecursiveComparison()
@@ -69,8 +69,8 @@ class ReservationRepositoryTest extends RepositoryTest {
         // given, when
         List<Reservation> foundReservations = getReservations(
                 List.of(BE.getId()),
-                TOMORROW_START_TIME.plusHours(15),
-                TOMORROW_START_TIME.plusHours(18));
+                THE_DAY_AFTER_TOMORROW_START_TIME.plusHours(15),
+                THE_DAY_AFTER_TOMORROW_START_TIME.plusHours(18));
 
         // then
         assertThat(foundReservations).isEmpty();
@@ -82,8 +82,8 @@ class ReservationRepositoryTest extends RepositoryTest {
         // given, when
         List<Reservation> foundReservations = getReservations(
                 List.of(FE1.getId()),
-                TOMORROW_START_TIME.plusHours(13),
-                TOMORROW_START_TIME.plusHours(14));
+                THE_DAY_AFTER_TOMORROW_START_TIME.plusHours(13),
+                THE_DAY_AFTER_TOMORROW_START_TIME.plusHours(14));
 
         // then
         assertThat(foundReservations).isEmpty();
@@ -95,8 +95,8 @@ class ReservationRepositoryTest extends RepositoryTest {
         // given, when
         List<Reservation> foundReservations = getReservations(
                 List.of(BE.getId(), FE1.getId()),
-                TOMORROW_START_TIME,
-                TOMORROW_START_TIME.plusDays(1));
+                THE_DAY_AFTER_TOMORROW_START_TIME,
+                THE_DAY_AFTER_TOMORROW_START_TIME.plusDays(1));
 
         // then
         assertThat(foundReservations).usingRecursiveComparison()
