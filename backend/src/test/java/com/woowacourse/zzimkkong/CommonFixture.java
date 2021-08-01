@@ -1,6 +1,10 @@
 package com.woowacourse.zzimkkong;
 
 import com.woowacourse.zzimkkong.domain.*;
+import com.woowacourse.zzimkkong.dto.map.MapCreateUpdateRequest;
+import com.woowacourse.zzimkkong.dto.member.MemberSaveRequest;
+import com.woowacourse.zzimkkong.dto.space.SettingsRequest;
+import com.woowacourse.zzimkkong.dto.space.SpaceCreateUpdateRequest;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -49,6 +53,7 @@ public class CommonFixture {
             .setting(BE_SETTING)
             .mapImage(MAP_IMAGE_URL)
             .build();
+
     public static Setting FE_SETTING = new Setting.Builder()
             .availableStartTime(LocalTime.of(0, 0))
             .availableEndTime(LocalTime.of(18, 0))
@@ -69,6 +74,7 @@ public class CommonFixture {
             .setting(FE_SETTING)
             .mapImage(MAP_IMAGE_URL)
             .build();
+
     public static Reservation BE_AM_ZERO_ONE = new Reservation.Builder()
             .startTime(TOMORROW_START_TIME)
             .endTime(TOMORROW_START_TIME.plusHours(1))
@@ -104,4 +110,46 @@ public class CommonFixture {
             .password(RESERVATION_PASSWORD)
             .space(FE1)
             .build();
+
+    public static final MapCreateUpdateRequest mapCreateRequest = new MapCreateUpdateRequest(LUTHER.getName(), LUTHER.getMapDrawing(), MAP_SVG);
+    public static final MemberSaveRequest memberSaveRequest = new MemberSaveRequest(EMAIL, PASSWORD, ORGANIZATION);
+    public static final SettingsRequest beSettingsRequest = new SettingsRequest(
+            LocalTime.of(0, 0),
+            LocalTime.of(23, 59),
+            BE_SETTING.getReservationTimeUnit(),
+            BE_SETTING.getReservationMinimumTimeUnit(),
+            BE_SETTING.getReservationMaximumTimeUnit(),
+            BE_SETTING.getReservationEnable(),
+            BE_SETTING.getDisabledWeekdays()
+    );
+
+    public static final SpaceCreateUpdateRequest beSpaceCreateUpdateRequest = new SpaceCreateUpdateRequest(
+            "백엔드 강의실",
+            "시니컬하네",
+            SPACE_DRAWING,
+            beSettingsRequest,
+            MAP_SVG
+    );
+
+    public static final SettingsRequest feSettingsRequest = new SettingsRequest(
+            LocalTime.of(0, 0),
+            LocalTime.of(23, 59),
+            FE_SETTING.getReservationTimeUnit(),
+            FE_SETTING.getReservationMinimumTimeUnit(),
+            FE_SETTING.getReservationMaximumTimeUnit(),
+            FE_SETTING.getReservationEnable(),
+            FE_SETTING.getDisabledWeekdays()
+    );
+
+    public static final SpaceCreateUpdateRequest feSpaceCreateUpdateRequest = new SpaceCreateUpdateRequest(
+            "프론트엔드 강의실1",
+            "시니컬하네",
+            SPACE_DRAWING,
+            feSettingsRequest,
+            MAP_SVG
+    );
+
+    public static final String SALLY_PASSWORD = "1230";
+    public static final String SALLY_NAME = "샐리";
+    public static final String SALLY_DESCRIPTION = "집 가고 싶은 회의";
 }
