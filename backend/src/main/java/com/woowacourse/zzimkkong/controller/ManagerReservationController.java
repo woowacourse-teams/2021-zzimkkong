@@ -18,11 +18,12 @@ import static com.woowacourse.zzimkkong.dto.Validator.DATE_FORMAT;
 
 @RestController
 @RequestMapping("/api/managers/maps/{mapId}")
-public class ManagerReservationController extends ReservationController<ManagerReservationService> {
+public class ManagerReservationController {
+    private final ManagerReservationService reservationService;
     private final SlackService slackService;
 
     public ManagerReservationController(final ManagerReservationService reservationService, final SlackService slackService) {
-        super(reservationService);
+        this.reservationService = reservationService;
         this.slackService = slackService;
     }
 
@@ -58,7 +59,6 @@ public class ManagerReservationController extends ReservationController<ManagerR
         ReservationFindResponse reservationFindResponse = reservationService.findReservations(mapId, spaceId, date, manager);
         return ResponseEntity.ok().body(reservationFindResponse);
     }
-
 
     @GetMapping("/reservations/{reservationId}")
     public ResponseEntity<ReservationResponse> findOne(

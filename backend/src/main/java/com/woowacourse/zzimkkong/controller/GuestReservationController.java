@@ -14,9 +14,11 @@ import static com.woowacourse.zzimkkong.dto.Validator.DATE_FORMAT;
 
 @RestController
 @RequestMapping("/api/guests/maps/{mapId}")
-public class GuestReservationController extends ReservationController<GuestReservationService> {
+public class GuestReservationController {
+    private final GuestReservationService reservationService;
+
     public GuestReservationController(final GuestReservationService reservationService) {
-        super(reservationService);
+        this.reservationService = reservationService;
     }
 
     @PostMapping("/reservations")
