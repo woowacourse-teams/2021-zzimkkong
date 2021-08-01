@@ -379,7 +379,7 @@ public class ManagerReservationServiceTest extends ServiceTest {
                 .isEqualTo(ReservationFindResponse.from(Collections.emptyList()));
         assertThat(managerReservationService.findAllReservations(LUTHER.getId(), THE_DAY_AFTER_TOMORROW, POBI))
                 .usingRecursiveComparison()
-                .isEqualTo(ReservationFindAllResponse.from(List.of(BE, FE1), Collections.emptyList()));
+                .isEqualTo(ReservationFindAllResponse.of(List.of(BE, FE1), Collections.emptyList()));
     }
 
     @DisplayName("전체 예약 조회 요청 시, 올바른 mapId, 날짜를 입력하면 해당 날짜에 존재하는 모든 예약 정보가 조회된다.")
@@ -420,7 +420,7 @@ public class ManagerReservationServiceTest extends ServiceTest {
                 .willReturn(foundReservations);
 
         //then
-        ReservationFindAllResponse reservationFindAllResponse = ReservationFindAllResponse.from(findSpaces, foundReservations);
+        ReservationFindAllResponse reservationFindAllResponse = ReservationFindAllResponse.of(findSpaces, foundReservations);
         assertThat(managerReservationService.findAllReservations(LUTHER.getId(), THE_DAY_AFTER_TOMORROW, POBI))
                 .usingRecursiveComparison()
                 .isEqualTo(reservationFindAllResponse);

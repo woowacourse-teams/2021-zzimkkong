@@ -66,7 +66,7 @@ public class ManagerReservationService extends ReservationService {
         List<Space> findSpaces = spaces.findAllByMapId(mapId);
         List<Reservation> reservations = getReservations(findSpaces, date);
 
-        return ReservationFindAllResponse.from(findSpaces, reservations);
+        return ReservationFindAllResponse.of(findSpaces, reservations);
     }
 
     @Transactional(readOnly = true)

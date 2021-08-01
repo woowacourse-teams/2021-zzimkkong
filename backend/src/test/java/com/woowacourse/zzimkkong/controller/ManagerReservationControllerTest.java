@@ -42,6 +42,7 @@ public class ManagerReservationControllerTest extends AcceptanceTest {
     void setUp() {
         saveMember(memberSaveRequest);
         saveMap("/api/managers/maps", mapCreateRequest);
+
         String spaceSaveApi = "/api/managers/maps/" + LUTHER.getId() + "/spaces";
         ExtractableResponse<Response> saveBeSpaceResponse = saveSpace(spaceSaveApi, beSpaceCreateUpdateRequest);
         ExtractableResponse<Response> saveFe1SpaceResponse = saveSpace(spaceSaveApi, feSpaceCreateUpdateRequest);
@@ -139,7 +140,7 @@ public class ManagerReservationControllerTest extends AcceptanceTest {
         ExtractableResponse<Response> response = findAllReservations(reservationApi, THE_DAY_AFTER_TOMORROW.toString());
 
         ReservationFindAllResponse actualResponse = response.as(ReservationFindAllResponse.class);
-        ReservationFindAllResponse expectedResponse = ReservationFindAllResponse.from(
+        ReservationFindAllResponse expectedResponse = ReservationFindAllResponse.of(
                 Arrays.asList(BE, FE1),
                 Arrays.asList(savedReservation,
                         BE_AM_ZERO_ONE,
