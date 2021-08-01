@@ -1,5 +1,4 @@
 import { ChangeEventHandler, Dispatch, InputHTMLAttributes, SetStateAction } from 'react';
-import { ReactComponent as CalendarIcon } from 'assets/svg/calendar.svg';
 import IconButton from 'components/IconButton/IconButton';
 import { formatDate, formatDateWithDay } from 'utils/datetime';
 import * as Styled from './DateInput.styles';
@@ -30,7 +29,7 @@ const DateInput = ({ date, setDate, ...props }: Props): JSX.Element => {
       <Styled.DateWrapper>
         <Styled.DateText>{formatDateWithDay(date)}</Styled.DateText>
         <Styled.DateInput type="date" onChange={onChange} value={formatDate(date)} {...props} />
-        <CalendarIcon />
+        <Styled.GrayCalendarIcon />
       </Styled.DateWrapper>
       <IconButton onClick={onClickNext}>
         <Styled.PrimaryArrowRightIcon width="100%" height="100%" />

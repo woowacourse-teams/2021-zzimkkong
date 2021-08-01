@@ -35,8 +35,8 @@ class GuestReservationServiceTest extends ServiceTest {
 
     private ReservationCreateUpdateWithPasswordRequest reservationCreateUpdateWithPasswordRequest = new ReservationCreateUpdateWithPasswordRequest(
             1L,
-            TOMORROW_START_TIME.plusHours(3),
-            TOMORROW_START_TIME.plusHours(4),
+            THE_DAY_AFTER_TOMORROW_START_TIME.plusHours(3),
+            THE_DAY_AFTER_TOMORROW_START_TIME.plusHours(4),
             RESERVATION_PASSWORD,
             USER_NAME,
             DESCRIPTION
@@ -126,8 +126,8 @@ class GuestReservationServiceTest extends ServiceTest {
         //given
         reservationCreateUpdateWithPasswordRequest = new ReservationCreateUpdateWithPasswordRequest(
                 1L,
-                TOMORROW_START_TIME.plusHours(3),
-                TOMORROW_START_TIME.minusHours(3),
+                THE_DAY_AFTER_TOMORROW_START_TIME.plusHours(3),
+                THE_DAY_AFTER_TOMORROW_START_TIME.minusHours(3),
                 RESERVATION_PASSWORD,
                 USER_NAME,
                 DESCRIPTION
@@ -147,8 +147,8 @@ class GuestReservationServiceTest extends ServiceTest {
         //given
         reservationCreateUpdateWithPasswordRequest = new ReservationCreateUpdateWithPasswordRequest(
                 1L,
-                TOMORROW_START_TIME,
-                TOMORROW_START_TIME,
+                THE_DAY_AFTER_TOMORROW_START_TIME,
+                THE_DAY_AFTER_TOMORROW_START_TIME,
                 RESERVATION_PASSWORD,
                 USER_NAME,
                 DESCRIPTION
@@ -168,8 +168,8 @@ class GuestReservationServiceTest extends ServiceTest {
         //given
         reservationCreateUpdateWithPasswordRequest = new ReservationCreateUpdateWithPasswordRequest(
                 1L,
-                TOMORROW_START_TIME,
-                TOMORROW_START_TIME.plusDays(1),
+                THE_DAY_AFTER_TOMORROW_START_TIME,
+                THE_DAY_AFTER_TOMORROW_START_TIME.plusDays(1),
                 RESERVATION_PASSWORD,
                 USER_NAME,
                 DESCRIPTION
@@ -262,7 +262,7 @@ class GuestReservationServiceTest extends ServiceTest {
 
         //then
         ReservationFindResponse reservationFindResponse = ReservationFindResponse.from(foundReservations);
-        assertThat(guestReservationService.findReservations(1L, 1L, TOMORROW))
+        assertThat(guestReservationService.findReservations(1L, 1L, THE_DAY_AFTER_TOMORROW))
                 .usingRecursiveComparison()
                 .isEqualTo(reservationFindResponse);
     }
@@ -276,7 +276,7 @@ class GuestReservationServiceTest extends ServiceTest {
         given(spaces.existsById(anyLong()))
                 .willReturn(false);
         //then
-        assertThatThrownBy(() -> guestReservationService.findReservations(1L, 1L, TOMORROW))
+        assertThatThrownBy(() -> guestReservationService.findReservations(1L, 1L, THE_DAY_AFTER_TOMORROW))
                 .isInstanceOf(NoSuchSpaceException.class);
     }
 
@@ -298,10 +298,10 @@ class GuestReservationServiceTest extends ServiceTest {
 
         //then
         ReservationFindResponse reservationFindResponse = ReservationFindResponse.from(Collections.emptyList());
-        assertThat(guestReservationService.findReservations(1L, 1L, TOMORROW))
+        assertThat(guestReservationService.findReservations(1L, 1L, THE_DAY_AFTER_TOMORROW))
                 .usingRecursiveComparison()
                 .isEqualTo(reservationFindResponse);
-        assertThat(guestReservationService.findAllReservations(1L, TOMORROW))
+        assertThat(guestReservationService.findAllReservations(1L, THE_DAY_AFTER_TOMORROW))
                 .usingRecursiveComparison()
                 .isEqualTo(ReservationFindAllResponse.from(Collections.emptyList()));
     }
@@ -343,7 +343,7 @@ class GuestReservationServiceTest extends ServiceTest {
 
         //then
         ReservationFindAllResponse reservationFindAllResponse = ReservationFindAllResponse.from(foundReservations);
-        assertThat(guestReservationService.findAllReservations(1L, TOMORROW))
+        assertThat(guestReservationService.findAllReservations(1L, THE_DAY_AFTER_TOMORROW))
                 .usingRecursiveComparison()
                 .isEqualTo(reservationFindAllResponse);
     }
@@ -416,8 +416,8 @@ class GuestReservationServiceTest extends ServiceTest {
         //when, then
         assertDoesNotThrow(() -> guestReservationService.updateReservation(1L, reservation.getId(), new ReservationCreateUpdateWithPasswordRequest(
                 1L,
-                TOMORROW_START_TIME.plusHours(20),
-                TOMORROW_START_TIME.plusHours(21),
+                THE_DAY_AFTER_TOMORROW.atTime(10,0),
+                THE_DAY_AFTER_TOMORROW.atTime(11,0),
                 reservation.getPassword(),
                 CHANGED_NAME,
                 CHANGED_DESCRIPTION
@@ -537,8 +537,8 @@ class GuestReservationServiceTest extends ServiceTest {
                 .willReturn(true);
         given(reservations.findById(anyLong()))
                 .willReturn(Optional.of(makeReservation(
-                        TOMORROW_START_TIME,
-                        TOMORROW_START_TIME.plusHours(2),
+                        THE_DAY_AFTER_TOMORROW_START_TIME,
+                        THE_DAY_AFTER_TOMORROW_START_TIME.plusHours(2),
                         BE)));
 
         //then
@@ -571,8 +571,8 @@ class GuestReservationServiceTest extends ServiceTest {
                 .willReturn(true);
         given(reservations.findById(anyLong()))
                 .willReturn(Optional.of(makeReservation(
-                        TOMORROW_START_TIME.plusHours(3),
-                        TOMORROW_START_TIME.plusHours(4),
+                        THE_DAY_AFTER_TOMORROW_START_TIME.plusHours(3),
+                        THE_DAY_AFTER_TOMORROW_START_TIME.plusHours(4),
                         BE)));
 
         //then

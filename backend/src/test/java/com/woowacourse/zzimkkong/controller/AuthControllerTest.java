@@ -63,6 +63,7 @@ class AuthControllerTest extends AcceptanceTest {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
     }
 
+    // TODO: token 필드로 가지고 메서드당 한번만 받도록 리팩토링
     static String getToken() {
         LoginRequest loginRequest = new LoginRequest(EMAIL, PASSWORD);
         ExtractableResponse<Response> loginResponse = login(loginRequest);

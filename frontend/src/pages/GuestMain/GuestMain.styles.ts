@@ -25,7 +25,7 @@ export const MapContainer = styled.div`
   }
 `;
 
-export const Map = styled.div`
+export const MapItem = styled.div`
   width: inherit;
   height: inherit;
   position: relative;
