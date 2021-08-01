@@ -356,7 +356,7 @@ class GuestReservationServiceTest extends ServiceTest {
 
         //then
         ReservationFindAllResponse reservationFindAllResponse = ReservationFindAllResponse.of(findSpaces, foundReservations);
-        assertThat(guestReservationService.findAllReservations(1L, THE_DAY_AFTER_TOMORROW)) //1231231
+        assertThat(guestReservationService.findAllReservations(1L, THE_DAY_AFTER_TOMORROW))
                 .usingRecursiveComparison()
                 .isEqualTo(reservationFindAllResponse);
     }

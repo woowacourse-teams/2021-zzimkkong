@@ -305,7 +305,7 @@ public class GuestReservationControllerTest extends AcceptanceTest {
         return RestAssured
                 .given(getRequestSpecification()).log().all()
                 .accept("*/*")
-                .filter(document("reservation/guest/get_all", getRequestPreprocessor(), getResponsePreprocessor()))
+                .filter(document("reservation/guest/getAll", getRequestPreprocessor(), getResponsePreprocessor()))
                 .queryParam("date", date)
                 .when().get(api)
                 .then().log().all().extract();
