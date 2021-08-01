@@ -40,8 +40,8 @@ public class ReservationCreateUpdateRequest {
             final String name,
             final String description) {
         this.spaceId = spaceId;
-        this.startDateTime = startDateTime;
-        this.endDateTime = endDateTime;
+        this.startDateTime = startDateTime.withSecond(0).withNano(0);
+        this.endDateTime = endDateTime.withSecond(0).withNano(0);
         this.name = name;
         this.description = description;
     }
