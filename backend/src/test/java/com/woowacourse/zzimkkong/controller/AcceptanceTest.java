@@ -2,6 +2,7 @@ package com.woowacourse.zzimkkong.controller;
 
 import com.woowacourse.zzimkkong.dto.map.MapCreateUpdateRequest;
 import com.woowacourse.zzimkkong.dto.member.MemberSaveRequest;
+import com.woowacourse.zzimkkong.service.SlackService;
 import io.restassured.RestAssured;
 import io.restassured.builder.RequestSpecBuilder;
 import io.restassured.specification.RequestSpecification;
@@ -9,6 +10,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.boot.test.autoconfigure.restdocs.AutoConfigureRestDocs;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.boot.web.server.LocalServerPort;
 import org.springframework.restdocs.RestDocumentationContextProvider;
 import org.springframework.restdocs.RestDocumentationExtension;
@@ -34,6 +36,9 @@ public class AcceptanceTest {
 
     @LocalServerPort
     int port;
+
+    @MockBean
+    private SlackService slackService;
 
     @BeforeEach
     public void setUp(RestDocumentationContextProvider restDocumentation) {
