@@ -20,7 +20,7 @@ public class MapFindAllResponse {
         this.organization = organization;
     }
 
-    public static MapFindAllResponse from(final List<Map> findMaps, final Member manager) {
+    public static MapFindAllResponse of(final List<Map> findMaps, final Member manager) {
         return findMaps.stream()
                 .map(MapFindResponse::from)
                 .collect(Collectors.collectingAndThen(toList(), list -> new MapFindAllResponse(list, manager.getOrganization())));
