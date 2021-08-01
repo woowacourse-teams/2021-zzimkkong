@@ -68,6 +68,7 @@ public class Reservation {
         return startDateTime.isEqual(startTime) && endDateTime.isEqual(endTime);
     }
 
+    // TODO: reservation 객체 주입받기
     public void update(final ReservationCreateUpdateRequest reservationCreateUpdateRequest, final Space space) {
         this.startTime = reservationCreateUpdateRequest.getStartDateTime();
         this.endTime = reservationCreateUpdateRequest.getEndDateTime();

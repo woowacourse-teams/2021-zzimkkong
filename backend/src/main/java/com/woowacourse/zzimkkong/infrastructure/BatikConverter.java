@@ -16,7 +16,7 @@ public class BatikConverter implements SvgConverter {
 
     public BatikConverter(
             @Value("${converter.temp.location}")
-            String saveDirectoryPath) {
+                    String saveDirectoryPath) {
         this.saveDirectoryPath = saveDirectoryPath;
     }
 
