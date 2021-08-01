@@ -247,7 +247,7 @@ public class ManagerReservationServiceTest extends ServiceTest {
     @ParameterizedTest
     @CsvSource(value = {"-10:10", "2:0", "0:1", "60:59", "-59:-59"}, delimiter = ':')
     void saveAvailabilityException(int startMinute, int endMinute) {
-        //given, when
+        //given
         saveMock();
         given(reservations.findAllBySpaceIdInAndStartTimeIsBetweenAndEndTimeIsBetween(
                 any(),
@@ -260,7 +260,7 @@ public class ManagerReservationServiceTest extends ServiceTest {
                         reservationCreateUpdateWithPasswordRequest.getEndDateTime().minusMinutes(endMinute),
                         BE)));
 
-        //then
+        //when,then
         assertThatThrownBy(() -> managerReservationService.saveReservation(
                 LUTHER.getId(),
                 reservationCreateUpdateWithPasswordRequest,
@@ -272,7 +272,7 @@ public class ManagerReservationServiceTest extends ServiceTest {
     @ParameterizedTest
     @ValueSource(ints = 60)
     void saveSameThresholdTime(int conferenceTime) {
-        //given, when
+        //given
         saveMock();
         given(reservations.findAllBySpaceIdInAndStartTimeIsBetweenAndEndTimeIsBetween(
                 anyList(),
@@ -290,7 +290,7 @@ public class ManagerReservationServiceTest extends ServiceTest {
                                 reservationCreateUpdateWithPasswordRequest.getEndDateTime().plusMinutes(conferenceTime),
                                 BE)));
 
-        //then
+        //when,then
         ReservationCreateResponse reservationCreateResponse = managerReservationService.saveReservation(
                 LUTHER.getId(),
                 reservationCreateUpdateWithPasswordRequest,
@@ -302,13 +302,13 @@ public class ManagerReservationServiceTest extends ServiceTest {
     @ParameterizedTest
     @ValueSource(ints = {3, 7, 29, 50})
     void saveReservationTimeUnitException(int minute) {
-        //given, when
+        //given
         saveMock();
         given(reservations.findById(anyLong()))
                 .willReturn(Optional.of(reservation));
-
-        //then
         LocalDateTime theDayAfterTomorrowTen = timeConverter.getNow().plusDays(2).withHour(0).withMinute(0).plusHours(10);
+
+        //when, then
         assertThatThrownBy(() -> managerReservationService.saveReservation(
                 LUTHER.getId(),
                 new ReservationCreateUpdateWithPasswordRequest(
@@ -338,12 +338,12 @@ public class ManagerReservationServiceTest extends ServiceTest {
     @ParameterizedTest
     @ValueSource(ints = {30, 150})
     void saveReservationMinimumMaximumTimeUnitException(int conferenceTime) {
-        //given, when
+        //given
         saveMock();
         given(reservations.findById(anyLong()))
                 .willReturn(Optional.of(reservation));
 
-        //then
+        //when,then
         assertThatThrownBy(() -> managerReservationService.saveReservation(
                 LUTHER.getId(),
                 new ReservationCreateUpdateWithPasswordRequest(
@@ -408,10 +408,10 @@ public class ManagerReservationServiceTest extends ServiceTest {
     @DisplayName("특정 공간 예약 조회 요청 시, 해당하는 맵이 없으면 오류가 발생한다.")
     @Test
     void findReservationsNotExistMap() {
-        //given, when
+        //given
         given(maps.existsById(anyLong()))
                 .willReturn(false);
-        //then
+        //when,then
         assertThatThrownBy(() -> managerReservationService.findReservations(LUTHER.getId(), BE.getId(), TOMORROW))
                 .isInstanceOf(NoSuchMapException.class);
     }
@@ -419,12 +419,12 @@ public class ManagerReservationServiceTest extends ServiceTest {
     @DisplayName("특정 공간 예약 조회 요청 시, 해당하는 공간이 없으면 오류가 발생한다.")
     @Test
     void findReservationsNotExistSpace() {
-        //given, when
+        //given
         given(maps.existsById(anyLong()))
                 .willReturn(true);
         given(spaces.existsById(anyLong()))
                 .willReturn(false);
-        //then
+        //when,then
         assertThatThrownBy(() -> managerReservationService.findReservations(LUTHER.getId(), BE.getId(), TOMORROW))
                 .isInstanceOf(NoSuchSpaceException.class);
     }
@@ -432,7 +432,7 @@ public class ManagerReservationServiceTest extends ServiceTest {
     @DisplayName("전체 예약이나 특정 공간 예약 조회 요청 시, 해당하는 예약이 없으면 빈 정보가 조회된다.")
     @Test
     void findEmptyReservations() {
-        //given, when
+        //given
         given(maps.existsById(anyLong()))
                 .willReturn(true);
         given(spaces.existsById(anyLong()))
@@ -445,7 +445,7 @@ public class ManagerReservationServiceTest extends ServiceTest {
                 any(LocalDateTime.class)))
                 .willReturn(Collections.emptyList());
 
-        //then
+        //when,then
         assertThat(managerReservationService.findReservations(LUTHER.getId(), BE.getId(), TOMORROW))
                 .usingRecursiveComparison()
                 .isEqualTo(ReservationFindResponse.from(Collections.emptyList()));
@@ -539,7 +539,7 @@ public class ManagerReservationServiceTest extends ServiceTest {
     @DisplayName("예약 수정 요청 시, 해당 예약이 존재하지 않으면 에러가 발생한다.")
     @Test
     void findInvalidReservationException() {
-        //given, when
+        //given
         given(maps.existsById(anyLong()))
                 .willReturn(true);
         given(maps.findById(anyLong()))
@@ -547,7 +547,7 @@ public class ManagerReservationServiceTest extends ServiceTest {
         given(reservations.findById(anyLong()))
                 .willReturn(Optional.empty());
 
-        //then
+        //when,then
         assertThatThrownBy(() -> managerReservationService.findReservation(
                 LUTHER.getId(),
                 reservation.getId(),
@@ -739,7 +739,7 @@ public class ManagerReservationServiceTest extends ServiceTest {
     @DisplayName("예약 삭제 요청이 옳다면 삭제한다.")
     @Test
     void deleteReservation() {
-        //given, when
+        //given
         Reservation reservationToDelete = makeReservation(
                 TOMORROW_START_TIME,
                 TOMORROW_START_TIME.plusHours(2),
@@ -752,14 +752,14 @@ public class ManagerReservationServiceTest extends ServiceTest {
         given(reservations.findById(anyLong()))
                 .willReturn(Optional.of(reservationToDelete));
 
-        //then
+        //when,then
         assertDoesNotThrow(() -> managerReservationService.deleteReservation(LUTHER.getId(), 1L, POBI));
     }
 
     @DisplayName("예약 삭제 요청 시, 맵의 관리자가 아니라면 오류가 발생한다.")
     @Test
     void deleteNoAuthorityException() {
-        //given, when
+        //given
         given(maps.existsById(anyLong()))
                 .willReturn(true);
         given(maps.findById(anyLong()))
@@ -767,7 +767,7 @@ public class ManagerReservationServiceTest extends ServiceTest {
         given(reservations.findById(anyLong()))
                 .willReturn(Optional.empty());
 
-        //then
+        //when,then
         assertThatThrownBy(() -> managerReservationService.deleteReservation(LUTHER.getId(), 1L, JASON))
                 .isInstanceOf(NoAuthorityOnMapException.class);
     }
@@ -775,7 +775,7 @@ public class ManagerReservationServiceTest extends ServiceTest {
     @DisplayName("예약 삭제 요청 시, 예약이 존재하지 않는다면 오류가 발생한다.")
     @Test
     void deleteReservationException() {
-        //given, when
+        //given
         given(maps.existsById(anyLong()))
                 .willReturn(true);
         given(maps.findById(anyLong()))
@@ -783,7 +783,7 @@ public class ManagerReservationServiceTest extends ServiceTest {
         given(reservations.findById(anyLong()))
                 .willReturn(Optional.empty());
 
-        //then
+        //when,then
         assertThatThrownBy(() -> managerReservationService.deleteReservation(LUTHER.getId(), 1L, POBI))
                 .isInstanceOf(NoSuchReservationException.class);
     }
