@@ -2,10 +2,7 @@ package com.woowacourse.zzimkkong.service;
 
 import com.woowacourse.zzimkkong.domain.Reservation;
 import com.woowacourse.zzimkkong.domain.Space;
-import com.woowacourse.zzimkkong.dto.reservation.ReservationCreateResponse;
-import com.woowacourse.zzimkkong.dto.reservation.ReservationCreateUpdateWithPasswordRequest;
-import com.woowacourse.zzimkkong.dto.reservation.ReservationPasswordAuthenticationRequest;
-import com.woowacourse.zzimkkong.dto.reservation.ReservationResponse;
+import com.woowacourse.zzimkkong.dto.reservation.*;
 import com.woowacourse.zzimkkong.exception.reservation.NoSuchReservationException;
 import com.woowacourse.zzimkkong.exception.reservation.ReservationPasswordException;
 import com.woowacourse.zzimkkong.exception.space.NoSuchSpaceException;
@@ -15,6 +12,10 @@ import com.woowacourse.zzimkkong.repository.ReservationRepository;
 import com.woowacourse.zzimkkong.repository.SpaceRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.time.LocalDate;
+import java.util.Collections;
+import java.util.List;
 
 @Service
 @Transactional
@@ -62,6 +63,27 @@ public class GuestReservationService extends ReservationService {
                 .orElseThrow(NoSuchReservationException::new);
         checkCorrectPassword(reservation, reservationPasswordAuthenticationRequest.getPassword());
         return ReservationResponse.from(reservation);
+    }
+
+    @Transactional(readOnly = true)
+    public ReservationFindResponse findReservations(final Long mapId, final Long spaceId, final LocalDate date) {
+        validateMapExistence(mapId);
+
+        Space space = spaces.findById(spaceId)
+                .orElseThrow(NoSuchSpaceException::new);
+        List<Reservation> reservations = getReservations(Collections.singletonList(space), date);
+
+        return ReservationFindResponse.from(reservations);
+    }
+
+    @Transactional(readOnly = true)
+    public ReservationFindAllResponse findAllReservations(final Long mapId, final LocalDate date) {
+        validateMapExistence(mapId);
+
+        List<Space> findSpaces = spaces.findAllByMapId(mapId);
+        List<Reservation> reservations = getReservations(findSpaces, date);
+
+        return ReservationFindAllResponse.of(findSpaces, reservations);
     }
 
     public void updateReservation(

@@ -1,7 +1,6 @@
 package com.woowacourse.zzimkkong.service;
 
 import com.woowacourse.zzimkkong.domain.Reservation;
-import com.woowacourse.zzimkkong.domain.Setting;
 import com.woowacourse.zzimkkong.domain.Space;
 import com.woowacourse.zzimkkong.dto.reservation.*;
 import com.woowacourse.zzimkkong.exception.InvalidConferenceTimeException;
@@ -18,7 +17,6 @@ import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.time.LocalDateTime;
-import java.time.LocalTime;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -38,8 +36,8 @@ public class ManagerReservationServiceTest extends ServiceTest {
     private ManagerReservationService managerReservationService;
     private ReservationCreateUpdateWithPasswordRequest reservationCreateUpdateWithPasswordRequest = new ReservationCreateUpdateWithPasswordRequest(
             BE.getId(),
-            TOMORROW_START_TIME.plusHours(3),
-            TOMORROW_START_TIME.plusHours(4),
+            THE_DAY_AFTER_TOMORROW_START_TIME.plusHours(3),
+            THE_DAY_AFTER_TOMORROW_START_TIME.plusHours(4),
             RESERVATION_PASSWORD,
             USER_NAME,
             DESCRIPTION
@@ -153,8 +151,8 @@ public class ManagerReservationServiceTest extends ServiceTest {
         //given
         reservationCreateUpdateWithPasswordRequest = new ReservationCreateUpdateWithPasswordRequest(
                 BE.getId(),
-                TOMORROW_START_TIME.plusHours(3),
-                TOMORROW_START_TIME.minusHours(3),
+                THE_DAY_AFTER_TOMORROW_START_TIME.plusHours(3),
+                THE_DAY_AFTER_TOMORROW_START_TIME.minusHours(3),
                 RESERVATION_PASSWORD,
                 USER_NAME,
                 DESCRIPTION
@@ -177,8 +175,8 @@ public class ManagerReservationServiceTest extends ServiceTest {
         //given
         reservationCreateUpdateWithPasswordRequest = new ReservationCreateUpdateWithPasswordRequest(
                 BE.getId(),
-                TOMORROW_START_TIME,
-                TOMORROW_START_TIME,
+                THE_DAY_AFTER_TOMORROW_START_TIME,
+                THE_DAY_AFTER_TOMORROW_START_TIME,
                 RESERVATION_PASSWORD,
                 USER_NAME,
                 DESCRIPTION
@@ -201,8 +199,8 @@ public class ManagerReservationServiceTest extends ServiceTest {
         //given
         reservationCreateUpdateWithPasswordRequest = new ReservationCreateUpdateWithPasswordRequest(
                 BE.getId(),
-                TOMORROW_START_TIME,
-                TOMORROW_START_TIME.plusDays(1),
+                THE_DAY_AFTER_TOMORROW_START_TIME,
+                THE_DAY_AFTER_TOMORROW_START_TIME.plusDays(1),
                 RESERVATION_PASSWORD,
                 USER_NAME,
                 DESCRIPTION
@@ -219,14 +217,15 @@ public class ManagerReservationServiceTest extends ServiceTest {
                 .isInstanceOf(NonMatchingStartAndEndDateException.class);
     }
 
-    @Test
+    @ParameterizedTest
+    @CsvSource(value = {"0:1", "1:0"}, delimiter = ':')
     @DisplayName("예약 생성 요청 시, 공간의 예약가능 시간이 아니라면 예외가 발생한다.")
-    void saveInvalidTimeSetting() {
+    void saveInvalidTimeSetting(int minusStartTime, int plusEndTime) {
         //given
         reservationCreateUpdateWithPasswordRequest = new ReservationCreateUpdateWithPasswordRequest(
                 BE.getId(),
-                TOMORROW.atTime(9,59),
-                TOMORROW.atTime(22,1),
+                THE_DAY_AFTER_TOMORROW.atTime(BE_SETTING.getAvailableStartTime().minusMinutes(minusStartTime)),
+                THE_DAY_AFTER_TOMORROW.atTime(BE_SETTING.getAvailableEndTime().plusMinutes(plusEndTime)),
                 RESERVATION_PASSWORD,
                 USER_NAME,
                 DESCRIPTION
@@ -290,7 +289,7 @@ public class ManagerReservationServiceTest extends ServiceTest {
                                 reservationCreateUpdateWithPasswordRequest.getEndDateTime().plusMinutes(conferenceTime),
                                 BE)));
 
-        //when,then
+        //when, then
         ReservationCreateResponse reservationCreateResponse = managerReservationService.saveReservation(
                 LUTHER.getId(),
                 reservationCreateUpdateWithPasswordRequest,
@@ -348,8 +347,8 @@ public class ManagerReservationServiceTest extends ServiceTest {
                 LUTHER.getId(),
                 new ReservationCreateUpdateWithPasswordRequest(
                         BE.getId(),
-                        TOMORROW_START_TIME,
-                        TOMORROW_START_TIME.plusMinutes(conferenceTime),
+                        THE_DAY_AFTER_TOMORROW_START_TIME,
+                        THE_DAY_AFTER_TOMORROW_START_TIME.plusMinutes(conferenceTime),
                         RESERVATION_PASSWORD,
                         USER_NAME,
                         DESCRIPTION
@@ -361,8 +360,8 @@ public class ManagerReservationServiceTest extends ServiceTest {
                 reservation.getId(),
                 new ReservationCreateUpdateWithPasswordRequest(
                         BE.getId(),
-                        TOMORROW_START_TIME,
-                        TOMORROW_START_TIME.plusMinutes(conferenceTime),
+                        THE_DAY_AFTER_TOMORROW_START_TIME,
+                        THE_DAY_AFTER_TOMORROW_START_TIME.plusMinutes(conferenceTime),
                         RESERVATION_PASSWORD,
                         USER_NAME,
                         DESCRIPTION
@@ -386,10 +385,10 @@ public class ManagerReservationServiceTest extends ServiceTest {
                         BE));
 
         //when
-        given(maps.existsById(anyLong()))
-                .willReturn(true);
-        given(spaces.existsById(anyLong()))
-                .willReturn(true);
+        given(maps.findById(anyLong()))
+                .willReturn(Optional.of(LUTHER));
+        given(spaces.findById(anyLong()))
+                .willReturn(Optional.of(BE));
         given(reservations.findAllBySpaceIdInAndStartTimeIsBetweenAndEndTimeIsBetween(
                 anyList(),
                 any(LocalDateTime.class),
@@ -400,7 +399,7 @@ public class ManagerReservationServiceTest extends ServiceTest {
 
         //then
         ReservationFindResponse reservationFindResponse = ReservationFindResponse.from(foundReservations);
-        assertThat(managerReservationService.findReservations(LUTHER.getId(), BE.getId(), TOMORROW))
+        assertThat(managerReservationService.findReservations(LUTHER.getId(), BE.getId(), THE_DAY_AFTER_TOMORROW, POBI))
                 .usingRecursiveComparison()
                 .isEqualTo(reservationFindResponse);
     }
@@ -408,35 +407,38 @@ public class ManagerReservationServiceTest extends ServiceTest {
     @DisplayName("특정 공간 예약 조회 요청 시, 해당하는 맵이 없으면 오류가 발생한다.")
     @Test
     void findReservationsNotExistMap() {
-        //given
-        given(maps.existsById(anyLong()))
-                .willReturn(false);
-        //when,then
-        assertThatThrownBy(() -> managerReservationService.findReservations(LUTHER.getId(), BE.getId(), TOMORROW))
+        //given, when
+        given(maps.findById(anyLong()))
+                .willReturn(Optional.empty());
+
+        //then
+        assertThatThrownBy(() -> managerReservationService.findReservations(LUTHER.getId(), BE.getId(), THE_DAY_AFTER_TOMORROW, POBI))
                 .isInstanceOf(NoSuchMapException.class);
     }
 
     @DisplayName("특정 공간 예약 조회 요청 시, 해당하는 공간이 없으면 오류가 발생한다.")
     @Test
     void findReservationsNotExistSpace() {
-        //given
-        given(maps.existsById(anyLong()))
-                .willReturn(true);
-        given(spaces.existsById(anyLong()))
-                .willReturn(false);
-        //when,then
-        assertThatThrownBy(() -> managerReservationService.findReservations(LUTHER.getId(), BE.getId(), TOMORROW))
+        //given, when
+        given(maps.findById(anyLong()))
+                .willReturn(Optional.of(LUTHER));
+        given(spaces.findById(anyLong()))
+                .willReturn(Optional.empty());
+        //then
+        assertThatThrownBy(() -> managerReservationService.findReservations(LUTHER.getId(), BE.getId(), THE_DAY_AFTER_TOMORROW, POBI))
                 .isInstanceOf(NoSuchSpaceException.class);
     }
 
     @DisplayName("전체 예약이나 특정 공간 예약 조회 요청 시, 해당하는 예약이 없으면 빈 정보가 조회된다.")
     @Test
     void findEmptyReservations() {
-        //given
-        given(maps.existsById(anyLong()))
-                .willReturn(true);
-        given(spaces.existsById(anyLong()))
-                .willReturn(true);
+        //given, when
+        given(maps.findById(anyLong()))
+                .willReturn(Optional.of(LUTHER));
+        given(spaces.findById(anyLong()))
+                .willReturn(Optional.of(BE));
+        given(spaces.findAllByMapId(anyLong()))
+                .willReturn(List.of(BE, FE1));
         given(reservations.findAllBySpaceIdInAndStartTimeIsBetweenAndEndTimeIsBetween(
                 anyList(),
                 any(LocalDateTime.class),
@@ -445,13 +447,13 @@ public class ManagerReservationServiceTest extends ServiceTest {
                 any(LocalDateTime.class)))
                 .willReturn(Collections.emptyList());
 
-        //when,then
-        assertThat(managerReservationService.findReservations(LUTHER.getId(), BE.getId(), TOMORROW))
+        //then
+        assertThat(managerReservationService.findReservations(LUTHER.getId(), BE.getId(), THE_DAY_AFTER_TOMORROW, POBI))
                 .usingRecursiveComparison()
                 .isEqualTo(ReservationFindResponse.from(Collections.emptyList()));
-        assertThat(managerReservationService.findAllReservations(LUTHER.getId(), TOMORROW))
+        assertThat(managerReservationService.findAllReservations(LUTHER.getId(), THE_DAY_AFTER_TOMORROW, POBI))
                 .usingRecursiveComparison()
-                .isEqualTo(ReservationFindAllResponse.from(Collections.emptyList()));
+                .isEqualTo(ReservationFindAllResponse.of(List.of(BE, FE1), Collections.emptyList()));
     }
 
     @DisplayName("전체 예약 조회 요청 시, 올바른 mapId, 날짜를 입력하면 해당 날짜에 존재하는 모든 예약 정보가 조회된다.")
@@ -476,12 +478,13 @@ public class ManagerReservationServiceTest extends ServiceTest {
                         reservationCreateUpdateWithPasswordRequest.getStartDateTime().plusMinutes(conferenceTime),
                         reservationCreateUpdateWithPasswordRequest.getEndDateTime().plusMinutes(conferenceTime),
                         FE1));
+        List<Space> findSpaces = List.of(BE, FE1);
 
         //when
-        given(maps.existsById(anyLong()))
-                .willReturn(true);
+        given(maps.findById(anyLong()))
+                .willReturn(Optional.of(LUTHER));
         given(spaces.findAllByMapId(anyLong()))
-                .willReturn(List.of(BE, FE1));
+                .willReturn(findSpaces);
         given(reservations.findAllBySpaceIdInAndStartTimeIsBetweenAndEndTimeIsBetween(
                 anyList(),
                 any(LocalDateTime.class),
@@ -491,18 +494,59 @@ public class ManagerReservationServiceTest extends ServiceTest {
                 .willReturn(foundReservations);
 
         //then
-        ReservationFindAllResponse reservationFindAllResponse = ReservationFindAllResponse.from(foundReservations);
-        assertThat(managerReservationService.findAllReservations(LUTHER.getId(), TOMORROW))
+        ReservationFindAllResponse reservationFindAllResponse = ReservationFindAllResponse.of(findSpaces, foundReservations);
+        assertThat(managerReservationService.findAllReservations(LUTHER.getId(), THE_DAY_AFTER_TOMORROW, POBI))
                 .usingRecursiveComparison()
                 .isEqualTo(reservationFindAllResponse);
+    }
+
+    @DisplayName("전체 예약 조회 요청 시, 맵의 소유자가 아니면 오류가 발생한다.")
+    @Test
+    void findAllReservationsNotOwner() {
+        //given, when
+        given(maps.findById(anyLong()))
+                .willReturn(Optional.of(LUTHER));
+        given(spaces.findAllByMapId(anyLong()))
+                .willReturn(List.of(BE, FE1));
+        given(reservations.findAllBySpaceIdInAndStartTimeIsBetweenAndEndTimeIsBetween(
+                anyList(),
+                any(LocalDateTime.class),
+                any(LocalDateTime.class),
+                any(LocalDateTime.class),
+                any(LocalDateTime.class)))
+                .willReturn(List.of(BE_AM_ZERO_ONE, BE_PM_ONE_TWO));
+
+        //then
+        assertThatThrownBy(() -> managerReservationService.findAllReservations(LUTHER.getId(), THE_DAY_AFTER_TOMORROW, JASON))
+                .isInstanceOf(NoAuthorityOnMapException.class);
+    }
+
+
+    @DisplayName("특정 날짜의 예약 조회 요청 시, 맵의 소유자가 아니면 오류가 발생한다.")
+    @Test
+    void findReservationsNotOwner() {
+        //given, when
+        given(maps.findById(anyLong()))
+                .willReturn(Optional.of(LUTHER));
+        given(spaces.existsById(anyLong()))
+                .willReturn(true);
+        given(reservations.findAllBySpaceIdInAndStartTimeIsBetweenAndEndTimeIsBetween(
+                anyList(),
+                any(LocalDateTime.class),
+                any(LocalDateTime.class),
+                any(LocalDateTime.class),
+                any(LocalDateTime.class)))
+                .willReturn(List.of(BE_AM_ZERO_ONE, BE_PM_ONE_TWO));
+
+        //then
+        assertThatThrownBy(() -> managerReservationService.findReservations(LUTHER.getId(), BE.getId(), THE_DAY_AFTER_TOMORROW, JASON))
+                .isInstanceOf(NoAuthorityOnMapException.class);
     }
 
     @DisplayName("예약 수정을 위한 예약 조회 요청 시, 해당 예약을 반환한다.")
     @Test
     void findReservation() {
         //given
-        given(maps.existsById(anyLong()))
-                .willReturn(true);
         given(maps.findById(anyLong()))
                 .willReturn(Optional.of(LUTHER));
         given(reservations.findById(anyLong()))
@@ -523,8 +567,6 @@ public class ManagerReservationServiceTest extends ServiceTest {
     @Test
     void findReservation_NoAuthority() {
         //given, when
-        given(maps.existsById(anyLong()))
-                .willReturn(true);
         given(maps.findById(anyLong()))
                 .willReturn(Optional.of(LUTHER));
 
@@ -539,15 +581,13 @@ public class ManagerReservationServiceTest extends ServiceTest {
     @DisplayName("예약 수정 요청 시, 해당 예약이 존재하지 않으면 에러가 발생한다.")
     @Test
     void findInvalidReservationException() {
-        //given
-        given(maps.existsById(anyLong()))
-                .willReturn(true);
+        //given, when
         given(maps.findById(anyLong()))
                 .willReturn(Optional.of(LUTHER));
         given(reservations.findById(anyLong()))
                 .willReturn(Optional.empty());
 
-        //when,then
+        //then
         assertThatThrownBy(() -> managerReservationService.findReservation(
                 LUTHER.getId(),
                 reservation.getId(),
@@ -559,8 +599,6 @@ public class ManagerReservationServiceTest extends ServiceTest {
     @Test
     void update() {
         //given
-        given(maps.existsById(anyLong()))
-                .willReturn(true);
         given(maps.findById(anyLong()))
                 .willReturn(Optional.of(LUTHER));
         given(spaces.findById(anyLong()))
@@ -571,8 +609,8 @@ public class ManagerReservationServiceTest extends ServiceTest {
         // when
         ReservationCreateUpdateRequest reservationCreateUpdateRequest = new ReservationCreateUpdateRequest(
                 BE.getId(),
-                TOMORROW.atTime(10,0),
-                TOMORROW.atTime(11,0),
+                THE_DAY_AFTER_TOMORROW.atTime(10, 0),
+                THE_DAY_AFTER_TOMORROW.atTime(11, 0),
                 CHANGED_NAME,
                 CHANGED_DESCRIPTION
         );
@@ -591,16 +629,14 @@ public class ManagerReservationServiceTest extends ServiceTest {
     @Test
     void updateNoAuthorityException() {
         //given
-        given(maps.existsById(anyLong()))
-                .willReturn(true);
         given(maps.findById(anyLong()))
                 .willReturn(Optional.of(LUTHER));
 
         //when
         ReservationCreateUpdateRequest reservationCreateUpdateRequest = new ReservationCreateUpdateRequest(
                 BE.getId(),
-                TOMORROW_START_TIME.plusHours(20),
-                TOMORROW_START_TIME.plusHours(21),
+                THE_DAY_AFTER_TOMORROW_START_TIME.plusHours(20),
+                THE_DAY_AFTER_TOMORROW_START_TIME.plusHours(21),
                 CHANGED_NAME,
                 CHANGED_DESCRIPTION
         );
@@ -619,16 +655,14 @@ public class ManagerReservationServiceTest extends ServiceTest {
     @ValueSource(ints = {0, -1})
     void updateInvalidEndTimeException(int endTime) {
         //given
-        given(maps.existsById(anyLong()))
-                .willReturn(true);
         given(maps.findById(anyLong()))
                 .willReturn(Optional.of(LUTHER));
 
         //when
         ReservationCreateUpdateRequest reservationCreateUpdateRequest = new ReservationCreateUpdateRequest(
                 BE.getId(),
-                TOMORROW_START_TIME.plusHours(1),
-                TOMORROW_START_TIME.plusHours(endTime),
+                THE_DAY_AFTER_TOMORROW_START_TIME.plusHours(1),
+                THE_DAY_AFTER_TOMORROW_START_TIME.plusHours(endTime),
                 CHANGED_NAME,
                 CHANGED_DESCRIPTION
         );
@@ -646,16 +680,14 @@ public class ManagerReservationServiceTest extends ServiceTest {
     @Test
     void updateInvalidDateException() {
         //given
-        given(maps.existsById(anyLong()))
-                .willReturn(true);
         given(maps.findById(anyLong()))
                 .willReturn(Optional.of(LUTHER));
 
         //when
         ReservationCreateUpdateRequest reservationCreateUpdateRequest = new ReservationCreateUpdateRequest(
                 BE.getId(),
-                TOMORROW_START_TIME,
-                TOMORROW_START_TIME.plusDays(1),
+                THE_DAY_AFTER_TOMORROW_START_TIME,
+                THE_DAY_AFTER_TOMORROW_START_TIME.plusDays(1),
                 CHANGED_NAME,
                 CHANGED_DESCRIPTION
         );
@@ -706,9 +738,10 @@ public class ManagerReservationServiceTest extends ServiceTest {
                 .isInstanceOf(ImpossibleReservationTimeException.class);
     }
 
+    @ParameterizedTest
+    @CsvSource(value = {"0:1", "1:0"}, delimiter = ':')
     @DisplayName("예약 수정 요청 시, 공간의 예약가능 시간이 아니라면 에러가 발생한다.")
-    @Test
-    void updateInvalidTimeSetting() {
+    void updateInvalidTimeSetting(int minusStartTime, int plusEndTime) {
         //given
         given(maps.existsById(anyLong()))
                 .willReturn(true);
@@ -722,8 +755,8 @@ public class ManagerReservationServiceTest extends ServiceTest {
         //when
         ReservationCreateUpdateRequest reservationCreateUpdateRequest = new ReservationCreateUpdateRequest(
                 BE.getId(),
-                TOMORROW.atTime(10,0),
-                TOMORROW.atTime(22,1),
+                THE_DAY_AFTER_TOMORROW.atTime(BE_SETTING.getAvailableStartTime().minusMinutes(minusStartTime)),
+                THE_DAY_AFTER_TOMORROW.atTime(BE_SETTING.getAvailableEndTime().plusMinutes(plusEndTime)),
                 CHANGED_NAME,
                 CHANGED_DESCRIPTION
         );
@@ -742,12 +775,10 @@ public class ManagerReservationServiceTest extends ServiceTest {
     void deleteReservation() {
         //given
         Reservation reservationToDelete = makeReservation(
-                TOMORROW_START_TIME,
-                TOMORROW_START_TIME.plusHours(2),
+                THE_DAY_AFTER_TOMORROW_START_TIME,
+                THE_DAY_AFTER_TOMORROW_START_TIME.plusHours(2),
                 BE);
 
-        given(maps.existsById(anyLong()))
-                .willReturn(true);
         given(maps.findById(anyLong()))
                 .willReturn(Optional.of(LUTHER));
         given(reservations.findById(anyLong()))
@@ -763,9 +794,7 @@ public class ManagerReservationServiceTest extends ServiceTest {
     @DisplayName("예약 삭제 요청 시, 맵의 관리자가 아니라면 오류가 발생한다.")
     @Test
     void deleteNoAuthorityException() {
-        //given
-        given(maps.existsById(anyLong()))
-                .willReturn(true);
+        //given, when
         given(maps.findById(anyLong()))
                 .willReturn(Optional.of(LUTHER));
         given(reservations.findById(anyLong()))
@@ -783,14 +812,12 @@ public class ManagerReservationServiceTest extends ServiceTest {
     @Test
     void deleteReservationException() {
         //given
-        given(maps.existsById(anyLong()))
-                .willReturn(true);
         given(maps.findById(anyLong()))
                 .willReturn(Optional.of(LUTHER));
         given(reservations.findById(anyLong()))
                 .willReturn(Optional.empty());
 
-        //when,then
+        //when, then
         assertThatThrownBy(() -> managerReservationService.deleteReservation(
                 LUTHER.getId(),
                 reservation.getId(),
@@ -811,8 +838,6 @@ public class ManagerReservationServiceTest extends ServiceTest {
     }
 
     private void saveMock() {
-        given(maps.existsById(anyLong()))
-                .willReturn(true);
         given(maps.findById(anyLong()))
                 .willReturn(Optional.of(LUTHER));
         given(spaces.findById(anyLong()))
