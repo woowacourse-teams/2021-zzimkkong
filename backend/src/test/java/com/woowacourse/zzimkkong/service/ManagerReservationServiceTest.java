@@ -68,36 +68,6 @@ public class ManagerReservationServiceTest extends ServiceTest {
         assertThat(reservationCreateResponse.getId()).isEqualTo(reservation.getId());
     }
 
-    @DisplayName("예약 생성 요청 시, 시작 시간이 현재라면 예약을 생성한다.")
-    @Test
-    void saveStartNow() {
-        //given
-        given(maps.existsById(anyLong()))
-                .willReturn(true);
-        given(maps.findById(anyLong()))
-                .willReturn(Optional.of(LUTHER));
-        given(spaces.findById(anyLong()))
-                .willReturn(Optional.of(BE));
-        given(reservations.save(any(Reservation.class)))
-                .willReturn(reservation);
-
-        //when
-        ReservationCreateResponse reservationCreateResponse = managerReservationService.saveReservation(
-                LUTHER.getId(),
-                new ReservationCreateUpdateWithPasswordRequest(
-                        BE.getId(),
-                        timeConverter.getNow(),
-                        timeConverter.getNow().plusMinutes(1),
-                        RESERVATION_PASSWORD,
-                        USER_NAME,
-                        DESCRIPTION
-                ),
-                POBI);
-
-        //then
-        assertThat(reservationCreateResponse.getId()).isEqualTo(reservation.getId());
-    }
-
     @DisplayName("예약 생성 요청 시, mapId에 따른 map이 존재하지 않는다면 예외가 발생한다.")
     @Test
     void saveNotExistMapException() {
