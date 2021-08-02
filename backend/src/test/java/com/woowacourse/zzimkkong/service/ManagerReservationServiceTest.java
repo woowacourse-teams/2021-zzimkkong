@@ -87,7 +87,7 @@ public class ManagerReservationServiceTest extends ServiceTest {
                 new ReservationCreateUpdateWithPasswordRequest(
                         BE.getId(),
                         timeConverter.getNow(),
-                        timeConverter.getNow().plusHours(4),
+                        timeConverter.getNow().plusMinutes(1),
                         RESERVATION_PASSWORD,
                         USER_NAME,
                         DESCRIPTION
