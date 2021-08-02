@@ -11,7 +11,7 @@ import java.time.ZoneId;
 public class LocalTimeConverter implements TimeConverter {
     @Override
     public LocalDateTime getNow() {
-        LocalDateTime localNow = LocalDateTime.now();
+        LocalDateTime localNow = LocalDateTime.now().withSecond(0).withNano(0);
         return localNow.atZone(ZoneId.of("Asia/Seoul"))
                 .toLocalDateTime();
     }

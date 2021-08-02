@@ -6,7 +6,10 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.EnumSource;
 
 import java.time.DayOfWeek;
+import java.time.LocalDateTime;
 
+import static com.woowacourse.zzimkkong.CommonFixture.BE;
+import static com.woowacourse.zzimkkong.CommonFixture.THE_DAY_AFTER_TOMORROW;
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class SpaceTest {
@@ -44,5 +47,25 @@ public class SpaceTest {
         Space space = spaceBuilder.setting(setting).build();
 
         assertThat(space.isClosedOn(dayOfWeek)).isFalse();
+    }
+
+    @Test
+    @DisplayName("예약하려는 시간이 공간의 예약 가능한 시간 내에 있다면 false를 반환한다")
+    void isNotBetweenAvailableTime() {
+        LocalDateTime startDateTime = THE_DAY_AFTER_TOMORROW.atTime(10,0);
+        LocalDateTime endDateTime = THE_DAY_AFTER_TOMORROW.atTime(18,0);
+        boolean actual = BE.isNotBetweenAvailableTime(startDateTime, endDateTime);
+
+        assertThat(actual).isFalse();
+    }
+
+    @Test
+    @DisplayName("예약하려는 시간이 공간의 예약 가능한 시간 외에 있다면 true를 반환한다")
+    void isNotBetweenAvailableTimeFail() {
+        LocalDateTime startDateTime = THE_DAY_AFTER_TOMORROW.atTime(9,59);
+        LocalDateTime endDateTime = THE_DAY_AFTER_TOMORROW.atTime(18,1);
+        boolean actual = BE.isNotBetweenAvailableTime(startDateTime, endDateTime);
+
+        assertThat(actual).isTrue();
     }
 }

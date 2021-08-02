@@ -1,5 +1,5 @@
 import styled, { css } from 'styled-components';
-import { Color } from 'types/styled';
+import { Color } from 'types/common';
 
 interface HeaderWrapperProps {
   expandable: boolean;

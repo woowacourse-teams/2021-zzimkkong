@@ -72,7 +72,7 @@ public class MapService {
     @Transactional(readOnly = true)
     public MapFindAllResponse findAllMaps(final Member manager) {
         List<Map> findMaps = maps.findAllByMember(manager);
-        return MapFindAllResponse.from(findMaps);
+        return MapFindAllResponse.of(findMaps, manager);
     }
 
     public void updateMap(final Long mapId, final MapCreateUpdateRequest mapCreateUpdateRequest, final Member manager) {
