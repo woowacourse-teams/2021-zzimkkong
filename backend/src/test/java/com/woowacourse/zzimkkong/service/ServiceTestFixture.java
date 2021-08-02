@@ -30,7 +30,7 @@ public class ServiceTestFixture {
             .reservationMinimumTimeUnit(60)
             .reservationMaximumTimeUnit(120)
             .reservationEnable(true)
-            .disabledWeekdays("Monday, Tuesday")
+            .disabledDayOfWeek(null)
             .build();
 
     public static Space BE = new Space.Builder()
@@ -53,7 +53,7 @@ public class ServiceTestFixture {
             .reservationMinimumTimeUnit(10)
             .reservationMaximumTimeUnit(1440)
             .reservationEnable(true)
-            .disabledWeekdays(null)
+            .disabledDayOfWeek(null)
             .build();
 
     public static Space FE1 = new Space.Builder()

@@ -35,7 +35,7 @@ class SpaceServiceTest extends ServiceTest {
             60,
             120,
             true,
-            "Monday, Tuesday"
+            null
     );
 
     private final SpaceCreateUpdateRequest spaceCreateUpdateRequest = new SpaceCreateUpdateRequest(
@@ -53,7 +53,7 @@ class SpaceServiceTest extends ServiceTest {
             60,
             120,
             true,
-            "Monday, Wednesday"
+            null
     );
 
     private final SpaceCreateUpdateRequest updateSpaceCreateUpdateRequest = new SpaceCreateUpdateRequest(

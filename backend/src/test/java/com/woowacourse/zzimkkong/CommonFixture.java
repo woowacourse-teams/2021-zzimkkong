@@ -41,7 +41,7 @@ public class CommonFixture {
             .reservationMinimumTimeUnit(10)
             .reservationMaximumTimeUnit(1440)
             .reservationEnable(true)
-            .disabledWeekdays(null)
+            .disabledDayOfWeek(null)
             .build();
 
     public static Space BE = new Space.Builder()
@@ -63,7 +63,7 @@ public class CommonFixture {
             .reservationMinimumTimeUnit(10)
             .reservationMaximumTimeUnit(1440)
             .reservationEnable(true)
-            .disabledWeekdays(null)
+            .disabledDayOfWeek(null)
             .build();
 
     public static Space FE1 = new Space.Builder()

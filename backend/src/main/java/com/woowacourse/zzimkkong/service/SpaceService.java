@@ -63,7 +63,7 @@ public class SpaceService {
                 .reservationMinimumTimeUnit(settingsRequest.getReservationMinimumTimeUnit())
                 .reservationMaximumTimeUnit(settingsRequest.getReservationMaximumTimeUnit())
                 .reservationEnable(settingsRequest.getReservationEnable())
-                .disabledWeekdays(settingsRequest.getDisabledWeekdays())
+                .disabledDayOfWeek(settingsRequest.getDisabledWeekdays())
                 .build();
 
         String thumbnailUrl = uploadSvgAsPngToS3(spaceCreateUpdateRequest.getMapImage(), map.getId().toString());
@@ -153,7 +153,7 @@ public class SpaceService {
                 .reservationEnable(settingsRequest.getReservationEnable())
                 .reservationMinimumTimeUnit(settingsRequest.getReservationMinimumTimeUnit())
                 .reservationMaximumTimeUnit(settingsRequest.getReservationMaximumTimeUnit())
-                .disabledWeekdays(settingsRequest.getDisabledWeekdays())
+                .disabledDayOfWeek(settingsRequest.getDisabledWeekdays())
                 .build();
 
         String thumbnailUrl = uploadSvgAsPngToS3(spaceCreateUpdateRequest.getMapImage(), map.getId().toString());

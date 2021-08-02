@@ -38,7 +38,7 @@ public class Setting {
         this.reservationMinimumTimeUnit = builder.reservationMinimumTimeUnit;
         this.reservationMaximumTimeUnit = builder.reservationMaximumTimeUnit;
         this.reservationEnable = builder.reservationEnable;
-        this.disabledDayOfWeek = builder.disabledWeekdays;
+        this.disabledDayOfWeek = builder.disabledDayOfWeek;
     }
 
     public LocalTime getAvailableStartTime() {
@@ -76,7 +76,7 @@ public class Setting {
         private Integer reservationMinimumTimeUnit = null;
         private Integer reservationMaximumTimeUnit = null;
         private Boolean reservationEnable = null;
-        private String disabledWeekdays = null;
+        private String disabledDayOfWeek = null;
 
         public Builder() {
         }
@@ -111,8 +111,8 @@ public class Setting {
             return this;
         }
 
-        public Setting.Builder disabledWeekdays(String inputDisabledWeekdays) {
-            disabledWeekdays = inputDisabledWeekdays;
+        public Setting.Builder disabledDayOfWeek(String inputDisabledWeekdays) {
+            disabledDayOfWeek = inputDisabledWeekdays;
             return this;
         }
 

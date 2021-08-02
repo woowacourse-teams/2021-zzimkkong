@@ -33,7 +33,7 @@ public class SpaceTest {
     @ParameterizedTest
     @EnumSource(value = DayOfWeek.class, names = {"MONDAY", "WEDNESDAY"})
     void isClosedOn_disable(DayOfWeek dayOfWeek) {
-        Setting setting = settingBuilder.disabledWeekdays("monday, wednesday").build();
+        Setting setting = settingBuilder.disabledDayOfWeek("monday, wednesday").build();
         Space space = spaceBuilder.setting(setting).build();
 
         assertThat(space.isClosedOn(dayOfWeek)).isTrue();
@@ -43,7 +43,7 @@ public class SpaceTest {
     @ParameterizedTest
     @EnumSource(value = DayOfWeek.class, names = {"TUESDAY", "THURSDAY", "FRIDAY", "SATURDAY", "SUNDAY"})
     void isClosedOn_able(DayOfWeek dayOfWeek) {
-        Setting setting = settingBuilder.disabledWeekdays("monday, wednesday").build();
+        Setting setting = settingBuilder.disabledDayOfWeek("monday, wednesday").build();
         Space space = spaceBuilder.setting(setting).build();
 
         assertThat(space.isClosedOn(dayOfWeek)).isFalse();
