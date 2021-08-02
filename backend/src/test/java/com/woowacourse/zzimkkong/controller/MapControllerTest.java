@@ -59,7 +59,7 @@ class MapControllerTest extends AcceptanceTest {
         // when
         ExtractableResponse<Response> response = findAllMaps();
         List<MapFindResponse> findMaps = response.as(MapFindAllResponse.class).getMaps();
-        List<MapFindResponse> expected = MapFindAllResponse.from(List.of(LUTHER, SMALL_HOUSE)).getMaps();
+        List<MapFindResponse> expected = MapFindAllResponse.of(List.of(LUTHER, SMALL_HOUSE), POBI).getMaps();
 
         // then
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
