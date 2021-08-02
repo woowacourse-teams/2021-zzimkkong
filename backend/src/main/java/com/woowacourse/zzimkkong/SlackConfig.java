@@ -14,14 +14,14 @@ public class SlackConfig implements WebMvcConfigurer {
     @Bean
     @Profile("!test")
     public SlackUrl slackUrl(
-            @Value("${slack.webhook.local}") final String dev_url) {
-        return new SlackUrl(dev_url);
+            @Value("${slack.webhook.local}") final String devUrl) {
+        return new SlackUrl(devUrl);
     }
 
     @Bean
     @Profile("test")
     public SlackUrl slackUrlTest(
-            @Value("${slack.webhook.test}") final String test_url) {
-        return new SlackUrl(test_url);
+            @Value("${slack.webhook.test}") final String testUrl) {
+        return new SlackUrl(testUrl);
     }
 }
