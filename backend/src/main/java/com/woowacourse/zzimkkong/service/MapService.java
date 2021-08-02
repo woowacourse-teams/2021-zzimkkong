@@ -26,6 +26,7 @@ import java.util.List;
 @Transactional
 public class MapService {
     public static final String THUMBNAILS_DIRECTORY_NAME = "thumbnails";
+    public static final String THUMBNAIL_EXTENSION = ".png";
 
     private final MapRepository maps;
     private final SpaceRepository spaces;
@@ -130,6 +131,6 @@ public class MapService {
 
     private void deleteThumbnail(Map map) {
         String fileName = map.getId().toString();
-        storageUploader.delete(THUMBNAILS_DIRECTORY_NAME, fileName);
+        storageUploader.delete(THUMBNAILS_DIRECTORY_NAME, fileName + THUMBNAIL_EXTENSION);
     }
 }

@@ -15,7 +15,6 @@ import java.io.File;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import static com.woowacourse.zzimkkong.DocumentUtils.getRequestSpecification;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @SpringBootTest
