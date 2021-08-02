@@ -5,20 +5,27 @@ import org.apache.batik.transcoder.TranscoderException;
 import org.apache.batik.transcoder.TranscoderInput;
 import org.apache.batik.transcoder.TranscoderOutput;
 import org.apache.batik.transcoder.image.PNGTranscoder;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import java.io.*;
 
 @Component
 public class BatikConverter implements SvgConverter {
-    public static final String SAVE_DIRECTORY_PATH = "src/main/resources/tmp/";
+    public final String saveDirectoryPath;
+
+    public BatikConverter(
+            @Value("${converter.temp.location}")
+                    String saveDirectoryPath) {
+        this.saveDirectoryPath = saveDirectoryPath;
+    }
 
     public File convertSvgToPngFile(final String mapSvgData, final String fileName) {
         try {
             ByteArrayInputStream svgInput = new ByteArrayInputStream(mapSvgData.getBytes());
             TranscoderInput transcoderInput = new TranscoderInput(svgInput);
 
-            String targetFileName = SAVE_DIRECTORY_PATH + fileName + ".png";
+            String targetFileName = saveDirectoryPath + fileName + ".png";
             OutputStream outputStream = new FileOutputStream(targetFileName);
             TranscoderOutput transcoderOutput = new TranscoderOutput(outputStream);
 

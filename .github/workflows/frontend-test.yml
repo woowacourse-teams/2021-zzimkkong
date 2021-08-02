@@ -1,0 +1,34 @@
+name: CI
+
+on: [pull_request]
+
+jobs:
+  changes:
+    runs-on: ubuntu-latest
+    outputs:
+      frontend: ${{ steps.filter.outputs.frontend }}
+    steps:
+      - uses: dorny/paths-filter@v2
+        id: filter
+        with:
+          filters: |
+            frontend:
+              - 'frontend/**'
+
+  FE-Test:
+    needs: changes
+    if: ${{ needs.changes.outputs.frontend == 'true' }}
+    runs-on: ubuntu-latest
+    env:
+      working-directory: ./frontend
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: yarn install
+        run: yarn install
+        working-directory: ${{ env.working-directory }}
+
+      - name: yarn test
+        run: yarn test:ci
+        working-directory: ${{ env.working-directory }}

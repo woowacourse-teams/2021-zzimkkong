@@ -4,6 +4,7 @@ import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
 
 import javax.persistence.*;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 
 @DynamicInsert
@@ -130,6 +131,14 @@ public class Space {
 
     public String getMapImage() {
         return mapImage;
+    }
+
+    public boolean isNotBetweenAvailableTime(LocalDateTime startDateTime, LocalDateTime endDateTime) {
+        boolean isEqualOrAfterStartTime = startDateTime.toLocalTime().equals(getAvailableStartTime()) ||
+                startDateTime.toLocalTime().isAfter(getAvailableStartTime());
+        boolean isEqualOrBeforeEndTime = endDateTime.toLocalTime().equals(getAvailableEndTime()) ||
+                endDateTime.toLocalTime().isBefore(getAvailableEndTime());
+        return !(isEqualOrAfterStartTime && isEqualOrBeforeEndTime);
     }
 
     public static class Builder {
