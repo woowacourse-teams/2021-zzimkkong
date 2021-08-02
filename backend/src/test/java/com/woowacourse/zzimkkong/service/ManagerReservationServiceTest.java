@@ -245,14 +245,15 @@ public class ManagerReservationServiceTest extends ServiceTest {
                 .isInstanceOf(NonMatchingStartAndEndDateException.class);
     }
 
-    @Test
+    @ParameterizedTest
+    @CsvSource(value = {"0:1", "1:0"}, delimiter = ':')
     @DisplayName("예약 생성 요청 시, 공간의 예약가능 시간이 아니라면 예외가 발생한다.")
-    void saveInvalidTimeSetting() {
+    void saveInvalidTimeSetting(int minusStartTime, int plusEndTime) {
         //given
         reservationCreateUpdateWithPasswordRequest = new ReservationCreateUpdateWithPasswordRequest(
                 BE.getId(),
-                THE_DAY_AFTER_TOMORROW.atTime(9, 59),
-                THE_DAY_AFTER_TOMORROW.atTime(22, 1),
+                THE_DAY_AFTER_TOMORROW.atTime(BE_SETTING.getAvailableStartTime().minusMinutes(minusStartTime)),
+                THE_DAY_AFTER_TOMORROW.atTime(BE_SETTING.getAvailableEndTime().plusMinutes(plusEndTime)),
                 RESERVATION_PASSWORD,
                 USER_NAME,
                 DESCRIPTION
@@ -693,9 +694,10 @@ public class ManagerReservationServiceTest extends ServiceTest {
                 .isInstanceOf(ImpossibleReservationTimeException.class);
     }
 
+    @ParameterizedTest
+    @CsvSource(value = {"0:1", "1:0"}, delimiter = ':')
     @DisplayName("예약 수정 요청 시, 공간의 예약가능 시간이 아니라면 에러가 발생한다.")
-    @Test
-    void updateInvalidTimeSetting() {
+    void updateInvalidTimeSetting(int minusStartTime, int plusEndTime) {
         //given
         given(maps.existsById(anyLong()))
                 .willReturn(true);
@@ -709,8 +711,8 @@ public class ManagerReservationServiceTest extends ServiceTest {
         //when
         ReservationCreateUpdateRequest reservationCreateUpdateRequest = new ReservationCreateUpdateRequest(
                 BE.getId(),
-                THE_DAY_AFTER_TOMORROW.atTime(10, 0),
-                THE_DAY_AFTER_TOMORROW.atTime(22, 1),
+                THE_DAY_AFTER_TOMORROW.atTime(BE_SETTING.getAvailableStartTime().minusMinutes(minusStartTime)),
+                THE_DAY_AFTER_TOMORROW.atTime(BE_SETTING.getAvailableEndTime().plusMinutes(plusEndTime)),
                 CHANGED_NAME,
                 CHANGED_DESCRIPTION
         );
