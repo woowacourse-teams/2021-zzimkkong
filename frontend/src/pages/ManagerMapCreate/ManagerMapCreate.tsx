@@ -165,6 +165,23 @@ const ManagerMapCreate = (): JSX.Element => {
   const handleDrawStart: MouseEventHandler<SVGElement> = (event) => {
     if (mode !== Mode.Line) return;
 
+    if (drawingStatus.start) {
+      const startPoint = `${drawingStatus.start.x},${drawingStatus.start.y}`;
+      const endPoint = `${stickyCoordinate.x},${stickyCoordinate.y}`;
+
+      setMapElements((prevState) => [
+        ...prevState,
+        {
+          id: nextId,
+          type: 'polyline',
+          stroke: color,
+          points: [startPoint, endPoint],
+        },
+      ]);
+
+      return;
+    }
+
     setDrawingStatus((prevState) => ({
       ...prevState,
       start: stickyCoordinate,
