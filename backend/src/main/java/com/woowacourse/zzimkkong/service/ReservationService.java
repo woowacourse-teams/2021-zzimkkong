@@ -40,30 +40,6 @@ public abstract class ReservationService {
         this.timeConverter = timeConverter;
     }
 
-    @Transactional(readOnly = true)
-    public ReservationFindResponse findReservations(final Long mapId, final Long spaceId, final LocalDate date) {
-        validateMapExistence(mapId);
-        validateSpaceExistence(spaceId);
-
-        List<Reservation> reservations = getReservations(Collections.singletonList(spaceId), date);
-
-        return ReservationFindResponse.from(reservations);
-    }
-
-    @Transactional(readOnly = true)
-    public ReservationFindAllResponse findAllReservations(final Long mapId, final LocalDate date) {
-        validateMapExistence(mapId);
-
-        List<Long> spaceIds = spaces.findAllByMapId(mapId)
-                .stream()
-                .map(Space::getId)
-                .collect(Collectors.toList());
-
-        List<Reservation> reservations = getReservations(spaceIds, date);
-
-        return ReservationFindAllResponse.from(reservations);
-    }
-
     protected void validateTime(final ReservationCreateUpdateRequest reservationCreateUpdateRequest) {
         LocalDateTime startDateTime = reservationCreateUpdateRequest.getStartDateTime();
         LocalDateTime endDateTime = reservationCreateUpdateRequest.getEndDateTime();
@@ -93,7 +69,7 @@ public abstract class ReservationService {
         }
 
         List<Reservation> reservationsOnDate = getReservations(
-                Collections.singletonList(space.getId()),
+                Collections.singletonList(space),
                 startDateTime.toLocalDate());
 
         excludeTargetReservation(space, reservation, reservationsOnDate);
@@ -112,7 +88,7 @@ public abstract class ReservationService {
         }
 
         List<Reservation> reservationsOnDate = getReservations(
-                Collections.singletonList(space.getId()),
+                Collections.singletonList(space),
                 startDateTime.toLocalDate());
 
         validateTimeConflicts(startDateTime, endDateTime, reservationsOnDate);
@@ -135,9 +111,12 @@ public abstract class ReservationService {
         }
     }
 
-    private List<Reservation> getReservations(final Collection<Long> spaceIds, final LocalDate date) {
+    protected List<Reservation> getReservations(final Collection<Space> findSpaces, final LocalDate date) {
         LocalDateTime minimumDateTime = date.atStartOfDay();
         LocalDateTime maximumDateTime = minimumDateTime.plusDays(ONE_DAY);
+        List<Long> spaceIds = findSpaces.stream()
+                .map(Space::getId)
+                .collect(Collectors.toList());
 
         return reservations.findAllBySpaceIdInAndStartTimeIsBetweenAndEndTimeIsBetween(
                 spaceIds,
@@ -152,12 +131,6 @@ public abstract class ReservationService {
     protected void validateMapExistence(final Long mapId) {
         if (!maps.existsById(mapId)) {
             throw new NoSuchMapException();
-        }
-    }
-
-    private void validateSpaceExistence(final Long spaceId) {
-        if (!spaces.existsById(spaceId)) {
-            throw new NoSuchSpaceException();
         }
     }
 }

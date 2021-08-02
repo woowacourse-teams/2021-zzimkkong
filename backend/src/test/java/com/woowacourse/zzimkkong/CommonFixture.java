@@ -15,8 +15,9 @@ public class CommonFixture {
     public static final String NEW_EMAIL = "sakjung@email.com";
     public static final String PASSWORD = "test1234";
     public static final String ORGANIZATION = "우아한테크코스";
-    public static final LocalDate TOMORROW = LocalDate.now().plusDays(1);
-    public static final LocalDateTime TOMORROW_START_TIME = TOMORROW.atStartOfDay();
+    public static final LocalDate THE_DAY_AFTER_TOMORROW = LocalDate.now().plusDays(2);
+    public static final LocalDateTime THE_DAY_AFTER_TOMORROW_START_TIME = THE_DAY_AFTER_TOMORROW.atTime(0, 0);
+
     public static final String DESCRIPTION = "찜꽁 1차 회의";
     public static final String USER_NAME = "찜꽁";
     public static final String RESERVATION_PASSWORD = "1234";
@@ -42,6 +43,7 @@ public class CommonFixture {
             .reservationEnable(true)
             .disabledWeekdays(null)
             .build();
+
     public static Space BE = new Space.Builder()
             .name("백엔드 강의실")
             .textPosition("bottom")
@@ -63,6 +65,7 @@ public class CommonFixture {
             .reservationEnable(true)
             .disabledWeekdays(null)
             .build();
+
     public static Space FE1 = new Space.Builder()
             .name("프론트엔드 강의실1")
             .textPosition("bottom")
@@ -76,8 +79,8 @@ public class CommonFixture {
             .build();
 
     public static Reservation BE_AM_ZERO_ONE = new Reservation.Builder()
-            .startTime(TOMORROW_START_TIME)
-            .endTime(TOMORROW_START_TIME.plusHours(1))
+            .startTime(THE_DAY_AFTER_TOMORROW_START_TIME)
+            .endTime(THE_DAY_AFTER_TOMORROW_START_TIME.plusHours(1))
             .description(DESCRIPTION)
             .userName(USER_NAME)
             .password(RESERVATION_PASSWORD)
@@ -85,8 +88,8 @@ public class CommonFixture {
             .build();
 
     public static Reservation BE_PM_ONE_TWO = new Reservation.Builder()
-            .startTime(TOMORROW.atTime(13, 0, 0))
-            .endTime(TOMORROW.atTime(14, 0, 0))
+            .startTime(THE_DAY_AFTER_TOMORROW.atTime(13, 0, 0))
+            .endTime(THE_DAY_AFTER_TOMORROW.atTime(14, 0, 0))
             .description("찜꽁 2차 회의")
             .userName(USER_NAME)
             .password(RESERVATION_PASSWORD)
@@ -94,8 +97,8 @@ public class CommonFixture {
             .build();
 
     public static Reservation BE_NEXT_DAY_PM_SIX_TWELVE = new Reservation.Builder()
-            .startTime(TOMORROW.plusDays(1).atTime(6, 0, 0))
-            .endTime(TOMORROW.plusDays(1).atTime(12, 0, 0))
+            .startTime(THE_DAY_AFTER_TOMORROW.plusDays(1).atTime(6, 0, 0))
+            .endTime(THE_DAY_AFTER_TOMORROW.plusDays(1).atTime(12, 0, 0))
             .description("찜꽁 3차 회의")
             .userName(USER_NAME)
             .password("6789")
@@ -103,8 +106,8 @@ public class CommonFixture {
             .build();
 
     public static Reservation FE1_ZERO_ONE = new Reservation.Builder()
-            .startTime(TOMORROW_START_TIME)
-            .endTime(TOMORROW.atTime(1, 0, 0))
+            .startTime(THE_DAY_AFTER_TOMORROW_START_TIME)
+            .endTime(THE_DAY_AFTER_TOMORROW.atTime(1, 0, 0))
             .description("찜꽁 5차 회의")
             .userName(USER_NAME)
             .password(RESERVATION_PASSWORD)

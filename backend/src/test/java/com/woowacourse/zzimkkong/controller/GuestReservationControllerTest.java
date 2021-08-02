@@ -18,21 +18,12 @@ import static com.woowacourse.zzimkkong.DocumentUtils.*;
 import static com.woowacourse.zzimkkong.controller.MapControllerTest.saveMap;
 import static com.woowacourse.zzimkkong.controller.MemberControllerTest.saveMember;
 import static com.woowacourse.zzimkkong.controller.SpaceControllerTest.saveSpace;
-import static com.woowacourse.zzimkkong.service.ServiceTestFixture.*;
-import static com.woowacourse.zzimkkong.service.ServiceTestFixture.BE;
-import static com.woowacourse.zzimkkong.service.ServiceTestFixture.BE_AM_ZERO_ONE;
-import static com.woowacourse.zzimkkong.service.ServiceTestFixture.BE_PM_ONE_TWO;
-import static com.woowacourse.zzimkkong.service.ServiceTestFixture.DESCRIPTION;
-import static com.woowacourse.zzimkkong.service.ServiceTestFixture.FE1;
-import static com.woowacourse.zzimkkong.service.ServiceTestFixture.FE1_ZERO_ONE;
-import static com.woowacourse.zzimkkong.service.ServiceTestFixture.LUTHER;
-import static com.woowacourse.zzimkkong.service.ServiceTestFixture.RESERVATION_PASSWORD;
-import static com.woowacourse.zzimkkong.service.ServiceTestFixture.USER_NAME;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.restdocs.restassured3.RestAssuredRestDocumentation.document;
 
 public class GuestReservationControllerTest extends AcceptanceTest {
     private final String reservationApi = "/api/guests/maps/" + LUTHER.getId() + "/reservations";
+
     private ReservationCreateUpdateWithPasswordRequest reservationCreateUpdateWithPasswordRequest;
     private Reservation savedReservation;
     private Long beSpaceId;
@@ -118,7 +109,8 @@ public class GuestReservationControllerTest extends AcceptanceTest {
         ExtractableResponse<Response> response = findAllReservations(reservationApi, THE_DAY_AFTER_TOMORROW.toString());
 
         ReservationFindAllResponse actualResponse = response.as(ReservationFindAllResponse.class);
-        ReservationFindAllResponse expectedResponse = ReservationFindAllResponse.from(
+        ReservationFindAllResponse expectedResponse = ReservationFindAllResponse.of(
+                Arrays.asList(BE, FE1),
                 Arrays.asList(savedReservation,
                         BE_AM_ZERO_ONE,
                         BE_PM_ONE_TWO,
@@ -230,7 +222,7 @@ public class GuestReservationControllerTest extends AcceptanceTest {
     @DisplayName("올바른 비밀번호와 함께 예약 수정을 위한 예약 조회 요청 시, 예약에 대한 정보를 반환한다")
     @Test
     void findOne() {
-        // given, when
+        //given, when
         ReservationPasswordAuthenticationRequest reservationPasswordAuthenticationRequest = new ReservationPasswordAuthenticationRequest(SALLY_PASSWORD);
 
         ExtractableResponse<Response> response = findReservation(reservationApi + "/" + savedReservationId, reservationPasswordAuthenticationRequest);
@@ -238,7 +230,7 @@ public class GuestReservationControllerTest extends AcceptanceTest {
         ReservationResponse actualResponse = response.as(ReservationResponse.class);
         ReservationResponse expectedResponse = ReservationResponse.from(savedReservation);
 
-        // then
+        //then
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
         assertThat(actualResponse).usingRecursiveComparison()
                 .ignoringExpectedNullFields()
