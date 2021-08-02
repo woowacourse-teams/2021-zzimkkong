@@ -3,6 +3,7 @@ plugins {
     id 'io.spring.dependency-management' version '1.0.11.RELEASE'
     id "org.asciidoctor.convert" version "1.5.10"
     id 'java'
+    id "org.flywaydb.flyway" version "7.2.0"
 }
 
 group = 'com.woowacourse'
@@ -28,6 +29,8 @@ dependencies {
     //database
     runtimeOnly 'mysql:mysql-connector-java'
     runtimeOnly 'com.h2database:h2'
+    //flyway
+    implementation 'org.flywaydb:flyway-core:6.4.2'
 
     testImplementation 'io.rest-assured:rest-assured:3.3.0'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
