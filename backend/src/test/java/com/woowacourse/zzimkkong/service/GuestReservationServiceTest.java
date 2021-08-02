@@ -250,8 +250,8 @@ class GuestReservationServiceTest extends ServiceTest {
         //when
         given(maps.existsById(anyLong()))
                 .willReturn(true);
-        given(spaces.existsById(anyLong()))
-                .willReturn(true);
+        given(spaces.findById(anyLong()))
+                .willReturn(Optional.of(BE));
         given(reservations.findAllBySpaceIdInAndStartTimeIsBetweenAndEndTimeIsBetween(
                 anyList(),
                 any(LocalDateTime.class),
@@ -262,7 +262,10 @@ class GuestReservationServiceTest extends ServiceTest {
 
         //then
         ReservationFindResponse reservationFindResponse = ReservationFindResponse.from(foundReservations);
-        assertThat(guestReservationService.findReservations(1L, 1L, THE_DAY_AFTER_TOMORROW))
+        assertThat(guestReservationService.findReservations(
+                LUTHER.getId(),
+                BE.getId(),
+                THE_DAY_AFTER_TOMORROW))
                 .usingRecursiveComparison()
                 .isEqualTo(reservationFindResponse);
     }
@@ -273,10 +276,13 @@ class GuestReservationServiceTest extends ServiceTest {
         //given, when
         given(maps.existsById(anyLong()))
                 .willReturn(true);
-        given(spaces.existsById(anyLong()))
-                .willReturn(false);
+        given(spaces.findAllByMapId(anyLong()))
+                .willReturn(List.of(BE, FE1));
         //then
-        assertThatThrownBy(() -> guestReservationService.findReservations(1L, 1L, THE_DAY_AFTER_TOMORROW))
+        assertThatThrownBy(() -> guestReservationService.findReservations(
+                LUTHER.getId(),
+                BE.getId(),
+                THE_DAY_AFTER_TOMORROW))
                 .isInstanceOf(NoSuchSpaceException.class);
     }
 
@@ -286,8 +292,10 @@ class GuestReservationServiceTest extends ServiceTest {
         //given, when
         given(maps.existsById(anyLong()))
                 .willReturn(true);
-        given(spaces.existsById(anyLong()))
-                .willReturn(true);
+        given(spaces.findAllByMapId(anyLong()))
+                .willReturn(List.of(BE, FE1));
+        given(spaces.findById(anyLong()))
+                .willReturn(Optional.of(BE));
         given(reservations.findAllBySpaceIdInAndStartTimeIsBetweenAndEndTimeIsBetween(
                 anyList(),
                 any(LocalDateTime.class),
@@ -298,12 +306,15 @@ class GuestReservationServiceTest extends ServiceTest {
 
         //then
         ReservationFindResponse reservationFindResponse = ReservationFindResponse.from(Collections.emptyList());
-        assertThat(guestReservationService.findReservations(1L, 1L, THE_DAY_AFTER_TOMORROW))
+        assertThat(guestReservationService.findReservations(
+                LUTHER.getId(),
+                BE.getId(),
+                THE_DAY_AFTER_TOMORROW))
                 .usingRecursiveComparison()
                 .isEqualTo(reservationFindResponse);
-        assertThat(guestReservationService.findAllReservations(1L, THE_DAY_AFTER_TOMORROW))
+        assertThat(guestReservationService.findAllReservations(LUTHER.getId(), THE_DAY_AFTER_TOMORROW))
                 .usingRecursiveComparison()
-                .isEqualTo(ReservationFindAllResponse.from(Collections.emptyList()));
+                .isEqualTo(ReservationFindAllResponse.of(List.of(BE, FE1), Collections.emptyList()));
     }
 
     @Test
@@ -327,12 +338,14 @@ class GuestReservationServiceTest extends ServiceTest {
                         reservationCreateUpdateWithPasswordRequest.getStartDateTime().plusMinutes(conferenceTime),
                         reservationCreateUpdateWithPasswordRequest.getEndDateTime().plusMinutes(conferenceTime),
                         FE1));
+        List<Space> findSpaces = List.of(BE, FE1);
+
 
         //when
         given(maps.existsById(anyLong()))
                 .willReturn(true);
         given(spaces.findAllByMapId(anyLong()))
-                .willReturn(List.of(BE, FE1));
+                .willReturn(findSpaces);
         given(reservations.findAllBySpaceIdInAndStartTimeIsBetweenAndEndTimeIsBetween(
                 anyList(),
                 any(LocalDateTime.class),
@@ -342,7 +355,7 @@ class GuestReservationServiceTest extends ServiceTest {
                 .willReturn(foundReservations);
 
         //then
-        ReservationFindAllResponse reservationFindAllResponse = ReservationFindAllResponse.from(foundReservations);
+        ReservationFindAllResponse reservationFindAllResponse = ReservationFindAllResponse.of(findSpaces, foundReservations);
         assertThat(guestReservationService.findAllReservations(1L, THE_DAY_AFTER_TOMORROW))
                 .usingRecursiveComparison()
                 .isEqualTo(reservationFindAllResponse);

@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.woowacourse.zzimkkong.domain.Reservation;
 import com.woowacourse.zzimkkong.domain.Space;
 
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
@@ -22,9 +23,12 @@ public class ReservationFindAllResponse {
         this.data = data;
     }
 
-    public static ReservationFindAllResponse from(final List<Reservation> reservations) {
+    public static ReservationFindAllResponse of(final List<Space> spaces, final List<Reservation> reservations) {
         Map<Space, List<Reservation>> reservationGroups = reservations.stream()
                 .collect(Collectors.groupingBy(Reservation::getSpace));
+        spaces.stream()
+                .filter(space -> !reservationGroups.containsKey(space))
+                .forEach(space -> reservationGroups.put(space, Collections.emptyList()));
 
         for (final List<Reservation> each : reservationGroups.values()) {
             each.sort(Comparator.comparing(Reservation::getStartTime));

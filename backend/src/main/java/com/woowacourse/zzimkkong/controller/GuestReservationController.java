@@ -1,21 +1,24 @@
 package com.woowacourse.zzimkkong.controller;
 
-import com.woowacourse.zzimkkong.dto.reservation.ReservationCreateResponse;
-import com.woowacourse.zzimkkong.dto.reservation.ReservationCreateUpdateWithPasswordRequest;
-import com.woowacourse.zzimkkong.dto.reservation.ReservationPasswordAuthenticationRequest;
-import com.woowacourse.zzimkkong.dto.reservation.ReservationResponse;
+import com.woowacourse.zzimkkong.dto.reservation.*;
 import com.woowacourse.zzimkkong.service.GuestReservationService;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.net.URI;
+import java.time.LocalDate;
+
+import static com.woowacourse.zzimkkong.dto.Validator.DATE_FORMAT;
 
 @RestController
 @RequestMapping("/api/guests/maps/{mapId}")
-public class GuestReservationController extends ReservationController<GuestReservationService> {
+public class GuestReservationController {
+    private final GuestReservationService reservationService;
+
     public GuestReservationController(final GuestReservationService reservationService) {
-        super(reservationService);
+        this.reservationService = reservationService;
     }
 
     @PostMapping("/reservations")
@@ -26,6 +29,23 @@ public class GuestReservationController extends ReservationController<GuestReser
         return ResponseEntity
                 .created(URI.create("/api/guests/maps/" + mapId + "/reservations/" + reservationCreateResponse.getId()))
                 .build();
+    }
+
+    @GetMapping("/reservations")
+    public ResponseEntity<ReservationFindAllResponse> findAll(
+            @PathVariable final Long mapId,
+            @RequestParam @DateTimeFormat(pattern = DATE_FORMAT) final LocalDate date) {
+        ReservationFindAllResponse reservationFindAllResponse = reservationService.findAllReservations(mapId, date);
+        return ResponseEntity.ok().body(reservationFindAllResponse);
+    }
+
+    @GetMapping("/spaces/{spaceId}/reservations")
+    public ResponseEntity<ReservationFindResponse> find(
+            @PathVariable final Long mapId,
+            @PathVariable final Long spaceId,
+            @RequestParam @DateTimeFormat(pattern = DATE_FORMAT) final LocalDate date) {
+        ReservationFindResponse reservationFindResponse = reservationService.findReservations(mapId, spaceId, date);
+        return ResponseEntity.ok().body(reservationFindResponse);
     }
 
     @PostMapping("/reservations/{reservationId}")

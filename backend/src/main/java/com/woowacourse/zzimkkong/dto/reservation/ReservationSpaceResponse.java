@@ -51,6 +51,7 @@ public class ReservationSpaceResponse {
                 .collect(Collectors.toList());
 
         Space space = reservationsPerSpace.getKey();
+
         return new ReservationSpaceResponse(
                 space.getId(),
                 space.getName(),
