@@ -55,6 +55,7 @@ class S3UploaderTest {
 
         // when
         s3Uploader.delete("testDirectoryName", testFile.getName());
+        RestAssured.port = RestAssured.UNDEFINED_PORT;
         ExtractableResponse<Response> response = RestAssured
                 .given().log().all()
                 .accept("application/json")
