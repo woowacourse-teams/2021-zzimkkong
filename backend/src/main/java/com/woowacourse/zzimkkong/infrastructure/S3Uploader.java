@@ -2,6 +2,7 @@ package com.woowacourse.zzimkkong.infrastructure;
 
 import com.amazonaws.AmazonClientException;
 import com.amazonaws.services.s3.AmazonS3;
+import com.amazonaws.services.s3.model.DeleteObjectRequest;
 import com.amazonaws.services.s3.model.PutObjectRequest;
 import com.woowacourse.zzimkkong.exception.infrastructure.S3UploadException;
 import org.springframework.beans.factory.annotation.Value;
@@ -29,6 +30,7 @@ public class S3Uploader implements StorageUploader {
         this.urlReplacement = urlReplacement;
     }
 
+    @Override
     public String upload(final String directoryName, final File uploadFile) {
         String fileName = directoryName + "/" + uploadFile.getName();
 
@@ -47,5 +49,10 @@ public class S3Uploader implements StorageUploader {
 
     private String replaceUrl(final String origin, final String replacement) {
         return origin.replace(s3DomainUrl, replacement);
+    }
+
+    @Override
+    public void delete(String directoryName, final String fileName) {
+        amazonS3.deleteObject(new DeleteObjectRequest(bucketName, directoryName + "/" + fileName));
     }
 }
