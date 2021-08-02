@@ -1,6 +1,7 @@
 package com.woowacourse.zzimkkong.service;
 
 import com.woowacourse.zzimkkong.domain.Reservation;
+import com.woowacourse.zzimkkong.domain.Setting;
 import com.woowacourse.zzimkkong.domain.Space;
 import com.woowacourse.zzimkkong.dto.reservation.*;
 import com.woowacourse.zzimkkong.exception.map.NoSuchMapException;
@@ -14,6 +15,7 @@ import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -64,6 +66,33 @@ class GuestReservationServiceTest extends ServiceTest {
         ReservationCreateResponse reservationCreateResponse = guestReservationService.saveReservation(1L, reservationCreateUpdateWithPasswordRequest);
 
         //then
+        assertThat(reservationCreateResponse.getId()).isEqualTo(reservation.getId());
+    }
+
+    @ParameterizedTest
+    @ValueSource(ints = 60)
+    @DisplayName("예약 생성 요청 시, 경계값이 일치한다면 생성된다.")
+    void saveSameThresholdTime(int conferenceTime) {
+        //given, when
+        saveMock();
+        given(reservations.findAllBySpaceIdInAndStartTimeIsBetweenAndEndTimeIsBetween(
+                anyList(),
+                any(LocalDateTime.class),
+                any(LocalDateTime.class),
+                any(LocalDateTime.class),
+                any(LocalDateTime.class)))
+                .willReturn(List.of(
+                        makeReservation(
+                                reservationCreateUpdateWithPasswordRequest.getStartDateTime().minusMinutes(conferenceTime),
+                                reservationCreateUpdateWithPasswordRequest.getEndDateTime().minusMinutes(conferenceTime),
+                                BE),
+                        makeReservation(
+                                reservationCreateUpdateWithPasswordRequest.getStartDateTime().plusMinutes(conferenceTime),
+                                reservationCreateUpdateWithPasswordRequest.getEndDateTime().plusMinutes(conferenceTime),
+                                BE)));
+
+        //then
+        ReservationCreateResponse reservationCreateResponse = guestReservationService.saveReservation(1L, reservationCreateUpdateWithPasswordRequest);
         assertThat(reservationCreateResponse.getId()).isEqualTo(reservation.getId());
     }
 
@@ -184,6 +213,30 @@ class GuestReservationServiceTest extends ServiceTest {
     }
 
     @ParameterizedTest
+    @CsvSource(value = {"0:1", "1:0"}, delimiter = ':')
+    @DisplayName("예약 생성 요청 시, 공간의 예약가능 시간이 아니라면 예외가 발생한다.")
+    void saveInvalidTimeSetting(int minusStartTime, int plusEndTime) {
+        //given
+        reservationCreateUpdateWithPasswordRequest = new ReservationCreateUpdateWithPasswordRequest(
+                BE.getId(),
+                THE_DAY_AFTER_TOMORROW.atTime(BE_SETTING.getAvailableStartTime().minusMinutes(minusStartTime)),
+                THE_DAY_AFTER_TOMORROW.atTime(BE_SETTING.getAvailableEndTime().plusMinutes(plusEndTime)),
+                RESERVATION_PASSWORD,
+                USER_NAME,
+                DESCRIPTION
+        );
+
+        //when
+        saveMock();
+
+        //then
+        assertThatThrownBy(() -> guestReservationService.saveReservation(
+                LUTHER.getId(),
+                reservationCreateUpdateWithPasswordRequest))
+                .isInstanceOf(ConflictSpaceSettingException.class);
+    }
+
+    @ParameterizedTest
     @CsvSource(value = {"-10:10", "2:0", "0:1", "60:59", "-59:-59"}, delimiter = ':')
     @DisplayName("예약 생성 요청 시, 이미 겹치는 시간이 존재하면 예외가 발생한다.")
     void saveAvailabilityException(int startMinute, int endMinute) {
@@ -205,31 +258,75 @@ class GuestReservationServiceTest extends ServiceTest {
                 .isInstanceOf(ImpossibleReservationTimeException.class);
     }
 
-    @ParameterizedTest
-    @ValueSource(ints = 60)
-    @DisplayName("예약 생성 요청 시, 경계값이 일치한다면 생성된다.")
-    void saveSameThresholdTime(int conferenceTime) {
-        //given, when
-        saveMock();
-        given(reservations.findAllBySpaceIdInAndStartTimeIsBetweenAndEndTimeIsBetween(
-                anyList(),
-                any(LocalDateTime.class),
-                any(LocalDateTime.class),
-                any(LocalDateTime.class),
-                any(LocalDateTime.class)))
-                .willReturn(List.of(
-                        makeReservation(
-                                reservationCreateUpdateWithPasswordRequest.getStartDateTime().minusMinutes(conferenceTime),
-                                reservationCreateUpdateWithPasswordRequest.getEndDateTime().minusMinutes(conferenceTime),
-                                BE),
-                        makeReservation(
-                                reservationCreateUpdateWithPasswordRequest.getStartDateTime().plusMinutes(conferenceTime),
-                                reservationCreateUpdateWithPasswordRequest.getEndDateTime().plusMinutes(conferenceTime),
-                                BE)));
+    @Test
+    @DisplayName("예약 생성 요청 시, 예약이 불가능한 공간이면 에러를 반환한다.")
+    void saveReservationUnable() {
+        // given, when
+        Setting setting = new Setting.Builder()
+                .availableStartTime(LocalTime.of(0, 0))
+                .availableEndTime(LocalTime.of(18, 0))
+                .reservationTimeUnit(10)
+                .reservationMinimumTimeUnit(10)
+                .reservationMaximumTimeUnit(1440)
+                .reservationEnable(false)
+                .disabledDayOfWeek(null)
+                .build();
 
-        //then
-        ReservationCreateResponse reservationCreateResponse = guestReservationService.saveReservation(1L, reservationCreateUpdateWithPasswordRequest);
-        assertThat(reservationCreateResponse.getId()).isEqualTo(reservation.getId());
+        Space be = new Space.Builder()
+                .name("백엔드 강의실")
+                .textPosition("bottom")
+                .color("#FED7D9")
+                .coordinate("100, 90")
+                .map(LUTHER)
+                .description("시니컬하네")
+                .area(SPACE_DRAWING)
+                .setting(setting)
+                .mapImage(MAP_IMAGE_URL)
+                .build();
+
+        given(maps.existsById(anyLong()))
+                .willReturn(true);
+        given(spaces.findById(anyLong()))
+                .willReturn(Optional.of(be));
+
+        // then
+        assertThatThrownBy(() -> guestReservationService.saveReservation(1L, reservationCreateUpdateWithPasswordRequest))
+                .isInstanceOf(IllegalSpaceToReserveException.class);
+    }
+
+    @Test
+    @DisplayName("예약 생성 요청 시, 예약이 불가능한 요일이면 에러를 반환한다.")
+    void saveIllegalDayOfWeek() {
+        // given, when
+        Setting setting = new Setting.Builder()
+                .availableStartTime(LocalTime.of(0, 0))
+                .availableEndTime(LocalTime.of(18, 0))
+                .reservationTimeUnit(10)
+                .reservationMinimumTimeUnit(10)
+                .reservationMaximumTimeUnit(1440)
+                .reservationEnable(true)
+                .disabledDayOfWeek(THE_DAY_AFTER_TOMORROW.getDayOfWeek().name())
+                .build();
+
+        Space be = new Space.Builder()
+                .name("백엔드 강의실")
+                .textPosition("bottom")
+                .color("#FED7D9")
+                .coordinate("100, 90")
+                .map(LUTHER)
+                .description("시니컬하네")
+                .area(SPACE_DRAWING)
+                .setting(setting)
+                .mapImage(MAP_IMAGE_URL)
+                .build();
+
+        given(maps.existsById(anyLong()))
+                .willReturn(true);
+        given(spaces.findById(anyLong()))
+                .willReturn(Optional.of(be));
+
+        assertThatThrownBy(() -> guestReservationService.saveReservation(1L, reservationCreateUpdateWithPasswordRequest))
+                .isInstanceOf(IllegalDayOfWeekException.class);
     }
 
     @Test
@@ -540,6 +637,113 @@ class GuestReservationServiceTest extends ServiceTest {
         //then
         assertThatThrownBy(() -> guestReservationService.updateReservation(1L, 1L, reservationCreateUpdateWithPasswordRequest))
                 .isInstanceOf(ImpossibleReservationTimeException.class);
+    }
+
+    @ParameterizedTest
+    @CsvSource(value = {"0:1", "1:0"}, delimiter = ':')
+    @DisplayName("예약 수정 요청 시, 공간의 예약가능 시간이 아니라면 에러가 발생한다.")
+    void updateInvalidTimeSetting(int minusStartTime, int plusEndTime) {
+        //given
+        given(maps.existsById(anyLong()))
+                .willReturn(true);
+        given(maps.findById(anyLong()))
+                .willReturn(Optional.of(LUTHER));
+        given(spaces.findById(anyLong()))
+                .willReturn(Optional.of(BE));
+        given(reservations.findById(anyLong()))
+                .willReturn(Optional.of(reservation));
+
+        //when
+        ReservationCreateUpdateWithPasswordRequest reservationCreateUpdateWithPasswordRequest = new ReservationCreateUpdateWithPasswordRequest(
+                BE.getId(),
+                THE_DAY_AFTER_TOMORROW.atTime(BE_SETTING.getAvailableStartTime().minusMinutes(minusStartTime)),
+                THE_DAY_AFTER_TOMORROW.atTime(BE_SETTING.getAvailableEndTime().plusMinutes(plusEndTime)),
+                RESERVATION_PASSWORD,
+                CHANGED_NAME,
+                CHANGED_DESCRIPTION
+        );
+
+        //then
+        assertThatThrownBy(() -> guestReservationService.updateReservation(
+                LUTHER.getId(),
+                1L,
+                reservationCreateUpdateWithPasswordRequest))
+                .isInstanceOf(ConflictSpaceSettingException.class);
+    }
+
+    @Test
+    @DisplayName("예약 수정 요청 시, 예약이 불가능한 공간이면 에러를 반환한다.")
+    void updateReservationUnable() {
+        // given, when
+        Setting setting = new Setting.Builder()
+                .availableStartTime(LocalTime.of(0, 0))
+                .availableEndTime(LocalTime.of(18, 0))
+                .reservationTimeUnit(10)
+                .reservationMinimumTimeUnit(10)
+                .reservationMaximumTimeUnit(1440)
+                .reservationEnable(false)
+                .disabledDayOfWeek(null)
+                .build();
+
+        Space be = new Space.Builder()
+                .name("백엔드 강의실")
+                .textPosition("bottom")
+                .color("#FED7D9")
+                .coordinate("100, 90")
+                .map(LUTHER)
+                .description("시니컬하네")
+                .area(SPACE_DRAWING)
+                .setting(setting)
+                .mapImage(MAP_IMAGE_URL)
+                .build();
+
+        given(maps.existsById(anyLong()))
+                .willReturn(true);
+        given(spaces.findById(anyLong()))
+                .willReturn(Optional.of(be));
+        given(reservations.findById(anyLong()))
+                .willReturn(Optional.of(reservation));
+
+        // then
+        assertThatThrownBy(() -> guestReservationService.updateReservation(1L, 1L, reservationCreateUpdateWithPasswordRequest))
+                .isInstanceOf(IllegalSpaceToReserveException.class);
+    }
+
+    @Test
+    @DisplayName("예약 수정 요청 시, 예약이 불가능한 요일이면 에러를 반환한다.")
+    void updateIllegalDayOfWeek() {
+        // given, when
+        Setting setting = new Setting.Builder()
+                .availableStartTime(LocalTime.of(0, 0))
+                .availableEndTime(LocalTime.of(18, 0))
+                .reservationTimeUnit(10)
+                .reservationMinimumTimeUnit(10)
+                .reservationMaximumTimeUnit(1440)
+                .reservationEnable(true)
+                .disabledDayOfWeek(THE_DAY_AFTER_TOMORROW.getDayOfWeek().name())
+                .build();
+
+        Space be = new Space.Builder()
+                .name("백엔드 강의실")
+                .textPosition("bottom")
+                .color("#FED7D9")
+                .coordinate("100, 90")
+                .map(LUTHER)
+                .description("시니컬하네")
+                .area(SPACE_DRAWING)
+                .setting(setting)
+                .mapImage(MAP_IMAGE_URL)
+                .build();
+
+        given(maps.existsById(anyLong()))
+                .willReturn(true);
+        given(spaces.findById(anyLong()))
+                .willReturn(Optional.of(be));
+        given(reservations.findById(anyLong()))
+                .willReturn(Optional.of(reservation));
+
+        assertThatThrownBy(() -> guestReservationService.updateReservation(1L, 1L, reservationCreateUpdateWithPasswordRequest))
+                .isInstanceOf(IllegalDayOfWeekException.class);
     }
 
     @Test
