@@ -122,7 +122,6 @@ public class SpaceControllerTest extends AcceptanceTest {
                 .description("우리집")
                 .area(SPACE_DRAWING)
                 .setting(defaultSetting)
-                .mapImage(MAP_SVG)
                 .build();
 
         String saveSpaceApi = "/api/managers/maps/1/spaces";

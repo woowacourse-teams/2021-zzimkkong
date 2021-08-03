@@ -12,8 +12,6 @@ public class SpaceCreateUpdateRequest {
     @NotBlank(message = EMPTY_MESSAGE)
     private String area;
     private SettingsRequest settingsRequest;
-    @NotBlank(message = EMPTY_MESSAGE)
-    private String mapImage;    // todo mapImageSvg로 칼럼명 통일
 
     public SpaceCreateUpdateRequest() {
     }
@@ -22,13 +20,11 @@ public class SpaceCreateUpdateRequest {
             final String spaceName,
             final String description,
             final String area,
-            final SettingsRequest settingsRequest,
-            final String mapImage) {
+            final SettingsRequest settingsRequest) {
         this.spaceName = spaceName;
         this.description = description;
         this.area = area;
         this.settingsRequest = settingsRequest;
-        this.mapImage = mapImage;
     }
 
     public String getSpaceName() {
@@ -45,9 +41,5 @@ public class SpaceCreateUpdateRequest {
 
     public SettingsRequest getSettingsRequest() {
         return settingsRequest;
-    }
-
-    public String getMapImage() {
-        return mapImage;
     }
 }

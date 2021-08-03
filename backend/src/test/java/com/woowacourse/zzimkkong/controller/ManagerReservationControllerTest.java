@@ -57,7 +57,6 @@ public class ManagerReservationControllerTest extends AcceptanceTest {
                 .description("시니컬하네")
                 .area(SPACE_DRAWING)
                 .setting(BE_SETTING)
-                .mapImage(MAP_IMAGE_URL)
                 .build();
 
         FE1 = new Space.Builder()
@@ -67,7 +66,6 @@ public class ManagerReservationControllerTest extends AcceptanceTest {
                 .description("시니컬하네")
                 .area(SPACE_DRAWING)
                 .setting(FE_SETTING)
-                .mapImage(MAP_IMAGE_URL)
                 .build();
 
         reservationCreateUpdateWithPasswordRequest = new ReservationCreateUpdateWithPasswordRequest(

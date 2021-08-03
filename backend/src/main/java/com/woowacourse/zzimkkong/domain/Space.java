@@ -41,9 +41,6 @@ public class Space {
     @Embedded
     private Setting setting;
 
-    @Column(nullable = false)
-    private String mapImage;    // todo Map 엔티티의 mapImageUrl 과 중복되는 칼럼이므로 삭제
-
     protected Space() {
     }
 
@@ -57,7 +54,6 @@ public class Space {
         this.description = builder.description;
         this.area = builder.area;
         this.setting = builder.setting;
-        this.mapImage = builder.mapImage;
     }
 
     public void update(final Space updateSpace) {
@@ -66,7 +62,6 @@ public class Space {
         this.description = updateSpace.description;
         this.area = updateSpace.area;
         this.setting = updateSpace.setting;
-        this.mapImage = updateSpace.mapImage;
     }
 
     public Long getId() {
@@ -129,10 +124,6 @@ public class Space {
         return setting.getDisabledWeekdays();
     }
 
-    public String getMapImage() {
-        return mapImage;
-    }
-
     public boolean isNotBetweenAvailableTime(LocalDateTime startDateTime, LocalDateTime endDateTime) {
         boolean isEqualOrAfterStartTime = startDateTime.toLocalTime().equals(getAvailableStartTime()) ||
                 startDateTime.toLocalTime().isAfter(getAvailableStartTime());
@@ -151,7 +142,6 @@ public class Space {
         private String description = null;
         private String area = null;
         private Setting setting = null;
-        private String mapImage = null;
 
         public Builder() {
         }
@@ -198,11 +188,6 @@ public class Space {
 
         public Space.Builder setting(Setting inputSetting) {
             setting = inputSetting;
-            return this;
-        }
-
-        public Space.Builder mapImage(String inputMapImage) {
-            mapImage = inputMapImage;
             return this;
         }
 

@@ -53,7 +53,6 @@ public class CommonFixture {
             .description("시니컬하네")
             .area(SPACE_DRAWING)
             .setting(BE_SETTING)
-            .mapImage(MAP_IMAGE_URL)
             .build();
 
     public static Setting FE_SETTING = new Setting.Builder()
@@ -75,7 +74,6 @@ public class CommonFixture {
             .description("시니컬하네")
             .area(SPACE_DRAWING)
             .setting(FE_SETTING)
-            .mapImage(MAP_IMAGE_URL)
             .build();
 
     public static Reservation BE_AM_ZERO_ONE = new Reservation.Builder()
