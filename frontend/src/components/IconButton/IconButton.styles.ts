@@ -1,7 +1,7 @@
 import styled, { css } from 'styled-components';
 
 interface Props {
-  size: 'small' | 'medium' | 'large';
+  size: 'small' | 'medium' | 'large' | 'xLarge';
 }
 
 export const Container = styled.div`
@@ -10,28 +10,15 @@ export const Container = styled.div`
   align-items: center;
 `;
 
-const buttonSizeCSS = {
-  small: css`
-    min-width: 1.25rem;
-  `,
-  medium: css`
-    min-width: 1.5rem;
-  `,
-  large: css`
-    min-width: 2.25rem;
-  `,
-};
-
 export const Button = styled.button<Props>`
   border: none;
   border-radius: 50%;
   background-color: transparent;
   cursor: pointer;
-  display: flex;
+  display: inline-flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  ${({ size }) => buttonSizeCSS[size]}
 `;
 
 const iconSizeCSS = {
@@ -46,6 +33,11 @@ const iconSizeCSS = {
   large: css`
     width: 2.25rem;
     height: 2.25rem;
+  `,
+
+  xLarge: css`
+    width: 2.75rem;
+    height: 2.75rem;
   `,
 };
 
@@ -63,6 +55,9 @@ const textSizeCSS = {
   `,
   large: css`
     font-size: 0.75rem;
+  `,
+  xLarge: css`
+    font-size: 0.875rem;
   `,
 };
 

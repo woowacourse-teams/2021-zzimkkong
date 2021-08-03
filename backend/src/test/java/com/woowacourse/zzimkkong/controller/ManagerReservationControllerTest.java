@@ -1,12 +1,9 @@
 package com.woowacourse.zzimkkong.controller;
 
 import com.woowacourse.zzimkkong.domain.Reservation;
+import com.woowacourse.zzimkkong.domain.Space;
 import com.woowacourse.zzimkkong.dto.reservation.*;
 import com.woowacourse.zzimkkong.infrastructure.AuthorizationExtractor;
-import com.woowacourse.zzimkkong.repository.MapRepository;
-import com.woowacourse.zzimkkong.repository.MemberRepository;
-import com.woowacourse.zzimkkong.repository.ReservationRepository;
-import com.woowacourse.zzimkkong.repository.SpaceRepository;
 import com.woowacourse.zzimkkong.service.SlackService;
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
@@ -14,57 +11,79 @@ import io.restassured.response.Response;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 
 import java.util.Arrays;
-import java.util.List;
 
 import static com.woowacourse.zzimkkong.CommonFixture.*;
 import static com.woowacourse.zzimkkong.DocumentUtils.*;
 import static com.woowacourse.zzimkkong.controller.AuthControllerTest.getToken;
+import static com.woowacourse.zzimkkong.controller.MapControllerTest.saveMap;
+import static com.woowacourse.zzimkkong.controller.MemberControllerTest.saveMember;
+import static com.woowacourse.zzimkkong.controller.SpaceControllerTest.saveSpace;
+import static com.woowacourse.zzimkkong.service.ServiceTestFixture.THE_DAY_AFTER_TOMORROW;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.restdocs.restassured3.RestAssuredRestDocumentation.document;
 
 public class ManagerReservationControllerTest extends AcceptanceTest {
-    @Autowired
-    private MemberRepository members;
-
-    @Autowired
-    private SpaceRepository spaces;
-
-    @Autowired
-    private MapRepository maps;
-
-    @Autowired
-    private ReservationRepository reservations;
-
     @MockBean
     private SlackService slackService;
 
-    private final String invalidToken = "rubbishToken";
+    private final String reservationApi = "/api/managers/maps/" + LUTHER.getId() + "/reservations";
     private ReservationCreateUpdateWithPasswordRequest reservationCreateUpdateWithPasswordRequest;
     private Reservation savedReservation;
-    private String token;
+    private Long beSpaceId;
+    private Long feSpaceId;
+    private Long savedReservationId;
 
     @BeforeEach
     void setUp() {
-        members.save(POBI); //TODO: 관련 테스트메서드 생성 시 repository 안쓰도록 수정 - 샐리
-        maps.save(LUTHER);
-        spaces.save(BE);
-        spaces.save(FE1);
+        saveMember(memberSaveRequest);
+        saveMap("/api/managers/maps", mapCreateRequest);
+
+        String spaceSaveApi = "/api/managers/maps/" + LUTHER.getId() + "/spaces";
+        ExtractableResponse<Response> saveBeSpaceResponse = saveSpace(spaceSaveApi, beSpaceCreateUpdateRequest);
+        ExtractableResponse<Response> saveFe1SpaceResponse = saveSpace(spaceSaveApi, feSpaceCreateUpdateRequest);
+
+        beSpaceId = Long.valueOf(saveBeSpaceResponse.header("location").split("/")[6]);
+        feSpaceId = Long.valueOf(saveFe1SpaceResponse.header("location").split("/")[6]);
+
+        BE = new Space.Builder()
+                .id(beSpaceId)
+                .name("백엔드 강의실")
+                .map(LUTHER)
+                .description("시니컬하네")
+                .area(SPACE_DRAWING)
+                .setting(BE_SETTING)
+                .mapImage(MAP_IMAGE_URL)
+                .build();
+
+        FE1 = new Space.Builder()
+                .id(feSpaceId)
+                .name("프론트엔드 강의실1")
+                .map(LUTHER)
+                .description("시니컬하네")
+                .area(SPACE_DRAWING)
+                .setting(FE_SETTING)
+                .mapImage(MAP_IMAGE_URL)
+                .build();
 
         reservationCreateUpdateWithPasswordRequest = new ReservationCreateUpdateWithPasswordRequest(
-                BE.getId(),
-                TOMORROW_START_TIME.plusHours(1),
-                TOMORROW_START_TIME.plusHours(2),
+                beSpaceId,
+                THE_DAY_AFTER_TOMORROW.atTime(12, 0),
+                THE_DAY_AFTER_TOMORROW.atTime(13, 0),
                 SALLY_PASSWORD,
                 SALLY_NAME,
                 SALLY_DESCRIPTION);
 
+        saveExampleReservations();
+
+        savedReservationId = getReservationIdAfterSave(reservationCreateUpdateWithPasswordRequest);
+
         savedReservation = new Reservation.Builder()
+                .id(savedReservationId)
                 .startTime(reservationCreateUpdateWithPasswordRequest.getStartDateTime())
                 .endTime(reservationCreateUpdateWithPasswordRequest.getEndDateTime())
                 .password(reservationCreateUpdateWithPasswordRequest.getPassword())
@@ -72,73 +91,33 @@ public class ManagerReservationControllerTest extends AcceptanceTest {
                 .description(reservationCreateUpdateWithPasswordRequest.getDescription())
                 .space(BE)
                 .build();
-
-        token = getToken();
     }
 
     @DisplayName("올바른 토큰이 주어질 때, 예약을 등록한다.")
     @Test
     void save() {
-        //given, when
-        String api = "/api/managers/maps/" + LUTHER.getId() + "/reservations";
-        ExtractableResponse<Response> response = saveReservation(token, api, reservationCreateUpdateWithPasswordRequest);
+        //given
+        ReservationCreateUpdateWithPasswordRequest newReservationCreateUpdateWithPasswordRequest = new ReservationCreateUpdateWithPasswordRequest(
+                beSpaceId,
+                THE_DAY_AFTER_TOMORROW_START_TIME.plusHours(5),
+                THE_DAY_AFTER_TOMORROW_START_TIME.plusHours(7),
+                SALLY_PASSWORD,
+                SALLY_NAME,
+                SALLY_DESCRIPTION);
+
+        //when
+        ExtractableResponse<Response> response = saveReservation(reservationApi, newReservationCreateUpdateWithPasswordRequest);
 
         //then
         assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
     }
 
-    @DisplayName("토큰이 검증되지 않는다면, 예약을 등록할 수 없다.")
-    @Test
-    void save_invalidToken() {
-        //given, when
-        String api = "/api/managers/maps/" + LUTHER.getId() + "/reservations";
-        ExtractableResponse<Response> response = saveReservation(invalidToken, api, reservationCreateUpdateWithPasswordRequest);
-
-        //then
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
-    }
-
-    @DisplayName("올바른 토큰이 주어질 때, 예약을 삭제한다.")
-    @Test
-    void delete() {
-        //given
-        String saveApi = "/api/managers/maps/" + LUTHER.getId() + "/reservations";
-        ExtractableResponse<Response> saveResponse = saveReservation(token, saveApi, reservationCreateUpdateWithPasswordRequest);
-        String api = saveResponse.header("location");
-
-        //when
-        ExtractableResponse<Response> response = deleteReservation(token, api);
-
-        //then
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
-    }
-
-    @DisplayName("토큰이 검증되지 않는다면 예약을 삭제할 수 없다.")
-    @Test
-    void delete_invalidToken() {
-        //given
-        String saveApi = "/api/managers/maps/" + LUTHER.getId() + "/reservations";
-        ExtractableResponse<Response> saveResponse = saveReservation(token, saveApi, reservationCreateUpdateWithPasswordRequest);
-        String api = saveResponse.header("location");
-
-        //when
-        ExtractableResponse<Response> response = deleteReservation(invalidToken, api);
-
-        //then
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
-    }
-
     @DisplayName("map id, space id, 특정 날짜가 주어질 때 해당 맵, 해당 공간, 해당 날짜에 속하는 예약들만 찾아온다")
     @Test
     void find() {
-        //given
-        ExtractableResponse<Response> saveResponse = saveExampleReservations();
-        String spaceId = String.valueOf(reservationCreateUpdateWithPasswordRequest.getSpaceId());
-        String api = saveResponse.header("location")
-                .replaceAll("/reservations/[0-9]", "/spaces/" + spaceId + "/reservations");
-
-        //when
-        ExtractableResponse<Response> response = findReservations(token, api, TOMORROW.toString());
+        //given, when
+        String api = reservationApi.replace("/reservations", "/spaces/" + beSpaceId + "/reservations");
+        ExtractableResponse<Response> response = findReservations(api, THE_DAY_AFTER_TOMORROW.toString());
 
         ReservationFindResponse actualResponse = response.as(ReservationFindResponse.class);
         ReservationFindResponse expectedResponse = ReservationFindResponse.from(
@@ -154,36 +133,16 @@ public class ManagerReservationControllerTest extends AcceptanceTest {
                 .isEqualTo(expectedResponse);
     }
 
-    @DisplayName("토큰이 검증되지 않는다면 해당 맵, 해당 공간, 해당 날짜에 속하는 예약들을 찾아올 수 없다.")
-    @Test
-    void find_invalidToken() {
-        //given
-        ExtractableResponse<Response> saveResponse = saveExampleReservations();
-        String spaceId = String.valueOf(reservationCreateUpdateWithPasswordRequest.getSpaceId());
-        String api = saveResponse.header("location")
-                .replaceAll("/reservations/[0-9]", "/spaces/" + spaceId + "/reservations");
-
-        //when
-        ExtractableResponse<Response> response = findReservations(invalidToken, api, TOMORROW.toString());
-
-        //then
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
-    }
-
     @DisplayName("map id와 특정 날짜가 주어질 때 해당 맵, 해당 날짜의 모든 공간에 대한 예약을 조회한다.")
     @Test
     void findAll() {
-        //given
-        ExtractableResponse<Response> saveResponse = saveExampleReservations();
-        String api = saveResponse.header("location")
-                .replaceAll("/reservations/[0-9]", "/reservations");
-
-        //when
-        ExtractableResponse<Response> response = findAllReservations(token, api, TOMORROW.toString());
+        //given, when
+        ExtractableResponse<Response> response = findAllReservations(reservationApi, THE_DAY_AFTER_TOMORROW.toString());
 
         ReservationFindAllResponse actualResponse = response.as(ReservationFindAllResponse.class);
-        ReservationFindAllResponse expectedResponse = ReservationFindAllResponse.from(
-                List.of(savedReservation,
+        ReservationFindAllResponse expectedResponse = ReservationFindAllResponse.of(
+                Arrays.asList(BE, FE1),
+                Arrays.asList(savedReservation,
                         BE_AM_ZERO_ONE,
                         BE_PM_ONE_TWO,
                         FE1_ZERO_ONE));
@@ -192,52 +151,38 @@ public class ManagerReservationControllerTest extends AcceptanceTest {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
         assertThat(actualResponse).usingRecursiveComparison()
                 .ignoringCollectionOrder()
+                .ignoringActualNullFields()
                 .ignoringExpectedNullFields()
                 .isEqualTo(expectedResponse);
-    }
-
-    @DisplayName("토큰이 검증되지 않는다면, 해당 날짜의 모든 공간에 대한 예약을 조회할 수 없다.")
-    @Test
-    void findAll_invalidToken() {
-        //given
-        ExtractableResponse<Response> saveResponse = saveExampleReservations();
-        String api = saveResponse.header("location")
-                .replaceAll("/reservations/[0-9]", "/reservations");
-
-        //when
-        ExtractableResponse<Response> response = findAllReservations(invalidToken, api, TOMORROW.toString());
-
-        //then
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
     }
 
     @DisplayName("공간 변경 없는 새로운 예약 정보가 주어지면 예약을 업데이트 한다")
     @Test
     void update_sameSpace() {
         //given
-        ExtractableResponse<Response> saveResponse = saveExampleReservations();
-        String api = saveResponse.header("location");
-
         ReservationCreateUpdateRequest reservationCreateUpdateRequestSameSpace = new ReservationCreateUpdateRequest(
                 reservationCreateUpdateWithPasswordRequest.getSpaceId(),
-                TOMORROW.atTime(1, 0, 0),
-                TOMORROW.atTime(2, 30, 0),
+                THE_DAY_AFTER_TOMORROW.atTime(1, 0),
+                THE_DAY_AFTER_TOMORROW.atTime(2, 30),
                 "sally",
                 "회의입니다."
         );
+        String api = reservationApi + "/" + savedReservationId;
 
         //when
-        ExtractableResponse<Response> updateResponse = updateReservation(token, api, reservationCreateUpdateRequestSameSpace);
-        ExtractableResponse<Response> findResponse = findReservation(token, api);
+        ExtractableResponse<Response> updateResponse = updateReservation(api, reservationCreateUpdateRequestSameSpace);
+        ExtractableResponse<Response> findResponse = findReservation(api);
 
-        ReservationResponse actualResponse = findResponse.body().as(ReservationResponse.class);
-        ReservationResponse expectedResponse = ReservationResponse.from(new Reservation.Builder()
-                .startTime(reservationCreateUpdateRequestSameSpace.getStartDateTime())
-                .endTime(reservationCreateUpdateRequestSameSpace.getEndDateTime())
-                .description(reservationCreateUpdateRequestSameSpace.getDescription())
-                .userName(reservationCreateUpdateRequestSameSpace.getName())
-                .space(BE)
-                .build());
+        ReservationResponse actualResponse = findResponse.as(ReservationResponse.class);
+        ReservationResponse expectedResponse = ReservationResponse.from(
+                new Reservation.Builder()
+                        .id(savedReservationId)
+                        .startTime(reservationCreateUpdateRequestSameSpace.getStartDateTime())
+                        .endTime(reservationCreateUpdateRequestSameSpace.getEndDateTime())
+                        .description(reservationCreateUpdateRequestSameSpace.getDescription())
+                        .userName(reservationCreateUpdateRequestSameSpace.getName())
+                        .space(BE)
+                        .build());
 
         //then
         assertThat(updateResponse.statusCode()).isEqualTo(HttpStatus.OK.value());
@@ -247,37 +192,37 @@ public class ManagerReservationControllerTest extends AcceptanceTest {
                 .isEqualTo(expectedResponse);
     }
 
-    @DisplayName("공간 변경 있는 새로운 예약 정보가 주어지면 공간을 이동한 채로 예약을 업데이트 한다")
+    @DisplayName("공간 변경 있는 새로운 예약 정보가 주어지면 공간을 이동한 채로 예약을 업데이트 한다.")
     @Test
     void update_spaceUpdate() {
         //given
-        ExtractableResponse<Response> saveResponse = saveExampleReservations();
-        String api = saveResponse.header("location");
-
-        ReservationCreateUpdateRequest reservationCreateUpdateRequestDifferentSpace = new ReservationCreateUpdateRequest(
+        ReservationCreateUpdateWithPasswordRequest reservationCreateUpdateWithPasswordRequestDifferentSpace = new ReservationCreateUpdateWithPasswordRequest(
                 FE1.getId(),
-                TOMORROW.atTime(3, 30, 0),
-                TOMORROW.atTime(4, 30, 0),
+                THE_DAY_AFTER_TOMORROW.atTime(3, 30),
+                THE_DAY_AFTER_TOMORROW.atTime(4, 30),
+                SALLY_PASSWORD,
                 "sally",
                 "회의입니다."
         );
 
+        String api = reservationApi + "/" + savedReservationId;
+
         //when
-        ExtractableResponse<Response> updateResponse = updateReservation(token, api, reservationCreateUpdateRequestDifferentSpace);
+        ExtractableResponse<Response> updateResponse = updateReservation(api, reservationCreateUpdateWithPasswordRequestDifferentSpace);
         ExtractableResponse<Response> findResponse = findReservations(
-                token,
                 api.replaceAll("/reservations/[0-9]",
-                        "/spaces/" + FE1.getId() + "/reservations"),
-                TOMORROW.toString());
+                        "/spaces/" + reservationCreateUpdateWithPasswordRequestDifferentSpace.getSpaceId() + "/reservations"),
+                THE_DAY_AFTER_TOMORROW.toString());
 
         ReservationFindResponse actualResponse = findResponse.as(ReservationFindResponse.class);
         ReservationFindResponse expectedResponse = ReservationFindResponse.from(
                 Arrays.asList(
                         new Reservation.Builder()
-                                .startTime(reservationCreateUpdateRequestDifferentSpace.getStartDateTime())
-                                .endTime(reservationCreateUpdateRequestDifferentSpace.getEndDateTime())
-                                .description(reservationCreateUpdateRequestDifferentSpace.getDescription())
-                                .userName(reservationCreateUpdateRequestDifferentSpace.getName())
+                                .startTime(reservationCreateUpdateWithPasswordRequestDifferentSpace.getStartDateTime())
+                                .endTime(reservationCreateUpdateWithPasswordRequestDifferentSpace.getEndDateTime())
+                                .description(reservationCreateUpdateWithPasswordRequestDifferentSpace.getDescription())
+                                .userName(reservationCreateUpdateWithPasswordRequestDifferentSpace.getName())
+                                .password(reservationCreateUpdateWithPasswordRequestDifferentSpace.getPassword())
                                 .space(FE1)
                                 .build(),
                         FE1_ZERO_ONE
@@ -291,37 +236,25 @@ public class ManagerReservationControllerTest extends AcceptanceTest {
                 .isEqualTo(expectedResponse);
     }
 
-    @DisplayName("올바르지 않은 토큰과 함께 예약 수정 요청을 하면 예약을 수정할 수 없다.")
+    @DisplayName("예약을 삭제한다.")
     @Test
-    void update_invalidToken() {
-        //given
-        ExtractableResponse<Response> saveResponse = saveExampleReservations();
-        String api = saveResponse.header("location");
+    void delete() {
+        //given, when
+        ReservationPasswordAuthenticationRequest reservationPasswordAuthenticationRequest
+                = new ReservationPasswordAuthenticationRequest(SALLY_PASSWORD);
 
-        ReservationCreateUpdateRequest reservationCreateUpdateRequestSameSpace = new ReservationCreateUpdateRequest(
-                reservationCreateUpdateWithPasswordRequest.getSpaceId(),
-                TOMORROW.atTime(1, 0, 0),
-                TOMORROW.atTime(2, 30, 0),
-                "sally",
-                "회의입니다."
-        );
-
-        //when
-        ExtractableResponse<Response> updateResponse = updateReservation(invalidToken, api, reservationCreateUpdateRequestSameSpace);
+        String api = reservationApi + "/" + savedReservationId;
 
         //then
-        assertThat(updateResponse.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
+        ExtractableResponse<Response> response = deleteReservation(api, reservationPasswordAuthenticationRequest);
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
     }
 
     @DisplayName("올바른 토큰과 함께 예약 수정을 위한 예약 조회 요청 시, 예약에 대한 정보를 반환한다")
     @Test
     void findOne() {
-        //given
-        ExtractableResponse<Response> saveResponse = saveExampleReservations();
-        String api = saveResponse.header("location");
-
-        //when
-        ExtractableResponse<Response> response = findReservation(token, api);
+        //given, when
+        ExtractableResponse<Response> response = findReservation(reservationApi + "/" + savedReservationId);
 
         ReservationResponse actualResponse = response.as(ReservationResponse.class);
         ReservationResponse expectedResponse = ReservationResponse.from(savedReservation);
@@ -333,38 +266,87 @@ public class ManagerReservationControllerTest extends AcceptanceTest {
                 .isEqualTo(expectedResponse);
     }
 
-    @DisplayName("올바르지 않은 토큰과 함께 예약 수정을 위한 예약 조회 요청 시, 예약에 대한 정보를 받을 수 없다.")
-    @Test
-    void findOne_invalidToken() {
-        //given
-        ExtractableResponse<Response> saveResponse = saveExampleReservations();
-        String api = saveResponse.header("location");
+    private void saveExampleReservations() {
+        ReservationCreateUpdateWithPasswordRequest beAmZeroOneRequest = new ReservationCreateUpdateWithPasswordRequest(
+                beSpaceId,
+                BE_AM_ZERO_ONE.getStartTime(),
+                BE_AM_ZERO_ONE.getEndTime(),
+                BE_AM_ZERO_ONE.getPassword(),
+                BE_AM_ZERO_ONE.getUserName(),
+                BE_AM_ZERO_ONE.getDescription());
 
-        //when
-        ExtractableResponse<Response> response = findReservation(invalidToken, api);
+        ReservationCreateUpdateWithPasswordRequest bePmOneTwoRequest = new ReservationCreateUpdateWithPasswordRequest(
+                beSpaceId,
+                BE_PM_ONE_TWO.getStartTime(),
+                BE_PM_ONE_TWO.getEndTime(),
+                BE_PM_ONE_TWO.getPassword(),
+                BE_PM_ONE_TWO.getUserName(),
+                BE_PM_ONE_TWO.getDescription());
 
-        //then
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
-    }
+        ReservationCreateUpdateWithPasswordRequest beNextDayPmSixTwelveRequest = new ReservationCreateUpdateWithPasswordRequest(
+                beSpaceId,
+                BE_NEXT_DAY_PM_SIX_TWELVE.getStartTime(),
+                BE_NEXT_DAY_PM_SIX_TWELVE.getEndTime(),
+                BE_NEXT_DAY_PM_SIX_TWELVE.getPassword(),
+                BE_NEXT_DAY_PM_SIX_TWELVE.getUserName(),
+                BE_NEXT_DAY_PM_SIX_TWELVE.getDescription());
 
-    private ExtractableResponse<Response> saveExampleReservations() {
-        reservations.save(BE_AM_ZERO_ONE);
-        reservations.save(BE_PM_ONE_TWO);
-        reservations.save(BE_NEXT_DAY_PM_SIX_TWELVE);
-        reservations.save(FE1_ZERO_ONE);
+        ReservationCreateUpdateWithPasswordRequest feZeroOneRequest = new ReservationCreateUpdateWithPasswordRequest(
+                feSpaceId,
+                FE1_ZERO_ONE.getStartTime(),
+                FE1_ZERO_ONE.getEndTime(),
+                FE1_ZERO_ONE.getPassword(),
+                FE1_ZERO_ONE.getUserName(),
+                FE1_ZERO_ONE.getDescription());
 
-        String api = "/api/managers/maps/" + LUTHER.getId() + "/reservations";
-        return saveReservation(token, api, reservationCreateUpdateWithPasswordRequest);
+        BE_AM_ZERO_ONE = new Reservation.Builder()
+                .id(getReservationIdAfterSave(beAmZeroOneRequest))
+                .startTime(THE_DAY_AFTER_TOMORROW_START_TIME)
+                .endTime(THE_DAY_AFTER_TOMORROW_START_TIME.plusHours(1))
+                .description(DESCRIPTION)
+                .userName(USER_NAME)
+                .password(RESERVATION_PASSWORD)
+                .space(BE)
+                .build();
+
+        BE_PM_ONE_TWO = new Reservation.Builder()
+                .id(getReservationIdAfterSave(bePmOneTwoRequest))
+                .startTime(THE_DAY_AFTER_TOMORROW.atTime(13, 0, 0))
+                .endTime(THE_DAY_AFTER_TOMORROW.atTime(14, 0, 0))
+                .description("찜꽁 2차 회의")
+                .userName(USER_NAME)
+                .password(RESERVATION_PASSWORD)
+                .space(BE)
+                .build();
+
+        BE_NEXT_DAY_PM_SIX_TWELVE = new Reservation.Builder()
+                .id(getReservationIdAfterSave(beNextDayPmSixTwelveRequest))
+                .startTime(THE_DAY_AFTER_TOMORROW.plusDays(1).atTime(6, 0, 0))
+                .endTime(THE_DAY_AFTER_TOMORROW.plusDays(1).atTime(12, 0, 0))
+                .description("찜꽁 3차 회의")
+                .userName(USER_NAME)
+                .password("6789")
+                .space(BE)
+                .build();
+
+        FE1_ZERO_ONE = new Reservation.Builder()
+                .id(getReservationIdAfterSave(feZeroOneRequest))
+                .startTime(THE_DAY_AFTER_TOMORROW_START_TIME)
+                .endTime(THE_DAY_AFTER_TOMORROW.atTime(1, 0, 0))
+                .description("찜꽁 5차 회의")
+                .userName(USER_NAME)
+                .password(RESERVATION_PASSWORD)
+                .space(FE1)
+                .build();
     }
 
     private ExtractableResponse<Response> saveReservation(
-            final String token,
             final String api,
             final ReservationCreateUpdateWithPasswordRequest reservationCreateUpdateWithPasswordRequest) {
         return RestAssured
                 .given(getRequestSpecification()).log().all()
                 .accept("application/json")
-                .header("Authorization", AuthorizationExtractor.AUTHENTICATION_TYPE + " " + token)
+                .header("Authorization", AuthorizationExtractor.AUTHENTICATION_TYPE + " " + getToken())
                 .filter(document("reservation/manager/post", getRequestPreprocessor(), getResponsePreprocessor()))
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body(reservationCreateUpdateWithPasswordRequest)
@@ -372,54 +354,40 @@ public class ManagerReservationControllerTest extends AcceptanceTest {
                 .then().log().all().extract();
     }
 
-    private ExtractableResponse<Response> deleteReservation(
-            final String token,
-            final String api) {
-        return RestAssured
-                .given(getRequestSpecification()).log().all()
-                .accept("*/*")
-                .header("Authorization", AuthorizationExtractor.AUTHENTICATION_TYPE + " " + token)
-                .filter(document("reservation/manager/delete", getRequestPreprocessor(), getResponsePreprocessor()))
-                .when().delete(api)
-                .then().log().all().extract();
+    private Long getReservationIdAfterSave(ReservationCreateUpdateWithPasswordRequest reservationCreateUpdateWithPasswordRequest) {
+        return Long.valueOf(
+                saveReservation(reservationApi, reservationCreateUpdateWithPasswordRequest)
+                        .header("location")
+                        .split("/")[6]);
     }
 
-    private ExtractableResponse<Response> findReservations(
-            final String token,
-            final String api,
-            final String date) {
+    private ExtractableResponse<Response> findReservations(final String api, final String date) {
         return RestAssured
                 .given(getRequestSpecification()).log().all()
                 .accept("*/*")
-                .header("Authorization", AuthorizationExtractor.AUTHENTICATION_TYPE + " " + token)
+                .header("Authorization", AuthorizationExtractor.AUTHENTICATION_TYPE + " " + getToken())
                 .filter(document("reservation/manager/get", getRequestPreprocessor(), getResponsePreprocessor()))
                 .queryParams("date", date)
                 .when().get(api)
                 .then().log().all().extract();
     }
 
-    private ExtractableResponse<Response> findAllReservations(
-            final String token,
-            final String api,
-            final String date) {
+    private ExtractableResponse<Response> findAllReservations(final String api, final String date) {
         return RestAssured
                 .given(getRequestSpecification()).log().all()
                 .accept("*/*")
-                .header("Authorization", AuthorizationExtractor.AUTHENTICATION_TYPE + " " + token)
-                .filter(document("reservation/manager/get_all", getRequestPreprocessor(), getResponsePreprocessor()))
+                .header("Authorization", AuthorizationExtractor.AUTHENTICATION_TYPE + " " + getToken())
+                .filter(document("reservation/manager/getAll", getRequestPreprocessor(), getResponsePreprocessor()))
                 .queryParam("date", date)
                 .when().get(api)
                 .then().log().all().extract();
     }
 
-    private ExtractableResponse<Response> updateReservation(
-            final String token,
-            final String api,
-            final ReservationCreateUpdateRequest reservationCreateUpdateRequest) {
+    private ExtractableResponse<Response> updateReservation(final String api, final ReservationCreateUpdateRequest reservationCreateUpdateRequest) {
         return RestAssured
                 .given(getRequestSpecification()).log().all()
                 .accept("application/json")
-                .header("Authorization", AuthorizationExtractor.AUTHENTICATION_TYPE + " " + token)
+                .header("Authorization", AuthorizationExtractor.AUTHENTICATION_TYPE + " " + getToken())
                 .filter(document("reservation/manager/put", getRequestPreprocessor(), getResponsePreprocessor()))
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body(reservationCreateUpdateRequest)
@@ -427,15 +395,28 @@ public class ManagerReservationControllerTest extends AcceptanceTest {
                 .then().log().all().extract();
     }
 
-    private ExtractableResponse<Response> findReservation(
-            final String token,
-            final String api) {
+    private ExtractableResponse<Response> findReservation(final String api) {
         return RestAssured
                 .given(getRequestSpecification()).log().all()
                 .accept("*/*")
-                .header("Authorization", AuthorizationExtractor.AUTHENTICATION_TYPE + " " + token)
-                .filter(document("reservation/manager/get_one", getRequestPreprocessor(), getResponsePreprocessor()))
+                .header("Authorization", AuthorizationExtractor.AUTHENTICATION_TYPE + " " + getToken())
+                .filter(document("reservation/manager/getForUpdate", getRequestPreprocessor(), getResponsePreprocessor()))
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .when().get(api)
+                .then().log().all().extract();
+    }
+
+    private ExtractableResponse<Response> deleteReservation(
+            final String api,
+            final ReservationPasswordAuthenticationRequest reservationPasswordAuthenticationRequest) {
+        return RestAssured
+                .given(getRequestSpecification()).log().all()
+                .accept("application/json")
+                .header("Authorization", AuthorizationExtractor.AUTHENTICATION_TYPE + " " + getToken())
+                .filter(document("reservation/manager/delete", getRequestPreprocessor(), getResponsePreprocessor()))
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .body(reservationPasswordAuthenticationRequest)
+                .when().delete(api)
                 .then().log().all().extract();
     }
 }
