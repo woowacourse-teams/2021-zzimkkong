@@ -27,13 +27,13 @@ public class MapFindResponse {
         this.publicMapId = publicMapId;
     }
 
-    public static MapFindResponse from(Map map) {
+    public static MapFindResponse of(Map map, String publicMapId) {
         return new MapFindResponse(
                 map.getId(),
                 map.getName(),
                 map.getMapDrawing(),
                 map.getMapImageUrl(),
-                map.getPublicMapId()
+                publicMapId
         );
     }
 

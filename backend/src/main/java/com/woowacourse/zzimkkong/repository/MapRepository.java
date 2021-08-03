@@ -9,6 +9,4 @@ import java.util.Optional;
 
 public interface MapRepository extends JpaRepository<Map, Long> {
     List<Map> findAllByMember(final Member member);
-
-    Optional<Map> findByPublicMapId(String publicMapId);
 }

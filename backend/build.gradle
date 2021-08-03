@@ -44,6 +44,9 @@ dependencies {
     implementation 'org.apache.xmlgraphics:xmlgraphics-commons:2.4'
     implementation 'xml-apis:xml-apis:1.4.01'
     implementation 'xml-apis:xml-apis-ext:1.3.04'
+
+    //cryptor
+    implementation 'commons-codec:commons-codec:1.15'
 }
 
 test {

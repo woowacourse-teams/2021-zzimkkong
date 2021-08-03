@@ -8,6 +8,7 @@ import com.woowacourse.zzimkkong.dto.map.MapFindAllResponse;
 import com.woowacourse.zzimkkong.dto.map.MapFindResponse;
 import com.woowacourse.zzimkkong.exception.authorization.NoAuthorityOnMapException;
 import com.woowacourse.zzimkkong.exception.space.ReservationExistOnSpaceException;
+import com.woowacourse.zzimkkong.infrastructure.Transcoder;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,8 +17,11 @@ import java.io.File;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import static com.woowacourse.zzimkkong.service.ServiceTestFixture.*;
+import static java.util.stream.Collectors.collectingAndThen;
+import static java.util.stream.Collectors.toList;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
@@ -27,6 +31,9 @@ import static org.mockito.BDDMockito.given;
 class MapServiceTest extends ServiceTest {
     @Autowired
     private MapService mapService;
+
+    @Autowired
+    private Transcoder transcoder;
 
     @Test
     @DisplayName("맵 생성 요청 시, 올바른 요청이 들어오면 맵을 생성한다.")
@@ -56,8 +63,9 @@ class MapServiceTest extends ServiceTest {
         MapFindResponse mapFindResponse = mapService.findMap(LUTHER.getId(), POBI);
 
         //then
-        assertThat(mapFindResponse).usingRecursiveComparison()
-                .isEqualTo(MapFindResponse.from(LUTHER));
+        assertThat(mapFindResponse)
+                .usingRecursiveComparison()
+                .isEqualTo(MapFindResponse.of(LUTHER, transcoder.encode(LUTHER.getId().toString())));
     }
 
     @Test
@@ -73,7 +81,9 @@ class MapServiceTest extends ServiceTest {
 
         //then
         assertThat(mapFindAllResponse).usingRecursiveComparison()
-                .isEqualTo(MapFindAllResponse.of(expectedMaps, POBI));
+                .isEqualTo(expectedMaps.stream()
+                        .map(map -> MapFindResponse.of(map, transcoder.encode(map.getId().toString())))
+                        .collect(collectingAndThen(toList(), mapFindResponses -> MapFindAllResponse.of(mapFindResponses, POBI))));
     }
 
     @Test

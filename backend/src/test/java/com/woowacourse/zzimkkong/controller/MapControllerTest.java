@@ -5,16 +5,19 @@ import com.woowacourse.zzimkkong.dto.map.MapFindAllResponse;
 import com.woowacourse.zzimkkong.dto.map.MapFindResponse;
 import com.woowacourse.zzimkkong.dto.member.MemberSaveRequest;
 import com.woowacourse.zzimkkong.infrastructure.AuthorizationExtractor;
+import com.woowacourse.zzimkkong.infrastructure.Transcoder;
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static com.woowacourse.zzimkkong.CommonFixture.*;
 import static com.woowacourse.zzimkkong.DocumentUtils.*;
@@ -24,6 +27,9 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.restdocs.restassured3.RestAssuredRestDocumentation.document;
 
 class MapControllerTest extends AcceptanceTest {
+    @Autowired
+    Transcoder transcoder;
+
     @BeforeEach
     void setUp() {
         saveMember(new MemberSaveRequest(EMAIL, PASSWORD, ORGANIZATION));
@@ -39,7 +45,7 @@ class MapControllerTest extends AcceptanceTest {
         // when
         ExtractableResponse<Response> response = findMap(api);
         MapFindResponse actualResponse = response.as(MapFindResponse.class);
-        MapFindResponse expectedResponse = MapFindResponse.from(LUTHER);
+        MapFindResponse expectedResponse = MapFindResponse.of(LUTHER, transcoder.encode(LUTHER.getId().toString()));
 
         // then
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
@@ -59,7 +65,9 @@ class MapControllerTest extends AcceptanceTest {
         // when
         ExtractableResponse<Response> response = findAllMaps();
         List<MapFindResponse> findMaps = response.as(MapFindAllResponse.class).getMaps();
-        List<MapFindResponse> expected = MapFindAllResponse.of(List.of(LUTHER, SMALL_HOUSE), POBI).getMaps();
+        List<MapFindResponse> expected = List.of(LUTHER, SMALL_HOUSE).stream()
+                .map(map -> MapFindResponse.of(map, transcoder.encode(map.getId().toString())))
+                .collect(Collectors.toList());
 
         // then
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
