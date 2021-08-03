@@ -24,12 +24,20 @@ import { ErrorResponse } from 'types/response';
 import { formatDate } from 'utils/datetime';
 import * as Styled from './ManagerMain.styles';
 
+/*
+ 공간 관리자 메인 페이지에서 맵 ID가 고정되는게 아닌 공간관리자 별로 맵 목록을 조회해서 가져올 수 있도록 수정
+  - 페이지 접속시 먼저 맵 목록 조회
+    - 맵이 있다면 -> 최상단의 맵 예약 정보를 화면에 보여줌
+    - 맵이 없다면 -> 화면에 '맵을 먼저 생성해주세요' 메세지 표시
+
+ - 맵 목록 중 선택 된 맵을 표시하는 기능 - border 색상 변경 등
+*/
+
 const ManagerMain = (): JSX.Element => {
-  const mapId = 1;
+  const history = useHistory();
+
   const [date, setDate] = useState(new Date());
   const [open, setOpen] = useState(false);
-
-  const history = useHistory();
 
   const onRequestError = (error: AxiosError<ErrorResponse>) => {
     alert(error.response?.data?.message ?? MESSAGE.MANAGER_MAIN.UNEXPECTED_GET_DATA_ERROR);
@@ -40,17 +48,27 @@ const ManagerMain = (): JSX.Element => {
     }
   };
 
-  const mapName = '우테코 교육장';
-  const getMaps = useManagerMaps({ onError: onRequestError });
+  // const getMaps = useManagerMaps({ onError: onRequestError });
+  const getMaps = useManagerMaps({
+    retry: false,
+  });
+
   const maps = getMaps.data?.data.maps ?? [];
+  const mapId = maps.length ? maps[0].mapId : 0;
+  const mapName = maps.length ? maps[0].mapName : '';
 
   const getReservations = useManagerReservations(
     {
       mapId,
       date: formatDate(date),
     },
-    { onError: onRequestError }
+    {
+      retry: false,
+      enabled: maps.length ? true : false,
+    }
+    // { onError: onRequestError }
   );
+
   const reservations = getReservations.data?.data?.data ?? [];
 
   const removeMap = useMutation(deleteMap, {
@@ -91,6 +109,14 @@ const ManagerMain = (): JSX.Element => {
         <Styled.DateInputWrapper>
           <DateInput date={date} setDate={setDate} />
         </Styled.DateInputWrapper>
+        {!reservations.length && (
+          <Styled.CreateMapWrapper>
+            <Styled.CreateMapMessage>현재 맵이 존재하지 않습니다.</Styled.CreateMapMessage>
+            <Styled.CreateMapLink to={PATH.MANAGER_MAP_CREATE}>
+              맵 생성하러 가기
+            </Styled.CreateMapLink>
+          </Styled.CreateMapWrapper>
+        )}
         <Styled.SpaceList>
           {reservations &&
             reservations.map(({ spaceId, spaceName, spaceColor, reservations }, index) => (

@@ -26,6 +26,26 @@ export const DateInputWrapper = styled.div`
   margin: 1rem 0;
 `;
 
+export const CreateMapWrapper = styled.div`
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  height: calc(100vh - 22rem);
+`;
+
+export const CreateMapMessage = styled.p`
+  font-size: 1.5rem;
+  font-weight: 700;
+  margin-bottom: 1rem;
+`;
+
+export const CreateMapLink = styled(Link)`
+  font-size: 1.25rem;
+  text-decoration: none;
+  color: ${({ theme }) => theme.primary[400]};
+`;
+
 export const PanelMessage = styled.p`
   padding: 1rem 0.75rem;
   font-size: 0.875rem;
