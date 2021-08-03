@@ -8,6 +8,7 @@ import com.woowacourse.zzimkkong.dto.map.MapCreateUpdateRequest;
 import com.woowacourse.zzimkkong.dto.map.MapFindAllResponse;
 import com.woowacourse.zzimkkong.dto.map.MapFindResponse;
 import com.woowacourse.zzimkkong.exception.authorization.NoAuthorityOnMapException;
+import com.woowacourse.zzimkkong.exception.map.InvalidAccessLinkException;
 import com.woowacourse.zzimkkong.exception.map.NoSuchMapException;
 import com.woowacourse.zzimkkong.exception.space.ReservationExistOnSpaceException;
 import com.woowacourse.zzimkkong.infrastructure.StorageUploader;
@@ -122,5 +123,11 @@ public class MapService {
         String thumbnailUrl = storageUploader.upload("thumbnails", pngFile);
         pngFile.delete();
         return thumbnailUrl;
+    }
+
+    public MapFindResponse findMapByPublicMapId(String publicMapId) {
+        Map map = maps.findByPublicMapId(publicMapId)
+                .orElseThrow(InvalidAccessLinkException::new);
+        return MapFindResponse.from(map);
     }
 }

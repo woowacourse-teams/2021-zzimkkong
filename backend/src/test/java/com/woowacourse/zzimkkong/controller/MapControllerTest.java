@@ -45,7 +45,7 @@ class MapControllerTest extends AcceptanceTest {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
         assertThat(actualResponse).usingRecursiveComparison()
                 .ignoringExpectedNullFields()
-                .ignoringFields("mapImageUrl")
+                .ignoringFields("mapImageUrl", "publicMapId")
                 .isEqualTo(expectedResponse);
     }
 
@@ -64,7 +64,7 @@ class MapControllerTest extends AcceptanceTest {
         // then
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
         assertThat(findMaps)
-                .usingElementComparatorIgnoringFields("mapImageUrl")
+                .usingElementComparatorIgnoringFields("mapImageUrl", "publicMapId")  // todo 프론트와 구현 후 ignore하지 않고 비교할 수 있는 방법 고안하기
                 .isEqualTo(expected);
     }
 

@@ -1,6 +1,9 @@
 package com.woowacourse.zzimkkong.domain;
 
+import com.amazonaws.util.Base64;
+
 import javax.persistence.*;
+import java.util.UUID;
 
 @Entity
 public class Map {
@@ -23,7 +26,11 @@ public class Map {
     @JoinColumn(name = "member_id", foreignKey = @ForeignKey(name = "fk_map_member"), nullable = false)
     private Member member;
 
+    @Column(nullable = false, unique = true)
+    private String publicMapId;
+
     protected Map() {
+        this.publicMapId = UUID.randomUUID().toString();
     }
 
     public Map(Long id, String name, String mapDrawing, String mapImageUrl, Member member) {
@@ -36,6 +43,8 @@ public class Map {
         this.mapDrawing = mapDrawing;
         this.mapImageUrl = mapImageUrl;
         this.member = member;
+        String universalUniqueId = UUID.randomUUID().toString();
+        this.publicMapId = new String(Base64.encode(universalUniqueId.getBytes()));
     }
 
     public void update(String mapName, String mapDrawing, String mapImageUrl) {
@@ -70,5 +79,9 @@ public class Map {
 
     public String getMapImageUrl() {
         return mapImageUrl;
+    }
+
+    public String getPublicMapId() {
+        return publicMapId;
     }
 }
