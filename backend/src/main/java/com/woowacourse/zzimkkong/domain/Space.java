@@ -1,7 +1,7 @@
 package com.woowacourse.zzimkkong.domain;
 
-import com.woowacourse.zzimkkong.exception.InvalidConferenceTimeException;
-import com.woowacourse.zzimkkong.exception.InvalidTimeUnitException;
+import com.woowacourse.zzimkkong.exception.reservation.InvalidConferenceTimeException;
+import com.woowacourse.zzimkkong.exception.reservation.InvalidTimeUnitException;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
 
