@@ -115,8 +115,8 @@ public class CommonFixture {
     public static final MapCreateUpdateRequest mapCreateRequest = new MapCreateUpdateRequest(LUTHER.getName(), LUTHER.getMapDrawing(), MAP_SVG);
     public static final MemberSaveRequest memberSaveRequest = new MemberSaveRequest(EMAIL, PASSWORD, ORGANIZATION);
     public static final SettingsRequest beSettingsRequest = new SettingsRequest(
-            LocalTime.of(0, 0),
-            LocalTime.of(23, 59),
+            BE_SETTING.getAvailableStartTime(),
+            BE_SETTING.getAvailableEndTime(),
             BE_SETTING.getReservationTimeUnit(),
             BE_SETTING.getReservationMinimumTimeUnit(),
             BE_SETTING.getReservationMaximumTimeUnit(),
@@ -126,15 +126,15 @@ public class CommonFixture {
 
     public static final SpaceCreateUpdateRequest beSpaceCreateUpdateRequest = new SpaceCreateUpdateRequest(
             "백엔드 강의실",
+            "#FED7D9",
             "시니컬하네",
             SPACE_DRAWING,
-            beSettingsRequest,
-            MAP_SVG
+            beSettingsRequest
     );
 
     public static final SettingsRequest feSettingsRequest = new SettingsRequest(
-            LocalTime.of(0, 0),
-            LocalTime.of(23, 59),
+            FE_SETTING.getAvailableStartTime(),
+            FE_SETTING.getAvailableEndTime(),
             FE_SETTING.getReservationTimeUnit(),
             FE_SETTING.getReservationMinimumTimeUnit(),
             FE_SETTING.getReservationMaximumTimeUnit(),
@@ -144,10 +144,10 @@ public class CommonFixture {
 
     public static final SpaceCreateUpdateRequest feSpaceCreateUpdateRequest = new SpaceCreateUpdateRequest(
             "프론트엔드 강의실1",
+            "#FFCCCC",
             "시니컬하네",
             SPACE_DRAWING,
-            feSettingsRequest,
-            MAP_SVG
+            feSettingsRequest
     );
 
     public static final String SALLY_PASSWORD = "1230";

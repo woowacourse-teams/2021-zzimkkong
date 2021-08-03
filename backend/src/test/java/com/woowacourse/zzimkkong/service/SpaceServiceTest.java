@@ -5,7 +5,6 @@ import com.woowacourse.zzimkkong.domain.Space;
 import com.woowacourse.zzimkkong.dto.space.*;
 import com.woowacourse.zzimkkong.exception.authorization.NoAuthorityOnMapException;
 import com.woowacourse.zzimkkong.exception.map.NoSuchMapException;
-import com.woowacourse.zzimkkong.exception.reservation.NoDataToUpdateException;
 import com.woowacourse.zzimkkong.exception.space.NoSuchSpaceException;
 import com.woowacourse.zzimkkong.exception.space.ReservationExistOnSpaceException;
 import org.junit.jupiter.api.DisplayName;
@@ -41,10 +40,10 @@ class SpaceServiceTest extends ServiceTest {
 
     private final SpaceCreateUpdateRequest spaceCreateUpdateRequest = new SpaceCreateUpdateRequest(
             "백엔드 강의실",
+            "#FF66B2",
             "우리집",
             SPACE_DRAWING,
-            settingsRequest,
-            MAP_SVG
+            settingsRequest
     );
 
     private final SettingsRequest updateSettingsRequest = new SettingsRequest(
@@ -59,10 +58,10 @@ class SpaceServiceTest extends ServiceTest {
 
     private final SpaceCreateUpdateRequest updateSpaceCreateUpdateRequest = new SpaceCreateUpdateRequest(
             "백엔드 강의실",
-            "우리집",
+            "#FFCCE5",
+            "새로바뀐집",
             SPACE_DRAWING,
-            updateSettingsRequest,
-            MAP_SVG
+            updateSettingsRequest
     );
 
     @DisplayName("공간 생성 요청 시, 공간을 생성한다.")

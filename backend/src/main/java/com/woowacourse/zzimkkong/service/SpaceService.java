@@ -60,8 +60,8 @@ public class SpaceService {
         Space space = spaces.save(
                 new Space.Builder()
                         .name(spaceCreateUpdateRequest.getSpaceName())
+                        .color(spaceCreateUpdateRequest.getColor())
                         .textPosition(null)
-                        .color(null)
                         .coordinate(null)
                         .map(map)
                         .description(spaceCreateUpdateRequest.getDescription())
@@ -146,8 +146,9 @@ public class SpaceService {
 
         return new Space.Builder()
                 .name(spaceCreateUpdateRequest.getSpaceName())
-                .map(map)
+                .color(spaceCreateUpdateRequest.getColor())
                 .description(spaceCreateUpdateRequest.getDescription())
+                .map(map)
                 .area(spaceCreateUpdateRequest.getArea())
                 .setting(updateSetting)
                 .build();
