@@ -135,7 +135,7 @@ const ManagerMain = (): JSX.Element => {
 
         {!reservations.length && selectedMapId && (
           <Styled.CreateMapWrapper>
-            <Styled.CreateMapMessage>현재 공간이 존재하지 않습니다.</Styled.CreateMapMessage>
+            <Styled.CreateMapMessage>생성한 공간이 없습니다.</Styled.CreateMapMessage>
             {/* 공간 편집 페이지 완성되면 링크 바꿔야 함 */}
             <Styled.CreateMapLink to={PATH.MANAGER_MAP_CREATE}>
               공간 생성하러 가기
@@ -145,7 +145,7 @@ const ManagerMain = (): JSX.Element => {
 
         {!reservations.length && !selectedMapId && (
           <Styled.CreateMapWrapper>
-            <Styled.CreateMapMessage>현재 맵이 존재하지 않습니다.</Styled.CreateMapMessage>
+            <Styled.CreateMapMessage>생성한 맵이 없습니다.</Styled.CreateMapMessage>
             <Styled.CreateMapLink to={PATH.MANAGER_MAP_CREATE}>
               맵 생성하러 가기
             </Styled.CreateMapLink>
