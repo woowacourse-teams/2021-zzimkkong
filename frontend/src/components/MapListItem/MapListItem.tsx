@@ -9,10 +9,17 @@ export interface Props {
   };
   title: string;
   control?: ReactNode;
+  selected?: boolean;
   onClick?: () => void;
 }
 
-const MapListItem = ({ thumbnail, title, control, onClick }: Props): JSX.Element => {
+const MapListItem = ({
+  thumbnail,
+  title,
+  control,
+  selected = false,
+  onClick,
+}: Props): JSX.Element => {
   const [thumbnailSrc, setThumbnailSrc] = useState(thumbnail.src);
 
   const onImgError = () => {
@@ -20,7 +27,7 @@ const MapListItem = ({ thumbnail, title, control, onClick }: Props): JSX.Element
   };
 
   return (
-    <Styled.Container role="listitem">
+    <Styled.Container role="listitem" selected={selected}>
       <Styled.ImageWrapper onClick={onClick}>
         <Styled.ImageInner>
           <Styled.Image
