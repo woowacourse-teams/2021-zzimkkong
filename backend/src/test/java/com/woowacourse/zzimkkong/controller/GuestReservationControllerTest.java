@@ -1,6 +1,7 @@
 package com.woowacourse.zzimkkong.controller;
 
 import com.woowacourse.zzimkkong.domain.Reservation;
+import com.woowacourse.zzimkkong.domain.Space;
 import com.woowacourse.zzimkkong.dto.reservation.*;
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
@@ -18,37 +19,64 @@ import static com.woowacourse.zzimkkong.DocumentUtils.*;
 import static com.woowacourse.zzimkkong.controller.MapControllerTest.saveMap;
 import static com.woowacourse.zzimkkong.controller.MemberControllerTest.saveMember;
 import static com.woowacourse.zzimkkong.controller.SpaceControllerTest.saveSpace;
+import static com.woowacourse.zzimkkong.service.ServiceTestFixture.THE_DAY_AFTER_TOMORROW;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.restdocs.restassured3.RestAssuredRestDocumentation.document;
 
 public class GuestReservationControllerTest extends AcceptanceTest {
-    private final String reservationApi = "/api/guests/maps/" + LUTHER.getId() + "/reservations";
-
     private ReservationCreateUpdateWithPasswordRequest reservationCreateUpdateWithPasswordRequest;
     private Reservation savedReservation;
-    private Long beSpaceId;
+    private String beReservationApi;
+    private String fe1ReservationApi;
     private Long savedReservationId;
-    private String savedReservationApi;
 
     @BeforeEach
     void setUp() {
         saveMember(memberSaveRequest);
         saveMap("/api/managers/maps", mapCreateRequest);
         String spaceSaveApi = "/api/managers/maps/" + LUTHER.getId() + "/spaces";
-        ExtractableResponse<Response> saveBeSpaceResponse = saveSpace(spaceSaveApi, beSpaceCreateUpdateRequest);
-        saveSpace(spaceSaveApi, feSpaceCreateUpdateRequest);
 
-        beSpaceId = Long.valueOf(saveBeSpaceResponse.header("location").split("/")[6]);
+        ExtractableResponse<Response> saveBeSpaceResponse = saveSpace(spaceSaveApi, beSpaceCreateUpdateRequest);
+        ExtractableResponse<Response> saveFe1SpaceResponse = saveSpace(spaceSaveApi, feSpaceCreateUpdateRequest);
+
+        beReservationApi = saveBeSpaceResponse.header("location")
+                .replaceAll("managers", "guests") + "/reservations";
+        fe1ReservationApi = saveFe1SpaceResponse.header("location")
+                .replaceAll("managers", "guests") + "/reservations";
+        Long beSpaceId = Long.valueOf(saveBeSpaceResponse.header("location").split("/")[6]);
+        Long feSpaceId = Long.valueOf(saveFe1SpaceResponse.header("location").split("/")[6]);
+
+        BE = new Space.Builder()
+                .id(beSpaceId)
+                .name("백엔드 강의실")
+                .map(LUTHER)
+                .description("시니컬하네")
+                .area(SPACE_DRAWING)
+                .setting(BE_SETTING)
+                .mapImage(MAP_IMAGE_URL)
+                .build();
+
+        FE1 = new Space.Builder()
+                .id(feSpaceId)
+                .name("프론트엔드 강의실1")
+                .map(LUTHER)
+                .description("시니컬하네")
+                .area(SPACE_DRAWING)
+                .setting(FE_SETTING)
+                .mapImage(MAP_IMAGE_URL)
+                .build();
 
         reservationCreateUpdateWithPasswordRequest = new ReservationCreateUpdateWithPasswordRequest(
-                beSpaceId,
                 THE_DAY_AFTER_TOMORROW_START_TIME.plusHours(1),
                 THE_DAY_AFTER_TOMORROW_START_TIME.plusHours(2),
                 SALLY_PASSWORD,
                 SALLY_NAME,
                 SALLY_DESCRIPTION);
 
+        saveExampleReservations();
+        savedReservationId = getReservationIdAfterSave(beReservationApi, reservationCreateUpdateWithPasswordRequest);
         savedReservation = new Reservation.Builder()
+                .id(savedReservationId)
                 .startTime(reservationCreateUpdateWithPasswordRequest.getStartDateTime())
                 .endTime(reservationCreateUpdateWithPasswordRequest.getEndDateTime())
                 .password(reservationCreateUpdateWithPasswordRequest.getPassword())
@@ -56,11 +84,6 @@ public class GuestReservationControllerTest extends AcceptanceTest {
                 .description(reservationCreateUpdateWithPasswordRequest.getDescription())
                 .space(BE)
                 .build();
-
-        ExtractableResponse<Response> saveResponse = saveExampleReservations();
-        String location = saveResponse.header("location");
-        savedReservationId = Long.valueOf(location.split("/")[6]);
-        savedReservationApi = location.replaceAll("/reservations/[0-9]", "/spaces/" + beSpaceId + "/reservations");
     }
 
     @DisplayName("예약을 등록한다.")
@@ -68,7 +91,6 @@ public class GuestReservationControllerTest extends AcceptanceTest {
     void save() {
         //given
         ReservationCreateUpdateWithPasswordRequest newReservationCreateUpdateWithPasswordRequest = new ReservationCreateUpdateWithPasswordRequest(
-                beSpaceId,
                 THE_DAY_AFTER_TOMORROW_START_TIME.plusHours(5),
                 THE_DAY_AFTER_TOMORROW_START_TIME.plusHours(7),
                 SALLY_PASSWORD,
@@ -76,7 +98,7 @@ public class GuestReservationControllerTest extends AcceptanceTest {
                 SALLY_DESCRIPTION);
 
         // when
-        ExtractableResponse<Response> response = saveReservation(reservationApi, newReservationCreateUpdateWithPasswordRequest);
+        ExtractableResponse<Response> response = saveReservation(beReservationApi, newReservationCreateUpdateWithPasswordRequest);
 
         //then
         assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
@@ -86,7 +108,7 @@ public class GuestReservationControllerTest extends AcceptanceTest {
     @Test
     void find() {
         //given, when
-        ExtractableResponse<Response> response = findReservations(savedReservationApi, THE_DAY_AFTER_TOMORROW.toString());
+        ExtractableResponse<Response> response = findReservations(beReservationApi, THE_DAY_AFTER_TOMORROW.toString());
 
         ReservationFindResponse actualResponse = response.as(ReservationFindResponse.class);
         ReservationFindResponse expectedResponse = ReservationFindResponse.from(
@@ -106,7 +128,8 @@ public class GuestReservationControllerTest extends AcceptanceTest {
     @Test
     void findAll() {
         //given, when
-        ExtractableResponse<Response> response = findAllReservations(reservationApi, THE_DAY_AFTER_TOMORROW.toString());
+        String api = beReservationApi.replaceAll("/spaces/[0-9]", "/spaces");
+        ExtractableResponse<Response> response = findAllReservations(api, THE_DAY_AFTER_TOMORROW.toString());
 
         ReservationFindAllResponse actualResponse = response.as(ReservationFindAllResponse.class);
         ReservationFindAllResponse expectedResponse = ReservationFindAllResponse.of(
@@ -130,14 +153,13 @@ public class GuestReservationControllerTest extends AcceptanceTest {
     void update_sameSpace() {
         //given
         ReservationCreateUpdateWithPasswordRequest reservationCreateUpdateWithPasswordRequestSameSpace = new ReservationCreateUpdateWithPasswordRequest(
-                reservationCreateUpdateWithPasswordRequest.getSpaceId(),
                 THE_DAY_AFTER_TOMORROW.atTime(1, 0),
                 THE_DAY_AFTER_TOMORROW.atTime(2, 30),
                 reservationCreateUpdateWithPasswordRequest.getPassword(),
                 "sally",
                 "회의입니다."
         );
-        String api = reservationApi + "/" + savedReservationId;
+        String api = beReservationApi + "/" + savedReservationId;
 
         //when
         ExtractableResponse<Response> updateResponse = updateReservation(api, reservationCreateUpdateWithPasswordRequestSameSpace);
@@ -167,7 +189,6 @@ public class GuestReservationControllerTest extends AcceptanceTest {
     void update_spaceUpdate() {
         //given
         ReservationCreateUpdateWithPasswordRequest reservationCreateUpdateWithPasswordRequestDifferentSpace = new ReservationCreateUpdateWithPasswordRequest(
-                FE1.getId(),
                 THE_DAY_AFTER_TOMORROW.atTime(3, 30),
                 THE_DAY_AFTER_TOMORROW.atTime(4, 30),
                 SALLY_PASSWORD,
@@ -175,14 +196,11 @@ public class GuestReservationControllerTest extends AcceptanceTest {
                 "회의입니다."
         );
 
-        String api = reservationApi + "/" + savedReservationId;
+        String api = fe1ReservationApi + "/" + savedReservationId;
 
         //when
         ExtractableResponse<Response> updateResponse = updateReservation(api, reservationCreateUpdateWithPasswordRequestDifferentSpace);
-        ExtractableResponse<Response> findResponse = findReservations(
-                api.replaceAll("/reservations/[0-9]",
-                        "/spaces/" + reservationCreateUpdateWithPasswordRequestDifferentSpace.getSpaceId() + "/reservations"),
-                THE_DAY_AFTER_TOMORROW.toString());
+        ExtractableResponse<Response> findResponse = findReservations(fe1ReservationApi, THE_DAY_AFTER_TOMORROW.toString());
 
         ReservationFindResponse actualResponse = findResponse.as(ReservationFindResponse.class);
         ReservationFindResponse expectedResponse = ReservationFindResponse.from(
@@ -212,7 +230,7 @@ public class GuestReservationControllerTest extends AcceptanceTest {
         //given, when
         ReservationPasswordAuthenticationRequest reservationPasswordAuthenticationRequest = new ReservationPasswordAuthenticationRequest(SALLY_PASSWORD);
 
-        String api = reservationApi + "/" + savedReservationId;
+        String api = beReservationApi + "/" + savedReservationId;
 
         //then
         ExtractableResponse<Response> response = deleteReservation(api, reservationPasswordAuthenticationRequest);
@@ -225,7 +243,7 @@ public class GuestReservationControllerTest extends AcceptanceTest {
         //given, when
         ReservationPasswordAuthenticationRequest reservationPasswordAuthenticationRequest = new ReservationPasswordAuthenticationRequest(SALLY_PASSWORD);
 
-        ExtractableResponse<Response> response = findReservation(reservationApi + "/" + savedReservationId, reservationPasswordAuthenticationRequest);
+        ExtractableResponse<Response> response = findReservation(beReservationApi + "/" + savedReservationId, reservationPasswordAuthenticationRequest);
 
         ReservationResponse actualResponse = response.as(ReservationResponse.class);
         ReservationResponse expectedResponse = ReservationResponse.from(savedReservation);
@@ -237,45 +255,81 @@ public class GuestReservationControllerTest extends AcceptanceTest {
                 .isEqualTo(expectedResponse);
     }
 
-    private ExtractableResponse<Response> saveExampleReservations() {
+    private void saveExampleReservations() {
         ReservationCreateUpdateWithPasswordRequest beAmZeroOneRequest = new ReservationCreateUpdateWithPasswordRequest(
-                BE.getId(),
-                THE_DAY_AFTER_TOMORROW_START_TIME,
-                THE_DAY_AFTER_TOMORROW_START_TIME.plusHours(1),
-                RESERVATION_PASSWORD,
-                USER_NAME,
-                DESCRIPTION);
+                BE_AM_ZERO_ONE.getStartTime(),
+                BE_AM_ZERO_ONE.getEndTime(),
+                BE_AM_ZERO_ONE.getPassword(),
+                BE_AM_ZERO_ONE.getUserName(),
+                BE_AM_ZERO_ONE.getDescription());
 
         ReservationCreateUpdateWithPasswordRequest bePmOneTwoRequest = new ReservationCreateUpdateWithPasswordRequest(
-                BE.getId(),
-                THE_DAY_AFTER_TOMORROW.atTime(13, 0),
-                THE_DAY_AFTER_TOMORROW.atTime(14, 0),
-                RESERVATION_PASSWORD,
-                USER_NAME,
-                "찜꽁 2차 회의");
+                BE_PM_ONE_TWO.getStartTime(),
+                BE_PM_ONE_TWO.getEndTime(),
+                BE_PM_ONE_TWO.getPassword(),
+                BE_PM_ONE_TWO.getUserName(),
+                BE_PM_ONE_TWO.getDescription());
 
         ReservationCreateUpdateWithPasswordRequest beNextDayPmSixTwelveRequest = new ReservationCreateUpdateWithPasswordRequest(
-                BE.getId(),
-                THE_DAY_AFTER_TOMORROW.plusDays(1).atTime(6, 0),
-                THE_DAY_AFTER_TOMORROW.plusDays(1).atTime(12, 0),
-                "6789",
-                USER_NAME,
-                "찜꽁 3차 회의");
+                BE_NEXT_DAY_PM_SIX_TWELVE.getStartTime(),
+                BE_NEXT_DAY_PM_SIX_TWELVE.getEndTime(),
+                BE_NEXT_DAY_PM_SIX_TWELVE.getPassword(),
+                BE_NEXT_DAY_PM_SIX_TWELVE.getUserName(),
+                BE_NEXT_DAY_PM_SIX_TWELVE.getDescription());
 
         ReservationCreateUpdateWithPasswordRequest feZeroOneRequest = new ReservationCreateUpdateWithPasswordRequest(
-                FE1.getId(),
-                THE_DAY_AFTER_TOMORROW.atStartOfDay(),
-                THE_DAY_AFTER_TOMORROW.atTime(1, 0),
-                RESERVATION_PASSWORD,
-                USER_NAME,
-                "찜꽁 5차 회의");
+                FE1_ZERO_ONE.getStartTime(),
+                FE1_ZERO_ONE.getEndTime(),
+                FE1_ZERO_ONE.getPassword(),
+                FE1_ZERO_ONE.getUserName(),
+                FE1_ZERO_ONE.getDescription());
 
-        saveReservation(reservationApi, beAmZeroOneRequest);
-        saveReservation(reservationApi, bePmOneTwoRequest);
-        saveReservation(reservationApi, beNextDayPmSixTwelveRequest);
-        saveReservation(reservationApi, feZeroOneRequest);
+        BE_AM_ZERO_ONE = new Reservation.Builder()
+                .id(getReservationIdAfterSave(beReservationApi, beAmZeroOneRequest))
+                .startTime(BE_AM_ZERO_ONE.getStartTime())
+                .endTime(BE_AM_ZERO_ONE.getEndTime())
+                .description(BE_AM_ZERO_ONE.getDescription())
+                .userName(BE_AM_ZERO_ONE.getUserName())
+                .password(BE_AM_ZERO_ONE.getPassword())
+                .space(BE)
+                .build();
 
-        return saveReservation(reservationApi, this.reservationCreateUpdateWithPasswordRequest);
+        BE_PM_ONE_TWO = new Reservation.Builder()
+                .id(getReservationIdAfterSave(beReservationApi, bePmOneTwoRequest))
+                .startTime(BE_PM_ONE_TWO.getStartTime())
+                .endTime(BE_PM_ONE_TWO.getEndTime())
+                .description(BE_PM_ONE_TWO.getDescription())
+                .userName(BE_PM_ONE_TWO.getUserName())
+                .password(BE_PM_ONE_TWO.getPassword())
+                .space(BE)
+                .build();
+
+        BE_NEXT_DAY_PM_SIX_TWELVE = new Reservation.Builder()
+                .id(getReservationIdAfterSave(beReservationApi, beNextDayPmSixTwelveRequest))
+                .startTime(BE_NEXT_DAY_PM_SIX_TWELVE.getStartTime())
+                .endTime(BE_NEXT_DAY_PM_SIX_TWELVE.getEndTime())
+                .description(BE_NEXT_DAY_PM_SIX_TWELVE.getDescription())
+                .userName(BE_NEXT_DAY_PM_SIX_TWELVE.getUserName())
+                .password(BE_NEXT_DAY_PM_SIX_TWELVE.getPassword())
+                .space(BE)
+                .build();
+
+        FE1_ZERO_ONE = new Reservation.Builder()
+                .id(getReservationIdAfterSave(fe1ReservationApi, feZeroOneRequest))
+                .startTime(FE1_ZERO_ONE.getStartTime())
+                .endTime(FE1_ZERO_ONE.getEndTime())
+                .description(FE1_ZERO_ONE.getDescription())
+                .userName(FE1_ZERO_ONE.getUserName())
+                .password(FE1_ZERO_ONE.getPassword())
+                .space(FE1)
+                .build();
+    }
+
+    private Long getReservationIdAfterSave(final String api, final ReservationCreateUpdateWithPasswordRequest reservationCreateUpdateWithPasswordRequest) {
+        return Long.valueOf(
+                saveReservation(api, reservationCreateUpdateWithPasswordRequest)
+                        .header("location")
+                        .split("/")[8]);
     }
 
     private ExtractableResponse<Response> saveReservation(
