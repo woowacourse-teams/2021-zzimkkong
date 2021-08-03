@@ -15,7 +15,6 @@ public class ReservationCreateUpdateRequest {
     protected Long spaceId;
 
     @DateTimeFormat(pattern = DATETIME_FORMAT)
-    @NotNull(message = EMPTY_MESSAGE)
     protected LocalDateTime startDateTime;
 
     @DateTimeFormat(pattern = DATETIME_FORMAT)
@@ -40,8 +39,8 @@ public class ReservationCreateUpdateRequest {
             final String name,
             final String description) {
         this.spaceId = spaceId;
-        this.startDateTime = startDateTime.withSecond(0).withNano(0);
-        this.endDateTime = endDateTime.withSecond(0).withNano(0);
+        this.startDateTime = startDateTime;
+        this.endDateTime = endDateTime;
         this.name = name;
         this.description = description;
     }
