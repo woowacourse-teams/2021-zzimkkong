@@ -20,6 +20,7 @@ import PATH from 'constants/path';
 import { LOCAL_STORAGE_KEY } from 'constants/storage';
 import useManagerMaps from 'hooks/useManagerMaps';
 import useManagerReservations from 'hooks/useManagerReservations';
+import { SpaceReservation } from 'types/common';
 import { ErrorResponse } from 'types/response';
 import { formatDate } from 'utils/datetime';
 import * as Styled from './ManagerMain.styles';
@@ -48,30 +49,45 @@ const ManagerMain = (): JSX.Element => {
     }
   };
 
-  // const getMaps = useManagerMaps({ onError: onRequestError });
   const getMaps = useManagerMaps({
-    retry: false,
+    onError: onRequestError,
   });
 
   const organization = getMaps.data?.data.organization ?? '';
 
   const maps = getMaps.data?.data.maps ?? [];
-  const mapId = maps.length ? maps[0].mapId : 0;
+  // const mapId = maps.length ? maps[0].mapId : 0;
+  const [selectedMapId, setSelectedMapId] = useState(0);
   const mapName = maps.length ? maps[0].mapName : '';
+
+  useEffect(() => {
+    setSelectedMapId(maps.length ? maps[0].mapId : 0);
+  }, [maps]);
 
   const getReservations = useManagerReservations(
     {
-      mapId,
+      mapId: selectedMapId,
       date: formatDate(date),
     },
     {
-      retry: false,
       enabled: maps.length ? true : false,
+      onError: onRequestError,
     }
-    // { onError: onRequestError }
   );
 
   const reservations = getReservations.data?.data?.data ?? [];
+
+  // const [reservations, setReservations] = useState<SpaceReservation[]>([]);
+
+  // useEffect((): void => {
+  //   // getReservations.data?.data?.data ?? []
+
+  //   setReservations(getReservations.data?.data?.data ?? []);
+  // }, [mapId]);
+
+  // useEffect((): void => {
+  //   setReservations(getReservations.data?.data?.data ?? []);
+  // }, []);
 
   const removeMap = useMutation(deleteMap, {
     onSuccess: () => {
@@ -95,6 +111,11 @@ const ManagerMain = (): JSX.Element => {
     setOpen(false);
   };
 
+  const handleSelectMap = (mapId: number) => {
+    setSelectedMapId(mapId);
+    onCloseDrawer();
+  };
+
   return (
     <>
       <Header />
@@ -111,7 +132,8 @@ const ManagerMain = (): JSX.Element => {
         <Styled.DateInputWrapper>
           <DateInput date={date} setDate={setDate} />
         </Styled.DateInputWrapper>
-        {!reservations.length && mapId ? (
+
+        {!reservations.length && selectedMapId && (
           <Styled.CreateMapWrapper>
             <Styled.CreateMapMessage>현재 공간이 존재하지 않습니다.</Styled.CreateMapMessage>
             {/* 공간 편집 페이지 완성되면 링크 바꿔야 함 */}
@@ -119,7 +141,9 @@ const ManagerMain = (): JSX.Element => {
               공간 생성하러 가기
             </Styled.CreateMapLink>
           </Styled.CreateMapWrapper>
-        ) : (
+        )}
+
+        {!reservations.length && !selectedMapId && (
           <Styled.CreateMapWrapper>
             <Styled.CreateMapMessage>현재 맵이 존재하지 않습니다.</Styled.CreateMapMessage>
             <Styled.CreateMapLink to={PATH.MANAGER_MAP_CREATE}>
@@ -127,6 +151,7 @@ const ManagerMain = (): JSX.Element => {
             </Styled.CreateMapLink>
           </Styled.CreateMapWrapper>
         )}
+
         <Styled.SpaceList>
           {reservations &&
             reservations.map(({ spaceId, spaceName, spaceColor, reservations }, index) => (
@@ -169,8 +194,10 @@ const ManagerMain = (): JSX.Element => {
           {maps.map(({ mapId, mapName, mapImageUrl }) => (
             <Styled.SpaceWrapper key={`map-${mapId}`}>
               <MapListItem
+                onClick={() => handleSelectMap(mapId)}
                 thumbnail={{ src: mapImageUrl, alt: mapName }}
                 title={mapName}
+                selected={mapId === selectedMapId}
                 control={
                   <>
                     <Styled.MapListItemControlButton size="small">
