@@ -11,6 +11,10 @@ export const ImageWrapper = styled.div`
   height: 0;
   padding-bottom: 75%;
   position: relative;
+
+  &:hover {
+    cursor: pointer;
+  }
 `;
 
 export const ImageInner = styled.div`

@@ -9,9 +9,10 @@ export interface Props {
   };
   title: string;
   control?: ReactNode;
+  onClick?: () => void;
 }
 
-const MapListItem = ({ thumbnail, title, control }: Props): JSX.Element => {
+const MapListItem = ({ thumbnail, title, control, onClick }: Props): JSX.Element => {
   const [thumbnailSrc, setThumbnailSrc] = useState(thumbnail.src);
 
   const onImgError = () => {
@@ -20,7 +21,7 @@ const MapListItem = ({ thumbnail, title, control }: Props): JSX.Element => {
 
   return (
     <Styled.Container role="listitem">
-      <Styled.ImageWrapper>
+      <Styled.ImageWrapper onClick={onClick}>
         <Styled.ImageInner>
           <Styled.Image
             src={thumbnailSrc}
