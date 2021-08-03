@@ -1,5 +1,5 @@
 import { AxiosError } from 'axios';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useMutation } from 'react-query';
 import { useHistory } from 'react-router-dom';
 import { deleteMap } from 'api/map';
@@ -53,7 +53,6 @@ const ManagerMain = (): JSX.Element => {
     retry: false,
   });
 
-  // console.log(getMaps.data?.data);
   const organization = getMaps.data?.data.organization ?? '';
 
   const maps = getMaps.data?.data.maps ?? [];
@@ -112,7 +111,15 @@ const ManagerMain = (): JSX.Element => {
         <Styled.DateInputWrapper>
           <DateInput date={date} setDate={setDate} />
         </Styled.DateInputWrapper>
-        {!reservations.length && (
+        {!reservations.length && mapId ? (
+          <Styled.CreateMapWrapper>
+            <Styled.CreateMapMessage>현재 공간이 존재하지 않습니다.</Styled.CreateMapMessage>
+            {/* 공간 편집 페이지 완성되면 링크 바꿔야 함 */}
+            <Styled.CreateMapLink to={PATH.MANAGER_MAP_CREATE}>
+              공간 생성하러 가기
+            </Styled.CreateMapLink>
+          </Styled.CreateMapWrapper>
+        ) : (
           <Styled.CreateMapWrapper>
             <Styled.CreateMapMessage>현재 맵이 존재하지 않습니다.</Styled.CreateMapMessage>
             <Styled.CreateMapLink to={PATH.MANAGER_MAP_CREATE}>
