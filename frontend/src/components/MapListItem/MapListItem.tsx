@@ -18,7 +18,7 @@ const MapListItem = ({
   title,
   control,
   selected = false,
-  onClick,
+  onClick = () => null,
 }: Props): JSX.Element => {
   const [thumbnailSrc, setThumbnailSrc] = useState(thumbnail.src);
 
