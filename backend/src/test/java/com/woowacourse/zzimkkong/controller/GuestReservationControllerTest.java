@@ -118,7 +118,8 @@ public class GuestReservationControllerTest extends AcceptanceTest {
     @Test
     void find() {
         //given, when
-        ExtractableResponse<Response> response = findReservations(reservationApi, THE_DAY_AFTER_TOMORROW.toString());
+        String api = reservationApi.replace("/reservations", "/spaces/" + beSpaceId + "/reservations");
+        ExtractableResponse<Response> response = findReservations(api, THE_DAY_AFTER_TOMORROW.toString());
 
         ReservationFindResponse actualResponse = response.as(ReservationFindResponse.class);
         ReservationFindResponse expectedResponse = ReservationFindResponse.from(
