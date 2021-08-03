@@ -7,11 +7,15 @@ import static com.woowacourse.zzimkkong.dto.ValidatorMessage.EMPTY_MESSAGE;
 public class SpaceCreateUpdateRequest {
     @NotBlank(message = EMPTY_MESSAGE)
     private String spaceName;
+
     @NotBlank(message = EMPTY_MESSAGE)
     private String description;
+
     @NotBlank(message = EMPTY_MESSAGE)
     private String area;
+
     private SettingsRequest settingsRequest;
+
     @NotBlank(message = EMPTY_MESSAGE)
     private String mapImage;    // todo mapImageSvg로 칼럼명 통일
 
