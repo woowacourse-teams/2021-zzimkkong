@@ -1,5 +1,5 @@
 import { AxiosError } from 'axios';
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { useMutation } from 'react-query';
 import { useHistory } from 'react-router-dom';
 import { deleteMap } from 'api/map';
@@ -20,25 +20,17 @@ import PATH from 'constants/path';
 import { LOCAL_STORAGE_KEY } from 'constants/storage';
 import useManagerMaps from 'hooks/useManagerMaps';
 import useManagerReservations from 'hooks/useManagerReservations';
-import { SpaceReservation } from 'types/common';
 import { ErrorResponse } from 'types/response';
 import { formatDate } from 'utils/datetime';
 import * as Styled from './ManagerMain.styles';
-
-/*
- 공간 관리자 메인 페이지에서 맵 ID가 고정되는게 아닌 공간관리자 별로 맵 목록을 조회해서 가져올 수 있도록 수정
-  - 페이지 접속시 먼저 맵 목록 조회
-    - 맵이 있다면 -> 최상단의 맵 예약 정보를 화면에 보여줌
-    - 맵이 없다면 -> 화면에 '맵을 먼저 생성해주세요' 메세지 표시
-
- - 맵 목록 중 선택 된 맵을 표시하는 기능 - border 색상 변경 등
-*/
 
 const ManagerMain = (): JSX.Element => {
   const history = useHistory();
 
   const [date, setDate] = useState(new Date());
   const [open, setOpen] = useState(false);
+  const [selectedMapId, setSelectedMapId] = useState(0);
+  const [selectedMapName, setSelectedMapName] = useState('');
 
   const onRequestError = (error: AxiosError<ErrorResponse>) => {
     alert(error.response?.data?.message ?? MESSAGE.MANAGER_MAIN.UNEXPECTED_GET_DATA_ERROR);
@@ -54,15 +46,7 @@ const ManagerMain = (): JSX.Element => {
   });
 
   const organization = getMaps.data?.data.organization ?? '';
-
-  const maps = getMaps.data?.data.maps ?? [];
-  // const mapId = maps.length ? maps[0].mapId : 0;
-  const [selectedMapId, setSelectedMapId] = useState(0);
-  const mapName = maps.length ? maps[0].mapName : '';
-
-  useEffect(() => {
-    setSelectedMapId(maps.length ? maps[0].mapId : 0);
-  }, [maps]);
+  const maps = useMemo(() => getMaps.data?.data.maps ?? [], [getMaps]);
 
   const getReservations = useManagerReservations(
     {
@@ -70,24 +54,12 @@ const ManagerMain = (): JSX.Element => {
       date: formatDate(date),
     },
     {
-      enabled: maps.length ? true : false,
+      enabled: selectedMapId ? true : false,
       onError: onRequestError,
     }
   );
 
   const reservations = getReservations.data?.data?.data ?? [];
-
-  // const [reservations, setReservations] = useState<SpaceReservation[]>([]);
-
-  // useEffect((): void => {
-  //   // getReservations.data?.data?.data ?? []
-
-  //   setReservations(getReservations.data?.data?.data ?? []);
-  // }, [mapId]);
-
-  // useEffect((): void => {
-  //   setReservations(getReservations.data?.data?.data ?? []);
-  // }, []);
 
   const removeMap = useMutation(deleteMap, {
     onSuccess: () => {
@@ -111,10 +83,16 @@ const ManagerMain = (): JSX.Element => {
     setOpen(false);
   };
 
-  const handleSelectMap = (mapId: number) => {
+  const handleSelectMap = (mapId: number, mapName: string) => {
     setSelectedMapId(mapId);
+    setSelectedMapName(mapName);
     onCloseDrawer();
   };
+
+  useEffect(() => {
+    setSelectedMapId(maps.length ? maps[0].mapId : 0);
+    setSelectedMapName(maps.length ? maps[0].mapName : '');
+  }, [maps]);
 
   return (
     <>
@@ -124,7 +102,7 @@ const ManagerMain = (): JSX.Element => {
           <IconButton text="맵 목록" onClick={onOpenDrawer}>
             <MenuIcon width="100%" height="100%" />
           </IconButton>
-          <Styled.PageTitle>{mapName}</Styled.PageTitle>
+          <Styled.PageTitle>{selectedMapName}</Styled.PageTitle>
           <IconButton text="공유 링크">
             <Styled.PrimaryLinkIcon width="100%" height="100%" />
           </IconButton>
@@ -194,7 +172,7 @@ const ManagerMain = (): JSX.Element => {
           {maps.map(({ mapId, mapName, mapImageUrl }) => (
             <Styled.SpaceWrapper key={`map-${mapId}`}>
               <MapListItem
-                onClick={() => handleSelectMap(mapId)}
+                onClick={() => handleSelectMap(mapId, mapName)}
                 thumbnail={{ src: mapImageUrl, alt: mapName }}
                 title={mapName}
                 selected={mapId === selectedMapId}
