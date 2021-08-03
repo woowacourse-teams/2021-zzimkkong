@@ -45,8 +45,7 @@ class MemberSaveRequestTest extends RequestTest {
     }
 
     @ParameterizedTest
-    @CsvSource(value = {"test1234:false", "testtest:true", "test123:true", "test1234test1234test1:true"}, delimiter = ':')
-    //todo: 특수문자 거르기 "test1234!:true",
+    @CsvSource(value = {"test1234:false", "1234test:false", "testtest:true", "12341234:true", "test123:true", "test1234test1234test1:true", "test1234!:true", "한글도실패1231:true"}, delimiter = ':')
     @DisplayName("회원가입 비밀번호에 옳지 않은 비밀번호 형식의 문자열이 들어오면 처리한다.")
     public void invalidPassword(String password, boolean flag) {
         MemberSaveRequest memberSaveRequest = new MemberSaveRequest("email@email.com", password, "organization");
