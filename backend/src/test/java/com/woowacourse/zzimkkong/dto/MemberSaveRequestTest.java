@@ -69,7 +69,7 @@ class MemberSaveRequestTest extends RequestTest {
 
     @ParameterizedTest
     @CsvSource(value = {"hihellomorethantwenty:true", "hihello:false"}, delimiter = ':')
-    @DisplayName("회원가입 조직명에 빈 문자열이 들어오면 처리한다.")
+    @DisplayName("회원가입 조직명에 옳지 않은 형식의 문자열이 들어오면 처리한다.")
     public void invalidOrganization(String organization, boolean flag) {
         MemberSaveRequest memberSaveRequest = new MemberSaveRequest("email@email.com", "password", organization);
 

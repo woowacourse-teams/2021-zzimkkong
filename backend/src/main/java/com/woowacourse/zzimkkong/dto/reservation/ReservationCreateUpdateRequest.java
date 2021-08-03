@@ -15,6 +15,7 @@ public class ReservationCreateUpdateRequest {
     protected Long spaceId;
 
     @DateTimeFormat(pattern = DATETIME_FORMAT)
+    @NotNull(message = EMPTY_MESSAGE)
     protected LocalDateTime startDateTime;
 
     @DateTimeFormat(pattern = DATETIME_FORMAT)
