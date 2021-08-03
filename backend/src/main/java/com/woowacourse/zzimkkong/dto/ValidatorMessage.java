@@ -1,6 +1,6 @@
 package com.woowacourse.zzimkkong.dto;
 
-public class Validator {
+public class ValidatorMessage {
     public static final String EMPTY_MESSAGE = "비어있는 항목을 입력해주세요.";
     public static final String EMAIL_MESSAGE = "올바른 이메일 형식이 아닙니다.";
     public static final String MEMBER_PASSWORD_MESSAGE = "비밀번호는 영어와 숫자를 포함해서 8자 이상 20자 이내로 입력해주세요.";

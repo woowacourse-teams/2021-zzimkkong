@@ -8,7 +8,7 @@ import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 import java.time.LocalDateTime;
 
-import static com.woowacourse.zzimkkong.dto.Validator.*;
+import static com.woowacourse.zzimkkong.dto.ValidatorMessage.*;
 
 public class ReservationCreateUpdateRequest {
     @NotNull(message = EMPTY_MESSAGE)

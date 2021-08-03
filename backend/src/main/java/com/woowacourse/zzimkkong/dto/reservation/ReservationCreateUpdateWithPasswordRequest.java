@@ -4,7 +4,7 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Pattern;
 import java.time.LocalDateTime;
 
-import static com.woowacourse.zzimkkong.dto.Validator.*;
+import static com.woowacourse.zzimkkong.dto.ValidatorMessage.*;
 
 public class ReservationCreateUpdateWithPasswordRequest extends ReservationCreateUpdateRequest {
     @NotBlank(message = EMPTY_MESSAGE)

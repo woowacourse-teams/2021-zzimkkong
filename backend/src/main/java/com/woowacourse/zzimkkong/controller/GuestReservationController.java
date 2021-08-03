@@ -10,7 +10,7 @@ import javax.validation.Valid;
 import java.net.URI;
 import java.time.LocalDate;
 
-import static com.woowacourse.zzimkkong.dto.Validator.DATE_FORMAT;
+import static com.woowacourse.zzimkkong.dto.ValidatorMessage.DATE_FORMAT;
 
 @RestController
 @RequestMapping("/api/guests/maps/{mapId}")

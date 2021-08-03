@@ -3,7 +3,7 @@ package com.woowacourse.zzimkkong.dto.reservation;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Pattern;
 
-import static com.woowacourse.zzimkkong.dto.Validator.*;
+import static com.woowacourse.zzimkkong.dto.ValidatorMessage.*;
 
 public class ReservationPasswordAuthenticationRequest {
     @NotBlank(message = EMPTY_MESSAGE)

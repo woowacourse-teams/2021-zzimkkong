@@ -2,7 +2,7 @@ package com.woowacourse.zzimkkong.dto.space;
 
 import javax.validation.constraints.NotBlank;
 
-import static com.woowacourse.zzimkkong.dto.Validator.EMPTY_MESSAGE;
+import static com.woowacourse.zzimkkong.dto.ValidatorMessage.EMPTY_MESSAGE;
 
 public class SpaceCreateUpdateRequest {
     @NotBlank(message = EMPTY_MESSAGE)
