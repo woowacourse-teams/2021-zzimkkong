@@ -66,7 +66,7 @@ public class SpaceService {
                 .disabledWeekdays(settingsRequest.getDisabledWeekdays())
                 .build();
 
-        String thumbnailUrl = uploadSvgAsPngToS3(spaceCreateUpdateRequest.getMapImage(), map.getId().toString());
+        String thumbnailUrl = uploadSvgAsPngToS3(spaceCreateUpdateRequest.getMapImageSvg(), map.getId().toString());
 
         Space space = spaces.save(
                 new Space.Builder()
@@ -156,7 +156,7 @@ public class SpaceService {
                 .disabledWeekdays(settingsRequest.getDisabledWeekdays())
                 .build();
 
-        String thumbnailUrl = uploadSvgAsPngToS3(spaceCreateUpdateRequest.getMapImage(), map.getId().toString());
+        String thumbnailUrl = uploadSvgAsPngToS3(spaceCreateUpdateRequest.getMapImageSvg(), map.getId().toString());
 
         return new Space.Builder()
                 .name(spaceCreateUpdateRequest.getSpaceName())
