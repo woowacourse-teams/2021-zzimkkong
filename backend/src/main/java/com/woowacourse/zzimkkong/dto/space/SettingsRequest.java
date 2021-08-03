@@ -12,7 +12,7 @@ public class SettingsRequest {
     private Integer reservationMinimumTimeUnit = 10;
     private Integer reservationMaximumTimeUnit = 1440;
     private Boolean reservationEnable = true;
-    private String disabledWeekdays = null;
+    private String enabledDayOfWeek = "monday, tuesday, wednesday, thursday, friday, saturday, sunday";
 
     public SettingsRequest() {
     }
@@ -24,14 +24,14 @@ public class SettingsRequest {
             final Integer reservationMinimumTimeUnit,
             final Integer reservationMaximumTimeUnit,
             final Boolean reservationEnable,
-            final String disabledWeekdays) {
+            final String enabledDayOfWeek) {
         this.availableStartTime = availableStartTime;
         this.availableEndTime = availableEndTime;
         this.reservationTimeUnit = reservationTimeUnit;
         this.reservationMinimumTimeUnit = reservationMinimumTimeUnit;
         this.reservationMaximumTimeUnit = reservationMaximumTimeUnit;
         this.reservationEnable = reservationEnable;
-        this.disabledWeekdays = disabledWeekdays;
+        this.enabledDayOfWeek = enabledDayOfWeek;
     }
 
     public LocalTime getAvailableStartTime() {
@@ -58,7 +58,7 @@ public class SettingsRequest {
         return reservationEnable;
     }
 
-    public String getDisabledWeekdays() {
-        return disabledWeekdays;
+    public String getEnabledDayOfWeek() {
+        return enabledDayOfWeek;
     }
 }

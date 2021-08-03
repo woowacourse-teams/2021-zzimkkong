@@ -3,17 +3,13 @@ package com.woowacourse.zzimkkong.service;
 import com.woowacourse.zzimkkong.domain.Reservation;
 import com.woowacourse.zzimkkong.domain.Space;
 import com.woowacourse.zzimkkong.dto.reservation.ReservationCreateUpdateRequest;
-import com.woowacourse.zzimkkong.dto.reservation.ReservationFindAllResponse;
-import com.woowacourse.zzimkkong.dto.reservation.ReservationFindResponse;
 import com.woowacourse.zzimkkong.exception.map.NoSuchMapException;
 import com.woowacourse.zzimkkong.exception.reservation.*;
 import com.woowacourse.zzimkkong.exception.reservation.IllegalSpaceToReserveException;
-import com.woowacourse.zzimkkong.exception.space.NoSuchSpaceException;
 import com.woowacourse.zzimkkong.infrastructure.TimeConverter;
 import com.woowacourse.zzimkkong.repository.MapRepository;
 import com.woowacourse.zzimkkong.repository.ReservationRepository;
 import com.woowacourse.zzimkkong.repository.SpaceRepository;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -66,7 +62,7 @@ public abstract class ReservationService {
         LocalDateTime endDateTime = reservationCreateUpdateRequest.getEndDateTime();
 
         validateReservationEnabled(space);
-        validateDisabledDayOfWeek(space, startDateTime);
+        validateEnabledDayOfWeek(space, startDateTime);
         validateSpaceAvailableTime(space, startDateTime, endDateTime);
 
         List<Reservation> reservationsOnDate = getReservations(
@@ -91,7 +87,7 @@ public abstract class ReservationService {
         LocalDateTime endDateTime = reservationCreateUpdateRequest.getEndDateTime();
 
         validateReservationEnabled(space);
-        validateDisabledDayOfWeek(space, startDateTime);
+        validateEnabledDayOfWeek(space, startDateTime);
         validateSpaceAvailableTime(space, startDateTime, endDateTime);
 
         List<Reservation> reservationsOnDate = getReservations(
@@ -107,7 +103,7 @@ public abstract class ReservationService {
         }
     }
 
-    private void validateDisabledDayOfWeek(final Space space, final LocalDateTime startDateTime) {
+    private void validateEnabledDayOfWeek(final Space space, final LocalDateTime startDateTime) {
         if (space.isClosedOn(startDateTime.getDayOfWeek())) {
             throw new IllegalDayOfWeekException();
         }

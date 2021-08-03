@@ -50,7 +50,7 @@ public class DataLoader implements CommandLineRunner {
                 .reservationMinimumTimeUnit(10)
                 .reservationMaximumTimeUnit(1440)
                 .reservationEnable(true)
-                .disabledDayOfWeek(null)
+                .enabledDayOfWeek(null)
                 .build();
 
         Space be = new Space.Builder()

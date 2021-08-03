@@ -26,7 +26,7 @@ public class Setting {
 
     // TODO: ENUMERATED 데이터 타입으로 변경하기
     @Column(nullable = true)
-    private String disabledDayOfWeek;
+    private String enabledDayOfWeek;
 
     public Setting() {
     }
@@ -38,7 +38,7 @@ public class Setting {
         this.reservationMinimumTimeUnit = builder.reservationMinimumTimeUnit;
         this.reservationMaximumTimeUnit = builder.reservationMaximumTimeUnit;
         this.reservationEnable = builder.reservationEnable;
-        this.disabledDayOfWeek = builder.disabledDayOfWeek;
+        this.enabledDayOfWeek = builder.enabledDayOfWeek;
     }
 
     public LocalTime getAvailableStartTime() {
@@ -65,8 +65,8 @@ public class Setting {
         return reservationEnable;
     }
 
-    public String getDisabledDayOfWeek() {
-        return disabledDayOfWeek;
+    public String getEnabledDayOfWeek() {
+        return enabledDayOfWeek;
     }
 
     public static class Builder {
@@ -76,7 +76,7 @@ public class Setting {
         private Integer reservationMinimumTimeUnit = null;
         private Integer reservationMaximumTimeUnit = null;
         private Boolean reservationEnable = null;
-        private String disabledDayOfWeek = null;
+        private String enabledDayOfWeek = null;
 
         public Builder() {
         }
@@ -111,8 +111,8 @@ public class Setting {
             return this;
         }
 
-        public Setting.Builder disabledDayOfWeek(String inputDisabledWeekdays) {
-            disabledDayOfWeek = inputDisabledWeekdays;
+        public Setting.Builder enabledDayOfWeek(String inputEnabledWeekdays) {
+            enabledDayOfWeek = inputEnabledWeekdays;
             return this;
         }
 

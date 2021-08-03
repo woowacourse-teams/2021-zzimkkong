@@ -269,7 +269,7 @@ class GuestReservationServiceTest extends ServiceTest {
                 .reservationMinimumTimeUnit(10)
                 .reservationMaximumTimeUnit(1440)
                 .reservationEnable(false)
-                .disabledDayOfWeek(null)
+                .enabledDayOfWeek(null)
                 .build();
 
         Space be = new Space.Builder()
@@ -305,7 +305,7 @@ class GuestReservationServiceTest extends ServiceTest {
                 .reservationMinimumTimeUnit(10)
                 .reservationMaximumTimeUnit(1440)
                 .reservationEnable(true)
-                .disabledDayOfWeek(THE_DAY_AFTER_TOMORROW.getDayOfWeek().name())
+                .enabledDayOfWeek(THE_DAY_AFTER_TOMORROW.plusDays(1L).getDayOfWeek().name())
                 .build();
 
         Space be = new Space.Builder()
@@ -682,7 +682,7 @@ class GuestReservationServiceTest extends ServiceTest {
                 .reservationMinimumTimeUnit(10)
                 .reservationMaximumTimeUnit(1440)
                 .reservationEnable(false)
-                .disabledDayOfWeek(null)
+                .enabledDayOfWeek(null)
                 .build();
 
         Space be = new Space.Builder()
@@ -720,7 +720,7 @@ class GuestReservationServiceTest extends ServiceTest {
                 .reservationMinimumTimeUnit(10)
                 .reservationMaximumTimeUnit(1440)
                 .reservationEnable(true)
-                .disabledDayOfWeek(THE_DAY_AFTER_TOMORROW.getDayOfWeek().name())
+                .enabledDayOfWeek(THE_DAY_AFTER_TOMORROW.plusDays(1L).getDayOfWeek().name())
                 .build();
 
         Space be = new Space.Builder()

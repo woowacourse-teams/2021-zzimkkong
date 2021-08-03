@@ -35,7 +35,7 @@ class SpaceServiceTest extends ServiceTest {
             60,
             120,
             true,
-            null
+            "monday, tuesday, wednesday, thursday, friday, saturday, sunday"
     );
 
     private final SpaceCreateUpdateRequest spaceCreateUpdateRequest = new SpaceCreateUpdateRequest(
@@ -53,7 +53,7 @@ class SpaceServiceTest extends ServiceTest {
             60,
             120,
             true,
-            null
+            "monday, tuesday, wednesday, thursday, friday, saturday, sunday"
     );
 
     private final SpaceCreateUpdateRequest updateSpaceCreateUpdateRequest = new SpaceCreateUpdateRequest(
@@ -203,7 +203,7 @@ class SpaceServiceTest extends ServiceTest {
                 POBI));
 
         assertThat(BE.getReservationTimeUnit()).isEqualTo(updateSettingsRequest.getReservationTimeUnit());
-        assertThat(BE.getDisabledDayOfWeek()).isEqualTo(updateSettingsRequest.getDisabledWeekdays());
+        assertThat(BE.getEnabledDayOfWeek()).isEqualTo(updateSettingsRequest.getEnabledDayOfWeek());
     }
 
     @DisplayName("공간 수정 요청 시, 해당 공간에 대한 권한이 없으면 수정할 수 없다.")

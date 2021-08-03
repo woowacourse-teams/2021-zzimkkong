@@ -133,8 +133,8 @@ public class Space {
         return setting.getReservationEnable();
     }
 
-    public String getDisabledDayOfWeek() {
-        return setting.getDisabledDayOfWeek();
+    public String getEnabledDayOfWeek() {
+        return setting.getEnabledDayOfWeek();
     }
 
     public String getMapImage() {
@@ -146,18 +146,18 @@ public class Space {
     }
 
     public boolean isClosedOn(final DayOfWeek dayOfWeek) {
-        return getDisabledDaysOfWeek().stream()
-                .anyMatch(disabledDayOfWeek -> disabledDayOfWeek.equals(dayOfWeek));
+        return getEnabledDaysOfWeek().stream()
+                .noneMatch(enabledDayOfWeek -> enabledDayOfWeek.equals(dayOfWeek));
     }
 
-    private List<DayOfWeek> getDisabledDaysOfWeek() {
-        String disabledDayOfWeekNames = getDisabledDayOfWeek();
+    private List<DayOfWeek> getEnabledDaysOfWeek() {
+        String enabledDayOfWeekNames = getEnabledDayOfWeek();
 
-        if (disabledDayOfWeekNames == null) {
+        if (enabledDayOfWeekNames == null) {
             return Collections.emptyList();
         }
 
-        return Arrays.stream(disabledDayOfWeekNames.split(DELIMITER))
+        return Arrays.stream(enabledDayOfWeekNames.split(DELIMITER))
                 .map(this::convertToDayOfWeek)
                 .collect(Collectors.toList());
     }
