@@ -67,7 +67,7 @@ public class CommonFixture {
     public static Space FE1 = new Space.Builder()
             .name("프론트엔드 강의실1")
             .textPosition("bottom")
-            .color("#FED7D9")
+            .color("#FFCCCC")
             .coordinate("560, 40")
             .map(LUTHER)
             .description("시니컬하네")
@@ -124,9 +124,9 @@ public class CommonFixture {
     );
 
     public static final SpaceCreateUpdateRequest beSpaceCreateUpdateRequest = new SpaceCreateUpdateRequest(
-            "백엔드 강의실",
-            "#FED7D9",
-            "시니컬하네",
+            BE.getName(),
+            BE.getColor(),
+            BE.getDescription(),
             SPACE_DRAWING,
             beSettingsRequest
     );
@@ -142,9 +142,9 @@ public class CommonFixture {
     );
 
     public static final SpaceCreateUpdateRequest feSpaceCreateUpdateRequest = new SpaceCreateUpdateRequest(
-            "프론트엔드 강의실1",
-            "#FFCCCC",
-            "시니컬하네",
+            FE1.getName(),
+            FE1.getColor(),
+            FE1.getDescription(),
             SPACE_DRAWING,
             feSettingsRequest
     );

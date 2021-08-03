@@ -52,18 +52,20 @@ public class ManagerReservationControllerTest extends AcceptanceTest {
 
         BE = new Space.Builder()
                 .id(beSpaceId)
-                .name("백엔드 강의실")
+                .name(BE.getName())
+                .color(BE.getColor())
+                .description(BE.getDescription())
                 .map(LUTHER)
-                .description("시니컬하네")
                 .area(SPACE_DRAWING)
                 .setting(BE_SETTING)
                 .build();
 
         FE1 = new Space.Builder()
                 .id(feSpaceId)
-                .name("프론트엔드 강의실1")
+                .name(FE1.getName())
+                .color(FE1.getColor())
+                .description(FE1.getDescription())
                 .map(LUTHER)
-                .description("시니컬하네")
                 .area(SPACE_DRAWING)
                 .setting(FE_SETTING)
                 .build();
