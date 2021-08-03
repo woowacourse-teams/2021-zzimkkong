@@ -73,7 +73,7 @@ class MapServiceTest extends ServiceTest {
 
         //then
         assertThat(mapFindAllResponse).usingRecursiveComparison()
-                .isEqualTo(MapFindAllResponse.from(expectedMaps));
+                .isEqualTo(MapFindAllResponse.of(expectedMaps, POBI));
     }
 
     @Test

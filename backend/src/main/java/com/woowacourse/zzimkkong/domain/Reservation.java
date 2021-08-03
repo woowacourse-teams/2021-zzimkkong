@@ -44,7 +44,6 @@ public class Reservation {
         this.space = builder.space;
     }
 
-
     public boolean hasConflictWith(final LocalDateTime startDateTime, final LocalDateTime endDateTime) {
         boolean contains = contains(startDateTime, endDateTime);
         boolean intersects = intersects(startDateTime, endDateTime);
@@ -68,6 +67,7 @@ public class Reservation {
         return startDateTime.isEqual(startTime) && endDateTime.isEqual(endTime);
     }
 
+    // TODO: reservation 객체 주입받기
     public void update(final ReservationCreateUpdateRequest reservationCreateUpdateRequest, final Space space) {
         this.startTime = reservationCreateUpdateRequest.getStartDateTime();
         this.endTime = reservationCreateUpdateRequest.getEndDateTime();

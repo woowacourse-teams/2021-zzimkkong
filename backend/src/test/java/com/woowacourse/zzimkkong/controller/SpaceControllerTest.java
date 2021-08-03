@@ -35,7 +35,7 @@ public class SpaceControllerTest extends AcceptanceTest {
 
         SettingsRequest settingsRequest = new SettingsRequest(
                 LocalTime.of(0, 0),
-                LocalTime.of(23, 59),
+                LocalTime.of(18, 0),
                 10,
                 10,
                 1440,
@@ -89,8 +89,8 @@ public class SpaceControllerTest extends AcceptanceTest {
     void save_default() {
         // given, when
         SettingsRequest settingsRequest = new SettingsRequest(
-                null,
-                null,
+                LocalTime.of(0,0),
+                LocalTime.of(18,0),
                 null,
                 null,
                 null,
@@ -108,7 +108,7 @@ public class SpaceControllerTest extends AcceptanceTest {
 
         Setting defaultSetting = new Setting.Builder()
                 .availableStartTime(LocalTime.of(0, 0))
-                .availableEndTime(LocalTime.of(23, 59))
+                .availableEndTime(LocalTime.of(18, 0))
                 .reservationTimeUnit(10)
                 .reservationMinimumTimeUnit(10)
                 .reservationMaximumTimeUnit(1440)
@@ -163,7 +163,7 @@ public class SpaceControllerTest extends AcceptanceTest {
         // given
         SettingsRequest feSettingsRequest = new SettingsRequest(
                 LocalTime.of(0, 0),
-                LocalTime.of(23, 59),
+                LocalTime.of(18, 0),
                 10,
                 10,
                 1440,
@@ -216,7 +216,7 @@ public class SpaceControllerTest extends AcceptanceTest {
                 MAP_SVG
         );
 
-        String api = "/api/managers/maps/" + LUTHER.getId() + "/spaces/" + BE.getId();
+        String api = "/api/managers/maps/" + LUTHER.getId() + "/spaces/1";
         ExtractableResponse<Response> response = updateSpace(api, updateSpaceCreateUpdateRequest);
 
         // then
@@ -227,21 +227,21 @@ public class SpaceControllerTest extends AcceptanceTest {
     @Test
     void delete() {
         // given, when
-        String api = "/api/managers/maps/" + LUTHER.getId() + "/spaces/" + BE.getId();
+        String api = "/api/managers/maps/" + LUTHER.getId() + "/spaces/1";
         ExtractableResponse<Response> response = deleteSpace(api);
 
         // then
         assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
     }
 
-    private ExtractableResponse<Response> saveSpace(final String api, final SpaceCreateUpdateRequest spaceCreateUpdateRequest) {
+    static ExtractableResponse<Response> saveSpace(final String api, final SpaceCreateUpdateRequest spaceCreateRequest) {
         return RestAssured
                 .given(getRequestSpecification()).log().all()
                 .accept("application/json")
                 .header("Authorization", AuthorizationExtractor.AUTHENTICATION_TYPE + " " + getToken())
                 .filter(document("space/post", getRequestPreprocessor(), getResponsePreprocessor()))
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(spaceCreateUpdateRequest)
+                .body(spaceCreateRequest)
                 .when().post(api)
                 .then().log().all().extract();
     }

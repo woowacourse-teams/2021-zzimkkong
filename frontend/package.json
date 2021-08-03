@@ -26,7 +26,8 @@
     "build": "cross-env NODE_ENV=production webpack",
     "storybook": "start-storybook -s ./src/assets -p 6006",
     "build-storybook": "build-storybook -s ./src/assets",
-    "test": "jest --watch"
+    "test": "jest --watch",
+    "test:ci": "jest"
   },
   "dependencies": {
     "axios": "^0.21.1",

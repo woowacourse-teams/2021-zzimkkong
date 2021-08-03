@@ -9,9 +9,10 @@ import Input from 'components/Input/Input';
 import Layout from 'components/Layout/Layout';
 import MANAGER from 'constants/manager';
 import MESSAGE from 'constants/message';
-import REGEXP from 'constants/regexp';
 import PATH from 'constants/path';
+import REGEXP from 'constants/regexp';
 import useInput from 'hooks/useInput';
+import { ErrorResponse } from 'types/response';
 import * as Styled from './ManagerJoin.styles';
 
 const ManagerJoin = (): JSX.Element => {
@@ -38,7 +39,7 @@ const ManagerJoin = (): JSX.Element => {
       setEmailMessage(MESSAGE.JOIN.VALID_EMAIL);
     },
 
-    onError: (error: AxiosError<Error>) => {
+    onError: (error: AxiosError<ErrorResponse>) => {
       setEmailMessage(error.response?.data.message ?? '');
     },
   });

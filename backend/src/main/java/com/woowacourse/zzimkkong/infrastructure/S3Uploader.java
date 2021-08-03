@@ -11,26 +11,41 @@ import java.io.File;
 
 @Component
 public class S3Uploader implements StorageUploader {
-    private final AmazonS3 amazonS3;
-    private final String bucket;
+    private static final String S3_DOMAIN_FORMAT = "https://%s.s3.%s.amazonaws.com";
 
-    public S3Uploader(final AmazonS3 amazonS3, @Value("${aws.s3.bucket_name}") final String bucket) {
+    private final AmazonS3 amazonS3;
+    private final String bucketName;
+    private final String s3DomainUrl;
+    private final String urlReplacement;
+
+    public S3Uploader(
+            final AmazonS3 amazonS3,
+            @Value("${aws.s3.bucket_name}") final String bucketName,
+            @Value("${aws.s3.region}") final String regionName,
+            @Value("${aws.s3.url_replacement}") final String urlReplacement) {
         this.amazonS3 = amazonS3;
-        this.bucket = bucket;
+        this.bucketName = bucketName;
+        this.s3DomainUrl = String.format(S3_DOMAIN_FORMAT, this.bucketName, regionName);
+        this.urlReplacement = urlReplacement;
     }
 
     public String upload(final String directoryName, final File uploadFile) {
         String fileName = directoryName + "/" + uploadFile.getName();
 
         try {
-            return putS3(uploadFile, fileName);
+            String resourceUrl = putS3(uploadFile, fileName);
+            return replaceUrl(resourceUrl, urlReplacement);
         } catch (AmazonClientException exception) {
             throw new S3UploadException(exception);
         }
     }
 
     private String putS3(final File uploadFile, final String fileName) {
-        amazonS3.putObject(new PutObjectRequest(bucket, fileName, uploadFile));
-        return amazonS3.getUrl(bucket, fileName).toString();
+        amazonS3.putObject(new PutObjectRequest(bucketName, fileName, uploadFile));
+        return amazonS3.getUrl(bucketName, fileName).toString();
+    }
+
+    private String replaceUrl(final String origin, final String replacement) {
+        return origin.replace(s3DomainUrl, replacement);
     }
 }

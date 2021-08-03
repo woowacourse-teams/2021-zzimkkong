@@ -19,6 +19,12 @@ const MESSAGE = {
     UNEXPECTED_DELETE_ERROR:
       '예약을 삭제하는 중에 문제가 발생했습니다. 잠시 후에 다시 시도해주세요.',
   },
+  MANAGER_MAIN: {
+    UNEXPECTED_GET_DATA_ERROR:
+      '정보를 불러오는 중에 문제가 발생했습니다. 잠시 후에 다시 시도해주세요.',
+    UNEXPECTED_MAP_DELETE_ERROR:
+      '맵을 삭제하는 중에 문제가 발생했습니다. 잠시 후에 다시 시도해주세요.',
+  },
 };
 
 export default MESSAGE;

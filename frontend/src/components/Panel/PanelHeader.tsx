@@ -1,6 +1,6 @@
 import { PropsWithChildren, useContext } from 'react';
 import { ReactComponent as CaretDownIcon } from 'assets/svg/caret-down.svg';
-import { Color } from 'types/styled';
+import { Color } from 'types/common';
 import PanelContext from './PanelContext';
 import * as Styled from './PanelHeader.styles';
 

@@ -29,15 +29,15 @@ include::{snippets}/reservation/guest/get/http-response.adoc[]
 === 전체 예약 조회
 ==== 공간 관리자
 ===== Request
-include::{snippets}/reservation/manager/get_all/http-request.adoc[]
+include::{snippets}/reservation/manager/getAll/http-request.adoc[]
 ===== Response
-include::{snippets}/reservation/manager/get_all/http-response.adoc[]
+include::{snippets}/reservation/manager/getAll/http-response.adoc[]
 
 ==== 예약자
 ===== Request
-include::{snippets}/reservation/guest/get_all/http-request.adoc[]
+include::{snippets}/reservation/guest/getAll/http-request.adoc[]
 ===== Response
-include::{snippets}/reservation/guest/get_all/http-response.adoc[]
+include::{snippets}/reservation/guest/getAll/http-response.adoc[]
 
 === 예약 삭제
 ==== 공간 관리자
@@ -55,15 +55,15 @@ include::{snippets}/reservation/guest/delete/http-response.adoc[]
 === 예약 비밀번호 확인
 ==== 공간 관리자
 ===== Request
-include::{snippets}/reservation/manager/get_one/http-request.adoc[]
+include::{snippets}/reservation/manager/getForUpdate/http-request.adoc[]
 ===== Response
-include::{snippets}/reservation/manager/get_one/http-response.adoc[]
+include::{snippets}/reservation/manager/getForUpdate/http-response.adoc[]
 
 ==== 예약자
 ===== Request
-include::{snippets}/reservation/guest/post_for_update/http-request.adoc[]
+include::{snippets}/reservation/guest/postForUpdate/http-request.adoc[]
 ===== Response
-include::{snippets}/reservation/guest/post_for_update/http-response.adoc[]
+include::{snippets}/reservation/guest/postForUpdate/http-response.adoc[]
 
 === 예약 수정
 ==== 공간 관리자
