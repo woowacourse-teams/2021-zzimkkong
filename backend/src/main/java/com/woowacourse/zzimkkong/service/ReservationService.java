@@ -133,4 +133,10 @@ public abstract class ReservationService {
             throw new NoSuchMapException();
         }
     }
+
+    protected void validateSpaceExistence(final Long spaceId) {
+        if (!spaces.existsById(spaceId)) {
+            throw new NoSuchSpaceException();
+        }
+    }
 }
