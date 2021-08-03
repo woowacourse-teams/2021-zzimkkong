@@ -23,6 +23,26 @@
 <summary> <b> 프론트엔드 실행 방법 확인하기 🎨 </b>  </summary>
 <div markdown="1">
 
+```
+0. clone
+
+https://github.com/woowacourse-teams/2021-zzimkkong.git
+
+1. 프로젝트 진입
+
+cd 2020-zzimkkong/frontend
+
+2. package install
+
+yarn
+
+3-1. 프로젝트 실행
+yarn start
+
+3-2. 스토리북 실행
+yarn storybook
+```
+
 </div>
 </details>
 
