@@ -111,7 +111,13 @@ const ManagerMain = (): JSX.Element => {
           <DateInput date={date} setDate={setDate} />
         </Styled.DateInputWrapper>
 
-        {!reservations.length && selectedMapId && (
+        {getReservations.isLoading && (
+          <Styled.NoticeWrapper>
+            <Styled.NoticeMessage>공간을 로딩 중입니다</Styled.NoticeMessage>
+          </Styled.NoticeWrapper>
+        )}
+
+        {!getReservations.isLoading && !reservations.length && selectedMapId && (
           <Styled.NoticeWrapper>
             <Styled.NoticeMessage>생성한 공간이 없습니다.</Styled.NoticeMessage>
             {/* 공간 편집 페이지 완성되면 링크 바꿔야 함 */}
@@ -119,7 +125,7 @@ const ManagerMain = (): JSX.Element => {
           </Styled.NoticeWrapper>
         )}
 
-        {!reservations.length && !selectedMapId && (
+        {!getReservations.isLoading && !reservations.length && !selectedMapId && (
           <Styled.NoticeWrapper>
             <Styled.NoticeMessage>생성한 맵이 없습니다.</Styled.NoticeMessage>
             <Styled.NoticeLink to={PATH.MANAGER_MAP_CREATE}>맵 생성하러 가기</Styled.NoticeLink>
