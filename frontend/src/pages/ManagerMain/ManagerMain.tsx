@@ -112,22 +112,18 @@ const ManagerMain = (): JSX.Element => {
         </Styled.DateInputWrapper>
 
         {!reservations.length && selectedMapId && (
-          <Styled.CreateMapWrapper>
-            <Styled.CreateMapMessage>생성한 공간이 없습니다.</Styled.CreateMapMessage>
+          <Styled.NoticeWrapper>
+            <Styled.NoticeMessage>생성한 공간이 없습니다.</Styled.NoticeMessage>
             {/* 공간 편집 페이지 완성되면 링크 바꿔야 함 */}
-            <Styled.CreateMapLink to={PATH.MANAGER_MAP_CREATE}>
-              공간 생성하러 가기
-            </Styled.CreateMapLink>
-          </Styled.CreateMapWrapper>
+            <Styled.NoticeLink to={PATH.MANAGER_MAP_CREATE}>공간 생성하러 가기</Styled.NoticeLink>
+          </Styled.NoticeWrapper>
         )}
 
         {!reservations.length && !selectedMapId && (
-          <Styled.CreateMapWrapper>
-            <Styled.CreateMapMessage>생성한 맵이 없습니다.</Styled.CreateMapMessage>
-            <Styled.CreateMapLink to={PATH.MANAGER_MAP_CREATE}>
-              맵 생성하러 가기
-            </Styled.CreateMapLink>
-          </Styled.CreateMapWrapper>
+          <Styled.NoticeWrapper>
+            <Styled.NoticeMessage>생성한 맵이 없습니다.</Styled.NoticeMessage>
+            <Styled.NoticeLink to={PATH.MANAGER_MAP_CREATE}>맵 생성하러 가기</Styled.NoticeLink>
+          </Styled.NoticeWrapper>
         )}
 
         <Styled.SpaceList>

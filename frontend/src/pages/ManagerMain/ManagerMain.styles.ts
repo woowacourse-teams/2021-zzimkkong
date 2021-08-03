@@ -26,7 +26,7 @@ export const DateInputWrapper = styled.div`
   margin: 1rem 0;
 `;
 
-export const CreateMapWrapper = styled.div`
+export const NoticeWrapper = styled.div`
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -34,13 +34,13 @@ export const CreateMapWrapper = styled.div`
   height: calc(100vh - 22rem);
 `;
 
-export const CreateMapMessage = styled.p`
+export const NoticeMessage = styled.p`
   font-size: 1.5rem;
   font-weight: 700;
   margin-bottom: 1rem;
 `;
 
-export const CreateMapLink = styled(Link)`
+export const NoticeLink = styled(Link)`
   font-size: 1.25rem;
   text-decoration: none;
   color: ${({ theme }) => theme.primary[400]};
