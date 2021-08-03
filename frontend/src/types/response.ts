@@ -11,6 +11,7 @@ export interface LoginSuccess {
 
 export interface QueryManagerMapsSuccess {
   maps: MapItem[];
+  organization: string;
 }
 
 export interface QueryManagerReservationsSuccess {

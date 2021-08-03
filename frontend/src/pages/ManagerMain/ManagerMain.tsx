@@ -53,6 +53,9 @@ const ManagerMain = (): JSX.Element => {
     retry: false,
   });
 
+  // console.log(getMaps.data?.data);
+  const organization = getMaps.data?.data.organization ?? '';
+
   const maps = getMaps.data?.data.maps ?? [];
   const mapId = maps.length ? maps[0].mapId : 0;
   const mapName = maps.length ? maps[0].mapName : '';
@@ -153,7 +156,7 @@ const ManagerMain = (): JSX.Element => {
       <Drawer open={open} placement="left" maxwidth="450px" onClose={onCloseDrawer}>
         <Drawer.Inner>
           <Drawer.Header>
-            <Drawer.HeaderText>우아한형제들</Drawer.HeaderText>
+            <Drawer.HeaderText>{organization}</Drawer.HeaderText>
             <Drawer.CloseButton />
           </Drawer.Header>
           {maps.map(({ mapId, mapName, mapImageUrl }) => (
