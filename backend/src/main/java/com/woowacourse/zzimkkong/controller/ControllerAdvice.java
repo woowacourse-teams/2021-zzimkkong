@@ -14,11 +14,15 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.dao.DataAccessException;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.HttpMediaTypeNotSupportedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import javax.validation.ConstraintViolationException;
+
+import java.time.DateTimeException;
+import java.time.format.DateTimeParseException;
 
 import static com.woowacourse.zzimkkong.dto.Validator.FORMAT_MESSAGE;
 import static com.woowacourse.zzimkkong.dto.Validator.SERVER_ERROR_MESSAGE;
@@ -45,6 +49,13 @@ public class ControllerAdvice {
     public ResponseEntity<ErrorResponse> invalidParamHandler(final ConstraintViolationException exception) {
         logger.info(exception.getMessage());
         return ResponseEntity.badRequest().body(ErrorResponse.from(exception));
+    }
+
+
+    @ExceptionHandler(HttpMediaTypeNotSupportedException.class)
+    public ResponseEntity<ErrorResponse> invalidDateTimeHandler(final HttpMediaTypeNotSupportedException e) {
+        logger.info(FORMAT_MESSAGE);
+        return ResponseEntity.badRequest().body(ErrorResponse.invalidFormat());
     }
 
     @ExceptionHandler(InvalidFormatException.class)
