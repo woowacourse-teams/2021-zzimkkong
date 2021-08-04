@@ -63,7 +63,7 @@ class GuestReservationServiceTest extends ServiceTest {
                 .willReturn(reservation);
 
         //when
-        ReservationCreateResponse reservationCreateResponse = guestReservationService.saveReservation(1L, reservationCreateUpdateWithPasswordRequest);
+        ReservationCreateResponse reservationCreateResponse = guestReservationService.saveReservation(LUTHER.getId(), reservationCreateUpdateWithPasswordRequest);
 
         //then
         assertThat(reservationCreateResponse.getId()).isEqualTo(reservation.getId());
@@ -92,7 +92,7 @@ class GuestReservationServiceTest extends ServiceTest {
                                 BE)));
 
         //then
-        ReservationCreateResponse reservationCreateResponse = guestReservationService.saveReservation(1L, reservationCreateUpdateWithPasswordRequest);
+        ReservationCreateResponse reservationCreateResponse = guestReservationService.saveReservation(LUTHER.getId(), reservationCreateUpdateWithPasswordRequest);
         assertThat(reservationCreateResponse.getId()).isEqualTo(reservation.getId());
     }
 
@@ -108,7 +108,7 @@ class GuestReservationServiceTest extends ServiceTest {
                 .willReturn(reservation);
 
         //then
-        assertThatThrownBy(() -> guestReservationService.saveReservation(1L, reservationCreateUpdateWithPasswordRequest))
+        assertThatThrownBy(() -> guestReservationService.saveReservation(LUTHER.getId(), reservationCreateUpdateWithPasswordRequest))
                 .isInstanceOf(NoSuchMapException.class);
     }
 
@@ -124,7 +124,7 @@ class GuestReservationServiceTest extends ServiceTest {
                 .willReturn(reservation);
 
         //then
-        assertThatThrownBy(() -> guestReservationService.saveReservation(1L, reservationCreateUpdateWithPasswordRequest))
+        assertThatThrownBy(() -> guestReservationService.saveReservation(LUTHER.getId(), reservationCreateUpdateWithPasswordRequest))
                 .isInstanceOf(NoSuchSpaceException.class);
     }
 
@@ -145,7 +145,7 @@ class GuestReservationServiceTest extends ServiceTest {
         saveMock();
 
         //then
-        assertThatThrownBy(() -> guestReservationService.saveReservation(1L, reservationCreateUpdateWithPasswordRequest))
+        assertThatThrownBy(() -> guestReservationService.saveReservation(LUTHER.getId(), reservationCreateUpdateWithPasswordRequest))
                 .isInstanceOf(ImpossibleStartTimeException.class);
     }
 
@@ -166,7 +166,7 @@ class GuestReservationServiceTest extends ServiceTest {
         saveMock();
 
         //then
-        assertThatThrownBy(() -> guestReservationService.saveReservation(1L, reservationCreateUpdateWithPasswordRequest))
+        assertThatThrownBy(() -> guestReservationService.saveReservation(LUTHER.getId(), reservationCreateUpdateWithPasswordRequest))
                 .isInstanceOf(ImpossibleEndTimeException.class);
     }
 
@@ -187,7 +187,7 @@ class GuestReservationServiceTest extends ServiceTest {
         saveMock();
 
         //then
-        assertThatThrownBy(() -> guestReservationService.saveReservation(1L, reservationCreateUpdateWithPasswordRequest))
+        assertThatThrownBy(() -> guestReservationService.saveReservation(LUTHER.getId(), reservationCreateUpdateWithPasswordRequest))
                 .isInstanceOf(ImpossibleEndTimeException.class);
     }
 
@@ -208,7 +208,7 @@ class GuestReservationServiceTest extends ServiceTest {
         saveMock();
 
         //then
-        assertThatThrownBy(() -> guestReservationService.saveReservation(1L, reservationCreateUpdateWithPasswordRequest))
+        assertThatThrownBy(() -> guestReservationService.saveReservation(LUTHER.getId(), reservationCreateUpdateWithPasswordRequest))
                 .isInstanceOf(NonMatchingStartAndEndDateException.class);
     }
 
@@ -254,7 +254,7 @@ class GuestReservationServiceTest extends ServiceTest {
                         BE)));
 
         //then
-        assertThatThrownBy(() -> guestReservationService.saveReservation(1L, reservationCreateUpdateWithPasswordRequest))
+        assertThatThrownBy(() -> guestReservationService.saveReservation(LUTHER.getId(), reservationCreateUpdateWithPasswordRequest))
                 .isInstanceOf(ImpossibleReservationTimeException.class);
     }
 
@@ -290,7 +290,7 @@ class GuestReservationServiceTest extends ServiceTest {
                 .willReturn(Optional.of(be));
 
         // then
-        assertThatThrownBy(() -> guestReservationService.saveReservation(1L, reservationCreateUpdateWithPasswordRequest))
+        assertThatThrownBy(() -> guestReservationService.saveReservation(LUTHER.getId(), reservationCreateUpdateWithPasswordRequest))
                 .isInstanceOf(InvalidReservationEnableException.class)
                 .hasMessage("공간의 예약조건을 확인해주세요.");
     }
@@ -327,7 +327,7 @@ class GuestReservationServiceTest extends ServiceTest {
                 .willReturn(Optional.of(be));
 
         // then
-        assertThatThrownBy(() -> guestReservationService.saveReservation(1L, reservationCreateUpdateWithPasswordRequest))
+        assertThatThrownBy(() -> guestReservationService.saveReservation(LUTHER.getId(), reservationCreateUpdateWithPasswordRequest))
                 .isInstanceOf(InvalidDayOfWeekException.class);
     }
 
@@ -455,7 +455,7 @@ class GuestReservationServiceTest extends ServiceTest {
 
         //then
         ReservationFindAllResponse reservationFindAllResponse = ReservationFindAllResponse.of(findSpaces, foundReservations);
-        assertThat(guestReservationService.findAllReservations(1L, THE_DAY_AFTER_TOMORROW))
+        assertThat(guestReservationService.findAllReservations(LUTHER.getId(), THE_DAY_AFTER_TOMORROW))
                 .usingRecursiveComparison()
                 .isEqualTo(reservationFindAllResponse);
     }
@@ -526,7 +526,7 @@ class GuestReservationServiceTest extends ServiceTest {
                 .willReturn(Optional.of(reservation));
 
         //when, then
-        assertDoesNotThrow(() -> guestReservationService.updateReservation(1L, reservation.getId(), new ReservationCreateUpdateWithPasswordRequest(
+        assertDoesNotThrow(() -> guestReservationService.updateReservation(LUTHER.getId(), reservation.getId(), new ReservationCreateUpdateWithPasswordRequest(
                 1L,
                 THE_DAY_AFTER_TOMORROW.atTime(10,0),
                 THE_DAY_AFTER_TOMORROW.atTime(11,0),
@@ -557,7 +557,7 @@ class GuestReservationServiceTest extends ServiceTest {
         );
 
         //then
-        assertThatThrownBy(() -> guestReservationService.updateReservation(1L, 1L, reservationCreateUpdateWithPasswordRequest))
+        assertThatThrownBy(() -> guestReservationService.updateReservation(LUTHER.getId(), reservation.getId(), reservationCreateUpdateWithPasswordRequest))
                 .isInstanceOf(ImpossibleEndTimeException.class);
     }
 
@@ -579,7 +579,7 @@ class GuestReservationServiceTest extends ServiceTest {
         );
 
         //then
-        assertThatThrownBy(() -> guestReservationService.updateReservation(1L, 1L, reservationCreateUpdateWithPasswordRequest))
+        assertThatThrownBy(() -> guestReservationService.updateReservation(LUTHER.getId(), reservation.getId(), reservationCreateUpdateWithPasswordRequest))
                 .isInstanceOf(NonMatchingStartAndEndDateException.class);
     }
 
@@ -605,7 +605,7 @@ class GuestReservationServiceTest extends ServiceTest {
         );
 
         //then
-        assertThatThrownBy(() -> guestReservationService.updateReservation(1L, 1L, reservationCreateUpdateWithPasswordRequest))
+        assertThatThrownBy(() -> guestReservationService.updateReservation(LUTHER.getId(), reservation.getId(), reservationCreateUpdateWithPasswordRequest))
                 .isInstanceOf(ReservationPasswordException.class);
     }
 
@@ -637,7 +637,7 @@ class GuestReservationServiceTest extends ServiceTest {
         );
 
         //then
-        assertThatThrownBy(() -> guestReservationService.updateReservation(1L, 1L, reservationCreateUpdateWithPasswordRequest))
+        assertThatThrownBy(() -> guestReservationService.updateReservation(LUTHER.getId(), reservation.getId(), reservationCreateUpdateWithPasswordRequest))
                 .isInstanceOf(ImpossibleReservationTimeException.class);
     }
 
@@ -668,7 +668,7 @@ class GuestReservationServiceTest extends ServiceTest {
         //then
         assertThatThrownBy(() -> guestReservationService.updateReservation(
                 LUTHER.getId(),
-                1L,
+                reservation.getId(),
                 reservationCreateUpdateWithPasswordRequest))
                 .isInstanceOf(ConflictSpaceSettingException.class);
     }
@@ -707,7 +707,7 @@ class GuestReservationServiceTest extends ServiceTest {
                 .willReturn(Optional.of(reservation));
 
         // then
-        assertThatThrownBy(() -> guestReservationService.updateReservation(1L, 1L, reservationCreateUpdateWithPasswordRequest))
+        assertThatThrownBy(() -> guestReservationService.updateReservation(LUTHER.getId(), reservation.getId(), reservationCreateUpdateWithPasswordRequest))
                 .isInstanceOf(InvalidReservationEnableException.class);
     }
 
@@ -745,7 +745,7 @@ class GuestReservationServiceTest extends ServiceTest {
                 .willReturn(Optional.of(reservation));
 
         // then
-        assertThatThrownBy(() -> guestReservationService.updateReservation(1L, 1L, reservationCreateUpdateWithPasswordRequest))
+        assertThatThrownBy(() -> guestReservationService.updateReservation(LUTHER.getId(), reservation.getId(), reservationCreateUpdateWithPasswordRequest))
                 .isInstanceOf(InvalidDayOfWeekException.class);
     }
 
@@ -762,7 +762,7 @@ class GuestReservationServiceTest extends ServiceTest {
                         BE)));
 
         //then
-        assertDoesNotThrow(() -> guestReservationService.deleteReservation(1L, 1L, RESERVATION_PASSWORD_AUTHENTICATION_REQUEST));
+        assertDoesNotThrow(() -> guestReservationService.deleteReservation(LUTHER.getId(), reservation.getId(), RESERVATION_PASSWORD_AUTHENTICATION_REQUEST));
     }
 
     @Test
@@ -775,7 +775,7 @@ class GuestReservationServiceTest extends ServiceTest {
                 .willReturn(Optional.empty());
 
         //then
-        assertThatThrownBy(() -> guestReservationService.deleteReservation(1L, 1L, RESERVATION_PASSWORD_AUTHENTICATION_REQUEST))
+        assertThatThrownBy(() -> guestReservationService.deleteReservation(LUTHER.getId(), reservation.getId(), RESERVATION_PASSWORD_AUTHENTICATION_REQUEST))
                 .isInstanceOf(NoSuchReservationException.class);
     }
 
@@ -796,7 +796,7 @@ class GuestReservationServiceTest extends ServiceTest {
                         BE)));
 
         //then
-        assertThatThrownBy(() -> guestReservationService.deleteReservation(1L, 1L, reservationPasswordAuthenticationRequest))
+        assertThatThrownBy(() -> guestReservationService.deleteReservation(LUTHER.getId(), reservation.getId(), reservationPasswordAuthenticationRequest))
                 .isInstanceOf(ReservationPasswordException.class);
     }
 

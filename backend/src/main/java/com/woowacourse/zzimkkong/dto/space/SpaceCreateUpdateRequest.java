@@ -1,5 +1,6 @@
 package com.woowacourse.zzimkkong.dto.space;
 
+import javax.validation.Valid;
 import javax.validation.constraints.NotBlank;
 
 import static com.woowacourse.zzimkkong.dto.Validator.EMPTY_MESSAGE;
@@ -11,6 +12,7 @@ public class SpaceCreateUpdateRequest {
     private String description;
     @NotBlank(message = EMPTY_MESSAGE)
     private String area;
+    @Valid
     private SettingsRequest settingsRequest;
     @NotBlank(message = EMPTY_MESSAGE)
     private String mapImage;    // todo mapImageSvg로 칼럼명 통일

@@ -1,6 +1,7 @@
 package com.woowacourse.zzimkkong.dto.space;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
+import com.woowacourse.zzimkkong.dto.DayOfWeekConstraint;
 
 import java.time.LocalTime;
 
@@ -12,6 +13,7 @@ public class SettingsRequest {
     private Integer reservationMinimumTimeUnit = 10;
     private Integer reservationMaximumTimeUnit = 1440;
     private Boolean reservationEnable = true;
+    @DayOfWeekConstraint
     private String enabledDayOfWeek = "monday, tuesday, wednesday, thursday, friday, saturday, sunday";
 
     public SettingsRequest() {

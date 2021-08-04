@@ -17,7 +17,7 @@ import java.util.stream.Collectors;
 @DynamicUpdate
 @Entity
 public class Space {
-    private static final String DELIMITER = ", ";
+    public static final String DELIMITER = ", ";
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
