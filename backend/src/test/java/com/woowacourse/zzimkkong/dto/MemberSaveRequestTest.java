@@ -67,7 +67,7 @@ class MemberSaveRequestTest extends RequestTest {
     }
 
     @ParameterizedTest
-    @CsvSource(value = {"hihellomorethantwenty:true", "한글조직:false", "hihello:false"}, delimiter = ':')
+    @CsvSource(value = {"hihellomorethantwenty:true", "한글조직:false", "hihello:false", "안 녕 하 세 요:false", "ㄱㄴ 힣 ㄷㄹ:false"}, delimiter = ':')
     @DisplayName("회원가입 조직명에 옳지 않은 형식의 문자열이 들어오면 처리한다.")
     public void invalidOrganization(String organization, boolean flag) {
         MemberSaveRequest memberSaveRequest = new MemberSaveRequest("email@email.com", "password", organization);

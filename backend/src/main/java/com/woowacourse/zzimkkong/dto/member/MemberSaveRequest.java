@@ -17,7 +17,7 @@ public class MemberSaveRequest {
     private String password;
 
     @NotNull(message = EMPTY_MESSAGE)
-    @Pattern(regexp = NAMING_FORMAT, message = ORGANIZATION_MESSAGE)
+    @Pattern(regexp = ORGANIZATION_FORMAT, message = ORGANIZATION_MESSAGE)
     private String organization;
 
     public MemberSaveRequest() {
