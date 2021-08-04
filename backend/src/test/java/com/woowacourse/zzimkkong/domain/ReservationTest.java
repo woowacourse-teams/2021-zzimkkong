@@ -9,11 +9,10 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 
-import static com.woowacourse.zzimkkong.CommonFixture.THE_DAY_AFTER_TOMORROW;
+import static com.woowacourse.zzimkkong.Constants.THE_DAY_AFTER_TOMORROW;
 import static org.assertj.core.api.Assertions.assertThat;
 
 class ReservationTest {
-
     private Reservation reservation;
 
     @BeforeEach
