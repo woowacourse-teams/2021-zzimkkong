@@ -1,7 +1,5 @@
 package com.woowacourse.zzimkkong;
 
-import com.woowacourse.zzimkkong.domain.Member;
-
 import java.time.LocalDate;
 import java.time.LocalTime;
 
@@ -22,6 +20,7 @@ public class Constants {
     public static final String SMALL_HOUSE_NAME = "작은집";
     public static final String MAP_DRAWING_DATA =
             "{'id': '1', 'type': 'polyline', 'fill': '', 'stroke': 'rgba(111, 111, 111, 1)', 'points': '['60,250', '1,231', '242,252']', 'd': '[]', 'transform': ''}";
+
     public static final LocalTime BE_AVAILABLE_START_TIME = LocalTime.of(0, 0);
     public static final LocalTime BE_AVAILABLE_END_TIME = LocalTime.of(18, 0);
     public static final Integer BE_RESERVATION_TIME_UNIT = 10;
@@ -29,6 +28,7 @@ public class Constants {
     public static final Integer BE_RESERVATION_MAXIMUM_TIME_UNIT = 1440;
     public static final Boolean BE_RESERVATION_ENABLE = true;
     public static final String BE_ENABLED_DAY_OF_WEEK = "monday,tuesday,wednesday,thursday,friday,saturday,sunday";
+
     public static final LocalTime FE_AVAILABLE_START_TIME = LocalTime.of(0, 0);
     public static final LocalTime FE_AVAILABLE_END_TIME = LocalTime.of(18, 0);
     public static final Integer FE_RESERVATION_TIME_UNIT = 10;
@@ -36,13 +36,11 @@ public class Constants {
     public static final Integer FE_RESERVATION_MAXIMUM_TIME_UNIT = 1440;
     public static final Boolean FE_RESERVATION_ENABLE = true;
     public static final String FE_ENABLED_DAY_OF_WEEK = "monday,tuesday,wednesday,thursday,friday,saturday,sunday";
+
     public static final String BE_NAME = "백엔드 강의실";
     public static final String BE_COLOR = "#FED7D9";
     public static final String BE_DESCRIPTION = "시니컬하네";
     public static final String FE_NAME = "프론트엔드 강의실1";
     public static final String FE_COLOR = "#FFCCCC";
     public static final String FE_DESCRIPTION = "시니컬하네";
-    public static Member POBI = new Member(EMAIL, PASSWORD, ORGANIZATION);
-    public static Member JASON = new Member("jason@test.com", PASSWORD, ORGANIZATION);
-
 }

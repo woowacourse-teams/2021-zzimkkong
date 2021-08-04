@@ -26,6 +26,7 @@ public class ReservationFindAllResponse {
     public static ReservationFindAllResponse of(final List<Space> spaces, final List<Reservation> reservations) {
         Map<Space, List<Reservation>> reservationGroups = reservations.stream()
                 .collect(Collectors.groupingBy(Reservation::getSpace));
+
         spaces.stream()
                 .filter(space -> !reservationGroups.containsKey(space))
                 .forEach(space -> reservationGroups.put(space, Collections.emptyList()));
