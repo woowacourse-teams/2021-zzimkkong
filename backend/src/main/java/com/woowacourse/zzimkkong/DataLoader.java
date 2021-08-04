@@ -40,7 +40,7 @@ public class DataLoader implements CommandLineRunner {
 
         Map luther = maps.save(
                 // todo 에디터로 만든 png 데이터를 넣기
-                new Map("루터회관", "mapDrawingData", "mapImageData", pobi)
+                new Map("루터회관", "mapDrawingData", "https://zzimkkong-personal.s3.ap-northeast-2.amazonaws.com/thumbnails/dummy_luther.png", pobi)
         );
 
         Setting defaultSetting = new Setting.Builder()
@@ -59,7 +59,7 @@ public class DataLoader implements CommandLineRunner {
                 .color("#FED7D9")
                 .coordinate("100, 90")
                 .map(luther)
-                .mapImage("mapImageData")
+                .mapImage("https://zzimkkong-personal.s3.ap-northeast-2.amazonaws.com/thumbnails/dummy_luther.png")
                 .setting(defaultSetting)
                 .build();
 
@@ -69,7 +69,7 @@ public class DataLoader implements CommandLineRunner {
                 .color("#FED7D9")
                 .coordinate("560, 40")
                 .map(luther)
-                .mapImage("mapImageData")
+                .mapImage("https://zzimkkong-personal.s3.ap-northeast-2.amazonaws.com/thumbnails/dummy_luther.png")
                 .setting(defaultSetting)
                 .build();
 
@@ -79,7 +79,7 @@ public class DataLoader implements CommandLineRunner {
                 .color("#FED7D9")
                 .coordinate("560, 140")
                 .map(luther)
-                .mapImage("mapImageData")
+                .mapImage("https://zzimkkong-personal.s3.ap-northeast-2.amazonaws.com/thumbnails/dummy_luther.png")
                 .setting(defaultSetting)
                 .build();
 
@@ -89,7 +89,7 @@ public class DataLoader implements CommandLineRunner {
                 .color("#FFE3AC")
                 .coordinate("29, 229")
                 .map(luther)
-                .mapImage("mapImageData")
+                .mapImage("https://zzimkkong-personal.s3.ap-northeast-2.amazonaws.com/thumbnails/dummy_luther.png")
                 .setting(defaultSetting)
                 .build();
 
@@ -99,7 +99,7 @@ public class DataLoader implements CommandLineRunner {
                 .color("#FFE3AC")
                 .coordinate("88, 229")
                 .map(luther)
-                .mapImage("mapImageData")
+                .mapImage("https://zzimkkong-personal.s3.ap-northeast-2.amazonaws.com/thumbnails/dummy_luther.png")
                 .setting(defaultSetting)
                 .build();
 
@@ -109,7 +109,7 @@ public class DataLoader implements CommandLineRunner {
                 .color("#FFE3AC")
                 .coordinate("510, 220")
                 .map(luther)
-                .mapImage("mapImageData")
+                .mapImage("https://zzimkkong-personal.s3.ap-northeast-2.amazonaws.com/thumbnails/dummy_luther.png")
                 .setting(defaultSetting)
                 .build();
 
@@ -119,7 +119,7 @@ public class DataLoader implements CommandLineRunner {
                 .color("#FFE3AC")
                 .coordinate("584, 220")
                 .map(luther)
-                .mapImage("mapImageData")
+                .mapImage("https://zzimkkong-personal.s3.ap-northeast-2.amazonaws.com/thumbnails/dummy_luther.png")
                 .setting(defaultSetting)
                 .build();
 
@@ -129,7 +129,7 @@ public class DataLoader implements CommandLineRunner {
                 .color("#FFE3AC")
                 .coordinate("668, 335")
                 .map(luther)
-                .mapImage("mapImageData")
+                .mapImage("https://zzimkkong-personal.s3.ap-northeast-2.amazonaws.com/thumbnails/dummy_luther.png")
                 .setting(defaultSetting)
                 .build();
 
@@ -139,7 +139,7 @@ public class DataLoader implements CommandLineRunner {
                 .color("#CCDFFB")
                 .coordinate("208, 289")
                 .map(luther)
-                .mapImage("mapImageData")
+                .mapImage("https://zzimkkong-personal.s3.ap-northeast-2.amazonaws.com/thumbnails/dummy_luther.png")
                 .setting(defaultSetting)
                 .build();
 
@@ -149,7 +149,7 @@ public class DataLoader implements CommandLineRunner {
                 .color("#CCDFFB")
                 .coordinate("208, 318")
                 .map(luther)
-                .mapImage("mapImageData")
+                .mapImage("https://zzimkkong-personal.s3.ap-northeast-2.amazonaws.com/thumbnails/dummy_luther.png")
                 .setting(defaultSetting)
                 .build();
 
@@ -159,7 +159,7 @@ public class DataLoader implements CommandLineRunner {
                 .color("#CCDFFB")
                 .coordinate("208, 347")
                 .map(luther)
-                .mapImage("mapImageData")
+                .mapImage("https://zzimkkong-personal.s3.ap-northeast-2.amazonaws.com/thumbnails/dummy_luther.png")
                 .setting(defaultSetting)
                 .build();
 
@@ -169,7 +169,7 @@ public class DataLoader implements CommandLineRunner {
                 .color("#CCDFFB")
                 .coordinate("208, 376")
                 .map(luther)
-                .mapImage("mapImageData")
+                .mapImage("https://zzimkkong-personal.s3.ap-northeast-2.amazonaws.com/thumbnails/dummy_luther.png")
                 .setting(defaultSetting)
                 .build();
 
@@ -179,7 +179,7 @@ public class DataLoader implements CommandLineRunner {
                 .color("#CCDFFB")
                 .coordinate("208, 404")
                 .map(luther)
-                .mapImage("mapImageData")
+                .mapImage("https://zzimkkong-personal.s3.ap-northeast-2.amazonaws.com/thumbnails/dummy_luther.png")
                 .setting(defaultSetting)
                 .build();
 
@@ -189,7 +189,7 @@ public class DataLoader implements CommandLineRunner {
                 .color("#D8FBCC")
                 .coordinate("259, 336")
                 .map(luther)
-                .mapImage("mapImageData")
+                .mapImage("https://zzimkkong-personal.s3.ap-northeast-2.amazonaws.com/thumbnails/dummy_luther.png")
                 .setting(defaultSetting)
                 .build();
 
