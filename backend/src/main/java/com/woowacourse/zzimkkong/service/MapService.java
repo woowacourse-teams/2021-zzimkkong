@@ -30,6 +30,9 @@ import static java.util.stream.Collectors.toList;
 @Service
 @Transactional
 public class MapService {
+    public static final String THUMBNAILS_DIRECTORY_NAME = "thumbnails";
+    public static final String THUMBNAIL_EXTENSION = ".png";
+
     private final MapRepository maps;
     private final SpaceRepository spaces;
     private final ReservationRepository reservations;
@@ -108,6 +111,8 @@ public class MapService {
         validateExistReservations(mapId);
 
         maps.deleteById(mapId);
+
+        deleteThumbnail(map);
     }
 
     private void validateExistReservations(Long mapId) {
@@ -129,9 +134,14 @@ public class MapService {
 
     private String uploadPngToS3(final String svgData, final String fileName) {
         File pngFile = svgConverter.convertSvgToPngFile(svgData, fileName);
-        String thumbnailUrl = storageUploader.upload("thumbnails", pngFile);
+        String thumbnailUrl = storageUploader.upload(THUMBNAILS_DIRECTORY_NAME, pngFile);
         pngFile.delete();
         return thumbnailUrl;
+    }
+
+    private void deleteThumbnail(Map map) {
+        String fileName = map.getId().toString();
+        storageUploader.delete(THUMBNAILS_DIRECTORY_NAME, fileName + THUMBNAIL_EXTENSION);
     }
 
     public MapFindResponse findMapByPublicMapId(String publicMapId) {
