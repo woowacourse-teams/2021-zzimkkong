@@ -291,7 +291,8 @@ class GuestReservationServiceTest extends ServiceTest {
 
         // then
         assertThatThrownBy(() -> guestReservationService.saveReservation(1L, reservationCreateUpdateWithPasswordRequest))
-                .isInstanceOf(IllegalSpaceToReserveException.class);
+                .isInstanceOf(InvalidReservationEnableException.class)
+                .hasMessage("공간의 예약조건을 확인해주세요.");
     }
 
     @Test
@@ -325,8 +326,9 @@ class GuestReservationServiceTest extends ServiceTest {
         given(spaces.findById(anyLong()))
                 .willReturn(Optional.of(be));
 
+        // then
         assertThatThrownBy(() -> guestReservationService.saveReservation(1L, reservationCreateUpdateWithPasswordRequest))
-                .isInstanceOf(IllegalDayOfWeekException.class);
+                .isInstanceOf(InvalidDayOfWeekException.class);
     }
 
     @Test
@@ -706,7 +708,7 @@ class GuestReservationServiceTest extends ServiceTest {
 
         // then
         assertThatThrownBy(() -> guestReservationService.updateReservation(1L, 1L, reservationCreateUpdateWithPasswordRequest))
-                .isInstanceOf(IllegalSpaceToReserveException.class);
+                .isInstanceOf(InvalidReservationEnableException.class);
     }
 
     @Test
@@ -742,8 +744,9 @@ class GuestReservationServiceTest extends ServiceTest {
         given(reservations.findById(anyLong()))
                 .willReturn(Optional.of(reservation));
 
+        // then
         assertThatThrownBy(() -> guestReservationService.updateReservation(1L, 1L, reservationCreateUpdateWithPasswordRequest))
-                .isInstanceOf(IllegalDayOfWeekException.class);
+                .isInstanceOf(InvalidDayOfWeekException.class);
     }
 
     @Test

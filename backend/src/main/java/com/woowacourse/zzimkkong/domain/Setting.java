@@ -24,7 +24,6 @@ public class Setting {
     @Column(nullable = false)
     private Boolean reservationEnable;
 
-    // TODO: ENUMERATED 데이터 타입으로 변경하기
     @Column(nullable = true)
     private String enabledDayOfWeek;
 
@@ -111,8 +110,8 @@ public class Setting {
             return this;
         }
 
-        public Setting.Builder enabledDayOfWeek(String inputEnabledWeekdays) {
-            enabledDayOfWeek = inputEnabledWeekdays;
+        public Setting.Builder enabledDayOfWeek(String inputEnabledDayOfWeek) {
+            enabledDayOfWeek = inputEnabledDayOfWeek;
             return this;
         }
 

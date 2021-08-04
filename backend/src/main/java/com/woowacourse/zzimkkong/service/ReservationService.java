@@ -5,7 +5,7 @@ import com.woowacourse.zzimkkong.domain.Space;
 import com.woowacourse.zzimkkong.dto.reservation.ReservationCreateUpdateRequest;
 import com.woowacourse.zzimkkong.exception.map.NoSuchMapException;
 import com.woowacourse.zzimkkong.exception.reservation.*;
-import com.woowacourse.zzimkkong.exception.reservation.IllegalSpaceToReserveException;
+import com.woowacourse.zzimkkong.exception.reservation.InvalidReservationEnableException;
 import com.woowacourse.zzimkkong.infrastructure.TimeConverter;
 import com.woowacourse.zzimkkong.repository.MapRepository;
 import com.woowacourse.zzimkkong.repository.ReservationRepository;
@@ -99,13 +99,13 @@ public abstract class ReservationService {
 
     private void validateReservationEnabled(final Space space) {
         if (space.isUnableToReserve()) {
-            throw new IllegalSpaceToReserveException();
+            throw new InvalidReservationEnableException();
         }
     }
 
     private void validateEnabledDayOfWeek(final Space space, final LocalDateTime startDateTime) {
         if (space.isClosedOn(startDateTime.getDayOfWeek())) {
-            throw new IllegalDayOfWeekException();
+            throw new InvalidDayOfWeekException();
         }
     }
 
