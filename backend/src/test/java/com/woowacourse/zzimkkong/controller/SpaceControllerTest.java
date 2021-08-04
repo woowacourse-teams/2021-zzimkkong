@@ -28,33 +28,41 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.restdocs.restassured3.RestAssuredRestDocumentation.document;
 
 public class SpaceControllerTest extends AcceptanceTest {
+    private String spaceSaveApi;
+    private Long beSpaceId;
+    private Long feSpaceId;
+
     @BeforeEach
     void setUp() {
         saveMember(memberSaveRequest);
         saveMap("/api/managers/maps", mapCreateRequest);
+        spaceSaveApi = "/api/managers/maps/" + LUTHER.getId() + "/spaces";
+        ExtractableResponse<Response> saveBeSpaceResponse = saveSpace(spaceSaveApi, beSpaceCreateUpdateRequest);
+        ExtractableResponse<Response> saveFe1SpaceResponse = saveSpace(spaceSaveApi, feSpaceCreateUpdateRequest);
 
-        SettingsRequest settingsRequest = new SettingsRequest(
-                LocalTime.of(0, 0),
-                LocalTime.of(18, 0),
-                10,
-                10,
-                1440,
-                true,
-                null
-        );
+        beSpaceId = Long.valueOf(saveBeSpaceResponse.header("location").split("/")[6]);
+        feSpaceId = Long.valueOf(saveFe1SpaceResponse.header("location").split("/")[6]);
 
-        SpaceCreateUpdateRequest spaceCreateUpdateRequest = new SpaceCreateUpdateRequest(
-                "백엔드 강의실",
-                "시니컬하네",
-                SPACE_DRAWING,
-                settingsRequest,
-                MAP_SVG
-        );
-        String saveSpaceApi = "/api/managers/maps/1/spaces";
-        saveSpace(saveSpaceApi, spaceCreateUpdateRequest);
+        BE = new Space.Builder()
+                .id(beSpaceId)
+                .name("백엔드 강의실")
+                .map(LUTHER)
+                .description("시니컬하네")
+                .area(SPACE_DRAWING)
+                .setting(BE_SETTING)
+                .build();
+
+        FE1 = new Space.Builder()
+                .id(feSpaceId)
+                .name("프론트엔드 강의실1")
+                .map(LUTHER)
+                .description("시니컬하네")
+                .area(SPACE_DRAWING)
+                .setting(FE_SETTING)
+                .build();
     }
 
-    @DisplayName("올바른 토큰이 주어질 때, space 정보가 들어오면 space를 저장한다")
+    @DisplayName("space 정보가 들어오면 space를 저장한다")
     @Test
     void save() {
         // given
@@ -70,21 +78,20 @@ public class SpaceControllerTest extends AcceptanceTest {
 
         SpaceCreateUpdateRequest newSpaceCreateUpdateRequest = new SpaceCreateUpdateRequest(
                 "잠실우리집",
+                "#CCFFE5",
                 "우리집",
                 SPACE_DRAWING,
-                newSettingsRequest,
-                MAP_SVG
+                newSettingsRequest
         );
 
         // when
-        String saveSpaceApi = "/api/managers/maps/1/spaces";
-        ExtractableResponse<Response> response = saveSpace(saveSpaceApi, newSpaceCreateUpdateRequest);
+        ExtractableResponse<Response> response = saveSpace(spaceSaveApi, newSpaceCreateUpdateRequest);
 
         // then
         assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
     }
 
-    @DisplayName("올바른 토큰이 주어질 때, space 정보 중 주어지지 않은 필드를 디폴트 값으로 저장한다")
+    @DisplayName("space 정보 중 주어지지 않은 필드를 디폴트 값으로 저장한다")
     @Test
     void save_default() {
         // given, when
@@ -100,10 +107,10 @@ public class SpaceControllerTest extends AcceptanceTest {
 
         SpaceCreateUpdateRequest defaultSpaceCreateUpdateRequest = new SpaceCreateUpdateRequest(
                 "잠실우리집",
+                "#CCFFE5",
                 "우리집",
                 SPACE_DRAWING,
-                settingsRequest,
-                MAP_SVG
+                settingsRequest
         );
 
         Setting defaultSetting = new Setting.Builder()
@@ -117,16 +124,14 @@ public class SpaceControllerTest extends AcceptanceTest {
                 .build();
 
         Space defaultSpace = new Space.Builder()
-                .id(2L)
-                .name("잠실우리집")
-                .description("우리집")
-                .area(SPACE_DRAWING)
+                .name(defaultSpaceCreateUpdateRequest.getSpaceName())
+                .color(defaultSpaceCreateUpdateRequest.getColor())
+                .description(defaultSpaceCreateUpdateRequest.getDescription())
                 .setting(defaultSetting)
-                .mapImage(MAP_SVG)
+                .area(SPACE_DRAWING)
                 .build();
 
-        String saveSpaceApi = "/api/managers/maps/1/spaces";
-        ExtractableResponse<Response> response = saveSpace(saveSpaceApi, defaultSpaceCreateUpdateRequest);
+        ExtractableResponse<Response> response = saveSpace(spaceSaveApi, defaultSpaceCreateUpdateRequest);
 
         // then
         String api = response.header("location");
@@ -140,11 +145,11 @@ public class SpaceControllerTest extends AcceptanceTest {
                 .isEqualTo(expectedSpaceFindDetailResponse);
     }
 
-    @DisplayName("올바른 토큰이 주어질 때, spaceId를 받아 해당 공간에 대한 정보를 조회한다.")
+    @DisplayName("spaceId를 받아 해당 공간에 대한 정보를 조회한다.")
     @Test
     void find() {
         // given, when
-        String api = "/api/managers/maps/1/spaces/1";
+        String api = spaceSaveApi + "/" + beSpaceId;
         ExtractableResponse<Response> response = findSpace(api);
         SpaceFindDetailResponse actual = response.body().as(SpaceFindDetailResponse.class);
         SpaceFindDetailResponse expected = SpaceFindDetailResponse.from(BE);
@@ -157,33 +162,11 @@ public class SpaceControllerTest extends AcceptanceTest {
                 .isEqualTo(expected);
     }
 
-    @DisplayName("올바른 토큰이 주어질 때, 전체 공간에 대한 정보를 조회한다.")
+    @DisplayName("전체 공간에 대한 정보를 조회한다.")
     @Test
     void findAll() {
-        // given
-        SettingsRequest feSettingsRequest = new SettingsRequest(
-                LocalTime.of(0, 0),
-                LocalTime.of(18, 0),
-                10,
-                10,
-                1440,
-                true,
-                null
-        );
-
-        SpaceCreateUpdateRequest feSpaceCreateUpdateRequest = new SpaceCreateUpdateRequest(
-                "프론트엔드 강의실1",
-                "시니컬하네",
-                SPACE_DRAWING,
-                feSettingsRequest,
-                MAP_SVG
-        );
-
-        String api = "/api/managers/maps/1/spaces";
-        saveSpace(api, feSpaceCreateUpdateRequest);
-
-        // when
-        ExtractableResponse<Response> response = findAllSpace(api);
+        // given, when
+        ExtractableResponse<Response> response = findAllSpace(spaceSaveApi);
         SpaceFindAllResponse actual = response.body().as(SpaceFindAllResponse.class);
         SpaceFindAllResponse expected = SpaceFindAllResponse.from(List.of(BE, FE1));
 
@@ -194,7 +177,7 @@ public class SpaceControllerTest extends AcceptanceTest {
                 .isEqualTo(expected);
     }
 
-    @DisplayName("올바른 토큰이 주어질 때, 공간을 수정한다.")
+    @DisplayName("공간을 수정한다.")
     @Test
     void update() {
         // given, when
@@ -210,24 +193,24 @@ public class SpaceControllerTest extends AcceptanceTest {
 
         SpaceCreateUpdateRequest updateSpaceCreateUpdateRequest = new SpaceCreateUpdateRequest(
                 "바다",
+                "#CCCCFF",
                 "장미아파트",
                 SPACE_DRAWING,
-                settingsRequest,
-                MAP_SVG
+                settingsRequest
         );
 
-        String api = "/api/managers/maps/" + LUTHER.getId() + "/spaces/1";
+        String api = "/api/managers/maps/" + LUTHER.getId() + "/spaces/" + beSpaceId;
         ExtractableResponse<Response> response = updateSpace(api, updateSpaceCreateUpdateRequest);
 
         // then
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
     }
 
-    @DisplayName("올바른 토큰이 주어질 때, 공간을 삭제한다.")
+    @DisplayName("공간을 삭제한다.")
     @Test
     void delete() {
         // given, when
-        String api = "/api/managers/maps/" + LUTHER.getId() + "/spaces/1";
+        String api = "/api/managers/maps/" + LUTHER.getId() + "/spaces/" + beSpaceId;
         ExtractableResponse<Response> response = deleteSpace(api);
 
         // then
