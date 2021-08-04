@@ -72,33 +72,15 @@ public class Space {
         this.mapImage = updateSpace.mapImage;
     }
 
-    public void validateTimeUnit(final LocalDateTime startDateTime, final LocalDateTime endDateTime) {
-        int durationMinutes = (int) ChronoUnit.MINUTES.between(startDateTime, endDateTime);
-
-        validateStartTimeByTimeUnit(startDateTime.getMinute());
-        validateConferenceTimeByTimeUnit(durationMinutes);
-        validateMinimumMaximumTimeUnit(durationMinutes);
+    public boolean isCorrectTimeUnit(int minute) {
+        return minute != 0 && isNotDivideBy(minute);
     }
 
-    private void validateStartTimeByTimeUnit(int minute) {
-        if (minute != 0 && isNotDivideBy(minute)) {
-            throw new InvalidTimeUnitException();
-        }
+    public boolean isCorrectMinimumMaximumTimeUnit(int durationMinutes) {
+        return durationMinutes < getReservationMinimumTimeUnit() || durationMinutes > getReservationMaximumTimeUnit();
     }
 
-    private void validateConferenceTimeByTimeUnit(int durationMinutes) {
-        if(isNotDivideBy(durationMinutes)) {
-            throw new InvalidTimeUnitException();
-        }
-    }
-
-    private void validateMinimumMaximumTimeUnit(int durationMinutes) {
-        if(durationMinutes < getReservationMinimumTimeUnit() || durationMinutes > getReservationMaximumTimeUnit()) {
-            throw new InvalidConferenceTimeException();
-        }
-    }
-
-    private boolean isNotDivideBy(int minute) {
+    public boolean isNotDivideBy(int minute) {
         return minute % getReservationTimeUnit() != 0;
     }
 

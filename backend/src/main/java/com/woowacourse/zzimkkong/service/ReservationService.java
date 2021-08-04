@@ -16,6 +16,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
@@ -64,11 +65,7 @@ public abstract class ReservationService {
         LocalDateTime startDateTime = reservationCreateUpdateRequest.getStartDateTime();
         LocalDateTime endDateTime = reservationCreateUpdateRequest.getEndDateTime();
 
-        if (space.isNotBetweenAvailableTime(startDateTime, endDateTime)) {
-            throw new ConflictSpaceSettingException();
-        }
-
-        space.validateTimeUnit(startDateTime, endDateTime);
+        validSpaceSetting(space, startDateTime, endDateTime);
 
         List<Reservation> reservationsOnDate = getReservations(
                 Collections.singletonList(space),
@@ -85,17 +82,29 @@ public abstract class ReservationService {
         LocalDateTime startDateTime = reservationCreateUpdateRequest.getStartDateTime();
         LocalDateTime endDateTime = reservationCreateUpdateRequest.getEndDateTime();
 
-        if (space.isNotBetweenAvailableTime(startDateTime, endDateTime)) {
-            throw new ConflictSpaceSettingException();
-        }
-
-        space.validateTimeUnit(startDateTime, endDateTime);
+        validSpaceSetting(space, startDateTime, endDateTime);
 
         List<Reservation> reservationsOnDate = getReservations(
                 Collections.singletonList(space),
                 startDateTime.toLocalDate());
 
         validateTimeConflicts(startDateTime, endDateTime, reservationsOnDate);
+    }
+
+    private void validSpaceSetting(Space space, LocalDateTime startDateTime, LocalDateTime endDateTime) {
+        int durationMinutes = (int) ChronoUnit.MINUTES.between(startDateTime, endDateTime);
+
+        if (space.isCorrectTimeUnit(startDateTime.getMinute()) | space.isNotDivideBy(durationMinutes)) {
+            throw new InvalidTimeUnitException();
+        }
+
+        if (space.isCorrectMinimumMaximumTimeUnit(durationMinutes)) {
+            throw new InvalidConferenceTimeException();
+        }
+
+        if (space.isNotBetweenAvailableTime(startDateTime, endDateTime)) {
+            throw new ConflictSpaceSettingException();
+        }
     }
 
     private void excludeTargetReservation(final Space space, final Reservation reservation, final List<Reservation> reservationsOnDate) {
