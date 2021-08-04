@@ -93,20 +93,8 @@ public class Space {
         return name;
     }
 
-    public String getTextPosition() {
-        return textPosition;
-    }
-
     public String getColor() {
         return color;
-    }
-
-    public String getCoordinate() {
-        return coordinate;
-    }
-
-    public Map getMap() {
-        return map;
     }
 
     public String getDescription() {
@@ -115,6 +103,14 @@ public class Space {
 
     public String getArea() {
         return area;
+    }
+
+    public String getTextPosition() {
+        return textPosition;
+    }
+
+    public String getCoordinate() {
+        return coordinate;
     }
 
     public LocalTime getAvailableEndTime() {
@@ -145,7 +141,12 @@ public class Space {
         return setting.getDisabledWeekdays();
     }
 
+    public Map getMap() {
+        return map;
+    }
+
     public static class Builder {
+
         private Long id = null;
         private String name = null;
         private String textPosition = null;
