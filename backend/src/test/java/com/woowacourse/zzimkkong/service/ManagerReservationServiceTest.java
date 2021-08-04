@@ -227,14 +227,14 @@ public class ManagerReservationServiceTest extends ServiceTest {
     }
 
     @ParameterizedTest
-    @CsvSource(value = {"0:1", "1:0"}, delimiter = ':')
+    @CsvSource(value = {"0:1", "22:23"}, delimiter = ':')
     @DisplayName("예약 생성 요청 시, 공간의 예약가능 시간이 아니라면 예외가 발생한다.")
-    void saveInvalidTimeSetting(int minusStartTime, int plusEndTime) {
+    void saveInvalidTimeSetting(int startTime, int endTime) {
         //given
         reservationCreateUpdateWithPasswordRequest = new ReservationCreateUpdateWithPasswordRequest(
                 BE.getId(),
-                THE_DAY_AFTER_TOMORROW.atTime(BE_SETTING.getAvailableStartTime().minusMinutes(minusStartTime)),
-                THE_DAY_AFTER_TOMORROW.atTime(BE_SETTING.getAvailableEndTime().plusMinutes(plusEndTime)),
+                THE_DAY_AFTER_TOMORROW.atTime(startTime, 0),
+                THE_DAY_AFTER_TOMORROW.atTime(endTime, 30),
                 RESERVATION_PASSWORD,
                 USER_NAME,
                 DESCRIPTION
@@ -248,7 +248,7 @@ public class ManagerReservationServiceTest extends ServiceTest {
                 LUTHER.getId(),
                 reservationCreateUpdateWithPasswordRequest,
                 POBI))
-                .isInstanceOf(ConflictSpaceSettingException.class);
+                .isInstanceOf(InvalidStartEndTimeException.class);
     }
 
     @DisplayName("예약 생성 요청 시, 이미 겹치는 시간이 존재하면 예외가 발생한다.")
@@ -822,9 +822,9 @@ public class ManagerReservationServiceTest extends ServiceTest {
     }
 
     @ParameterizedTest
-    @CsvSource(value = {"0:1", "1:0"}, delimiter = ':')
+    @CsvSource(value = {"0:1", "22:23"}, delimiter = ':')
     @DisplayName("예약 수정 요청 시, 공간의 예약가능 시간이 아니라면 에러가 발생한다.")
-    void updateInvalidTimeSetting(int minusStartTime, int plusEndTime) {
+    void updateInvalidTimeSetting(int startTime, int endTime) {
         //given
         given(maps.existsById(anyLong()))
                 .willReturn(true);
@@ -838,8 +838,8 @@ public class ManagerReservationServiceTest extends ServiceTest {
         //when
         ReservationCreateUpdateRequest reservationCreateUpdateRequest = new ReservationCreateUpdateRequest(
                 BE.getId(),
-                THE_DAY_AFTER_TOMORROW.atTime(BE_SETTING.getAvailableStartTime().minusMinutes(minusStartTime)),
-                THE_DAY_AFTER_TOMORROW.atTime(BE_SETTING.getAvailableEndTime().plusMinutes(plusEndTime)),
+                THE_DAY_AFTER_TOMORROW.atTime(startTime, 0),
+                THE_DAY_AFTER_TOMORROW.atTime(endTime,30),
                 CHANGED_NAME,
                 CHANGED_DESCRIPTION
         );
@@ -850,7 +850,7 @@ public class ManagerReservationServiceTest extends ServiceTest {
                 reservation.getId(),
                 reservationCreateUpdateRequest,
                 POBI))
-                .isInstanceOf(ConflictSpaceSettingException.class);
+                .isInstanceOf(InvalidStartEndTimeException.class);
     }
 
     @Test

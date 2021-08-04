@@ -100,7 +100,7 @@ public abstract class ReservationService {
         }
 
         if (space.isNotBetweenAvailableTime(startDateTime, endDateTime)) {
-            throw new ConflictSpaceSettingException();
+            throw new InvalidStartEndTimeException();
         }
 
         if (space.isUnableToReserve()) {
