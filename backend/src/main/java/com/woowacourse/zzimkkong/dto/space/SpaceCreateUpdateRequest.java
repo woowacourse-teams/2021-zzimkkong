@@ -9,6 +9,9 @@ public class SpaceCreateUpdateRequest {
     private String spaceName;
 
     @NotBlank(message = EMPTY_MESSAGE)
+    private String color;
+
+    @NotBlank(message = EMPTY_MESSAGE)
     private String description;
 
     @NotBlank(message = EMPTY_MESSAGE)
@@ -16,27 +19,28 @@ public class SpaceCreateUpdateRequest {
 
     private SettingsRequest settingsRequest;
 
-    @NotBlank(message = EMPTY_MESSAGE)
-    private String mapImageSvg;
-
     public SpaceCreateUpdateRequest() {
     }
 
     public SpaceCreateUpdateRequest(
             final String spaceName,
+            final String color,
             final String description,
             final String area,
-            final SettingsRequest settingsRequest,
-            final String mapImageSvg) {
+            final SettingsRequest settingsRequest) {
         this.spaceName = spaceName;
+        this.color = color;
         this.description = description;
         this.area = area;
         this.settingsRequest = settingsRequest;
-        this.mapImageSvg = mapImageSvg;
     }
 
     public String getSpaceName() {
         return spaceName;
+    }
+
+    public String getColor() {
+        return color;
     }
 
     public String getDescription() {
@@ -49,9 +53,5 @@ public class SpaceCreateUpdateRequest {
 
     public SettingsRequest getSettingsRequest() {
         return settingsRequest;
-    }
-
-    public String getMapImageSvg() {
-        return mapImageSvg;
     }
 }
