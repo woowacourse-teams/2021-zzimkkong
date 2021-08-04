@@ -1,8 +1,12 @@
 import styled from 'styled-components';
 
-export const Container = styled.div`
+interface ContainerProps {
+  selected: boolean;
+}
+
+export const Container = styled.div<ContainerProps>`
   padding: 0.75rem;
-  border: 1px solid ${({ theme }) => theme.gray[400]};
+  border: 2px solid ${({ theme, selected }) => (selected ? theme.primary[400] : theme.gray[400])};
   border-radius: 0.25rem;
 `;
 
@@ -11,6 +15,10 @@ export const ImageWrapper = styled.div`
   height: 0;
   padding-bottom: 75%;
   position: relative;
+
+  &:hover {
+    cursor: pointer;
+  }
 `;
 
 export const ImageInner = styled.div`

@@ -1,5 +1,5 @@
 import { AxiosError } from 'axios';
-import { useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { useMutation } from 'react-query';
 import { useHistory } from 'react-router-dom';
 import { deleteMap } from 'api/map';
@@ -25,11 +25,12 @@ import { formatDate } from 'utils/datetime';
 import * as Styled from './ManagerMain.styles';
 
 const ManagerMain = (): JSX.Element => {
-  const mapId = 1;
+  const history = useHistory();
+
   const [date, setDate] = useState(new Date());
   const [open, setOpen] = useState(false);
-
-  const history = useHistory();
+  const [selectedMapId, setSelectedMapId] = useState(0);
+  const [selectedMapName, setSelectedMapName] = useState('');
 
   const onRequestError = (error: AxiosError<ErrorResponse>) => {
     alert(error.response?.data?.message ?? MESSAGE.MANAGER_MAIN.UNEXPECTED_GET_DATA_ERROR);
@@ -40,17 +41,24 @@ const ManagerMain = (): JSX.Element => {
     }
   };
 
-  const mapName = '우테코 교육장';
-  const getMaps = useManagerMaps({ onError: onRequestError });
-  const maps = getMaps.data?.data.maps ?? [];
+  const getMaps = useManagerMaps({
+    onError: onRequestError,
+  });
+
+  const organization = getMaps.data?.data.organization ?? '';
+  const maps = useMemo(() => getMaps.data?.data.maps ?? [], [getMaps]);
 
   const getReservations = useManagerReservations(
     {
-      mapId,
+      mapId: selectedMapId,
       date: formatDate(date),
     },
-    { onError: onRequestError }
+    {
+      enabled: selectedMapId ? true : false,
+      onError: onRequestError,
+    }
   );
+
   const reservations = getReservations.data?.data?.data ?? [];
 
   const removeMap = useMutation(deleteMap, {
@@ -75,6 +83,17 @@ const ManagerMain = (): JSX.Element => {
     setOpen(false);
   };
 
+  const handleSelectMap = (mapId: number, mapName: string) => {
+    setSelectedMapId(mapId);
+    setSelectedMapName(mapName);
+    onCloseDrawer();
+  };
+
+  useEffect(() => {
+    setSelectedMapId(maps.length ? maps[0].mapId : 0);
+    setSelectedMapName(maps.length ? maps[0].mapName : '');
+  }, [maps]);
+
   return (
     <>
       <Header />
@@ -83,7 +102,7 @@ const ManagerMain = (): JSX.Element => {
           <IconButton text="맵 목록" onClick={onOpenDrawer}>
             <MenuIcon width="100%" height="100%" />
           </IconButton>
-          <Styled.PageTitle>{mapName}</Styled.PageTitle>
+          <Styled.PageTitle>{selectedMapName}</Styled.PageTitle>
           <IconButton text="공유 링크">
             <Styled.PrimaryLinkIcon width="100%" height="100%" />
           </IconButton>
@@ -91,6 +110,28 @@ const ManagerMain = (): JSX.Element => {
         <Styled.DateInputWrapper>
           <DateInput date={date} setDate={setDate} />
         </Styled.DateInputWrapper>
+
+        {getReservations.isLoading && (
+          <Styled.NoticeWrapper>
+            <Styled.NoticeMessage>공간을 로딩 중입니다</Styled.NoticeMessage>
+          </Styled.NoticeWrapper>
+        )}
+
+        {!getReservations.isLoading && !reservations.length && selectedMapId && (
+          <Styled.NoticeWrapper>
+            <Styled.NoticeMessage>생성한 공간이 없습니다.</Styled.NoticeMessage>
+            {/* 공간 편집 페이지 완성되면 링크 바꿔야 함 */}
+            <Styled.NoticeLink to={PATH.MANAGER_MAP_CREATE}>공간 생성하러 가기</Styled.NoticeLink>
+          </Styled.NoticeWrapper>
+        )}
+
+        {!getReservations.isLoading && !reservations.length && !selectedMapId && (
+          <Styled.NoticeWrapper>
+            <Styled.NoticeMessage>생성한 맵이 없습니다.</Styled.NoticeMessage>
+            <Styled.NoticeLink to={PATH.MANAGER_MAP_CREATE}>맵 생성하러 가기</Styled.NoticeLink>
+          </Styled.NoticeWrapper>
+        )}
+
         <Styled.SpaceList>
           {reservations &&
             reservations.map(({ spaceId, spaceName, spaceColor, reservations }, index) => (
@@ -127,14 +168,16 @@ const ManagerMain = (): JSX.Element => {
       <Drawer open={open} placement="left" maxwidth="450px" onClose={onCloseDrawer}>
         <Drawer.Inner>
           <Drawer.Header>
-            <Drawer.HeaderText>우아한형제들</Drawer.HeaderText>
+            <Drawer.HeaderText>{organization}</Drawer.HeaderText>
             <Drawer.CloseButton />
           </Drawer.Header>
           {maps.map(({ mapId, mapName, mapImageUrl }) => (
             <Styled.SpaceWrapper key={`map-${mapId}`}>
               <MapListItem
+                onClick={() => handleSelectMap(mapId, mapName)}
                 thumbnail={{ src: mapImageUrl, alt: mapName }}
                 title={mapName}
+                selected={mapId === selectedMapId}
                 control={
                   <>
                     <Styled.MapListItemControlButton size="small">
