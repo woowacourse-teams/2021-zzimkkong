@@ -11,10 +11,10 @@ import com.woowacourse.zzimkkong.exception.authorization.NoAuthorityOnMapExcepti
 import com.woowacourse.zzimkkong.exception.map.InvalidAccessLinkException;
 import com.woowacourse.zzimkkong.exception.map.NoSuchMapException;
 import com.woowacourse.zzimkkong.exception.space.ReservationExistOnSpaceException;
+import com.woowacourse.zzimkkong.infrastructure.PublicIdGenerator;
 import com.woowacourse.zzimkkong.infrastructure.StorageUploader;
 import com.woowacourse.zzimkkong.infrastructure.SvgConverter;
 import com.woowacourse.zzimkkong.infrastructure.TimeConverter;
-import com.woowacourse.zzimkkong.infrastructure.Transcoder;
 import com.woowacourse.zzimkkong.repository.MapRepository;
 import com.woowacourse.zzimkkong.repository.ReservationRepository;
 import com.woowacourse.zzimkkong.repository.SpaceRepository;
@@ -36,7 +36,7 @@ public class MapService {
     private final StorageUploader storageUploader;
     private final SvgConverter svgConverter;
     private final TimeConverter timeConverter;
-    private final Transcoder transcoder;
+    private final PublicIdGenerator publicIdGenerator;
 
     public MapService(
             final MapRepository maps,
@@ -45,14 +45,14 @@ public class MapService {
             final StorageUploader storageUploader,
             final SvgConverter svgConverter,
             final TimeConverter timeConverter,
-            final Transcoder transcoder) {
+            final PublicIdGenerator publicIdGenerator) {
         this.maps = maps;
         this.spaces = spaces;
         this.reservations = reservations;
         this.storageUploader = storageUploader;
         this.svgConverter = svgConverter;
         this.timeConverter = timeConverter;
-        this.transcoder = transcoder;
+        this.publicIdGenerator = publicIdGenerator;
     }
 
     public MapCreateResponse saveMap(final MapCreateUpdateRequest mapCreateUpdateRequest, final Member manager) {
@@ -74,14 +74,14 @@ public class MapService {
                 .orElseThrow(NoSuchMapException::new);
 
         validateManagerOfMap(map, manager);
-        return MapFindResponse.of(map, generatePublicMapId(map));
+        return MapFindResponse.of(map, publicIdGenerator.from(map));
     }
 
     @Transactional(readOnly = true)
     public MapFindAllResponse findAllMaps(final Member manager) {
         List<Map> findMaps = maps.findAllByMember(manager);
         return findMaps.stream()
-                .map(map -> MapFindResponse.of(map, generatePublicMapId(map)))
+                .map(map -> MapFindResponse.of(map, publicIdGenerator.from(map)))
                 .collect(collectingAndThen(toList(), mapFindResponses -> MapFindAllResponse.of(mapFindResponses, manager)));
     }
 
@@ -136,16 +136,12 @@ public class MapService {
 
     public MapFindResponse findMapByPublicMapId(String publicMapId) {
         try {
-            Long mapId = Long.parseLong(transcoder.decode(publicMapId));
+            Long mapId = publicIdGenerator.parseIdFrom(publicMapId);
             Map map = maps.findById(mapId)
                     .orElseThrow(InvalidAccessLinkException::new);
-            return MapFindResponse.of(map, generatePublicMapId(map));
+            return MapFindResponse.of(map, publicIdGenerator.from(map));
         } catch (NumberFormatException exception) {
             throw new InvalidAccessLinkException();
         }
-    }
-
-    private String generatePublicMapId(Map map) {
-        return transcoder.encode(map.getId().toString());
     }
 }

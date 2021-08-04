@@ -1,9 +1,6 @@
 package com.woowacourse.zzimkkong.domain;
 
-import com.amazonaws.util.Base64;
-
 import javax.persistence.*;
-import java.util.UUID;
 
 @Entity
 public class Map {
@@ -39,7 +36,6 @@ public class Map {
         this.mapDrawing = mapDrawing;
         this.mapImageUrl = mapImageUrl;
         this.member = member;
-        String universalUniqueId = UUID.randomUUID().toString();
     }
 
     public void update(String mapName, String mapDrawing, String mapImageUrl) {

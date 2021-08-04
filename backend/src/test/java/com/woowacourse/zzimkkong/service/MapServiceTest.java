@@ -8,7 +8,7 @@ import com.woowacourse.zzimkkong.dto.map.MapFindAllResponse;
 import com.woowacourse.zzimkkong.dto.map.MapFindResponse;
 import com.woowacourse.zzimkkong.exception.authorization.NoAuthorityOnMapException;
 import com.woowacourse.zzimkkong.exception.space.ReservationExistOnSpaceException;
-import com.woowacourse.zzimkkong.infrastructure.Transcoder;
+import com.woowacourse.zzimkkong.infrastructure.PublicIdGenerator;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,7 +17,6 @@ import java.io.File;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 import static com.woowacourse.zzimkkong.service.ServiceTestFixture.*;
 import static java.util.stream.Collectors.collectingAndThen;
@@ -33,7 +32,7 @@ class MapServiceTest extends ServiceTest {
     private MapService mapService;
 
     @Autowired
-    private Transcoder transcoder;
+    private PublicIdGenerator publicIdGenerator;
 
     @Test
     @DisplayName("맵 생성 요청 시, 올바른 요청이 들어오면 맵을 생성한다.")
@@ -65,7 +64,7 @@ class MapServiceTest extends ServiceTest {
         //then
         assertThat(mapFindResponse)
                 .usingRecursiveComparison()
-                .isEqualTo(MapFindResponse.of(LUTHER, transcoder.encode(LUTHER.getId().toString())));
+                .isEqualTo(MapFindResponse.of(LUTHER, publicIdGenerator.from(LUTHER)));
     }
 
     @Test
@@ -82,7 +81,7 @@ class MapServiceTest extends ServiceTest {
         //then
         assertThat(mapFindAllResponse).usingRecursiveComparison()
                 .isEqualTo(expectedMaps.stream()
-                        .map(map -> MapFindResponse.of(map, transcoder.encode(map.getId().toString())))
+                        .map(map -> MapFindResponse.of(map, publicIdGenerator.from(map)))
                         .collect(collectingAndThen(toList(), mapFindResponses -> MapFindAllResponse.of(mapFindResponses, POBI))));
     }
 

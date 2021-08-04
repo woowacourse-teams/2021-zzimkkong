@@ -5,7 +5,7 @@ import com.woowacourse.zzimkkong.dto.map.MapFindAllResponse;
 import com.woowacourse.zzimkkong.dto.map.MapFindResponse;
 import com.woowacourse.zzimkkong.dto.member.MemberSaveRequest;
 import com.woowacourse.zzimkkong.infrastructure.AuthorizationExtractor;
-import com.woowacourse.zzimkkong.infrastructure.Transcoder;
+import com.woowacourse.zzimkkong.infrastructure.PublicIdGenerator;
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
@@ -28,7 +28,7 @@ import static org.springframework.restdocs.restassured3.RestAssuredRestDocumenta
 
 class MapControllerTest extends AcceptanceTest {
     @Autowired
-    Transcoder transcoder;
+    PublicIdGenerator publicIdGenerator;
 
     @BeforeEach
     void setUp() {
@@ -45,7 +45,7 @@ class MapControllerTest extends AcceptanceTest {
         // when
         ExtractableResponse<Response> response = findMap(api);
         MapFindResponse actualResponse = response.as(MapFindResponse.class);
-        MapFindResponse expectedResponse = MapFindResponse.of(LUTHER, transcoder.encode(LUTHER.getId().toString()));
+        MapFindResponse expectedResponse = MapFindResponse.of(LUTHER, publicIdGenerator.from(LUTHER));
 
         // then
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
@@ -66,7 +66,7 @@ class MapControllerTest extends AcceptanceTest {
         ExtractableResponse<Response> response = findAllMaps();
         List<MapFindResponse> findMaps = response.as(MapFindAllResponse.class).getMaps();
         List<MapFindResponse> expected = List.of(LUTHER, SMALL_HOUSE).stream()
-                .map(map -> MapFindResponse.of(map, transcoder.encode(map.getId().toString())))
+                .map(map -> MapFindResponse.of(map, publicIdGenerator.from(map)))
                 .collect(Collectors.toList());
 
         // then
