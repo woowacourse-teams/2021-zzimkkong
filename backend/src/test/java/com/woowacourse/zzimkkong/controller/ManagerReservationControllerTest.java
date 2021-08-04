@@ -17,13 +17,11 @@ import org.springframework.http.MediaType;
 
 import java.util.Arrays;
 
-import static com.woowacourse.zzimkkong.CommonFixture.*;
 import static com.woowacourse.zzimkkong.DocumentUtils.*;
 import static com.woowacourse.zzimkkong.controller.AuthControllerTest.getToken;
 import static com.woowacourse.zzimkkong.controller.MapControllerTest.saveMap;
 import static com.woowacourse.zzimkkong.controller.MemberControllerTest.saveMember;
 import static com.woowacourse.zzimkkong.controller.SpaceControllerTest.saveSpace;
-import static com.woowacourse.zzimkkong.service.ServiceTestFixture.THE_DAY_AFTER_TOMORROW;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.restdocs.restassured3.RestAssuredRestDocumentation.document;
 
@@ -41,7 +39,7 @@ public class ManagerReservationControllerTest extends AcceptanceTest {
     @BeforeEach
     void setUp() {
         saveMember(memberSaveRequest);
-        saveMap("/api/managers/maps", mapCreateRequest);
+        saveMap("/api/managers/maps", mapCreateUpdateRequest);
 
         String spaceSaveApi = "/api/managers/maps/" + LUTHER.getId() + "/spaces";
         ExtractableResponse<Response> saveBeSpaceResponse = saveSpace(spaceSaveApi, beSpaceCreateUpdateRequest);

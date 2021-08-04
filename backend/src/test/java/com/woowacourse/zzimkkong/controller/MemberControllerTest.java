@@ -9,7 +9,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 
-import static com.woowacourse.zzimkkong.CommonFixture.*;
+import static com.woowacourse.zzimkkong.Constants.*;
 import static com.woowacourse.zzimkkong.DocumentUtils.*;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.restdocs.restassured3.RestAssuredRestDocumentation.document;
@@ -31,8 +31,13 @@ class MemberControllerTest extends AcceptanceTest {
     @DisplayName("이메일 중복 확인 시, 중복되지 않은 이메일을 입력하면 통과한다.")
     @Test
     void getMembers() {
-        //given, when
-        ExtractableResponse<Response> response = validateDuplicateEmail("pobi@naver.com");
+        //given
+        MemberSaveRequest newMemberSaveRequest = new MemberSaveRequest(NEW_EMAIL, PASSWORD, ORGANIZATION);
+        saveMember(newMemberSaveRequest);
+
+        // when
+        String anotherEmail = "pobi@naver.com";
+        ExtractableResponse<Response> response = validateDuplicateEmail(anotherEmail);
 
         //then
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
@@ -49,7 +54,7 @@ class MemberControllerTest extends AcceptanceTest {
                 .then().log().all().extract();
     }
 
-    private ExtractableResponse<Response> validateDuplicateEmail(String email) {
+    private ExtractableResponse<Response> validateDuplicateEmail(final String email) {
         return RestAssured
                 .given(getRequestSpecification()).log().all()
                 .accept("application/json")

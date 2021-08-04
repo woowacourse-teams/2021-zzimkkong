@@ -1,5 +1,7 @@
 package com.woowacourse.zzimkkong.controller;
 
+import com.woowacourse.zzimkkong.domain.Map;
+import com.woowacourse.zzimkkong.domain.Member;
 import com.woowacourse.zzimkkong.domain.Setting;
 import com.woowacourse.zzimkkong.domain.Space;
 import com.woowacourse.zzimkkong.dto.space.SettingsRequest;
@@ -19,7 +21,7 @@ import org.springframework.http.MediaType;
 import java.time.LocalTime;
 import java.util.List;
 
-import static com.woowacourse.zzimkkong.CommonFixture.*;
+import static com.woowacourse.zzimkkong.Constants.*;
 import static com.woowacourse.zzimkkong.DocumentUtils.*;
 import static com.woowacourse.zzimkkong.controller.AuthControllerTest.getToken;
 import static com.woowacourse.zzimkkong.controller.MapControllerTest.saveMap;
@@ -28,37 +30,61 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.restdocs.restassured3.RestAssuredRestDocumentation.document;
 
 public class SpaceControllerTest extends AcceptanceTest {
-    private String spaceSaveApi;
+    private String spaceApi;
     private Long beSpaceId;
     private Long feSpaceId;
+    private Space be;
+    private Space fe;
 
     @BeforeEach
     void setUp() {
         saveMember(memberSaveRequest);
-        saveMap("/api/managers/maps", mapCreateRequest);
-        spaceSaveApi = "/api/managers/maps/" + LUTHER.getId() + "/spaces";
-        ExtractableResponse<Response> saveBeSpaceResponse = saveSpace(spaceSaveApi, beSpaceCreateUpdateRequest);
-        ExtractableResponse<Response> saveFe1SpaceResponse = saveSpace(spaceSaveApi, feSpaceCreateUpdateRequest);
+        String lutherId = saveMap("/api/managers/maps", mapCreateUpdateRequest).header("location").split("/")[4];
+        spaceApi = "/api/managers/maps/" + lutherId + "/spaces";
+        ExtractableResponse<Response> saveBeSpaceResponse = saveSpace(spaceApi, beSpaceCreateUpdateRequest);
+        ExtractableResponse<Response> saveFe1SpaceResponse = saveSpace(spaceApi, feSpaceCreateUpdateRequest);
 
         beSpaceId = Long.valueOf(saveBeSpaceResponse.header("location").split("/")[6]);
         feSpaceId = Long.valueOf(saveFe1SpaceResponse.header("location").split("/")[6]);
 
-        BE = new Space.Builder()
-                .id(beSpaceId)
-                .name("백엔드 강의실")
-                .map(LUTHER)
-                .description("시니컬하네")
-                .area(SPACE_DRAWING)
-                .setting(BE_SETTING)
+        Member pobi = new Member(EMAIL, PASSWORD, ORGANIZATION);
+        Map luther = new Map(LUTHER_NAME, MAP_DRAWING_DATA, MAP_IMAGE_URL, pobi);
+        Setting beSetting = new Setting.Builder()
+                .availableStartTime(BE_AVAILABLE_START_TIME)
+                .availableEndTime(BE_AVAILABLE_END_TIME)
+                .reservationTimeUnit(BE_RESERVATION_TIME_UNIT)
+                .reservationMinimumTimeUnit(BE_RESERVATION_MINIMUM_TIME_UNIT)
+                .reservationMaximumTimeUnit(BE_RESERVATION_MAXIMUM_TIME_UNIT)
+                .reservationEnable(BE_RESERVATION_ENABLE)
+                .disabledWeekdays(BE_ENABLED_DAY_OF_WEEK)
                 .build();
 
-        FE1 = new Space.Builder()
-                .id(feSpaceId)
-                .name("프론트엔드 강의실1")
-                .map(LUTHER)
-                .description("시니컬하네")
+        Setting feSetting = new Setting.Builder()
+                .availableStartTime(FE_AVAILABLE_START_TIME)
+                .availableEndTime(FE_AVAILABLE_END_TIME)
+                .reservationTimeUnit(FE_RESERVATION_TIME_UNIT)
+                .reservationMinimumTimeUnit(FE_RESERVATION_MINIMUM_TIME_UNIT)
+                .reservationMaximumTimeUnit(FE_RESERVATION_MAXIMUM_TIME_UNIT)
+                .reservationEnable(FE_RESERVATION_ENABLE)
+                .disabledWeekdays(FE_ENABLED_DAY_OF_WEEK)
+                .build();
+
+        be = new Space.Builder()
+                .id(beSpaceId)
+                .name(BE_NAME)
+                .map(luther)
+                .description(BE_DESCRIPTION)
                 .area(SPACE_DRAWING)
-                .setting(FE_SETTING)
+                .setting(beSetting)
+                .build();
+
+        fe = new Space.Builder()
+                .id(feSpaceId)
+                .name(FE_NAME)
+                .map(luther)
+                .description(FE_DESCRIPTION)
+                .area(SPACE_DRAWING)
+                .setting(feSetting)
                 .build();
     }
 
@@ -85,7 +111,7 @@ public class SpaceControllerTest extends AcceptanceTest {
         );
 
         // when
-        ExtractableResponse<Response> response = saveSpace(spaceSaveApi, newSpaceCreateUpdateRequest);
+        ExtractableResponse<Response> response = saveSpace(spaceApi, newSpaceCreateUpdateRequest);
 
         // then
         assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
@@ -131,7 +157,7 @@ public class SpaceControllerTest extends AcceptanceTest {
                 .area(SPACE_DRAWING)
                 .build();
 
-        ExtractableResponse<Response> response = saveSpace(spaceSaveApi, defaultSpaceCreateUpdateRequest);
+        ExtractableResponse<Response> response = saveSpace(spaceApi, defaultSpaceCreateUpdateRequest);
 
         // then
         String api = response.header("location");
@@ -149,10 +175,10 @@ public class SpaceControllerTest extends AcceptanceTest {
     @Test
     void find() {
         // given, when
-        String api = spaceSaveApi + "/" + beSpaceId;
+        String api = spaceApi + "/" + beSpaceId;
         ExtractableResponse<Response> response = findSpace(api);
         SpaceFindDetailResponse actual = response.body().as(SpaceFindDetailResponse.class);
-        SpaceFindDetailResponse expected = SpaceFindDetailResponse.from(BE);
+        SpaceFindDetailResponse expected = SpaceFindDetailResponse.from(be);
 
         // then
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
@@ -166,9 +192,9 @@ public class SpaceControllerTest extends AcceptanceTest {
     @Test
     void findAll() {
         // given, when
-        ExtractableResponse<Response> response = findAllSpace(spaceSaveApi);
+        ExtractableResponse<Response> response = findAllSpace(spaceApi);
         SpaceFindAllResponse actual = response.body().as(SpaceFindAllResponse.class);
-        SpaceFindAllResponse expected = SpaceFindAllResponse.from(List.of(BE, FE1));
+        SpaceFindAllResponse expected = SpaceFindAllResponse.from(List.of(be, fe));
 
         // then
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
@@ -199,7 +225,7 @@ public class SpaceControllerTest extends AcceptanceTest {
                 settingsRequest
         );
 
-        String api = "/api/managers/maps/" + LUTHER.getId() + "/spaces/" + beSpaceId;
+        String api = spaceApi + "/" + beSpaceId;
         ExtractableResponse<Response> response = updateSpace(api, updateSpaceCreateUpdateRequest);
 
         // then
@@ -210,7 +236,7 @@ public class SpaceControllerTest extends AcceptanceTest {
     @Test
     void delete() {
         // given, when
-        String api = "/api/managers/maps/" + LUTHER.getId() + "/spaces/" + beSpaceId;
+        String api = spaceApi + "/" + beSpaceId;
         ExtractableResponse<Response> response = deleteSpace(api);
 
         // then
@@ -276,5 +302,3 @@ public class SpaceControllerTest extends AcceptanceTest {
                 .then().log().all().extract();
     }
 }
-
-

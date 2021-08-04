@@ -43,7 +43,7 @@ public class CommonFixture {
             .disabledWeekdays(null)
             .build();
 
-    public static Space BE = new Space.Builder()
+    public static Space.Builder BE = new Space.Builder()
             .name("백엔드 강의실")
             .textPosition("bottom")
             .color("#FED7D9")
@@ -51,8 +51,8 @@ public class CommonFixture {
             .map(LUTHER)
             .description("시니컬하네")
             .area(SPACE_DRAWING)
-            .setting(BE_SETTING)
-            .build();
+            .setting(BE_SETTING);
+//            .build();
 
     public static Setting FE_SETTING = new Setting.Builder()
             .availableStartTime(LocalTime.of(0, 0))
