@@ -191,19 +191,19 @@ class SpaceServiceTest extends ServiceTest {
         given(maps.findById(anyLong()))
                 .willReturn(Optional.of(LUTHER));
         given(spaces.findById(anyLong()))
-                .willReturn(Optional.of(BE));
+                .willReturn(Optional.of(FE1));
         given(storageUploader.upload(anyString(), any(File.class)))
                 .willReturn(MAP_IMAGE_URL);
 
         // then
         assertDoesNotThrow(() -> spaceService.updateSpace(
                 LUTHER.getId(),
-                BE.getId(),
+                FE1.getId(),
                 updateSpaceCreateUpdateRequest,
                 POBI));
 
-        assertThat(BE.getReservationTimeUnit()).isEqualTo(updateSettingsRequest.getReservationTimeUnit());
-        assertThat(BE.getDisabledWeekdays()).isEqualTo(updateSettingsRequest.getDisabledWeekdays());
+        assertThat(FE1.getReservationTimeUnit()).isEqualTo(updateSettingsRequest.getReservationTimeUnit());
+        assertThat(FE1.getDisabledWeekdays()).isEqualTo(updateSettingsRequest.getDisabledWeekdays());
     }
 
     @DisplayName("공간 수정 요청 시, 해당 공간에 대한 권한이 없으면 수정할 수 없다.")
