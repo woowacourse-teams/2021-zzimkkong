@@ -43,27 +43,28 @@ public class GuestReservationControllerTest extends AcceptanceTest {
                 .replaceAll("managers", "guests") + "/reservations";
         fe1ReservationApi = saveFe1SpaceResponse.header("location")
                 .replaceAll("managers", "guests") + "/reservations";
+
         Long beSpaceId = Long.valueOf(saveBeSpaceResponse.header("location").split("/")[6]);
         Long feSpaceId = Long.valueOf(saveFe1SpaceResponse.header("location").split("/")[6]);
 
         BE = new Space.Builder()
                 .id(beSpaceId)
-                .name("백엔드 강의실")
+                .name(BE.getName())
+                .color(BE.getColor())
+                .description(BE.getDescription())
                 .map(LUTHER)
-                .description("시니컬하네")
                 .area(SPACE_DRAWING)
                 .setting(BE_SETTING)
-                .mapImage(MAP_IMAGE_URL)
                 .build();
 
         FE1 = new Space.Builder()
                 .id(feSpaceId)
-                .name("프론트엔드 강의실1")
+                .name(FE1.getName())
+                .color(FE1.getColor())
+                .description(FE1.getDescription())
                 .map(LUTHER)
-                .description("시니컬하네")
                 .area(SPACE_DRAWING)
                 .setting(FE_SETTING)
-                .mapImage(MAP_IMAGE_URL)
                 .build();
 
         reservationCreateUpdateWithPasswordRequest = new ReservationCreateUpdateWithPasswordRequest(
@@ -180,7 +181,6 @@ public class GuestReservationControllerTest extends AcceptanceTest {
         assertThat(updateResponse.statusCode()).isEqualTo(HttpStatus.OK.value());
         assertThat(actualResponse).usingRecursiveComparison()
                 .ignoringCollectionOrder()
-                .ignoringExpectedNullFields()
                 .isEqualTo(expectedResponse);
     }
 

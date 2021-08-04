@@ -61,7 +61,7 @@ class GuestReservationServiceTest extends ServiceTest {
 
         //when
         ReservationCreateResponse reservationCreateResponse = guestReservationService.saveReservation(
-                1L,
+                LUTHER.getId(),
                 BE.getId(),
                 reservationCreateUpdateWithPasswordRequest);
 
@@ -200,7 +200,7 @@ class GuestReservationServiceTest extends ServiceTest {
     }
 
     @ParameterizedTest
-    @CsvSource(value = {"-10:10", "2:0", "0:1", "60:59", "-59:-59"}, delimiter = ':')
+    @CsvSource(value = {"-30:0", "0:30"}, delimiter = ':')
     @DisplayName("예약 생성 요청 시, 이미 겹치는 시간이 존재하면 예외가 발생한다.")
     void saveAvailabilityException(int startMinute, int endMinute) {
         //given, when
@@ -218,7 +218,7 @@ class GuestReservationServiceTest extends ServiceTest {
 
         //then
         assertThatThrownBy(() -> guestReservationService.saveReservation(
-                1L,
+                LUTHER.getId(),
                 BE.getId(),
                 reservationCreateUpdateWithPasswordRequest))
                 .isInstanceOf(ImpossibleReservationTimeException.class);
@@ -378,7 +378,7 @@ class GuestReservationServiceTest extends ServiceTest {
 
         //then
         ReservationFindAllResponse reservationFindAllResponse = ReservationFindAllResponse.of(findSpaces, foundReservations);
-        assertThat(guestReservationService.findAllReservations(1L, THE_DAY_AFTER_TOMORROW))
+        assertThat(guestReservationService.findAllReservations(LUTHER.getId(), THE_DAY_AFTER_TOMORROW))
                 .usingRecursiveComparison()
                 .isEqualTo(reservationFindAllResponse);
     }
@@ -552,7 +552,7 @@ class GuestReservationServiceTest extends ServiceTest {
     }
 
     @ParameterizedTest
-    @CsvSource(value = {"0:2", "59:70", "-10:10"}, delimiter = ':')
+    @CsvSource(value = {"30:30", "-30:-30"}, delimiter = ':')
     @DisplayName("예약 수정 요청 시, 해당 시간에 예약이 존재하면 에러가 발생한다.")
     void updateImpossibleTimeException(int startTime, int endTime) {
         //given
@@ -571,7 +571,7 @@ class GuestReservationServiceTest extends ServiceTest {
         //when
         ReservationCreateUpdateWithPasswordRequest reservationCreateUpdateWithPasswordRequest = new ReservationCreateUpdateWithPasswordRequest(
                 BE_PM_ONE_TWO.getStartTime().plusMinutes(startTime),
-                BE_PM_ONE_TWO.getStartTime().plusMinutes(endTime),
+                BE_PM_ONE_TWO.getEndTime().plusMinutes(endTime),
                 reservation.getPassword(),
                 reservation.getUserName(),
                 reservation.getDescription()

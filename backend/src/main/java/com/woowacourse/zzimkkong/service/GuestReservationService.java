@@ -33,8 +33,8 @@ public class GuestReservationService extends ReservationService {
             final Long spaceId,
             final ReservationCreateUpdateWithPasswordRequest reservationCreateUpdateWithPasswordRequest) {
         validateMapExistence(mapId);
-
         validateTime(reservationCreateUpdateWithPasswordRequest);
+
         Space space = spaces.findById(spaceId)
                 .orElseThrow(NoSuchSpaceException::new);
         validateAvailability(space, reservationCreateUpdateWithPasswordRequest);

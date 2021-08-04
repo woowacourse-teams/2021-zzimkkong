@@ -3,6 +3,8 @@ package com.woowacourse.zzimkkong.service;
 import com.woowacourse.zzimkkong.domain.Reservation;
 import com.woowacourse.zzimkkong.domain.Space;
 import com.woowacourse.zzimkkong.dto.reservation.*;
+import com.woowacourse.zzimkkong.exception.reservation.InvalidDurationTimeException;
+import com.woowacourse.zzimkkong.exception.reservation.InvalidTimeUnitException;
 import com.woowacourse.zzimkkong.exception.authorization.NoAuthorityOnMapException;
 import com.woowacourse.zzimkkong.exception.map.NoSuchMapException;
 import com.woowacourse.zzimkkong.exception.reservation.*;
@@ -247,7 +249,7 @@ public class ManagerReservationServiceTest extends ServiceTest {
     @ParameterizedTest
     @CsvSource(value = {"-10:10", "2:0", "0:1", "60:59", "-59:-59"}, delimiter = ':')
     void saveAvailabilityException(int startMinute, int endMinute) {
-        //given, when
+        //given
         saveMock();
         given(reservations.findAllBySpaceIdInAndStartTimeIsBetweenAndEndTimeIsBetween(
                 any(),
@@ -260,7 +262,7 @@ public class ManagerReservationServiceTest extends ServiceTest {
                         reservationCreateUpdateWithPasswordRequest.getEndDateTime().minusMinutes(endMinute),
                         BE)));
 
-        //then
+        //when,then
         assertThatThrownBy(() -> managerReservationService.saveReservation(
                 LUTHER.getId(),
                 BE.getId(),
@@ -273,7 +275,7 @@ public class ManagerReservationServiceTest extends ServiceTest {
     @ParameterizedTest
     @ValueSource(ints = 60)
     void saveSameThresholdTime(int conferenceTime) {
-        //given, when
+        //given
         saveMock();
         given(reservations.findAllBySpaceIdInAndStartTimeIsBetweenAndEndTimeIsBetween(
                 anyList(),
@@ -291,13 +293,85 @@ public class ManagerReservationServiceTest extends ServiceTest {
                                 reservationCreateUpdateWithPasswordRequest.getEndDateTime().plusMinutes(conferenceTime),
                                 BE)));
 
-        //then
+        //when, then
         ReservationCreateResponse reservationCreateResponse = managerReservationService.saveReservation(
                 LUTHER.getId(),
                 BE.getId(),
                 reservationCreateUpdateWithPasswordRequest,
                 POBI);
         assertThat(reservationCreateResponse.getId()).isEqualTo(reservation.getId());
+    }
+
+    @DisplayName("예약 생성/수정 요청 시, space setting의 reservationTimeUnit이 일치하지 않으면 예외가 발생한다.")
+    @ParameterizedTest
+    @ValueSource(ints = {3, 7, 29, 50})
+    void saveReservationTimeUnitException(int minute) {
+        //given
+        saveMock();
+        given(reservations.findById(anyLong()))
+                .willReturn(Optional.of(reservation));
+        LocalDateTime theDayAfterTomorrowTen = timeConverter.getNow().plusDays(2).withHour(0).withMinute(0).plusHours(10);
+
+        //when, then
+        assertThatThrownBy(() -> managerReservationService.saveReservation(
+                LUTHER.getId(),
+                BE.getId(),
+                new ReservationCreateUpdateWithPasswordRequest(
+                        theDayAfterTomorrowTen.plusMinutes(minute),
+                        theDayAfterTomorrowTen.plusMinutes(minute).plusMinutes(60),
+                        RESERVATION_PASSWORD,
+                        USER_NAME,
+                        DESCRIPTION
+                ),
+                POBI)).isInstanceOf(InvalidTimeUnitException.class);
+        assertThatThrownBy(() -> managerReservationService.updateReservation(
+                LUTHER.getId(),
+                BE.getId(),
+                reservation.getId(),
+                new ReservationCreateUpdateWithPasswordRequest(
+                        theDayAfterTomorrowTen.plusMinutes(minute),
+                        theDayAfterTomorrowTen.plusMinutes(minute).plusMinutes(60),
+                        RESERVATION_PASSWORD,
+                        USER_NAME,
+                        DESCRIPTION
+                ),
+                POBI)).isInstanceOf(InvalidTimeUnitException.class);
+    }
+
+    @DisplayName("예약 생성/수정 요청 시, space setting의 minimum, maximum 시간이 옳지 않으면 예외가 발생한다.")
+    @ParameterizedTest
+    @ValueSource(ints = {30, 150})
+    void saveReservationMinimumMaximumTimeUnitException(int conferenceTime) {
+        //given
+        saveMock();
+        given(reservations.findById(anyLong()))
+                .willReturn(Optional.of(reservation));
+
+        //when,then
+        assertThatThrownBy(() -> managerReservationService.saveReservation(
+                LUTHER.getId(),
+                BE.getId(),
+                new ReservationCreateUpdateWithPasswordRequest(
+                        THE_DAY_AFTER_TOMORROW_START_TIME,
+                        THE_DAY_AFTER_TOMORROW_START_TIME.plusMinutes(conferenceTime),
+                        RESERVATION_PASSWORD,
+                        USER_NAME,
+                        DESCRIPTION
+                ),
+                POBI)).isInstanceOf(InvalidDurationTimeException.class);
+
+        assertThatThrownBy(() -> managerReservationService.updateReservation(
+                LUTHER.getId(),
+                BE.getId(),
+                reservation.getId(),
+                new ReservationCreateUpdateWithPasswordRequest(
+                        THE_DAY_AFTER_TOMORROW_START_TIME,
+                        THE_DAY_AFTER_TOMORROW_START_TIME.plusMinutes(conferenceTime),
+                        RESERVATION_PASSWORD,
+                        USER_NAME,
+                        DESCRIPTION
+                ),
+                POBI)).isInstanceOf(InvalidDurationTimeException.class);
     }
 
     @DisplayName("특정 공간 예약 조회 요청 시, 올바르게 입력하면 해당 날짜, 공간에 대한 예약 정보가 조회된다.")
@@ -346,7 +420,6 @@ public class ManagerReservationServiceTest extends ServiceTest {
         assertThatThrownBy(() -> managerReservationService.findReservations(LUTHER.getId(), BE.getId(), THE_DAY_AFTER_TOMORROW, POBI))
                 .isInstanceOf(NoSuchMapException.class);
     }
-
 
     @DisplayName("특정 공간 예약 조회 요청 시, 해당하는 공간이 없으면 오류가 발생한다.")
     @Test
@@ -583,7 +656,7 @@ public class ManagerReservationServiceTest extends ServiceTest {
         assertThatThrownBy(() -> managerReservationService.updateReservation(
                 LUTHER.getId(),
                 BE.getId(),
-                1L,
+                reservation.getId(),
                 reservationCreateUpdateRequest,
                 JASON))
                 .isInstanceOf(NoAuthorityOnMapException.class);
@@ -601,8 +674,8 @@ public class ManagerReservationServiceTest extends ServiceTest {
 
         //when
         ReservationCreateUpdateRequest reservationCreateUpdateRequest = new ReservationCreateUpdateRequest(
-                LocalDateTime.now().plusDays(1L).plusHours(1),
-                LocalDateTime.now().plusDays(1L).plusHours(endTime),
+                THE_DAY_AFTER_TOMORROW_START_TIME.plusHours(1),
+                THE_DAY_AFTER_TOMORROW_START_TIME.plusHours(endTime),
                 CHANGED_NAME,
                 CHANGED_DESCRIPTION
         );
@@ -611,7 +684,7 @@ public class ManagerReservationServiceTest extends ServiceTest {
         assertThatThrownBy(() -> managerReservationService.updateReservation(
                 LUTHER.getId(),
                 BE.getId(),
-                1L,
+                reservation.getId(),
                 reservationCreateUpdateRequest,
                 POBI))
                 .isInstanceOf(ImpossibleEndTimeException.class);
@@ -628,8 +701,8 @@ public class ManagerReservationServiceTest extends ServiceTest {
 
         //when
         ReservationCreateUpdateRequest reservationCreateUpdateRequest = new ReservationCreateUpdateRequest(
-                LocalDateTime.now().plusDays(1),
-                LocalDateTime.now().plusDays(2),
+                THE_DAY_AFTER_TOMORROW_START_TIME,
+                THE_DAY_AFTER_TOMORROW_START_TIME.plusDays(1),
                 CHANGED_NAME,
                 CHANGED_DESCRIPTION
         );
@@ -638,7 +711,7 @@ public class ManagerReservationServiceTest extends ServiceTest {
         assertThatThrownBy(() -> managerReservationService.updateReservation(
                 LUTHER.getId(),
                 BE.getId(),
-                1L,
+                reservation.getId(),
                 reservationCreateUpdateRequest,
                 POBI))
                 .isInstanceOf(NonMatchingStartAndEndDateException.class);
@@ -646,7 +719,7 @@ public class ManagerReservationServiceTest extends ServiceTest {
 
     @DisplayName("예약 수정 요청 시, 해당 시간에 예약이 존재하면 에러가 발생한다.")
     @ParameterizedTest
-    @CsvSource(value = {"0:2", "59:70", "-10:10"}, delimiter = ':')
+    @CsvSource(value = {"30:30", "-30:-30"}, delimiter = ':')
     void updateImpossibleTimeException(int startTime, int endTime) {
         //given
         given(maps.existsById(anyLong()))
@@ -666,7 +739,7 @@ public class ManagerReservationServiceTest extends ServiceTest {
         //when
         ReservationCreateUpdateRequest reservationCreateUpdateRequest = new ReservationCreateUpdateRequest(
                 BE_PM_ONE_TWO.getStartTime().plusMinutes(startTime),
-                BE_PM_ONE_TWO.getStartTime().plusMinutes(endTime),
+                BE_PM_ONE_TWO.getEndTime().plusMinutes(endTime),
                 reservation.getUserName(),
                 reservation.getDescription()
         );
@@ -675,7 +748,7 @@ public class ManagerReservationServiceTest extends ServiceTest {
         assertThatThrownBy(() -> managerReservationService.updateReservation(
                 LUTHER.getId(),
                 BE.getId(),
-                1L,
+                reservation.getId(),
                 reservationCreateUpdateRequest,
                 POBI))
                 .isInstanceOf(ImpossibleReservationTimeException.class);
@@ -707,7 +780,7 @@ public class ManagerReservationServiceTest extends ServiceTest {
         assertThatThrownBy(() -> managerReservationService.updateReservation(
                 LUTHER.getId(),
                 BE.getId(),
-                1L,
+                reservation.getId(),
                 reservationCreateUpdateRequest,
                 POBI))
                 .isInstanceOf(ConflictSpaceSettingException.class);
@@ -716,7 +789,7 @@ public class ManagerReservationServiceTest extends ServiceTest {
     @DisplayName("예약 삭제 요청이 옳다면 삭제한다.")
     @Test
     void deleteReservation() {
-        //given, when
+        //given
         Reservation reservationToDelete = makeReservation(
                 THE_DAY_AFTER_TOMORROW_START_TIME,
                 THE_DAY_AFTER_TOMORROW_START_TIME.plusHours(2),
@@ -729,11 +802,11 @@ public class ManagerReservationServiceTest extends ServiceTest {
         given(reservations.findById(anyLong()))
                 .willReturn(Optional.of(reservationToDelete));
 
-        //then
+        //when, then
         assertDoesNotThrow(() -> managerReservationService.deleteReservation(
                 LUTHER.getId(),
                 BE.getId(),
-                1L,
+                reservation.getId(),
                 POBI));
     }
 
@@ -750,7 +823,7 @@ public class ManagerReservationServiceTest extends ServiceTest {
         assertThatThrownBy(() -> managerReservationService.deleteReservation(
                 LUTHER.getId(),
                 BE.getId(),
-                1L,
+                reservation.getId(),
                 JASON))
                 .isInstanceOf(NoAuthorityOnMapException.class);
     }
@@ -758,7 +831,7 @@ public class ManagerReservationServiceTest extends ServiceTest {
     @DisplayName("예약 삭제 요청 시, 예약이 존재하지 않는다면 오류가 발생한다.")
     @Test
     void deleteReservationException() {
-        //given, when
+        //given
         given(maps.findById(anyLong()))
                 .willReturn(Optional.of(LUTHER));
         given(spaces.existsById(anyLong()))
@@ -770,7 +843,7 @@ public class ManagerReservationServiceTest extends ServiceTest {
         assertThatThrownBy(() -> managerReservationService.deleteReservation(
                 LUTHER.getId(),
                 BE.getId(),
-                1L,
+                reservation.getId(),
                 POBI))
                 .isInstanceOf(NoSuchReservationException.class);
     }
