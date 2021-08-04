@@ -1,9 +1,14 @@
 package com.woowacourse.zzimkkong;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 
 public class Constants {
+    public static final String SALLY_PASSWORD = "1230";
+    public static final String SALLY_NAME = "샐리";
+    public static final String SALLY_DESCRIPTION = "집 가고 싶은 회의";
+
     public static final String EMAIL = "pobi@email.com";
     public static final String NEW_EMAIL = "sakjung@email.com";
     public static final String PASSWORD = "test1234";
@@ -43,4 +48,28 @@ public class Constants {
     public static final String FE_NAME = "프론트엔드 강의실1";
     public static final String FE_COLOR = "#FFCCCC";
     public static final String FE_DESCRIPTION = "시니컬하네";
+
+    public static final LocalDateTime BE_AM_ZERO_ONE_START_TIME = THE_DAY_AFTER_TOMORROW.atTime(0,0);
+    public static final LocalDateTime BE_AM_ZERO_ONE_END_TIME = THE_DAY_AFTER_TOMORROW.atTime(1,0);
+    public static final String BE_AM_ZERO_ONE_DESCRIPTION = DESCRIPTION;
+    public static final String BE_AM_ZERO_ONE_USERNAME = USER_NAME;
+    public static final String BE_AM_ZERO_ONE_PASSWORD = RESERVATION_PASSWORD;
+
+    public static final LocalDateTime BE_PM_ONE_TWO_START_TIME = THE_DAY_AFTER_TOMORROW.atTime(13,0);
+    public static final LocalDateTime BE_PM_ONE_TWO_END_TIME = THE_DAY_AFTER_TOMORROW.atTime(14,0);
+    public static final String BE_PM_ONE_TWO_DESCRIPTION = "찜꽁 2차 회의";
+    public static final String BE_PM_ONE_TWO_USERNAME = USER_NAME;
+    public static final String BE_PM_ONE_TWO_PASSWORD = RESERVATION_PASSWORD;
+
+    public static final LocalDateTime BE_NEXT_DAY_AM_SIX_TWELVE_START_TIME = THE_DAY_AFTER_TOMORROW.plusDays(1L).atTime(6,0);
+    public static final LocalDateTime BE_NEXT_DAY_AM_SIX_TWELVE_END_TIME = THE_DAY_AFTER_TOMORROW.plusDays(1L).atTime(12,0);
+    public static final String BE_NEXT_DAY_AM_SIX_TWELVE_DESCRIPTION = "찜꽁 3차 회의";
+    public static final String BE_NEXT_DAY_AM_SIX_TWELVE_USERNAME = USER_NAME;
+    public static final String BE_NEXT_DAY_AM_SIX_TWELVE_PASSWORD = RESERVATION_PASSWORD;
+
+    public static final LocalDateTime FE1_ZERO_ONE_START_TIME = THE_DAY_AFTER_TOMORROW.atTime(0,0);
+    public static final LocalDateTime FE1_ZERO_ONE_END_TIME = THE_DAY_AFTER_TOMORROW.atTime(1,0);
+    public static final String FE1_ZERO_ONE_DESCRIPTION = "찜꽁 5차 회의";
+    public static final String FE1_ZERO_ONE_USERNAME = USER_NAME;
+    public static final String FE1_ZERO_ONE_PASSWORD = RESERVATION_PASSWORD;
 }

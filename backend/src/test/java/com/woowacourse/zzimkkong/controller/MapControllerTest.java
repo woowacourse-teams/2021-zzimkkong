@@ -25,20 +25,23 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.restdocs.restassured3.RestAssuredRestDocumentation.document;
 
 class MapControllerTest extends AcceptanceTest {
+    private static String accessToken;
     private Map luther;
     private Map smallHouse;
+    private Member pobi;
     private String saveMapApi;
     private String createdMapApi;
 
     @BeforeEach
     void setUp() {
         saveMember(memberSaveRequest);
+        accessToken = getToken();
 
         saveMapApi = "/api/managers/maps";
         createdMapApi = saveMap(saveMapApi, mapCreateUpdateRequest).header("location");
 
         // For Test Comparison
-        Member pobi = new Member(EMAIL, PASSWORD, ORGANIZATION);
+        pobi = new Member(EMAIL, PASSWORD, ORGANIZATION);
         luther = new Map(LUTHER_NAME, MAP_DRAWING_DATA, MAP_IMAGE_URL, pobi);
         smallHouse = new Map(SMALL_HOUSE_NAME, MAP_DRAWING_DATA, MAP_IMAGE_URL, pobi);
     }
@@ -68,12 +71,14 @@ class MapControllerTest extends AcceptanceTest {
         // when
         ExtractableResponse<Response> response = findAllMaps(saveMapApi);
         List<MapFindResponse> findMaps = response.as(MapFindAllResponse.class).getMaps();
-        List<MapFindResponse> expected = MapFindAllResponse.of(List.of(luther, smallHouse), POBI).getMaps();
+        List<MapFindResponse> expected = MapFindAllResponse.of(List.of(luther, smallHouse), pobi).getMaps();
 
         // then
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
         assertThat(findMaps)
-                .usingElementComparatorIgnoringFields("mapImageUrl")
+                .usingRecursiveComparison()
+                .ignoringExpectedNullFields()
+                .ignoringFields("mapImageUrl")
                 .isEqualTo(expected);
     }
 
@@ -118,7 +123,7 @@ class MapControllerTest extends AcceptanceTest {
         return RestAssured
                 .given(getRequestSpecification()).log().all()
                 .accept("application/json")
-                .header("Authorization", AuthorizationExtractor.AUTHENTICATION_TYPE + " " + getToken())
+                .header("Authorization", AuthorizationExtractor.AUTHENTICATION_TYPE + " " + accessToken)
                 .filter(document("map/post", getRequestPreprocessor(), getResponsePreprocessor()))
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body(mapCreateUpdateRequest)
@@ -130,7 +135,7 @@ class MapControllerTest extends AcceptanceTest {
         return RestAssured
                 .given(getRequestSpecification()).log().all()
                 .accept("application/json")
-                .header("Authorization", AuthorizationExtractor.AUTHENTICATION_TYPE + " " + getToken())
+                .header("Authorization", AuthorizationExtractor.AUTHENTICATION_TYPE + " " + accessToken)
                 .filter(document("map/get", getRequestPreprocessor(), getResponsePreprocessor()))
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .when().get(api)
@@ -141,7 +146,7 @@ class MapControllerTest extends AcceptanceTest {
         return RestAssured
                 .given(getRequestSpecification()).log().all()
                 .accept("application/json")
-                .header("Authorization", AuthorizationExtractor.AUTHENTICATION_TYPE + " " + getToken())
+                .header("Authorization", AuthorizationExtractor.AUTHENTICATION_TYPE + " " + accessToken)
                 .filter(document("map/getAll", getRequestPreprocessor(), getResponsePreprocessor()))
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .when().get(api)
@@ -152,7 +157,7 @@ class MapControllerTest extends AcceptanceTest {
         return RestAssured
                 .given(getRequestSpecification()).log().all()
                 .accept("application/json")
-                .header("Authorization", AuthorizationExtractor.AUTHENTICATION_TYPE + " " + getToken())
+                .header("Authorization", AuthorizationExtractor.AUTHENTICATION_TYPE + " " + accessToken)
                 .filter(document("map/put", getRequestPreprocessor(), getResponsePreprocessor()))
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body(mapCreateUpdateRequest)
@@ -164,7 +169,7 @@ class MapControllerTest extends AcceptanceTest {
         return RestAssured
                 .given(getRequestSpecification()).log().all()
                 .accept("application/json")
-                .header("Authorization", AuthorizationExtractor.AUTHENTICATION_TYPE + " " + getToken())
+                .header("Authorization", AuthorizationExtractor.AUTHENTICATION_TYPE + " " + accessToken)
                 .filter(document("map/delete", getRequestPreprocessor(), getResponsePreprocessor()))
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .when().delete(api)

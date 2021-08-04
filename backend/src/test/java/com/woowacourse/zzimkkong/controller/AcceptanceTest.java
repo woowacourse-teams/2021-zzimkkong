@@ -29,10 +29,6 @@ import static org.springframework.restdocs.restassured3.RestAssuredRestDocumenta
 @AutoConfigureRestDocs
 @ActiveProfiles("test")
 public class AcceptanceTest {
-    protected static final String SALLY_PASSWORD = "1230";
-    protected static final String SALLY_NAME = "샐리";
-    protected static final String SALLY_DESCRIPTION = "집 가고 싶은 회의";
-
     protected final MemberSaveRequest memberSaveRequest = new MemberSaveRequest(EMAIL, PASSWORD, ORGANIZATION);
     protected static final LoginRequest loginRequest = new LoginRequest(EMAIL, PASSWORD);
     protected final MapCreateUpdateRequest mapCreateUpdateRequest = new MapCreateUpdateRequest(LUTHER_NAME, MAP_DRAWING_DATA, MAP_SVG);
@@ -68,6 +64,7 @@ public class AcceptanceTest {
             SPACE_DRAWING,
             feSettingsRequest
     );
+
     @LocalServerPort
     int port;
 
