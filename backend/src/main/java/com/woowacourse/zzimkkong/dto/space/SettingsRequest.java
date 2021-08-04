@@ -16,9 +16,13 @@ public class SettingsRequest {
     private LocalTime availableEndTime = LocalTime.of(23, 59);
 
     private Integer reservationTimeUnit = 10;
+
     private Integer reservationMinimumTimeUnit = 10;
+
     private Integer reservationMaximumTimeUnit = 1440;
+
     private Boolean reservationEnable = true;
+
     private String disabledWeekdays = null;
 
     public SettingsRequest() {
