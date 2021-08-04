@@ -1,14 +1,11 @@
 package com.woowacourse.zzimkkong.domain;
 
-import com.woowacourse.zzimkkong.exception.reservation.InvalidConferenceTimeException;
-import com.woowacourse.zzimkkong.exception.reservation.InvalidTimeUnitException;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.time.temporal.ChronoUnit;
 
 @DynamicInsert
 @DynamicUpdate

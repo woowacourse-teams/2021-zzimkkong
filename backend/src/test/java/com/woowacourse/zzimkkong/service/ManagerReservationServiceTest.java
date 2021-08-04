@@ -3,7 +3,7 @@ package com.woowacourse.zzimkkong.service;
 import com.woowacourse.zzimkkong.domain.Reservation;
 import com.woowacourse.zzimkkong.domain.Space;
 import com.woowacourse.zzimkkong.dto.reservation.*;
-import com.woowacourse.zzimkkong.exception.reservation.InvalidConferenceTimeException;
+import com.woowacourse.zzimkkong.exception.reservation.InvalidDurationTimeException;
 import com.woowacourse.zzimkkong.exception.reservation.InvalidTimeUnitException;
 import com.woowacourse.zzimkkong.exception.authorization.NoAuthorityOnMapException;
 import com.woowacourse.zzimkkong.exception.map.NoSuchMapException;
@@ -353,7 +353,7 @@ public class ManagerReservationServiceTest extends ServiceTest {
                         USER_NAME,
                         DESCRIPTION
                 ),
-                POBI)).isInstanceOf(InvalidConferenceTimeException.class);
+                POBI)).isInstanceOf(InvalidDurationTimeException.class);
 
         assertThatThrownBy(() -> managerReservationService.updateReservation(
                 LUTHER.getId(),
@@ -366,7 +366,7 @@ public class ManagerReservationServiceTest extends ServiceTest {
                         USER_NAME,
                         DESCRIPTION
                 ),
-                POBI)).isInstanceOf(InvalidConferenceTimeException.class);
+                POBI)).isInstanceOf(InvalidDurationTimeException.class);
     }
 
     @DisplayName("특정 공간 예약 조회 요청 시, 올바르게 입력하면 해당 날짜, 공간에 대한 예약 정보가 조회된다.")
