@@ -69,6 +69,18 @@ public class Space {
         this.mapImage = updateSpace.mapImage;
     }
 
+    public boolean isCorrectTimeUnit(int minute) {
+        return minute != 0 && isNotDivideBy(minute);
+    }
+
+    public boolean isCorrectMinimumMaximumTimeUnit(int durationMinutes) {
+        return durationMinutes < getReservationMinimumTimeUnit() || durationMinutes > getReservationMaximumTimeUnit();
+    }
+
+    public boolean isNotDivideBy(int minute) {
+        return minute % getReservationTimeUnit() != 0;
+    }
+
     public Long getId() {
         return id;
     }

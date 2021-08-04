@@ -46,14 +46,14 @@ public class ServiceTestFixture {
             .mapImage(MAP_IMAGE_URL)
             .build();
 
-    public static Setting FE_SETTING = new Setting.Builder()
-            .availableStartTime(LocalTime.of(0, 0))
-            .availableEndTime(LocalTime.of(23, 59))
-            .reservationTimeUnit(10)
-            .reservationMinimumTimeUnit(10)
-            .reservationMaximumTimeUnit(1440)
-            .reservationEnable(true)
-            .disabledWeekdays(null)
+    public static Setting FE1_SETTING = new Setting.Builder()
+            .availableStartTime(LocalTime.of(10, 0))
+            .availableEndTime(LocalTime.of(22, 0))
+            .reservationTimeUnit(40)
+            .reservationMinimumTimeUnit(80)
+            .reservationMaximumTimeUnit(130)
+            .reservationEnable(false)
+            .disabledWeekdays("Monday, Tuesday")
             .build();
 
     public static Space FE1 = new Space.Builder()
@@ -65,7 +65,7 @@ public class ServiceTestFixture {
             .map(LUTHER)
             .description("시니컬하네")
             .area(SPACE_DRAWING)
-            .setting(FE_SETTING)
+            .setting(FE1_SETTING)
             .mapImage(MAP_IMAGE_URL)
             .build();
 
