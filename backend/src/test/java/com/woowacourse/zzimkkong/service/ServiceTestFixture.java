@@ -43,7 +43,6 @@ public class ServiceTestFixture {
             .description("우리집")
             .area(SPACE_DRAWING)
             .setting(BE_SETTING)
-            .mapImage(MAP_IMAGE_URL)
             .build();
 
     public static Setting FE_SETTING = new Setting.Builder()
@@ -66,7 +65,6 @@ public class ServiceTestFixture {
             .description("시니컬하네")
             .area(SPACE_DRAWING)
             .setting(FE_SETTING)
-            .mapImage(MAP_IMAGE_URL)
             .build();
 
     public static final LocalDate THE_DAY_AFTER_TOMORROW = LocalDate.now().plusDays(2L);

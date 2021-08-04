@@ -24,6 +24,7 @@ public class DayOfWeekValidator implements ConstraintValidator<DayOfWeekConstrai
         }
 
         List<String> dayOfWeekInput = Arrays.stream(value.split(DELIMITER))
+                .map(String::trim)
                 .map(String::toUpperCase)
                 .collect(Collectors.toList());
 

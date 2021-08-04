@@ -13,6 +13,7 @@ import com.woowacourse.zzimkkong.repository.SpaceRepository;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
@@ -61,9 +62,7 @@ public abstract class ReservationService {
         LocalDateTime startDateTime = reservationCreateUpdateRequest.getStartDateTime();
         LocalDateTime endDateTime = reservationCreateUpdateRequest.getEndDateTime();
 
-        validateReservationEnabled(space);
-        validateEnabledDayOfWeek(space, startDateTime);
-        validateSpaceAvailableTime(space, startDateTime, endDateTime);
+        validateSpaceSetting(space, startDateTime, endDateTime);
 
         List<Reservation> reservationsOnDate = getReservations(
                 Collections.singletonList(space),
@@ -74,21 +73,13 @@ public abstract class ReservationService {
         validateTimeConflicts(startDateTime, endDateTime, reservationsOnDate);
     }
 
-    private void validateSpaceAvailableTime(final Space space, final LocalDateTime startDateTime, final LocalDateTime endDateTime) {
-        if (space.isNotBetweenAvailableTime(startDateTime, endDateTime)) {
-            throw new ConflictSpaceSettingException();
-        }
-    }
-
     protected void validateAvailability(
             final Space space,
             final ReservationCreateUpdateRequest reservationCreateUpdateRequest) {
         LocalDateTime startDateTime = reservationCreateUpdateRequest.getStartDateTime();
         LocalDateTime endDateTime = reservationCreateUpdateRequest.getEndDateTime();
 
-        validateReservationEnabled(space);
-        validateEnabledDayOfWeek(space, startDateTime);
-        validateSpaceAvailableTime(space, startDateTime, endDateTime);
+        validateSpaceSetting(space, startDateTime, endDateTime);
 
         List<Reservation> reservationsOnDate = getReservations(
                 Collections.singletonList(space),
@@ -97,13 +88,25 @@ public abstract class ReservationService {
         validateTimeConflicts(startDateTime, endDateTime, reservationsOnDate);
     }
 
-    private void validateReservationEnabled(final Space space) {
+    private void validateSpaceSetting(Space space, LocalDateTime startDateTime, LocalDateTime endDateTime) {
+        int durationMinutes = (int) ChronoUnit.MINUTES.between(startDateTime, endDateTime);
+
+        if (space.isCorrectTimeUnit(startDateTime.getMinute()) | space.isNotDivideBy(durationMinutes)) {
+            throw new InvalidTimeUnitException();
+        }
+
+        if (space.isCorrectMinimumMaximumTimeUnit(durationMinutes)) {
+            throw new InvalidDurationTimeException();
+        }
+
+        if (space.isNotBetweenAvailableTime(startDateTime, endDateTime)) {
+            throw new ConflictSpaceSettingException();
+        }
+
         if (space.isUnableToReserve()) {
             throw new InvalidReservationEnableException();
         }
-    }
 
-    private void validateEnabledDayOfWeek(final Space space, final LocalDateTime startDateTime) {
         if (space.isClosedOn(startDateTime.getDayOfWeek())) {
             throw new InvalidDayOfWeekException();
         }

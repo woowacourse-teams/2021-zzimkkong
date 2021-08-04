@@ -40,16 +40,16 @@ class SpaceServiceTest extends ServiceTest {
 
     private final SpaceCreateUpdateRequest spaceCreateUpdateRequest = new SpaceCreateUpdateRequest(
             "백엔드 강의실",
+            "#FF66B2",
             "우리집",
             SPACE_DRAWING,
-            settingsRequest,
-            MAP_SVG
+            settingsRequest
     );
 
     private final SettingsRequest updateSettingsRequest = new SettingsRequest(
             LocalTime.of(10, 0),
             LocalTime.of(22, 0),
-            40,
+            30,
             60,
             120,
             true,
@@ -58,10 +58,10 @@ class SpaceServiceTest extends ServiceTest {
 
     private final SpaceCreateUpdateRequest updateSpaceCreateUpdateRequest = new SpaceCreateUpdateRequest(
             "백엔드 강의실",
-            "우리집",
+            "#FFCCE5",
+            "새로바뀐집",
             SPACE_DRAWING,
-            updateSettingsRequest,
-            MAP_SVG
+            updateSettingsRequest
     );
 
     @DisplayName("공간 생성 요청 시, 공간을 생성한다.")
@@ -191,14 +191,14 @@ class SpaceServiceTest extends ServiceTest {
         given(maps.findById(anyLong()))
                 .willReturn(Optional.of(LUTHER));
         given(spaces.findById(anyLong()))
-                .willReturn(Optional.of(BE));
+                .willReturn(Optional.of(FE1));
         given(storageUploader.upload(anyString(), any(File.class)))
                 .willReturn(MAP_IMAGE_URL);
 
         // then
         assertDoesNotThrow(() -> spaceService.updateSpace(
                 LUTHER.getId(),
-                BE.getId(),
+                FE1.getId(),
                 updateSpaceCreateUpdateRequest,
                 POBI));
 

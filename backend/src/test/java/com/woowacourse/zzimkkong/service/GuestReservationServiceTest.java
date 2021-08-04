@@ -36,7 +36,7 @@ class GuestReservationServiceTest extends ServiceTest {
     private GuestReservationService guestReservationService;
 
     private ReservationCreateUpdateWithPasswordRequest reservationCreateUpdateWithPasswordRequest = new ReservationCreateUpdateWithPasswordRequest(
-            1L,
+            BE.getId(),
             THE_DAY_AFTER_TOMORROW_START_TIME.plusHours(3),
             THE_DAY_AFTER_TOMORROW_START_TIME.plusHours(4),
             RESERVATION_PASSWORD,
@@ -236,7 +236,7 @@ class GuestReservationServiceTest extends ServiceTest {
     }
 
     @ParameterizedTest
-    @CsvSource(value = {"-10:10", "2:0", "0:1", "60:59", "-59:-59"}, delimiter = ':')
+    @CsvSource(value = {"-30:0", "0:30"}, delimiter = ':')
     @DisplayName("예약 생성 요청 시, 이미 겹치는 시간이 존재하면 예외가 발생한다.")
     void saveAvailabilityException(int startMinute, int endMinute) {
         //given, when
@@ -253,7 +253,9 @@ class GuestReservationServiceTest extends ServiceTest {
                         BE)));
 
         //then
-        assertThatThrownBy(() -> guestReservationService.saveReservation(LUTHER.getId(), reservationCreateUpdateWithPasswordRequest))
+        assertThatThrownBy(() -> guestReservationService.saveReservation(
+                LUTHER.getId(),
+                reservationCreateUpdateWithPasswordRequest))
                 .isInstanceOf(ImpossibleReservationTimeException.class);
     }
 
@@ -280,7 +282,6 @@ class GuestReservationServiceTest extends ServiceTest {
                 .description("시니컬하네")
                 .area(SPACE_DRAWING)
                 .setting(setting)
-                .mapImage(MAP_IMAGE_URL)
                 .build();
 
         given(maps.existsById(anyLong()))
@@ -317,7 +318,6 @@ class GuestReservationServiceTest extends ServiceTest {
                 .description("시니컬하네")
                 .area(SPACE_DRAWING)
                 .setting(setting)
-                .mapImage(MAP_IMAGE_URL)
                 .build();
 
         given(maps.existsById(anyLong()))
@@ -609,7 +609,7 @@ class GuestReservationServiceTest extends ServiceTest {
     }
 
     @ParameterizedTest
-    @CsvSource(value = {"0:2", "59:70", "-10:10"}, delimiter = ':')
+    @CsvSource(value = {"30:30", "-30:-30"}, delimiter = ':')
     @DisplayName("예약 수정 요청 시, 해당 시간에 예약이 존재하면 에러가 발생한다.")
     void updateImpossibleTimeException(int startTime, int endTime) {
         //given
@@ -629,7 +629,7 @@ class GuestReservationServiceTest extends ServiceTest {
         ReservationCreateUpdateWithPasswordRequest reservationCreateUpdateWithPasswordRequest = new ReservationCreateUpdateWithPasswordRequest(
                 1L,
                 BE_PM_ONE_TWO.getStartTime().plusMinutes(startTime),
-                BE_PM_ONE_TWO.getStartTime().plusMinutes(endTime),
+                BE_PM_ONE_TWO.getEndTime().plusMinutes(endTime),
                 reservation.getPassword(),
                 reservation.getUserName(),
                 reservation.getDescription()
@@ -695,7 +695,6 @@ class GuestReservationServiceTest extends ServiceTest {
                 .description("시니컬하네")
                 .area(SPACE_DRAWING)
                 .setting(setting)
-                .mapImage(MAP_IMAGE_URL)
                 .build();
 
         given(maps.existsById(anyLong()))
@@ -733,7 +732,6 @@ class GuestReservationServiceTest extends ServiceTest {
                 .description("시니컬하네")
                 .area(SPACE_DRAWING)
                 .setting(setting)
-                .mapImage(MAP_IMAGE_URL)
                 .build();
 
         given(maps.existsById(anyLong()))
