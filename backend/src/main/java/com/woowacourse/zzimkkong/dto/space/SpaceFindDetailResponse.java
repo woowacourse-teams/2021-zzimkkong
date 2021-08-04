@@ -4,6 +4,7 @@ import com.woowacourse.zzimkkong.domain.Space;
 
 public class SpaceFindDetailResponse {
     private String name;
+    private String color;
     private String description;
     private String area;
     private SettingResponse settings;
@@ -13,10 +14,12 @@ public class SpaceFindDetailResponse {
 
     protected SpaceFindDetailResponse(
             final String name,
+            final String color,
             final String description,
             final String area,
             final SettingResponse settings) {
         this.name = name;
+        this.color = color;
         this.description = description;
         this.area = area;
         this.settings = settings;
@@ -27,6 +30,7 @@ public class SpaceFindDetailResponse {
 
         return new SpaceFindDetailResponse(
                 space.getName(),
+                space.getColor(),
                 space.getDescription(),
                 space.getArea(),
                 settingResponse);
@@ -34,6 +38,10 @@ public class SpaceFindDetailResponse {
 
     public String getName() {
         return name;
+    }
+
+    public String getColor() {
+        return color;
     }
 
     public String getDescription() {
