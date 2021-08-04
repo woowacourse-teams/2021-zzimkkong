@@ -2,6 +2,7 @@ package com.woowacourse.zzimkkong.dto.space;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonInclude;
+import com.woowacourse.zzimkkong.dto.TimeUnit;
 
 import java.time.LocalTime;
 
@@ -15,6 +16,7 @@ public class SettingsRequest {
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = TIME_FORMAT)
     private LocalTime availableEndTime = LocalTime.of(23, 59);
 
+    @TimeUnit
     private Integer reservationTimeUnit = 10;
 
     private Integer reservationMinimumTimeUnit = 10;
