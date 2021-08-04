@@ -236,7 +236,7 @@ class GuestReservationServiceTest extends ServiceTest {
     }
 
     @ParameterizedTest
-    @CsvSource(value = {"-60:0", "0:60"}, delimiter = ':')
+    @CsvSource(value = {"60:0", "0:60"}, delimiter = ':')
     @DisplayName("예약 생성 요청 시, 이미 겹치는 시간이 존재하면 예외가 발생한다.")
     void saveAvailabilityException(int startMinute, int endMinute) {
         //given, when
@@ -249,7 +249,7 @@ class GuestReservationServiceTest extends ServiceTest {
                 any(LocalDateTime.class)))
                 .willReturn(List.of(makeReservation(
                         reservationCreateUpdateWithPasswordRequest.getStartDateTime().minusMinutes(startMinute),
-                        reservationCreateUpdateWithPasswordRequest.getEndDateTime().minusMinutes(endMinute),
+                        reservationCreateUpdateWithPasswordRequest.getEndDateTime().plusMinutes(endMinute),
                         BE)));
 
         //then
