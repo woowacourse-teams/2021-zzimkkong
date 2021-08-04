@@ -77,6 +77,42 @@ public class Space {
         this.mapImage = updateSpace.mapImage;
     }
 
+    public boolean isUnableToReserve() {
+        return !getReservationEnable();
+    }
+
+    public boolean isClosedOn(final DayOfWeek dayOfWeek) {
+        return getEnabledDaysOfWeek().stream()
+                .noneMatch(enabledDayOfWeek -> enabledDayOfWeek.equals(dayOfWeek));
+    }
+
+    private List<DayOfWeek> getEnabledDaysOfWeek() {
+        String enabledDayOfWeekNames = getEnabledDayOfWeek();
+
+        if (enabledDayOfWeekNames == null) {
+            return Collections.emptyList();
+        }
+
+        return Arrays.stream(enabledDayOfWeekNames.split(DELIMITER))
+                .map(this::convertToDayOfWeek)
+                .collect(Collectors.toList());
+    }
+
+    private DayOfWeek convertToDayOfWeek(final String dayOfWeekName) {
+        return Arrays.stream(DayOfWeek.values())
+                .filter(dayOfWeek -> dayOfWeek.name().equals(dayOfWeekName.toUpperCase()))
+                .findAny()
+                .orElseThrow(NoSuchDayOfWeekException::new);
+    }
+
+    public boolean isNotBetweenAvailableTime(LocalDateTime startDateTime, LocalDateTime endDateTime) {
+        boolean isEqualOrAfterStartTime = startDateTime.toLocalTime().equals(getAvailableStartTime()) ||
+                startDateTime.toLocalTime().isAfter(getAvailableStartTime());
+        boolean isEqualOrBeforeEndTime = endDateTime.toLocalTime().equals(getAvailableEndTime()) ||
+                endDateTime.toLocalTime().isBefore(getAvailableEndTime());
+        return !(isEqualOrAfterStartTime && isEqualOrBeforeEndTime);
+    }
+
     public Long getId() {
         return id;
     }
@@ -139,42 +175,6 @@ public class Space {
 
     public String getMapImage() {
         return mapImage;
-    }
-
-    public boolean isUnableToReserve() {
-        return !getReservationEnable();
-    }
-
-    public boolean isClosedOn(final DayOfWeek dayOfWeek) {
-        return getEnabledDaysOfWeek().stream()
-                .noneMatch(enabledDayOfWeek -> enabledDayOfWeek.equals(dayOfWeek));
-    }
-
-    private List<DayOfWeek> getEnabledDaysOfWeek() {
-        String enabledDayOfWeekNames = getEnabledDayOfWeek();
-
-        if (enabledDayOfWeekNames == null) {
-            return Collections.emptyList();
-        }
-
-        return Arrays.stream(enabledDayOfWeekNames.split(DELIMITER))
-                .map(this::convertToDayOfWeek)
-                .collect(Collectors.toList());
-    }
-
-    private DayOfWeek convertToDayOfWeek(final String dayOfWeekName) {
-        return Arrays.stream(DayOfWeek.values())
-                .filter(dayOfWeek -> dayOfWeek.name().equals(dayOfWeekName.toUpperCase()))
-                .findAny()
-                .orElseThrow(NoSuchDayOfWeekException::new);
-    }
-
-    public boolean isNotBetweenAvailableTime(LocalDateTime startDateTime, LocalDateTime endDateTime) {
-        boolean isEqualOrAfterStartTime = startDateTime.toLocalTime().equals(getAvailableStartTime()) ||
-                startDateTime.toLocalTime().isAfter(getAvailableStartTime());
-        boolean isEqualOrBeforeEndTime = endDateTime.toLocalTime().equals(getAvailableEndTime()) ||
-                endDateTime.toLocalTime().isBefore(getAvailableEndTime());
-        return !(isEqualOrAfterStartTime && isEqualOrBeforeEndTime);
     }
 
     public static class Builder {

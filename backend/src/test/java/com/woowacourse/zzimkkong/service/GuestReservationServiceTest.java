@@ -217,6 +217,8 @@ class GuestReservationServiceTest extends ServiceTest {
     @DisplayName("예약 생성 요청 시, 공간의 예약가능 시간이 아니라면 예외가 발생한다.")
     void saveInvalidTimeSetting(int minusStartTime, int plusEndTime) {
         //given
+        saveMock();
+
         reservationCreateUpdateWithPasswordRequest = new ReservationCreateUpdateWithPasswordRequest(
                 BE.getId(),
                 THE_DAY_AFTER_TOMORROW.atTime(BE_SETTING.getAvailableStartTime().minusMinutes(minusStartTime)),
@@ -225,9 +227,6 @@ class GuestReservationServiceTest extends ServiceTest {
                 USER_NAME,
                 DESCRIPTION
         );
-
-        //when
-        saveMock();
 
         //then
         assertThatThrownBy(() -> guestReservationService.saveReservation(
