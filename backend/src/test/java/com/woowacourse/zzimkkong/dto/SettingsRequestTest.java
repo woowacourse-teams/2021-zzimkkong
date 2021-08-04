@@ -12,7 +12,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 class SettingsRequestTest extends RequestTest {
     @ParameterizedTest
-    @ValueSource(ints = {1, 5, 45, 70})
+    @ValueSource(ints = {1, 45, 70})
     @DisplayName("공간의 예약 설정에 단위 시간이 올바르지 않게 들어오면 처리한다.")
     void invalidTimeUnit(int timeUnit) {
         SettingsRequest settingsRequest = new SettingsRequest(
