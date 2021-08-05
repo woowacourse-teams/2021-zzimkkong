@@ -25,6 +25,15 @@ export const MapContainer = styled.div`
   }
 `;
 
+export const SpaceAreaText = styled.text`
+  dominant-baseline: middle;
+  text-anchor: middle;
+  fill: ${({ theme }) => theme.black[700]};
+  font-size: 1rem;
+  pointer-events: none;
+  user-select: none;
+`;
+
 export const PanelContainer = styled.div`
   margin: 1.5rem 0;
 `;

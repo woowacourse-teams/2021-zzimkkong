@@ -16,6 +16,7 @@ import Modal from 'components/Modal/Modal';
 import Panel from 'components/Panel/Panel';
 import ReservationListItem from 'components/ReservationListItem/ReservationListItem';
 import MESSAGE from 'constants/message';
+import PALETTE from 'constants/palette';
 import PATH from 'constants/path';
 import useGuestMap from 'hooks/useGuestMap';
 import useInput from 'hooks/useInput';
@@ -24,7 +25,7 @@ import useSpaces from 'hooks/useSpaces';
 import { Area, MapDrawing, MapItem, Reservation, Space } from 'types/common';
 import { ErrorResponse } from 'types/response';
 import { formatDate } from 'utils/datetime';
-import * as Styled from '../GuestMain/GuestMain.styles';
+import * as Styled from './GuestMap.styles';
 
 export interface GuestMapState {
   spaceId?: Space['id'];
@@ -163,7 +164,7 @@ const GuestMap = (): JSX.Element => {
           <Styled.PageTitle>{map?.mapName}</Styled.PageTitle>
           <DateInput date={date} setDate={setDate} />
           <Styled.MapContainer>
-            {getMap.isSuccess && mapDrawing && (
+            {mapDrawing && (
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 version="1.1"
@@ -178,6 +179,29 @@ const GuestMap = (): JSX.Element => {
                     strokeWidth="2"
                   />
                 ))}
+
+                {spaceList.length > 0 &&
+                  spaceList.map(({ id, area, color, name }) => (
+                    <g key={`area-${id}`}>
+                      {area.shape === 'rect' && (
+                        <rect
+                          x={area.x}
+                          y={area.y}
+                          width={area.width}
+                          height={area.height}
+                          fill={color ?? PALETTE.RED[200]}
+                          opacity="0.3"
+                        />
+                      )}
+
+                      <Styled.SpaceAreaText
+                        x={area.x + area.width / 2}
+                        y={area.y + area.height / 2}
+                      >
+                        {name}
+                      </Styled.SpaceAreaText>
+                    </g>
+                  ))}
               </svg>
             )}
           </Styled.MapContainer>
