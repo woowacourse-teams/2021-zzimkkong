@@ -8,6 +8,7 @@ import com.woowacourse.zzimkkong.dto.space.SpaceCreateUpdateRequest;
 import io.restassured.RestAssured;
 import io.restassured.builder.RequestSpecBuilder;
 import io.restassured.specification.RequestSpecification;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.boot.test.autoconfigure.restdocs.AutoConfigureRestDocs;
@@ -69,6 +70,8 @@ public class AcceptanceTest {
 
     @LocalServerPort
     int port;
+
+    //TODO: BEFORE ALL 로 accessToken 리얼 1번만 해서 필드로 두도록!
 
     @BeforeEach
     public void setUp(RestDocumentationContextProvider restDocumentation) {

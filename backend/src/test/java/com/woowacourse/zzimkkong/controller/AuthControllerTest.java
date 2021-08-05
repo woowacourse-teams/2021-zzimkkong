@@ -17,6 +17,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.restdocs.restassured3.RestAssuredRestDocumentation.document;
 
 class AuthControllerTest extends AcceptanceTest {
+    // todo displayname 정리
     @DisplayName("유효한 정보의 로그인 요청이 오면 토큰을 발급한다.")
     @Test
     void login() {
