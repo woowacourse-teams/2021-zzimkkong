@@ -1,3 +1,5 @@
+import { DrawingAreaShape } from 'constants/editor';
+
 export type Color = string;
 
 export interface Coordinate {
@@ -30,4 +32,60 @@ export interface Space {
 
 export interface SpaceReservation extends Space {
   reservations: Reservation[];
+}
+
+export interface ReservationSettings {
+  availableStartTime: string;
+  availableEndTime: string;
+  reservationTimeUnit: number;
+  reservationMinimumTimeUnit: number;
+  reservationMaximumTimeUnit: number;
+  reservationEnable: boolean;
+  enabledDayOfWeek: string | null;
+}
+
+export interface ManagerSpace {
+  id: number;
+  name: string;
+  color: Color;
+  description: string;
+  area: SpaceArea;
+  settings: ReservationSettings;
+}
+
+export interface ManagerSpaceAPI extends Omit<ManagerSpace, 'area'> {
+  area: string;
+}
+
+export interface MapItem {
+  mapId: number;
+  mapName: string;
+  mapDrawing: string;
+  mapImageUrl: string;
+}
+
+export interface MapElement {
+  id: number;
+  type: string;
+  stroke: string;
+  points: string[];
+}
+
+export interface MapDrawing {
+  width: number;
+  height: number;
+  mapElements: MapElement[];
+}
+
+export interface SpaceArea {
+  shape: DrawingAreaShape;
+  x: number;
+  y: number;
+  width: number;
+  height: number;
+}
+
+export interface DrawingStatus {
+  start?: Coordinate;
+  end?: Coordinate;
 }
