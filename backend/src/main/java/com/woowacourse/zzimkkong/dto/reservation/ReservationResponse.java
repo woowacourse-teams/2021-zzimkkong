@@ -6,7 +6,7 @@ import com.woowacourse.zzimkkong.domain.Reservation;
 
 import java.time.LocalDateTime;
 
-import static com.woowacourse.zzimkkong.dto.Validator.DATETIME_FORMAT;
+import static com.woowacourse.zzimkkong.dto.ValidatorMessage.DATETIME_FORMAT;
 
 public class ReservationResponse {
     @JsonProperty

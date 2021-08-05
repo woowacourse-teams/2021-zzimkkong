@@ -93,7 +93,7 @@ public class SpaceControllerTest extends AcceptanceTest {
         SettingsRequest newSettingsRequest = new SettingsRequest(
                 LocalTime.of(10, 0),
                 LocalTime.of(20, 0),
-                20,
+                30,
                 60,
                 100,
                 true,

@@ -6,7 +6,7 @@ import com.woowacourse.zzimkkong.domain.Space;
 
 import java.time.LocalTime;
 
-import static com.woowacourse.zzimkkong.dto.Validator.TIME_FORMAT;
+import static com.woowacourse.zzimkkong.dto.ValidatorMessage.TIME_FORMAT;
 
 public class SettingResponse {
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = TIME_FORMAT)

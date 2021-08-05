@@ -5,7 +5,7 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 
-import static com.woowacourse.zzimkkong.dto.Validator.*;
+import static com.woowacourse.zzimkkong.dto.ValidatorMessage.*;
 
 public class MemberSaveRequest {
     @NotBlank(message = EMPTY_MESSAGE)
@@ -17,7 +17,7 @@ public class MemberSaveRequest {
     private String password;
 
     @NotNull(message = EMPTY_MESSAGE)
-    @Pattern(regexp = NAMING_FORMAT, message = ORGANIZATION_MESSAGE)
+    @Pattern(regexp = ORGANIZATION_FORMAT, message = ORGANIZATION_MESSAGE)
     private String organization;
 
     public MemberSaveRequest() {
