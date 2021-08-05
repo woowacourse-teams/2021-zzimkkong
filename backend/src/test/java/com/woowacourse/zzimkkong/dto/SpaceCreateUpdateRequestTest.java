@@ -5,7 +5,6 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.NullAndEmptySource;
 
-import static com.woowacourse.zzimkkong.CommonFixture.beSettingsRequest;
 import static com.woowacourse.zzimkkong.dto.ValidatorMessage.EMPTY_MESSAGE;
 import static org.assertj.core.api.Assertions.assertThat;
 
