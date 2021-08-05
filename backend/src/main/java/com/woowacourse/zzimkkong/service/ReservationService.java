@@ -1,5 +1,6 @@
 package com.woowacourse.zzimkkong.service;
 
+import com.woowacourse.zzimkkong.domain.Map;
 import com.woowacourse.zzimkkong.domain.Reservation;
 import com.woowacourse.zzimkkong.domain.Space;
 import com.woowacourse.zzimkkong.dto.reservation.ReservationCreateUpdateRequest;
@@ -153,8 +154,8 @@ public abstract class ReservationService {
         }
     }
 
-    protected void validateSpaceExistence(final Long spaceId) {
-        if (!spaces.existsById(spaceId)) {
+    protected void validateSpaceExistence(final Map map, final Long spaceId) {
+        if (map.doesNotHaveSpaceId(spaceId)) {
             throw new NoSuchSpaceException();
         }
     }

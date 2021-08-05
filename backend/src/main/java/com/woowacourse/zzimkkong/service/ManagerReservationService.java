@@ -6,7 +6,6 @@ import com.woowacourse.zzimkkong.domain.Reservation;
 import com.woowacourse.zzimkkong.domain.Space;
 import com.woowacourse.zzimkkong.dto.reservation.*;
 import com.woowacourse.zzimkkong.dto.slack.SlackResponse;
-import com.woowacourse.zzimkkong.exception.authorization.NoAuthorityOnMapException;
 import com.woowacourse.zzimkkong.exception.map.NoSuchMapException;
 import com.woowacourse.zzimkkong.exception.reservation.NoSuchReservationException;
 import com.woowacourse.zzimkkong.exception.space.NoSuchSpaceException;
@@ -43,7 +42,7 @@ public class ManagerReservationService extends ReservationService {
                 .orElseThrow(NoSuchMapException::new);
         validateManagerOfMap(map, manager);
 
-        Space space = spaces.findById(spaceId)
+        Space space = map.getSpaceById(spaceId)
                 .orElseThrow(NoSuchSpaceException::new);
         validateTime(reservationCreateUpdateWithPasswordRequest);
         validateAvailability(space, reservationCreateUpdateWithPasswordRequest);
@@ -86,7 +85,7 @@ public class ManagerReservationService extends ReservationService {
                 .orElseThrow(NoSuchMapException::new);
         validateManagerOfMap(map, manager);
 
-        Space space = spaces.findById(spaceId)
+        Space space = map.getSpaceById(spaceId)
                 .orElseThrow(NoSuchSpaceException::new);
         List<Reservation> reservations = getReservations(Collections.singletonList(space), date);
 
@@ -103,7 +102,7 @@ public class ManagerReservationService extends ReservationService {
                 .orElseThrow(NoSuchMapException::new);
         validateManagerOfMap(map, manager);
 
-        validateSpaceExistence(spaceId); // TODO: map.hasSpace
+        validateSpaceExistence(map, spaceId);
 
         Reservation reservation = reservations
                 .findById(reservationId)
@@ -121,8 +120,8 @@ public class ManagerReservationService extends ReservationService {
                 .orElseThrow(NoSuchMapException::new);
         validateManagerOfMap(map, manager);
 
-        Space space = spaces.findById(spaceId)
-                .orElseThrow(NoSuchSpaceException::new); // TODO: Map 에서 가져오기
+        Space space = map.getSpaceById(spaceId)
+                .orElseThrow(NoSuchSpaceException::new);
 
         validateTime(reservationCreateUpdateRequest);
         Reservation reservation = reservations
@@ -144,7 +143,7 @@ public class ManagerReservationService extends ReservationService {
                 .orElseThrow(NoSuchMapException::new);
         validateManagerOfMap(map, manager);
 
-        validateSpaceExistence(spaceId);
+        validateSpaceExistence(map, spaceId);
 
         Reservation reservation = reservations
                 .findById(reservationId)

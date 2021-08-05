@@ -3,6 +3,7 @@ package com.woowacourse.zzimkkong.domain;
 import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Entity
 public class Map {
@@ -51,6 +52,17 @@ public class Map {
 
     public boolean isNotOwnedBy(final Member manager) {
         return !this.member.equals(manager);
+    }
+
+    public Boolean doesNotHaveSpaceId(final Long spaceId) {
+        return spaces.stream()
+                .noneMatch(space -> space.hasId(spaceId));
+    }
+
+    public Optional<Space> getSpaceById(final Long spaceId) {
+        return spaces.stream()
+                .filter(space -> space.hasId(spaceId))
+                .findFirst();
     }
 
     public void updateImageUrl(final String mapImageUrl) {

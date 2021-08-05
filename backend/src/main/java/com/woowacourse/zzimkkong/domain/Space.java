@@ -123,6 +123,10 @@ public class Space {
         return !(isEqualOrAfterStartTime && isEqualOrBeforeEndTime);
     }
 
+    public boolean hasId(final Long spaceId) {
+        return id.equals(spaceId);
+    }
+
     public Long getId() {
         return id;
     }
