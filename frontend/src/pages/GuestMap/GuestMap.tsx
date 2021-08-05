@@ -1,0 +1,289 @@
+import { AxiosError } from 'axios';
+import { data } from 'msw/lib/types/context';
+import { FormEventHandler, useMemo, useState } from 'react';
+import { useMutation } from 'react-query';
+import { useHistory, useLocation, useParams } from 'react-router-dom';
+import { deleteReservation } from 'api/reservation';
+import { ReactComponent as Delete } from 'assets/svg/delete.svg';
+import { ReactComponent as Edit } from 'assets/svg/edit.svg';
+import { ReactComponent as More } from 'assets/svg/more.svg';
+import Button from 'components/Button/Button';
+import DateInput from 'components/DateInput/DateInput';
+import Header from 'components/Header/Header';
+import Input from 'components/Input/Input';
+import Layout from 'components/Layout/Layout';
+import Modal from 'components/Modal/Modal';
+import Panel from 'components/Panel/Panel';
+import ReservationListItem from 'components/ReservationListItem/ReservationListItem';
+import MESSAGE from 'constants/message';
+import PATH from 'constants/path';
+import useGuestMap from 'hooks/useGuestMap';
+import useInput from 'hooks/useInput';
+import useReservations from 'hooks/useReservations';
+import useSpaces from 'hooks/useSpaces';
+import { Area, MapDrawing, MapItem, Reservation, Space } from 'types/common';
+import { ErrorResponse } from 'types/response';
+import { formatDate } from 'utils/datetime';
+import * as Styled from '../GuestMain/GuestMain.styles';
+
+export interface GuestMapState {
+  spaceId?: Space['id'];
+  targetDate?: Date;
+}
+
+export interface URLParameter {
+  publicMapId: string;
+}
+
+const GuestMap = (): JSX.Element => {
+  const [modalOpen, setModalOpen] = useState(false);
+  const [passwordInputModalOpen, setPasswordInputModalOpen] = useState(false);
+  const [selectedReservation, setSelectedReservation] = useState<Reservation>();
+
+  const [passwordInput, onChangePasswordInput] = useInput('');
+
+  const history = useHistory();
+  const location = useLocation<GuestMapState>();
+  const { publicMapId } = useParams<URLParameter>();
+
+  const spaceId = location.state?.spaceId;
+  const targetDate = location.state?.targetDate;
+
+  const now = new Date();
+  const todayDate = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+
+  const [map, setMap] = useState<MapItem>();
+  const mapDrawing = map?.mapDrawing;
+  const getMap = useGuestMap(
+    { publicMapId },
+    {
+      onError: () => {
+        history.push('/not-found');
+      },
+      onSuccess: (response) => {
+        const mapData = response.data;
+
+        setMap({
+          ...mapData,
+          mapDrawing: JSON.parse(mapData.mapDrawing) as MapDrawing,
+        });
+      },
+      retry: false,
+    }
+  );
+
+  const [spaceList, setSpaceList] = useState<Space[]>([]);
+  const spaces = useMemo(() => {
+    const result: { [key: string]: Space } = {};
+    spaceList.forEach((item) => (result[item.id] = item));
+
+    return result;
+  }, [spaceList]);
+  const getSpaces = useSpaces(
+    { mapId: map?.mapId as number },
+    {
+      enabled: map?.mapId !== undefined,
+      onSuccess: (response) => {
+        const { spaces } = response.data;
+
+        setSpaceList(spaces.map((space) => ({ ...space, area: JSON.parse(space.area) as Area })));
+      },
+    }
+  );
+
+  const [selectedSpaceId, onChangeSelectedSpaceId] = useInput(
+    String(spaceId ?? (spaceList[0] ? spaceList[0].id : ''))
+  );
+  const [date, setDate] = useState(targetDate ? new Date(targetDate) : new Date());
+
+  const getReservations = useReservations(
+    {
+      mapId: map?.mapId as number,
+      spaceId: Number(selectedSpaceId),
+      date: formatDate(date),
+    },
+    {
+      enabled: map?.mapId !== undefined && selectedSpaceId !== '',
+    }
+  );
+  const reservations = getReservations.data?.data?.reservations ?? [];
+  const reservationAvailable = new Date(date) > todayDate;
+
+  const removeReservation = useMutation(deleteReservation, {
+    onSuccess: () => {
+      window.alert('예약이 삭제 되었습니다.');
+      setModalOpen(false);
+      setPasswordInputModalOpen(false);
+    },
+
+    onError: (error: AxiosError<ErrorResponse>) => {
+      alert(error.response?.data.message ?? MESSAGE.RESERVATION.UNEXPECTED_DELETE_ERROR);
+    },
+  });
+
+  const handleSelectModal = (reservation: Reservation) => {
+    setModalOpen(true);
+    setSelectedReservation(reservation);
+  };
+
+  const handleSelectEdit = () => {
+    if (!selectedSpaceId) return;
+
+    history.push({
+      pathname: PATH.GUEST_RESERVATION_EDIT,
+      state: {
+        mapId: map?.mapId,
+        spaceId: Number(selectedSpaceId),
+        reservation: selectedReservation,
+        spaceName: spaces[selectedSpaceId].name,
+        selectedDate: formatDate(date),
+      },
+    });
+  };
+
+  const handleSelectDelete = (): void => {
+    setPasswordInputModalOpen(true);
+  };
+
+  const handleDeleteReservation: FormEventHandler<HTMLFormElement> = (event) => {
+    event.preventDefault();
+
+    removeReservation.mutate({
+      mapId: map?.mapId as number,
+      password: passwordInput,
+      reservationId: Number(selectedReservation?.id),
+    });
+  };
+
+  return (
+    <>
+      <Header />
+      <Layout>
+        <Styled.PageWithBottomButton hasBottomButton={reservationAvailable}>
+          <Styled.PageTitle>{map?.mapName}</Styled.PageTitle>
+          <DateInput date={date} setDate={setDate} />
+          <Styled.MapContainer>
+            {getMap.isSuccess && mapDrawing && (
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                version="1.1"
+                width={mapDrawing.width}
+                height={mapDrawing.height}
+              >
+                {mapDrawing.mapElements.map((element) => (
+                  <polyline
+                    key={`polyline-${element.id}`}
+                    points={element.points.join(' ')}
+                    stroke={element.stroke}
+                    strokeWidth="2"
+                  />
+                ))}
+              </svg>
+            )}
+          </Styled.MapContainer>
+          {selectedSpaceId && (
+            <Styled.PanelContainer>
+              <Panel>
+                <Panel.Header dotColor={spaces[selectedSpaceId].color}>
+                  <Panel.Title>{spaces[selectedSpaceId].name}</Panel.Title>
+                </Panel.Header>
+                <Panel.Content>
+                  <>
+                    {getReservations.isLoadingError && (
+                      <Styled.Message>
+                        예약 목록을 불러오는 데 문제가 생겼어요!
+                        <br />
+                        새로 고침으로 다시 시도해주세요.
+                      </Styled.Message>
+                    )}
+                    {getReservations.isLoading && !getReservations.isLoadingError && (
+                      <Styled.Message>불러오는 중입니다...</Styled.Message>
+                    )}
+                    {getReservations.isSuccess && reservations?.length === 0 && (
+                      <Styled.Message>오늘의 첫 예약을 잡아보세요!</Styled.Message>
+                    )}
+                    {getReservations.isSuccess && reservations.length > 0 && (
+                      <Styled.ReservationList role="list">
+                        {reservations.map((reservation: Reservation) => (
+                          <ReservationListItem
+                            key={reservation.id}
+                            reservation={reservation}
+                            control={
+                              <Button
+                                variant="text"
+                                size="small"
+                                onClick={() => handleSelectModal(reservation)}
+                              >
+                                <More />
+                              </Button>
+                            }
+                          />
+                        ))}
+                      </Styled.ReservationList>
+                    )}
+                  </>
+                </Panel.Content>
+              </Panel>
+            </Styled.PanelContainer>
+          )}
+        </Styled.PageWithBottomButton>
+        {selectedSpaceId && reservationAvailable && (
+          <Styled.ReservationLink
+            to={{
+              pathname: PATH.GUEST_RESERVATION,
+              state: {
+                mapId: map?.mapId,
+                spaceId: Number(selectedSpaceId),
+                spaceName: spaces[selectedSpaceId].name,
+                selectedDate: formatDate(date),
+              },
+            }}
+          >
+            예약하기
+          </Styled.ReservationLink>
+        )}
+      </Layout>
+      <Modal open={modalOpen} isClosableDimmer={true} onClose={() => setModalOpen(false)}>
+        <Styled.SelectBox>
+          <Styled.SelectButton onClick={handleSelectEdit}>
+            <Edit />
+            수정하기
+          </Styled.SelectButton>
+          <Styled.SelectButton onClick={handleSelectDelete}>
+            <Delete />
+            삭제하기
+          </Styled.SelectButton>
+        </Styled.SelectBox>
+      </Modal>
+      <Modal
+        open={passwordInputModalOpen}
+        isClosableDimmer={true}
+        onClose={() => setModalOpen(false)}
+      >
+        <Modal.Header>예약시 사용하신 비밀번호를 입력해주세요.</Modal.Header>
+        <Modal.Inner>
+          <form onSubmit={handleDeleteReservation}>
+            <Input
+              type="password"
+              label="비밀번호"
+              minLength={4}
+              maxLength={4}
+              value={passwordInput}
+              onChange={onChangePasswordInput}
+            />
+            <Styled.DeleteModalContainer>
+              <Button variant="text" type="button" onClick={() => setPasswordInputModalOpen(false)}>
+                취소
+              </Button>
+              <Button variant="text" type="submit">
+                확인
+              </Button>
+            </Styled.DeleteModalContainer>
+          </form>
+        </Modal.Inner>
+      </Modal>
+    </>
+  );
+};
+
+export default GuestMap;

@@ -1,7 +1,7 @@
 import { AxiosError, AxiosResponse } from 'axios';
 import { QueryKey, useQuery, UseQueryOptions, UseQueryResult } from 'react-query';
+import { queryGuestMap, QueryGuestMapParams } from 'api/guestMap';
 import { ErrorResponse, QueryGuestMapSuccess } from 'types/response';
-import { queryGuestMap, QueryGuestMapParams } from './../api/GuestMap';
 
 const useGuestMap = <TData = AxiosResponse<QueryGuestMapSuccess>>(
   publicMapId: string,

@@ -1,5 +1,6 @@
 import { ReactNode } from 'react';
 import GuestMain from 'pages/GuestMain/GuestMain';
+import GuestMap from 'pages/GuestMap/GuestMap';
 import GuestReservation from 'pages/GuestReservation/GuestReservation';
 import GuestReservationEdit from 'pages/GuestReservationEdit/GuestReservationEdit';
 import ManagerJoin from 'pages/ManagerJoin/ManagerJoin';
@@ -30,6 +31,10 @@ export const PUBLIC_ROUTES: Route[] = [
   {
     path: PATH.GUEST_MAIN,
     component: <GuestMain />,
+  },
+  {
+    path: PATH.GUEST_MAP,
+    component: <GuestMap />,
   },
   {
     path: PATH.GUEST_RESERVATION,
