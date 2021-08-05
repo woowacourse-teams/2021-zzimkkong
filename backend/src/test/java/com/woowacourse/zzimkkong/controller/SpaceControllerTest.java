@@ -75,7 +75,7 @@ public class SpaceControllerTest extends AcceptanceTest {
                 60,
                 100,
                 true,
-                "Monday, Tuesday"
+                "monday, tuesday, wednesday, thursday, friday, saturday, sunday"
         );
 
         SpaceCreateUpdateRequest newSpaceCreateUpdateRequest = new SpaceCreateUpdateRequest(
@@ -122,7 +122,7 @@ public class SpaceControllerTest extends AcceptanceTest {
                 .reservationMinimumTimeUnit(10)
                 .reservationMaximumTimeUnit(1440)
                 .reservationEnable(true)
-                .disabledWeekdays(null)
+                .enabledDayOfWeek("monday, tuesday, wednesday, thursday, friday, saturday, sunday")
                 .build();
 
         Space defaultSpace = new Space.Builder()
@@ -190,7 +190,7 @@ public class SpaceControllerTest extends AcceptanceTest {
                 80,
                 130,
                 false,
-                "Monday, Tuesday"
+                "monday, tuesday, wednesday, thursday, friday, saturday, sunday"
         );
 
         SpaceCreateUpdateRequest updateSpaceCreateUpdateRequest = new SpaceCreateUpdateRequest(

@@ -54,7 +54,7 @@ public class SpaceService {
                 .reservationMinimumTimeUnit(settingsRequest.getReservationMinimumTimeUnit())
                 .reservationMaximumTimeUnit(settingsRequest.getReservationMaximumTimeUnit())
                 .reservationEnable(settingsRequest.getReservationEnable())
-                .disabledWeekdays(settingsRequest.getDisabledWeekdays())
+                .enabledDayOfWeek(settingsRequest.getEnabledDayOfWeek())
                 .build();
 
         Space space = spaces.save(
@@ -141,7 +141,7 @@ public class SpaceService {
                 .reservationEnable(settingsRequest.getReservationEnable())
                 .reservationMinimumTimeUnit(settingsRequest.getReservationMinimumTimeUnit())
                 .reservationMaximumTimeUnit(settingsRequest.getReservationMaximumTimeUnit())
-                .disabledWeekdays(settingsRequest.getDisabledWeekdays())
+                .enabledDayOfWeek(settingsRequest.getEnabledDayOfWeek())
                 .build();
 
         return new Space.Builder()

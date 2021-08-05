@@ -40,7 +40,7 @@ public class CommonFixture {
             .reservationMinimumTimeUnit(10)
             .reservationMaximumTimeUnit(1440)
             .reservationEnable(true)
-            .disabledWeekdays(null)
+            .enabledDayOfWeek("monday, tuesday, wednesday, thursday, friday, saturday, sunday")
             .build();
 
     public static Space BE = new Space.Builder()
@@ -61,7 +61,7 @@ public class CommonFixture {
             .reservationMinimumTimeUnit(10)
             .reservationMaximumTimeUnit(1440)
             .reservationEnable(true)
-            .disabledWeekdays(null)
+            .enabledDayOfWeek("monday, tuesday, wednesday, thursday, friday, saturday, sunday")
             .build();
 
     public static Space FE1 = new Space.Builder()
@@ -120,7 +120,7 @@ public class CommonFixture {
             BE_SETTING.getReservationMinimumTimeUnit(),
             BE_SETTING.getReservationMaximumTimeUnit(),
             BE_SETTING.getReservationEnable(),
-            BE_SETTING.getDisabledWeekdays()
+            BE_SETTING.getEnabledDayOfWeek()
     );
 
     public static final SpaceCreateUpdateRequest beSpaceCreateUpdateRequest = new SpaceCreateUpdateRequest(
@@ -138,7 +138,7 @@ public class CommonFixture {
             FE_SETTING.getReservationMinimumTimeUnit(),
             FE_SETTING.getReservationMaximumTimeUnit(),
             FE_SETTING.getReservationEnable(),
-            FE_SETTING.getDisabledWeekdays()
+            FE_SETTING.getEnabledDayOfWeek()
     );
 
     public static final SpaceCreateUpdateRequest feSpaceCreateUpdateRequest = new SpaceCreateUpdateRequest(

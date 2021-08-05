@@ -1,16 +1,25 @@
 package com.woowacourse.zzimkkong.domain;
 
+import com.woowacourse.zzimkkong.exception.space.NoSuchDayOfWeekException;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
 
 import javax.persistence.*;
+
+import java.time.DayOfWeek;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @DynamicInsert
 @DynamicUpdate
 @Entity
 public class Space {
+    public static final String DELIMITER = ",";
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -77,6 +86,35 @@ public class Space {
         return minute % getReservationTimeUnit() != 0;
     }
 
+    public boolean isUnableToReserve() {
+        return !getReservationEnable();
+    }
+
+    public boolean isClosedOn(final DayOfWeek dayOfWeek) {
+        return getEnabledDaysOfWeek().stream()
+                .noneMatch(enabledDayOfWeek -> enabledDayOfWeek.equals(dayOfWeek));
+    }
+
+    private List<DayOfWeek> getEnabledDaysOfWeek() {
+        String enabledDayOfWeekNames = getEnabledDayOfWeek();
+
+        if (enabledDayOfWeekNames == null) {
+            return Collections.emptyList();
+        }
+
+        return Arrays.stream(enabledDayOfWeekNames.split(DELIMITER))
+                .map(String::trim)
+                .map(this::convertToDayOfWeek)
+                .collect(Collectors.toList());
+    }
+
+    private DayOfWeek convertToDayOfWeek(final String dayOfWeekName) {
+        return Arrays.stream(DayOfWeek.values())
+                .filter(dayOfWeek -> dayOfWeek.name().equals(dayOfWeekName.toUpperCase()))
+                .findAny()
+                .orElseThrow(NoSuchDayOfWeekException::new);
+    }
+
     public boolean isNotBetweenAvailableTime(LocalDateTime startDateTime, LocalDateTime endDateTime) {
         boolean isEqualOrAfterStartTime = startDateTime.toLocalTime().equals(getAvailableStartTime()) ||
                 startDateTime.toLocalTime().isAfter(getAvailableStartTime());
@@ -137,8 +175,8 @@ public class Space {
         return setting.getReservationEnable();
     }
 
-    public String getDisabledWeekdays() {
-        return setting.getDisabledWeekdays();
+    public String getEnabledDayOfWeek() {
+        return setting.getEnabledDayOfWeek();
     }
 
     public Map getMap() {
@@ -146,7 +184,6 @@ public class Space {
     }
 
     public static class Builder {
-
         private Long id = null;
         private String name = null;
         private String textPosition = null;
