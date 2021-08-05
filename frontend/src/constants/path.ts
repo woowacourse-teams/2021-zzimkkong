@@ -7,7 +7,7 @@ const PATH = {
   MANAGER_SPACE_EDIT: '/map/:mapId/space/edit',
   GUEST_MAIN: '/guest',
   GUEST_MAP: '/guest/:publicMapId',
-  GUEST_RESERVATION: '/guest/reservation',
+  GUEST_RESERVATION: '/guest/:publicMapId/reservation',
   GUEST_RESERVATION_EDIT: '/guest/reservation/edit',
   NOT_FOUND: ['*', '/not-found'],
 };

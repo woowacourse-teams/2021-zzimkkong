@@ -25,6 +25,16 @@ export const MapContainer = styled.div`
   }
 `;
 
+export const Space = styled.g`
+  cursor: pointer;
+`;
+
+export const SpaceArea = styled.rect`
+  &:hover {
+    opacity: 0.5;
+  }
+`;
+
 export const SpaceAreaText = styled.text`
   dominant-baseline: middle;
   text-anchor: middle;

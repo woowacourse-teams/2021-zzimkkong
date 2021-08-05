@@ -74,6 +74,7 @@ const GuestMap = (): JSX.Element => {
   );
 
   const [spaceList, setSpaceList] = useState<Space[]>([]);
+  const [selectedSpaceId, setSelectedSpaceId] = useState(spaceId);
   const spaces = useMemo(() => {
     const result: { [key: string]: Space } = {};
     spaceList.forEach((item) => (result[item.id] = item));
@@ -88,13 +89,14 @@ const GuestMap = (): JSX.Element => {
         const { spaces } = response.data;
 
         setSpaceList(spaces.map((space) => ({ ...space, area: JSON.parse(space.area) as Area })));
+
+        if (!selectedSpaceId) {
+          setSelectedSpaceId(spaces[0].id);
+        }
       },
     }
   );
 
-  const [selectedSpaceId, onChangeSelectedSpaceId] = useInput(
-    String(spaceId ?? (spaceList[0] ? spaceList[0].id : ''))
-  );
   const [date, setDate] = useState(targetDate ? new Date(targetDate) : new Date());
 
   const getReservations = useReservations(
@@ -104,7 +106,7 @@ const GuestMap = (): JSX.Element => {
       date: formatDate(date),
     },
     {
-      enabled: map?.mapId !== undefined && selectedSpaceId !== '',
+      enabled: map?.mapId !== undefined && selectedSpaceId !== undefined,
     }
   );
   const reservations = getReservations.data?.data?.reservations ?? [];
@@ -121,6 +123,10 @@ const GuestMap = (): JSX.Element => {
       alert(error.response?.data.message ?? MESSAGE.RESERVATION.UNEXPECTED_DELETE_ERROR);
     },
   });
+
+  const handleClickSpaceArea = (spaceId: number) => {
+    setSelectedSpaceId(spaceId);
+  };
 
   const handleSelectModal = (reservation: Reservation) => {
     setModalOpen(true);
@@ -151,6 +157,7 @@ const GuestMap = (): JSX.Element => {
 
     removeReservation.mutate({
       mapId: map?.mapId as number,
+      spaceId: selectedSpaceId as number,
       password: passwordInput,
       reservationId: Number(selectedReservation?.id),
     });
@@ -182,9 +189,9 @@ const GuestMap = (): JSX.Element => {
 
                 {spaceList.length > 0 &&
                   spaceList.map(({ id, area, color, name }) => (
-                    <g key={`area-${id}`}>
+                    <Styled.Space key={`area-${id}`} onClick={() => handleClickSpaceArea(id)}>
                       {area.shape === 'rect' && (
-                        <rect
+                        <Styled.SpaceArea
                           x={area.x}
                           y={area.y}
                           width={area.width}
@@ -200,7 +207,7 @@ const GuestMap = (): JSX.Element => {
                       >
                         {name}
                       </Styled.SpaceAreaText>
-                    </g>
+                    </Styled.Space>
                   ))}
               </svg>
             )}
@@ -254,10 +261,10 @@ const GuestMap = (): JSX.Element => {
         {selectedSpaceId && reservationAvailable && (
           <Styled.ReservationLink
             to={{
-              pathname: PATH.GUEST_RESERVATION,
+              pathname: `/guest/${publicMapId}/reservation`,
               state: {
                 mapId: map?.mapId,
-                spaceId: Number(selectedSpaceId),
+                spaceId: selectedSpaceId,
                 spaceName: spaces[selectedSpaceId].name,
                 selectedDate: formatDate(date),
               },

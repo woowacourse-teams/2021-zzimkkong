@@ -1,7 +1,7 @@
 import { AxiosError } from 'axios';
 import { FormEventHandler, useEffect } from 'react';
 import { useMutation } from 'react-query';
-import { useHistory, useLocation } from 'react-router-dom';
+import { useHistory, useLocation, useParams } from 'react-router-dom';
 import { postReservation } from 'api/reservation';
 import { ReactComponent as CalendarIcon } from 'assets/svg/calendar.svg';
 import Button from 'components/Button/Button';
@@ -29,9 +29,14 @@ interface GuestReservationState {
   scrollPosition: ScrollPosition;
 }
 
+export interface URLParameter {
+  publicMapId: string;
+}
+
 const GuestReservation = (): JSX.Element => {
   const location = useLocation<GuestReservationState>();
   const history = useHistory<GuestMainState>();
+  const { publicMapId } = useParams<URLParameter>();
 
   const { mapId, spaceId, spaceName, selectedDate, scrollPosition } = location.state;
 
@@ -56,7 +61,7 @@ const GuestReservation = (): JSX.Element => {
 
   const createReservation = useMutation(postReservation, {
     onSuccess: () => {
-      history.push(PATH.GUEST_MAIN, {
+      history.push(`/guest/${publicMapId}`, {
         spaceId,
         targetDate: new Date(`${date}T${startTime}`),
       });

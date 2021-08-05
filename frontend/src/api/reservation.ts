@@ -14,7 +14,6 @@ export interface QuerySpaceReservationsParams extends QueryMapReservationsParams
 }
 
 interface ReservationParams {
-  spaceId: number;
   reservation: {
     startDateTime: Date;
     endDateTime: Date;
@@ -26,10 +25,12 @@ interface ReservationParams {
 
 interface PostReservationParams extends ReservationParams {
   mapId: number;
+  spaceId: number;
 }
 
 interface PutReservationParams extends ReservationParams {
   mapId: number;
+  spaceId: number;
   reservationId: number;
 }
 
