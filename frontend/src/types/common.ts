@@ -11,11 +11,23 @@ export interface ScrollPosition {
   x?: number;
   y?: number;
 }
+export interface MapElement {
+  id: number;
+  type: 'polyline';
+  stroke: Color;
+  points: string[];
+}
+
+export interface MapDrawing {
+  width: number;
+  height: number;
+  mapElements: MapElement[];
+}
 
 export interface MapItem {
   mapId: number;
   mapName: string;
-  mapDrawing: string;
+  mapDrawing: MapDrawing;
   mapImageUrl: string;
   publicMapId: string;
 }
@@ -28,12 +40,31 @@ export interface Reservation {
   description: string;
 }
 
+interface SpaceSetting {
+  availableStartTime: string;
+  availableEndTime: string;
+  reservationTimeUnit: number;
+  reservationMinimumTimeUnit: number;
+  reservationMaximumTimeUnit: number;
+  reservationEnable: boolean;
+  disabledWeekdays: string[];
+}
+
+export interface Area {
+  shape: string;
+  width: number;
+  height: number;
+  x: number;
+  y: number;
+}
+
 export interface Space {
-  spaceId: number;
-  spaceName: string;
-  spaceColor: Color;
-  textPosition: 'left' | 'right' | 'top' | 'bottom';
-  coordinate: Coordinate;
+  id: number;
+  name: string;
+  color: Color;
+  description: string;
+  area: Area;
+  settings: SpaceSetting;
 }
 
 export interface SpaceReservation extends Space {
@@ -63,25 +94,10 @@ export interface ManagerSpaceAPI extends Omit<ManagerSpace, 'area'> {
   area: string;
 }
 
-export interface MapItem {
-  mapId: number;
-  mapName: string;
-  mapDrawing: string;
-  mapImageUrl: string;
-}
-
 export interface DrawingStatus {
   start?: Coordinate;
   end?: Coordinate;
 }
-
-export interface MapElement {
-  id: number;
-  type: 'polyline';
-  stroke: Color;
-  points: string[];
-}
-
 export interface MapDrawing {
   width: number;
   height: number;

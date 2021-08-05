@@ -1,4 +1,12 @@
-import { Space } from 'types/common';
+import { Coordinate, Color } from 'types/common';
+
+interface Space {
+  spaceId: number;
+  spaceName: string;
+  textPosition: 'top' | 'bottom' | 'left' | 'right';
+  spaceColor: Color;
+  coordinate: Coordinate;
+}
 
 const spaceList: Space[] = [
   {

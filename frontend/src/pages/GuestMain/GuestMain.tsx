@@ -27,7 +27,7 @@ import * as Styled from './GuestMain.styles';
 import spaceList from './spaceList';
 
 export interface GuestMainState {
-  spaceId?: Space['spaceId'];
+  spaceId?: Space['id'];
   targetDate?: Date;
   scrollPosition?: ScrollPosition;
 }

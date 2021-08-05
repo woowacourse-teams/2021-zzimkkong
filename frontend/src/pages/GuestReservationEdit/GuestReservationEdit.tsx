@@ -24,8 +24,8 @@ import * as Styled from './GuestReservationEdit.styles';
 interface GuestReservationEditState {
   mapId: number;
   reservation: Reservation;
-  spaceId: Space['spaceId'];
-  spaceName: Space['spaceName'];
+  spaceId: Space['id'];
+  spaceName: Space['name'];
   selectedDate: string;
 }
 

@@ -23,8 +23,8 @@ import * as Styled from './GuestReservation.styles';
 
 interface GuestReservationState {
   mapId: number;
-  spaceId: Space['spaceId'];
-  spaceName: Space['spaceName'];
+  spaceId: Space['id'];
+  spaceName: Space['name'];
   selectedDate: string;
   scrollPosition: ScrollPosition;
 }

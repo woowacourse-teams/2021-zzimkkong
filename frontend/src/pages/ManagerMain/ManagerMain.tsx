@@ -19,7 +19,7 @@ import MESSAGE from 'constants/message';
 import PATH, { HREF } from 'constants/path';
 import useManagerMaps from 'hooks/useManagerMaps';
 import useManagerReservations from 'hooks/useManagerReservations';
-import { ErrorResponse } from 'types/response';
+import { ErrorResponse, MapItemResponse } from 'types/response';
 import { formatDate } from 'utils/datetime';
 import * as Styled from './ManagerMain.styles';
 
@@ -40,7 +40,7 @@ const ManagerMain = (): JSX.Element => {
   });
 
   const organization = getMaps.data?.data.organization ?? '';
-  const maps = useMemo(() => getMaps.data?.data.maps ?? [], [getMaps]);
+  const maps = useMemo((): MapItemResponse[] => getMaps.data?.data.maps ?? [], [getMaps]);
 
   const getReservations = useManagerReservations(
     {
@@ -147,11 +147,11 @@ const ManagerMain = (): JSX.Element => {
 
         <Styled.SpaceList>
           {reservations &&
-            reservations.map(({ spaceId, spaceName, spaceColor, reservations }, index) => (
-              <Styled.SpaceReservationWrapper key={`space-${spaceId}`}>
+            reservations.map(({ id, name, color, reservations }, index) => (
+              <Styled.SpaceReservationWrapper key={`space-${id}`}>
                 <Panel expandable initialExpanded={!index}>
-                  <Panel.Header dotColor={spaceColor}>
-                    <Panel.Title>{spaceName}</Panel.Title>
+                  <Panel.Header dotColor={color}>
+                    <Panel.Title>{name}</Panel.Title>
                   </Panel.Header>
                   <Panel.Content>
                     {reservations.length === 0 ? (
