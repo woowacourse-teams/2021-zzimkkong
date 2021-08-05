@@ -31,7 +31,6 @@ import static org.springframework.restdocs.restassured3.RestAssuredRestDocumenta
 @AutoConfigureRestDocs
 @ActiveProfiles("test")
 public class AcceptanceTest {
-    protected static String accessToken;
     protected final MemberSaveRequest memberSaveRequest = new MemberSaveRequest(EMAIL, PASSWORD, ORGANIZATION);
     protected static final LoginRequest loginRequest = new LoginRequest(EMAIL, PASSWORD);
     protected final MapCreateUpdateRequest mapCreateUpdateRequest = new MapCreateUpdateRequest(LUTHER_NAME, MAP_DRAWING_DATA, MAP_SVG);
@@ -78,8 +77,5 @@ public class AcceptanceTest {
                 .addFilter(documentationConfiguration(restDocumentation))
                 .build();
         setRequestSpecification(spec);
-
-        saveMember(memberSaveRequest);
-        accessToken = getToken();
     }
 }

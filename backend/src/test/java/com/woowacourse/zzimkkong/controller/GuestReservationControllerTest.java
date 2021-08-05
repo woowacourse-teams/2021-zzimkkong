@@ -16,6 +16,7 @@ import java.util.Arrays;
 
 import static com.woowacourse.zzimkkong.Constants.*;
 import static com.woowacourse.zzimkkong.DocumentUtils.*;
+import static com.woowacourse.zzimkkong.controller.AuthControllerTest.getToken;
 import static com.woowacourse.zzimkkong.controller.MapControllerTest.saveMap;
 import static com.woowacourse.zzimkkong.controller.MemberControllerTest.saveMember;
 import static com.woowacourse.zzimkkong.controller.SpaceControllerTest.saveSpace;
@@ -38,11 +39,13 @@ public class GuestReservationControllerTest extends AcceptanceTest {
 
     @BeforeEach
     void setUp() {
-//        saveMember(memberSaveRequest);
-        String lutherId = saveMap("/api/managers/maps", mapCreateUpdateRequest).header("location").split("/")[4];
+        saveMember(memberSaveRequest);
+        String accessToken = getToken();
+
+        String lutherId = saveMap(accessToken, "/api/managers/maps", mapCreateUpdateRequest).header("location").split("/")[4];
         String spaceApi = "/api/managers/maps/" + lutherId + "/spaces";
-        ExtractableResponse<Response> saveBeSpaceResponse = saveSpace(spaceApi, beSpaceCreateUpdateRequest);
-        ExtractableResponse<Response> saveFe1SpaceResponse = saveSpace(spaceApi, feSpaceCreateUpdateRequest);
+        ExtractableResponse<Response> saveBeSpaceResponse = saveSpace(accessToken, spaceApi, beSpaceCreateUpdateRequest);
+        ExtractableResponse<Response> saveFe1SpaceResponse = saveSpace(accessToken, spaceApi, feSpaceCreateUpdateRequest);
 
         Long beSpaceId = Long.valueOf(saveBeSpaceResponse.header("location").split("/")[6]);
         Long feSpaceId = Long.valueOf(saveFe1SpaceResponse.header("location").split("/")[6]);
