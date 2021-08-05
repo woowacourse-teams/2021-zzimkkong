@@ -49,11 +49,11 @@ public class Constants {
     public static final String FE_COLOR = "#FFCCCC";
     public static final String FE_DESCRIPTION = "시니컬하네";
 
-    public static final LocalDateTime BE_AM_ZERO_ONE_START_TIME = THE_DAY_AFTER_TOMORROW.atTime(10,0);
-    public static final LocalDateTime BE_AM_ZERO_ONE_END_TIME = THE_DAY_AFTER_TOMORROW.atTime(11,0);
-    public static final String BE_AM_ZERO_ONE_DESCRIPTION = DESCRIPTION;
-    public static final String BE_AM_ZERO_ONE_USERNAME = USER_NAME;
-    public static final String BE_AM_ZERO_ONE_PASSWORD = RESERVATION_PASSWORD;
+    public static final LocalDateTime BE_AM_TEN_ELEVEN_START_TIME = THE_DAY_AFTER_TOMORROW.atTime(10,0);
+    public static final LocalDateTime BE_AM_TEN_ELEVEN_END_TIME = THE_DAY_AFTER_TOMORROW.atTime(11,0);
+    public static final String BE_AM_TEN_ELEVEN_DESCRIPTION = DESCRIPTION;
+    public static final String BE_AM_TEN_ELEVEN_USERNAME = USER_NAME;
+    public static final String BE_AM_TEN_ELEVEN_PASSWORD = RESERVATION_PASSWORD;
 
     public static final LocalDateTime BE_PM_ONE_TWO_START_TIME = THE_DAY_AFTER_TOMORROW.atTime(13,0);
     public static final LocalDateTime BE_PM_ONE_TWO_END_TIME = THE_DAY_AFTER_TOMORROW.atTime(14,0);
@@ -61,15 +61,15 @@ public class Constants {
     public static final String BE_PM_ONE_TWO_USERNAME = USER_NAME;
     public static final String BE_PM_ONE_TWO_PASSWORD = RESERVATION_PASSWORD;
 
-    public static final LocalDateTime BE_NEXT_DAY_AM_SIX_TWELVE_START_TIME = THE_DAY_AFTER_TOMORROW.plusDays(1L).atTime(16,0);
-    public static final LocalDateTime BE_NEXT_DAY_AM_SIX_TWELVE_END_TIME = THE_DAY_AFTER_TOMORROW.plusDays(1L).atTime(18,0);
-    public static final String BE_NEXT_DAY_AM_SIX_TWELVE_DESCRIPTION = "찜꽁 3차 회의";
-    public static final String BE_NEXT_DAY_AM_SIX_TWELVE_USERNAME = USER_NAME;
-    public static final String BE_NEXT_DAY_AM_SIX_TWELVE_PASSWORD = RESERVATION_PASSWORD;
+    public static final LocalDateTime BE_NEXT_DAY_PM_FOUR_TO_SIX_START_TIME = THE_DAY_AFTER_TOMORROW.plusDays(1L).atTime(16,0);
+    public static final LocalDateTime BE_NEXT_DAY_PM_FOUR_TO_SIX_END_TIME = THE_DAY_AFTER_TOMORROW.plusDays(1L).atTime(18,0);
+    public static final String BE_NEXT_DAY_PM_FOUR_TO_SIX_DESCRIPTION = "찜꽁 3차 회의";
+    public static final String BE_NEXT_DAY_PM_FOUR_TO_SIX_USERNAME = USER_NAME;
+    public static final String BE_NEXT_DAY_PM_FOUR_TO_SIX_PASSWORD = RESERVATION_PASSWORD;
 
-    public static final LocalDateTime FE1_ZERO_ONE_START_TIME = THE_DAY_AFTER_TOMORROW.atTime(10,0);
-    public static final LocalDateTime FE1_ZERO_ONE_END_TIME = THE_DAY_AFTER_TOMORROW.atTime(11,0);
-    public static final String FE1_ZERO_ONE_DESCRIPTION = "찜꽁 5차 회의";
-    public static final String FE1_ZERO_ONE_USERNAME = USER_NAME;
-    public static final String FE1_ZERO_ONE_PASSWORD = RESERVATION_PASSWORD;
+    public static final LocalDateTime FE1_AM_TEN_ELEVEN_START_TIME = THE_DAY_AFTER_TOMORROW.atTime(10,0);
+    public static final LocalDateTime FE1_AM_TEN_ELEVEN_END_TIME = THE_DAY_AFTER_TOMORROW.atTime(11,0);
+    public static final String FE1_AM_TEN_ELEVEN_DESCRIPTION = "찜꽁 5차 회의";
+    public static final String FE1_AM_TEN_ELEVEN_USERNAME = USER_NAME;
+    public static final String FE1_AM_TEN_ELEVEN_PASSWORD = RESERVATION_PASSWORD;
 }
