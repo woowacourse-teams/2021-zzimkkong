@@ -69,18 +69,37 @@ const ManagerMain = (): JSX.Element => {
     removeMap.mutate({ mapId });
   };
 
-  const onOpenDrawer = () => {
+  const getSelectedPublicMapId = () => {
+    const selectedMap = maps.find((map) => map.mapId === selectedMapId);
+
+    return selectedMap?.publicMapId ?? '';
+  };
+
+  const handleCopyLink = () => {
+    navigator.clipboard
+      .writeText(`${window.location.origin}/guest/${getSelectedPublicMapId()}`)
+      .then(
+        () => {
+          alert('클립보드 복사 성공!');
+        },
+        () => {
+          alert('클립보드 복사 실패!');
+        }
+      );
+  };
+
+  const handleOpenDrawer = () => {
     setOpen(true);
   };
 
-  const onCloseDrawer = () => {
+  const handleCloseDrawer = () => {
     setOpen(false);
   };
 
   const handleSelectMap = (mapId: number, mapName: string) => {
     setSelectedMapId(mapId);
     setSelectedMapName(mapName);
-    onCloseDrawer();
+    handleCloseDrawer();
   };
 
   useEffect(() => {
@@ -93,11 +112,11 @@ const ManagerMain = (): JSX.Element => {
       <Header />
       <Layout>
         <Styled.PageHeader>
-          <IconButton text="맵 목록" onClick={onOpenDrawer}>
+          <IconButton text="맵 목록" onClick={handleOpenDrawer}>
             <MenuIcon width="100%" height="100%" />
           </IconButton>
           <Styled.PageTitle>{selectedMapName}</Styled.PageTitle>
-          <IconButton text="공유 링크">
+          <IconButton text="공유 링크" onClick={handleCopyLink}>
             <Styled.PrimaryLinkIcon width="100%" height="100%" />
           </IconButton>
         </Styled.PageHeader>
@@ -159,7 +178,7 @@ const ManagerMain = (): JSX.Element => {
         </Styled.SpaceList>
       </Layout>
 
-      <Drawer open={open} placement="left" maxwidth="450px" onClose={onCloseDrawer}>
+      <Drawer open={open} placement="left" maxwidth="450px" onClose={handleCloseDrawer}>
         <Drawer.Inner>
           <Drawer.Header>
             <Drawer.HeaderText>{organization}</Drawer.HeaderText>

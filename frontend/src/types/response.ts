@@ -9,6 +9,8 @@ export interface LoginSuccess {
   accessToken: string;
 }
 
+export type QueryGuestMapSuccess = MapItem;
+
 export type QueryManagerMapSuccess = MapItem;
 
 export interface QueryManagerMapsSuccess {

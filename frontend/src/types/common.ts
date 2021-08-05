@@ -17,6 +17,7 @@ export interface MapItem {
   mapName: string;
   mapDrawing: string;
   mapImageUrl: string;
+  publicMapId: string;
 }
 
 export interface Reservation {
