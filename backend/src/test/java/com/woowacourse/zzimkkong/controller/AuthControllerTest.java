@@ -1,7 +1,6 @@
 package com.woowacourse.zzimkkong.controller;
 
 import com.woowacourse.zzimkkong.dto.member.LoginRequest;
-import com.woowacourse.zzimkkong.dto.member.MemberSaveRequest;
 import com.woowacourse.zzimkkong.dto.member.TokenResponse;
 import com.woowacourse.zzimkkong.infrastructure.AuthorizationExtractor;
 import io.restassured.RestAssured;
@@ -12,21 +11,19 @@ import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 
-import static com.woowacourse.zzimkkong.CommonFixture.*;
 import static com.woowacourse.zzimkkong.DocumentUtils.*;
 import static com.woowacourse.zzimkkong.controller.MemberControllerTest.saveMember;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.restdocs.restassured3.RestAssuredRestDocumentation.document;
 
 class AuthControllerTest extends AcceptanceTest {
-    @DisplayName("유효한 정보의 로그인 요청이 오면 토큰을 발급한다.")
     @Test
+    @DisplayName("유효한 정보의 로그인 요청이 오면 토큰을 발급한다.")
     void login() {
         // given
-        saveMember(new MemberSaveRequest(EMAIL, PASSWORD, ORGANIZATION));
+        saveMember(memberSaveRequest);
 
         // when
-        LoginRequest loginRequest = new LoginRequest(EMAIL, PASSWORD);
         ExtractableResponse<Response> response = login(loginRequest);
         TokenResponse responseBody = response.body().as(TokenResponse.class);
 
@@ -39,8 +36,7 @@ class AuthControllerTest extends AcceptanceTest {
     @DisplayName("유효한 토큰으로 요청이 오면 200 ok가 반환된다.")
     void validToken() {
         // given
-        saveMember(new MemberSaveRequest(EMAIL, PASSWORD, ORGANIZATION));
-
+        saveMember(memberSaveRequest);
         String accessToken = getToken();
 
         //when
@@ -63,9 +59,7 @@ class AuthControllerTest extends AcceptanceTest {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
     }
 
-    // TODO: token 필드로 가지고 메서드당 한번만 받도록 리팩토링
     static String getToken() {
-        LoginRequest loginRequest = new LoginRequest(EMAIL, PASSWORD);
         ExtractableResponse<Response> loginResponse = login(loginRequest);
 
         TokenResponse responseBody = loginResponse.body().as(TokenResponse.class);

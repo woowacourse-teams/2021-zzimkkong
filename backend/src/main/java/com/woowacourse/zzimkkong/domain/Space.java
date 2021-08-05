@@ -74,11 +74,19 @@ public class Space {
         this.map = updateSpace.map;
     }
 
-    public boolean isCorrectTimeUnit(int minute) {
+    public boolean isNotBetweenAvailableTime(LocalDateTime startDateTime, LocalDateTime endDateTime) {
+        boolean isEqualOrAfterStartTime = startDateTime.toLocalTime().equals(getAvailableStartTime()) ||
+                startDateTime.toLocalTime().isAfter(getAvailableStartTime());
+        boolean isEqualOrBeforeEndTime = endDateTime.toLocalTime().equals(getAvailableEndTime()) ||
+                endDateTime.toLocalTime().isBefore(getAvailableEndTime());
+        return !(isEqualOrAfterStartTime && isEqualOrBeforeEndTime);
+    }
+
+    public boolean isIncorrectTimeUnit(int minute) {
         return minute != 0 && isNotDivideBy(minute);
     }
 
-    public boolean isCorrectMinimumMaximumTimeUnit(int durationMinutes) {
+    public boolean isIncorrectMinimumMaximumTimeUnit(int durationMinutes) {
         return durationMinutes < getReservationMinimumTimeUnit() || durationMinutes > getReservationMaximumTimeUnit();
     }
 
@@ -113,14 +121,6 @@ public class Space {
                 .filter(dayOfWeek -> dayOfWeek.name().equals(dayOfWeekName.toUpperCase()))
                 .findAny()
                 .orElseThrow(NoSuchDayOfWeekException::new);
-    }
-
-    public boolean isNotBetweenAvailableTime(LocalDateTime startDateTime, LocalDateTime endDateTime) {
-        boolean isEqualOrAfterStartTime = startDateTime.toLocalTime().equals(getAvailableStartTime()) ||
-                startDateTime.toLocalTime().isAfter(getAvailableStartTime());
-        boolean isEqualOrBeforeEndTime = endDateTime.toLocalTime().equals(getAvailableEndTime()) ||
-                endDateTime.toLocalTime().isBefore(getAvailableEndTime());
-        return !(isEqualOrAfterStartTime && isEqualOrBeforeEndTime);
     }
 
     public Long getId() {
