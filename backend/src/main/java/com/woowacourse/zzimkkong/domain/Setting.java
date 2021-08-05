@@ -25,7 +25,7 @@ public class Setting {
     private Boolean reservationEnable;
 
     @Column(nullable = true)
-    private String disabledWeekdays;
+    private String enabledDayOfWeek;
 
     public Setting() {
     }
@@ -37,7 +37,7 @@ public class Setting {
         this.reservationMinimumTimeUnit = builder.reservationMinimumTimeUnit;
         this.reservationMaximumTimeUnit = builder.reservationMaximumTimeUnit;
         this.reservationEnable = builder.reservationEnable;
-        this.disabledWeekdays = builder.disabledWeekdays;
+        this.enabledDayOfWeek = builder.enabledDayOfWeek;
     }
 
     public LocalTime getAvailableStartTime() {
@@ -64,8 +64,8 @@ public class Setting {
         return reservationEnable;
     }
 
-    public String getDisabledWeekdays() {
-        return disabledWeekdays;
+    public String getEnabledDayOfWeek() {
+        return enabledDayOfWeek;
     }
 
     public static class Builder {
@@ -75,7 +75,7 @@ public class Setting {
         private Integer reservationMinimumTimeUnit = null;
         private Integer reservationMaximumTimeUnit = null;
         private Boolean reservationEnable = null;
-        private String disabledWeekdays = null;
+        private String enabledDayOfWeek = null;
 
         public Builder() {
         }
@@ -110,8 +110,8 @@ public class Setting {
             return this;
         }
 
-        public Setting.Builder disabledWeekdays(String inputDisabledWeekdays) {
-            disabledWeekdays = inputDisabledWeekdays;
+        public Setting.Builder enabledDayOfWeek(String inputEnabledDayOfWeek) {
+            enabledDayOfWeek = inputEnabledDayOfWeek;
             return this;
         }
 
