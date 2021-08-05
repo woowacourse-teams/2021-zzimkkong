@@ -69,7 +69,7 @@ public class GuestReservationControllerTest extends AcceptanceTest {
                 .reservationMinimumTimeUnit(BE_RESERVATION_MINIMUM_TIME_UNIT)
                 .reservationMaximumTimeUnit(BE_RESERVATION_MAXIMUM_TIME_UNIT)
                 .reservationEnable(BE_RESERVATION_ENABLE)
-                .disabledWeekdays(BE_ENABLED_DAY_OF_WEEK)
+                .enabledDayOfWeek(BE_ENABLED_DAY_OF_WEEK)
                 .build();
 
         be = new Space.Builder()
@@ -88,7 +88,7 @@ public class GuestReservationControllerTest extends AcceptanceTest {
                 .reservationMinimumTimeUnit(FE_RESERVATION_MINIMUM_TIME_UNIT)
                 .reservationMaximumTimeUnit(FE_RESERVATION_MAXIMUM_TIME_UNIT)
                 .reservationEnable(FE_RESERVATION_ENABLE)
-                .disabledWeekdays(FE_ENABLED_DAY_OF_WEEK)
+                .enabledDayOfWeek(FE_ENABLED_DAY_OF_WEEK)
                 .build();
 
         fe = new Space.Builder()
