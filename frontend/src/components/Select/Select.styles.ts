@@ -39,7 +39,7 @@ export const ListBoxButton = styled.button`
   }
 
   &:disabled {
-    background-color: ${({ theme }) => theme.gray[200]};
+    background-color: ${({ theme }) => theme.gray[100]};
     cursor: default;
   }
 `;
