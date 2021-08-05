@@ -102,7 +102,7 @@ public class MapService {
         deleteThumbnail(map);
     }
 
-    private void validateExistReservations(Long mapId) {
+    private void validateExistReservations(final Long mapId) {
         List<Space> findSpaces = spaces.findAllByMapId(mapId);
 
         boolean isExistReservationInAnySpace = findSpaces.stream()

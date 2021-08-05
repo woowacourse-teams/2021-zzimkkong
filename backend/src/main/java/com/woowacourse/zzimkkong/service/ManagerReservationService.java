@@ -39,7 +39,9 @@ public class ManagerReservationService extends ReservationService {
             final Long spaceId,
             final ReservationCreateUpdateWithPasswordRequest reservationCreateUpdateWithPasswordRequest,
             final Member manager) {
-        validateAuthorityOnMap(mapId, manager);
+        Map map = maps.findById(mapId)
+                .orElseThrow(NoSuchMapException::new);
+        validateManagerOfMap(map, manager);
 
         Space space = spaces.findById(spaceId)
                 .orElseThrow(NoSuchSpaceException::new);
@@ -64,7 +66,9 @@ public class ManagerReservationService extends ReservationService {
             final Long mapId,
             final LocalDate date,
             final Member manager) {
-        validateAuthorityOnMap(mapId, manager);
+        Map map = maps.findById(mapId)
+                .orElseThrow(NoSuchMapException::new);
+        validateManagerOfMap(map, manager);
 
         List<Space> findSpaces = spaces.findAllByMapId(mapId);
         List<Reservation> reservations = getReservations(findSpaces, date);
@@ -78,7 +82,9 @@ public class ManagerReservationService extends ReservationService {
             final Long spaceId,
             final LocalDate date,
             final Member manager) {
-        validateAuthorityOnMap(mapId, manager);
+        Map map = maps.findById(mapId)
+                .orElseThrow(NoSuchMapException::new);
+        validateManagerOfMap(map, manager);
 
         Space space = spaces.findById(spaceId)
                 .orElseThrow(NoSuchSpaceException::new);
@@ -93,8 +99,11 @@ public class ManagerReservationService extends ReservationService {
             final Long spaceId,
             final Long reservationId,
             final Member manager) {
-        validateAuthorityOnMap(mapId, manager);
-        validateSpaceExistence(spaceId);
+        Map map = maps.findById(mapId)
+                .orElseThrow(NoSuchMapException::new);
+        validateManagerOfMap(map, manager);
+
+        validateSpaceExistence(spaceId); // TODO: map.hasSpace
 
         Reservation reservation = reservations
                 .findById(reservationId)
@@ -108,9 +117,12 @@ public class ManagerReservationService extends ReservationService {
             final Long reservationId,
             final ReservationCreateUpdateRequest reservationCreateUpdateRequest,
             final Member manager) {
-        validateAuthorityOnMap(mapId, manager);
+        Map map = maps.findById(mapId)
+                .orElseThrow(NoSuchMapException::new);
+        validateManagerOfMap(map, manager);
+
         Space space = spaces.findById(spaceId)
-                .orElseThrow(NoSuchSpaceException::new);
+                .orElseThrow(NoSuchSpaceException::new); // TODO: Map 에서 가져오기
 
         validateTime(reservationCreateUpdateRequest);
         Reservation reservation = reservations
@@ -128,7 +140,10 @@ public class ManagerReservationService extends ReservationService {
             final Long spaceId,
             final Long reservationId,
             final Member manager) {
-        validateAuthorityOnMap(mapId, manager);
+        Map map = maps.findById(mapId)
+                .orElseThrow(NoSuchMapException::new);
+        validateManagerOfMap(map, manager);
+
         validateSpaceExistence(spaceId);
 
         Reservation reservation = reservations
@@ -136,11 +151,5 @@ public class ManagerReservationService extends ReservationService {
                 .orElseThrow(NoSuchReservationException::new);
         reservations.delete(reservation);
         return SlackResponse.from(reservation);
-    }
-
-    private void validateAuthorityOnMap(final Long mapId, final Member manager) {
-        Map map = maps.findById(mapId)
-                .orElseThrow(NoSuchMapException::new);
-        validateManagerOfMap(map, manager);
     }
 }
