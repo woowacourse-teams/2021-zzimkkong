@@ -1,5 +1,4 @@
 import { AxiosError } from 'axios';
-import { data } from 'msw/lib/types/context';
 import { FormEventHandler, useMemo, useState } from 'react';
 import { useMutation } from 'react-query';
 import { useHistory, useLocation, useParams } from 'react-router-dom';
