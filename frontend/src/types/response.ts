@@ -1,4 +1,4 @@
-import { Reservation, Space } from './common';
+import { ManagerSpaceAPI, MapItem, Reservation, Space } from './common';
 
 export interface ErrorResponse {
   message?: string;
@@ -16,3 +16,13 @@ export interface QueryReservationsSuccess {
 export interface QuerySpacesSuccess {
   data: Space[];
 }
+
+export interface QueryManagerSpaceSuccess {
+  data: ManagerSpaceAPI;
+}
+
+export interface QueryManagerSpacesSuccess {
+  spaces: ManagerSpaceAPI[];
+}
+
+export type QueryManagerMapSuccess = MapItem;

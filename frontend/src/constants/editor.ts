@@ -5,3 +5,8 @@ export enum Mode {
   POLYLINE = 'polyline',
   DECORATION = 'decoration',
 }
+
+export enum DrawingAreaShape {
+  RECT = 'rect',
+  POLYGON = 'polygon',
+}

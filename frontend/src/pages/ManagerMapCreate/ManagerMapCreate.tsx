@@ -21,15 +21,10 @@ import IconButton from 'components/IconButton/IconButton';
 import Layout from 'components/Layout/Layout';
 import PALETTE from 'constants/palette';
 import useInput from 'hooks/useInput';
-import { Color, Coordinate } from 'types/common';
+import { Color, Coordinate, DrawingStatus } from 'types/common';
 import { Mode } from 'types/editor';
 import { ErrorResponse } from 'types/response';
 import * as Styled from './ManagerMapCreate.styles';
-
-interface DrawingStatus {
-  start?: Coordinate;
-  end?: Coordinate;
-}
 
 interface MapElement {
   id: number;
