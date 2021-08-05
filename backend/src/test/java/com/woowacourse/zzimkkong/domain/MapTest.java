@@ -7,8 +7,8 @@ import static com.woowacourse.zzimkkong.Constants.*;
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class MapTest {
-    @DisplayName("맵의 관리자가 아니면 true, 맞으면 false")
     @Test
+    @DisplayName("맵의 관리자가 아니면 true, 맞으면 false")
     void isNotOwnedBy() {
         Member pobi = new Member(EMAIL, PASSWORD, ORGANIZATION);
         Map luther = new Map(LUTHER_NAME, MAP_DRAWING_DATA, MAP_IMAGE_URL, pobi);

@@ -45,8 +45,8 @@ public class SpaceTest {
         assertThat(actual).isTrue();
     }
 
-    @DisplayName("예약이 가능한 공간이면 false를 반환한다")
     @Test
+    @DisplayName("예약이 가능한 공간이면 false를 반환한다")
     void isAbleToReserve() {
         Setting reservationEnableSetting = new Setting.Builder().reservationEnable(true).build();
         Space reservationEnableSpace = new Space.Builder().setting(reservationEnableSetting).build();
@@ -54,8 +54,8 @@ public class SpaceTest {
         assertThat(reservationEnableSpace.isUnableToReserve()).isFalse();
     }
 
-    @DisplayName("예약이 불가능한 공간이면 true를 반환한다")
     @Test
+    @DisplayName("예약이 불가능한 공간이면 true를 반환한다")
     void isUnableToReserve() {
         Setting reservationUnableSetting = new Setting.Builder().reservationEnable(false).build();
         Space reservationUnableSpace = new Space.Builder().setting(reservationUnableSetting).build();
@@ -63,9 +63,9 @@ public class SpaceTest {
         assertThat(reservationUnableSpace.isUnableToReserve()).isTrue();
     }
 
-    @DisplayName("해당 요일에 예약이 불가능하면 true를 반환한다")
     @ParameterizedTest
     @EnumSource(value = DayOfWeek.class, names = {"TUESDAY", "THURSDAY", "FRIDAY", "SATURDAY", "SUNDAY"})
+    @DisplayName("해당 요일에 예약이 불가능하면 true를 반환한다")
     void isClosedOn_Disabled(DayOfWeek dayOfWeek) {
         Setting setting = new Setting.Builder().enabledDayOfWeek("monday, wednesday").build();
         Space space = new Space.Builder().setting(setting).build();
@@ -73,9 +73,9 @@ public class SpaceTest {
         assertThat(space.isClosedOn(dayOfWeek)).isTrue();
     }
 
-    @DisplayName("예약 가능한 요일이 null이면 모든 요일에 대해서 true를 반환한다")
     @ParameterizedTest
     @EnumSource(value = DayOfWeek.class)
+    @DisplayName("예약 가능한 요일이 null이면 모든 요일에 대해서 true를 반환한다")
     void isClosedOn_nullEnabledDayOfWeek(DayOfWeek dayOfWeek) {
         Setting setting = new Setting.Builder().enabledDayOfWeek(null).build();
         Space space = new Space.Builder().setting(setting).build();
@@ -83,9 +83,9 @@ public class SpaceTest {
         assertThat(space.isClosedOn(dayOfWeek)).isTrue();
     }
 
-    @DisplayName("해당 요일에 예약이 가능하면 false를 반환한다")
     @ParameterizedTest
     @EnumSource(value = DayOfWeek.class, names = {"MONDAY", "WEDNESDAY"})
+    @DisplayName("해당 요일에 예약이 가능하면 false를 반환한다")
     void isClosedOn_Enable(DayOfWeek dayOfWeek) {
         Setting setting = new Setting.Builder().enabledDayOfWeek("monday, wednesday").build();
         Space space = new Space.Builder().setting(setting).build();

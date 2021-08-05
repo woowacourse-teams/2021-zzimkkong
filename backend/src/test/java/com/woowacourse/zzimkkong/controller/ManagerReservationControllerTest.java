@@ -120,8 +120,8 @@ public class ManagerReservationControllerTest extends AcceptanceTest {
                 .build();
     }
 
-    @DisplayName("올바른 토큰이 주어질 때, 예약을 등록한다.")
     @Test
+    @DisplayName("올바른 토큰이 주어질 때, 예약을 등록한다.")
     void save() {
         //given
         ReservationCreateUpdateWithPasswordRequest newReservationCreateUpdateWithPasswordRequest = new ReservationCreateUpdateWithPasswordRequest(
@@ -138,8 +138,8 @@ public class ManagerReservationControllerTest extends AcceptanceTest {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
     }
 
-    @DisplayName("map id, space id, 특정 날짜가 주어질 때 해당 맵, 해당 공간, 해당 날짜에 속하는 예약들만 찾아온다")
     @Test
+    @DisplayName("map id, space id, 특정 날짜가 주어질 때 해당 맵, 해당 공간, 해당 날짜에 속하는 예약들만 찾아온다")
     void find() {
         //given, when
         ExtractableResponse<Response> response = findReservations(accessToken, beReservationApi, THE_DAY_AFTER_TOMORROW.toString());
@@ -158,8 +158,8 @@ public class ManagerReservationControllerTest extends AcceptanceTest {
                 .isEqualTo(expectedResponse);
     }
 
-    @DisplayName("map id와 특정 날짜가 주어질 때 해당 맵, 해당 날짜의 모든 공간에 대한 예약을 조회한다.")
     @Test
+    @DisplayName("map id와 특정 날짜가 주어질 때 해당 맵, 해당 날짜의 모든 공간에 대한 예약을 조회한다.")
     void findAll() {
         //given, when
         String api = beReservationApi.replaceAll("/spaces/[0-9]", "/spaces");
@@ -182,8 +182,8 @@ public class ManagerReservationControllerTest extends AcceptanceTest {
                 .isEqualTo(expectedResponse);
     }
 
-    @DisplayName("올바른 토큰과 함께 예약 수정을 위한 예약 조회 요청 시, 예약에 대한 정보를 반환한다")
     @Test
+    @DisplayName("올바른 토큰과 함께 예약 수정을 위한 예약 조회 요청 시, 예약에 대한 정보를 반환한다")
     void findOne() {
         //given, when
         ExtractableResponse<Response> response = findReservation(accessToken, beReservationApi + "/" + savedReservationId);
@@ -198,8 +198,8 @@ public class ManagerReservationControllerTest extends AcceptanceTest {
                 .isEqualTo(expectedResponse);
     }
 
-    @DisplayName("공간 변경 없는 새로운 예약 정보가 주어지면 예약을 업데이트 한다")
     @Test
+    @DisplayName("공간 변경 없는 새로운 예약 정보가 주어지면 예약을 업데이트 한다")
     void update_sameSpace() {
         //given
         ReservationCreateUpdateRequest reservationCreateUpdateRequestSameSpace = new ReservationCreateUpdateRequest(
@@ -233,8 +233,8 @@ public class ManagerReservationControllerTest extends AcceptanceTest {
                 .isEqualTo(expectedResponse);
     }
 
-    @DisplayName("공간 변경 있는 새로운 예약 정보가 주어지면 공간을 이동한 채로 예약을 업데이트 한다.")
     @Test
+    @DisplayName("공간 변경 있는 새로운 예약 정보가 주어지면 공간을 이동한 채로 예약을 업데이트 한다.")
     void update_spaceUpdate() {
         //given
         ReservationCreateUpdateWithPasswordRequest reservationCreateUpdateWithPasswordRequestDifferentSpace = new ReservationCreateUpdateWithPasswordRequest(
@@ -276,8 +276,8 @@ public class ManagerReservationControllerTest extends AcceptanceTest {
                 .isEqualTo(expectedResponse);
     }
 
-    @DisplayName("예약을 삭제한다.")
     @Test
+    @DisplayName("예약을 삭제한다.")
     void delete() {
         //given, when
         ReservationPasswordAuthenticationRequest reservationPasswordAuthenticationRequest

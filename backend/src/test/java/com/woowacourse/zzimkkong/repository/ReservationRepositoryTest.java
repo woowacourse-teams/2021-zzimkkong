@@ -134,8 +134,8 @@ class ReservationRepositoryTest extends RepositoryTest {
         assertThat(savedReservation).isEqualTo(be_two_three);
     }
 
-    @DisplayName("map id, space id, 특정 시간이 주어질 때, 해당 spaceId와 해당 시간에 속하는 예약들만 찾아온다")
     @Test
+    @DisplayName("map id, space id, 특정 시간이 주어질 때, 해당 spaceId와 해당 시간에 속하는 예약들만 찾아온다")
     void findAllBySpaceIdAndStartTimeIsBetweenAndEndTimeIsBetween() {
         // given, when
         List<Reservation> foundReservations = getReservations(
@@ -148,8 +148,8 @@ class ReservationRepositoryTest extends RepositoryTest {
                 .isEqualTo(List.of(beAmZeroOne, bePmOneTwo, fe1ZeroOne));
     }
 
-    @DisplayName("특정 시간에 부합하는 예약이 없으면 빈 리스트를 반환한다")
     @Test
+    @DisplayName("특정 시간에 부합하는 예약이 없으면 빈 리스트를 반환한다")
     void findAllBySpaceIdAndStartTimeIsBetweenAndEndTimeIsBetween_noMatchingTime() {
         // given, when
         List<Reservation> foundReservations = getReservations(
@@ -161,8 +161,8 @@ class ReservationRepositoryTest extends RepositoryTest {
         assertThat(foundReservations).isEmpty();
     }
 
-    @DisplayName("특정 공간에 부합하는 예약이 없으면 빈 리스트를 반환한다")
     @Test
+    @DisplayName("특정 공간에 부합하는 예약이 없으면 빈 리스트를 반환한다")
     void findAllBySpaceIdAndStartTimeIsBetweenAndEndTimeIsBetween_noMatchingReservation() {
         // given, when
         List<Reservation> foundReservations = getReservations(
@@ -174,8 +174,8 @@ class ReservationRepositoryTest extends RepositoryTest {
         assertThat(foundReservations).isEmpty();
     }
 
-    @DisplayName("map id와 특정 날짜가 주어질 때, 해당 날짜에 속하는 해당 map의 모든 space들의 예약들을 찾아온다")
     @Test
+    @DisplayName("map id와 특정 날짜가 주어질 때, 해당 날짜에 속하는 해당 map의 모든 space들의 예약들을 찾아온다")
     void findAllBySpaceIdAndStartTimeIsBetweenAndEndTimeIsBetween_allSpaces() {
         // given, when
         List<Reservation> foundReservations = getReservations(
@@ -187,15 +187,15 @@ class ReservationRepositoryTest extends RepositoryTest {
         assertThat(foundReservations).containsExactlyInAnyOrderElementsOf(List.of(beAmZeroOne, bePmOneTwo, fe1ZeroOne));
     }
 
-    @DisplayName("예약을 삭제할 수 있다.")
     @Test
+    @DisplayName("예약을 삭제할 수 있다.")
     void delete() {
         //given, when, then
         assertDoesNotThrow(() -> reservations.delete(beNextDayAmSixTwelve));
     }
 
-    @DisplayName("해당 공간에 대한 예약 존재여부를 확인한다.")
     @Test
+    @DisplayName("해당 공간에 대한 예약 존재여부를 확인한다.")
     void existsBySpace() {
         // given, when, then
         assertThat(reservations.existsBySpaceIdAndEndTimeAfter(fe.getId(), LocalDateTime.now())).isTrue();

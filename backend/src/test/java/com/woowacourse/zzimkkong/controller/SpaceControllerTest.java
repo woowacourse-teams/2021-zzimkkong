@@ -93,8 +93,8 @@ public class SpaceControllerTest extends AcceptanceTest {
                 .build();
     }
 
-    @DisplayName("space 정보가 들어오면 space를 저장한다")
     @Test
+    @DisplayName("space 정보가 들어오면 space를 저장한다")
     void save() {
         // given
         SettingsRequest newSettingsRequest = new SettingsRequest(
@@ -122,8 +122,8 @@ public class SpaceControllerTest extends AcceptanceTest {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
     }
 
-    @DisplayName("space 정보 중 주어지지 않은 필드를 디폴트 값으로 저장한다")
     @Test
+    @DisplayName("space 정보 중 주어지지 않은 필드를 디폴트 값으로 저장한다")
     void save_default() {
         // given, when
         SettingsRequest settingsRequest = new SettingsRequest(
@@ -176,8 +176,8 @@ public class SpaceControllerTest extends AcceptanceTest {
                 .isEqualTo(expectedSpaceFindDetailResponse);
     }
 
-    @DisplayName("spaceId를 받아 해당 공간에 대한 정보를 조회한다.")
     @Test
+    @DisplayName("spaceId를 받아 해당 공간에 대한 정보를 조회한다.")
     void find() {
         // given, when
         String api = spaceApi + "/" + beSpaceId;
@@ -193,8 +193,8 @@ public class SpaceControllerTest extends AcceptanceTest {
                 .isEqualTo(expected);
     }
 
-    @DisplayName("전체 공간에 대한 정보를 조회한다.")
     @Test
+    @DisplayName("전체 공간에 대한 정보를 조회한다.")
     void findAll() {
         // given, when
         ExtractableResponse<Response> response = findAllSpace(accessToken, spaceApi);
@@ -208,8 +208,8 @@ public class SpaceControllerTest extends AcceptanceTest {
                 .isEqualTo(expected);
     }
 
-    @DisplayName("공간을 수정한다.")
     @Test
+    @DisplayName("공간을 수정한다.")
     void update() {
         // given, when
         SettingsRequest settingsRequest = new SettingsRequest(
@@ -237,8 +237,8 @@ public class SpaceControllerTest extends AcceptanceTest {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
     }
 
-    @DisplayName("공간을 삭제한다.")
     @Test
+    @DisplayName("공간을 삭제한다.")
     void delete() {
         // given, when
         String api = spaceApi + "/" + beSpaceId;

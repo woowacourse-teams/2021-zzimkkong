@@ -65,8 +65,8 @@ class SpaceRepositoryTest extends RepositoryTest {
         maps.save(luther);
     }
 
-    @DisplayName("공간을 저장한다.")
     @Test
+    @DisplayName("공간을 저장한다.")
     void save() {
         // given, when
         Space savedSpace = spaces.save(be);
@@ -76,8 +76,8 @@ class SpaceRepositoryTest extends RepositoryTest {
         assertThat(savedSpace).isEqualTo(be);
     }
 
-    @DisplayName("맵의 Id를 이용해 모든 공간을 찾아온다.")
     @Test
+    @DisplayName("맵의 Id를 이용해 모든 공간을 찾아온다.")
     void findAllByMapId() {
         // given
         spaces.save(be);

@@ -15,8 +15,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.restdocs.restassured3.RestAssuredRestDocumentation.document;
 
 class MemberControllerTest extends AcceptanceTest {
-    @DisplayName("정상적인 회원가입 입력이 들어오면 회원 정보를 저장한다.")
     @Test
+    @DisplayName("정상적인 회원가입 입력이 들어오면 회원 정보를 저장한다.")
     void join() {
         //given
         MemberSaveRequest newMemberSaveRequest = new MemberSaveRequest(NEW_EMAIL, PASSWORD, ORGANIZATION);
@@ -28,8 +28,8 @@ class MemberControllerTest extends AcceptanceTest {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
     }
 
-    @DisplayName("이메일 중복 확인 시, 중복되지 않은 이메일을 입력하면 통과한다.")
     @Test
+    @DisplayName("이메일 중복 확인 시, 중복되지 않은 이메일을 입력하면 통과한다.")
     void getMembers() {
         //given
         MemberSaveRequest newMemberSaveRequest = new MemberSaveRequest(NEW_EMAIL, PASSWORD, ORGANIZATION);
