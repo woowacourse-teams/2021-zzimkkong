@@ -13,6 +13,7 @@ export interface Props {
   maxheight?: string | number;
   disabled?: boolean;
   value: string;
+  onChange: (selectedValue: string) => void;
   setValue: Dispatch<SetStateAction<string>>;
 }
 
@@ -22,6 +23,7 @@ const Select = ({
   maxheight,
   disabled = false,
   value,
+  onChange = () => null,
   setValue = () => null,
 }: Props): JSX.Element => {
   const [open, setOpen] = useState(false);
@@ -35,6 +37,7 @@ const Select = ({
   const selectOption = (selectedValue: Props['value']) => {
     setValue(selectedValue);
     setOpen(false);
+    onChange(selectedValue);
   };
 
   return (
