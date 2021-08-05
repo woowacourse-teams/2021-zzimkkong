@@ -4,8 +4,11 @@ import PALETTE from './constants/palette';
 export const theme: DefaultTheme = {
   primary: PALETTE.ORANGE,
   red: PALETTE.RED,
+  orange: PALETTE.ORANGE,
+  yellow: PALETTE.YELLOW,
   green: PALETTE.GREEN,
   blue: PALETTE.BLUE,
+  purple: PALETTE.PURPLE,
   black: PALETTE.BLACK,
   gray: PALETTE.GRAY,
   white: PALETTE.WHITE,
