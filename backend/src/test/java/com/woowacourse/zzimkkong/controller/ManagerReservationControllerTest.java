@@ -17,11 +17,8 @@ import org.springframework.http.MediaType;
 import java.util.Arrays;
 
 import static com.woowacourse.zzimkkong.Constants.*;
-import static com.woowacourse.zzimkkong.Constants.SPACE_DRAWING;
 import static com.woowacourse.zzimkkong.DocumentUtils.*;
-import static com.woowacourse.zzimkkong.controller.AuthControllerTest.getToken;
 import static com.woowacourse.zzimkkong.controller.MapControllerTest.saveMap;
-import static com.woowacourse.zzimkkong.controller.MemberControllerTest.saveMember;
 import static com.woowacourse.zzimkkong.controller.SpaceControllerTest.saveSpace;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.restdocs.restassured3.RestAssuredRestDocumentation.document;
@@ -34,7 +31,6 @@ public class ManagerReservationControllerTest extends AcceptanceTest {
     private String beReservationApi;
     private String fe1ReservationApi;
     private Long savedReservationId;
-    private static String accessToken;
 
     private Space be;
     private Space fe;
@@ -45,13 +41,10 @@ public class ManagerReservationControllerTest extends AcceptanceTest {
 
     @BeforeEach
     void setUp() {
-        saveMember(memberSaveRequest);
-        accessToken = getToken();
-
-        String lutherId = saveMap(accessToken, "/api/managers/maps", mapCreateUpdateRequest).header("location").split("/")[4];
+        String lutherId = saveMap("/api/managers/maps", mapCreateUpdateRequest).header("location").split("/")[4];
         String spaceApi = "/api/managers/maps/" + lutherId + "/spaces";
-        ExtractableResponse<Response> saveBeSpaceResponse = saveSpace(accessToken, spaceApi, beSpaceCreateUpdateRequest);
-        ExtractableResponse<Response> saveFe1SpaceResponse = saveSpace(accessToken, spaceApi, feSpaceCreateUpdateRequest);
+        ExtractableResponse<Response> saveBeSpaceResponse = saveSpace(spaceApi, beSpaceCreateUpdateRequest);
+        ExtractableResponse<Response> saveFe1SpaceResponse = saveSpace(spaceApi, feSpaceCreateUpdateRequest);
 
         Long beSpaceId = Long.valueOf(saveBeSpaceResponse.header("location").split("/")[6]);
         Long feSpaceId = Long.valueOf(saveFe1SpaceResponse.header("location").split("/")[6]);
@@ -109,7 +102,7 @@ public class ManagerReservationControllerTest extends AcceptanceTest {
                 .build();
 
         saveExampleReservations();
-        savedReservationId = getReservationIdAfterSave(accessToken, beReservationApi, reservationCreateUpdateWithPasswordRequest);
+        savedReservationId = getReservationIdAfterSave(beReservationApi, reservationCreateUpdateWithPasswordRequest);
         savedReservation = new Reservation.Builder()
                 .startTime(reservationCreateUpdateWithPasswordRequest.getStartDateTime())
                 .endTime(reservationCreateUpdateWithPasswordRequest.getEndDateTime())
@@ -132,7 +125,7 @@ public class ManagerReservationControllerTest extends AcceptanceTest {
                 SALLY_DESCRIPTION);
 
         //when
-        ExtractableResponse<Response> response = saveReservation(accessToken, beReservationApi, newReservationCreateUpdateWithPasswordRequest);
+        ExtractableResponse<Response> response = saveReservation(beReservationApi, newReservationCreateUpdateWithPasswordRequest);
 
         //then
         assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
@@ -142,7 +135,7 @@ public class ManagerReservationControllerTest extends AcceptanceTest {
     @DisplayName("map id, space id, 특정 날짜가 주어질 때 해당 맵, 해당 공간, 해당 날짜에 속하는 예약들만 찾아온다")
     void find() {
         //given, when
-        ExtractableResponse<Response> response = findReservations(accessToken, beReservationApi, THE_DAY_AFTER_TOMORROW.toString());
+        ExtractableResponse<Response> response = findReservations(beReservationApi, THE_DAY_AFTER_TOMORROW.toString());
 
         ReservationFindResponse actualResponse = response.as(ReservationFindResponse.class);
         ReservationFindResponse expectedResponse = ReservationFindResponse.from(
@@ -163,7 +156,7 @@ public class ManagerReservationControllerTest extends AcceptanceTest {
     void findAll() {
         //given, when
         String api = beReservationApi.replaceAll("/spaces/[0-9]", "/spaces");
-        ExtractableResponse<Response> response = findAllReservations(accessToken, api, THE_DAY_AFTER_TOMORROW.toString());
+        ExtractableResponse<Response> response = findAllReservations(api, THE_DAY_AFTER_TOMORROW.toString());
 
         ReservationFindAllResponse actualResponse = response.as(ReservationFindAllResponse.class);
         ReservationFindAllResponse expectedResponse = ReservationFindAllResponse.of(
@@ -186,7 +179,7 @@ public class ManagerReservationControllerTest extends AcceptanceTest {
     @DisplayName("올바른 토큰과 함께 예약 수정을 위한 예약 조회 요청 시, 예약에 대한 정보를 반환한다")
     void findOne() {
         //given, when
-        ExtractableResponse<Response> response = findReservation(accessToken, beReservationApi + "/" + savedReservationId);
+        ExtractableResponse<Response> response = findReservation(beReservationApi + "/" + savedReservationId);
 
         ReservationResponse actualResponse = response.as(ReservationResponse.class);
         ReservationResponse expectedResponse = ReservationResponse.from(savedReservation);
@@ -211,8 +204,8 @@ public class ManagerReservationControllerTest extends AcceptanceTest {
         String api = beReservationApi + "/" + savedReservationId;
 
         //when
-        ExtractableResponse<Response> updateResponse = updateReservation(accessToken, api, reservationCreateUpdateRequestSameSpace);
-        ExtractableResponse<Response> findResponse = findReservation(accessToken, api);
+        ExtractableResponse<Response> updateResponse = updateReservation(api, reservationCreateUpdateRequestSameSpace);
+        ExtractableResponse<Response> findResponse = findReservation(api);
 
         ReservationResponse actualResponse = findResponse.as(ReservationResponse.class);
         ReservationResponse expectedResponse = ReservationResponse.from(
@@ -248,9 +241,8 @@ public class ManagerReservationControllerTest extends AcceptanceTest {
         String api = fe1ReservationApi + "/" + savedReservationId;
 
         //when
-        ExtractableResponse<Response> updateResponse = updateReservation(accessToken, api, reservationCreateUpdateWithPasswordRequestDifferentSpace);
+        ExtractableResponse<Response> updateResponse = updateReservation(api, reservationCreateUpdateWithPasswordRequestDifferentSpace);
         ExtractableResponse<Response> findResponse = findReservations(
-                accessToken,
                 fe1ReservationApi,
                 THE_DAY_AFTER_TOMORROW.toString());
 
@@ -286,7 +278,7 @@ public class ManagerReservationControllerTest extends AcceptanceTest {
         String api = beReservationApi + "/" + savedReservationId;
 
         //then
-        ExtractableResponse<Response> response = deleteReservation(accessToken, api, reservationPasswordAuthenticationRequest);
+        ExtractableResponse<Response> response = deleteReservation(api, reservationPasswordAuthenticationRequest);
         assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
     }
 
@@ -320,7 +312,7 @@ public class ManagerReservationControllerTest extends AcceptanceTest {
                 FE1_AM_TEN_ELEVEN_DESCRIPTION);
 
         beAmZeroOne = new Reservation.Builder()
-                .id(getReservationIdAfterSave(accessToken, beReservationApi, beAmZeroOneRequest))
+                .id(getReservationIdAfterSave(beReservationApi, beAmZeroOneRequest))
                 .startTime(BE_AM_TEN_ELEVEN_START_TIME)
                 .endTime(BE_AM_TEN_ELEVEN_END_TIME)
                 .description(BE_AM_TEN_ELEVEN_DESCRIPTION)
@@ -330,7 +322,7 @@ public class ManagerReservationControllerTest extends AcceptanceTest {
                 .build();
 
         bePmOneTwo = new Reservation.Builder()
-                .id(getReservationIdAfterSave(accessToken, beReservationApi, bePmOneTwoRequest))
+                .id(getReservationIdAfterSave(beReservationApi, bePmOneTwoRequest))
                 .startTime(BE_PM_ONE_TWO_START_TIME)
                 .endTime(BE_PM_ONE_TWO_END_TIME)
                 .description(BE_PM_ONE_TWO_DESCRIPTION)
@@ -339,10 +331,10 @@ public class ManagerReservationControllerTest extends AcceptanceTest {
                 .space(be)
                 .build();
 
-        getReservationIdAfterSave(accessToken, beReservationApi, beNextDayAmSixTwelveRequest);
+        getReservationIdAfterSave(beReservationApi, beNextDayAmSixTwelveRequest);
 
         fe1ZeroOne = new Reservation.Builder()
-                .id(getReservationIdAfterSave(accessToken, fe1ReservationApi, feZeroOneRequest))
+                .id(getReservationIdAfterSave(fe1ReservationApi, feZeroOneRequest))
                 .startTime(FE1_AM_TEN_ELEVEN_START_TIME)
                 .endTime(FE1_AM_TEN_ELEVEN_END_TIME)
                 .description(FE1_AM_TEN_ELEVEN_DESCRIPTION)
@@ -353,17 +345,15 @@ public class ManagerReservationControllerTest extends AcceptanceTest {
     }
 
     private Long getReservationIdAfterSave(
-            final String accessToken,
             final String api,
             final ReservationCreateUpdateWithPasswordRequest reservationCreateUpdateWithPasswordRequest) {
         return Long.valueOf(
-                saveReservation(accessToken, api, reservationCreateUpdateWithPasswordRequest)
+                saveReservation(api, reservationCreateUpdateWithPasswordRequest)
                         .header("location")
                         .split("/")[8]);
     }
 
     private ExtractableResponse<Response> saveReservation(
-            final String accessToken,
             final String api,
             final ReservationCreateUpdateWithPasswordRequest reservationCreateUpdateWithPasswordRequest) {
         return RestAssured
@@ -377,7 +367,7 @@ public class ManagerReservationControllerTest extends AcceptanceTest {
                 .then().log().all().extract();
     }
 
-    private ExtractableResponse<Response> findReservations(final String accessToken, final String api, final String date) {
+    private ExtractableResponse<Response> findReservations(final String api, final String date) {
         return RestAssured
                 .given(getRequestSpecification()).log().all()
                 .accept("*/*")
@@ -388,7 +378,7 @@ public class ManagerReservationControllerTest extends AcceptanceTest {
                 .then().log().all().extract();
     }
 
-    private ExtractableResponse<Response> findAllReservations(final String accessToken, final String api, final String date) {
+    private ExtractableResponse<Response> findAllReservations(final String api, final String date) {
         return RestAssured
                 .given(getRequestSpecification()).log().all()
                 .accept("*/*")
@@ -400,7 +390,6 @@ public class ManagerReservationControllerTest extends AcceptanceTest {
     }
 
     private ExtractableResponse<Response> updateReservation(
-            final String accessToken,
             final String api,
             final ReservationCreateUpdateRequest reservationCreateUpdateRequest) {
         return RestAssured
@@ -414,7 +403,7 @@ public class ManagerReservationControllerTest extends AcceptanceTest {
                 .then().log().all().extract();
     }
 
-    private ExtractableResponse<Response> findReservation(final String accessToken, final String api) {
+    private ExtractableResponse<Response> findReservation( final String api) {
         return RestAssured
                 .given(getRequestSpecification()).log().all()
                 .accept("*/*")
@@ -426,7 +415,7 @@ public class ManagerReservationControllerTest extends AcceptanceTest {
     }
 
     private ExtractableResponse<Response> deleteReservation(
-            final String accessToken,
+
             final String api,
             final ReservationPasswordAuthenticationRequest reservationPasswordAuthenticationRequest) {
         return RestAssured

@@ -23,9 +23,7 @@ import java.util.List;
 
 import static com.woowacourse.zzimkkong.Constants.*;
 import static com.woowacourse.zzimkkong.DocumentUtils.*;
-import static com.woowacourse.zzimkkong.controller.AuthControllerTest.getToken;
 import static com.woowacourse.zzimkkong.controller.MapControllerTest.saveMap;
-import static com.woowacourse.zzimkkong.controller.MemberControllerTest.saveMember;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.restdocs.restassured3.RestAssuredRestDocumentation.document;
 
@@ -35,17 +33,12 @@ public class SpaceControllerTest extends AcceptanceTest {
     private Space be;
     private Space fe;
 
-    private String accessToken;
-
     @BeforeEach
     void setUp() {
-        saveMember(memberSaveRequest);
-        accessToken = getToken();
-
-        String lutherId = saveMap(accessToken, "/api/managers/maps", mapCreateUpdateRequest).header("location").split("/")[4];
+        String lutherId = saveMap("/api/managers/maps", mapCreateUpdateRequest).header("location").split("/")[4];
         spaceApi = "/api/managers/maps/" + lutherId + "/spaces";
-        ExtractableResponse<Response> saveBeSpaceResponse = saveSpace(accessToken, spaceApi, beSpaceCreateUpdateRequest);
-        ExtractableResponse<Response> saveFe1SpaceResponse = saveSpace(accessToken, spaceApi, feSpaceCreateUpdateRequest);
+        ExtractableResponse<Response> saveBeSpaceResponse = saveSpace(spaceApi, beSpaceCreateUpdateRequest);
+        ExtractableResponse<Response> saveFe1SpaceResponse = saveSpace(spaceApi, feSpaceCreateUpdateRequest);
 
         beSpaceId = Long.valueOf(saveBeSpaceResponse.header("location").split("/")[6]);
         Long feSpaceId = Long.valueOf(saveFe1SpaceResponse.header("location").split("/")[6]);
@@ -116,7 +109,7 @@ public class SpaceControllerTest extends AcceptanceTest {
         );
 
         // when
-        ExtractableResponse<Response> response = saveSpace(accessToken, spaceApi, newSpaceCreateUpdateRequest);
+        ExtractableResponse<Response> response = saveSpace(spaceApi, newSpaceCreateUpdateRequest);
 
         // then
         assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
@@ -162,12 +155,12 @@ public class SpaceControllerTest extends AcceptanceTest {
                 .area(SPACE_DRAWING)
                 .build();
 
-        ExtractableResponse<Response> response = saveSpace(accessToken, spaceApi, defaultSpaceCreateUpdateRequest);
+        ExtractableResponse<Response> response = saveSpace(spaceApi, defaultSpaceCreateUpdateRequest);
 
         // then
         String api = response.header("location");
 
-        ExtractableResponse<Response> findResponse = findSpace(accessToken, api);
+        ExtractableResponse<Response> findResponse = findSpace(api);
         SpaceFindDetailResponse actualSpaceFindDetailResponse = findResponse.as(SpaceFindDetailResponse.class);
         SpaceFindDetailResponse expectedSpaceFindDetailResponse = SpaceFindDetailResponse.from(defaultSpace);
 
@@ -181,7 +174,7 @@ public class SpaceControllerTest extends AcceptanceTest {
     void find() {
         // given, when
         String api = spaceApi + "/" + beSpaceId;
-        ExtractableResponse<Response> response = findSpace(accessToken, api);
+        ExtractableResponse<Response> response = findSpace(api);
         SpaceFindDetailResponse actual = response.body().as(SpaceFindDetailResponse.class);
         SpaceFindDetailResponse expected = SpaceFindDetailResponse.from(be);
 
@@ -197,7 +190,7 @@ public class SpaceControllerTest extends AcceptanceTest {
     @DisplayName("전체 공간에 대한 정보를 조회한다.")
     void findAll() {
         // given, when
-        ExtractableResponse<Response> response = findAllSpace(accessToken, spaceApi);
+        ExtractableResponse<Response> response = findAllSpace(spaceApi);
         SpaceFindAllResponse actual = response.body().as(SpaceFindAllResponse.class);
         SpaceFindAllResponse expected = SpaceFindAllResponse.from(List.of(be, fe));
 
@@ -231,7 +224,7 @@ public class SpaceControllerTest extends AcceptanceTest {
         );
 
         String api = spaceApi + "/" + beSpaceId;
-        ExtractableResponse<Response> response = updateSpace(accessToken, api, updateSpaceCreateUpdateRequest);
+        ExtractableResponse<Response> response = updateSpace(api, updateSpaceCreateUpdateRequest);
 
         // then
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
@@ -242,13 +235,13 @@ public class SpaceControllerTest extends AcceptanceTest {
     void delete() {
         // given, when
         String api = spaceApi + "/" + beSpaceId;
-        ExtractableResponse<Response> response = deleteSpace(accessToken, api);
+        ExtractableResponse<Response> response = deleteSpace(api);
 
         // then
         assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
     }
 
-    static ExtractableResponse<Response> saveSpace(final String accessToken, final String api, final SpaceCreateUpdateRequest spaceCreateRequest) {
+    static ExtractableResponse<Response> saveSpace(final String api, final SpaceCreateUpdateRequest spaceCreateRequest) {
         return RestAssured
                 .given(getRequestSpecification()).log().all()
                 .accept("application/json")
@@ -260,7 +253,7 @@ public class SpaceControllerTest extends AcceptanceTest {
                 .then().log().all().extract();
     }
 
-    private ExtractableResponse<Response> findAllSpace(final String accessToken, final String api) {
+    private ExtractableResponse<Response> findAllSpace(final String api) {
         return RestAssured
                 .given(getRequestSpecification()).log().all()
                 .accept("application/json")
@@ -271,7 +264,7 @@ public class SpaceControllerTest extends AcceptanceTest {
                 .then().log().all().extract();
     }
 
-    private ExtractableResponse<Response> findSpace(final String accessToken, final String api) {
+    private ExtractableResponse<Response> findSpace(final String api) {
         return RestAssured
                 .given(getRequestSpecification()).log().all()
                 .accept("application/json")
@@ -283,7 +276,6 @@ public class SpaceControllerTest extends AcceptanceTest {
     }
 
     private ExtractableResponse<Response> updateSpace(
-            final String accessToken,
             final String api,
             final SpaceCreateUpdateRequest spaceCreateUpdateRequest) {
         return RestAssured
@@ -297,7 +289,7 @@ public class SpaceControllerTest extends AcceptanceTest {
                 .then().log().all().extract();
     }
 
-    private ExtractableResponse<Response> deleteSpace(final String accessToken, final String api) {
+    private ExtractableResponse<Response> deleteSpace(final String api) {
         return RestAssured
                 .given(getRequestSpecification()).log().all()
                 .accept("application/json")
