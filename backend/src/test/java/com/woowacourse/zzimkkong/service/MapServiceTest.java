@@ -148,4 +148,22 @@ class MapServiceTest extends ServiceTest {
         assertThatThrownBy(() -> mapService.deleteMap(LUTHER.getId(), POBI))
                 .isInstanceOf(ReservationExistOnSpaceException.class);
     }
+
+    @Test
+    @DisplayName("Public Id로부터 Map을 찾을 수 있다.")
+    void findMapByPublicId() {
+        // given
+        String publicMapId = publicIdGenerator.from(LUTHER);
+        given(maps.findById(anyLong()))
+                .willReturn(Optional.of(LUTHER));
+
+        // when
+        MapFindResponse actual = mapService.findMapByPublicMapId(publicMapId);
+        MapFindResponse expected = MapFindResponse.of(LUTHER, publicIdGenerator.from(LUTHER));
+
+        // then
+        assertThat(actual)
+                .usingRecursiveComparison()
+                .isEqualTo(expected);
+    }
 }

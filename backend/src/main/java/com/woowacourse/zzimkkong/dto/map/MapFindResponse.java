@@ -53,5 +53,7 @@ public class MapFindResponse {
         return mapImageUrl;
     }
 
-    public String getPublicMapId() { return publicMapId; }
+    public String getPublicMapId() {
+        return publicMapId;
+    }
 }

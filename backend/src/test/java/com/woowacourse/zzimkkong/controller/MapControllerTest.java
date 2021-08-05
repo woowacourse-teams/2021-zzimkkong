@@ -131,7 +131,7 @@ class MapControllerTest extends AcceptanceTest {
                 .then().log().all().extract();
     }
 
-    private ExtractableResponse<Response> findMap(String api) {
+    static ExtractableResponse<Response> findMap(String api) {
         return RestAssured
                 .given(getRequestSpecification()).log().all()
                 .accept("application/json")
