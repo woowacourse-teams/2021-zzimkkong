@@ -148,7 +148,7 @@ public class SpaceControllerTest extends AcceptanceTest {
                 .build();
 
         Space defaultSpace = new Space.Builder()
-                .name(defaultSpaceCreateUpdateRequest.getSpaceName())
+                .name(defaultSpaceCreateUpdateRequest.getName())
                 .color(defaultSpaceCreateUpdateRequest.getColor())
                 .description(defaultSpaceCreateUpdateRequest.getDescription())
                 .setting(defaultSetting)
