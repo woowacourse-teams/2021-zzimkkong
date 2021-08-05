@@ -21,6 +21,8 @@ import java.time.LocalDate;
 import java.util.Collections;
 import java.util.List;
 
+import static com.woowacourse.zzimkkong.service.MapService.validateManagerOfMap;
+
 @Service
 @Transactional
 public class ManagerReservationService extends ReservationService {
@@ -139,12 +141,6 @@ public class ManagerReservationService extends ReservationService {
     private void validateAuthorityOnMap(final Long mapId, final Member manager) {
         Map map = maps.findById(mapId)
                 .orElseThrow(NoSuchMapException::new);
-        validateManagerOfMap(manager, map);
-    }
-
-    private void validateManagerOfMap(Member manager, Map map) {
-        if (map.isNotOwnedBy(manager)) {
-            throw new NoAuthorityOnMapException();
-        }
+        validateManagerOfMap(map, manager);
     }
 }

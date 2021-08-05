@@ -67,7 +67,6 @@ public class MapService {
     public MapFindResponse findMap(final Long mapId, final Member manager) {
         Map map = maps.findById(mapId)
                 .orElseThrow(NoSuchMapException::new);
-
         validateManagerOfMap(map, manager);
         return MapFindResponse.from(map);
     }
@@ -81,7 +80,6 @@ public class MapService {
     public void updateMap(final Long mapId, final MapCreateUpdateRequest mapCreateUpdateRequest, final Member manager) {
         Map map = maps.findById(mapId)
                 .orElseThrow(NoSuchMapException::new);
-
         validateManagerOfMap(map, manager);
 
         String thumbnailUrl = uploadPngToS3(mapCreateUpdateRequest.getMapImageSvg(), map.getId().toString());
@@ -95,7 +93,6 @@ public class MapService {
     public void deleteMap(final Long mapId, final Member manager) {
         Map map = maps.findById(mapId)
                 .orElseThrow(NoSuchMapException::new);
-
         validateManagerOfMap(map, manager);
 
         validateExistReservations(mapId);
@@ -116,8 +113,8 @@ public class MapService {
         }
     }
 
-    private void validateManagerOfMap(final Map map, final Member manager) {
-        if (!manager.equals(map.getMember())) {   // TODO: ReservationService 와의 중복 제거 -김샐
+    public static void validateManagerOfMap(final Map map, final Member manager) {
+        if (map.isNotOwnedBy(manager)) {
             throw new NoAuthorityOnMapException();
         }
     }

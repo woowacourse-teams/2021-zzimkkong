@@ -1,6 +1,8 @@
 package com.woowacourse.zzimkkong.domain;
 
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 public class Map {
@@ -22,6 +24,9 @@ public class Map {
     @ManyToOne
     @JoinColumn(name = "member_id", foreignKey = @ForeignKey(name = "fk_map_member"), nullable = false)
     private Member member;
+
+    @OneToMany(mappedBy = "map", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<Space> spaces = new ArrayList<>();
 
     protected Map() {
     }
@@ -70,5 +75,9 @@ public class Map {
 
     public String getMapImageUrl() {
         return mapImageUrl;
+    }
+
+    public List<Space> getSpaces() {
+        return spaces;
     }
 }

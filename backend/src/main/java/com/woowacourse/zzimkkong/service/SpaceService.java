@@ -18,6 +18,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
+import static com.woowacourse.zzimkkong.service.MapService.validateManagerOfMap;
+
 @Service
 @Transactional
 public class SpaceService {
@@ -43,7 +45,7 @@ public class SpaceService {
             final Member manager) {
         Map map = maps.findById(mapId)
                 .orElseThrow(NoSuchMapException::new);
-        validateAuthorityOnMap(manager, map);
+        validateManagerOfMap(map, manager);
 
         SettingsRequest settingsRequest = spaceCreateUpdateRequest.getSettingsRequest();
 
@@ -78,7 +80,7 @@ public class SpaceService {
             final Member manager) {
         Map map = maps.findById(mapId)
                 .orElseThrow(NoSuchMapException::new);
-        validateAuthorityOnMap(manager, map);
+        validateManagerOfMap(map, manager);
 
         Space space = spaces.findById(spaceId)
                 .orElseThrow(NoSuchSpaceException::new);
@@ -91,7 +93,7 @@ public class SpaceService {
             final Member manager) {
         Map map = maps.findById(mapId)
                 .orElseThrow(NoSuchMapException::new);
-        validateAuthorityOnMap(manager, map);
+        validateManagerOfMap(map, manager);
 
         List<Space> findAllSpaces = spaces.findAllByMapId(mapId);
         return SpaceFindAllResponse.from(findAllSpaces);
@@ -104,7 +106,7 @@ public class SpaceService {
             final Member manager) {
         Map map = maps.findById(mapId)
                 .orElseThrow(NoSuchMapException::new);
-        validateAuthorityOnMap(manager, map);
+        validateManagerOfMap(map, manager);
 
         Space space = spaces.findById(spaceId)
                 .orElseThrow(NoSuchSpaceException::new);
@@ -119,7 +121,7 @@ public class SpaceService {
             final Member manager) {
         Map map = maps.findById(mapId)
                 .orElseThrow(NoSuchMapException::new);
-        validateAuthorityOnMap(manager, map);
+        validateManagerOfMap(map, manager);
 
         Space space = spaces.findById(spaceId)
                 .orElseThrow(NoSuchSpaceException::new);
@@ -157,12 +159,6 @@ public class SpaceService {
     private void validateReservationExistence(final Long spaceId) {
         if (reservations.existsBySpaceIdAndEndTimeAfter(spaceId, timeConverter.getNow())) {
             throw new ReservationExistOnSpaceException();
-        }
-    }
-
-    private void validateAuthorityOnMap(final Member manager, final Map map) {
-        if (map.isNotOwnedBy(manager)) {
-            throw new NoAuthorityOnMapException();
         }
     }
 }
