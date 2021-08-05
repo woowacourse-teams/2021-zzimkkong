@@ -27,7 +27,7 @@ import static com.woowacourse.zzimkkong.controller.MemberControllerTest.saveMemb
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.restdocs.restassured3.RestAssuredRestDocumentation.document;
 
-public class SpaceControllerTest extends AcceptanceTest {
+public class ManagerSpaceControllerTest extends AcceptanceTest {
     private String spaceSaveApi;
     private Long beSpaceId;
     private Long feSpaceId;
