@@ -54,12 +54,12 @@ public class SpaceService {
                 .reservationMinimumTimeUnit(settingsRequest.getReservationMinimumTimeUnit())
                 .reservationMaximumTimeUnit(settingsRequest.getReservationMaximumTimeUnit())
                 .reservationEnable(settingsRequest.getReservationEnable())
-                .disabledWeekdays(settingsRequest.getDisabledWeekdays())
+                .enabledDayOfWeek(settingsRequest.getEnabledDayOfWeek())
                 .build();
 
         Space space = spaces.save(
                 new Space.Builder()
-                        .name(spaceCreateUpdateRequest.getSpaceName())
+                        .name(spaceCreateUpdateRequest.getName())
                         .color(spaceCreateUpdateRequest.getColor())
                         .description(spaceCreateUpdateRequest.getDescription())
                         .area(spaceCreateUpdateRequest.getArea())
@@ -141,11 +141,11 @@ public class SpaceService {
                 .reservationEnable(settingsRequest.getReservationEnable())
                 .reservationMinimumTimeUnit(settingsRequest.getReservationMinimumTimeUnit())
                 .reservationMaximumTimeUnit(settingsRequest.getReservationMaximumTimeUnit())
-                .disabledWeekdays(settingsRequest.getDisabledWeekdays())
+                .enabledDayOfWeek(settingsRequest.getEnabledDayOfWeek())
                 .build();
 
         return new Space.Builder()
-                .name(spaceCreateUpdateRequest.getSpaceName())
+                .name(spaceCreateUpdateRequest.getName())
                 .color(spaceCreateUpdateRequest.getColor())
                 .description(spaceCreateUpdateRequest.getDescription())
                 .area(spaceCreateUpdateRequest.getArea())

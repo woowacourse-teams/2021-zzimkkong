@@ -40,7 +40,8 @@ public class SpaceControllerTest extends AcceptanceTest {
         ExtractableResponse<Response> saveBeSpaceResponse = saveSpace(spaceSaveApi, beSpaceCreateUpdateRequest);
         ExtractableResponse<Response> saveFe1SpaceResponse = saveSpace(spaceSaveApi, feSpaceCreateUpdateRequest);
 
-        beSpaceId = Long.valueOf(saveBeSpaceResponse.header("location").split("/")[6]);
+        String location = saveBeSpaceResponse.header("location");
+        beSpaceId = Long.valueOf(location.split("/")[6]);
         feSpaceId = Long.valueOf(saveFe1SpaceResponse.header("location").split("/")[6]);
 
         BE = new Space.Builder()
@@ -71,11 +72,11 @@ public class SpaceControllerTest extends AcceptanceTest {
         SettingsRequest newSettingsRequest = new SettingsRequest(
                 LocalTime.of(10, 0),
                 LocalTime.of(20, 0),
-                20,
+                30,
                 60,
                 100,
                 true,
-                "Monday, Tuesday"
+                "monday, tuesday, wednesday, thursday, friday, saturday, sunday"
         );
 
         SpaceCreateUpdateRequest newSpaceCreateUpdateRequest = new SpaceCreateUpdateRequest(
@@ -122,11 +123,11 @@ public class SpaceControllerTest extends AcceptanceTest {
                 .reservationMinimumTimeUnit(10)
                 .reservationMaximumTimeUnit(1440)
                 .reservationEnable(true)
-                .disabledWeekdays(null)
+                .enabledDayOfWeek("monday, tuesday, wednesday, thursday, friday, saturday, sunday")
                 .build();
 
         Space defaultSpace = new Space.Builder()
-                .name(defaultSpaceCreateUpdateRequest.getSpaceName())
+                .name(defaultSpaceCreateUpdateRequest.getName())
                 .color(defaultSpaceCreateUpdateRequest.getColor())
                 .description(defaultSpaceCreateUpdateRequest.getDescription())
                 .setting(defaultSetting)
@@ -190,7 +191,7 @@ public class SpaceControllerTest extends AcceptanceTest {
                 80,
                 130,
                 false,
-                "Monday, Tuesday"
+                "monday, tuesday, wednesday, thursday, friday, saturday, sunday"
         );
 
         SpaceCreateUpdateRequest updateSpaceCreateUpdateRequest = new SpaceCreateUpdateRequest(

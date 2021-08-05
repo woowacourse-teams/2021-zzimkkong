@@ -5,6 +5,7 @@ import com.woowacourse.zzimkkong.domain.Space;
 import com.woowacourse.zzimkkong.dto.reservation.ReservationCreateUpdateRequest;
 import com.woowacourse.zzimkkong.exception.map.NoSuchMapException;
 import com.woowacourse.zzimkkong.exception.reservation.*;
+import com.woowacourse.zzimkkong.exception.reservation.InvalidReservationEnableException;
 import com.woowacourse.zzimkkong.exception.space.NoSuchSpaceException;
 import com.woowacourse.zzimkkong.infrastructure.TimeConverter;
 import com.woowacourse.zzimkkong.repository.MapRepository;
@@ -39,8 +40,8 @@ public abstract class ReservationService {
     }
 
     protected void validateTime(final ReservationCreateUpdateRequest reservationCreateUpdateRequest) {
-        LocalDateTime startDateTime = reservationCreateUpdateRequest.getStartDateTime();
-        LocalDateTime endDateTime = reservationCreateUpdateRequest.getEndDateTime();
+        LocalDateTime startDateTime = reservationCreateUpdateRequest.getStartDateTime().withSecond(0).withNano(0);
+        LocalDateTime endDateTime = reservationCreateUpdateRequest.getEndDateTime().withSecond(0).withNano(0);
 
         if (startDateTime.isBefore(timeConverter.getNow())) {
             throw new ImpossibleStartTimeException();
@@ -100,7 +101,15 @@ public abstract class ReservationService {
         }
 
         if (space.isNotBetweenAvailableTime(startDateTime, endDateTime)) {
-            throw new ConflictSpaceSettingException();
+            throw new InvalidStartEndTimeException();
+        }
+
+        if (space.isUnableToReserve()) {
+            throw new InvalidReservationEnableException();
+        }
+
+        if (space.isClosedOn(startDateTime.getDayOfWeek())) {
+            throw new InvalidDayOfWeekException();
         }
     }
 
