@@ -26,8 +26,11 @@ declare module 'styled-components' {
   export interface DefaultTheme {
     primary: Palette;
     red: Palette;
+    orange: Palette;
+    yellow: Palette;
     green: Palette;
     blue: Palette;
+    purple: Palette;
     black: Palette;
     gray: Palette;
     white: Color;
