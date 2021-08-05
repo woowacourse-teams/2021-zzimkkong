@@ -37,7 +37,6 @@ public class ManagerReservationServiceTest extends ServiceTest {
     @Autowired
     private ManagerReservationService managerReservationService;
     private ReservationCreateUpdateWithPasswordRequest reservationCreateUpdateWithPasswordRequest = new ReservationCreateUpdateWithPasswordRequest(
-            BE.getId(),
             THE_DAY_AFTER_TOMORROW_START_TIME.plusHours(3),
             THE_DAY_AFTER_TOMORROW_START_TIME.plusHours(4),
             RESERVATION_PASSWORD,
@@ -45,7 +44,6 @@ public class ManagerReservationServiceTest extends ServiceTest {
             DESCRIPTION
     );
     private ReservationCreateUpdateRequest reservationCreateUpdateRequest = new ReservationCreateUpdateRequest(
-            BE.getId(),
             THE_DAY_AFTER_TOMORROW_START_TIME.plusHours(3),
             THE_DAY_AFTER_TOMORROW_START_TIME.plusHours(4),
             CHANGED_NAME,
@@ -72,6 +70,7 @@ public class ManagerReservationServiceTest extends ServiceTest {
         //when
         ReservationCreateResponse reservationCreateResponse = managerReservationService.saveReservation(
                 LUTHER.getId(),
+                BE.getId(),
                 reservationCreateUpdateWithPasswordRequest,
                 POBI);
 
@@ -89,6 +88,7 @@ public class ManagerReservationServiceTest extends ServiceTest {
         //then
         assertThatThrownBy(() -> managerReservationService.saveReservation(
                 LUTHER.getId(),
+                BE.getId(),
                 reservationCreateUpdateWithPasswordRequest,
                 POBI))
                 .isInstanceOf(NoSuchMapException.class);
@@ -106,6 +106,7 @@ public class ManagerReservationServiceTest extends ServiceTest {
         //then
         assertThatThrownBy(() -> managerReservationService.saveReservation(
                 LUTHER.getId(),
+                BE.getId(),
                 reservationCreateUpdateWithPasswordRequest,
                 JASON))
                 .isInstanceOf(NoAuthorityOnMapException.class);
@@ -125,6 +126,7 @@ public class ManagerReservationServiceTest extends ServiceTest {
         //then
         assertThatThrownBy(() -> managerReservationService.saveReservation(
                 LUTHER.getId(),
+                BE.getId(),
                 reservationCreateUpdateWithPasswordRequest,
                 POBI))
                 .isInstanceOf(NoSuchSpaceException.class);
@@ -135,7 +137,6 @@ public class ManagerReservationServiceTest extends ServiceTest {
     void saveStartTimeBeforeNow() {
         //given
         reservationCreateUpdateWithPasswordRequest = new ReservationCreateUpdateWithPasswordRequest(
-                BE.getId(),
                 LocalDateTime.now().minusHours(3),
                 LocalDateTime.now().plusHours(3),
                 RESERVATION_PASSWORD,
@@ -149,6 +150,7 @@ public class ManagerReservationServiceTest extends ServiceTest {
         //then
         assertThatThrownBy(() -> managerReservationService.saveReservation(
                 LUTHER.getId(),
+                BE.getId(),
                 reservationCreateUpdateWithPasswordRequest,
                 POBI))
                 .isInstanceOf(ImpossibleStartTimeException.class);
@@ -159,7 +161,6 @@ public class ManagerReservationServiceTest extends ServiceTest {
     void saveEndTimeBeforeNow() {
         //given
         reservationCreateUpdateWithPasswordRequest = new ReservationCreateUpdateWithPasswordRequest(
-                BE.getId(),
                 THE_DAY_AFTER_TOMORROW_START_TIME.plusHours(3),
                 THE_DAY_AFTER_TOMORROW_START_TIME.minusHours(3),
                 RESERVATION_PASSWORD,
@@ -173,6 +174,7 @@ public class ManagerReservationServiceTest extends ServiceTest {
         //then
         assertThatThrownBy(() -> managerReservationService.saveReservation(
                 LUTHER.getId(),
+                BE.getId(),
                 reservationCreateUpdateWithPasswordRequest,
                 POBI))
                 .isInstanceOf(ImpossibleEndTimeException.class);
@@ -183,7 +185,6 @@ public class ManagerReservationServiceTest extends ServiceTest {
     void saveStartTimeEqualsEndTime() {
         //given
         reservationCreateUpdateWithPasswordRequest = new ReservationCreateUpdateWithPasswordRequest(
-                BE.getId(),
                 THE_DAY_AFTER_TOMORROW_START_TIME,
                 THE_DAY_AFTER_TOMORROW_START_TIME,
                 RESERVATION_PASSWORD,
@@ -197,6 +198,7 @@ public class ManagerReservationServiceTest extends ServiceTest {
         //then
         assertThatThrownBy(() -> managerReservationService.saveReservation(
                 LUTHER.getId(),
+                BE.getId(),
                 reservationCreateUpdateWithPasswordRequest,
                 POBI))
                 .isInstanceOf(ImpossibleEndTimeException.class);
@@ -207,7 +209,6 @@ public class ManagerReservationServiceTest extends ServiceTest {
     void saveStartTimeDateNotEqualsEndTimeDate() {
         //given
         reservationCreateUpdateWithPasswordRequest = new ReservationCreateUpdateWithPasswordRequest(
-                BE.getId(),
                 THE_DAY_AFTER_TOMORROW_START_TIME,
                 THE_DAY_AFTER_TOMORROW_START_TIME.plusDays(1),
                 RESERVATION_PASSWORD,
@@ -221,6 +222,7 @@ public class ManagerReservationServiceTest extends ServiceTest {
         //then
         assertThatThrownBy(() -> managerReservationService.saveReservation(
                 LUTHER.getId(),
+                BE.getId(),
                 reservationCreateUpdateWithPasswordRequest,
                 POBI))
                 .isInstanceOf(NonMatchingStartAndEndDateException.class);
@@ -232,7 +234,6 @@ public class ManagerReservationServiceTest extends ServiceTest {
     void saveInvalidTimeSetting(int startTime, int endTime) {
         //given
         reservationCreateUpdateWithPasswordRequest = new ReservationCreateUpdateWithPasswordRequest(
-                BE.getId(),
                 THE_DAY_AFTER_TOMORROW.atTime(startTime, 0),
                 THE_DAY_AFTER_TOMORROW.atTime(endTime, 30),
                 RESERVATION_PASSWORD,
@@ -246,6 +247,7 @@ public class ManagerReservationServiceTest extends ServiceTest {
         //then
         assertThatThrownBy(() -> managerReservationService.saveReservation(
                 LUTHER.getId(),
+                BE.getId(),
                 reservationCreateUpdateWithPasswordRequest,
                 POBI))
                 .isInstanceOf(InvalidStartEndTimeException.class);
@@ -271,6 +273,7 @@ public class ManagerReservationServiceTest extends ServiceTest {
         //when,then
         assertThatThrownBy(() -> managerReservationService.saveReservation(
                 LUTHER.getId(),
+                BE.getId(),
                 reservationCreateUpdateWithPasswordRequest,
                 POBI))
                 .isInstanceOf(ImpossibleReservationTimeException.class);
@@ -309,7 +312,7 @@ public class ManagerReservationServiceTest extends ServiceTest {
                 .willReturn(Optional.of(be));
 
         // then
-        assertThatThrownBy(() -> managerReservationService.saveReservation(LUTHER.getId(), reservationCreateUpdateWithPasswordRequest, POBI))
+        assertThatThrownBy(() -> managerReservationService.saveReservation(LUTHER.getId(), BE.getId(), reservationCreateUpdateWithPasswordRequest, POBI))
                 .isInstanceOf(InvalidReservationEnableException.class);
     }
 
@@ -346,7 +349,7 @@ public class ManagerReservationServiceTest extends ServiceTest {
                 .willReturn(Optional.of(be));
 
         // then
-        assertThatThrownBy(() -> managerReservationService.saveReservation(LUTHER.getId(), reservationCreateUpdateWithPasswordRequest, POBI))
+        assertThatThrownBy(() -> managerReservationService.saveReservation(LUTHER.getId(), BE.getId(), reservationCreateUpdateWithPasswordRequest, POBI))
                 .isInstanceOf(InvalidDayOfWeekException.class);
     }
 
@@ -375,6 +378,7 @@ public class ManagerReservationServiceTest extends ServiceTest {
         //when, then
         ReservationCreateResponse reservationCreateResponse = managerReservationService.saveReservation(
                 LUTHER.getId(),
+                BE.getId(),
                 reservationCreateUpdateWithPasswordRequest,
                 POBI);
         assertThat(reservationCreateResponse.getId()).isEqualTo(reservation.getId());
@@ -393,8 +397,8 @@ public class ManagerReservationServiceTest extends ServiceTest {
         //when, then
         assertThatThrownBy(() -> managerReservationService.saveReservation(
                 LUTHER.getId(),
+                BE.getId(),
                 new ReservationCreateUpdateWithPasswordRequest(
-                        BE.getId(),
                         theDayAfterTomorrowTen.plusMinutes(minute),
                         theDayAfterTomorrowTen.plusMinutes(minute).plusMinutes(60),
                         RESERVATION_PASSWORD,
@@ -404,9 +408,9 @@ public class ManagerReservationServiceTest extends ServiceTest {
                 POBI)).isInstanceOf(InvalidTimeUnitException.class);
         assertThatThrownBy(() -> managerReservationService.updateReservation(
                 LUTHER.getId(),
+                BE.getId(),
                 reservation.getId(),
                 new ReservationCreateUpdateWithPasswordRequest(
-                        BE.getId(),
                         theDayAfterTomorrowTen.plusMinutes(minute),
                         theDayAfterTomorrowTen.plusMinutes(minute).plusMinutes(60),
                         RESERVATION_PASSWORD,
@@ -428,8 +432,8 @@ public class ManagerReservationServiceTest extends ServiceTest {
         //when,then
         assertThatThrownBy(() -> managerReservationService.saveReservation(
                 LUTHER.getId(),
+                BE.getId(),
                 new ReservationCreateUpdateWithPasswordRequest(
-                        BE.getId(),
                         THE_DAY_AFTER_TOMORROW_START_TIME,
                         THE_DAY_AFTER_TOMORROW_START_TIME.plusMinutes(conferenceTime),
                         RESERVATION_PASSWORD,
@@ -440,9 +444,9 @@ public class ManagerReservationServiceTest extends ServiceTest {
 
         assertThatThrownBy(() -> managerReservationService.updateReservation(
                 LUTHER.getId(),
+                BE.getId(),
                 reservation.getId(),
                 new ReservationCreateUpdateWithPasswordRequest(
-                        BE.getId(),
                         THE_DAY_AFTER_TOMORROW_START_TIME,
                         THE_DAY_AFTER_TOMORROW_START_TIME.plusMinutes(conferenceTime),
                         RESERVATION_PASSWORD,
@@ -632,12 +636,15 @@ public class ManagerReservationServiceTest extends ServiceTest {
         //given
         given(maps.findById(anyLong()))
                 .willReturn(Optional.of(LUTHER));
+        given(spaces.existsById(anyLong()))
+                .willReturn(true);
         given(reservations.findById(anyLong()))
                 .willReturn(Optional.of(reservation));
 
         //when
         ReservationResponse actualResponse = managerReservationService.findReservation(
                 LUTHER.getId(),
+                BE.getId(),
                 reservation.getId(),
                 POBI);
 
@@ -656,6 +663,7 @@ public class ManagerReservationServiceTest extends ServiceTest {
         //then
         assertThatThrownBy(() -> managerReservationService.findReservation(
                 LUTHER.getId(),
+                BE.getId(),
                 reservation.getId(),
                 JASON))
                 .isInstanceOf(NoAuthorityOnMapException.class);
@@ -667,12 +675,15 @@ public class ManagerReservationServiceTest extends ServiceTest {
         //given, when
         given(maps.findById(anyLong()))
                 .willReturn(Optional.of(LUTHER));
+        given(spaces.existsById(anyLong()))
+                .willReturn(true);
         given(reservations.findById(anyLong()))
                 .willReturn(Optional.empty());
 
         //then
         assertThatThrownBy(() -> managerReservationService.findReservation(
                 LUTHER.getId(),
+                BE.getId(),
                 reservation.getId(),
                 POBI))
                 .isInstanceOf(NoSuchReservationException.class);
@@ -691,7 +702,6 @@ public class ManagerReservationServiceTest extends ServiceTest {
 
         // when
         ReservationCreateUpdateRequest reservationCreateUpdateRequest = new ReservationCreateUpdateRequest(
-                BE.getId(),
                 THE_DAY_AFTER_TOMORROW.atTime(10, 0),
                 THE_DAY_AFTER_TOMORROW.atTime(11, 0),
                 CHANGED_NAME,
@@ -701,6 +711,7 @@ public class ManagerReservationServiceTest extends ServiceTest {
         //then
         assertDoesNotThrow(() -> managerReservationService.updateReservation(
                 LUTHER.getId(),
+                BE.getId(),
                 reservation.getId(),
                 reservationCreateUpdateRequest,
                 POBI));
@@ -717,7 +728,6 @@ public class ManagerReservationServiceTest extends ServiceTest {
 
         //when
         ReservationCreateUpdateRequest reservationCreateUpdateRequest = new ReservationCreateUpdateRequest(
-                BE.getId(),
                 THE_DAY_AFTER_TOMORROW_START_TIME.plusHours(20),
                 THE_DAY_AFTER_TOMORROW_START_TIME.plusHours(21),
                 CHANGED_NAME,
@@ -727,6 +737,7 @@ public class ManagerReservationServiceTest extends ServiceTest {
         //then
         assertThatThrownBy(() -> managerReservationService.updateReservation(
                 LUTHER.getId(),
+                BE.getId(),
                 reservation.getId(),
                 reservationCreateUpdateRequest,
                 JASON))
@@ -740,10 +751,11 @@ public class ManagerReservationServiceTest extends ServiceTest {
         //given
         given(maps.findById(anyLong()))
                 .willReturn(Optional.of(LUTHER));
+        given(spaces.findById(anyLong()))
+                .willReturn(Optional.of(BE));
 
         //when
         ReservationCreateUpdateRequest reservationCreateUpdateRequest = new ReservationCreateUpdateRequest(
-                BE.getId(),
                 THE_DAY_AFTER_TOMORROW_START_TIME.plusHours(1),
                 THE_DAY_AFTER_TOMORROW_START_TIME.plusHours(endTime),
                 CHANGED_NAME,
@@ -753,6 +765,7 @@ public class ManagerReservationServiceTest extends ServiceTest {
         //then
         assertThatThrownBy(() -> managerReservationService.updateReservation(
                 LUTHER.getId(),
+                BE.getId(),
                 reservation.getId(),
                 reservationCreateUpdateRequest,
                 POBI))
@@ -765,10 +778,11 @@ public class ManagerReservationServiceTest extends ServiceTest {
         //given
         given(maps.findById(anyLong()))
                 .willReturn(Optional.of(LUTHER));
+        given(spaces.findById(anyLong()))
+                .willReturn(Optional.of(BE));
 
         //when
         ReservationCreateUpdateRequest reservationCreateUpdateRequest = new ReservationCreateUpdateRequest(
-                BE.getId(),
                 THE_DAY_AFTER_TOMORROW_START_TIME,
                 THE_DAY_AFTER_TOMORROW_START_TIME.plusDays(1),
                 CHANGED_NAME,
@@ -778,6 +792,7 @@ public class ManagerReservationServiceTest extends ServiceTest {
         //then
         assertThatThrownBy(() -> managerReservationService.updateReservation(
                 LUTHER.getId(),
+                BE.getId(),
                 reservation.getId(),
                 reservationCreateUpdateRequest,
                 POBI))
@@ -805,7 +820,6 @@ public class ManagerReservationServiceTest extends ServiceTest {
 
         //when
         ReservationCreateUpdateRequest reservationCreateUpdateRequest = new ReservationCreateUpdateRequest(
-                BE.getId(),
                 BE_PM_ONE_TWO.getStartTime().plusMinutes(startTime),
                 BE_PM_ONE_TWO.getEndTime().plusMinutes(endTime),
                 reservation.getUserName(),
@@ -815,6 +829,7 @@ public class ManagerReservationServiceTest extends ServiceTest {
         //then
         assertThatThrownBy(() -> managerReservationService.updateReservation(
                 LUTHER.getId(),
+                BE.getId(),
                 reservation.getId(),
                 reservationCreateUpdateRequest,
                 POBI))
@@ -837,7 +852,6 @@ public class ManagerReservationServiceTest extends ServiceTest {
 
         //when
         ReservationCreateUpdateRequest reservationCreateUpdateRequest = new ReservationCreateUpdateRequest(
-                BE.getId(),
                 THE_DAY_AFTER_TOMORROW.atTime(startTime, 0),
                 THE_DAY_AFTER_TOMORROW.atTime(endTime,30),
                 CHANGED_NAME,
@@ -847,6 +861,7 @@ public class ManagerReservationServiceTest extends ServiceTest {
         //then
         assertThatThrownBy(() -> managerReservationService.updateReservation(
                 LUTHER.getId(),
+                BE.getId(),
                 reservation.getId(),
                 reservationCreateUpdateRequest,
                 POBI))
@@ -888,7 +903,7 @@ public class ManagerReservationServiceTest extends ServiceTest {
                 .willReturn(Optional.of(reservation));
 
         // then
-        assertThatThrownBy(() -> managerReservationService.updateReservation(LUTHER.getId(), reservation.getId(), reservationCreateUpdateRequest, POBI))
+        assertThatThrownBy(() -> managerReservationService.updateReservation(LUTHER.getId(), BE.getId(), reservation.getId(), reservationCreateUpdateRequest, POBI))
                 .isInstanceOf(InvalidReservationEnableException.class);
     }
 
@@ -927,7 +942,7 @@ public class ManagerReservationServiceTest extends ServiceTest {
                 .willReturn(Optional.of(reservation));
 
         // then
-        assertThatThrownBy(() -> managerReservationService.updateReservation(LUTHER.getId(), reservation.getId(), reservationCreateUpdateRequest, POBI))
+        assertThatThrownBy(() -> managerReservationService.updateReservation(LUTHER.getId(), BE.getId(), reservation.getId(), reservationCreateUpdateRequest, POBI))
                 .isInstanceOf(InvalidDayOfWeekException.class);
     }
 
@@ -942,12 +957,15 @@ public class ManagerReservationServiceTest extends ServiceTest {
 
         given(maps.findById(anyLong()))
                 .willReturn(Optional.of(LUTHER));
+        given(spaces.existsById(anyLong()))
+                .willReturn(true);
         given(reservations.findById(anyLong()))
                 .willReturn(Optional.of(reservationToDelete));
 
-        //when,then
+        //when, then
         assertDoesNotThrow(() -> managerReservationService.deleteReservation(
                 LUTHER.getId(),
+                BE.getId(),
                 reservation.getId(),
                 POBI));
     }
@@ -961,9 +979,10 @@ public class ManagerReservationServiceTest extends ServiceTest {
         given(reservations.findById(anyLong()))
                 .willReturn(Optional.empty());
 
-        //when,then
+        //then
         assertThatThrownBy(() -> managerReservationService.deleteReservation(
                 LUTHER.getId(),
+                BE.getId(),
                 reservation.getId(),
                 JASON))
                 .isInstanceOf(NoAuthorityOnMapException.class);
@@ -975,12 +994,15 @@ public class ManagerReservationServiceTest extends ServiceTest {
         //given
         given(maps.findById(anyLong()))
                 .willReturn(Optional.of(LUTHER));
+        given(spaces.existsById(anyLong()))
+                .willReturn(true);
         given(reservations.findById(anyLong()))
                 .willReturn(Optional.empty());
 
-        //when, then
+        //then
         assertThatThrownBy(() -> managerReservationService.deleteReservation(
                 LUTHER.getId(),
+                BE.getId(),
                 reservation.getId(),
                 POBI))
                 .isInstanceOf(NoSuchReservationException.class);

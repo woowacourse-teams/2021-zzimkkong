@@ -61,12 +61,12 @@ public class SpaceService {
                 new Space.Builder()
                         .name(spaceCreateUpdateRequest.getSpaceName())
                         .color(spaceCreateUpdateRequest.getColor())
-                        .textPosition(null)
-                        .coordinate(null)
-                        .map(map)
                         .description(spaceCreateUpdateRequest.getDescription())
                         .area(spaceCreateUpdateRequest.getArea())
                         .setting(setting)
+                        .map(map)
+                        .textPosition(null)
+                        .coordinate(null)
                         .build());
         return SpaceCreateResponse.from(space);
     }
@@ -148,9 +148,9 @@ public class SpaceService {
                 .name(spaceCreateUpdateRequest.getSpaceName())
                 .color(spaceCreateUpdateRequest.getColor())
                 .description(spaceCreateUpdateRequest.getDescription())
-                .map(map)
                 .area(spaceCreateUpdateRequest.getArea())
                 .setting(updateSetting)
+                .map(map)
                 .build();
     }
 
