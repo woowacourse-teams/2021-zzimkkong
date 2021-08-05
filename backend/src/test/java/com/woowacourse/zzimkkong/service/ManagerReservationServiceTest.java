@@ -106,11 +106,11 @@ public class ManagerReservationServiceTest extends ServiceTest {
 
         beAmZeroOne = new Reservation.Builder()
                 .id(1L)
-                .startTime(BE_AM_ZERO_ONE_START_TIME)
-                .endTime(BE_AM_ZERO_ONE_END_TIME)
-                .description(BE_AM_ZERO_ONE_DESCRIPTION)
-                .userName(BE_AM_ZERO_ONE_USERNAME)
-                .password(BE_AM_ZERO_ONE_PASSWORD)
+                .startTime(BE_AM_TEN_ELEVEN_START_TIME)
+                .endTime(BE_AM_TEN_ELEVEN_END_TIME)
+                .description(BE_AM_TEN_ELEVEN_DESCRIPTION)
+                .userName(BE_AM_TEN_ELEVEN_USERNAME)
+                .password(BE_AM_TEN_ELEVEN_PASSWORD)
                 .space(be)
                 .build();
 

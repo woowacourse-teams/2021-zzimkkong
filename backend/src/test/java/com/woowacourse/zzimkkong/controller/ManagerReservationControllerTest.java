@@ -60,8 +60,8 @@ public class ManagerReservationControllerTest extends AcceptanceTest {
         fe1ReservationApi = saveFe1SpaceResponse.header("location") + "/reservations";
 
         ReservationCreateUpdateWithPasswordRequest reservationCreateUpdateWithPasswordRequest = new ReservationCreateUpdateWithPasswordRequest(
-                THE_DAY_AFTER_TOMORROW.atTime(1, 0),
-                THE_DAY_AFTER_TOMORROW.atTime(2, 0),
+                THE_DAY_AFTER_TOMORROW.atTime(15, 0),
+                THE_DAY_AFTER_TOMORROW.atTime(16, 0),
                 SALLY_PASSWORD,
                 SALLY_NAME,
                 SALLY_DESCRIPTION);
@@ -125,8 +125,8 @@ public class ManagerReservationControllerTest extends AcceptanceTest {
     void save() {
         //given
         ReservationCreateUpdateWithPasswordRequest newReservationCreateUpdateWithPasswordRequest = new ReservationCreateUpdateWithPasswordRequest(
-                THE_DAY_AFTER_TOMORROW.atTime(5, 0),
-                THE_DAY_AFTER_TOMORROW.atTime(7, 0),
+                THE_DAY_AFTER_TOMORROW.atTime(19, 0),
+                THE_DAY_AFTER_TOMORROW.atTime(20, 0),
                 SALLY_PASSWORD,
                 SALLY_NAME,
                 SALLY_DESCRIPTION);
@@ -203,8 +203,8 @@ public class ManagerReservationControllerTest extends AcceptanceTest {
     void update_sameSpace() {
         //given
         ReservationCreateUpdateRequest reservationCreateUpdateRequestSameSpace = new ReservationCreateUpdateRequest(
-                THE_DAY_AFTER_TOMORROW.atTime(1, 0),
-                THE_DAY_AFTER_TOMORROW.atTime(2, 30),
+                THE_DAY_AFTER_TOMORROW.atTime(19, 0),
+                THE_DAY_AFTER_TOMORROW.atTime(20, 30),
                 "sally",
                 "회의입니다."
         );
@@ -238,8 +238,8 @@ public class ManagerReservationControllerTest extends AcceptanceTest {
     void update_spaceUpdate() {
         //given
         ReservationCreateUpdateWithPasswordRequest reservationCreateUpdateWithPasswordRequestDifferentSpace = new ReservationCreateUpdateWithPasswordRequest(
-                THE_DAY_AFTER_TOMORROW.atTime(3, 30),
-                THE_DAY_AFTER_TOMORROW.atTime(4, 30),
+                THE_DAY_AFTER_TOMORROW.atTime(19, 30),
+                THE_DAY_AFTER_TOMORROW.atTime(20, 30),
                 SALLY_PASSWORD,
                 "sally",
                 "회의입니다."
@@ -292,11 +292,11 @@ public class ManagerReservationControllerTest extends AcceptanceTest {
 
     private void saveExampleReservations() {
         ReservationCreateUpdateWithPasswordRequest beAmZeroOneRequest = new ReservationCreateUpdateWithPasswordRequest(
-                BE_AM_ZERO_ONE_START_TIME,
-                BE_AM_ZERO_ONE_END_TIME,
-                BE_AM_ZERO_ONE_PASSWORD,
-                BE_AM_ZERO_ONE_USERNAME,
-                BE_AM_ZERO_ONE_DESCRIPTION);
+                BE_AM_TEN_ELEVEN_START_TIME,
+                BE_AM_TEN_ELEVEN_END_TIME,
+                BE_AM_TEN_ELEVEN_PASSWORD,
+                BE_AM_TEN_ELEVEN_USERNAME,
+                BE_AM_TEN_ELEVEN_DESCRIPTION);
 
         ReservationCreateUpdateWithPasswordRequest bePmOneTwoRequest = new ReservationCreateUpdateWithPasswordRequest(
                 BE_PM_ONE_TWO_START_TIME,
@@ -306,26 +306,26 @@ public class ManagerReservationControllerTest extends AcceptanceTest {
                 BE_PM_ONE_TWO_DESCRIPTION);
 
         ReservationCreateUpdateWithPasswordRequest beNextDayAmSixTwelveRequest = new ReservationCreateUpdateWithPasswordRequest(
-                BE_NEXT_DAY_AM_SIX_TWELVE_START_TIME,
-                BE_NEXT_DAY_AM_SIX_TWELVE_END_TIME,
-                BE_NEXT_DAY_AM_SIX_TWELVE_PASSWORD,
-                BE_NEXT_DAY_AM_SIX_TWELVE_USERNAME,
-                BE_NEXT_DAY_AM_SIX_TWELVE_DESCRIPTION);
+                BE_NEXT_DAY_PM_FOUR_TO_SIX_START_TIME,
+                BE_NEXT_DAY_PM_FOUR_TO_SIX_END_TIME,
+                BE_NEXT_DAY_PM_FOUR_TO_SIX_PASSWORD,
+                BE_NEXT_DAY_PM_FOUR_TO_SIX_USERNAME,
+                BE_NEXT_DAY_PM_FOUR_TO_SIX_DESCRIPTION);
 
         ReservationCreateUpdateWithPasswordRequest feZeroOneRequest = new ReservationCreateUpdateWithPasswordRequest(
-                FE1_ZERO_ONE_START_TIME,
-                FE1_ZERO_ONE_END_TIME,
-                FE1_ZERO_ONE_PASSWORD,
-                FE1_ZERO_ONE_USERNAME,
-                FE1_ZERO_ONE_DESCRIPTION);
+                FE1_AM_TEN_ELEVEN_START_TIME,
+                FE1_AM_TEN_ELEVEN_END_TIME,
+                FE1_AM_TEN_ELEVEN_PASSWORD,
+                FE1_AM_TEN_ELEVEN_USERNAME,
+                FE1_AM_TEN_ELEVEN_DESCRIPTION);
 
         beAmZeroOne = new Reservation.Builder()
                 .id(getReservationIdAfterSave(accessToken, beReservationApi, beAmZeroOneRequest))
-                .startTime(BE_AM_ZERO_ONE_START_TIME)
-                .endTime(BE_AM_ZERO_ONE_END_TIME)
-                .description(BE_AM_ZERO_ONE_DESCRIPTION)
-                .userName(BE_AM_ZERO_ONE_USERNAME)
-                .password(BE_AM_ZERO_ONE_PASSWORD)
+                .startTime(BE_AM_TEN_ELEVEN_START_TIME)
+                .endTime(BE_AM_TEN_ELEVEN_END_TIME)
+                .description(BE_AM_TEN_ELEVEN_DESCRIPTION)
+                .userName(BE_AM_TEN_ELEVEN_USERNAME)
+                .password(BE_AM_TEN_ELEVEN_PASSWORD)
                 .space(be)
                 .build();
 
@@ -343,11 +343,11 @@ public class ManagerReservationControllerTest extends AcceptanceTest {
 
         fe1ZeroOne = new Reservation.Builder()
                 .id(getReservationIdAfterSave(accessToken, fe1ReservationApi, feZeroOneRequest))
-                .startTime(FE1_ZERO_ONE_START_TIME)
-                .endTime(FE1_ZERO_ONE_END_TIME)
-                .description(FE1_ZERO_ONE_DESCRIPTION)
-                .userName(FE1_ZERO_ONE_USERNAME)
-                .password(FE1_ZERO_ONE_PASSWORD)
+                .startTime(FE1_AM_TEN_ELEVEN_START_TIME)
+                .endTime(FE1_AM_TEN_ELEVEN_END_TIME)
+                .description(FE1_AM_TEN_ELEVEN_DESCRIPTION)
+                .userName(FE1_AM_TEN_ELEVEN_USERNAME)
+                .password(FE1_AM_TEN_ELEVEN_PASSWORD)
                 .space(fe)
                 .build();
     }

@@ -72,11 +72,11 @@ class ReservationRepositoryTest extends RepositoryTest {
         spaces.save(fe);
 
         beAmZeroOne = new Reservation.Builder()
-                .startTime(BE_AM_ZERO_ONE_START_TIME)
-                .endTime(BE_AM_ZERO_ONE_END_TIME)
-                .description(BE_AM_ZERO_ONE_DESCRIPTION)
-                .userName(BE_AM_ZERO_ONE_USERNAME)
-                .password(BE_AM_ZERO_ONE_PASSWORD)
+                .startTime(BE_AM_TEN_ELEVEN_START_TIME)
+                .endTime(BE_AM_TEN_ELEVEN_END_TIME)
+                .description(BE_AM_TEN_ELEVEN_DESCRIPTION)
+                .userName(BE_AM_TEN_ELEVEN_USERNAME)
+                .password(BE_AM_TEN_ELEVEN_PASSWORD)
                 .space(be)
                 .build();
 
@@ -90,20 +90,20 @@ class ReservationRepositoryTest extends RepositoryTest {
                 .build();
 
         beNextDayAmSixTwelve = new Reservation.Builder()
-                .startTime(BE_NEXT_DAY_AM_SIX_TWELVE_START_TIME)
-                .endTime(BE_NEXT_DAY_AM_SIX_TWELVE_END_TIME)
-                .description(BE_NEXT_DAY_AM_SIX_TWELVE_DESCRIPTION)
-                .userName(BE_NEXT_DAY_AM_SIX_TWELVE_USERNAME)
-                .password(BE_NEXT_DAY_AM_SIX_TWELVE_PASSWORD)
+                .startTime(BE_NEXT_DAY_PM_FOUR_TO_SIX_START_TIME)
+                .endTime(BE_NEXT_DAY_PM_FOUR_TO_SIX_END_TIME)
+                .description(BE_NEXT_DAY_PM_FOUR_TO_SIX_DESCRIPTION)
+                .userName(BE_NEXT_DAY_PM_FOUR_TO_SIX_USERNAME)
+                .password(BE_NEXT_DAY_PM_FOUR_TO_SIX_PASSWORD)
                 .space(be)
                 .build();
 
         fe1ZeroOne = new Reservation.Builder()
-                .startTime(FE1_ZERO_ONE_START_TIME)
-                .endTime(FE1_ZERO_ONE_END_TIME)
-                .description(FE1_ZERO_ONE_DESCRIPTION)
-                .userName(FE1_ZERO_ONE_USERNAME)
-                .password(FE1_ZERO_ONE_PASSWORD)
+                .startTime(FE1_AM_TEN_ELEVEN_START_TIME)
+                .endTime(FE1_AM_TEN_ELEVEN_END_TIME)
+                .description(FE1_AM_TEN_ELEVEN_DESCRIPTION)
+                .userName(FE1_AM_TEN_ELEVEN_USERNAME)
+                .password(FE1_AM_TEN_ELEVEN_PASSWORD)
                 .space(fe)
                 .build();
 
@@ -209,7 +209,7 @@ class ReservationRepositoryTest extends RepositoryTest {
     @DisplayName("특정 시간 이후의 예약이 존재하는지 확인한다.")
     void existsAllStartTimeAfter(int minusMinute, boolean expected) {
         //given, when
-        Boolean actual = reservations.existsBySpaceIdAndEndTimeAfter(be.getId(), BE_NEXT_DAY_AM_SIX_TWELVE_END_TIME.minusMinutes(minusMinute));
+        Boolean actual = reservations.existsBySpaceIdAndEndTimeAfter(be.getId(), BE_NEXT_DAY_PM_FOUR_TO_SIX_END_TIME.minusMinutes(minusMinute));
 
         //then
         assertThat(actual).isEqualTo(expected);
