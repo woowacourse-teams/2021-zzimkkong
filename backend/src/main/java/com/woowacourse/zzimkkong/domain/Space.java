@@ -18,19 +18,8 @@ public class Space {
     @Column(nullable = false, length = 20)
     private String name;
 
-    // TODO: map Editor 구현되면 column 삭제
-    @Column(nullable = true, length = 6)
-    private String textPosition;
-
     @Column(nullable = true, length = 25)
     private String color;
-
-    @Column(nullable = true)
-    private String coordinate;
-
-    @ManyToOne
-    @JoinColumn(name = "map_id", foreignKey = @ForeignKey(name = "fk_space_map"), nullable = false)
-    private Map map;
 
     @Column(nullable = true)
     private String description;
@@ -41,27 +30,39 @@ public class Space {
     @Embedded
     private Setting setting;
 
+    // TODO: map Editor 구현되면 column 삭제
+    @Column(nullable = true, length = 6)
+    private String textPosition;
+
+    @Column(nullable = true)
+    private String coordinate;
+
+    @ManyToOne
+    @JoinColumn(name = "map_id", foreignKey = @ForeignKey(name = "fk_space_map"), nullable = false)
+    private Map map;
+
     protected Space() {
     }
 
     protected Space(Builder builder) {
         this.id = builder.id;
         this.name = builder.name;
-        this.textPosition = builder.textPosition;
         this.color = builder.color;
-        this.coordinate = builder.coordinate;
-        this.map = builder.map;
         this.description = builder.description;
         this.area = builder.area;
         this.setting = builder.setting;
+        this.textPosition = builder.textPosition;
+        this.coordinate = builder.coordinate;
+        this.map = builder.map;
     }
 
     public void update(final Space updateSpace) {
         this.name = updateSpace.name;
-        this.map = updateSpace.map;
+        this.color = updateSpace.color;
         this.description = updateSpace.description;
         this.area = updateSpace.area;
         this.setting = updateSpace.setting;
+        this.map = updateSpace.map;
     }
 
     public boolean isCorrectTimeUnit(int minute) {
@@ -76,6 +77,14 @@ public class Space {
         return minute % getReservationTimeUnit() != 0;
     }
 
+    public boolean isNotBetweenAvailableTime(LocalDateTime startDateTime, LocalDateTime endDateTime) {
+        boolean isEqualOrAfterStartTime = startDateTime.toLocalTime().equals(getAvailableStartTime()) ||
+                startDateTime.toLocalTime().isAfter(getAvailableStartTime());
+        boolean isEqualOrBeforeEndTime = endDateTime.toLocalTime().equals(getAvailableEndTime()) ||
+                endDateTime.toLocalTime().isBefore(getAvailableEndTime());
+        return !(isEqualOrAfterStartTime && isEqualOrBeforeEndTime);
+    }
+
     public Long getId() {
         return id;
     }
@@ -84,20 +93,8 @@ public class Space {
         return name;
     }
 
-    public String getTextPosition() {
-        return textPosition;
-    }
-
     public String getColor() {
         return color;
-    }
-
-    public String getCoordinate() {
-        return coordinate;
-    }
-
-    public Map getMap() {
-        return map;
     }
 
     public String getDescription() {
@@ -106,6 +103,14 @@ public class Space {
 
     public String getArea() {
         return area;
+    }
+
+    public String getTextPosition() {
+        return textPosition;
+    }
+
+    public String getCoordinate() {
+        return coordinate;
     }
 
     public LocalTime getAvailableEndTime() {
@@ -136,15 +141,12 @@ public class Space {
         return setting.getDisabledWeekdays();
     }
 
-    public boolean isNotBetweenAvailableTime(LocalDateTime startDateTime, LocalDateTime endDateTime) {
-        boolean isEqualOrAfterStartTime = startDateTime.toLocalTime().equals(getAvailableStartTime()) ||
-                startDateTime.toLocalTime().isAfter(getAvailableStartTime());
-        boolean isEqualOrBeforeEndTime = endDateTime.toLocalTime().equals(getAvailableEndTime()) ||
-                endDateTime.toLocalTime().isBefore(getAvailableEndTime());
-        return !(isEqualOrAfterStartTime && isEqualOrBeforeEndTime);
+    public Map getMap() {
+        return map;
     }
 
     public static class Builder {
+
         private Long id = null;
         private String name = null;
         private String textPosition = null;
@@ -168,23 +170,8 @@ public class Space {
             return this;
         }
 
-        public Space.Builder textPosition(String inputTextPosition) {
-            textPosition = inputTextPosition;
-            return this;
-        }
-
         public Space.Builder color(String inputColor) {
             color = inputColor;
-            return this;
-        }
-
-        public Space.Builder coordinate(String inputCoordinate) {
-            coordinate = inputCoordinate;
-            return this;
-        }
-
-        public Space.Builder map(Map inputMap) {
-            map = inputMap;
             return this;
         }
 
@@ -200,6 +187,21 @@ public class Space {
 
         public Space.Builder setting(Setting inputSetting) {
             setting = inputSetting;
+            return this;
+        }
+
+        public Space.Builder textPosition(String inputTextPosition) {
+            textPosition = inputTextPosition;
+            return this;
+        }
+
+        public Space.Builder coordinate(String inputCoordinate) {
+            coordinate = inputCoordinate;
+            return this;
+        }
+
+        public Space.Builder map(Map inputMap) {
+            map = inputMap;
             return this;
         }
 

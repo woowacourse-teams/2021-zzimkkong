@@ -30,11 +30,12 @@ public class GuestReservationService extends ReservationService {
 
     public ReservationCreateResponse saveReservation(
             final Long mapId,
+            final Long spaceId,
             final ReservationCreateUpdateWithPasswordRequest reservationCreateUpdateWithPasswordRequest) {
         validateMapExistence(mapId);
         validateTime(reservationCreateUpdateWithPasswordRequest);
 
-        Space space = spaces.findById(reservationCreateUpdateWithPasswordRequest.getSpaceId())
+        Space space = spaces.findById(spaceId)
                 .orElseThrow(NoSuchSpaceException::new);
         validateAvailability(space, reservationCreateUpdateWithPasswordRequest);
 
@@ -54,9 +55,11 @@ public class GuestReservationService extends ReservationService {
     @Transactional(readOnly = true)
     public ReservationResponse findReservation(
             final Long mapId,
+            final Long spaceId,
             final Long reservationId,
             final ReservationPasswordAuthenticationRequest reservationPasswordAuthenticationRequest) {
         validateMapExistence(mapId);
+        validateSpaceExistence(spaceId);
 
         Reservation reservation = reservations
                 .findById(reservationId)
@@ -88,12 +91,14 @@ public class GuestReservationService extends ReservationService {
 
     public void updateReservation(
             final Long mapId,
+            final Long spaceId,
             final Long reservationId,
             final ReservationCreateUpdateWithPasswordRequest reservationCreateUpdateWithPasswordRequest) {
         validateMapExistence(mapId);
+
         validateTime(reservationCreateUpdateWithPasswordRequest);
 
-        Space space = spaces.findById(reservationCreateUpdateWithPasswordRequest.getSpaceId())
+        Space space = spaces.findById(spaceId)
                 .orElseThrow(NoSuchSpaceException::new);
         Reservation reservation = reservations
                 .findById(reservationId)
@@ -107,9 +112,11 @@ public class GuestReservationService extends ReservationService {
 
     public void deleteReservation(
             final Long mapId,
+            final Long spaceId,
             final Long reservationId,
             final ReservationPasswordAuthenticationRequest reservationPasswordAuthenticationRequest) {
         validateMapExistence(mapId);
+        validateSpaceExistence(spaceId);
 
         Reservation reservation = reservations
                 .findById(reservationId)
