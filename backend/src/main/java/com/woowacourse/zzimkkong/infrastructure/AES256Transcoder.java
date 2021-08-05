@@ -16,7 +16,7 @@ import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 
 @Component
-@PropertySource("classpath:config/transcoder.properties")
+@PropertySource("classpath:config/AES256Transcoder.properties")
 public class AES256Transcoder implements Transcoder {
     private final SecretKey secureKey;
     private final IvParameterSpec ivParameterSpec;
