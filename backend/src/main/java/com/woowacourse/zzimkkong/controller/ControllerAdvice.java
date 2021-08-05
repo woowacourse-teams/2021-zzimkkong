@@ -20,8 +20,8 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import javax.validation.ConstraintViolationException;
 
-import static com.woowacourse.zzimkkong.dto.Validator.FORMAT_MESSAGE;
-import static com.woowacourse.zzimkkong.dto.Validator.SERVER_ERROR_MESSAGE;
+import static com.woowacourse.zzimkkong.dto.ValidatorMessage.FORMAT_MESSAGE;
+import static com.woowacourse.zzimkkong.dto.ValidatorMessage.SERVER_ERROR_MESSAGE;
 
 @RestControllerAdvice
 public class ControllerAdvice {

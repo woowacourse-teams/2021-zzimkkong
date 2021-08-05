@@ -5,7 +5,7 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 
-import static com.woowacourse.zzimkkong.dto.Validator.*;
+import static com.woowacourse.zzimkkong.dto.ValidatorMessage.*;
 
 public class LoginRequest {
     @NotBlank(message = EMPTY_MESSAGE)
