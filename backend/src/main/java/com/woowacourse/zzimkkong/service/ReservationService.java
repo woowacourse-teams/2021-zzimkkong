@@ -92,11 +92,11 @@ public abstract class ReservationService {
     private void validateSpaceSetting(Space space, LocalDateTime startDateTime, LocalDateTime endDateTime) {
         int durationMinutes = (int) ChronoUnit.MINUTES.between(startDateTime, endDateTime);
 
-        if (space.isCorrectTimeUnit(startDateTime.getMinute()) | space.isNotDivideBy(durationMinutes)) {
+        if (space.isIncorrectTimeUnit(startDateTime.getMinute()) | space.isNotDivideBy(durationMinutes)) {
             throw new InvalidTimeUnitException();
         }
 
-        if (space.isCorrectMinimumMaximumTimeUnit(durationMinutes)) {
+        if (space.isIncorrectMinimumMaximumTimeUnit(durationMinutes)) {
             throw new InvalidDurationTimeException();
         }
 
