@@ -23,14 +23,12 @@ import java.util.List;
 
 import static com.woowacourse.zzimkkong.Constants.*;
 import static com.woowacourse.zzimkkong.DocumentUtils.*;
-import static com.woowacourse.zzimkkong.controller.AuthControllerTest.getToken;
 import static com.woowacourse.zzimkkong.controller.MapControllerTest.saveMap;
 import static com.woowacourse.zzimkkong.controller.MemberControllerTest.saveMember;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.restdocs.restassured3.RestAssuredRestDocumentation.document;
 
 public class SpaceControllerTest extends AcceptanceTest {
-    private static String accessToken;
     private String spaceApi;
     private Long beSpaceId;
     private Space be;
@@ -38,8 +36,7 @@ public class SpaceControllerTest extends AcceptanceTest {
 
     @BeforeEach
     void setUp() {
-        saveMember(memberSaveRequest);
-        accessToken = getToken();
+//        saveMember(memberSaveRequest);
 
         String lutherId = saveMap("/api/managers/maps", mapCreateUpdateRequest).header("location").split("/")[4];
         spaceApi = "/api/managers/maps/" + lutherId + "/spaces";

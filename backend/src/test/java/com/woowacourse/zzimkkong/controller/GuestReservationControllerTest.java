@@ -5,6 +5,7 @@ import com.woowacourse.zzimkkong.dto.reservation.*;
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -37,7 +38,7 @@ public class GuestReservationControllerTest extends AcceptanceTest {
 
     @BeforeEach
     void setUp() {
-        saveMember(memberSaveRequest);
+//        saveMember(memberSaveRequest);
         String lutherId = saveMap("/api/managers/maps", mapCreateUpdateRequest).header("location").split("/")[4];
         String spaceApi = "/api/managers/maps/" + lutherId + "/spaces";
         ExtractableResponse<Response> saveBeSpaceResponse = saveSpace(spaceApi, beSpaceCreateUpdateRequest);

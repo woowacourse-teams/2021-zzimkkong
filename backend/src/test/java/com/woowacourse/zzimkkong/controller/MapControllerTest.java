@@ -19,13 +19,11 @@ import java.util.List;
 
 import static com.woowacourse.zzimkkong.Constants.*;
 import static com.woowacourse.zzimkkong.DocumentUtils.*;
-import static com.woowacourse.zzimkkong.controller.AuthControllerTest.getToken;
 import static com.woowacourse.zzimkkong.controller.MemberControllerTest.saveMember;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.restdocs.restassured3.RestAssuredRestDocumentation.document;
 
 class MapControllerTest extends AcceptanceTest {
-    private static String accessToken;
     private Map luther;
     private Map smallHouse;
     private Member pobi;
@@ -34,8 +32,7 @@ class MapControllerTest extends AcceptanceTest {
 
     @BeforeEach
     void setUp() {
-        saveMember(memberSaveRequest);
-        accessToken = getToken();
+//        saveMember(memberSaveRequest);
 
         saveMapApi = "/api/managers/maps";
         createdMapApi = saveMap(saveMapApi, mapCreateUpdateRequest).header("location");

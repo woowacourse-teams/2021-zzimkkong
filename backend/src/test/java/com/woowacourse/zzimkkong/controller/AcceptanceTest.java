@@ -21,6 +21,8 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import static com.woowacourse.zzimkkong.Constants.*;
 import static com.woowacourse.zzimkkong.DocumentUtils.setRequestSpecification;
+import static com.woowacourse.zzimkkong.controller.AuthControllerTest.getToken;
+import static com.woowacourse.zzimkkong.controller.MemberControllerTest.saveMember;
 import static org.springframework.restdocs.restassured3.RestAssuredRestDocumentation.documentationConfiguration;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
@@ -29,6 +31,7 @@ import static org.springframework.restdocs.restassured3.RestAssuredRestDocumenta
 @AutoConfigureRestDocs
 @ActiveProfiles("test")
 public class AcceptanceTest {
+    protected static String accessToken;
     protected final MemberSaveRequest memberSaveRequest = new MemberSaveRequest(EMAIL, PASSWORD, ORGANIZATION);
     protected static final LoginRequest loginRequest = new LoginRequest(EMAIL, PASSWORD);
     protected final MapCreateUpdateRequest mapCreateUpdateRequest = new MapCreateUpdateRequest(LUTHER_NAME, MAP_DRAWING_DATA, MAP_SVG);
@@ -75,5 +78,8 @@ public class AcceptanceTest {
                 .addFilter(documentationConfiguration(restDocumentation))
                 .build();
         setRequestSpecification(spec);
+
+        saveMember(memberSaveRequest);
+        accessToken = getToken();
     }
 }

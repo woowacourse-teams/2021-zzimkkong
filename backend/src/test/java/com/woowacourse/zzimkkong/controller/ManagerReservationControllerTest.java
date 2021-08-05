@@ -19,7 +19,6 @@ import java.util.Arrays;
 import static com.woowacourse.zzimkkong.Constants.*;
 import static com.woowacourse.zzimkkong.Constants.SPACE_DRAWING;
 import static com.woowacourse.zzimkkong.DocumentUtils.*;
-import static com.woowacourse.zzimkkong.controller.AuthControllerTest.getToken;
 import static com.woowacourse.zzimkkong.controller.MapControllerTest.saveMap;
 import static com.woowacourse.zzimkkong.controller.MemberControllerTest.saveMember;
 import static com.woowacourse.zzimkkong.controller.SpaceControllerTest.saveSpace;
@@ -30,7 +29,6 @@ public class ManagerReservationControllerTest extends AcceptanceTest {
     @MockBean
     private SlackService slackService;
 
-    private String accessToken;
     private Reservation savedReservation;
     private String beReservationApi;
     private String fe1ReservationApi;
@@ -45,8 +43,7 @@ public class ManagerReservationControllerTest extends AcceptanceTest {
 
     @BeforeEach
     void setUp() {
-        saveMember(memberSaveRequest);
-        accessToken = getToken();
+//        saveMember(memberSaveRequest);
 
         String lutherId = saveMap("/api/managers/maps", mapCreateUpdateRequest).header("location").split("/")[4];
         String spaceApi = "/api/managers/maps/" + lutherId + "/spaces";
