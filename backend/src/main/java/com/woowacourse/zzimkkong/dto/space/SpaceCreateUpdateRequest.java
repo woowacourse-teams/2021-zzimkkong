@@ -7,7 +7,7 @@ import static com.woowacourse.zzimkkong.dto.ValidatorMessage.EMPTY_MESSAGE;
 
 public class SpaceCreateUpdateRequest {
     @NotBlank(message = EMPTY_MESSAGE)
-    private String spaceName;
+    private String name;
 
     @NotBlank(message = EMPTY_MESSAGE)
     private String color;
@@ -25,20 +25,20 @@ public class SpaceCreateUpdateRequest {
     }
 
     public SpaceCreateUpdateRequest(
-            final String spaceName,
+            final String name,
             final String color,
             final String description,
             final String area,
             final SettingsRequest settingsRequest) {
-        this.spaceName = spaceName;
+        this.name = name;
         this.color = color;
         this.description = description;
         this.area = area;
         this.settingsRequest = settingsRequest;
     }
 
-    public String getSpaceName() {
-        return spaceName;
+    public String getName() {
+        return name;
     }
 
     public String getColor() {

@@ -47,6 +47,7 @@ public class SpaceControllerTest extends AcceptanceTest {
         BE = new Space.Builder()
                 .id(beSpaceId)
                 .name("백엔드 강의실")
+                .color(BE.getColor())
                 .map(LUTHER)
                 .description("시니컬하네")
                 .area(SPACE_DRAWING)
@@ -56,6 +57,7 @@ public class SpaceControllerTest extends AcceptanceTest {
         FE1 = new Space.Builder()
                 .id(feSpaceId)
                 .name("프론트엔드 강의실1")
+                .color(FE1.getColor())
                 .map(LUTHER)
                 .description("시니컬하네")
                 .area(SPACE_DRAWING)
@@ -74,7 +76,7 @@ public class SpaceControllerTest extends AcceptanceTest {
                 60,
                 100,
                 true,
-                "Monday, Tuesday"
+                "monday, tuesday, wednesday, thursday, friday, saturday, sunday"
         );
 
         SpaceCreateUpdateRequest newSpaceCreateUpdateRequest = new SpaceCreateUpdateRequest(
@@ -121,11 +123,11 @@ public class SpaceControllerTest extends AcceptanceTest {
                 .reservationMinimumTimeUnit(10)
                 .reservationMaximumTimeUnit(1440)
                 .reservationEnable(true)
-                .disabledWeekdays(null)
+                .enabledDayOfWeek("monday, tuesday, wednesday, thursday, friday, saturday, sunday")
                 .build();
 
         Space defaultSpace = new Space.Builder()
-                .name(defaultSpaceCreateUpdateRequest.getSpaceName())
+                .name(defaultSpaceCreateUpdateRequest.getName())
                 .color(defaultSpaceCreateUpdateRequest.getColor())
                 .description(defaultSpaceCreateUpdateRequest.getDescription())
                 .setting(defaultSetting)
@@ -189,7 +191,7 @@ public class SpaceControllerTest extends AcceptanceTest {
                 80,
                 130,
                 false,
-                "Monday, Tuesday"
+                "monday, tuesday, wednesday, thursday, friday, saturday, sunday"
         );
 
         SpaceCreateUpdateRequest updateSpaceCreateUpdateRequest = new SpaceCreateUpdateRequest(

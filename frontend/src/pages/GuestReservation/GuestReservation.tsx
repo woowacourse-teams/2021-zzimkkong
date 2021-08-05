@@ -70,16 +70,9 @@ const GuestReservation = (): JSX.Element => {
 
     if (createReservation.isLoading) return;
 
-    const reservation = {
-      spaceId,
-      name,
-      description,
-      password,
-      startDateTime,
-      endDateTime,
-    };
+    const reservation = { name, description, password, startDateTime, endDateTime };
 
-    createReservation.mutate({ reservation, mapId });
+    createReservation.mutate({ reservation, mapId, spaceId });
   };
 
   return (

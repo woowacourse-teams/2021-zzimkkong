@@ -18,7 +18,6 @@ class ReservationCreateUpdateWithPasswordRequestTest extends RequestTest {
     @DisplayName("예약 비밀번호에 빈 문자열이 들어오면 처리한다.")
     public void blankReservationPassword(String password) {
         ReservationCreateUpdateWithPasswordRequest reservationCreateUpdateWithPasswordRequest = new ReservationCreateUpdateWithPasswordRequest(
-                1L,
                 LocalDateTime.now(),
                 LocalDateTime.now(),
                 password,
@@ -35,7 +34,6 @@ class ReservationCreateUpdateWithPasswordRequestTest extends RequestTest {
     @DisplayName("예약 비밀번호에 옳지 않은 형식의 비밀번호가 들어오면 처리한다.")
     public void invalidEmail(String password, boolean flag) {
         ReservationCreateUpdateWithPasswordRequest reservationCreateUpdateWithPasswordRequest = new ReservationCreateUpdateWithPasswordRequest(
-                1L,
                 LocalDateTime.now(),
                 LocalDateTime.now(),
                 password,

@@ -19,33 +19,15 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 public class ReservationCreateUpdateRequestTest extends RequestTest {
     @ParameterizedTest
     @NullSource
-    @DisplayName("예약 생성에 빈 spaceId가 들어오면 처리한다.")
-    public void blankSpaceId(Long spaceId) {
-        ReservationCreateUpdateRequest reservationCreateUpdateRequest = new ReservationCreateUpdateRequest(
-                spaceId,
-                LocalDateTime.now(),
-                LocalDateTime.now(),
-                "name",
-                "description");
-
-        assertThat(getConstraintViolations(reservationCreateUpdateRequest).stream()
-                .anyMatch(violation -> violation.getMessage().equals(EMPTY_MESSAGE)))
-                .isTrue();
-    }
-
-    @ParameterizedTest
-    @NullSource
     @DisplayName("예약 생성에 빈 dateTime이 들어오면 처리한다.")
     public void blankDateTime(LocalDateTime dateTime) {
         ReservationCreateUpdateRequest startTime = new ReservationCreateUpdateRequest(
-                1L,
                 dateTime,
                 LocalDateTime.now(),
                 "name",
                 "description");
 
         ReservationCreateUpdateRequest endTime = new ReservationCreateUpdateRequest(
-                1L,
                 LocalDateTime.now(),
                 dateTime,
                 "name",
@@ -65,7 +47,6 @@ public class ReservationCreateUpdateRequestTest extends RequestTest {
     @DisplayName("예약 생성에 옳지 않은 형식의 dateTime이 들어오면 처리한다.")
     public void invalidDateTime(String dateTime) {
         assertThatThrownBy(() -> new ReservationCreateUpdateRequest(
-                1L,
                 LocalDateTime.parse(dateTime),
                 LocalDateTime.parse(dateTime),
                 "name",
@@ -77,7 +58,6 @@ public class ReservationCreateUpdateRequestTest extends RequestTest {
     @DisplayName("예약 생성에 빈 이름이 들어오면 처리한다.")
     public void blankName(String data) {
         ReservationCreateUpdateRequest nameRequest = new ReservationCreateUpdateRequest(
-                1L,
                 LocalDateTime.now(),
                 LocalDateTime.now(),
                 data,
@@ -93,7 +73,6 @@ public class ReservationCreateUpdateRequestTest extends RequestTest {
     @DisplayName("예약 생성의 이름에 옳지 않은 형식의 문자열이 들어오면 처리한다.")
     public void invalidName(String name, boolean flag) {
         ReservationCreateUpdateRequest reservationCreateUpdateRequest = new ReservationCreateUpdateRequest(
-                1L,
                 LocalDateTime.now(),
                 LocalDateTime.now(),
                 name,
@@ -109,7 +88,6 @@ public class ReservationCreateUpdateRequestTest extends RequestTest {
     @DisplayName("예약 생성에 빈 이름이 들어오면 처리한다.")
     public void blankDescription(String description) {
         ReservationCreateUpdateRequest descriptionRequest = new ReservationCreateUpdateRequest(
-                1L,
                 LocalDateTime.now(),
                 LocalDateTime.now(),
                 "name",
@@ -124,7 +102,6 @@ public class ReservationCreateUpdateRequestTest extends RequestTest {
     @DisplayName("예약 생성의 이름에 옳지 않은 형식의 문자열이 들어오면 처리한다.")
     public void invalidDescription() {
         ReservationCreateUpdateRequest reservationCreateUpdateRequest = new ReservationCreateUpdateRequest(
-                1L,
                 LocalDateTime.now(),
                 LocalDateTime.now(),
                 "name",
