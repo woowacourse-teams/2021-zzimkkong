@@ -4,6 +4,7 @@ plugins {
     id "org.asciidoctor.convert" version "1.5.10"
     id 'java'
     id 'jacoco'
+    id "org.sonarqube" version "3.3"
 }
 
 group = 'com.woowacourse'
@@ -81,7 +82,7 @@ jacocoTestReport {
     dependsOn test
     reports{
         html.enabled true
-        xml.enabled false
+        xml.enabled true
         csv.enabled false
     }
     finalizedBy jacocoTestCoverageVerification
@@ -111,4 +112,21 @@ jacocoTestCoverageVerification {
             }
         }
     }
+//    finalizedBy sonarqube
 }
+
+//sonarqube {
+//    properties {
+//        property "sonar.host.url", "http://zzimkkong-service.o-r.kr:8000"
+//        property "sonar.login", "admin"
+//        property "sonar.password", "zzimmkkong1!"
+//        property 'sonar.sources', 'src'
+//        property 'sonar.language', 'java'
+//        property 'sonar.projectVersion', '0.0.1-SNAPSHOT'
+//        property 'sonar.sourceEncoding', 'UTF-8'
+//        property 'sonar.coverage.jacoco.xmlReportPaths', '${buildDir}/reports/jacoco/test/jacocoTestReport.xml'
+//        property 'sonar.java.binaries', '${buildDir}/classes'
+//        property 'sonar.test.inclusions', '**/*Test.java'
+//        property 'sonar.exclusions', '**/test/**, **/Q*.java, **/*Doc*.java, **/resources/**'
+//    }
+//}
