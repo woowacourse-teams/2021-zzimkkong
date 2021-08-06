@@ -127,6 +127,7 @@ public class SpaceService {
     public void deleteSpace(
             final Long mapId,
             final Long spaceId,
+            final SpaceDeleteRequest spaceDeleteRequest,
             final Member manager) {
         Map map = maps.findById(mapId)
                 .orElseThrow(NoSuchMapException::new);
@@ -138,6 +139,8 @@ public class SpaceService {
         validateReservationExistence(spaceId);
 
         spaces.delete(space);
+
+        thumbnailManager.uploadMapThumbnail(spaceDeleteRequest.getMapImageSvg(), map);
     }
 
     private Space getUpdateSpace(

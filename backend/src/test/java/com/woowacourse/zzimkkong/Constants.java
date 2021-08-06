@@ -24,7 +24,7 @@ public class Constants {
     public static final String LUTHER_NAME = "루터회관";
     public static final String SMALL_HOUSE_NAME = "작은집";
     public static final String MAP_DRAWING_DATA =
-            "{\"width\":100,\"height\":100,\"mapElements\":[{\"id\":2,\"type\":\"polyline\",\"stroke\":\"#333333\",\"points\":[\"50,40\",\"40,20\"]},{\"id\":3,\"type\":\"polyline\",\"stroke\":\"#333333\",\"points\":[\"40,20\",\"20,20\"]},{\"id\":4,\"type\":\"polyline\",\"stroke\":\"#333333\",\"points\":[\"20,20\",\"10,50\"]},{\"id\":5,\"type\":\"polyline\",\"stroke\":\"#333333\",\"points\":[\"10,50\",\"50,90\"]},{\"id\":6,\"type\":\"polyline\",\"stroke\":\"#333333\",\"points\":[\"50,90\",\"90,50\"]},{\"id\":7,\"type\":\"polyline\",\"stroke\":\"#333333\",\"points\":[\"90,50\",\"80,20\"]},{\"id\":8,\"type\":\"polyline\",\"stroke\":\"#333333\",\"points\":[\"80,20\",\"60,20\"]},{\"id\":9,\"type\":\"polyline\",\"stroke\":\"#333333\",\"points\":[\"60,20\",\"50,40\"]}]}";
+            "{'width':100,'height':100,'mapElements':[{'id':2,'type':'polyline','stroke':'#333333','points':['50,40','40,20']},{'id':3,'type':'polyline','stroke':'#333333','points':['40,20','20,20']},{'id':4,'type':'polyline','stroke':'#333333','points':['20,20','10,50']},{'id':5,'type':'polyline','stroke':'#333333','points':['10,50','50,90']},{'id':6,'type':'polyline','stroke':'#333333','points':['50,90','90,50']},{'id':7,'type':'polyline','stroke':'#333333','points':['90,50','80,20']},{'id':8,'type':'polyline','stroke':'#333333','points':['80,20','60,20']},{'id':9,'type':'polyline','stroke':'#333333','points':['60,20','50,40']}]}";
 
     public static final LocalTime BE_AVAILABLE_START_TIME = LocalTime.of(10, 0);
     public static final LocalTime BE_AVAILABLE_END_TIME = LocalTime.of(22, 0);

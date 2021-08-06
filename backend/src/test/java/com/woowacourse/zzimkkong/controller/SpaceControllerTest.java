@@ -4,10 +4,7 @@ import com.woowacourse.zzimkkong.domain.Map;
 import com.woowacourse.zzimkkong.domain.Member;
 import com.woowacourse.zzimkkong.domain.Setting;
 import com.woowacourse.zzimkkong.domain.Space;
-import com.woowacourse.zzimkkong.dto.space.SettingsRequest;
-import com.woowacourse.zzimkkong.dto.space.SpaceCreateUpdateRequest;
-import com.woowacourse.zzimkkong.dto.space.SpaceFindAllResponse;
-import com.woowacourse.zzimkkong.dto.space.SpaceFindDetailResponse;
+import com.woowacourse.zzimkkong.dto.space.*;
 import com.woowacourse.zzimkkong.infrastructure.AuthorizationExtractor;
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
@@ -238,7 +235,9 @@ public class SpaceControllerTest extends AcceptanceTest {
     void delete() {
         // given, when
         String api = spaceApi + "/" + beSpaceId;
-        ExtractableResponse<Response> response = deleteSpace(api);
+        SpaceDeleteRequest spaceDeleteRequest = new SpaceDeleteRequest(MAP_SVG);
+
+        ExtractableResponse<Response> response = deleteSpace(api, spaceDeleteRequest);
 
         // then
         assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
@@ -292,13 +291,14 @@ public class SpaceControllerTest extends AcceptanceTest {
                 .then().log().all().extract();
     }
 
-    private ExtractableResponse<Response> deleteSpace(final String api) {
+    private ExtractableResponse<Response> deleteSpace(final String api, final SpaceDeleteRequest spaceDeleteRequest) {
         return RestAssured
                 .given(getRequestSpecification()).log().all()
                 .accept("application/json")
                 .header("Authorization", AuthorizationExtractor.AUTHENTICATION_TYPE + " " + accessToken)
                 .filter(document("space/delete", getRequestPreprocessor(), getResponsePreprocessor()))
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .body(spaceDeleteRequest)
                 .when().delete(api)
                 .then().log().all().extract();
     }
