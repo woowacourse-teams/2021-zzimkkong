@@ -2,6 +2,7 @@ package com.woowacourse.zzimkkong.controller;
 
 import com.woowacourse.zzimkkong.domain.Manager;
 import com.woowacourse.zzimkkong.domain.Member;
+import com.woowacourse.zzimkkong.dto.PresetCreateRequest;
 import com.woowacourse.zzimkkong.dto.member.MemberSaveRequest;
 import com.woowacourse.zzimkkong.dto.member.MemberSaveResponse;
 import com.woowacourse.zzimkkong.dto.member.PresetCreateResponse;
@@ -52,10 +53,10 @@ public class MemberController {
 
     @PostMapping("/presets")
     public ResponseEntity<Void> createPreset(
-            @RequestBody @Valid final SettingsRequest settingsRequest,
+            @RequestBody @Valid final PresetCreateRequest presetCreateRequest,
             @Manager final Member manager) {
 
-        PresetCreateResponse presetCreateResponse = presetService.savePreset(settingsRequest, manager);
+        PresetCreateResponse presetCreateResponse = presetService.savePreset(presetCreateRequest, manager);
 
         return ResponseEntity
                 .created(URI.create("/api/members/presets/" + presetCreateResponse.getId()))

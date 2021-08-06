@@ -32,7 +32,7 @@ class PresetRepositoryTest extends RepositoryTest {
                 .enabledDayOfWeek(BE_ENABLED_DAY_OF_WEEK)
                 .build();
 
-        preset = new Preset(setting, pobi);
+        preset = new Preset(PRESET_NAME1, setting, pobi);
     }
 
     @Test

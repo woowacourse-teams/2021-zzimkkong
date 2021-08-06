@@ -3,6 +3,7 @@ package com.woowacourse.zzimkkong.service;
 import com.woowacourse.zzimkkong.domain.Member;
 import com.woowacourse.zzimkkong.domain.Preset;
 import com.woowacourse.zzimkkong.domain.Setting;
+import com.woowacourse.zzimkkong.dto.PresetCreateRequest;
 import com.woowacourse.zzimkkong.dto.member.PresetCreateResponse;
 import com.woowacourse.zzimkkong.dto.space.SettingsRequest;
 import com.woowacourse.zzimkkong.repository.PresetRepository;
@@ -45,6 +46,8 @@ class PresetServiceTest extends ServiceTest {
     @DisplayName("프리셋 저장 요청 시, 프리셋을 저장한다.")
     void save() {
         //given
+        PresetCreateRequest presetCreateRequest = new PresetCreateRequest(PRESET_NAME1, settingsRequest);
+
         Setting setting = new Setting.Builder()
                 .availableStartTime(BE_AVAILABLE_START_TIME)
                 .availableEndTime(BE_AVAILABLE_END_TIME)
@@ -55,13 +58,13 @@ class PresetServiceTest extends ServiceTest {
                 .enabledDayOfWeek(BE_ENABLED_DAY_OF_WEEK)
                 .build();
 
-        Preset expected = new Preset(1L, setting, pobi);
+        Preset expected = new Preset(1L, presetCreateRequest.getName(), setting, pobi);
 
         given(presets.save(any(Preset.class)))
                 .willReturn(expected);
 
         //when
-        PresetCreateResponse presetCreateResponse = presetService.savePreset(settingsRequest, pobi);
+        PresetCreateResponse presetCreateResponse = presetService.savePreset(presetCreateRequest, pobi);
 
         //then
         assertThat(presetCreateResponse.getId()).isNotNull();

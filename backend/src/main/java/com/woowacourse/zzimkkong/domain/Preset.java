@@ -8,6 +8,9 @@ public class Preset {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(nullable = false, length = 20)
+    private String name;
+
     @Embedded
     private Setting setting;
 
@@ -19,18 +22,23 @@ public class Preset {
 
     }
 
-    public Preset(final Setting setting, final Member member) {
+    public Preset(final String name, final Setting setting, final Member member) {
+        this.name = name;
         this.setting = setting;
         this.member = member;
     }
 
-    public Preset(final Long id, final Setting setting, final Member member) {
-        this(setting, member);
+    public Preset(final Long id, final String name, final Setting setting, final Member member) {
+        this(name, setting, member);
         this.id = id;
     }
 
     public Long getId() {
         return id;
+    }
+
+    public String getName() {
+        return name;
     }
 
     public Member getMember() {

@@ -3,6 +3,7 @@ package com.woowacourse.zzimkkong.controller;
 import com.woowacourse.zzimkkong.domain.Map;
 import com.woowacourse.zzimkkong.domain.Member;
 import com.woowacourse.zzimkkong.domain.Setting;
+import com.woowacourse.zzimkkong.dto.PresetCreateRequest;
 import com.woowacourse.zzimkkong.dto.member.MemberSaveRequest;
 import com.woowacourse.zzimkkong.dto.space.SettingsRequest;
 import com.woowacourse.zzimkkong.infrastructure.AuthorizationExtractor;
@@ -79,8 +80,10 @@ class MemberControllerTest extends AcceptanceTest {
                 BE_ENABLED_DAY_OF_WEEK
         );
 
+        PresetCreateRequest presetCreateRequest = new PresetCreateRequest(PRESET_NAME1, settingsRequest);
+
         //when
-        ExtractableResponse<Response> response = savePreset(settingsRequest);
+        ExtractableResponse<Response> response = savePreset(presetCreateRequest);
 
         //then
         assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
@@ -108,14 +111,14 @@ class MemberControllerTest extends AcceptanceTest {
                 .then().log().all().extract();
     }
 
-    private ExtractableResponse<Response> savePreset(final SettingsRequest settingsRequest) {
+    private ExtractableResponse<Response> savePreset(final PresetCreateRequest presetCreateRequest) {
         return RestAssured
                 .given(getRequestSpecification()).log().all()
                 .accept("application/json")
                 .header("Authorization", AuthorizationExtractor.AUTHENTICATION_TYPE + " " + accessToken)
                 .filter(document("preset/post", getRequestPreprocessor(), getResponsePreprocessor()))
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(settingsRequest)
+                .body(presetCreateRequest)
                 .when().post("/api/members/presets")
                 .then().log().all().extract();
     }

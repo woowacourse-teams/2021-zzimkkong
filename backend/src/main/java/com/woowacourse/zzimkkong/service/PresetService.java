@@ -3,6 +3,7 @@ package com.woowacourse.zzimkkong.service;
 import com.woowacourse.zzimkkong.domain.Member;
 import com.woowacourse.zzimkkong.domain.Preset;
 import com.woowacourse.zzimkkong.domain.Setting;
+import com.woowacourse.zzimkkong.dto.PresetCreateRequest;
 import com.woowacourse.zzimkkong.dto.member.PresetCreateResponse;
 import com.woowacourse.zzimkkong.dto.space.SettingsRequest;
 import com.woowacourse.zzimkkong.repository.PresetRepository;
@@ -18,7 +19,8 @@ public class PresetService {
         this.presets = presets;
     }
 
-    public PresetCreateResponse savePreset(final SettingsRequest settingsRequest, final Member manager) {
+    public PresetCreateResponse savePreset(final PresetCreateRequest presetCreateRequest, final Member manager) {
+        SettingsRequest settingsRequest = presetCreateRequest.getSettingsRequest();
         Setting setting = new Setting.Builder()
                 .availableStartTime(settingsRequest.getAvailableStartTime())
                 .availableEndTime(settingsRequest.getAvailableEndTime())
@@ -29,7 +31,7 @@ public class PresetService {
                 .enabledDayOfWeek(settingsRequest.getEnabledDayOfWeek())
                 .build();
 
-        Preset preset = presets.save(new Preset(setting, manager));
+        Preset preset = presets.save(new Preset(presetCreateRequest.getName(), setting, manager));
 
         return PresetCreateResponse.from(preset);
     }
