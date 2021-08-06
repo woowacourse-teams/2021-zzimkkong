@@ -3,6 +3,7 @@ package com.woowacourse.zzimkkong.infrastructure;
 import com.woowacourse.zzimkkong.domain.Map;
 import com.woowacourse.zzimkkong.domain.Member;
 import com.woowacourse.zzimkkong.exception.map.InvalidAccessLinkException;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,12 +17,8 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 @SpringBootTest
 @ActiveProfiles("test")
 class PublicIdGeneratorTest {
-    private final static Member MEMBER = new Member(1L, EMAIL, PASSWORD, ORGANIZATION);
-    private final static Map MAP = new Map(1L,
-            LUTHER_NAME,
-            MAP_DRAWING_DATA,
-            MAP_IMAGE_URL,
-            MEMBER);
+    private Member pobi;
+    private Map luther;
 
     @Autowired
     PublicIdGenerator publicIdGenerator;
@@ -29,11 +26,21 @@ class PublicIdGeneratorTest {
     @Autowired
     Transcoder transcoder;
 
+    @BeforeEach
+    void setUp() {
+        pobi = new Member(1L, EMAIL, PASSWORD, ORGANIZATION);
+        luther = new Map(1L,
+                LUTHER_NAME,
+                MAP_DRAWING_DATA,
+                MAP_IMAGE_URL,
+                pobi);
+    }
+
     @Test
     @DisplayName("Map 도메인 객체로부터 인코딩된 publicId를 만들어낸다.")
     void generatePublicIdFromMap() {
         // given, when
-        String publicMapId = publicIdGenerator.from(MAP);
+        String publicMapId = publicIdGenerator.from(luther);
 
         // then
         assertThat(publicMapId).isNotEmpty();
@@ -43,11 +50,11 @@ class PublicIdGeneratorTest {
     @DisplayName("인코딩된 publicMapId로부터 Id를 얻어낸다.")
     void parseIdFromEncodedString() {
         // given
-        String publicMapId = publicIdGenerator.from(MAP);
+        String publicMapId = publicIdGenerator.from(luther);
 
         // when
         Long actual = publicIdGenerator.parseIdFrom(publicMapId);
-        Long expected = MAP.getId();
+        Long expected = luther.getId();
 
         // then
         assertThat(actual).isEqualTo(expected);
