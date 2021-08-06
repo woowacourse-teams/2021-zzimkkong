@@ -46,7 +46,7 @@ public class AES256Transcoder implements Transcoder {
 
             byte[] encrypted = cipher.doFinal(input.getBytes(StandardCharsets.UTF_8));
 
-            return new String(Base64.encodeBase64(encrypted));
+            return Base64.encodeBase64URLSafeString(encrypted);
         } catch (InvalidKeyException |
                 IllegalBlockSizeException | BadPaddingException |
                 NoSuchPaddingException | NoSuchAlgorithmException |
