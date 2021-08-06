@@ -3,10 +3,11 @@ package com.woowacourse.zzimkkong.dto.space;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.woowacourse.zzimkkong.dto.DayOfWeekConstraint;
+import com.woowacourse.zzimkkong.dto.TimeUnit;
 
 import java.time.LocalTime;
 
-import static com.woowacourse.zzimkkong.dto.Validator.TIME_FORMAT;
+import static com.woowacourse.zzimkkong.dto.ValidatorMessage.TIME_FORMAT;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class SettingsRequest {
@@ -16,6 +17,7 @@ public class SettingsRequest {
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = TIME_FORMAT)
     private LocalTime availableEndTime = LocalTime.of(23, 59);
 
+    @TimeUnit
     private Integer reservationTimeUnit = 10;
 
     private Integer reservationMinimumTimeUnit = 10;

@@ -31,7 +31,4 @@ public class ServiceTest {
 
     @MockBean
     protected StorageUploader storageUploader;
-
-    @Autowired
-    protected TimeConverter timeConverter;
 }

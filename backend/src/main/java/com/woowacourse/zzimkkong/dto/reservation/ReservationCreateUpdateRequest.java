@@ -8,7 +8,7 @@ import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 import java.time.LocalDateTime;
 
-import static com.woowacourse.zzimkkong.dto.Validator.*;
+import static com.woowacourse.zzimkkong.dto.ValidatorMessage.*;
 
 public class ReservationCreateUpdateRequest {
     @DateTimeFormat(pattern = DATETIME_FORMAT)
@@ -35,8 +35,8 @@ public class ReservationCreateUpdateRequest {
             final LocalDateTime endDateTime,
             final String name,
             final String description) {
-        this.startDateTime = startDateTime.withSecond(0).withNano(0);
-        this.endDateTime = endDateTime.withSecond(0).withNano(0);
+        this.startDateTime = startDateTime;
+        this.endDateTime = endDateTime;
         this.name = name;
         this.description = description;
     }

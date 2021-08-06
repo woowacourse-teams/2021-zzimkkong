@@ -5,7 +5,7 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 
 import javax.validation.ConstraintViolationException;
 
-import static com.woowacourse.zzimkkong.dto.Validator.FORMAT_MESSAGE;
+import static com.woowacourse.zzimkkong.dto.ValidatorMessage.FORMAT_MESSAGE;
 
 public class ErrorResponse {
     private String message;
