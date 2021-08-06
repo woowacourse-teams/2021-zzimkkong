@@ -8,33 +8,34 @@ public class Preset {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false)
-    private Long managerId;
-
     @Embedded
     private Setting setting;
+
+    @ManyToOne
+    @JoinColumn(name = "manager_id", foreignKey = @ForeignKey(name = "fk_preset_member"), nullable = false)
+    private Member manager;
 
     protected Preset() {
 
     }
 
-    public Preset(final Long managerId, final Setting setting) {
-        this.managerId = managerId;
+    public Preset(final Setting setting, final Member manager) {
         this.setting = setting;
+        this.manager = manager;
     }
 
-    public Preset(final Long id, final Long managerId, final Setting setting) {
+    public Preset(final Long id, final Setting setting, final Member manager) {
         this.id = id;
-        this.managerId = managerId;
         this.setting = setting;
+        this.manager = manager;
     }
 
     public Long getId() {
         return id;
     }
 
-    public Long getManagerId() {
-        return managerId;
+    public Member getManager() {
+        return manager;
     }
 
     public Setting getSetting() {

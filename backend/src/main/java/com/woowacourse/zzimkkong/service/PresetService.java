@@ -27,7 +27,7 @@ public class PresetService {
                 .enabledDayOfWeek(settingsRequest.getEnabledDayOfWeek())
                 .build();
 
-        Preset preset = presets.save(new Preset(manager.getId(), setting));
+        Preset preset = presets.save(new Preset(setting, manager));
 
         return PresetCreateResponse.from(preset);
     }

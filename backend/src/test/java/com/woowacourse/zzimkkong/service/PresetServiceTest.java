@@ -56,10 +56,11 @@ class PresetServiceTest extends ServiceTest {
                 .enabledDayOfWeek(BE_ENABLED_DAY_OF_WEEK)
                 .build();
 
-        Preset expected = new Preset(1L, pobi.getId(), setting);
+        Preset expected = new Preset(1L, setting, pobi);
 
         given(presets.save(any(Preset.class)))
                 .willReturn(expected);
+
         //when
         PresetCreateResponse presetCreateResponse = presetService.savePreset(settingsRequest, pobi);
 
