@@ -1,6 +1,7 @@
 package com.woowacourse.zzimkkong.infrastructure;
 
 import com.woowacourse.zzimkkong.domain.Map;
+import com.woowacourse.zzimkkong.exception.infrastructure.DecodingException;
 import com.woowacourse.zzimkkong.exception.map.InvalidAccessLinkException;
 import org.springframework.stereotype.Component;
 
@@ -20,7 +21,7 @@ public class PublicIdGenerator {
         try {
             String decoded = transcoder.decode(publicId);
             return Long.parseLong(decoded);
-        } catch (NumberFormatException exception) {
+        } catch (DecodingException | NumberFormatException exception) {
             throw new InvalidAccessLinkException();
         }
     }

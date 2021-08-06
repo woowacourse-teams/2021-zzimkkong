@@ -55,14 +55,14 @@ class PublicIdGeneratorTest {
     }
 
     @Test
-    @DisplayName("디코딩 할 수 없는 문자열이 주어지면 예외를 발생시킨다.")
+    @DisplayName("디코딩 할 수 없는 문자열이 publicId로 주어지면 예외를 발생시킨다.")
     void parseIdFromInvalidToDecode() {
         // given
         String wrongPublicId = "zzimkkong";
 
         // when, then
         assertThatThrownBy(() -> publicIdGenerator.parseIdFrom(wrongPublicId))
-                .isInstanceOf(DecodingException.class);
+                .isInstanceOf(InvalidAccessLinkException.class);
     }
 
     @Test

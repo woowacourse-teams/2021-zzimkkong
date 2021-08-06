@@ -145,13 +145,9 @@ public class MapService {
     }
 
     public MapFindResponse findMapByPublicMapId(String publicMapId) {
-        try {
-            Long mapId = publicIdGenerator.parseIdFrom(publicMapId);
-            Map map = maps.findById(mapId)
-                    .orElseThrow(InvalidAccessLinkException::new);
-            return MapFindResponse.of(map, publicIdGenerator.from(map));
-        } catch (NumberFormatException exception) {
-            throw new InvalidAccessLinkException();
-        }
+        Long mapId = publicIdGenerator.parseIdFrom(publicMapId);
+        Map map = maps.findById(mapId)
+                .orElseThrow(InvalidAccessLinkException::new);
+        return MapFindResponse.of(map, publicIdGenerator.from(map));
     }
 }

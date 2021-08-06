@@ -9,6 +9,7 @@ import com.woowacourse.zzimkkong.dto.map.MapCreateUpdateRequest;
 import com.woowacourse.zzimkkong.dto.map.MapFindAllResponse;
 import com.woowacourse.zzimkkong.dto.map.MapFindResponse;
 import com.woowacourse.zzimkkong.exception.authorization.NoAuthorityOnMapException;
+import com.woowacourse.zzimkkong.exception.map.InvalidAccessLinkException;
 import com.woowacourse.zzimkkong.exception.space.ReservationExistOnSpaceException;
 import com.woowacourse.zzimkkong.infrastructure.PublicIdGenerator;
 import org.junit.jupiter.api.BeforeEach;
@@ -29,6 +30,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.when;
 
 class MapServiceTest extends ServiceTest {
     @Autowired
@@ -219,5 +221,16 @@ class MapServiceTest extends ServiceTest {
         assertThat(actual)
                 .usingRecursiveComparison()
                 .isEqualTo(expected);
+    }
+
+    @Test
+    @DisplayName("잘못된 publicMapId가 주어지면 예외가 발생한다.")
+    void findMapByWrongPublicId() {
+        // given
+        String wrongPublicMapId = "zzimkkong";
+
+        // when, then
+        assertThatThrownBy(() -> mapService.findMapByPublicMapId(wrongPublicMapId))
+                .isInstanceOf(InvalidAccessLinkException.class);
     }
 }
