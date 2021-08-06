@@ -105,7 +105,8 @@ public class SpaceControllerTest extends AcceptanceTest {
                 "#CCFFE5",
                 "우리집",
                 SPACE_DRAWING,
-                newSettingsRequest
+                newSettingsRequest,
+                MAP_SVG
         );
 
         // when
@@ -134,7 +135,8 @@ public class SpaceControllerTest extends AcceptanceTest {
                 "#CCFFE5",
                 "우리집",
                 SPACE_DRAWING,
-                settingsRequest
+                settingsRequest,
+                MAP_SVG
         );
 
         Setting defaultSetting = new Setting.Builder()
@@ -220,7 +222,8 @@ public class SpaceControllerTest extends AcceptanceTest {
                 "#CCCCFF",
                 "장미아파트",
                 SPACE_DRAWING,
-                settingsRequest
+                settingsRequest,
+                MAP_SVG
         );
 
         String api = spaceApi + "/" + beSpaceId;

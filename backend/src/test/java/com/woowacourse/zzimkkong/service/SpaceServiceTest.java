@@ -45,7 +45,8 @@ class SpaceServiceTest extends ServiceTest {
             BE_COLOR,
             BE_DESCRIPTION,
             SPACE_DRAWING,
-            settingsRequest
+            settingsRequest,
+            MAP_SVG
     );
 
     private final SpaceCreateUpdateRequest updateSpaceCreateUpdateRequest = new SpaceCreateUpdateRequest(
@@ -53,7 +54,8 @@ class SpaceServiceTest extends ServiceTest {
             "#FFCCE5",
             "새로바뀐집",
             SPACE_DRAWING,
-            settingsRequest
+            settingsRequest,
+            MAP_SVG
     );
 
     private Member pobi;

@@ -5,6 +5,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.NullAndEmptySource;
 
+import static com.woowacourse.zzimkkong.Constants.MAP_SVG;
 import static com.woowacourse.zzimkkong.dto.ValidatorMessage.EMPTY_MESSAGE;
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -18,7 +19,8 @@ class SpaceCreateUpdateRequestTest extends RequestTest {
                 "color",
                 "description",
                 "area",
-                beSettingsRequest);
+                beSettingsRequest,
+                "mapImageSvg");
 
         assertThat(getConstraintViolations(spaceCreateUpdateRequest).stream()
                 .anyMatch(violation -> violation.getMessage().equals(EMPTY_MESSAGE)))
@@ -34,7 +36,8 @@ class SpaceCreateUpdateRequestTest extends RequestTest {
                 "color",
                 description,
                 "area",
-                beSettingsRequest);
+                beSettingsRequest,
+                "mapImageSvg");
 
         assertThat(getConstraintViolations(spaceCreateUpdateRequest).stream()
                 .anyMatch(violation -> violation.getMessage().equals(EMPTY_MESSAGE)))
@@ -50,7 +53,8 @@ class SpaceCreateUpdateRequestTest extends RequestTest {
                 "color",
                 "description",
                 area,
-                beSettingsRequest);
+                beSettingsRequest,
+                "mapImageSvg");
 
         assertThat(getConstraintViolations(spaceCreateUpdateRequest).stream()
                 .anyMatch(violation -> violation.getMessage().equals(EMPTY_MESSAGE)))

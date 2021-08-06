@@ -68,6 +68,8 @@ public class SpaceService {
                         .textPosition(null)
                         .coordinate(null)
                         .build());
+
+
         return SpaceCreateResponse.from(space);
     }
 

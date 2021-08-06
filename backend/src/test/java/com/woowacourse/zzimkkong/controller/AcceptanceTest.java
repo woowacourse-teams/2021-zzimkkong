@@ -50,7 +50,8 @@ public class AcceptanceTest {
             BE_COLOR,
             BE_DESCRIPTION,
             SPACE_DRAWING,
-            beSettingsRequest
+            beSettingsRequest,
+            MAP_SVG
     );
     protected final SettingsRequest feSettingsRequest = new SettingsRequest(
             FE_AVAILABLE_START_TIME,
@@ -66,7 +67,8 @@ public class AcceptanceTest {
             FE_COLOR,
             FE_DESCRIPTION,
             SPACE_DRAWING,
-            feSettingsRequest
+            feSettingsRequest,
+            MAP_SVG
     );
 
     @LocalServerPort
