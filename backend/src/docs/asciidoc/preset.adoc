@@ -5,3 +5,9 @@
 include::{snippets}/preset/post/http-request.adoc[]
 ==== Response
 include::{snippets}/preset/post/http-response.adoc[]
+
+=== 프리셋 전체조회
+==== Request
+include::{snippets}/preset/getAll/http-request.adoc[]
+==== Response
+include::{snippets}/preset/getAll/http-response.adoc[]
