@@ -34,7 +34,8 @@ public class GuestReservationService extends ReservationService {
             final Long mapId,
             final Long spaceId,
             final ReservationCreateUpdateWithPasswordRequest reservationCreateUpdateWithPasswordRequest) {
-        Map map = maps.findById(mapId).orElseThrow(NoSuchMapException::new);
+        Map map = maps.findById(mapId)
+                .orElseThrow(NoSuchMapException::new);
         validateTime(reservationCreateUpdateWithPasswordRequest);
 
         Space space = map.getSpaceById(spaceId)
@@ -60,7 +61,8 @@ public class GuestReservationService extends ReservationService {
             final Long spaceId,
             final Long reservationId,
             final ReservationPasswordAuthenticationRequest reservationPasswordAuthenticationRequest) {
-        Map map = maps.findById(mapId).orElseThrow(NoSuchMapException::new);
+        Map map = maps.findById(mapId)
+                .orElseThrow(NoSuchMapException::new);
         validateSpaceExistence(map, spaceId);
 
         Reservation reservation = reservations
@@ -72,7 +74,8 @@ public class GuestReservationService extends ReservationService {
 
     @Transactional(readOnly = true)
     public ReservationFindResponse findReservations(final Long mapId, final Long spaceId, final LocalDate date) {
-        Map map = maps.findById(mapId).orElseThrow(NoSuchMapException::new);
+        Map map = maps.findById(mapId)
+                .orElseThrow(NoSuchMapException::new);
 
         Space space = map.getSpaceById(spaceId)
                 .orElseThrow(NoSuchSpaceException::new);
@@ -83,7 +86,8 @@ public class GuestReservationService extends ReservationService {
 
     @Transactional(readOnly = true)
     public ReservationFindAllResponse findAllReservations(final Long mapId, final LocalDate date) {
-        Map map = maps.findById(mapId).orElseThrow(NoSuchMapException::new);
+        Map map = maps.findById(mapId)
+                .orElseThrow(NoSuchMapException::new);
         List<Space> findSpaces = map.getSpaces();
 
         List<Reservation> reservations = getReservations(findSpaces, date);
@@ -96,7 +100,8 @@ public class GuestReservationService extends ReservationService {
             final Long spaceId,
             final Long reservationId,
             final ReservationCreateUpdateWithPasswordRequest reservationCreateUpdateWithPasswordRequest) {
-        Map map = maps.findById(mapId).orElseThrow(NoSuchMapException::new);
+        Map map = maps.findById(mapId)
+                .orElseThrow(NoSuchMapException::new);
         validateTime(reservationCreateUpdateWithPasswordRequest);
 
         Space space = map.getSpaceById(spaceId)
@@ -124,7 +129,8 @@ public class GuestReservationService extends ReservationService {
             final Long spaceId,
             final Long reservationId,
             final ReservationPasswordAuthenticationRequest reservationPasswordAuthenticationRequest) {
-        Map map = maps.findById(mapId).orElseThrow(NoSuchMapException::new);
+        Map map = maps.findById(mapId)
+                .orElseThrow(NoSuchMapException::new);
         validateSpaceExistence(map, spaceId);
 
         Reservation reservation = reservations
