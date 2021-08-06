@@ -47,7 +47,8 @@ public class SpaceService {
         validateManagerOfMap(map, manager);
 
         Space space = getSpace(spaceCreateUpdateRequest, map);
-        return SpaceCreateResponse.from(space);
+        Space saveSpace = spaces.save(space);
+        return SpaceCreateResponse.from(saveSpace);
     }
 
     @Transactional(readOnly = true)
