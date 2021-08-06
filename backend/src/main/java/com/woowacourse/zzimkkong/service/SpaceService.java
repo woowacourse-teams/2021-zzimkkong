@@ -77,6 +77,16 @@ public class SpaceService {
         return SpaceFindAllResponse.from(findAllSpaces);
     }
 
+    @Transactional(readOnly = true)
+    public SpaceFindAllResponse findAllSpace(
+            final Long mapId) {
+        Map map = maps.findById(mapId)
+                .orElseThrow(NoSuchMapException::new);
+
+        List<Space> findAllSpaces = spaces.findAllByMapId(mapId);
+        return SpaceFindAllResponse.from(findAllSpaces);
+    }
+
     public void updateSpace(
             final Long mapId,
             final Long spaceId,
