@@ -95,15 +95,16 @@ public class MapService {
                 .orElseThrow(NoSuchMapException::new);
         validateManagerOfMap(map, manager);
 
-        validateExistReservations(mapId);
+        //todo 공간-예약 양방향 매핑 적용 후 map 안으로 메서드 옮기기
+        validateExistReservations(map);
 
-        maps.deleteById(mapId);
+        maps.delete(map);
 
         deleteThumbnail(map);
     }
 
-    private void validateExistReservations(final Long mapId) {
-        List<Space> findSpaces = spaces.findAllByMapId(mapId);
+    private void validateExistReservations(final Map map) {
+        List<Space> findSpaces = map.getSpaces();
 
         boolean isExistReservationInAnySpace = findSpaces.stream()
                 .anyMatch(space -> reservations.existsBySpaceIdAndEndTimeAfter(space.getId(), timeConverter.getNow()));
@@ -126,7 +127,7 @@ public class MapService {
         return thumbnailUrl;
     }
 
-    private void deleteThumbnail(Map map) {
+    private void deleteThumbnail(final Map map) {
         String fileName = map.getId().toString();
         storageUploader.delete(THUMBNAILS_DIRECTORY_NAME, fileName + THUMBNAIL_EXTENSION);
     }

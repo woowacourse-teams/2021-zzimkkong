@@ -26,7 +26,7 @@ public class Map {
     @JoinColumn(name = "member_id", foreignKey = @ForeignKey(name = "fk_map_member"), nullable = false)
     private Member member;
 
-    @OneToMany(mappedBy = "map", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "map", cascade = CascadeType.REMOVE, fetch = FetchType.LAZY)
     private List<Space> spaces = new ArrayList<>();
 
     protected Map() {
