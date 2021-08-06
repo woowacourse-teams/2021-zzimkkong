@@ -7,8 +7,10 @@ import com.woowacourse.zzimkkong.dto.member.PresetCreateResponse;
 import com.woowacourse.zzimkkong.dto.space.SettingsRequest;
 import com.woowacourse.zzimkkong.repository.PresetRepository;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
+@Transactional
 public class PresetService {
     private final PresetRepository presets;
 
@@ -30,5 +32,10 @@ public class PresetService {
         Preset preset = presets.save(new Preset(setting, manager));
 
         return PresetCreateResponse.from(preset);
+    }
+
+    public void delete(Long presetId) {
+        Preset preset = presets.findById(presetId).orElseThrow(IllegalArgumentException::new);
+        presets.delete(preset);
     }
 }
