@@ -38,10 +38,9 @@ public class Map {
         this.member = member;
     }
 
-    public void update(String mapName, String mapDrawing, String mapImageUrl) {
+    public void update(String mapName, String mapDrawing) {
         this.name = mapName;
         this.mapDrawing = mapDrawing;
-        this.mapImageUrl = mapImageUrl;
     }
 
     public boolean isNotOwnedBy(final Member manager) {

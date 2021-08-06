@@ -73,8 +73,7 @@ public class SpaceService {
                         .coordinate(null)
                         .build());
 
-        String thumbnailUrl = thumbnailManager.uploadMapThumbnail(spaceCreateUpdateRequest.getMapImageSvg(), map);
-        map.updateImageUrl(thumbnailUrl);
+        thumbnailManager.uploadMapThumbnail(spaceCreateUpdateRequest.getMapImageSvg(), map);
 
         return SpaceCreateResponse.from(space);
     }
@@ -130,8 +129,7 @@ public class SpaceService {
 
         space.update(updateSpace);
 
-        String thumbnailUrl = thumbnailManager.uploadMapThumbnail(spaceCreateUpdateRequest.getMapImageSvg(), map);
-        map.updateImageUrl(thumbnailUrl);
+        thumbnailManager.uploadMapThumbnail(spaceCreateUpdateRequest.getMapImageSvg(), map);
     }
 
     public void deleteSpace(

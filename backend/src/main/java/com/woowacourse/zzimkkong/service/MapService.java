@@ -76,12 +76,11 @@ public class MapService {
 
         validateManagerOfMap(map, manager);
 
-        String thumbnailUrl = thumbnailManager.uploadMapThumbnail(mapCreateUpdateRequest.getMapImageSvg(), map);
+        thumbnailManager.uploadMapThumbnail(mapCreateUpdateRequest.getMapImageSvg(), map);
 
         map.update(
                 mapCreateUpdateRequest.getMapName(),
-                mapCreateUpdateRequest.getMapDrawing(),
-                thumbnailUrl);
+                mapCreateUpdateRequest.getMapDrawing());
     }
 
     public void deleteMap(final Long mapId, final Member manager) {
