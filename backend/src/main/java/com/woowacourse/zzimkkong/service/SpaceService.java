@@ -83,7 +83,7 @@ public class SpaceService {
         Map map = maps.findById(mapId)
                 .orElseThrow(NoSuchMapException::new);
 
-        List<Space> findAllSpaces = spaces.findAllByMapId(mapId);
+        List<Space> findAllSpaces = map.getSpaces();
         return SpaceFindAllResponse.from(findAllSpaces);
     }
 

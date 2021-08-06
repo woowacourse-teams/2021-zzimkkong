@@ -249,8 +249,6 @@ class SpaceServiceTest extends ServiceTest {
         // given
         given(maps.findById(anyLong()))
                 .willReturn(Optional.of(luther));
-        given(spaces.findAllByMapId(anyLong()))
-                .willReturn(List.of(be, fe));
 
         // when
         SpaceFindAllResponse actual = spaceService.findAllSpace(luther.getId());
