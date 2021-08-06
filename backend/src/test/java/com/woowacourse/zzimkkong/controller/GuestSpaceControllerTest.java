@@ -87,7 +87,8 @@ public class GuestSpaceControllerTest extends AcceptanceTest {
     @DisplayName("전체 공간에 대한 정보를 조회한다.")
     void findAll() {
         // given, when
-        ExtractableResponse<Response> response = findAllSpace(spaceApi);
+        String guestSpaceApi = spaceApi.replaceAll("managers", "guests");
+        ExtractableResponse<Response> response = findAllSpace(guestSpaceApi);
         SpaceFindAllResponse actual = response.body().as(SpaceFindAllResponse.class);
         SpaceFindAllResponse expected = SpaceFindAllResponse.from(List.of(be, fe));
 
