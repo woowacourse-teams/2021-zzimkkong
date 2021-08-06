@@ -123,7 +123,7 @@ public class Space {
                 .orElseThrow(NoSuchDayOfWeekException::new);
     }
 
-    public boolean hasId(final Long spaceId) {
+    public boolean hasSameId(final Long spaceId) {
         return id.equals(spaceId);
     }
 

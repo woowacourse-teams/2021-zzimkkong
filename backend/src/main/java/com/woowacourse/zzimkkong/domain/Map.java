@@ -56,12 +56,12 @@ public class Map {
 
     public Boolean doesNotHaveSpaceId(final Long spaceId) {
         return spaces.stream()
-                .noneMatch(space -> space.hasId(spaceId));
+                .noneMatch(space -> space.hasSameId(spaceId));
     }
 
     public Optional<Space> getSpaceById(final Long spaceId) {
         return spaces.stream()
-                .filter(space -> space.hasId(spaceId))
+                .filter(space -> space.hasSameId(spaceId))
                 .findFirst();
     }
 
