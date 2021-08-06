@@ -13,14 +13,15 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.dao.DataAccessException;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import javax.validation.ConstraintViolationException;
 
-import static com.woowacourse.zzimkkong.dto.Validator.FORMAT_MESSAGE;
-import static com.woowacourse.zzimkkong.dto.Validator.SERVER_ERROR_MESSAGE;
+import static com.woowacourse.zzimkkong.dto.ValidatorMessage.FORMAT_MESSAGE;
+import static com.woowacourse.zzimkkong.dto.ValidatorMessage.SERVER_ERROR_MESSAGE;
 
 @RestControllerAdvice
 public class ControllerAdvice {
@@ -54,7 +55,7 @@ public class ControllerAdvice {
         return ResponseEntity.badRequest().body(ErrorResponse.from(exception));
     }
 
-    @ExceptionHandler(InvalidFormatException.class)
+    @ExceptionHandler({InvalidFormatException.class, HttpMessageNotReadableException.class})
     public ResponseEntity<ErrorResponse> invalidFormatHandler() {
         logger.info(FORMAT_MESSAGE);
         return ResponseEntity.badRequest().body(ErrorResponse.invalidFormat());

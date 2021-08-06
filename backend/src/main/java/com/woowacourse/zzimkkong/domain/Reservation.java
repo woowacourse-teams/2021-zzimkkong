@@ -1,7 +1,5 @@
 package com.woowacourse.zzimkkong.domain;
 
-import com.woowacourse.zzimkkong.dto.reservation.ReservationCreateUpdateRequest;
-
 import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
@@ -67,12 +65,11 @@ public class Reservation {
         return startDateTime.isEqual(startTime) && endDateTime.isEqual(endTime);
     }
 
-    // TODO: reservation 객체 주입받기
-    public void update(final ReservationCreateUpdateRequest reservationCreateUpdateRequest, final Space space) {
-        this.startTime = reservationCreateUpdateRequest.getStartDateTime();
-        this.endTime = reservationCreateUpdateRequest.getEndDateTime();
-        this.userName = reservationCreateUpdateRequest.getName();
-        this.description = reservationCreateUpdateRequest.getDescription();
+    public void update(final Reservation updateReservation, final Space space) {
+        this.startTime = updateReservation.startTime;
+        this.endTime = updateReservation.endTime;
+        this.userName = updateReservation.userName;
+        this.description = updateReservation.description;
         this.space = space;
     }
 

@@ -5,6 +5,7 @@ import com.woowacourse.zzimkkong.domain.Space;
 import com.woowacourse.zzimkkong.dto.reservation.ReservationCreateUpdateRequest;
 import com.woowacourse.zzimkkong.exception.map.NoSuchMapException;
 import com.woowacourse.zzimkkong.exception.reservation.*;
+import com.woowacourse.zzimkkong.exception.space.NoSuchSpaceException;
 import com.woowacourse.zzimkkong.infrastructure.TimeConverter;
 import com.woowacourse.zzimkkong.repository.MapRepository;
 import com.woowacourse.zzimkkong.repository.ReservationRepository;
@@ -38,8 +39,8 @@ public abstract class ReservationService {
     }
 
     protected void validateTime(final ReservationCreateUpdateRequest reservationCreateUpdateRequest) {
-        LocalDateTime startDateTime = reservationCreateUpdateRequest.getStartDateTime();
-        LocalDateTime endDateTime = reservationCreateUpdateRequest.getEndDateTime();
+        LocalDateTime startDateTime = reservationCreateUpdateRequest.getStartDateTime().withSecond(0).withNano(0);
+        LocalDateTime endDateTime = reservationCreateUpdateRequest.getEndDateTime().withSecond(0).withNano(0);
 
         if (startDateTime.isBefore(timeConverter.getNow())) {
             throw new ImpossibleStartTimeException();
@@ -90,16 +91,24 @@ public abstract class ReservationService {
     private void validateSpaceSetting(Space space, LocalDateTime startDateTime, LocalDateTime endDateTime) {
         int durationMinutes = (int) ChronoUnit.MINUTES.between(startDateTime, endDateTime);
 
-        if (space.isCorrectTimeUnit(startDateTime.getMinute()) | space.isNotDivideBy(durationMinutes)) {
+        if (space.isIncorrectTimeUnit(startDateTime.getMinute()) | space.isNotDivideBy(durationMinutes)) {
             throw new InvalidTimeUnitException();
         }
 
-        if (space.isCorrectMinimumMaximumTimeUnit(durationMinutes)) {
+        if (space.isIncorrectMinimumMaximumTimeUnit(durationMinutes)) {
             throw new InvalidDurationTimeException();
         }
 
         if (space.isNotBetweenAvailableTime(startDateTime, endDateTime)) {
-            throw new ConflictSpaceSettingException();
+            throw new InvalidStartEndTimeException();
+        }
+
+        if (space.isUnableToReserve()) {
+            throw new InvalidReservationEnableException();
+        }
+
+        if (space.isClosedOn(startDateTime.getDayOfWeek())) {
+            throw new InvalidDayOfWeekException();
         }
     }
 
@@ -140,6 +149,12 @@ public abstract class ReservationService {
     protected void validateMapExistence(final Long mapId) {
         if (!maps.existsById(mapId)) {
             throw new NoSuchMapException();
+        }
+    }
+
+    protected void validateSpaceExistence(final Long spaceId) {
+        if (!spaces.existsById(spaceId)) {
+            throw new NoSuchSpaceException();
         }
     }
 }

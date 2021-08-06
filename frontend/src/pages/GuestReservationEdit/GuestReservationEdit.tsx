@@ -71,7 +71,6 @@ const GuestReservationEdit = (): JSX.Element => {
     if (editReservation.isLoading) return;
 
     const editReservationParams = {
-      spaceId,
       name,
       description,
       password,
@@ -82,6 +81,7 @@ const GuestReservationEdit = (): JSX.Element => {
     editReservation.mutate({
       reservation: editReservationParams,
       mapId,
+      spaceId,
       reservationId: reservation.id,
     });
   };

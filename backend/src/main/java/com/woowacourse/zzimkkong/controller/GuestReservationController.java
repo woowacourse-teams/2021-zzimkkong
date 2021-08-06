@@ -10,10 +10,10 @@ import javax.validation.Valid;
 import java.net.URI;
 import java.time.LocalDate;
 
-import static com.woowacourse.zzimkkong.dto.Validator.DATE_FORMAT;
+import static com.woowacourse.zzimkkong.dto.ValidatorMessage.DATE_FORMAT;
 
 @RestController
-@RequestMapping("/api/guests/maps/{mapId}")
+@RequestMapping("/api/guests/maps/{mapId}/spaces")
 public class GuestReservationController {
     private final GuestReservationService reservationService;
 
@@ -21,13 +21,17 @@ public class GuestReservationController {
         this.reservationService = reservationService;
     }
 
-    @PostMapping("/reservations")
+    @PostMapping("/{spaceId}/reservations")
     public ResponseEntity<Void> create(
             @PathVariable final Long mapId,
+            @PathVariable final Long spaceId,
             @RequestBody @Valid final ReservationCreateUpdateWithPasswordRequest reservationCreateUpdateWithPasswordRequest) {
-        ReservationCreateResponse reservationCreateResponse = reservationService.saveReservation(mapId, reservationCreateUpdateWithPasswordRequest);
+        ReservationCreateResponse reservationCreateResponse = reservationService.saveReservation(
+                mapId,
+                spaceId,
+                reservationCreateUpdateWithPasswordRequest);
         return ResponseEntity
-                .created(URI.create("/api/guests/maps/" + mapId + "/reservations/" + reservationCreateResponse.getId()))
+                .created(URI.create("/api/guests/maps/" + mapId + "/spaces/" + spaceId + "/reservations/" + reservationCreateResponse.getId()))
                 .build();
     }
 
@@ -39,7 +43,7 @@ public class GuestReservationController {
         return ResponseEntity.ok().body(reservationFindAllResponse);
     }
 
-    @GetMapping("/spaces/{spaceId}/reservations")
+    @GetMapping("/{spaceId}/reservations")
     public ResponseEntity<ReservationFindResponse> find(
             @PathVariable final Long mapId,
             @PathVariable final Long spaceId,
@@ -48,30 +52,45 @@ public class GuestReservationController {
         return ResponseEntity.ok().body(reservationFindResponse);
     }
 
-    @PostMapping("/reservations/{reservationId}")
+    @PostMapping("/{spaceId}/reservations/{reservationId}")
     public ResponseEntity<ReservationResponse> findOne(
             @PathVariable final Long mapId,
+            @PathVariable final Long spaceId,
             @PathVariable final Long reservationId,
             @RequestBody @Valid final ReservationPasswordAuthenticationRequest reservationPasswordAuthenticationRequest) {
-        ReservationResponse reservationResponse = reservationService.findReservation(mapId, reservationId, reservationPasswordAuthenticationRequest);
+        ReservationResponse reservationResponse = reservationService.findReservation(
+                mapId,
+                spaceId,
+                reservationId,
+                reservationPasswordAuthenticationRequest);
         return ResponseEntity.ok().body(reservationResponse);
     }
 
-    @PutMapping("/reservations/{reservationId}")
+    @PutMapping("/{spaceId}/reservations/{reservationId}")
     public ResponseEntity<Void> update(
             @PathVariable final Long mapId,
+            @PathVariable final Long spaceId,
             @PathVariable final Long reservationId,
             @RequestBody @Valid final ReservationCreateUpdateWithPasswordRequest reservationCreateUpdateWithPasswordRequest) {
-        reservationService.updateReservation(mapId, reservationId, reservationCreateUpdateWithPasswordRequest);
+        reservationService.updateReservation(
+                mapId,
+                spaceId,
+                reservationId,
+                reservationCreateUpdateWithPasswordRequest);
         return ResponseEntity.ok().build();
     }
 
-    @DeleteMapping("/reservations/{reservationId}")
+    @DeleteMapping("/{spaceId}/reservations/{reservationId}")
     public ResponseEntity<Void> delete(
             @PathVariable final Long mapId,
+            @PathVariable final Long spaceId,
             @PathVariable final Long reservationId,
             @RequestBody @Valid ReservationPasswordAuthenticationRequest reservationPasswordAuthenticationRequest) {
-        reservationService.deleteReservation(mapId, reservationId, reservationPasswordAuthenticationRequest);
+        reservationService.deleteReservation(
+                mapId,
+                spaceId,
+                reservationId,
+                reservationPasswordAuthenticationRequest);
         return ResponseEntity.noContent().build();
     }
 }

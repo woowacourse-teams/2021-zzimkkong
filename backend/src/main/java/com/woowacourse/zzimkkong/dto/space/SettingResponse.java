@@ -6,7 +6,7 @@ import com.woowacourse.zzimkkong.domain.Space;
 
 import java.time.LocalTime;
 
-import static com.woowacourse.zzimkkong.dto.Validator.TIME_FORMAT;
+import static com.woowacourse.zzimkkong.dto.ValidatorMessage.TIME_FORMAT;
 
 public class SettingResponse {
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = TIME_FORMAT)
@@ -22,7 +22,7 @@ public class SettingResponse {
     @JsonProperty
     private Boolean reservationEnable;
     @JsonProperty
-    private String disabledWeekdays;
+    private String enabledDayOfWeek;
 
     public SettingResponse() {
     }
@@ -34,14 +34,14 @@ public class SettingResponse {
             final Integer reservationMinimumTimeUnit,
             final Integer reservationMaximumTimeUnit,
             final Boolean reservationEnable,
-            final String disabledWeekdays) {
+            final String enabledDayOfWeek) {
         this.availableStartTime = availableStartTime;
         this.availableEndTime = availableEndTime;
         this.reservationTimeUnit = reservationTimeUnit;
         this.reservationMinimumTimeUnit = reservationMinimumTimeUnit;
         this.reservationMaximumTimeUnit = reservationMaximumTimeUnit;
         this.reservationEnable = reservationEnable;
-        this.disabledWeekdays = disabledWeekdays;
+        this.enabledDayOfWeek = enabledDayOfWeek;
     }
 
     public static SettingResponse from(final Space space) {
@@ -52,7 +52,7 @@ public class SettingResponse {
                 space.getReservationMinimumTimeUnit(),
                 space.getReservationMaximumTimeUnit(),
                 space.getReservationEnable(),
-                space.getDisabledWeekdays()
+                space.getEnabledDayOfWeek()
         );
     }
 }
