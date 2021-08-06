@@ -15,8 +15,8 @@ import java.util.Arrays;
 
 import static com.woowacourse.zzimkkong.Constants.*;
 import static com.woowacourse.zzimkkong.DocumentUtils.*;
+import static com.woowacourse.zzimkkong.controller.ManagerSpaceControllerTest.saveSpace;
 import static com.woowacourse.zzimkkong.controller.MapControllerTest.saveMap;
-import static com.woowacourse.zzimkkong.controller.SpaceControllerTest.saveSpace;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.restdocs.restassured3.RestAssuredRestDocumentation.document;
 
