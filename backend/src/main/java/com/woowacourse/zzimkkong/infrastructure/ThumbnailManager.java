@@ -23,10 +23,6 @@ public class ThumbnailManager {
         String fileName = makeThumbnailFileName(map);
         File pngFile = svgConverter.convertSvgToPngFile(svgData, fileName);
 
-        if (map.getId().equals(2L)) {
-            System.out.println();
-        }
-
         String thumbnailUrl = storageUploader.upload(THUMBNAILS_DIRECTORY_NAME, pngFile);
 
         pngFile.delete();
