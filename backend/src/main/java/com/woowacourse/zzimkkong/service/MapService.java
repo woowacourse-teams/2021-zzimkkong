@@ -147,7 +147,7 @@ public class MapService {
     public MapFindResponse findMapByPublicMapId(String publicMapId) {
         Long mapId = publicIdGenerator.parseIdFrom(publicMapId);
         Map map = maps.findById(mapId)
-                .orElseThrow(InvalidAccessLinkException::new);
+                .orElseThrow(NoSuchMapException::new);
         return MapFindResponse.of(map, publicIdGenerator.from(map));
     }
 }
