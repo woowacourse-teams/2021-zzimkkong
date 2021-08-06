@@ -43,7 +43,7 @@ public class DataLoader implements CommandLineRunner {
                 new Map(
                         "루터회관",
                         "{'id': '1', 'type': 'polyline', 'fill': '', 'stroke': 'rgba(111, 111, 111, 1)', 'points': '['60,250', '1,231', '242,252']', 'd': '[]', 'transform': ''}",
-                        "https://zzimkkong-personal.s3.ap-northeast-2.amazonaws.com/thumbnails/1.png",
+                        "https://zzimkkong-personal.s3.ap-northeast-2.amazonaws.com/thumbnails/dummy_luther.png",
                         pobi)
         );
 
