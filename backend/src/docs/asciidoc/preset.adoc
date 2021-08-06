@@ -1,0 +1,7 @@
+== Preset(공간 설정 프리셋)
+
+=== 프리셋 생성
+==== Request
+include::{snippets}/preset/post/http-request.adoc[]
+==== Response
+include::{snippets}/preset/post/http-response.adoc[]
