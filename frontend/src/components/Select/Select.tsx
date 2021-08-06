@@ -1,4 +1,4 @@
-import { useState, PropsWithChildren, Dispatch, SetStateAction } from 'react';
+import { useState, PropsWithChildren } from 'react';
 import { ReactComponent as CaretDownIcon } from 'assets/svg/caret-down.svg';
 import PALETTE from 'constants/palette';
 import * as Styled from './Select.styles';
