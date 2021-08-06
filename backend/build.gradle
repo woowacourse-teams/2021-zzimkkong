@@ -115,11 +115,14 @@ jacocoTestCoverageVerification {
 }
 
 project.tasks["jacocoTestCoverageVerification"].finalizedBy "sonarqube"
-
 sonarqube {
+    def sonarProperties = new Properties()
+    sonarProperties.load(new FileInputStream(file("src/main/resources/config/sonar.properties")))
+    def sonarToken = sonarProperties.getProperty("SONAR_TOKEN")
+
     properties {
         property "sonar.host.url", "http://zzimkkong-service.o-r.kr:8000"
-        property "sonar.login", "5db700a3ce190fd7ed2913f3e068148d273dfac1"
+        property "sonar.login", sonarToken
         property 'sonar.sources', 'src'
         property 'sonar.language', 'java'
         property 'sonar.projectVersion', '0.0.1-SNAPSHOT'
