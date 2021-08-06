@@ -5,19 +5,27 @@ import com.woowacourse.zzimkkong.dto.member.LoginRequest;
 import com.woowacourse.zzimkkong.dto.member.TokenResponse;
 import com.woowacourse.zzimkkong.exception.member.NoSuchMemberException;
 import com.woowacourse.zzimkkong.exception.member.PasswordMismatchException;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.Optional;
 
-import static com.woowacourse.zzimkkong.service.ServiceTestFixture.*;
+import static com.woowacourse.zzimkkong.Constants.*;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.BDDMockito.given;
 
 class AuthServiceTest extends ServiceTest {
+    private Member pobi;
+
+    @BeforeEach
+    void setUp() {
+        pobi = new Member(EMAIL, PASSWORD, ORGANIZATION);
+    }
+
     @Autowired
     private AuthService authService;
 
@@ -27,7 +35,7 @@ class AuthServiceTest extends ServiceTest {
         //given
         LoginRequest loginRequest = new LoginRequest(EMAIL, PASSWORD);
         given(members.findByEmail(anyString()))
-                .willReturn(Optional.of(POBI));
+                .willReturn(Optional.of(pobi));
 
         //when
         TokenResponse tokenResponse = authService.login(loginRequest);
