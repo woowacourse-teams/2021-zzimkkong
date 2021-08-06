@@ -17,47 +17,7 @@
 | <img src="https://avatars.githubusercontent.com/u/49346677?v=4" width=400px alt="김김"/> | <img src="https://avatars.githubusercontent.com/u/56033755?v=4" width=400px alt="바다"/> | <img src="https://avatars.githubusercontent.com/u/58401309?v=4" width=400px alt="삭정"/> | <img src="https://avatars.githubusercontent.com/u/43775108?v=4" width=400px alt="샐리"> | <img src="https://avatars.githubusercontent.com/u/45230497?v=4" width=400px alt="썬"> | <img src="https://avatars.githubusercontent.com/u/61097373?v=4" width=400px alt="유조"> | <img src="https://avatars.githubusercontent.com/u/2542730?v=4" width=400px alt="체프"> |
 |                       [김김](https://github.com/tributetothemoon)                        |                            [바다](https://github.com/xrabcde)                            |                            [삭정](https://github.com/sakjung)                            |                          [샐리](https://github.com/dusdn1702)                           |                         [썬](https://github.com/SunYoungKwon)                         |                            [유조](https://github.com/yujo11)                            |                          [체프](https://github.com/Puterism)                           |
 
-## 3. 실행 방법 🏃‍♂️🏃‍♀️
-
-<details>
-<summary> <b> 프론트엔드 실행 방법 확인하기 🎨 </b>  </summary>
-<div markdown="1">
-
-```
-0. clone
-
-https://github.com/woowacourse-teams/2021-zzimkkong.git
-
-1. 프로젝트 진입
-
-cd 2020-zzimkkong/frontend
-
-2. package install
-
-yarn
-
-3-1. 프로젝트 실행
-yarn start
-
-3-2. 스토리북 실행
-yarn storybook
-```
-
-</div>
-</details>
-
-<details>
-<summary> <b> 백엔드 실행 방법 확인하기  🕋 </b>  </summary>
-<div markdown="1">
-123
-</div>
-</details>
-
-## 4. 팀 문화 🏠
-
-<details>
-<summary> <b> 찜꽁 팀 문화 확인하기 🔍 </b>  </summary>
-<div markdown="1">
+## 3. 팀 문화 🏠
 
 #### 1. 인정? 인정!
 
@@ -111,6 +71,3 @@ yarn storybook
 
 - 의견을 제시할 때는 논리적으로!
 - 합리적인 근거와 정중한 말투로 부탁드려요.
-
-</div>
-</details>
