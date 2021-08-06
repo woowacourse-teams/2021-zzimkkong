@@ -33,20 +33,15 @@ public class Map {
     }
 
     public Map(String name, String mapDrawing, String mapImageUrl, Member member) {
-        this(null, name, mapDrawing, mapImageUrl, member, null);
+        this(null, name, mapDrawing, mapImageUrl, member);
     }
 
     public Map(Long id, String name, String mapDrawing, String mapImageUrl, Member member) {
-        this(id, name, mapDrawing, mapImageUrl, member, null);
-    }
-
-    public Map(final Long id, final String name, final String mapDrawing, final String mapImageUrl, final Member member, final List<Space> spaces) {
         this.id = id;
         this.name = name;
         this.mapDrawing = mapDrawing;
         this.mapImageUrl = mapImageUrl;
         this.member = member;
-        this.spaces = spaces;
     }
 
     public void update(String mapName, String mapDrawing, String mapImageUrl) {
@@ -72,6 +67,14 @@ public class Map {
 
     public void updateImageUrl(final String mapImageUrl) {
         this.mapImageUrl = mapImageUrl;
+    }
+
+    public void addSpace(final Space space) {
+        spaces.add(space);
+    }
+
+    public void addAllSpaces(final List<Space> spaces) {
+        this.spaces.addAll(spaces);
     }
 
     public Long getId() {

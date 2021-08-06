@@ -83,9 +83,9 @@ public class GuestReservationService extends ReservationService {
 
     @Transactional(readOnly = true)
     public ReservationFindAllResponse findAllReservations(final Long mapId, final LocalDate date) {
-        validateMapExistence(mapId);
+        Map map = maps.findById(mapId).orElseThrow(NoSuchMapException::new);
+        List<Space> findSpaces = map.getSpaces();
 
-        List<Space> findSpaces = spaces.findAllByMapId(mapId);
         List<Reservation> reservations = getReservations(findSpaces, date);
 
         return ReservationFindAllResponse.of(findSpaces, reservations);

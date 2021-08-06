@@ -69,7 +69,7 @@ public class ManagerReservationService extends ReservationService {
                 .orElseThrow(NoSuchMapException::new);
         validateManagerOfMap(map, manager);
 
-        List<Space> findSpaces = spaces.findAllByMapId(mapId); // TODO: map.getSpaces
+        List<Space> findSpaces = map.getSpaces();
         List<Reservation> reservations = getReservations(findSpaces, date);
 
         return ReservationFindAllResponse.of(findSpaces, reservations);
