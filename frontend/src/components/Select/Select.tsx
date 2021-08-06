@@ -14,7 +14,6 @@ export interface Props {
   disabled?: boolean;
   value: string;
   onChange: (selectedValue: string) => void;
-  setValue: Dispatch<SetStateAction<string>>;
 }
 
 const Select = ({
@@ -24,7 +23,6 @@ const Select = ({
   disabled = false,
   value,
   onChange = () => null,
-  setValue = () => null,
 }: Props): JSX.Element => {
   const [open, setOpen] = useState(false);
 
@@ -35,7 +33,6 @@ const Select = ({
   };
 
   const selectOption = (selectedValue: Props['value']) => {
-    setValue(selectedValue);
     setOpen(false);
     onChange(selectedValue);
   };

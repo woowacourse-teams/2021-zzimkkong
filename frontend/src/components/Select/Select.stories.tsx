@@ -12,7 +12,6 @@ const Template: Story<PropsWithChildren<Props>> = (args) => <Select {...args} />
 export const Default = Template.bind({});
 Default.args = {
   value: '1',
-  setValue: () => null,
   options: [
     {
       value: '1',
