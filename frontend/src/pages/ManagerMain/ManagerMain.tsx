@@ -34,11 +34,6 @@ const ManagerMain = (): JSX.Element => {
 
   const onRequestError = (error: AxiosError<ErrorResponse>) => {
     alert(error.response?.data?.message ?? MESSAGE.MANAGER_MAIN.UNEXPECTED_GET_DATA_ERROR);
-
-    if (error.response?.status === 401) {
-      localStorage.removeItem(LOCAL_STORAGE_KEY.ACCESS_TOKEN);
-      history.push(PATH.MANAGER_LOGIN);
-    }
   };
 
   const getMaps = useManagerMaps({
