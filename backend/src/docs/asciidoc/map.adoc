@@ -29,3 +29,9 @@ include::{snippets}/map/put/http-response.adoc[]
 include::{snippets}/map/delete/http-request.adoc[]
 ==== Response
 include::{snippets}/map/delete/http-response.adoc[]
+
+=== 공유링크를 통한 맵 조회
+==== Request
+include::{snippets}/map/getByPublicId/http-request.adoc
+==== Response
+include::{snippets}/map/getByPublicId/http-response.adoc[]
