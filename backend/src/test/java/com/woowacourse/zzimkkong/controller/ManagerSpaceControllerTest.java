@@ -24,7 +24,7 @@ import static com.woowacourse.zzimkkong.controller.MapControllerTest.saveMap;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.restdocs.restassured3.RestAssuredRestDocumentation.document;
 
-public class SpaceControllerTest extends AcceptanceTest {
+public class ManagerSpaceControllerTest extends AcceptanceTest {
     private String spaceApi;
     private Long beSpaceId;
     private Space be;
@@ -248,7 +248,7 @@ public class SpaceControllerTest extends AcceptanceTest {
                 .given(getRequestSpecification()).log().all()
                 .accept("application/json")
                 .header("Authorization", AuthorizationExtractor.AUTHENTICATION_TYPE + " " + accessToken)
-                .filter(document("space/post", getRequestPreprocessor(), getResponsePreprocessor()))
+                .filter(document("space/manager/post", getRequestPreprocessor(), getResponsePreprocessor()))
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body(spaceCreateRequest)
                 .when().post(api)
@@ -260,7 +260,7 @@ public class SpaceControllerTest extends AcceptanceTest {
                 .given(getRequestSpecification()).log().all()
                 .accept("application/json")
                 .header("Authorization", AuthorizationExtractor.AUTHENTICATION_TYPE + " " + accessToken)
-                .filter(document("space/getAll", getRequestPreprocessor(), getResponsePreprocessor()))
+                .filter(document("space/manager/getAll", getRequestPreprocessor(), getResponsePreprocessor()))
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .when().get(api)
                 .then().log().all().extract();
@@ -271,7 +271,7 @@ public class SpaceControllerTest extends AcceptanceTest {
                 .given(getRequestSpecification()).log().all()
                 .accept("application/json")
                 .header("Authorization", AuthorizationExtractor.AUTHENTICATION_TYPE + " " + accessToken)
-                .filter(document("space/get", getRequestPreprocessor(), getResponsePreprocessor()))
+                .filter(document("space/manager/get", getRequestPreprocessor(), getResponsePreprocessor()))
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .when().get(api)
                 .then().log().all().extract();
@@ -284,7 +284,7 @@ public class SpaceControllerTest extends AcceptanceTest {
                 .given(getRequestSpecification()).log().all()
                 .accept("application/json")
                 .header("Authorization", AuthorizationExtractor.AUTHENTICATION_TYPE + " " + accessToken)
-                .filter(document("space/put", getRequestPreprocessor(), getResponsePreprocessor()))
+                .filter(document("space/manager/put", getRequestPreprocessor(), getResponsePreprocessor()))
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body(spaceCreateUpdateRequest)
                 .when().put(api)
@@ -296,7 +296,7 @@ public class SpaceControllerTest extends AcceptanceTest {
                 .given(getRequestSpecification()).log().all()
                 .accept("application/json")
                 .header("Authorization", AuthorizationExtractor.AUTHENTICATION_TYPE + " " + accessToken)
-                .filter(document("space/delete", getRequestPreprocessor(), getResponsePreprocessor()))
+                .filter(document("space/manager/delete", getRequestPreprocessor(), getResponsePreprocessor()))
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body(spaceDeleteRequest)
                 .when().delete(api)
