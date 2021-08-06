@@ -8,6 +8,8 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import java.util.List;
+
 import static com.woowacourse.zzimkkong.Constants.*;
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -15,11 +17,12 @@ class PresetRepositoryTest extends RepositoryTest {
     @Autowired
     private PresetRepository presets;
 
+    private Member pobi;
     private Preset preset;
 
     @BeforeEach
     void setUp() {
-        Member pobi = new Member(EMAIL, PASSWORD, ORGANIZATION);
+        pobi = new Member(EMAIL, PASSWORD, ORGANIZATION);
         members.save(pobi);
 
         Setting setting = new Setting.Builder()
@@ -44,5 +47,18 @@ class PresetRepositoryTest extends RepositoryTest {
         //then
         assertThat(savedPreset.getId()).isNotNull();
         assertThat(savedPreset).isEqualTo(preset);
+    }
+
+    @Test
+    @DisplayName("멤버의 모든 프리셋을 저장할 수 있다.")
+    void findAllByMember() {
+        //given
+        Preset savedPreset = presets.save(preset);
+
+        //when
+        List<Preset> actualPresets = presets.findAllByMember(pobi);
+
+        //then
+        assertThat(actualPresets).containsExactlyInAnyOrderElementsOf(List.of(savedPreset));
     }
 }
