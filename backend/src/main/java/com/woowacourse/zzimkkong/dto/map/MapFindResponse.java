@@ -9,7 +9,6 @@ public class MapFindResponse {
     private String mapImageUrl;
 
     public MapFindResponse() {
-
     }
 
     private MapFindResponse(Long mapId, String mapName, String mapDrawing, String mapImageUrl) {

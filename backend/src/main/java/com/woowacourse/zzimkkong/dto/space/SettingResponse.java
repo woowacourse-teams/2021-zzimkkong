@@ -2,6 +2,8 @@ package com.woowacourse.zzimkkong.dto.space;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.woowacourse.zzimkkong.domain.Preset;
+import com.woowacourse.zzimkkong.domain.Setting;
 import com.woowacourse.zzimkkong.domain.Space;
 
 import java.time.LocalTime;
@@ -54,5 +56,18 @@ public class SettingResponse {
                 space.getReservationEnable(),
                 space.getEnabledDayOfWeek()
         );
+    }
+
+    public static SettingResponse from(final Preset preset) {
+        Setting setting = preset.getSetting();
+
+        return new SettingResponse(
+                setting.getAvailableStartTime(),
+                setting.getAvailableEndTime(),
+                setting.getReservationTimeUnit(),
+                setting.getReservationMinimumTimeUnit(),
+                setting.getReservationMaximumTimeUnit(),
+                setting.getReservationEnable(),
+                setting.getEnabledDayOfWeek());
     }
 }

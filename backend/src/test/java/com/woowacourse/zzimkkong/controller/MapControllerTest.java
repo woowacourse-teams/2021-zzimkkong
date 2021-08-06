@@ -60,13 +60,11 @@ class MapControllerTest extends AcceptanceTest {
     @DisplayName("특정 멤버가 가진 모든 맵을 조회한다.")
     void findAll() {
         // given
-        saveMap(
-
-                saveMapApi,
+        saveMap(saveMapApi,
                 new MapCreateUpdateRequest(smallHouse.getName(), smallHouse.getMapDrawing(), MAP_SVG));
 
         // when
-        ExtractableResponse<Response> response = findAllMaps( saveMapApi);
+        ExtractableResponse<Response> response = findAllMaps(saveMapApi);
         List<MapFindResponse> findMaps = response.as(MapFindAllResponse.class).getMaps();
         List<MapFindResponse> expected = MapFindAllResponse.of(List.of(luther, smallHouse), pobi).getMaps();
 
