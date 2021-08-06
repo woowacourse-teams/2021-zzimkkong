@@ -34,8 +34,8 @@ class JwtUtilsTest {
     @Autowired
     private ObjectMapper objectMapper;
 
-    @DisplayName("Payload를 담아 token을 발급한다.")
     @Test
+    @DisplayName("Payload를 담아 token을 발급한다.")
     void createToken() {
         // given
         Map<String, Object> payload = createPayload();
@@ -47,8 +47,8 @@ class JwtUtilsTest {
         assertThat(token).isInstanceOf(String.class);
     }
 
-    @DisplayName("발급한 토큰의 유효성을 검사한다.")
     @Test
+    @DisplayName("발급한 토큰의 유효성을 검사한다.")
     void validateToken() {
         // given
         Map<String, Object> payload = createPayload();
@@ -59,8 +59,8 @@ class JwtUtilsTest {
         jwtUtils.validateToken(token);
     }
 
-    @DisplayName("유효기간이 지나면 예외를 발생시킨다.")
     @Test
+    @DisplayName("유효기간이 지나면 예외를 발생시킨다.")
     void expiredTokenThrowsException() {
         // given
         JwtUtils jwtUtils = new JwtUtils("Temporal_Secret_Key", 0);
@@ -74,8 +74,8 @@ class JwtUtilsTest {
                 .isInstanceOf(TokenExpiredException.class);
     }
 
-    @DisplayName("조작된 토큰을 보내면 예외를 발생시킨다.")
     @Test
+    @DisplayName("조작된 토큰을 보내면 예외를 발생시킨다.")
     void invalidTokenThrowsException() throws JsonProcessingException {
         // given
         Map<String, Object> payloadOrigin = createPayload();
