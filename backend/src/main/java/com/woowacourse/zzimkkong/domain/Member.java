@@ -1,6 +1,8 @@
 package com.woowacourse.zzimkkong.domain;
 
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 public class Member {
@@ -16,6 +18,9 @@ public class Member {
 
     @Column(nullable = false, length = 20)
     private String organization;
+
+    @OneToMany(mappedBy = "member", cascade = CascadeType.REMOVE)
+    private List<Preset> presets = new ArrayList<>();
 
     protected Member() {
     }
@@ -56,5 +61,9 @@ public class Member {
 
     public String getOrganization() {
         return organization;
+    }
+
+    public List<Preset> getPresets() {
+        return presets;
     }
 }

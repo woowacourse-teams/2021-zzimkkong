@@ -11,31 +11,31 @@ public class Preset {
     @Embedded
     private Setting setting;
 
-    @ManyToOne
-    @JoinColumn(name = "manager_id", foreignKey = @ForeignKey(name = "fk_preset_member"), nullable = false)
-    private Member manager;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "member_id", foreignKey = @ForeignKey(name = "fk_preset_member"), nullable = false)
+    private Member member;
 
     protected Preset() {
 
     }
 
-    public Preset(final Setting setting, final Member manager) {
+    public Preset(final Setting setting, final Member member) {
         this.setting = setting;
-        this.manager = manager;
+        this.member = member;
     }
 
-    public Preset(final Long id, final Setting setting, final Member manager) {
+    public Preset(final Long id, final Setting setting, final Member member) {
         this.id = id;
         this.setting = setting;
-        this.manager = manager;
+        this.member = member;
     }
 
     public Long getId() {
         return id;
     }
 
-    public Member getManager() {
-        return manager;
+    public Member getMember() {
+        return member;
     }
 
     public Setting getSetting() {
