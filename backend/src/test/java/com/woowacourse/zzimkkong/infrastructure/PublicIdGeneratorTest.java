@@ -2,7 +2,6 @@ package com.woowacourse.zzimkkong.infrastructure;
 
 import com.woowacourse.zzimkkong.domain.Map;
 import com.woowacourse.zzimkkong.domain.Member;
-import com.woowacourse.zzimkkong.exception.infrastructure.DecodingException;
 import com.woowacourse.zzimkkong.exception.map.InvalidAccessLinkException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -10,18 +9,18 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 
+import static com.woowacourse.zzimkkong.Constants.*;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 @SpringBootTest
 @ActiveProfiles("test")
 class PublicIdGeneratorTest {
-    // todo 테스트 fixture 리팩토링이 끝난 후 Constants 클래스 활용하기
-    private final static Member MEMBER = new Member(1L, "pobi@woowa.com", "test1234", "woowacourse");
+    private final static Member MEMBER = new Member(1L, EMAIL, PASSWORD, ORGANIZATION);
     private final static Map MAP = new Map(1L,
-            "루터회관 14층",
-            "{'type': 'polyline', 'stroke': 'rgba(111, 111, 111, 1)', 'points': '['60, 250', '1, 231']'}",
-            "https://zzimkkong-personal.s3.ap-northeast-2.amazonaws.com/thumbnails/2387563.png",
+            LUTHER_NAME,
+            MAP_DRAWING_DATA,
+            MAP_IMAGE_URL,
             MEMBER);
 
     @Autowired
