@@ -9,8 +9,6 @@ import com.woowacourse.zzimkkong.exception.authorization.NoAuthorityOnMapExcepti
 import com.woowacourse.zzimkkong.exception.map.NoSuchMapException;
 import com.woowacourse.zzimkkong.exception.space.NoSuchSpaceException;
 import com.woowacourse.zzimkkong.exception.space.ReservationExistOnSpaceException;
-import com.woowacourse.zzimkkong.infrastructure.StorageUploader;
-import com.woowacourse.zzimkkong.infrastructure.SvgConverter;
 import com.woowacourse.zzimkkong.infrastructure.TimeConverter;
 import com.woowacourse.zzimkkong.repository.MapRepository;
 import com.woowacourse.zzimkkong.repository.ReservationRepository;
@@ -18,7 +16,6 @@ import com.woowacourse.zzimkkong.repository.SpaceRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.io.File;
 import java.util.List;
 
 @Service
@@ -26,8 +23,6 @@ import java.util.List;
 public class SpaceService {
     private final MapRepository maps;
     private final SpaceRepository spaces;
-    private final StorageUploader storageUploader;
-    private final SvgConverter svgConverter;
     private final ReservationRepository reservations;
     private final TimeConverter timeConverter;
 
@@ -35,14 +30,10 @@ public class SpaceService {
             final MapRepository maps,
             final SpaceRepository spaces,
             final ReservationRepository reservations,
-            final StorageUploader storageUploader,
-            final SvgConverter svgConverter,
             final TimeConverter timeConverter) {
         this.maps = maps;
         this.spaces = spaces;
         this.reservations = reservations;
-        this.storageUploader = storageUploader;
-        this.svgConverter = svgConverter;
         this.timeConverter = timeConverter;
     }
 
@@ -63,22 +54,19 @@ public class SpaceService {
                 .reservationMinimumTimeUnit(settingsRequest.getReservationMinimumTimeUnit())
                 .reservationMaximumTimeUnit(settingsRequest.getReservationMaximumTimeUnit())
                 .reservationEnable(settingsRequest.getReservationEnable())
-                .disabledWeekdays(settingsRequest.getDisabledWeekdays())
+                .enabledDayOfWeek(settingsRequest.getEnabledDayOfWeek())
                 .build();
-
-        String thumbnailUrl = uploadSvgAsPngToS3(spaceCreateUpdateRequest.getMapImage(), map.getId().toString());
 
         Space space = spaces.save(
                 new Space.Builder()
-                        .name(spaceCreateUpdateRequest.getSpaceName())
-                        .textPosition(null)
-                        .color(null)
-                        .coordinate(null)
-                        .map(map)
+                        .name(spaceCreateUpdateRequest.getName())
+                        .color(spaceCreateUpdateRequest.getColor())
                         .description(spaceCreateUpdateRequest.getDescription())
                         .area(spaceCreateUpdateRequest.getArea())
                         .setting(setting)
-                        .mapImage(thumbnailUrl)
+                        .map(map)
+                        .textPosition(null)
+                        .coordinate(null)
                         .build());
         return SpaceCreateResponse.from(space);
     }
@@ -153,18 +141,16 @@ public class SpaceService {
                 .reservationEnable(settingsRequest.getReservationEnable())
                 .reservationMinimumTimeUnit(settingsRequest.getReservationMinimumTimeUnit())
                 .reservationMaximumTimeUnit(settingsRequest.getReservationMaximumTimeUnit())
-                .disabledWeekdays(settingsRequest.getDisabledWeekdays())
+                .enabledDayOfWeek(settingsRequest.getEnabledDayOfWeek())
                 .build();
 
-        String thumbnailUrl = uploadSvgAsPngToS3(spaceCreateUpdateRequest.getMapImage(), map.getId().toString());
-
         return new Space.Builder()
-                .name(spaceCreateUpdateRequest.getSpaceName())
-                .map(map)
+                .name(spaceCreateUpdateRequest.getName())
+                .color(spaceCreateUpdateRequest.getColor())
                 .description(spaceCreateUpdateRequest.getDescription())
                 .area(spaceCreateUpdateRequest.getArea())
                 .setting(updateSetting)
-                .mapImage(thumbnailUrl)
+                .map(map)
                 .build();
     }
 
@@ -178,12 +164,5 @@ public class SpaceService {
         if (map.isNotOwnedBy(manager)) {
             throw new NoAuthorityOnMapException();
         }
-    }
-
-    private String uploadSvgAsPngToS3(final String svgData, final String fileName) { // todo MapService와의 중복 제거
-        File pngFile = svgConverter.convertSvgToPngFile(svgData, fileName);
-        String thumbnailUrl = storageUploader.upload("thumbnails", pngFile);
-        pngFile.delete();
-        return thumbnailUrl;
     }
 }

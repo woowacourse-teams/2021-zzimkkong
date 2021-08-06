@@ -12,11 +12,12 @@ public class SpaceFindDetailWithIdResponse extends SpaceFindDetailResponse {
 
     private SpaceFindDetailWithIdResponse(
             final String name,
+            final String color,
             final String description,
             final String area,
             final SettingResponse settings,
             final Long id) {
-        super(name, description, area, settings);
+        super(name, color, description, area, settings);
         this.id = id;
     }
 
@@ -25,6 +26,7 @@ public class SpaceFindDetailWithIdResponse extends SpaceFindDetailResponse {
 
         return new SpaceFindDetailWithIdResponse(
                 space.getName(),
+                space.getColor(),
                 space.getDescription(),
                 space.getArea(),
                 settingResponse,

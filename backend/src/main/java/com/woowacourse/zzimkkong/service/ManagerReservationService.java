@@ -34,13 +34,14 @@ public class ManagerReservationService extends ReservationService {
 
     public ReservationCreateResponse saveReservation(
             final Long mapId,
+            final Long spaceId,
             final ReservationCreateUpdateWithPasswordRequest reservationCreateUpdateWithPasswordRequest,
             final Member manager) {
         validateAuthorityOnMap(mapId, manager);
 
-        validateTime(reservationCreateUpdateWithPasswordRequest);
-        Space space = spaces.findById(reservationCreateUpdateWithPasswordRequest.getSpaceId())
+        Space space = spaces.findById(spaceId)
                 .orElseThrow(NoSuchSpaceException::new);
+        validateTime(reservationCreateUpdateWithPasswordRequest);
         validateAvailability(space, reservationCreateUpdateWithPasswordRequest);
 
         Reservation reservation = reservations.save(
@@ -87,9 +88,11 @@ public class ManagerReservationService extends ReservationService {
     @Transactional(readOnly = true)
     public ReservationResponse findReservation(
             final Long mapId,
+            final Long spaceId,
             final Long reservationId,
             final Member manager) {
         validateAuthorityOnMap(mapId, manager);
+        validateSpaceExistence(spaceId);
 
         Reservation reservation = reservations
                 .findById(reservationId)
@@ -99,29 +102,40 @@ public class ManagerReservationService extends ReservationService {
 
     public SlackResponse updateReservation(
             final Long mapId,
+            final Long spaceId,
             final Long reservationId,
             final ReservationCreateUpdateRequest reservationCreateUpdateRequest,
             final Member manager) {
         validateAuthorityOnMap(mapId, manager);
-        validateTime(reservationCreateUpdateRequest);
-
-        Space space = spaces.findById(reservationCreateUpdateRequest.getSpaceId())
+        Space space = spaces.findById(spaceId)
                 .orElseThrow(NoSuchSpaceException::new);
+
+        validateTime(reservationCreateUpdateRequest);
         Reservation reservation = reservations
                 .findById(reservationId)
                 .orElseThrow(NoSuchReservationException::new);
 
         validateAvailability(space, reservationCreateUpdateRequest, reservation);
 
-        reservation.update(reservationCreateUpdateRequest, space);
+        Reservation updateReservation = new Reservation.Builder()
+                .startTime(reservationCreateUpdateRequest.getStartDateTime())
+                .endTime(reservationCreateUpdateRequest.getEndDateTime())
+                .userName(reservationCreateUpdateRequest.getName())
+                .description(reservationCreateUpdateRequest.getDescription())
+                .space(space)
+                .build();
+
+        reservation.update(updateReservation, space);
         return SlackResponse.from(reservation);
     }
 
     public SlackResponse deleteReservation(
             final Long mapId,
+            final Long spaceId,
             final Long reservationId,
             final Member manager) {
         validateAuthorityOnMap(mapId, manager);
+        validateSpaceExistence(spaceId);
 
         Reservation reservation = reservations
                 .findById(reservationId)

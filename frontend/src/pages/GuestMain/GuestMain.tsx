@@ -43,7 +43,7 @@ const GuestMain = (): JSX.Element => {
 
   const history = useHistory();
   const location = useLocation<GuestMainState>();
-  const spaceId = location.state?.spaceId;
+  const spaceId = Number(location.state?.spaceId);
   const targetDate = location.state?.targetDate;
 
   const now = new Date();
@@ -102,6 +102,7 @@ const GuestMain = (): JSX.Element => {
 
     removeReservation.mutate({
       mapId,
+      spaceId,
       password: passwordInput,
       reservationId: Number(selectedReservation?.id),
     });

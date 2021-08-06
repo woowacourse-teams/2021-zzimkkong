@@ -1,16 +1,25 @@
 package com.woowacourse.zzimkkong.domain;
 
+import com.woowacourse.zzimkkong.exception.space.NoSuchDayOfWeekException;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
 
 import javax.persistence.*;
+
+import java.time.DayOfWeek;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @DynamicInsert
 @DynamicUpdate
 @Entity
 public class Space {
+    public static final String DELIMITER = ",";
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -18,19 +27,8 @@ public class Space {
     @Column(nullable = false, length = 20)
     private String name;
 
-    // TODO: map Editor 구현되면 column 삭제
-    @Column(nullable = true, length = 6)
-    private String textPosition;
-
     @Column(nullable = true, length = 25)
     private String color;
-
-    @Column(nullable = true)
-    private String coordinate;
-
-    @ManyToOne
-    @JoinColumn(name = "map_id", foreignKey = @ForeignKey(name = "fk_space_map"), nullable = false)
-    private Map map;
 
     @Column(nullable = true)
     private String description;
@@ -41,8 +39,16 @@ public class Space {
     @Embedded
     private Setting setting;
 
-    @Column(nullable = false)
-    private String mapImage;    // todo Map 엔티티의 mapImageUrl 과 중복되는 칼럼이므로 삭제
+    // TODO: map Editor 구현되면 column 삭제
+    @Column(nullable = true, length = 6)
+    private String textPosition;
+
+    @Column(nullable = true)
+    private String coordinate;
+
+    @ManyToOne
+    @JoinColumn(name = "map_id", foreignKey = @ForeignKey(name = "fk_space_map"), nullable = false)
+    private Map map;
 
     protected Space() {
     }
@@ -50,23 +56,71 @@ public class Space {
     protected Space(Builder builder) {
         this.id = builder.id;
         this.name = builder.name;
-        this.textPosition = builder.textPosition;
         this.color = builder.color;
-        this.coordinate = builder.coordinate;
-        this.map = builder.map;
         this.description = builder.description;
         this.area = builder.area;
         this.setting = builder.setting;
-        this.mapImage = builder.mapImage;
+        this.textPosition = builder.textPosition;
+        this.coordinate = builder.coordinate;
+        this.map = builder.map;
     }
 
     public void update(final Space updateSpace) {
         this.name = updateSpace.name;
-        this.map = updateSpace.map;
+        this.color = updateSpace.color;
         this.description = updateSpace.description;
         this.area = updateSpace.area;
         this.setting = updateSpace.setting;
-        this.mapImage = updateSpace.mapImage;
+        this.map = updateSpace.map;
+    }
+
+    public boolean isNotBetweenAvailableTime(LocalDateTime startDateTime, LocalDateTime endDateTime) {
+        boolean isEqualOrAfterStartTime = startDateTime.toLocalTime().equals(getAvailableStartTime()) ||
+                startDateTime.toLocalTime().isAfter(getAvailableStartTime());
+        boolean isEqualOrBeforeEndTime = endDateTime.toLocalTime().equals(getAvailableEndTime()) ||
+                endDateTime.toLocalTime().isBefore(getAvailableEndTime());
+        return !(isEqualOrAfterStartTime && isEqualOrBeforeEndTime);
+    }
+
+    public boolean isIncorrectTimeUnit(int minute) {
+        return minute != 0 && isNotDivideBy(minute);
+    }
+
+    public boolean isIncorrectMinimumMaximumTimeUnit(int durationMinutes) {
+        return durationMinutes < getReservationMinimumTimeUnit() || durationMinutes > getReservationMaximumTimeUnit();
+    }
+
+    public boolean isNotDivideBy(int minute) {
+        return minute % getReservationTimeUnit() != 0;
+    }
+
+    public boolean isUnableToReserve() {
+        return !getReservationEnable();
+    }
+
+    public boolean isClosedOn(final DayOfWeek dayOfWeek) {
+        return getEnabledDaysOfWeek().stream()
+                .noneMatch(enabledDayOfWeek -> enabledDayOfWeek.equals(dayOfWeek));
+    }
+
+    private List<DayOfWeek> getEnabledDaysOfWeek() {
+        String enabledDayOfWeekNames = getEnabledDayOfWeek();
+
+        if (enabledDayOfWeekNames == null) {
+            return Collections.emptyList();
+        }
+
+        return Arrays.stream(enabledDayOfWeekNames.split(DELIMITER))
+                .map(String::trim)
+                .map(this::convertToDayOfWeek)
+                .collect(Collectors.toList());
+    }
+
+    private DayOfWeek convertToDayOfWeek(final String dayOfWeekName) {
+        return Arrays.stream(DayOfWeek.values())
+                .filter(dayOfWeek -> dayOfWeek.name().equals(dayOfWeekName.toUpperCase()))
+                .findAny()
+                .orElseThrow(NoSuchDayOfWeekException::new);
     }
 
     public Long getId() {
@@ -77,20 +131,8 @@ public class Space {
         return name;
     }
 
-    public String getTextPosition() {
-        return textPosition;
-    }
-
     public String getColor() {
         return color;
-    }
-
-    public String getCoordinate() {
-        return coordinate;
-    }
-
-    public Map getMap() {
-        return map;
     }
 
     public String getDescription() {
@@ -99,6 +141,14 @@ public class Space {
 
     public String getArea() {
         return area;
+    }
+
+    public String getTextPosition() {
+        return textPosition;
+    }
+
+    public String getCoordinate() {
+        return coordinate;
     }
 
     public LocalTime getAvailableEndTime() {
@@ -125,20 +175,12 @@ public class Space {
         return setting.getReservationEnable();
     }
 
-    public String getDisabledWeekdays() {
-        return setting.getDisabledWeekdays();
+    public String getEnabledDayOfWeek() {
+        return setting.getEnabledDayOfWeek();
     }
 
-    public String getMapImage() {
-        return mapImage;
-    }
-
-    public boolean isNotBetweenAvailableTime(LocalDateTime startDateTime, LocalDateTime endDateTime) {
-        boolean isEqualOrAfterStartTime = startDateTime.toLocalTime().equals(getAvailableStartTime()) ||
-                startDateTime.toLocalTime().isAfter(getAvailableStartTime());
-        boolean isEqualOrBeforeEndTime = endDateTime.toLocalTime().equals(getAvailableEndTime()) ||
-                endDateTime.toLocalTime().isBefore(getAvailableEndTime());
-        return !(isEqualOrAfterStartTime && isEqualOrBeforeEndTime);
+    public Map getMap() {
+        return map;
     }
 
     public static class Builder {
@@ -151,7 +193,6 @@ public class Space {
         private String description = null;
         private String area = null;
         private Setting setting = null;
-        private String mapImage = null;
 
         public Builder() {
         }
@@ -166,23 +207,8 @@ public class Space {
             return this;
         }
 
-        public Space.Builder textPosition(String inputTextPosition) {
-            textPosition = inputTextPosition;
-            return this;
-        }
-
         public Space.Builder color(String inputColor) {
             color = inputColor;
-            return this;
-        }
-
-        public Space.Builder coordinate(String inputCoordinate) {
-            coordinate = inputCoordinate;
-            return this;
-        }
-
-        public Space.Builder map(Map inputMap) {
-            map = inputMap;
             return this;
         }
 
@@ -201,8 +227,18 @@ public class Space {
             return this;
         }
 
-        public Space.Builder mapImage(String inputMapImage) {
-            mapImage = inputMapImage;
+        public Space.Builder textPosition(String inputTextPosition) {
+            textPosition = inputTextPosition;
+            return this;
+        }
+
+        public Space.Builder coordinate(String inputCoordinate) {
+            coordinate = inputCoordinate;
+            return this;
+        }
+
+        public Space.Builder map(Map inputMap) {
+            map = inputMap;
             return this;
         }
 

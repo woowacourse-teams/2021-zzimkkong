@@ -1,5 +1,7 @@
 package com.woowacourse.zzimkkong.controller;
 
+import com.woowacourse.zzimkkong.domain.Map;
+import com.woowacourse.zzimkkong.domain.Member;
 import com.woowacourse.zzimkkong.domain.Setting;
 import com.woowacourse.zzimkkong.domain.Space;
 import com.woowacourse.zzimkkong.dto.space.SettingsRequest;
@@ -19,73 +21,102 @@ import org.springframework.http.MediaType;
 import java.time.LocalTime;
 import java.util.List;
 
-import static com.woowacourse.zzimkkong.CommonFixture.*;
+import static com.woowacourse.zzimkkong.Constants.*;
 import static com.woowacourse.zzimkkong.DocumentUtils.*;
-import static com.woowacourse.zzimkkong.controller.AuthControllerTest.getToken;
 import static com.woowacourse.zzimkkong.controller.MapControllerTest.saveMap;
-import static com.woowacourse.zzimkkong.controller.MemberControllerTest.saveMember;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.restdocs.restassured3.RestAssuredRestDocumentation.document;
 
 public class SpaceControllerTest extends AcceptanceTest {
+    private String spaceApi;
+    private Long beSpaceId;
+    private Space be;
+    private Space fe;
+
     @BeforeEach
     void setUp() {
-        saveMember(memberSaveRequest);
-        saveMap("/api/managers/maps", mapCreateRequest);
+        String lutherId = saveMap("/api/managers/maps", mapCreateUpdateRequest).header("location").split("/")[4];
+        spaceApi = "/api/managers/maps/" + lutherId + "/spaces";
+        ExtractableResponse<Response> saveBeSpaceResponse = saveSpace(spaceApi, beSpaceCreateUpdateRequest);
+        ExtractableResponse<Response> saveFe1SpaceResponse = saveSpace(spaceApi, feSpaceCreateUpdateRequest);
 
-        SettingsRequest settingsRequest = new SettingsRequest(
-                LocalTime.of(0, 0),
-                LocalTime.of(18, 0),
-                10,
-                10,
-                1440,
-                true,
-                null
-        );
+        beSpaceId = Long.valueOf(saveBeSpaceResponse.header("location").split("/")[6]);
+        Long feSpaceId = Long.valueOf(saveFe1SpaceResponse.header("location").split("/")[6]);
 
-        SpaceCreateUpdateRequest spaceCreateUpdateRequest = new SpaceCreateUpdateRequest(
-                "백엔드 강의실",
-                "시니컬하네",
-                SPACE_DRAWING,
-                settingsRequest,
-                MAP_SVG
-        );
-        String saveSpaceApi = "/api/managers/maps/1/spaces";
-        saveSpace(saveSpaceApi, spaceCreateUpdateRequest);
+        Member pobi = new Member(EMAIL, PASSWORD, ORGANIZATION);
+        Map luther = new Map(LUTHER_NAME, MAP_DRAWING_DATA, MAP_IMAGE_URL, pobi);
+        Setting beSetting = new Setting.Builder()
+                .availableStartTime(BE_AVAILABLE_START_TIME)
+                .availableEndTime(BE_AVAILABLE_END_TIME)
+                .reservationTimeUnit(BE_RESERVATION_TIME_UNIT)
+                .reservationMinimumTimeUnit(BE_RESERVATION_MINIMUM_TIME_UNIT)
+                .reservationMaximumTimeUnit(BE_RESERVATION_MAXIMUM_TIME_UNIT)
+                .reservationEnable(BE_RESERVATION_ENABLE)
+                .enabledDayOfWeek(BE_ENABLED_DAY_OF_WEEK)
+                .build();
+
+        Setting feSetting = new Setting.Builder()
+                .availableStartTime(FE_AVAILABLE_START_TIME)
+                .availableEndTime(FE_AVAILABLE_END_TIME)
+                .reservationTimeUnit(FE_RESERVATION_TIME_UNIT)
+                .reservationMinimumTimeUnit(FE_RESERVATION_MINIMUM_TIME_UNIT)
+                .reservationMaximumTimeUnit(FE_RESERVATION_MAXIMUM_TIME_UNIT)
+                .reservationEnable(FE_RESERVATION_ENABLE)
+                .enabledDayOfWeek(FE_ENABLED_DAY_OF_WEEK)
+                .build();
+
+        be = new Space.Builder()
+                .id(beSpaceId)
+                .name(BE_NAME)
+                .color(BE_COLOR)
+                .map(luther)
+                .description(BE_DESCRIPTION)
+                .area(SPACE_DRAWING)
+                .setting(beSetting)
+                .build();
+
+        fe = new Space.Builder()
+                .id(feSpaceId)
+                .name(FE_NAME)
+                .color(FE_COLOR)
+                .map(luther)
+                .description(FE_DESCRIPTION)
+                .area(SPACE_DRAWING)
+                .setting(feSetting)
+                .build();
     }
 
-    @DisplayName("올바른 토큰이 주어질 때, space 정보가 들어오면 space를 저장한다")
     @Test
+    @DisplayName("space 정보가 들어오면 space를 저장한다")
     void save() {
         // given
         SettingsRequest newSettingsRequest = new SettingsRequest(
                 LocalTime.of(10, 0),
                 LocalTime.of(20, 0),
-                20,
+                30,
                 60,
                 100,
                 true,
-                "Monday, Tuesday"
+                "monday, tuesday, wednesday, thursday, friday, saturday, sunday"
         );
 
         SpaceCreateUpdateRequest newSpaceCreateUpdateRequest = new SpaceCreateUpdateRequest(
                 "잠실우리집",
+                "#CCFFE5",
                 "우리집",
                 SPACE_DRAWING,
-                newSettingsRequest,
-                MAP_SVG
+                newSettingsRequest
         );
 
         // when
-        String saveSpaceApi = "/api/managers/maps/1/spaces";
-        ExtractableResponse<Response> response = saveSpace(saveSpaceApi, newSpaceCreateUpdateRequest);
+        ExtractableResponse<Response> response = saveSpace(spaceApi, newSpaceCreateUpdateRequest);
 
         // then
         assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
     }
 
-    @DisplayName("올바른 토큰이 주어질 때, space 정보 중 주어지지 않은 필드를 디폴트 값으로 저장한다")
     @Test
+    @DisplayName("space 정보 중 주어지지 않은 필드를 디폴트 값으로 저장한다")
     void save_default() {
         // given, when
         SettingsRequest settingsRequest = new SettingsRequest(
@@ -100,10 +131,10 @@ public class SpaceControllerTest extends AcceptanceTest {
 
         SpaceCreateUpdateRequest defaultSpaceCreateUpdateRequest = new SpaceCreateUpdateRequest(
                 "잠실우리집",
+                "#CCFFE5",
                 "우리집",
                 SPACE_DRAWING,
-                settingsRequest,
-                MAP_SVG
+                settingsRequest
         );
 
         Setting defaultSetting = new Setting.Builder()
@@ -113,20 +144,18 @@ public class SpaceControllerTest extends AcceptanceTest {
                 .reservationMinimumTimeUnit(10)
                 .reservationMaximumTimeUnit(1440)
                 .reservationEnable(true)
-                .disabledWeekdays(null)
+                .enabledDayOfWeek("monday, tuesday, wednesday, thursday, friday, saturday, sunday")
                 .build();
 
         Space defaultSpace = new Space.Builder()
-                .id(2L)
-                .name("잠실우리집")
-                .description("우리집")
-                .area(SPACE_DRAWING)
+                .name(defaultSpaceCreateUpdateRequest.getName())
+                .color(defaultSpaceCreateUpdateRequest.getColor())
+                .description(defaultSpaceCreateUpdateRequest.getDescription())
                 .setting(defaultSetting)
-                .mapImage(MAP_SVG)
+                .area(SPACE_DRAWING)
                 .build();
 
-        String saveSpaceApi = "/api/managers/maps/1/spaces";
-        ExtractableResponse<Response> response = saveSpace(saveSpaceApi, defaultSpaceCreateUpdateRequest);
+        ExtractableResponse<Response> response = saveSpace(spaceApi, defaultSpaceCreateUpdateRequest);
 
         // then
         String api = response.header("location");
@@ -140,14 +169,14 @@ public class SpaceControllerTest extends AcceptanceTest {
                 .isEqualTo(expectedSpaceFindDetailResponse);
     }
 
-    @DisplayName("올바른 토큰이 주어질 때, spaceId를 받아 해당 공간에 대한 정보를 조회한다.")
     @Test
+    @DisplayName("spaceId를 받아 해당 공간에 대한 정보를 조회한다.")
     void find() {
         // given, when
-        String api = "/api/managers/maps/1/spaces/1";
+        String api = spaceApi + "/" + beSpaceId;
         ExtractableResponse<Response> response = findSpace(api);
         SpaceFindDetailResponse actual = response.body().as(SpaceFindDetailResponse.class);
-        SpaceFindDetailResponse expected = SpaceFindDetailResponse.from(BE);
+        SpaceFindDetailResponse expected = SpaceFindDetailResponse.from(be);
 
         // then
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
@@ -157,35 +186,13 @@ public class SpaceControllerTest extends AcceptanceTest {
                 .isEqualTo(expected);
     }
 
-    @DisplayName("올바른 토큰이 주어질 때, 전체 공간에 대한 정보를 조회한다.")
     @Test
+    @DisplayName("전체 공간에 대한 정보를 조회한다.")
     void findAll() {
-        // given
-        SettingsRequest feSettingsRequest = new SettingsRequest(
-                LocalTime.of(0, 0),
-                LocalTime.of(18, 0),
-                10,
-                10,
-                1440,
-                true,
-                null
-        );
-
-        SpaceCreateUpdateRequest feSpaceCreateUpdateRequest = new SpaceCreateUpdateRequest(
-                "프론트엔드 강의실1",
-                "시니컬하네",
-                SPACE_DRAWING,
-                feSettingsRequest,
-                MAP_SVG
-        );
-
-        String api = "/api/managers/maps/1/spaces";
-        saveSpace(api, feSpaceCreateUpdateRequest);
-
-        // when
-        ExtractableResponse<Response> response = findAllSpace(api);
+        // given, when
+        ExtractableResponse<Response> response = findAllSpace(spaceApi);
         SpaceFindAllResponse actual = response.body().as(SpaceFindAllResponse.class);
-        SpaceFindAllResponse expected = SpaceFindAllResponse.from(List.of(BE, FE1));
+        SpaceFindAllResponse expected = SpaceFindAllResponse.from(List.of(be, fe));
 
         // then
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
@@ -194,8 +201,8 @@ public class SpaceControllerTest extends AcceptanceTest {
                 .isEqualTo(expected);
     }
 
-    @DisplayName("올바른 토큰이 주어질 때, 공간을 수정한다.")
     @Test
+    @DisplayName("공간을 수정한다.")
     void update() {
         // given, when
         SettingsRequest settingsRequest = new SettingsRequest(
@@ -205,29 +212,29 @@ public class SpaceControllerTest extends AcceptanceTest {
                 80,
                 130,
                 false,
-                "Monday, Tuesday"
+                "monday, tuesday, wednesday, thursday, friday, saturday, sunday"
         );
 
         SpaceCreateUpdateRequest updateSpaceCreateUpdateRequest = new SpaceCreateUpdateRequest(
                 "바다",
+                "#CCCCFF",
                 "장미아파트",
                 SPACE_DRAWING,
-                settingsRequest,
-                MAP_SVG
+                settingsRequest
         );
 
-        String api = "/api/managers/maps/" + LUTHER.getId() + "/spaces/1";
+        String api = spaceApi + "/" + beSpaceId;
         ExtractableResponse<Response> response = updateSpace(api, updateSpaceCreateUpdateRequest);
 
         // then
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
     }
 
-    @DisplayName("올바른 토큰이 주어질 때, 공간을 삭제한다.")
     @Test
+    @DisplayName("공간을 삭제한다.")
     void delete() {
         // given, when
-        String api = "/api/managers/maps/" + LUTHER.getId() + "/spaces/1";
+        String api = spaceApi + "/" + beSpaceId;
         ExtractableResponse<Response> response = deleteSpace(api);
 
         // then
@@ -238,7 +245,7 @@ public class SpaceControllerTest extends AcceptanceTest {
         return RestAssured
                 .given(getRequestSpecification()).log().all()
                 .accept("application/json")
-                .header("Authorization", AuthorizationExtractor.AUTHENTICATION_TYPE + " " + getToken())
+                .header("Authorization", AuthorizationExtractor.AUTHENTICATION_TYPE + " " + accessToken)
                 .filter(document("space/post", getRequestPreprocessor(), getResponsePreprocessor()))
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body(spaceCreateRequest)
@@ -250,7 +257,7 @@ public class SpaceControllerTest extends AcceptanceTest {
         return RestAssured
                 .given(getRequestSpecification()).log().all()
                 .accept("application/json")
-                .header("Authorization", AuthorizationExtractor.AUTHENTICATION_TYPE + " " + getToken())
+                .header("Authorization", AuthorizationExtractor.AUTHENTICATION_TYPE + " " + accessToken)
                 .filter(document("space/getAll", getRequestPreprocessor(), getResponsePreprocessor()))
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .when().get(api)
@@ -261,7 +268,7 @@ public class SpaceControllerTest extends AcceptanceTest {
         return RestAssured
                 .given(getRequestSpecification()).log().all()
                 .accept("application/json")
-                .header("Authorization", AuthorizationExtractor.AUTHENTICATION_TYPE + " " + getToken())
+                .header("Authorization", AuthorizationExtractor.AUTHENTICATION_TYPE + " " + accessToken)
                 .filter(document("space/get", getRequestPreprocessor(), getResponsePreprocessor()))
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .when().get(api)
@@ -274,7 +281,7 @@ public class SpaceControllerTest extends AcceptanceTest {
         return RestAssured
                 .given(getRequestSpecification()).log().all()
                 .accept("application/json")
-                .header("Authorization", AuthorizationExtractor.AUTHENTICATION_TYPE + " " + getToken())
+                .header("Authorization", AuthorizationExtractor.AUTHENTICATION_TYPE + " " + accessToken)
                 .filter(document("space/put", getRequestPreprocessor(), getResponsePreprocessor()))
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body(spaceCreateUpdateRequest)
@@ -286,12 +293,10 @@ public class SpaceControllerTest extends AcceptanceTest {
         return RestAssured
                 .given(getRequestSpecification()).log().all()
                 .accept("application/json")
-                .header("Authorization", AuthorizationExtractor.AUTHENTICATION_TYPE + " " + getToken())
+                .header("Authorization", AuthorizationExtractor.AUTHENTICATION_TYPE + " " + accessToken)
                 .filter(document("space/delete", getRequestPreprocessor(), getResponsePreprocessor()))
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .when().delete(api)
                 .then().log().all().extract();
     }
 }
-
-
