@@ -108,7 +108,15 @@ public class GuestReservationService extends ReservationService {
         checkCorrectPassword(reservation, reservationCreateUpdateWithPasswordRequest.getPassword());
         validateAvailability(space, reservationCreateUpdateWithPasswordRequest, reservation);
 
-        reservation.update(reservationCreateUpdateWithPasswordRequest, space);
+        Reservation updateReservation = new Reservation.Builder()
+                .startTime(reservationCreateUpdateWithPasswordRequest.getStartDateTime())
+                .endTime(reservationCreateUpdateWithPasswordRequest.getEndDateTime())
+                .userName(reservationCreateUpdateWithPasswordRequest.getName())
+                .description(reservationCreateUpdateWithPasswordRequest.getDescription())
+                .space(space)
+                .build();
+
+        reservation.update(updateReservation, space);
     }
 
     public void deleteReservation(
