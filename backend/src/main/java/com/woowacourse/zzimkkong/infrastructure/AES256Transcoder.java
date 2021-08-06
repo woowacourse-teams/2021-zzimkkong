@@ -2,6 +2,7 @@ package com.woowacourse.zzimkkong.infrastructure;
 
 import com.woowacourse.zzimkkong.exception.infrastructure.DecodingException;
 import com.woowacourse.zzimkkong.exception.infrastructure.EncodingException;
+import com.woowacourse.zzimkkong.exception.infrastructure.InsufficientSecretKeyLengthException;
 import org.apache.commons.codec.binary.Base64;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;
@@ -18,12 +19,22 @@ import java.security.NoSuchAlgorithmException;
 @Component
 @PropertySource("classpath:config/AES256Transcoder.properties")
 public class AES256Transcoder implements Transcoder {
+    private static final int MINIMUM_LENGTH_OF_SECRET_KEY = 32;
+    private static final int LENGTH_OF_INITIALIZATION_VECTOR = 16;
+
     private final SecretKey secureKey;
     private final IvParameterSpec ivParameterSpec;
 
     public AES256Transcoder(@Value("${transcoder.secret-key}") String secretKey) {
-        this.secureKey = new SecretKeySpec(secretKey.substring(0, 32).getBytes(), "AES");
-        this.ivParameterSpec = new IvParameterSpec(secretKey.substring(0, 16).getBytes());
+        validateLengthOfSecretKey(secretKey);
+        this.secureKey = new SecretKeySpec(secretKey.substring(0, MINIMUM_LENGTH_OF_SECRET_KEY).getBytes(), "AES");
+        this.ivParameterSpec = new IvParameterSpec(secretKey.substring(0, LENGTH_OF_INITIALIZATION_VECTOR).getBytes());
+    }
+
+    private void validateLengthOfSecretKey(String secretKey) {
+        if (secretKey.length() < MINIMUM_LENGTH_OF_SECRET_KEY) {
+            throw new InsufficientSecretKeyLengthException();
+        }
     }
 
     @Override
