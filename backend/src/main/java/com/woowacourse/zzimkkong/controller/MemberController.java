@@ -5,6 +5,7 @@ import com.woowacourse.zzimkkong.domain.Member;
 import com.woowacourse.zzimkkong.dto.member.MemberSaveRequest;
 import com.woowacourse.zzimkkong.dto.member.MemberSaveResponse;
 import com.woowacourse.zzimkkong.dto.member.PresetCreateResponse;
+import com.woowacourse.zzimkkong.dto.member.PresetFindAllResponse;
 import com.woowacourse.zzimkkong.dto.space.SettingsRequest;
 import com.woowacourse.zzimkkong.service.MemberService;
 import com.woowacourse.zzimkkong.service.PresetService;
@@ -60,5 +61,11 @@ public class MemberController {
         return ResponseEntity
                 .created(URI.create("/api/members/presets/" + presetCreateResponse.getId()))
                 .build();
+    }
+
+    @GetMapping("/presets")
+    public ResponseEntity<PresetFindAllResponse> findPreset(@Manager final Member manager) {
+        PresetFindAllResponse presetFindAllResponse = presetService.findAllPresets(manager);
+        return ResponseEntity.ok().body(presetFindAllResponse);
     }
 }
