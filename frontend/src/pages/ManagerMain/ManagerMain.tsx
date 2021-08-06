@@ -1,7 +1,6 @@
 import { AxiosError } from 'axios';
 import { useEffect, useMemo, useState } from 'react';
 import { useMutation } from 'react-query';
-import { useHistory } from 'react-router-dom';
 import { deleteMap } from 'api/map';
 import { ReactComponent as DeleteIcon } from 'assets/svg/delete.svg';
 import { ReactComponent as EditIcon } from 'assets/svg/edit.svg';
@@ -17,7 +16,6 @@ import Panel from 'components/Panel/Panel';
 import ReservationListItem from 'components/ReservationListItem/ReservationListItem';
 import MESSAGE from 'constants/message';
 import PATH from 'constants/path';
-import { LOCAL_STORAGE_KEY } from 'constants/storage';
 import useManagerMaps from 'hooks/useManagerMaps';
 import useManagerReservations from 'hooks/useManagerReservations';
 import { ErrorResponse } from 'types/response';
@@ -25,8 +23,6 @@ import { formatDate } from 'utils/datetime';
 import * as Styled from './ManagerMain.styles';
 
 const ManagerMain = (): JSX.Element => {
-  const history = useHistory();
-
   const [date, setDate] = useState(new Date());
   const [open, setOpen] = useState(false);
   const [selectedMapId, setSelectedMapId] = useState(0);
