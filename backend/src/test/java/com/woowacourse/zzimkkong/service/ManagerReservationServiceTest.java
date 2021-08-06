@@ -897,8 +897,7 @@ public class ManagerReservationServiceTest extends ServiceTest {
                 .willReturn(true);
         given(maps.findById(anyLong()))
                 .willReturn(Optional.of(LUTHER));
-        given(spaces.findById(anyLong()))
-                .willReturn(Optional.of(be));
+        // TODO: map fixture 안에 spaces도 초기화 해줄 수 있는 생성자 만들어 줘서 쓰기!
         given(reservations.findById(anyLong()))
                 .willReturn(Optional.of(reservation));
 
