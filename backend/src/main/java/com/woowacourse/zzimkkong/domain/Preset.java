@@ -25,9 +25,8 @@ public class Preset {
     }
 
     public Preset(final Long id, final Setting setting, final Member member) {
+        this(setting, member);
         this.id = id;
-        this.setting = setting;
-        this.member = member;
     }
 
     public Long getId() {
