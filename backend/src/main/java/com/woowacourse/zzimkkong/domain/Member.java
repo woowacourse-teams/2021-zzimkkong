@@ -54,6 +54,10 @@ public class Member {
                 .findAny();
     }
 
+    public void addPreset(final Preset preset) {
+        this.presets.add(preset);
+    }
+
     public Long getId() {
         return id;
     }

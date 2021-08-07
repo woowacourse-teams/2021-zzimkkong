@@ -14,14 +14,11 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.mock.mockito.MockBean;
 
-import java.util.Optional;
-
 import static com.woowacourse.zzimkkong.Constants.*;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.BDDMockito.given;
 
 class PresetServiceTest extends ServiceTest {
@@ -81,9 +78,7 @@ class PresetServiceTest extends ServiceTest {
     void delete() {
         //given
         Preset savedPreset = new Preset(1L, PRESET_NAME1, setting, pobi);
-
-        given(presets.findById(anyLong()))
-                .willReturn(Optional.of(savedPreset));
+        pobi.addPreset(savedPreset);
 
         //when, then
         assertDoesNotThrow(() -> presetService.deletePreset(savedPreset.getId(), pobi));
@@ -94,6 +89,7 @@ class PresetServiceTest extends ServiceTest {
     void deleteOwnerException() {
         //given
         Preset savedPreset = new Preset(1L, PRESET_NAME1, setting, pobi);
+        pobi.addPreset(savedPreset);
 
         Member jason = new Member(2L, "jason@email.com", PASSWORD, ORGANIZATION);
 
@@ -107,9 +103,12 @@ class PresetServiceTest extends ServiceTest {
     void deleteInvalidPresetException() {
         //given
         Preset savedPreset = new Preset(1L, PRESET_NAME1, setting, pobi);
+        pobi.addPreset(savedPreset);
+
+        Preset invalidPreset = new Preset(2L, PRESET_NAME1, setting, pobi);
 
         //when, then
-        assertThatThrownBy(() -> presetService.deletePreset(savedPreset.getId(), pobi))
+        assertThatThrownBy(() -> presetService.deletePreset(invalidPreset.getId(), pobi))
                 .isInstanceOf(NoSuchPresetException.class);
     }
 }
