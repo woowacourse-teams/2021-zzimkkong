@@ -143,8 +143,8 @@ public class MapService {
         storageUploader.delete(THUMBNAILS_DIRECTORY_NAME, fileName + THUMBNAIL_EXTENSION);
     }
 
-    public MapFindResponse findMapByPublicMapId(String publicMapId) {
-        Long mapId = sharingIdGenerator.parseIdFrom(publicMapId);
+    public MapFindResponse findMapBySharingId(String sharingMapId) {
+        Long mapId = sharingIdGenerator.parseIdFrom(sharingMapId);
         Map map = maps.findById(mapId)
                 .orElseThrow(NoSuchMapException::new);
         return MapFindResponse.of(map, sharingIdGenerator.from(map));

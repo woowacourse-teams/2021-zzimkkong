@@ -205,15 +205,15 @@ class MapServiceTest extends ServiceTest {
     }
 
     @Test
-    @DisplayName("Public Id로부터 Map을 찾을 수 있다.")
-    void findMapByPublicId() {
+    @DisplayName("Sharing Id로부터 Map을 찾을 수 있다.")
+    void findMapBySharingId() {
         // given
-        String publicMapId = sharingIdGenerator.from(luther);
+        String sharingId = sharingIdGenerator.from(luther);
         given(maps.findById(anyLong()))
                 .willReturn(Optional.of(luther));
 
         // when
-        MapFindResponse actual = mapService.findMapByPublicMapId(publicMapId);
+        MapFindResponse actual = mapService.findMapBySharingId(sharingId);
         MapFindResponse expected = MapFindResponse.of(luther, sharingIdGenerator.from(luther));
 
         // then
@@ -223,13 +223,13 @@ class MapServiceTest extends ServiceTest {
     }
 
     @Test
-    @DisplayName("잘못된 publicMapId가 주어지면 예외가 발생한다.")
-    void findMapByWrongPublicId() {
+    @DisplayName("잘못된 Sharing Id가 주어지면 예외가 발생한다.")
+    void findMapByWrongSharingId() {
         // given
-        String wrongPublicMapId = "zzimkkong";
+        String wrongSharingId = "zzimkkong";
 
         // when, then
-        assertThatThrownBy(() -> mapService.findMapByPublicMapId(wrongPublicMapId))
+        assertThatThrownBy(() -> mapService.findMapBySharingId(wrongSharingId))
                 .isInstanceOf(InvalidAccessLinkException.class);
     }
 }

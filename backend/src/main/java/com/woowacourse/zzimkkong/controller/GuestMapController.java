@@ -19,7 +19,7 @@ public class GuestMapController {
 
     @GetMapping
     public ResponseEntity<MapFindResponse> find(@RequestParam final String publicMapId) {
-        MapFindResponse mapFindResponse = mapService.findMapByPublicMapId(publicMapId);
+        MapFindResponse mapFindResponse = mapService.findMapBySharingId(publicMapId);
         return ResponseEntity.ok().body(mapFindResponse);
     }
 }

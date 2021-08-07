@@ -36,18 +36,17 @@ class GuestMapControllerTest extends AcceptanceTest {
     }
 
     @Test
-    @DisplayName("게스트는 publicId를 통해 Map을 조회할 수 있다.")
-    void requestFindMapByPublicId() {
+    @DisplayName("게스트는 Sharing Id를 통해 Map을 조회할 수 있다.")
+    void requestFindMapBySharingId() {
         // given
         String mapId = createMapResponse.header("Location").split("/")[4];
 
         ExtractableResponse<Response> mapFindResponseFromId = findMap("/api/managers/maps/" + mapId);
         MapFindResponse expected = mapFindResponseFromId.body().as(MapFindResponse.class);
-
-        String publicMapId = expected.getPublicMapId();
+        String sharingId = expected.getPublicMapId();
 
         // when
-        ExtractableResponse<Response> mapFindResponseFromPublicId = requestFindMapByPublicId(publicMapId);
+        ExtractableResponse<Response> mapFindResponseFromPublicId = requestFindMapBySharingId(sharingId);
         MapFindResponse actual = mapFindResponseFromPublicId.body().as(MapFindResponse.class);
 
         // then
@@ -56,13 +55,13 @@ class GuestMapControllerTest extends AcceptanceTest {
                 .isEqualTo(expected);
     }
 
-    private ExtractableResponse<Response> requestFindMapByPublicId(String publicMapId) {
+    private ExtractableResponse<Response> requestFindMapBySharingId(String sharingMapId) {
         return RestAssured
                 .given(getRequestSpecification()).log().all()
                 .accept("application/json")
                 .filter(document("map/getByPublicId", getRequestPreprocessor(), getResponsePreprocessor()))
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .when().get("/api/guests/maps?publicMapId=" + publicMapId)
+                .when().get("/api/guests/maps?publicMapId=" + sharingMapId)
                 .then().log().all().extract();
     }
 }

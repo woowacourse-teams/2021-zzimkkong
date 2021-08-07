@@ -41,7 +41,6 @@ public class AES256Transcoder implements Transcoder {
     public String encode(String input) {
         try {
             Cipher cipher = Cipher.getInstance("AES/CBC/PKCS5Padding");
-
             cipher.init(Cipher.ENCRYPT_MODE, secureKey, ivParameterSpec);
 
             byte[] encrypted = cipher.doFinal(input.getBytes(StandardCharsets.UTF_8));
@@ -59,7 +58,6 @@ public class AES256Transcoder implements Transcoder {
     public String decode(String input) {
         try {
             Cipher cipher = Cipher.getInstance("AES/CBC/PKCS5Padding");
-
             cipher.init(Cipher.DECRYPT_MODE, secureKey, ivParameterSpec);
 
             byte[] byteStr = Base64.decodeBase64(input.getBytes());

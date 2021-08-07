@@ -37,23 +37,23 @@ class SharingIdGeneratorTest {
     }
 
     @Test
-    @DisplayName("Map 도메인 객체로부터 인코딩된 publicId를 만들어낸다.")
+    @DisplayName("Map 도메인 객체로부터 인코딩된 Sharing Id를 만들어낸다.")
     void generatePublicIdFromMap() {
         // given, when
-        String publicMapId = sharingIdGenerator.from(luther);
+        String sharingMapId = sharingIdGenerator.from(luther);
 
         // then
-        assertThat(publicMapId).isNotEmpty();
+        assertThat(sharingMapId).isNotEmpty();
     }
 
     @Test
-    @DisplayName("인코딩된 publicMapId로부터 Id를 얻어낸다.")
+    @DisplayName("인코딩된 Sharing Id로부터 Id를 얻어낸다.")
     void parseIdFromEncodedString() {
         // given
-        String publicMapId = sharingIdGenerator.from(luther);
+        String sharingId = sharingIdGenerator.from(luther);
 
         // when
-        Long actual = sharingIdGenerator.parseIdFrom(publicMapId);
+        Long actual = sharingIdGenerator.parseIdFrom(sharingId);
         Long expected = luther.getId();
 
         // then
@@ -61,18 +61,18 @@ class SharingIdGeneratorTest {
     }
 
     @Test
-    @DisplayName("디코딩 할 수 없는 문자열이 publicId로 주어지면 예외를 발생시킨다.")
+    @DisplayName("디코딩 할 수 없는 문자열이 Sharing Id로 주어지면 예외를 발생시킨다.")
     void parseIdFromInvalidToDecode() {
         // given
-        String wrongPublicId = "zzimkkong";
+        String wrongSharingId = "zzimkkong";
 
         // when, then
-        assertThatThrownBy(() -> sharingIdGenerator.parseIdFrom(wrongPublicId))
+        assertThatThrownBy(() -> sharingIdGenerator.parseIdFrom(wrongSharingId))
                 .isInstanceOf(InvalidAccessLinkException.class);
     }
 
     @Test
-    @DisplayName("Id 타입과 같은 Long 타입의 값으로 디코딩 할 수 없는 값이 publicId로 주어지면 예외를 발생시킨다.")
+    @DisplayName("Id 타입과 같은 Long 타입의 값으로 디코딩 할 수 없는 값이 Sharing Id로 주어지면 예외를 발생시킨다.")
     void parseIdFromNotIdValue() {
         // given
         String beforeEncoded = "zzimkkong";
