@@ -2,7 +2,6 @@ import { AxiosError } from 'axios';
 import {
   ChangeEventHandler,
   FormEventHandler,
-  KeyboardEventHandler,
   MouseEventHandler,
   useCallback,
   useEffect,
@@ -216,14 +215,6 @@ const ManagerSpaceEdit = (): JSX.Element => {
     width: 0,
     height: 0,
   });
-
-  const handleKeyDown: KeyboardEventHandler<SVGElement> = useCallback((event) => {
-    if (event.key === KEY_SPACE) setDraggable(true);
-  }, []);
-
-  const handleKeyUp: KeyboardEventHandler<SVGElement> = useCallback((event) => {
-    if (event.key === KEY_SPACE) setDraggable(false);
-  }, []);
 
   const handleWheel: WheelEventHandler<SVGElement> = useCallback((event) => {
     const { offsetX, offsetY, deltaY } = event.nativeEvent;
@@ -619,6 +610,14 @@ const ManagerSpaceEdit = (): JSX.Element => {
     ]
   );
 
+  const handleKeyDown = useCallback((event: KeyboardEvent) => {
+    if (event.key === KEY_SPACE) setDraggable(true);
+  }, []);
+
+  const handleKeyUp = useCallback((event: KeyboardEvent) => {
+    if (event.key === KEY_SPACE) setDraggable(false);
+  }, []);
+
   useEffect(() => {
     const editorWidth = editorRef.current ? editorRef.current.offsetWidth : 0;
     const editorHeight = editorRef.current ? editorRef.current.offsetHeight : 0;
@@ -639,6 +638,16 @@ const ManagerSpaceEdit = (): JSX.Element => {
       }));
     }
   }, [width, height]);
+
+  useEffect(() => {
+    document.addEventListener('keydown', handleKeyDown);
+    document.addEventListener('keyup', handleKeyUp);
+
+    return () => {
+      document.removeEventListener('keydown', handleKeyDown);
+      document.removeEventListener('keyup', handleKeyUp);
+    };
+  }, [handleKeyDown, handleKeyUp]);
 
   if (
     (map.isError && map.error?.response?.status === 401) ||
@@ -695,14 +704,11 @@ const ManagerSpaceEdit = (): JSX.Element => {
                   height="100%"
                   isDragging={isDragging}
                   isDraggable={isDraggable}
-                  onKeyDown={handleKeyDown}
-                  onKeyUp={handleKeyUp}
                   onWheel={handleWheel}
                   onMouseDown={handleDragStart}
                   onMouseUp={handleDragEnd}
                   onMouseOut={handleMouseOut}
                   onMouseMove={handleDrag}
-                  tabIndex={0}
                 >
                   <rect width="100%" height="100%" fill={PALETTE.GRAY[200]}></rect>
                   <svg
