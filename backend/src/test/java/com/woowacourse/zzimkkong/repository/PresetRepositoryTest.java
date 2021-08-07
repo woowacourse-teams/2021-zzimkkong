@@ -50,7 +50,7 @@ class PresetRepositoryTest extends RepositoryTest {
     }
 
     @Test
-    @DisplayName("멤버의 모든 프리셋을 저장할 수 있다.")
+    @DisplayName("멤버의 모든 프리셋을 조회할 수 있다.")
     void findAllByMember() {
         //given
         Preset savedPreset = presets.save(preset);
