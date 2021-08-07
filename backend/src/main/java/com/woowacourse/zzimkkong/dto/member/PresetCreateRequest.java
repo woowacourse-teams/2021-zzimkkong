@@ -1,4 +1,4 @@
-package com.woowacourse.zzimkkong.dto;
+package com.woowacourse.zzimkkong.dto.member;
 
 import com.woowacourse.zzimkkong.dto.space.SettingsRequest;
 
@@ -20,7 +20,7 @@ public class PresetCreateRequest {
 
     }
 
-    public PresetCreateRequest(String name, SettingsRequest settingsRequest) {
+    public PresetCreateRequest(final String name, final SettingsRequest settingsRequest) {
         this.name = name;
         this.settingsRequest = settingsRequest;
     }

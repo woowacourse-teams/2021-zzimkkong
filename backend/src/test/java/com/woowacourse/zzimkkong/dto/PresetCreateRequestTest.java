@@ -1,5 +1,6 @@
 package com.woowacourse.zzimkkong.dto;
 
+import com.woowacourse.zzimkkong.dto.member.PresetCreateRequest;
 import com.woowacourse.zzimkkong.dto.space.SettingsRequest;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.params.ParameterizedTest;
