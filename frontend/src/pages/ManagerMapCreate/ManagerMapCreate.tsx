@@ -62,6 +62,8 @@ const ManagerMapCreate = (): JSX.Element => {
 
   const [gripPoints, setGripPoints] = useState<GripPoint[]>([]);
   const [selectedMapElementId, setSelectedMapElementId] = useState<MapElement['id'] | null>(null);
+  const [erasingMapElementIds, setErasingMapElementIds] = useState<MapElement['id'][]>([]);
+  const [isErasing, setErasing] = useState(false);
 
   const nextMapElementId = Math.max(...mapElements.map(({ id }) => id), 1) + 1;
   const nextGripPointId = Math.max(...gripPoints.map(({ id }) => id), 1) + 1;
@@ -98,7 +100,7 @@ const ManagerMapCreate = (): JSX.Element => {
     },
   });
 
-  const getSVGCoordinate = (event: React.MouseEvent<SVGElement>) => {
+  const getSVGCoordinate = (event: MouseEvent<SVGElement>) => {
     const svg = (event.nativeEvent.target as SVGElement)?.ownerSVGElement;
     if (!svg) return { svg: null, x: -1, y: -1 };
 
@@ -163,6 +165,36 @@ const ManagerMapCreate = (): JSX.Element => {
     });
   };
 
+  const handleDragStart: MouseEventHandler<SVGElement> = (event) => {
+    if (!isDraggable) return;
+
+    setDragOffsetX(event.nativeEvent.offsetX - board.x);
+    setDragOffsetY(event.nativeEvent.offsetY - board.y);
+
+    setDragging(true);
+  };
+
+  const handleDrag: MouseEventHandler<SVGElement> = (event) => {
+    if (!isDraggable || !isDragging) return;
+
+    const { offsetX, offsetY } = event.nativeEvent;
+
+    setBoard((prevState) => ({
+      ...prevState,
+      x: offsetX - dragOffsetX,
+      y: offsetY - dragOffsetY,
+    }));
+  };
+
+  const handleDragEnd = () => {
+    if (!isDraggable) return;
+
+    setDragOffsetX(0);
+    setDragOffsetY(0);
+
+    setDragging(false);
+  };
+
   const handleSelectMapElement = (event: MouseEvent<SVGPolylineElement>, id: MapElement['id']) => {
     if (mode !== Mode.Select) return;
 
@@ -184,35 +216,7 @@ const ManagerMapCreate = (): JSX.Element => {
     unselectMapElement();
   };
 
-  const handleDragStart: MouseEventHandler<SVGElement> = (event) => {
-    setDragOffsetX(event.nativeEvent.offsetX - board.x);
-    setDragOffsetY(event.nativeEvent.offsetY - board.y);
-
-    setDragging(true);
-  };
-
-  const handleDrag: MouseEventHandler<SVGElement> = (event) => {
-    if (!isDraggable || !isDragging) return;
-
-    const { offsetX, offsetY } = event.nativeEvent;
-
-    setBoard((prevState) => ({
-      ...prevState,
-      x: offsetX - dragOffsetX,
-      y: offsetY - dragOffsetY,
-    }));
-  };
-
-  const handleDragEnd = () => {
-    setDragOffsetX(0);
-    setDragOffsetY(0);
-
-    setDragging(false);
-  };
-
-  const handleDrawStart: MouseEventHandler<SVGElement> = (event) => {
-    if (mode !== Mode.Line) return;
-
+  const drawStart = () => {
     if (drawingStatus.start) {
       const startPoint = `${drawingStatus.start.x},${drawingStatus.start.y}`;
       const endPoint = `${stickyCoordinate.x},${stickyCoordinate.y}`;
@@ -230,15 +234,15 @@ const ManagerMapCreate = (): JSX.Element => {
       return;
     }
 
+    if (isDragging) return;
+
     setDrawingStatus((prevState) => ({
       ...prevState,
       start: stickyCoordinate,
     }));
   };
 
-  const handleDrawEnd: MouseEventHandler<SVGElement> = (event) => {
-    if (mode !== Mode.Line) return;
-
+  const drawEnd = () => {
     if (!drawingStatus || !drawingStatus.start) return;
 
     const startPoint = `${drawingStatus.start.x},${drawingStatus.start.y}`;
@@ -246,7 +250,7 @@ const ManagerMapCreate = (): JSX.Element => {
 
     setDrawingStatus({});
 
-    if (startPoint === endPoint) return;
+    if (startPoint === endPoint || isDragging) return;
 
     setMapElements((prevState) => [
       ...prevState,
@@ -258,6 +262,67 @@ const ManagerMapCreate = (): JSX.Element => {
       },
     ]);
   };
+
+  const eraseStart = () => {
+    if (erasingMapElementIds.length > 0) {
+      eraseEnd();
+
+      return;
+    }
+    setErasing(true);
+    setErasingMapElementIds([]);
+  };
+
+  const eraseEnd = () => {
+    setErasing(false);
+    setMapElements((prevMapElements) =>
+      prevMapElements.filter(({ id }) => !erasingMapElementIds.includes(id))
+    );
+    setErasingMapElementIds([]);
+  };
+
+  const handleSelectErasingElement = (id: MapElement['id']) => {
+    if (mode !== Mode.Eraser || !isErasing) return;
+
+    setErasingMapElementIds((prevIds) => [...prevIds, id]);
+  };
+
+  const handleMouseDown = () => {
+    if (mode === Mode.Line) drawStart();
+    if (mode === Mode.Eraser) eraseStart();
+  };
+
+  const handleMouseUp = () => {
+    if (mode === Mode.Line) drawEnd();
+    if (mode === Mode.Eraser) eraseEnd();
+  };
+
+  const deleteMapElement = useCallback(() => {
+    if (!selectedMapElementId) return;
+
+    setMapElements((prevMapElements) =>
+      prevMapElements.filter(({ id }) => id !== selectedMapElementId)
+    );
+    unselectMapElement();
+  }, [selectedMapElementId]);
+
+  const handleKeyDown = useCallback(
+    (event: KeyboardEvent) => {
+      if (event.key === KEY_DELETE) {
+        deleteMapElement();
+      }
+      if (event.key === KEY_SPACE) {
+        setPressSpacebar(true);
+      }
+    },
+    [deleteMapElement]
+  );
+
+  const handleKeyUp = useCallback((event: KeyboardEvent) => {
+    if (event.key === KEY_SPACE) {
+      setPressSpacebar(false);
+    }
+  }, []);
 
   const handleSubmit: FormEventHandler<HTMLFormElement> = (event) => {
     event.preventDefault();
@@ -291,33 +356,6 @@ const ManagerMapCreate = (): JSX.Element => {
 
     createMap.mutate({ mapName, mapDrawing, mapImageSvg });
   };
-
-  const deleteMapElement = useCallback(() => {
-    if (!selectedMapElementId) return;
-
-    setMapElements((prevMapElements) =>
-      prevMapElements.filter(({ id }) => id !== selectedMapElementId)
-    );
-    unselectMapElement();
-  }, [selectedMapElementId]);
-
-  const handleKeyDown = useCallback(
-    (event: KeyboardEvent) => {
-      if (event.key === KEY_DELETE) {
-        deleteMapElement();
-      }
-      if (event.key === KEY_SPACE) {
-        setPressSpacebar(true);
-      }
-    },
-    [deleteMapElement]
-  );
-
-  const handleKeyUp = useCallback((event: KeyboardEvent) => {
-    if (event.key === KEY_SPACE) {
-      setPressSpacebar(false);
-    }
-  }, []);
 
   useEffect(() => {
     const editorWidth = editorRef.current ? editorRef.current.offsetWidth : 0;
@@ -404,6 +442,13 @@ const ManagerMapCreate = (): JSX.Element => {
                 <PolylineIcon />
               </Styled.ToolbarButton>
               <Styled.ToolbarButton
+                text="지우개"
+                selected={mode === Mode.Eraser}
+                onClick={() => selectMode(Mode.Eraser)}
+              >
+                <SelectIcon />
+              </Styled.ToolbarButton>
+              <Styled.ToolbarButton
                 text="장식"
                 selected={mode === Mode.Decoration}
                 onClick={() => selectMode(Mode.Decoration)}
@@ -422,15 +467,15 @@ const ManagerMapCreate = (): JSX.Element => {
                 onWheel={handleWheel}
                 onMouseDown={handleDragStart}
                 onMouseUp={handleDragEnd}
-                onMouseMoveCapture={handleDrag}
+                onMouseMove={handleDrag}
               >
                 <rect width="100%" height="100%" fill={PALETTE.GRAY[200]}></rect>
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   version="1.1"
                   onMouseMove={handleMouseMove}
-                  onMouseDown={handleDrawStart}
-                  onMouseUp={handleDrawEnd}
+                  onMouseDown={handleMouseDown}
+                  onMouseUp={handleMouseUp}
                 >
                   <defs>
                     <pattern
@@ -496,7 +541,9 @@ const ManagerMapCreate = (): JSX.Element => {
                         strokeWidth={LINE_WIDTH}
                         strokeLinecap="round"
                         cursor={mode === Mode.Select ? 'pointer' : 'default'}
+                        opacity={erasingMapElementIds.includes(element.id) ? '0.3' : '1'}
                         onClickCapture={(event) => handleSelectMapElement(event, element.id)}
+                        onMouseOverCapture={() => handleSelectErasingElement(element.id)}
                       />
                     ))}
 
