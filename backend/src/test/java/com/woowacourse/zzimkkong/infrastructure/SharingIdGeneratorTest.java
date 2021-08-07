@@ -16,12 +16,12 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 @SpringBootTest
 @ActiveProfiles("test")
-class PublicIdGeneratorTest {
+class SharingIdGeneratorTest {
     private Member pobi;
     private Map luther;
 
     @Autowired
-    PublicIdGenerator publicIdGenerator;
+    SharingIdGenerator sharingIdGenerator;
 
     @Autowired
     Transcoder transcoder;
@@ -40,7 +40,7 @@ class PublicIdGeneratorTest {
     @DisplayName("Map 도메인 객체로부터 인코딩된 publicId를 만들어낸다.")
     void generatePublicIdFromMap() {
         // given, when
-        String publicMapId = publicIdGenerator.from(luther);
+        String publicMapId = sharingIdGenerator.from(luther);
 
         // then
         assertThat(publicMapId).isNotEmpty();
@@ -50,10 +50,10 @@ class PublicIdGeneratorTest {
     @DisplayName("인코딩된 publicMapId로부터 Id를 얻어낸다.")
     void parseIdFromEncodedString() {
         // given
-        String publicMapId = publicIdGenerator.from(luther);
+        String publicMapId = sharingIdGenerator.from(luther);
 
         // when
-        Long actual = publicIdGenerator.parseIdFrom(publicMapId);
+        Long actual = sharingIdGenerator.parseIdFrom(publicMapId);
         Long expected = luther.getId();
 
         // then
@@ -67,7 +67,7 @@ class PublicIdGeneratorTest {
         String wrongPublicId = "zzimkkong";
 
         // when, then
-        assertThatThrownBy(() -> publicIdGenerator.parseIdFrom(wrongPublicId))
+        assertThatThrownBy(() -> sharingIdGenerator.parseIdFrom(wrongPublicId))
                 .isInstanceOf(InvalidAccessLinkException.class);
     }
 
@@ -79,7 +79,7 @@ class PublicIdGeneratorTest {
         String encoded = transcoder.encode(beforeEncoded);
 
         // when, then
-        assertThatThrownBy(() -> publicIdGenerator.parseIdFrom(encoded))
+        assertThatThrownBy(() -> sharingIdGenerator.parseIdFrom(encoded))
                 .isInstanceOf(InvalidAccessLinkException.class);
     }
 }

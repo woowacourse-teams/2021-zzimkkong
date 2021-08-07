@@ -6,7 +6,7 @@ import com.woowacourse.zzimkkong.dto.map.MapCreateUpdateRequest;
 import com.woowacourse.zzimkkong.dto.map.MapFindAllResponse;
 import com.woowacourse.zzimkkong.dto.map.MapFindResponse;
 import com.woowacourse.zzimkkong.infrastructure.AuthorizationExtractor;
-import com.woowacourse.zzimkkong.infrastructure.PublicIdGenerator;
+import com.woowacourse.zzimkkong.infrastructure.SharingIdGenerator;
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
@@ -34,7 +34,7 @@ class MapControllerTest extends AcceptanceTest {
     private String createdMapApi;
 
     @Autowired
-    PublicIdGenerator publicIdGenerator;
+    SharingIdGenerator sharingIdGenerator;
 
     @BeforeEach
     void setUp() {
@@ -80,7 +80,7 @@ class MapControllerTest extends AcceptanceTest {
         ExtractableResponse<Response> response = findAllMaps(saveMapApi);
         List<MapFindResponse> findMaps = response.as(MapFindAllResponse.class).getMaps();
         List<MapFindResponse> expected = List.of(luther, smallHouse).stream()
-                .map(map -> MapFindResponse.of(map, publicIdGenerator.from(expectedMapIterator.next())))
+                .map(map -> MapFindResponse.of(map, sharingIdGenerator.from(expectedMapIterator.next())))
                 .collect(Collectors.toList());
 
         // then

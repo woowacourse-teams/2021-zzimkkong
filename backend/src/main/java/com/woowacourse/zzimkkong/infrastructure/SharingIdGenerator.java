@@ -6,10 +6,10 @@ import com.woowacourse.zzimkkong.exception.map.InvalidAccessLinkException;
 import org.springframework.stereotype.Component;
 
 @Component
-public class PublicIdGenerator {
+public class SharingIdGenerator {
     private final Transcoder transcoder;
 
-    public PublicIdGenerator(Transcoder transcoder) {
+    public SharingIdGenerator(Transcoder transcoder) {
         this.transcoder = transcoder;
     }
 

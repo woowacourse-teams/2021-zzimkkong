@@ -11,7 +11,7 @@ import com.woowacourse.zzimkkong.dto.map.MapFindResponse;
 import com.woowacourse.zzimkkong.exception.authorization.NoAuthorityOnMapException;
 import com.woowacourse.zzimkkong.exception.map.InvalidAccessLinkException;
 import com.woowacourse.zzimkkong.exception.space.ReservationExistOnSpaceException;
-import com.woowacourse.zzimkkong.infrastructure.PublicIdGenerator;
+import com.woowacourse.zzimkkong.infrastructure.SharingIdGenerator;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -87,7 +87,7 @@ class MapServiceTest extends ServiceTest {
     }
 
     @Autowired
-    private PublicIdGenerator publicIdGenerator;
+    private SharingIdGenerator sharingIdGenerator;
 
     @Test
     @DisplayName("맵 생성 요청 시, 올바른 요청이 들어오면 맵을 생성한다.")
@@ -119,7 +119,7 @@ class MapServiceTest extends ServiceTest {
         //then
         assertThat(mapFindResponse)
                 .usingRecursiveComparison()
-                .isEqualTo(MapFindResponse.of(luther, publicIdGenerator.from(luther)));
+                .isEqualTo(MapFindResponse.of(luther, sharingIdGenerator.from(luther)));
     }
 
     @Test
@@ -136,7 +136,7 @@ class MapServiceTest extends ServiceTest {
         //then
         assertThat(mapFindAllResponse).usingRecursiveComparison()
                 .isEqualTo(expectedMaps.stream()
-                        .map(map -> MapFindResponse.of(map, publicIdGenerator.from(map)))
+                        .map(map -> MapFindResponse.of(map, sharingIdGenerator.from(map)))
                         .collect(collectingAndThen(toList(), mapFindResponses -> MapFindAllResponse.of(mapFindResponses, pobi))));
     }
 
@@ -208,13 +208,13 @@ class MapServiceTest extends ServiceTest {
     @DisplayName("Public Id로부터 Map을 찾을 수 있다.")
     void findMapByPublicId() {
         // given
-        String publicMapId = publicIdGenerator.from(luther);
+        String publicMapId = sharingIdGenerator.from(luther);
         given(maps.findById(anyLong()))
                 .willReturn(Optional.of(luther));
 
         // when
         MapFindResponse actual = mapService.findMapByPublicMapId(publicMapId);
-        MapFindResponse expected = MapFindResponse.of(luther, publicIdGenerator.from(luther));
+        MapFindResponse expected = MapFindResponse.of(luther, sharingIdGenerator.from(luther));
 
         // then
         assertThat(actual)
