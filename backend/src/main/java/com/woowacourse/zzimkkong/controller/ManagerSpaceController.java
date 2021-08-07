@@ -15,10 +15,10 @@ import java.net.URI;
 
 @RestController
 @RequestMapping("/api/managers/maps/{mapId}/spaces")
-public class SpaceController {
+public class ManagerSpaceController {
     private final SpaceService spaceService;
 
-    public SpaceController(final SpaceService spaceService) {
+    public ManagerSpaceController(final SpaceService spaceService) {
         this.spaceService = spaceService;
     }
 

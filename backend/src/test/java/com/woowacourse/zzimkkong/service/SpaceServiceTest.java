@@ -227,6 +227,23 @@ class SpaceServiceTest extends ServiceTest {
     }
 
     @Test
+    @DisplayName("예약자 전체 공간을 조회한다.")
+    void findAllGuest() {
+        // given
+        given(maps.findById(anyLong()))
+                .willReturn(Optional.of(luther));
+        given(spaces.findAllByMapId(anyLong()))
+                .willReturn(List.of(be, fe));
+
+        // when
+        SpaceFindAllResponse actual = spaceService.findAllSpace(luther.getId());
+
+        // then
+        assertThat(actual).usingRecursiveComparison()
+                .isEqualTo(SpaceFindAllResponse.from(List.of(be, fe)));
+    }
+
+    @Test
     @DisplayName("공간을 수정한다.")
     void update() {
         // given, when
