@@ -1,7 +1,9 @@
 import { AxiosError } from 'axios';
 import {
   FormEventHandler,
+  MouseEvent,
   MouseEventHandler,
+  useCallback,
   useEffect,
   useRef,
   useState,
@@ -23,27 +25,17 @@ import Layout from 'components/Layout/Layout';
 import PALETTE from 'constants/palette';
 import PATH from 'constants/path';
 import useInput from 'hooks/useInput';
-import { Color, Coordinate } from 'types/common';
+import { Color, Coordinate, DrawingStatus, GripPoint, MapElement } from 'types/common';
 import { Mode } from 'types/editor';
 import { ErrorResponse } from 'types/response';
 import * as Styled from './ManagerMapCreate.styles';
-
-interface DrawingStatus {
-  start?: Coordinate;
-  end?: Coordinate;
-}
-
-interface MapElement {
-  id: number;
-  type: 'polyline';
-  stroke: Color;
-  points: string[];
-}
 
 const GRID_SIZE = 10;
 const SCALE_DELTA = 0.001;
 const MIN_SCALE = 0.5;
 const MAX_SCALE = 3.0;
+const LINE_WIDTH = 3;
+const KEY_DELETE = 'Delete';
 
 const ManagerMapCreate = (): JSX.Element => {
   const editorRef = useRef<HTMLDivElement | null>(null);
@@ -66,7 +58,12 @@ const ManagerMapCreate = (): JSX.Element => {
   const [color, setColor] = useState<Color>('#333333');
   const [drawingStatus, setDrawingStatus] = useState<DrawingStatus>({});
   const [mapElements, setMapElements] = useState<MapElement[]>([]);
-  const nextId = Math.max(...mapElements.map(({ id }) => id), 1) + 1;
+
+  const [gripPoints, setGripPoints] = useState<GripPoint[]>([]);
+  const [selectedMapElementId, setSelectedMapElementId] = useState<MapElement['id'] | null>(null);
+
+  const nextMapElementId = Math.max(...mapElements.map(({ id }) => id), 1) + 1;
+  const nextGripPointId = Math.max(...gripPoints.map(({ id }) => id), 1) + 1;
 
   const [widthValue, onChangeWidthValue] = useInput('800');
   const [heightValue, onChangeHeightValue] = useInput('600');
@@ -80,6 +77,24 @@ const ManagerMapCreate = (): JSX.Element => {
     x: 0,
     y: 0,
     scale: 1,
+  });
+
+  const createMap = useMutation(postMap, {
+    onSuccess: (response) => {
+      if (window.confirm('맵 생성 완료! 공간을 편집하러 가시겠어요?')) {
+        const headers = response.headers as { location: string };
+        const mapId = headers.location.split('/').pop() ?? '';
+
+        history.push(`/map/${mapId}/space/edit`);
+
+        return;
+      }
+
+      history.push(PATH.MANAGER_MAIN);
+    },
+    onError: (error: AxiosError<ErrorResponse>) => {
+      console.error(error);
+    },
   });
 
   const getSVGCoordinate = (event: React.MouseEvent<SVGElement>) => {
@@ -96,6 +111,17 @@ const ManagerMapCreate = (): JSX.Element => {
     const y = (point.y - board.y) * (1 / board.scale);
 
     return { svg, x, y };
+  };
+
+  const selectMenu = (mode: Mode) => {
+    setDrawingStatus({});
+    setCoordinate({ x: 0, y: 0 });
+    setMode(mode);
+  };
+
+  const unselectMapElement = () => {
+    setSelectedMapElementId(null);
+    setGripPoints([]);
   };
 
   const handleMouseMove: MouseEventHandler<SVGElement> = (event) => {
@@ -136,6 +162,27 @@ const ManagerMapCreate = (): JSX.Element => {
     });
   };
 
+  const handleSelectMapElement = (event: MouseEvent<SVGPolylineElement>, id: MapElement['id']) => {
+    if (mode !== Mode.Select) return;
+
+    const target = event.target as SVGPolylineElement;
+    const points = Object.values<Coordinate>(target?.points).map(({ x, y }) => ({ x, y }));
+
+    const newGripPoints = points.map((point, index) => ({
+      id: nextGripPointId + index,
+      mapElementId: id,
+      x: point.x,
+      y: point.y,
+    }));
+
+    setSelectedMapElementId(id);
+    setGripPoints([...newGripPoints]);
+  };
+
+  const handleClickBoard: MouseEventHandler<SVGGElement> = (event) => {
+    unselectMapElement();
+  };
+
   const handleDragStart: MouseEventHandler<SVGElement> = (event) => {
     setDragOffsetX(event.nativeEvent.offsetX - board.x);
     setDragOffsetY(event.nativeEvent.offsetY - board.y);
@@ -172,7 +219,7 @@ const ManagerMapCreate = (): JSX.Element => {
       setMapElements((prevState) => [
         ...prevState,
         {
-          id: nextId,
+          id: nextMapElementId,
           type: 'polyline',
           stroke: color,
           points: [startPoint, endPoint],
@@ -199,7 +246,7 @@ const ManagerMapCreate = (): JSX.Element => {
     setMapElements((prevState) => [
       ...prevState,
       {
-        id: nextId,
+        id: nextMapElementId,
         type: 'polyline',
         stroke: color,
         points: [startPoint, endPoint],
@@ -208,24 +255,6 @@ const ManagerMapCreate = (): JSX.Element => {
 
     setDrawingStatus({});
   };
-
-  const createMap = useMutation(postMap, {
-    onSuccess: (response) => {
-      if (window.confirm('맵 생성 완료! 공간을 편집하러 가시겠어요?')) {
-        const headers = response.headers as { location: string };
-        const mapId = headers.location.split('/').pop() ?? '';
-
-        history.push(`/map/${mapId}/space/edit`);
-
-        return;
-      }
-
-      history.push(PATH.MANAGER_MAIN);
-    },
-    onError: (error: AxiosError<ErrorResponse>) => {
-      console.error(error);
-    },
-  });
 
   const handleSubmit: FormEventHandler<HTMLFormElement> = (event) => {
     event.preventDefault();
@@ -246,7 +275,8 @@ const ManagerMapCreate = (): JSX.Element => {
               <polyline
                 points='${points.join(' ')}'
                 stroke='${stroke}'
-                strokeWidth='2'
+                strokeWidth='${LINE_WIDTH}'
+                strokeLinecap='round'
               />
             `
           )
@@ -259,6 +289,21 @@ const ManagerMapCreate = (): JSX.Element => {
     createMap.mutate({ mapName, mapDrawing, mapImageSvg });
   };
 
+  const handleDeleteMapElement = useCallback(
+    (event: KeyboardEvent) => {
+      if (!selectedMapElementId) return;
+
+      if (event.key === KEY_DELETE) {
+        console.log(mapElements, selectedMapElementId);
+        setMapElements((prevMapElements) =>
+          prevMapElements.filter(({ id }) => id !== selectedMapElementId)
+        );
+        unselectMapElement();
+      }
+    },
+    [mapElements, selectedMapElementId]
+  );
+
   useEffect(() => {
     const editorWidth = editorRef.current ? editorRef.current.offsetWidth : 0;
     const editorHeight = editorRef.current ? editorRef.current.offsetHeight : 0;
@@ -269,6 +314,14 @@ const ManagerMapCreate = (): JSX.Element => {
       y: (editorHeight - height) / 2,
     }));
   }, [width, height]);
+
+  useEffect(() => {
+    document.addEventListener('keydown', handleDeleteMapElement);
+
+    return () => {
+      document.removeEventListener('keydown', handleDeleteMapElement);
+    };
+  }, [handleDeleteMapElement]);
 
   return (
     <>
@@ -309,35 +362,35 @@ const ManagerMapCreate = (): JSX.Element => {
               <Styled.ToolbarButton
                 text="선택"
                 selected={mode === Mode.Select}
-                onClick={() => setMode(Mode.Select)}
+                onClick={() => selectMenu(Mode.Select)}
               >
                 <SelectIcon />
               </Styled.ToolbarButton>
               <Styled.ToolbarButton
                 text="이동"
                 selected={mode === Mode.Move}
-                onClick={() => setMode(Mode.Move)}
+                onClick={() => selectMenu(Mode.Move)}
               >
                 <MoveIcon />
               </Styled.ToolbarButton>
               <Styled.ToolbarButton
                 text="선"
                 selected={mode === Mode.Line}
-                onClick={() => setMode(Mode.Line)}
+                onClick={() => selectMenu(Mode.Line)}
               >
                 <LineIcon />
               </Styled.ToolbarButton>
               <Styled.ToolbarButton
                 text="다각선"
                 selected={mode === Mode.Polyline}
-                onClick={() => setMode(Mode.Polyline)}
+                onClick={() => selectMenu(Mode.Polyline)}
               >
                 <PolylineIcon />
               </Styled.ToolbarButton>
               <Styled.ToolbarButton
                 text="장식"
                 selected={mode === Mode.Decoration}
-                onClick={() => setMode(Mode.Decoration)}
+                onClick={() => selectMenu(Mode.Decoration)}
               >
                 <ItemsIcon />
               </Styled.ToolbarButton>
@@ -400,34 +453,50 @@ const ManagerMapCreate = (): JSX.Element => {
                   <g
                     id="board"
                     transform={`matrix(${board.scale}, 0, 0, ${board.scale}, ${board.x}, ${board.y})`}
+                    onClickCapture={handleClickBoard}
                   >
                     <rect width={`${width}px`} height={`${height}px`} fill="white" />
+
                     {/* 전체 격자를 그리는 rect */}
                     <rect
                       width={`${width + 0.5}px`}
                       height={`${height + 0.5}px`}
                       fill="url(#grid)"
                     />
-                    <circle
-                      cx={stickyCoordinate.x}
-                      cy={stickyCoordinate.y}
-                      r={4}
-                      fill={PALETTE.OPACITY_BLACK[700]}
-                    />
+
+                    {mode === Mode.Line && (
+                      <circle
+                        cx={stickyCoordinate.x}
+                        cy={stickyCoordinate.y}
+                        r={4}
+                        fill={PALETTE.OPACITY_BLACK[700]}
+                      />
+                    )}
+
                     {mapElements.map((element) => (
                       <polyline
                         key={`polyline-${element.id}`}
                         points={element.points.join(' ')}
                         stroke={element.stroke}
-                        strokeWidth="2"
+                        strokeWidth={LINE_WIDTH}
+                        strokeLinecap="round"
+                        cursor={mode === Mode.Select ? 'pointer' : 'default'}
+                        onClickCapture={(event) => handleSelectMapElement(event, element.id)}
                       />
                     ))}
+
+                    {mode === Mode.Select &&
+                      gripPoints.map(({ x, y }, index) => (
+                        <Styled.GripPoint key={index} cx={x} cy={y} r={4} />
+                      ))}
+
                     {drawingStatus.start && (
                       <polyline
                         key="preview-line"
                         points={`${drawingStatus.start.x},${drawingStatus.start.y} ${stickyCoordinate.x},${stickyCoordinate.y}`}
                         stroke={PALETTE.OPACITY_BLACK[200]}
-                        strokeWidth="2"
+                        strokeWidth={LINE_WIDTH}
+                        strokeLinecap="round"
                       />
                     )}
                   </g>
