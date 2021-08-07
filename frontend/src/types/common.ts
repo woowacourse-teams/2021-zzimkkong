@@ -50,3 +50,11 @@ export interface GripPoint {
   x: number;
   y: number;
 }
+
+export interface EditorBoard {
+  width: number;
+  height: number;
+  x: number;
+  y: number;
+  scale: number;
+}

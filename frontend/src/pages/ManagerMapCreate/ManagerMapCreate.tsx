@@ -23,7 +23,7 @@ import Layout from 'components/Layout/Layout';
 import PALETTE from 'constants/palette';
 import PATH from 'constants/path';
 import useInput from 'hooks/useInput';
-import { Color, Coordinate, DrawingStatus, GripPoint, MapElement } from 'types/common';
+import { Color, Coordinate, DrawingStatus, EditorBoard, GripPoint, MapElement } from 'types/common';
 import { Mode } from 'types/editor';
 import { ErrorResponse } from 'types/response';
 import * as Styled from './ManagerMapCreate.styles';
@@ -72,7 +72,7 @@ const ManagerMapCreate = (): JSX.Element => {
   const width = Number(widthValue);
   const height = Number(heightValue);
 
-  const [board, setBoard] = useState({
+  const [board, setBoard] = useState<EditorBoard>({
     width,
     height,
     x: 0,
