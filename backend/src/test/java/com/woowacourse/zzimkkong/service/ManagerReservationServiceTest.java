@@ -59,6 +59,9 @@ public class ManagerReservationServiceTest extends ServiceTest {
     private Reservation bePmOneTwo;
     private Reservation reservation;
 
+    private Long noneExistingMapId;
+    private Long noneExistingSpaceId;
+
     @BeforeEach
     void setUp() {
         pobi = new Member(EMAIL, PASSWORD, ORGANIZATION);
@@ -128,6 +131,9 @@ public class ManagerReservationServiceTest extends ServiceTest {
                 reservationCreateUpdateWithPasswordRequest.getStartDateTime(),
                 reservationCreateUpdateWithPasswordRequest.getEndDateTime(),
                 be);
+
+        noneExistingMapId = luther.getId() + 1;
+        noneExistingSpaceId = (long) (luther.getSpaces().size() + 1);
     }
 
     @Test
@@ -159,7 +165,7 @@ public class ManagerReservationServiceTest extends ServiceTest {
 
         //then
         assertThatThrownBy(() -> managerReservationService.saveReservation(
-                luther.getId(),
+                noneExistingMapId,
                 be.getId(),
                 reservationCreateUpdateWithPasswordRequest,
                 pobi))
@@ -192,7 +198,7 @@ public class ManagerReservationServiceTest extends ServiceTest {
         //then
         assertThatThrownBy(() -> managerReservationService.saveReservation(
                 luther.getId(),
-                3L,
+                noneExistingSpaceId,
                 reservationCreateUpdateWithPasswordRequest,
                 pobi))
                 .isInstanceOf(NoSuchSpaceException.class);
@@ -561,7 +567,7 @@ public class ManagerReservationServiceTest extends ServiceTest {
                 .willReturn(Optional.empty());
 
         //then
-        assertThatThrownBy(() -> managerReservationService.findReservations(luther.getId(), be.getId(), THE_DAY_AFTER_TOMORROW, pobi))
+        assertThatThrownBy(() -> managerReservationService.findReservations(noneExistingMapId, be.getId(), THE_DAY_AFTER_TOMORROW, pobi))
                 .isInstanceOf(NoSuchMapException.class);
     }
 
@@ -575,7 +581,7 @@ public class ManagerReservationServiceTest extends ServiceTest {
         //then
         assertThatThrownBy(() -> managerReservationService.findReservations(
                 luther.getId(),
-                3L,
+                noneExistingSpaceId,
                 THE_DAY_AFTER_TOMORROW,
                 pobi))
                 .isInstanceOf(NoSuchSpaceException.class);

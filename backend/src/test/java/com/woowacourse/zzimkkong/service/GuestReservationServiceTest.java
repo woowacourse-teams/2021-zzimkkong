@@ -50,6 +50,9 @@ class GuestReservationServiceTest extends ServiceTest {
     private Reservation bePmOneTwo;
     private Reservation reservation;
 
+    private Long noneExistingMapId;
+    private Long noneExistingSpaceId;
+
     @BeforeEach
     void setUp() {
         Member pobi = new Member(EMAIL, PASSWORD, ORGANIZATION);
@@ -118,6 +121,9 @@ class GuestReservationServiceTest extends ServiceTest {
                 reservationCreateUpdateWithPasswordRequest.getStartDateTime(),
                 reservationCreateUpdateWithPasswordRequest.getEndDateTime(),
                 be);
+
+        noneExistingMapId = luther.getId() + 1;
+        noneExistingSpaceId = (long) (luther.getSpaces().size() + 1);
     }
 
     @Test
@@ -148,7 +154,7 @@ class GuestReservationServiceTest extends ServiceTest {
 
         //then
         assertThatThrownBy(() -> guestReservationService.saveReservation(
-                luther.getId(),
+                noneExistingMapId,
                 be.getId(),
                 reservationCreateUpdateWithPasswordRequest))
                 .isInstanceOf(NoSuchMapException.class);
@@ -164,7 +170,7 @@ class GuestReservationServiceTest extends ServiceTest {
         //then
         assertThatThrownBy(() -> guestReservationService.saveReservation(
                 luther.getId(),
-                3L,
+                noneExistingSpaceId,
                 reservationCreateUpdateWithPasswordRequest))
                 .isInstanceOf(NoSuchSpaceException.class);
     }
@@ -536,7 +542,7 @@ class GuestReservationServiceTest extends ServiceTest {
                 .willReturn(Optional.empty());
 
         //then
-        assertThatThrownBy(() -> guestReservationService.findReservations(luther.getId(), be.getId(), THE_DAY_AFTER_TOMORROW))
+        assertThatThrownBy(() -> guestReservationService.findReservations(noneExistingMapId, be.getId(), THE_DAY_AFTER_TOMORROW))
                 .isInstanceOf(NoSuchMapException.class);
     }
     
@@ -550,7 +556,7 @@ class GuestReservationServiceTest extends ServiceTest {
         //then
         assertThatThrownBy(() -> guestReservationService.findReservations(
                 luther.getId(),
-                3L,
+                noneExistingSpaceId,
                 THE_DAY_AFTER_TOMORROW))
                 .isInstanceOf(NoSuchSpaceException.class);
     }
