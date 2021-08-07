@@ -195,6 +195,10 @@ const ManagerMapCreate = (): JSX.Element => {
     setDragging(false);
   };
 
+  const handleMouseOut = () => {
+    setDragging(false);
+  };
+
   const handleSelectMapElement = (event: MouseEvent<SVGPolylineElement>, id: MapElement['id']) => {
     if (mode !== Mode.Select) return;
 
@@ -308,6 +312,8 @@ const ManagerMapCreate = (): JSX.Element => {
 
   const handleKeyDown = useCallback(
     (event: KeyboardEvent) => {
+      if ((event.target as HTMLElement).tagName === 'INPUT') return;
+
       if (event.key === KEY_DELETE) {
         deleteMapElement();
       }
@@ -468,6 +474,7 @@ const ManagerMapCreate = (): JSX.Element => {
                 onMouseDown={handleDragStart}
                 onMouseUp={handleDragEnd}
                 onMouseMove={handleDrag}
+                onMouseOut={handleMouseOut}
               >
                 <rect width="100%" height="100%" fill={PALETTE.GRAY[200]}></rect>
                 <svg
