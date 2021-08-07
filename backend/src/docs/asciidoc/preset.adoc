@@ -5,3 +5,9 @@
 include::{snippets}/preset/post/http-request.adoc[]
 ==== Response
 include::{snippets}/preset/post/http-response.adoc[]
+
+=== 프리셋 삭제
+==== Request
+include::{snippets}/preset/delete/http-request.adoc[]
+==== Response
+include::{snippets}/preset/delete/http-response.adoc[]
