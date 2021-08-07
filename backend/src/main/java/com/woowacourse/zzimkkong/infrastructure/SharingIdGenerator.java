@@ -9,15 +9,15 @@ import org.springframework.stereotype.Component;
 public class SharingIdGenerator {
     private final Transcoder transcoder;
 
-    public SharingIdGenerator(Transcoder transcoder) {
+    public SharingIdGenerator(final Transcoder transcoder) {
         this.transcoder = transcoder;
     }
 
-    public String from(Map map) {
+    public String from(final Map map) {
         return transcoder.encode(map.getId().toString());
     }
 
-    public Long parseIdFrom(String publicId) {
+    public Long parseIdFrom(final String publicId) {
         try {
             String decoded = transcoder.decode(publicId);
             return Long.parseLong(decoded);

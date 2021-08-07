@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class GuestMapController {
     private final MapService mapService;
 
-    public GuestMapController(MapService mapService) {
+    public GuestMapController(final MapService mapService) {
         this.mapService = mapService;
     }
 
