@@ -12,7 +12,6 @@ import {
 import { useMutation } from 'react-query';
 import { useHistory } from 'react-router-dom';
 import { postMap } from 'api/map';
-import { ReactComponent as EditIcon } from 'assets/svg/edit.svg';
 import { ReactComponent as ItemsIcon } from 'assets/svg/items.svg';
 import { ReactComponent as LineIcon } from 'assets/svg/line.svg';
 import { ReactComponent as MoveIcon } from 'assets/svg/move.svg';
@@ -20,7 +19,6 @@ import { ReactComponent as PolylineIcon } from 'assets/svg/polyline.svg';
 import { ReactComponent as SelectIcon } from 'assets/svg/select.svg';
 import Button from 'components/Button/Button';
 import Header from 'components/Header/Header';
-import IconButton from 'components/IconButton/IconButton';
 import Layout from 'components/Layout/Layout';
 import PALETTE from 'constants/palette';
 import PATH from 'constants/path';
@@ -301,7 +299,7 @@ const ManagerMapCreate = (): JSX.Element => {
     unselectMapElement();
   }, [selectedMapElementId]);
 
-  const handleKeyPress = useCallback(
+  const handleKeyDown = useCallback(
     (event: KeyboardEvent) => {
       if (event.key === KEY_DELETE) {
         deleteMapElement();
@@ -331,14 +329,14 @@ const ManagerMapCreate = (): JSX.Element => {
   }, [width, height]);
 
   useEffect(() => {
-    document.addEventListener('keypress', handleKeyPress);
+    document.addEventListener('keydown', handleKeyDown);
     document.addEventListener('keyup', handleKeyUp);
 
     return () => {
-      document.removeEventListener('keypress', handleKeyPress);
+      document.removeEventListener('keydown', handleKeyDown);
       document.removeEventListener('keyup', handleKeyUp);
     };
-  }, [handleKeyPress, handleKeyUp]);
+  }, [handleKeyDown, handleKeyUp]);
 
   return (
     <>
