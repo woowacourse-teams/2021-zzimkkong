@@ -32,19 +32,19 @@ public class Map {
     protected Map() {
     }
 
-    public Map(String name, String mapDrawing, String mapImageUrl, Member member) {
+    public Map(final String name, final String mapDrawing, final String mapImageUrl, final Member member) {
         this.name = name;
         this.mapDrawing = mapDrawing;
         this.mapImageUrl = mapImageUrl;
         this.member = member;
     }
 
-    public Map(Long id, String name, String mapDrawing, String mapImageUrl, Member member) {
+    public Map(final Long id, final String name, final String mapDrawing, final String mapImageUrl, final Member member) {
         this(name, mapDrawing, mapImageUrl, member);
         this.id = id;
     }
 
-    public void update(String mapName, String mapDrawing, String mapImageUrl) {
+    public void update(final String mapName, final String mapDrawing, final String mapImageUrl) {
         this.name = mapName;
         this.mapDrawing = mapDrawing;
         this.mapImageUrl = mapImageUrl;

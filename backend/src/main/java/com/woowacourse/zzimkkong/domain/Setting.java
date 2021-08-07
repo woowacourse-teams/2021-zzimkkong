@@ -30,7 +30,7 @@ public class Setting {
     public Setting() {
     }
 
-    protected Setting(Builder builder) {
+    protected Setting(final Builder builder) {
         this.availableStartTime = builder.availableStartTime;
         this.availableEndTime = builder.availableEndTime;
         this.reservationTimeUnit = builder.reservationTimeUnit;
@@ -80,37 +80,37 @@ public class Setting {
         public Builder() {
         }
 
-        public Setting.Builder availableStartTime(LocalTime inputAvailableStartTime) {
+        public Setting.Builder availableStartTime(final LocalTime inputAvailableStartTime) {
             availableStartTime = inputAvailableStartTime;
             return this;
         }
 
-        public Setting.Builder availableEndTime(LocalTime inputAvailableEndTime) {
+        public Setting.Builder availableEndTime(final LocalTime inputAvailableEndTime) {
             availableEndTime = inputAvailableEndTime;
             return this;
         }
 
-        public Setting.Builder reservationTimeUnit(Integer inputReservationTimeUnit) {
+        public Setting.Builder reservationTimeUnit(final Integer inputReservationTimeUnit) {
             reservationTimeUnit = inputReservationTimeUnit;
             return this;
         }
 
-        public Setting.Builder reservationMinimumTimeUnit(Integer inputReservationMinimumTimeUnit) {
+        public Setting.Builder reservationMinimumTimeUnit(final Integer inputReservationMinimumTimeUnit) {
             reservationMinimumTimeUnit = inputReservationMinimumTimeUnit;
             return this;
         }
 
-        public Setting.Builder reservationMaximumTimeUnit(Integer inputReservationMaximumTimeUnit) {
+        public Setting.Builder reservationMaximumTimeUnit(final Integer inputReservationMaximumTimeUnit) {
             reservationMaximumTimeUnit = inputReservationMaximumTimeUnit;
             return this;
         }
 
-        public Setting.Builder reservationEnable(Boolean inputReservationEnable) {
+        public Setting.Builder reservationEnable(final Boolean inputReservationEnable) {
             reservationEnable = inputReservationEnable;
             return this;
         }
 
-        public Setting.Builder enabledDayOfWeek(String inputEnabledDayOfWeek) {
+        public Setting.Builder enabledDayOfWeek(final String inputEnabledDayOfWeek) {
             enabledDayOfWeek = inputEnabledDayOfWeek;
             return this;
         }

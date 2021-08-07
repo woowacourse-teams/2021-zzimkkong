@@ -34,7 +34,7 @@ public class Reservation {
     protected Reservation() {
     }
 
-    protected Reservation(Builder builder) {
+    protected Reservation(final Builder builder) {
         this.id = builder.id;
         this.startTime = builder.startTime;
         this.endTime = builder.endTime;
@@ -87,37 +87,37 @@ public class Reservation {
         public Builder() {
         }
 
-        public Builder id(Long inputId) {
+        public Builder id(final Long inputId) {
             id = inputId;
             return this;
         }
 
-        public Builder startTime(LocalDateTime inputStartTime) {
+        public Builder startTime(final LocalDateTime inputStartTime) {
             startTime = inputStartTime.truncatedTo(ChronoUnit.SECONDS);
             return this;
         }
 
-        public Builder endTime(LocalDateTime inputEndTime) {
+        public Builder endTime(final LocalDateTime inputEndTime) {
             endTime = inputEndTime.truncatedTo(ChronoUnit.SECONDS);
             return this;
         }
 
-        public Builder password(String inputPassword) {
+        public Builder password(final String inputPassword) {
             password = inputPassword;
             return this;
         }
 
-        public Builder userName(String inputUserName) {
+        public Builder userName(final String inputUserName) {
             userName = inputUserName;
             return this;
         }
 
-        public Builder description(String inputDescription) {
+        public Builder description(final String inputDescription) {
             description = inputDescription;
             return this;
         }
 
-        public Builder space(Space inputSpace) {
+        public Builder space(final Space inputSpace) {
             space = inputSpace;
             return this;
         }
@@ -128,7 +128,7 @@ public class Reservation {
 
     }
 
-    public boolean isWrongPassword(String password) {
+    public boolean isWrongPassword(final String password) {
         return !this.password.equals(password);
     }
 
