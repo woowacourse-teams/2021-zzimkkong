@@ -106,8 +106,6 @@ class SpaceServiceTest extends ServiceTest {
                 .area(SPACE_DRAWING)
                 .setting(feSetting)
                 .build();
-
-        luther.addAllSpaces(List.of(be, fe));
     }
 
     @Test
@@ -132,8 +130,6 @@ class SpaceServiceTest extends ServiceTest {
                 .area(SPACE_DRAWING)
                 .setting(setting)
                 .build();
-
-        luther.addSpace(newSpace);
 
         given(maps.findById(anyLong()))
                 .willReturn(Optional.of(luther));

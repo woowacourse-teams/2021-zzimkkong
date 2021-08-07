@@ -73,10 +73,6 @@ public class Map {
         spaces.add(space);
     }
 
-    public void addAllSpaces(final List<Space> spaces) {
-        this.spaces.addAll(spaces);
-    }
-
     public Long getId() {
         return id;
     }

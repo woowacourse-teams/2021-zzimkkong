@@ -94,8 +94,6 @@ class GuestReservationServiceTest extends ServiceTest {
                 .setting(feSetting)
                 .build();
 
-        luther.addAllSpaces(List.of(be, fe));
-
         beAmZeroOne = new Reservation.Builder()
                 .id(1L)
                 .startTime(BE_AM_TEN_ELEVEN_START_TIME)
@@ -346,7 +344,6 @@ class GuestReservationServiceTest extends ServiceTest {
 
         given(maps.findById(anyLong()))
                 .willReturn(Optional.of(luther));
-        luther.addSpace(closedSpace);
 
         // then
         assertThatThrownBy(() -> guestReservationService.saveReservation(
@@ -384,7 +381,6 @@ class GuestReservationServiceTest extends ServiceTest {
 
         given(maps.findById(anyLong()))
                 .willReturn(Optional.of(luther));
-        luther.addSpace(invalidDayOfWeekSpace);
 
         // then
         assertThatThrownBy(() -> guestReservationService.saveReservation(
@@ -877,7 +873,6 @@ class GuestReservationServiceTest extends ServiceTest {
 
         given(maps.findById(anyLong()))
                 .willReturn(Optional.of(luther));
-        luther.addSpace(closedSpace);
         given(reservations.findById(anyLong()))
                 .willReturn(Optional.of(reservation));
 
@@ -916,7 +911,6 @@ class GuestReservationServiceTest extends ServiceTest {
                 .willReturn(Optional.of(luther));
         given(reservations.findById(anyLong()))
                 .willReturn(Optional.of(reservation));
-        luther.addSpace(invalidDayOfWeekSpace);
 
         // then
         assertThatThrownBy(() -> guestReservationService.updateReservation(luther.getId(), invalidDayOfWeekSpace.getId(), reservation.getId(), reservationCreateUpdateWithPasswordRequest))

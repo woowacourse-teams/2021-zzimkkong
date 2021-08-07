@@ -80,8 +80,6 @@ class MapServiceTest extends ServiceTest {
                 .area(SPACE_DRAWING)
                 .setting(feSetting)
                 .build();
-
-        luther.addAllSpaces(List.of(be, fe));
     }
 
     @Test

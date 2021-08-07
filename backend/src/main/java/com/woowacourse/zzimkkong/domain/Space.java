@@ -63,6 +63,10 @@ public class Space {
         this.textPosition = builder.textPosition;
         this.coordinate = builder.coordinate;
         this.map = builder.map;
+
+        if (map != null) {
+            map.addSpace(this);
+        }
     }
 
     public void update(final Space updateSpace) {
@@ -71,7 +75,6 @@ public class Space {
         this.description = updateSpace.description;
         this.area = updateSpace.area;
         this.setting = updateSpace.setting;
-        this.map = updateSpace.map;
     }
 
     public boolean isNotBetweenAvailableTime(LocalDateTime startDateTime, LocalDateTime endDateTime) {

@@ -104,8 +104,6 @@ public class ManagerReservationServiceTest extends ServiceTest {
                 .setting(feSetting)
                 .build();
 
-        luther.addAllSpaces(List.of(be, fe));
-
         beAmZeroOne = new Reservation.Builder()
                 .id(1L)
                 .startTime(BE_AM_TEN_ELEVEN_START_TIME)
@@ -376,7 +374,6 @@ public class ManagerReservationServiceTest extends ServiceTest {
 
         given(maps.findById(anyLong()))
                 .willReturn(Optional.of(luther));
-        luther.addSpace(closedSpace);
 
         // then
         assertThatThrownBy(() -> managerReservationService.saveReservation(luther.getId(), closedSpace.getId(), reservationCreateUpdateWithPasswordRequest, pobi))
@@ -411,7 +408,6 @@ public class ManagerReservationServiceTest extends ServiceTest {
 
         given(maps.findById(anyLong()))
                 .willReturn(Optional.of(luther));
-        luther.addSpace(invalidDayOfWeekSpace);
 
         // then
         assertThatThrownBy(() -> managerReservationService.saveReservation(luther.getId(), invalidDayOfWeekSpace.getId(), reservationCreateUpdateWithPasswordRequest, pobi))
@@ -938,7 +934,6 @@ public class ManagerReservationServiceTest extends ServiceTest {
 
         given(maps.findById(anyLong()))
                 .willReturn(Optional.of(luther));
-        luther.addSpace(closedSpace);
         given(reservations.findById(anyLong()))
                 .willReturn(Optional.of(reservation));
 
@@ -975,7 +970,6 @@ public class ManagerReservationServiceTest extends ServiceTest {
 
         given(maps.findById(anyLong()))
                 .willReturn(Optional.of(luther));
-        luther.addSpace(invalidDayOfWeekSpace);
         given(reservations.findById(anyLong()))
                 .willReturn(Optional.of(reservation));
 
