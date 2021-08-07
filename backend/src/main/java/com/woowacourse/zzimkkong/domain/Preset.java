@@ -33,6 +33,10 @@ public class Preset {
         this.id = id;
     }
 
+    public boolean isNotOwnedBy(final Member member) {
+        return this.member.equals(member);
+    }
+
     public Long getId() {
         return id;
     }
