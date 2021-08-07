@@ -29,7 +29,6 @@ public class MapService {
     public static final String THUMBNAIL_EXTENSION = ".png";
 
     private final MapRepository maps;
-    private final SpaceRepository spaces;
     private final ReservationRepository reservations;
     private final StorageUploader storageUploader;
     private final SvgConverter svgConverter;
@@ -37,13 +36,11 @@ public class MapService {
 
     public MapService(
             final MapRepository maps,
-            final SpaceRepository spaces,
             final ReservationRepository reservations,
             final StorageUploader storageUploader,
             final SvgConverter svgConverter,
             final TimeConverter timeConverter) {
         this.maps = maps;
-        this.spaces = spaces;
         this.reservations = reservations;
         this.storageUploader = storageUploader;
         this.svgConverter = svgConverter;
