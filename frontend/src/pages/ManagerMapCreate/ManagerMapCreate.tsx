@@ -244,6 +244,10 @@ const ManagerMapCreate = (): JSX.Element => {
     const startPoint = `${drawingStatus.start.x},${drawingStatus.start.y}`;
     const endPoint = `${stickyCoordinate.x},${stickyCoordinate.y}`;
 
+    setDrawingStatus({});
+
+    if (startPoint === endPoint) return;
+
     setMapElements((prevState) => [
       ...prevState,
       {
@@ -253,8 +257,6 @@ const ManagerMapCreate = (): JSX.Element => {
         points: [startPoint, endPoint],
       },
     ]);
-
-    setDrawingStatus({});
   };
 
   const handleSubmit: FormEventHandler<HTMLFormElement> = (event) => {
