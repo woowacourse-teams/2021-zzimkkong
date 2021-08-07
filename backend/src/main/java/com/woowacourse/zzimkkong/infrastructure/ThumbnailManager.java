@@ -35,7 +35,7 @@ public class ThumbnailManager {
         storageUploader.delete(THUMBNAILS_DIRECTORY_NAME, fileName + THUMBNAIL_EXTENSION);
     }
 
-    private String makeThumbnailFileName(Map map) {
+    private String makeThumbnailFileName(final Map map) {
         return String.format(THUMBNAIL_FILE_FORMAT, map.getId().toString());
     }
 }

@@ -11,7 +11,7 @@ public class SpaceDeleteRequest {
     public SpaceDeleteRequest() {
     }
 
-    public SpaceDeleteRequest(String mapImageSvg) {
+    public SpaceDeleteRequest(final String mapImageSvg) {
         this.mapImageSvg = mapImageSvg;
     }
 
