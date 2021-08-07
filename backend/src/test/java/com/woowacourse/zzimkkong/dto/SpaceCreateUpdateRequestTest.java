@@ -63,7 +63,7 @@ class SpaceCreateUpdateRequestTest extends RequestTest {
 
     @ParameterizedTest
     @NullAndEmptySource
-    @DisplayName("mapImageSvg에 빈 문자열이 들어오면 처리한다.")
+    @DisplayName("맵의 Svg 정보에 빈 문자열이 들어오면 처리한다.")
     public void blankMapImageSvg(String mapImageSvg) {
         SpaceCreateUpdateRequest spaceCreateUpdateRequest = new SpaceCreateUpdateRequest(
                 "name",
