@@ -355,13 +355,12 @@ const ManagerMapCreate = (): JSX.Element => {
                     value={mapName}
                     onChange={onChangeMapName}
                   />
-                  <IconButton>
-                    <EditIcon />
-                  </IconButton>
                 </Styled.MapNameContainer>
                 <Styled.TempSaveContainer>
                   <Styled.TempSaveMessage>1분 전에 임시 저장되었습니다.</Styled.TempSaveMessage>
-                  <Styled.TempSaveButton variant="primary-text">임시 저장</Styled.TempSaveButton>
+                  <Styled.TempSaveButton type="button" variant="primary-text">
+                    임시 저장
+                  </Styled.TempSaveButton>
                 </Styled.TempSaveContainer>
               </Styled.HeaderContent>
               <Styled.HeaderContent>
