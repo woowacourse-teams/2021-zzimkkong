@@ -8,10 +8,11 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 class PresetTest {
     @Test
-    @DisplayName("프리셋의 member가 동일한지 확인한다.")
-    void hasSameMember() {
+    @DisplayName("프리셋의 member가 동일하다면 false, 그렇지 않다면 true를 반환한다.")
+    void isNotOwnedBy() {
         //given
         Member member = new Member(EMAIL, PASSWORD, ORGANIZATION);
+        Member another = new Member("another@email.com", PASSWORD, ORGANIZATION);
         Setting setting = new Setting.Builder()
                 .availableStartTime(BE_AVAILABLE_START_TIME)
                 .availableEndTime(BE_AVAILABLE_END_TIME)
@@ -26,5 +27,6 @@ class PresetTest {
 
         //when, then
         assertThat(preset.isNotOwnedBy(member)).isTrue();
+        assertThat(preset.isNotOwnedBy(another)).isFalse();
     }
 }

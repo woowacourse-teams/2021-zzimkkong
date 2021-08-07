@@ -37,6 +37,10 @@ public class Preset {
         return this.member.equals(member);
     }
 
+    public boolean hasSameId(final Long presetId) {
+        return this.id.equals(presetId);
+    }
+
     public Long getId() {
         return id;
     }

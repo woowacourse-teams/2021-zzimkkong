@@ -6,7 +6,6 @@ import com.woowacourse.zzimkkong.domain.Setting;
 import com.woowacourse.zzimkkong.dto.member.PresetCreateRequest;
 import com.woowacourse.zzimkkong.dto.member.PresetCreateResponse;
 import com.woowacourse.zzimkkong.dto.space.SettingsRequest;
-import com.woowacourse.zzimkkong.exception.preset.NoAuthorityOnPresetException;
 import com.woowacourse.zzimkkong.exception.preset.NoSuchPresetException;
 import com.woowacourse.zzimkkong.repository.PresetRepository;
 import org.springframework.stereotype.Service;
@@ -39,12 +38,8 @@ public class PresetService {
     }
 
     public void deletePreset(final Long presetId, final Member manager) {
-        Preset preset = presets.findById(presetId)
+        Preset preset = manager.findPresetById(presetId)
                 .orElseThrow(NoSuchPresetException::new);
-
-        if(!preset.isNotOwnedBy(manager)) {
-            throw new NoAuthorityOnPresetException();
-        }
 
         presets.delete(preset);
     }

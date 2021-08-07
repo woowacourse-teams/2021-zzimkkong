@@ -17,7 +17,6 @@ public class PresetCreateRequest {
     private SettingsRequest settingsRequest;
 
     public PresetCreateRequest() {
-
     }
 
     public PresetCreateRequest(final String name, final SettingsRequest settingsRequest) {

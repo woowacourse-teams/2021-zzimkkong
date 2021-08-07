@@ -6,7 +6,6 @@ import com.woowacourse.zzimkkong.domain.Setting;
 import com.woowacourse.zzimkkong.dto.member.PresetCreateRequest;
 import com.woowacourse.zzimkkong.dto.member.PresetCreateResponse;
 import com.woowacourse.zzimkkong.dto.space.SettingsRequest;
-import com.woowacourse.zzimkkong.exception.preset.NoAuthorityOnPresetException;
 import com.woowacourse.zzimkkong.exception.preset.NoSuchPresetException;
 import com.woowacourse.zzimkkong.repository.PresetRepository;
 import org.junit.jupiter.api.BeforeEach;
@@ -96,14 +95,11 @@ class PresetServiceTest extends ServiceTest {
         //given
         Preset savedPreset = new Preset(1L, PRESET_NAME1, setting, pobi);
 
-        given(presets.findById(anyLong()))
-                .willReturn(Optional.of(savedPreset));
-
         Member jason = new Member(2L, "jason@email.com", PASSWORD, ORGANIZATION);
 
         //when, then
         assertThatThrownBy(() -> presetService.deletePreset(savedPreset.getId(), jason))
-                .isInstanceOf(NoAuthorityOnPresetException.class);
+                .isInstanceOf(NoSuchPresetException.class);
     }
 
     @Test
@@ -111,9 +107,6 @@ class PresetServiceTest extends ServiceTest {
     void deleteInvalidPresetException() {
         //given
         Preset savedPreset = new Preset(1L, PRESET_NAME1, setting, pobi);
-
-        given(presets.findById(anyLong()))
-                .willReturn(Optional.empty());
 
         //when, then
         assertThatThrownBy(() -> presetService.deletePreset(savedPreset.getId(), pobi))
