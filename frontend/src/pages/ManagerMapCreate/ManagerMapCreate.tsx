@@ -36,6 +36,7 @@ const MIN_SCALE = 0.5;
 const MAX_SCALE = 3.0;
 const LINE_WIDTH = 3;
 const KEY_DELETE = 'Delete';
+const KEY_SPACE = ' ';
 
 const ManagerMapCreate = (): JSX.Element => {
   const editorRef = useRef<HTMLDivElement | null>(null);
@@ -45,9 +46,11 @@ const ManagerMapCreate = (): JSX.Element => {
   const [mapName, onChangeMapName] = useInput('');
 
   const [mode, setMode] = useState(Mode.Select);
-  const [isDragging, setDragging] = useState(false);
   const [dragOffsetX, setDragOffsetX] = useState(0);
   const [dragOffsetY, setDragOffsetY] = useState(0);
+  const [isDragging, setDragging] = useState(false);
+  const [isPressSpacebar, setPressSpacebar] = useState(false);
+  const isDraggable = mode === Mode.Move || isPressSpacebar;
 
   const [coordinate, setCoordinate] = useState<Coordinate>({ x: 0, y: 0 });
   const stickyCoordinate: Coordinate = {
@@ -113,7 +116,7 @@ const ManagerMapCreate = (): JSX.Element => {
     return { svg, x, y };
   };
 
-  const selectMenu = (mode: Mode) => {
+  const selectMode = (mode: Mode) => {
     setDrawingStatus({});
     setCoordinate({ x: 0, y: 0 });
     setMode(mode);
@@ -191,7 +194,7 @@ const ManagerMapCreate = (): JSX.Element => {
   };
 
   const handleDrag: MouseEventHandler<SVGElement> = (event) => {
-    if (mode !== Mode.Move || !isDragging) return;
+    if (!isDraggable || !isDragging) return;
 
     const { offsetX, offsetY } = event.nativeEvent;
 
@@ -289,20 +292,32 @@ const ManagerMapCreate = (): JSX.Element => {
     createMap.mutate({ mapName, mapDrawing, mapImageSvg });
   };
 
-  const handleDeleteMapElement = useCallback(
-    (event: KeyboardEvent) => {
-      if (!selectedMapElementId) return;
+  const deleteMapElement = useCallback(() => {
+    if (!selectedMapElementId) return;
 
+    setMapElements((prevMapElements) =>
+      prevMapElements.filter(({ id }) => id !== selectedMapElementId)
+    );
+    unselectMapElement();
+  }, [selectedMapElementId]);
+
+  const handleKeyPress = useCallback(
+    (event: KeyboardEvent) => {
       if (event.key === KEY_DELETE) {
-        console.log(mapElements, selectedMapElementId);
-        setMapElements((prevMapElements) =>
-          prevMapElements.filter(({ id }) => id !== selectedMapElementId)
-        );
-        unselectMapElement();
+        deleteMapElement();
+      }
+      if (event.key === KEY_SPACE) {
+        setPressSpacebar(true);
       }
     },
-    [mapElements, selectedMapElementId]
+    [deleteMapElement]
   );
+
+  const handleKeyUp = useCallback((event: KeyboardEvent) => {
+    if (event.key === KEY_SPACE) {
+      setPressSpacebar(false);
+    }
+  }, []);
 
   useEffect(() => {
     const editorWidth = editorRef.current ? editorRef.current.offsetWidth : 0;
@@ -316,12 +331,14 @@ const ManagerMapCreate = (): JSX.Element => {
   }, [width, height]);
 
   useEffect(() => {
-    document.addEventListener('keydown', handleDeleteMapElement);
+    document.addEventListener('keypress', handleKeyPress);
+    document.addEventListener('keyup', handleKeyUp);
 
     return () => {
-      document.removeEventListener('keydown', handleDeleteMapElement);
+      document.removeEventListener('keypress', handleKeyPress);
+      document.removeEventListener('keyup', handleKeyUp);
     };
-  }, [handleDeleteMapElement]);
+  }, [handleKeyPress, handleKeyUp]);
 
   return (
     <>
@@ -362,35 +379,35 @@ const ManagerMapCreate = (): JSX.Element => {
               <Styled.ToolbarButton
                 text="선택"
                 selected={mode === Mode.Select}
-                onClick={() => selectMenu(Mode.Select)}
+                onClick={() => selectMode(Mode.Select)}
               >
                 <SelectIcon />
               </Styled.ToolbarButton>
               <Styled.ToolbarButton
                 text="이동"
                 selected={mode === Mode.Move}
-                onClick={() => selectMenu(Mode.Move)}
+                onClick={() => selectMode(Mode.Move)}
               >
                 <MoveIcon />
               </Styled.ToolbarButton>
               <Styled.ToolbarButton
                 text="선"
                 selected={mode === Mode.Line}
-                onClick={() => selectMenu(Mode.Line)}
+                onClick={() => selectMode(Mode.Line)}
               >
                 <LineIcon />
               </Styled.ToolbarButton>
               <Styled.ToolbarButton
                 text="다각선"
                 selected={mode === Mode.Polyline}
-                onClick={() => selectMenu(Mode.Polyline)}
+                onClick={() => selectMode(Mode.Polyline)}
               >
                 <PolylineIcon />
               </Styled.ToolbarButton>
               <Styled.ToolbarButton
                 text="장식"
                 selected={mode === Mode.Decoration}
-                onClick={() => selectMenu(Mode.Decoration)}
+                onClick={() => selectMode(Mode.Decoration)}
               >
                 <ItemsIcon />
               </Styled.ToolbarButton>
@@ -402,12 +419,11 @@ const ManagerMapCreate = (): JSX.Element => {
                 width="100%"
                 height="100%"
                 isDragging={isDragging}
-                isDraggable={mode === Mode.Move}
+                isDraggable={isDraggable}
                 onWheel={handleWheel}
                 onMouseDown={handleDragStart}
                 onMouseUp={handleDragEnd}
                 onMouseMoveCapture={handleDrag}
-                tabIndex={0}
               >
                 <rect width="100%" height="100%" fill={PALETTE.GRAY[200]}></rect>
                 <svg
