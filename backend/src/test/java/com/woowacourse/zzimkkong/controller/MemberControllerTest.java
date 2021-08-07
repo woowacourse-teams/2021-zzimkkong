@@ -1,6 +1,5 @@
 package com.woowacourse.zzimkkong.controller;
 
-import com.woowacourse.zzimkkong.domain.Map;
 import com.woowacourse.zzimkkong.domain.Member;
 import com.woowacourse.zzimkkong.domain.Setting;
 import com.woowacourse.zzimkkong.dto.PresetCreateRequest;
@@ -24,6 +23,7 @@ import static org.springframework.restdocs.restassured3.RestAssuredRestDocumenta
 class MemberControllerTest extends AcceptanceTest {
     private Member pobi;
     private Setting setting;
+
     @BeforeEach
     void setUp() {
         pobi = new Member(EMAIL, PASSWORD, ORGANIZATION);
@@ -89,6 +89,31 @@ class MemberControllerTest extends AcceptanceTest {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
     }
 
+    @Test
+    @DisplayName("프리셋을 삭제한다.")
+    void delete() {
+        //given
+        SettingsRequest settingsRequest = new SettingsRequest(
+                BE_AVAILABLE_START_TIME,
+                BE_AVAILABLE_END_TIME,
+                BE_RESERVATION_TIME_UNIT,
+                BE_RESERVATION_MINIMUM_TIME_UNIT,
+                BE_RESERVATION_MAXIMUM_TIME_UNIT,
+                BE_RESERVATION_ENABLE,
+                BE_ENABLED_DAY_OF_WEEK
+        );
+
+        PresetCreateRequest presetCreateRequest = new PresetCreateRequest(PRESET_NAME1, settingsRequest);
+        ExtractableResponse<Response> saveResponse = savePreset(presetCreateRequest);
+        String api = saveResponse.header("location");
+
+        //when
+        ExtractableResponse<Response> response = deletePreset(api);
+
+        //then
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
+    }
+
     static ExtractableResponse<Response> saveMember(final MemberSaveRequest memberSaveRequest) {
         return RestAssured
                 .given(getRequestSpecification()).log().all()
@@ -120,6 +145,17 @@ class MemberControllerTest extends AcceptanceTest {
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body(presetCreateRequest)
                 .when().post("/api/members/presets")
+                .then().log().all().extract();
+    }
+
+    private ExtractableResponse<Response> deletePreset(String api) {
+        return RestAssured
+                .given(getRequestSpecification()).log().all()
+                .accept("application/json")
+                .header("Authorization", AuthorizationExtractor.AUTHENTICATION_TYPE + " " + accessToken)
+                .filter(document("preset/delete", getRequestPreprocessor(), getResponsePreprocessor()))
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .when().delete(api)
                 .then().log().all().extract();
     }
 }

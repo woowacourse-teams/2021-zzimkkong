@@ -44,7 +44,7 @@ class MapControllerTest extends AcceptanceTest {
     @DisplayName("특정 맵을 조회한다.")
     void find() {
         // given, when
-        ExtractableResponse<Response> response = findMap( createdMapApi);
+        ExtractableResponse<Response> response = findMap(createdMapApi);
         MapFindResponse actualResponse = response.as(MapFindResponse.class);
         MapFindResponse expectedResponse = MapFindResponse.from(luther);
 
@@ -66,7 +66,7 @@ class MapControllerTest extends AcceptanceTest {
                 new MapCreateUpdateRequest(smallHouse.getName(), smallHouse.getMapDrawing(), MAP_SVG));
 
         // when
-        ExtractableResponse<Response> response = findAllMaps( saveMapApi);
+        ExtractableResponse<Response> response = findAllMaps(saveMapApi);
         List<MapFindResponse> findMaps = response.as(MapFindAllResponse.class).getMaps();
         List<MapFindResponse> expected = MapFindAllResponse.of(List.of(luther, smallHouse), pobi).getMaps();
 
