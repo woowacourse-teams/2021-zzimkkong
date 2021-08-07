@@ -46,7 +46,15 @@ public class SpaceService {
                 .orElseThrow(NoSuchMapException::new);
         validateManagerOfMap(map, manager);
 
-        Space space = getSpace(spaceCreateUpdateRequest, map);
+        Setting setting = getSetting(spaceCreateUpdateRequest);
+        Space space = new Space.Builder()
+                .name(spaceCreateUpdateRequest.getName())
+                .color(spaceCreateUpdateRequest.getColor())
+                .description(spaceCreateUpdateRequest.getDescription())
+                .area(spaceCreateUpdateRequest.getArea())
+                .setting(setting)
+                .map(map)
+                .build();
         Space saveSpace = spaces.save(space);
         return SpaceCreateResponse.from(saveSpace);
     }
@@ -98,7 +106,15 @@ public class SpaceService {
 
         Space space = map.getSpaceById(spaceId)
                 .orElseThrow(NoSuchSpaceException::new);
-        Space updateSpace = getSpace(spaceCreateUpdateRequest, map);
+
+        Setting setting = getSetting(spaceCreateUpdateRequest);
+        Space updateSpace = new Space.Builder()
+                .name(spaceCreateUpdateRequest.getName())
+                .color(spaceCreateUpdateRequest.getColor())
+                .description(spaceCreateUpdateRequest.getDescription())
+                .area(spaceCreateUpdateRequest.getArea())
+                .setting(setting)
+                .build();
 
         space.update(updateSpace);
     }
@@ -119,12 +135,10 @@ public class SpaceService {
         spaces.delete(space);
     }
 
-    private Space getSpace(
-            final SpaceCreateUpdateRequest spaceCreateUpdateRequest,
-            final Map map) {
+    private Setting getSetting(final SpaceCreateUpdateRequest spaceCreateUpdateRequest) {
         SettingsRequest settingsRequest = spaceCreateUpdateRequest.getSettingsRequest();
 
-        Setting updateSetting = new Setting.Builder()
+        return new Setting.Builder()
                 .availableStartTime(settingsRequest.getAvailableStartTime())
                 .availableEndTime(settingsRequest.getAvailableEndTime())
                 .reservationTimeUnit(settingsRequest.getReservationTimeUnit())
@@ -132,15 +146,6 @@ public class SpaceService {
                 .reservationMinimumTimeUnit(settingsRequest.getReservationMinimumTimeUnit())
                 .reservationMaximumTimeUnit(settingsRequest.getReservationMaximumTimeUnit())
                 .enabledDayOfWeek(settingsRequest.getEnabledDayOfWeek())
-                .build();
-
-        return new Space.Builder()
-                .name(spaceCreateUpdateRequest.getName())
-                .color(spaceCreateUpdateRequest.getColor())
-                .description(spaceCreateUpdateRequest.getDescription())
-                .area(spaceCreateUpdateRequest.getArea())
-                .setting(updateSetting)
-                .map(map)
                 .build();
     }
 
