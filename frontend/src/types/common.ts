@@ -5,6 +5,11 @@ export interface Coordinate {
   y: number;
 }
 
+export interface ScrollPosition {
+  x: number | undefined;
+  y: number | undefined;
+}
+
 export interface MapItem {
   mapId: number;
   mapName: string;
