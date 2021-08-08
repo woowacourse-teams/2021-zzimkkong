@@ -34,6 +34,15 @@ const GuestReservation = (): JSX.Element => {
 
   const { mapId, spaceId, spaceName, selectedDate } = location.state;
 
+  history.listen((location) => {
+    if (location.pathname === PATH.GUEST_MAIN) {
+      location.state = {
+        spaceId,
+        targetDate: new Date(selectedDate),
+      };
+    }
+  });
+
   if (!mapId || !spaceId || !spaceName) history.replace(PATH.GUEST_MAIN);
 
   const now = new Date();

@@ -1,5 +1,5 @@
 import { AxiosError } from 'axios';
-import { FormEventHandler, useState } from 'react';
+import { FormEventHandler, useEffect, useState } from 'react';
 import { useMutation } from 'react-query';
 import { useHistory, useLocation } from 'react-router-dom';
 import { deleteReservation } from 'api/reservation';
@@ -50,7 +50,10 @@ const GuestMain = (): JSX.Element => {
   const todayDate = new Date(now.getFullYear(), now.getMonth(), now.getDate());
 
   const [date, setDate] = useState(targetDate ? new Date(targetDate) : new Date());
-  const [selectedSpaceId, onChangeSelectedSpaceId] = useInput(`${spaceId ?? spaceList[0].spaceId}`);
+
+  const [selectedSpaceId, onChangeSelectedSpaceId, setSelectedSpaceId] = useInput(
+    `${spaceId ?? spaceList[0].spaceId}`
+  );
   const getReservations = useReservations({
     mapId,
     spaceId: Number(selectedSpaceId),
@@ -107,6 +110,14 @@ const GuestMain = (): JSX.Element => {
       reservationId: Number(selectedReservation?.id),
     });
   };
+
+  useEffect(() => {
+    setDate(targetDate ? new Date(targetDate) : new Date());
+  }, [targetDate]);
+
+  useEffect(() => {
+    setSelectedSpaceId(String(spaceId));
+  }, [setSelectedSpaceId, spaceId]);
 
   return (
     <>
