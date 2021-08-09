@@ -84,8 +84,6 @@ class PresetServiceTest extends ServiceTest {
         Preset secondPreset = new Preset(2L, PRESET_NAME2, setting, pobi);
 
         List<Preset> expectedPresets = List.of(firstPreset, secondPreset);
-        given(presets.findAllByMember(any(Member.class)))
-                .willReturn(expectedPresets);
 
         //when
         PresetFindAllResponse presetFindAllResponse = presetService.findAllPresets(pobi);
@@ -125,5 +123,4 @@ class PresetServiceTest extends ServiceTest {
         assertThatThrownBy(() -> presetService.deletePreset(1L, pobi))
                 .isInstanceOf(NoSuchPresetException.class);
     }
-
 }

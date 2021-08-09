@@ -17,12 +17,11 @@ class PresetRepositoryTest extends RepositoryTest {
     @Autowired
     private PresetRepository presets;
 
-    private Member pobi;
     private Preset preset;
 
     @BeforeEach
     void setUp() {
-        pobi = new Member(EMAIL, PASSWORD, ORGANIZATION);
+        Member pobi = new Member(EMAIL, PASSWORD, ORGANIZATION);
         members.save(pobi);
 
         Setting setting = new Setting.Builder()
@@ -47,18 +46,5 @@ class PresetRepositoryTest extends RepositoryTest {
         //then
         assertThat(savedPreset.getId()).isNotNull();
         assertThat(savedPreset).isEqualTo(preset);
-    }
-
-    @Test
-    @DisplayName("멤버의 모든 프리셋을 조회할 수 있다.")
-    void findAllByMember() {
-        //given
-        Preset savedPreset = presets.save(preset);
-
-        //when
-        List<Preset> actualPresets = presets.findAllByMember(pobi);
-
-        //then
-        assertThat(actualPresets).containsExactlyInAnyOrderElementsOf(List.of(savedPreset));
     }
 }
