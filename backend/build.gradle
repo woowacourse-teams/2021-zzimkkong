@@ -3,6 +3,8 @@ plugins {
     id 'io.spring.dependency-management' version '1.0.11.RELEASE'
     id "org.asciidoctor.convert" version "1.5.10"
     id 'java'
+    id 'jacoco'
+    id "org.sonarqube" version "3.3"
 }
 
 group = 'com.woowacourse'
@@ -51,6 +53,11 @@ dependencies {
 test {
     outputs.dir snippetsDir
     useJUnitPlatform()
+    jacoco {
+        destinationFile = file("$buildDir/jacoco/jacoco.exec")
+    }
+
+    finalizedBy jacocoTestReport
 }
 
 asciidoctor {
@@ -66,7 +73,63 @@ task createDocument(type: Copy) {
 
 bootJar {
     dependsOn createDocument
-    from ("${asciidoctor.outputDir}/html5") {
+    from("${asciidoctor.outputDir}/html5") {
         into 'static/docs'
+    }
+}
+
+jacocoTestReport {
+    dependsOn test
+    reports{
+        html.enabled true
+        xml.enabled true
+        csv.enabled false
+    }
+    finalizedBy jacocoTestCoverageVerification
+}
+
+jacocoTestCoverageVerification {
+    violationRules {
+        rule {
+            element = 'BUNDLE'
+
+            limit {
+                counter = 'BRANCH'
+                value = 'COVEREDRATIO'
+                minimum = 0.91
+            }
+
+            limit {
+                counter = 'INSTRUCTION'
+                value = 'COVEREDRATIO'
+                minimum = 0.79
+            }
+
+            limit {
+                counter = 'LINE'
+                value = 'COVEREDRATIO'
+                minimum = 0.78
+            }
+        }
+    }
+}
+
+project.tasks["jacocoTestCoverageVerification"].finalizedBy "sonarqube"
+sonarqube {
+    def sonarProperties = new Properties()
+    sonarProperties.load(new FileInputStream(file("src/main/resources/config/sonar.properties")))
+    def sonarToken = sonarProperties.getProperty("SONAR_TOKEN")
+
+    properties {
+        property "sonar.host.url", "http://zzimkkong-service.o-r.kr:8000"
+        property "sonar.login", sonarToken
+        property 'sonar.sources', 'src'
+        property 'sonar.language', 'java'
+        property 'sonar.projectVersion', '0.0.1-SNAPSHOT'
+        property 'sonar.sourceEncoding', 'UTF-8'
+        property 'sonar.coverage.jacoco.xmlReportPaths', 'build/reports/jacoco/test/jacocoTestReport.xml'
+        property 'sonar.java.binaries', 'build/classes'
+        property 'sonar.test.inclusions', '**/*Test.java'
+        property 'sonar.exclusions', '**/*Doc*.java, **/resources/**'
     }
 }
