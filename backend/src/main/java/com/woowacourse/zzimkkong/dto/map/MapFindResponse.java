@@ -7,7 +7,7 @@ public class MapFindResponse {
     private String mapName;
     private String mapDrawing;
     private String mapImageUrl;
-    private String publicMapId;
+    private String sharingMapId;
 
     public MapFindResponse() {
     }
@@ -19,21 +19,21 @@ public class MapFindResponse {
         this.mapImageUrl = mapImageUrl;
     }
 
-    private MapFindResponse(Long mapId, String mapName, String mapDrawing, String mapImageUrl, String publicMapId) {
+    private MapFindResponse(Long mapId, String mapName, String mapDrawing, String mapImageUrl, String sharingMapId) {
         this.mapId = mapId;
         this.mapName = mapName;
         this.mapDrawing = mapDrawing;
         this.mapImageUrl = mapImageUrl;
-        this.publicMapId = publicMapId;
+        this.sharingMapId = sharingMapId;
     }
 
-    public static MapFindResponse of(Map map, String publicMapId) {
+    public static MapFindResponse of(Map map, String sharingMapId) {
         return new MapFindResponse(
                 map.getId(),
                 map.getName(),
                 map.getMapDrawing(),
                 map.getMapImageUrl(),
-                publicMapId
+                sharingMapId
         );
     }
 
@@ -53,7 +53,7 @@ public class MapFindResponse {
         return mapImageUrl;
     }
 
-    public String getPublicMapId() {
-        return publicMapId;
+    public String getSharingMapId() {
+        return sharingMapId;
     }
 }

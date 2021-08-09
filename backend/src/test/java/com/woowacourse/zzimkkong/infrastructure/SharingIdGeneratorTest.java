@@ -38,7 +38,7 @@ class SharingIdGeneratorTest {
 
     @Test
     @DisplayName("Map 도메인 객체로부터 인코딩된 Sharing Id를 만들어낸다.")
-    void generatePublicIdFromMap() {
+    void generateSharingIdFromMap() {
         // given, when
         String sharingMapId = sharingIdGenerator.from(luther);
 

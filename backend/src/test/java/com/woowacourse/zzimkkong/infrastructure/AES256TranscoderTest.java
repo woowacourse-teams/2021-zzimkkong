@@ -47,10 +47,10 @@ class AES256TranscoderTest {
     @DisplayName("디코딩 할 수 없는 문자열이 주어지면 에러를 발생시킨다.")
     void decodeFromInvalidString() {
         // given
-        String wrongPublicId = "zzimkkong";
+        String wrongSharingId = "zzimkkong";
 
         // when, then
-        assertThatThrownBy(() -> aes256Transcoder.decode(wrongPublicId))
+        assertThatThrownBy(() -> aes256Transcoder.decode(wrongSharingId))
                 .isInstanceOf(DecodingException.class);
     }
 }

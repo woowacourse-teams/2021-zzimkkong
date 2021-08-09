@@ -53,7 +53,7 @@ class MapControllerTest extends AcceptanceTest {
         // given, when
         ExtractableResponse<Response> response = findMap(createdMapApi);
         MapFindResponse actualResponse = response.as(MapFindResponse.class);
-        MapFindResponse expectedResponse = MapFindResponse.of(luther, actualResponse.getPublicMapId());
+        MapFindResponse expectedResponse = MapFindResponse.of(luther, actualResponse.getSharingMapId());
 
         // then
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());

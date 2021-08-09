@@ -43,11 +43,11 @@ class GuestMapControllerTest extends AcceptanceTest {
 
         ExtractableResponse<Response> mapFindResponseFromId = findMap("/api/managers/maps/" + mapId);
         MapFindResponse expected = mapFindResponseFromId.body().as(MapFindResponse.class);
-        String sharingId = expected.getPublicMapId();
+        String sharingId = expected.getSharingMapId();
 
         // when
-        ExtractableResponse<Response> mapFindResponseFromPublicId = requestFindMapBySharingId(sharingId);
-        MapFindResponse actual = mapFindResponseFromPublicId.body().as(MapFindResponse.class);
+        ExtractableResponse<Response> mapFindResponseFromSharingId = requestFindMapBySharingId(sharingId);
+        MapFindResponse actual = mapFindResponseFromSharingId.body().as(MapFindResponse.class);
 
         // then
         assertThat(actual)
@@ -59,9 +59,9 @@ class GuestMapControllerTest extends AcceptanceTest {
         return RestAssured
                 .given(getRequestSpecification()).log().all()
                 .accept("application/json")
-                .filter(document("map/getByPublicId", getRequestPreprocessor(), getResponsePreprocessor()))
+                .filter(document("map/getBySharingId", getRequestPreprocessor(), getResponsePreprocessor()))
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .when().get("/api/guests/maps?publicMapId=" + sharingMapId)
+                .when().get("/api/guests/maps?sharingMapId=" + sharingMapId)
                 .then().log().all().extract();
     }
 }
