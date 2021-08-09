@@ -27,8 +27,9 @@ import static org.springframework.restdocs.restassured3.RestAssuredRestDocumenta
 class MemberControllerTest extends AcceptanceTest {
     private Member pobi;
     private Setting setting;
-    private Preset firstPreset;
-    private Preset secondPreset;
+
+    private SettingsRequest settingsRequest;
+    private PresetCreateRequest presetCreateRequest;
 
     @BeforeEach
     void setUp() {
@@ -43,8 +44,16 @@ class MemberControllerTest extends AcceptanceTest {
                 .enabledDayOfWeek(BE_ENABLED_DAY_OF_WEEK)
                 .build();
 
-        firstPreset = new Preset(PRESET_NAME1, setting, pobi);
-        secondPreset = new Preset(PRESET_NAME2, setting, pobi);
+        settingsRequest = new SettingsRequest(
+                BE_AVAILABLE_START_TIME,
+                BE_AVAILABLE_END_TIME,
+                BE_RESERVATION_TIME_UNIT,
+                BE_RESERVATION_MINIMUM_TIME_UNIT,
+                BE_RESERVATION_MAXIMUM_TIME_UNIT,
+                BE_RESERVATION_ENABLE,
+                BE_ENABLED_DAY_OF_WEEK
+        );
+        presetCreateRequest = new PresetCreateRequest(PRESET_NAME1, settingsRequest);
     }
 
     @Test
@@ -78,20 +87,7 @@ class MemberControllerTest extends AcceptanceTest {
     @Test
     @DisplayName("프리셋을 저장한다.")
     void createPreset() {
-        //given
-        SettingsRequest settingsRequest = new SettingsRequest(
-                BE_AVAILABLE_START_TIME,
-                BE_AVAILABLE_END_TIME,
-                BE_RESERVATION_TIME_UNIT,
-                BE_RESERVATION_MINIMUM_TIME_UNIT,
-                BE_RESERVATION_MAXIMUM_TIME_UNIT,
-                BE_RESERVATION_ENABLE,
-                BE_ENABLED_DAY_OF_WEEK
-        );
-
-        PresetCreateRequest presetCreateRequest = new PresetCreateRequest(PRESET_NAME1, settingsRequest);
-
-        //when
+        //given, when
         ExtractableResponse<Response> response = savePreset(presetCreateRequest);
 
         //then
@@ -102,17 +98,8 @@ class MemberControllerTest extends AcceptanceTest {
     @DisplayName("멤버가 가진 프리셋을 모두 조회한다.")
     void findAllPreset() {
         //given
-        SettingsRequest settingsRequest = new SettingsRequest(
-                BE_AVAILABLE_START_TIME,
-                BE_AVAILABLE_END_TIME,
-                BE_RESERVATION_TIME_UNIT,
-                BE_RESERVATION_MINIMUM_TIME_UNIT,
-                BE_RESERVATION_MAXIMUM_TIME_UNIT,
-                BE_RESERVATION_ENABLE,
-                BE_ENABLED_DAY_OF_WEEK
-        );
-
-        PresetCreateRequest presetCreateRequest = new PresetCreateRequest(PRESET_NAME1, settingsRequest);
+        Preset firstPreset = new Preset(PRESET_NAME1, setting, pobi);
+        Preset secondPreset = new Preset(PRESET_NAME2, setting, pobi);
         PresetCreateRequest presetCreateRequest2 = new PresetCreateRequest(PRESET_NAME2, settingsRequest);
 
         savePreset(presetCreateRequest);
@@ -132,17 +119,6 @@ class MemberControllerTest extends AcceptanceTest {
     @DisplayName("프리셋을 삭제한다.")
     void delete() {
         //given
-        SettingsRequest settingsRequest = new SettingsRequest(
-                BE_AVAILABLE_START_TIME,
-                BE_AVAILABLE_END_TIME,
-                BE_RESERVATION_TIME_UNIT,
-                BE_RESERVATION_MINIMUM_TIME_UNIT,
-                BE_RESERVATION_MAXIMUM_TIME_UNIT,
-                BE_RESERVATION_ENABLE,
-                BE_ENABLED_DAY_OF_WEEK
-        );
-
-        PresetCreateRequest presetCreateRequest = new PresetCreateRequest(PRESET_NAME1, settingsRequest);
         ExtractableResponse<Response> saveResponse = savePreset(presetCreateRequest);
         String api = saveResponse.header("location");
 
