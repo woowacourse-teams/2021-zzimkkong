@@ -95,4 +95,12 @@ class PresetServiceTest extends ServiceTest {
         assertThatThrownBy(() -> presetService.deletePreset(savedPreset.getId(), jason))
                 .isInstanceOf(NoSuchPresetException.class);
     }
+
+    @Test
+    @DisplayName("프리셋 삭제 요청 시, 프리셋이 존재하지 않으면 예외가 발생한다.")
+    void deleteInvalidPresetException() {
+        //given, when, then
+        assertThatThrownBy(() -> presetService.deletePreset(1L, pobi))
+                .isInstanceOf(NoSuchPresetException.class);
+    }
 }
