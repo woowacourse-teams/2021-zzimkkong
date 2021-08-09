@@ -19,17 +19,6 @@ public class Preset {
     private Member member;
 
     protected Preset() {
-
-    }
-
-    public Preset(final Setting setting, final Member member) {
-        this.setting = setting;
-        this.member = member;
-    }
-
-    public Preset(final Long id, final Setting setting, final Member member) {
-        this(setting, member);
-        this.id = id;
     }
 
     public Preset(final String name, final Setting setting, final Member member) {
