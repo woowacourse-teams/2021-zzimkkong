@@ -33,7 +33,6 @@ public class MapService {
     public static final String THUMBNAIL_EXTENSION = ".png";
 
     private final MapRepository maps;
-    private final SpaceRepository spaces;
     private final ReservationRepository reservations;
     private final StorageUploader storageUploader;
     private final SvgConverter svgConverter;
@@ -42,14 +41,12 @@ public class MapService {
 
     public MapService(
             final MapRepository maps,
-            final SpaceRepository spaces,
             final ReservationRepository reservations,
             final StorageUploader storageUploader,
             final SvgConverter svgConverter,
             final TimeConverter timeConverter,
             final SharingIdGenerator sharingIdGenerator) {
         this.maps = maps;
-        this.spaces = spaces;
         this.reservations = reservations;
         this.storageUploader = storageUploader;
         this.svgConverter = svgConverter;
@@ -74,7 +71,6 @@ public class MapService {
     public MapFindResponse findMap(final Long mapId, final Member manager) {
         Map map = maps.findById(mapId)
                 .orElseThrow(NoSuchMapException::new);
-
         validateManagerOfMap(map, manager);
         return MapFindResponse.of(map, sharingIdGenerator.from(map));
     }
@@ -90,7 +86,6 @@ public class MapService {
     public void updateMap(final Long mapId, final MapCreateUpdateRequest mapCreateUpdateRequest, final Member manager) {
         Map map = maps.findById(mapId)
                 .orElseThrow(NoSuchMapException::new);
-
         validateManagerOfMap(map, manager);
 
         String thumbnailUrl = uploadPngToS3(mapCreateUpdateRequest.getMapImageSvg(), map.getId().toString());
@@ -104,18 +99,18 @@ public class MapService {
     public void deleteMap(final Long mapId, final Member manager) {
         Map map = maps.findById(mapId)
                 .orElseThrow(NoSuchMapException::new);
-
         validateManagerOfMap(map, manager);
 
-        validateExistReservations(mapId);
+        //todo 공간-예약 양방향 매핑 적용 후 map 안으로 메서드 옮기기
+        validateExistReservations(map);
 
-        maps.deleteById(mapId);
+        maps.delete(map);
 
         deleteThumbnail(map);
     }
 
-    private void validateExistReservations(Long mapId) {
-        List<Space> findSpaces = spaces.findAllByMapId(mapId);
+    private void validateExistReservations(final Map map) {
+        List<Space> findSpaces = map.getSpaces();
 
         boolean isExistReservationInAnySpace = findSpaces.stream()
                 .anyMatch(space -> reservations.existsBySpaceIdAndEndTimeAfter(space.getId(), timeConverter.getNow()));
@@ -125,8 +120,8 @@ public class MapService {
         }
     }
 
-    private void validateManagerOfMap(final Map map, final Member manager) {
-        if (!manager.equals(map.getMember())) {   // TODO: ReservationService 와의 중복 제거 -김샐
+    public static void validateManagerOfMap(final Map map, final Member manager) {
+        if (map.isNotOwnedBy(manager)) {
             throw new NoAuthorityOnMapException();
         }
     }
@@ -138,7 +133,7 @@ public class MapService {
         return thumbnailUrl;
     }
 
-    private void deleteThumbnail(Map map) {
+    private void deleteThumbnail(final Map map) {
         String fileName = map.getId().toString();
         storageUploader.delete(THUMBNAILS_DIRECTORY_NAME, fileName + THUMBNAIL_EXTENSION);
     }

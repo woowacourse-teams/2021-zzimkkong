@@ -92,10 +92,8 @@ class MapServiceTest extends ServiceTest {
     @Test
     @DisplayName("맵 생성 요청 시, 올바른 요청이 들어오면 맵을 생성한다.")
     void create() {
-        //given
+        //given, when
         MapCreateUpdateRequest mapCreateUpdateRequest = new MapCreateUpdateRequest(luther.getName(), luther.getMapDrawing(), MAP_SVG);
-
-        //when
         given(maps.save(any(Map.class)))
                 .willReturn(luther);
         given(storageUploader.upload(anyString(), any(File.class)))
@@ -175,10 +173,6 @@ class MapServiceTest extends ServiceTest {
         //given
         given(maps.findById(anyLong()))
                 .willReturn(Optional.of(luther));
-
-        given(spaces.findAllByMapId(anyLong()))
-                .willReturn(List.of(be, fe));
-
         given(reservations.existsBySpaceIdAndEndTimeAfter(anyLong(), any(LocalDateTime.class)))
                 .willReturn(false);
 
@@ -192,10 +186,6 @@ class MapServiceTest extends ServiceTest {
         //given
         given(maps.findById(anyLong()))
                 .willReturn(Optional.of(luther));
-
-        given(spaces.findAllByMapId(anyLong()))
-                .willReturn(List.of(be, fe));
-
         given(reservations.existsBySpaceIdAndEndTimeAfter(anyLong(), any(LocalDateTime.class)))
                 .willReturn(true);
 
