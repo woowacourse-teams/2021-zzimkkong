@@ -10,6 +10,7 @@ include::member.adoc[]
 include::reservation.adoc[]
 include::map.adoc[]
 include::space.adoc[]
+include::preset.adoc[]
 
 === 예외처리
 ==== Response
