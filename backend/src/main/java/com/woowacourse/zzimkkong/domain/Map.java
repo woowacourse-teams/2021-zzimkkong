@@ -45,10 +45,9 @@ public class Map {
         this.id = id;
     }
 
-    public void update(final String mapName, final String mapDrawing, final String mapImageUrl) {
+    public void update(final String mapName, final String mapDrawing) {
         this.name = mapName;
         this.mapDrawing = mapDrawing;
-        this.mapImageUrl = mapImageUrl;
     }
 
     public boolean isNotOwnedBy(final Member manager) {
