@@ -6,7 +6,6 @@ import com.woowacourse.zzimkkong.domain.Reservation;
 import com.woowacourse.zzimkkong.domain.Space;
 import com.woowacourse.zzimkkong.dto.reservation.*;
 import com.woowacourse.zzimkkong.dto.slack.SlackResponse;
-import com.woowacourse.zzimkkong.exception.authorization.NoAuthorityOnMapException;
 import com.woowacourse.zzimkkong.exception.map.NoSuchMapException;
 import com.woowacourse.zzimkkong.exception.reservation.NoSuchReservationException;
 import com.woowacourse.zzimkkong.exception.space.NoSuchSpaceException;
@@ -20,6 +19,8 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDate;
 import java.util.Collections;
 import java.util.List;
+
+import static com.woowacourse.zzimkkong.service.MapService.validateManagerOfMap;
 
 @Service
 @Transactional
@@ -37,9 +38,11 @@ public class ManagerReservationService extends ReservationService {
             final Long spaceId,
             final ReservationCreateUpdateWithPasswordRequest reservationCreateUpdateWithPasswordRequest,
             final Member manager) {
-        validateAuthorityOnMap(mapId, manager);
+        Map map = maps.findById(mapId)
+                .orElseThrow(NoSuchMapException::new);
+        validateManagerOfMap(map, manager);
 
-        Space space = spaces.findById(spaceId)
+        Space space = map.findSpaceById(spaceId)
                 .orElseThrow(NoSuchSpaceException::new);
         validateTime(reservationCreateUpdateWithPasswordRequest);
         validateAvailability(space, reservationCreateUpdateWithPasswordRequest);
@@ -62,9 +65,11 @@ public class ManagerReservationService extends ReservationService {
             final Long mapId,
             final LocalDate date,
             final Member manager) {
-        validateAuthorityOnMap(mapId, manager);
+        Map map = maps.findById(mapId)
+                .orElseThrow(NoSuchMapException::new);
+        validateManagerOfMap(map, manager);
 
-        List<Space> findSpaces = spaces.findAllByMapId(mapId);
+        List<Space> findSpaces = map.getSpaces();
         List<Reservation> reservations = getReservations(findSpaces, date);
 
         return ReservationFindAllResponse.of(findSpaces, reservations);
@@ -76,9 +81,11 @@ public class ManagerReservationService extends ReservationService {
             final Long spaceId,
             final LocalDate date,
             final Member manager) {
-        validateAuthorityOnMap(mapId, manager);
+        Map map = maps.findById(mapId)
+                .orElseThrow(NoSuchMapException::new);
+        validateManagerOfMap(map, manager);
 
-        Space space = spaces.findById(spaceId)
+        Space space = map.findSpaceById(spaceId)
                 .orElseThrow(NoSuchSpaceException::new);
         List<Reservation> reservations = getReservations(Collections.singletonList(space), date);
 
@@ -91,8 +98,11 @@ public class ManagerReservationService extends ReservationService {
             final Long spaceId,
             final Long reservationId,
             final Member manager) {
-        validateAuthorityOnMap(mapId, manager);
-        validateSpaceExistence(spaceId);
+        Map map = maps.findById(mapId)
+                .orElseThrow(NoSuchMapException::new);
+        validateManagerOfMap(map, manager);
+
+        validateSpaceExistence(map, spaceId);
 
         Reservation reservation = reservations
                 .findById(reservationId)
@@ -106,8 +116,11 @@ public class ManagerReservationService extends ReservationService {
             final Long reservationId,
             final ReservationCreateUpdateRequest reservationCreateUpdateRequest,
             final Member manager) {
-        validateAuthorityOnMap(mapId, manager);
-        Space space = spaces.findById(spaceId)
+        Map map = maps.findById(mapId)
+                .orElseThrow(NoSuchMapException::new);
+        validateManagerOfMap(map, manager);
+
+        Space space = map.findSpaceById(spaceId)
                 .orElseThrow(NoSuchSpaceException::new);
 
         validateTime(reservationCreateUpdateRequest);
@@ -134,25 +147,16 @@ public class ManagerReservationService extends ReservationService {
             final Long spaceId,
             final Long reservationId,
             final Member manager) {
-        validateAuthorityOnMap(mapId, manager);
-        validateSpaceExistence(spaceId);
+        Map map = maps.findById(mapId)
+                .orElseThrow(NoSuchMapException::new);
+        validateManagerOfMap(map, manager);
+
+        validateSpaceExistence(map, spaceId);
 
         Reservation reservation = reservations
                 .findById(reservationId)
                 .orElseThrow(NoSuchReservationException::new);
         reservations.delete(reservation);
         return SlackResponse.from(reservation);
-    }
-
-    private void validateAuthorityOnMap(final Long mapId, final Member manager) {
-        Map map = maps.findById(mapId)
-                .orElseThrow(NoSuchMapException::new);
-        validateManagerOfMap(manager, map);
-    }
-
-    private void validateManagerOfMap(Member manager, Map map) {
-        if (map.isNotOwnedBy(manager)) {
-            throw new NoAuthorityOnMapException();
-        }
     }
 }

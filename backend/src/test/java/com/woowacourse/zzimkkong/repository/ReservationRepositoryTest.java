@@ -180,8 +180,8 @@ class ReservationRepositoryTest extends RepositoryTest {
         // given, when
         List<Reservation> foundReservations = getReservations(
                 List.of(be.getId(), fe.getId()),
-                THE_DAY_AFTER_TOMORROW.atTime(0,0),
-                THE_DAY_AFTER_TOMORROW.atTime(0,0).plusDays(1));
+                THE_DAY_AFTER_TOMORROW.atTime(0, 0),
+                THE_DAY_AFTER_TOMORROW.atTime(0, 0).plusDays(1));
 
         // then
         assertThat(foundReservations).containsExactlyInAnyOrderElementsOf(List.of(beAmZeroOne, bePmOneTwo, fe1ZeroOne));

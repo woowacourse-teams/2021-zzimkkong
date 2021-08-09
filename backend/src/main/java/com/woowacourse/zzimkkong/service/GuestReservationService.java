@@ -1,8 +1,10 @@
 package com.woowacourse.zzimkkong.service;
 
+import com.woowacourse.zzimkkong.domain.Map;
 import com.woowacourse.zzimkkong.domain.Reservation;
 import com.woowacourse.zzimkkong.domain.Space;
 import com.woowacourse.zzimkkong.dto.reservation.*;
+import com.woowacourse.zzimkkong.exception.map.NoSuchMapException;
 import com.woowacourse.zzimkkong.exception.reservation.NoSuchReservationException;
 import com.woowacourse.zzimkkong.exception.reservation.ReservationPasswordException;
 import com.woowacourse.zzimkkong.exception.space.NoSuchSpaceException;
@@ -32,10 +34,11 @@ public class GuestReservationService extends ReservationService {
             final Long mapId,
             final Long spaceId,
             final ReservationCreateUpdateWithPasswordRequest reservationCreateUpdateWithPasswordRequest) {
-        validateMapExistence(mapId);
+        Map map = maps.findById(mapId)
+                .orElseThrow(NoSuchMapException::new);
         validateTime(reservationCreateUpdateWithPasswordRequest);
 
-        Space space = spaces.findById(spaceId)
+        Space space = map.findSpaceById(spaceId)
                 .orElseThrow(NoSuchSpaceException::new);
         validateAvailability(space, reservationCreateUpdateWithPasswordRequest);
 
@@ -58,8 +61,9 @@ public class GuestReservationService extends ReservationService {
             final Long spaceId,
             final Long reservationId,
             final ReservationPasswordAuthenticationRequest reservationPasswordAuthenticationRequest) {
-        validateMapExistence(mapId);
-        validateSpaceExistence(spaceId);
+        Map map = maps.findById(mapId)
+                .orElseThrow(NoSuchMapException::new);
+        validateSpaceExistence(map, spaceId);
 
         Reservation reservation = reservations
                 .findById(reservationId)
@@ -70,9 +74,10 @@ public class GuestReservationService extends ReservationService {
 
     @Transactional(readOnly = true)
     public ReservationFindResponse findReservations(final Long mapId, final Long spaceId, final LocalDate date) {
-        validateMapExistence(mapId);
+        Map map = maps.findById(mapId)
+                .orElseThrow(NoSuchMapException::new);
 
-        Space space = spaces.findById(spaceId)
+        Space space = map.findSpaceById(spaceId)
                 .orElseThrow(NoSuchSpaceException::new);
         List<Reservation> reservations = getReservations(Collections.singletonList(space), date);
 
@@ -81,9 +86,10 @@ public class GuestReservationService extends ReservationService {
 
     @Transactional(readOnly = true)
     public ReservationFindAllResponse findAllReservations(final Long mapId, final LocalDate date) {
-        validateMapExistence(mapId);
+        Map map = maps.findById(mapId)
+                .orElseThrow(NoSuchMapException::new);
+        List<Space> findSpaces = map.getSpaces();
 
-        List<Space> findSpaces = spaces.findAllByMapId(mapId);
         List<Reservation> reservations = getReservations(findSpaces, date);
 
         return ReservationFindAllResponse.of(findSpaces, reservations);
@@ -94,11 +100,11 @@ public class GuestReservationService extends ReservationService {
             final Long spaceId,
             final Long reservationId,
             final ReservationCreateUpdateWithPasswordRequest reservationCreateUpdateWithPasswordRequest) {
-        validateMapExistence(mapId);
-
+        Map map = maps.findById(mapId)
+                .orElseThrow(NoSuchMapException::new);
         validateTime(reservationCreateUpdateWithPasswordRequest);
 
-        Space space = spaces.findById(spaceId)
+        Space space = map.findSpaceById(spaceId)
                 .orElseThrow(NoSuchSpaceException::new);
         Reservation reservation = reservations
                 .findById(reservationId)
@@ -123,8 +129,9 @@ public class GuestReservationService extends ReservationService {
             final Long spaceId,
             final Long reservationId,
             final ReservationPasswordAuthenticationRequest reservationPasswordAuthenticationRequest) {
-        validateMapExistence(mapId);
-        validateSpaceExistence(spaceId);
+        Map map = maps.findById(mapId)
+                .orElseThrow(NoSuchMapException::new);
+        validateSpaceExistence(map, spaceId);
 
         Reservation reservation = reservations
                 .findById(reservationId)

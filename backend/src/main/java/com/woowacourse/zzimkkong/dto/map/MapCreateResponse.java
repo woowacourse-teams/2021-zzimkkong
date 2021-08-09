@@ -8,11 +8,11 @@ public class MapCreateResponse {
     public MapCreateResponse() {
     }
 
-    private MapCreateResponse(Long id) {
+    private MapCreateResponse(final Long id) {
         this.id = id;
     }
 
-    public static MapCreateResponse from(Map saveMap) {
+    public static MapCreateResponse from(final Map saveMap) {
         return new MapCreateResponse(saveMap.getId());
     }
 

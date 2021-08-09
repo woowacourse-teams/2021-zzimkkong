@@ -4,10 +4,7 @@ import com.woowacourse.zzimkkong.domain.Map;
 import com.woowacourse.zzimkkong.domain.Member;
 import com.woowacourse.zzimkkong.domain.Setting;
 import com.woowacourse.zzimkkong.domain.Space;
-import com.woowacourse.zzimkkong.dto.space.SettingsRequest;
-import com.woowacourse.zzimkkong.dto.space.SpaceCreateUpdateRequest;
-import com.woowacourse.zzimkkong.dto.space.SpaceFindAllResponse;
-import com.woowacourse.zzimkkong.dto.space.SpaceFindDetailResponse;
+import com.woowacourse.zzimkkong.dto.space.*;
 import com.woowacourse.zzimkkong.infrastructure.AuthorizationExtractor;
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
@@ -105,7 +102,8 @@ public class ManagerSpaceControllerTest extends AcceptanceTest {
                 "#CCFFE5",
                 "우리집",
                 SPACE_DRAWING,
-                newSettingsRequest
+                newSettingsRequest,
+                MAP_SVG
         );
 
         // when
@@ -120,8 +118,8 @@ public class ManagerSpaceControllerTest extends AcceptanceTest {
     void save_default() {
         // given, when
         SettingsRequest settingsRequest = new SettingsRequest(
-                LocalTime.of(0,0),
-                LocalTime.of(18,0),
+                LocalTime.of(0, 0),
+                LocalTime.of(18, 0),
                 null,
                 null,
                 null,
@@ -134,7 +132,8 @@ public class ManagerSpaceControllerTest extends AcceptanceTest {
                 "#CCFFE5",
                 "우리집",
                 SPACE_DRAWING,
-                settingsRequest
+                settingsRequest,
+                MAP_SVG
         );
 
         Setting defaultSetting = new Setting.Builder()
@@ -220,7 +219,8 @@ public class ManagerSpaceControllerTest extends AcceptanceTest {
                 "#CCCCFF",
                 "장미아파트",
                 SPACE_DRAWING,
-                settingsRequest
+                settingsRequest,
+                MAP_SVG
         );
 
         String api = spaceApi + "/" + beSpaceId;
@@ -235,7 +235,9 @@ public class ManagerSpaceControllerTest extends AcceptanceTest {
     void delete() {
         // given, when
         String api = spaceApi + "/" + beSpaceId;
-        ExtractableResponse<Response> response = deleteSpace(api);
+        SpaceDeleteRequest spaceDeleteRequest = new SpaceDeleteRequest(MAP_SVG);
+
+        ExtractableResponse<Response> response = deleteSpace(api, spaceDeleteRequest);
 
         // then
         assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
@@ -289,13 +291,14 @@ public class ManagerSpaceControllerTest extends AcceptanceTest {
                 .then().log().all().extract();
     }
 
-    private ExtractableResponse<Response> deleteSpace(final String api) {
+    private ExtractableResponse<Response> deleteSpace(final String api, final SpaceDeleteRequest spaceDeleteRequest) {
         return RestAssured
                 .given(getRequestSpecification()).log().all()
                 .accept("application/json")
                 .header("Authorization", AuthorizationExtractor.AUTHENTICATION_TYPE + " " + accessToken)
                 .filter(document("space/manager/delete", getRequestPreprocessor(), getResponsePreprocessor()))
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .body(spaceDeleteRequest)
                 .when().delete(api)
                 .then().log().all().extract();
     }

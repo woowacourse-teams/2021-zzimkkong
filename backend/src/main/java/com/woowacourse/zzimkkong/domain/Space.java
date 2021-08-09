@@ -5,7 +5,6 @@ import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
 
 import javax.persistence.*;
-
 import java.time.DayOfWeek;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -53,7 +52,7 @@ public class Space {
     protected Space() {
     }
 
-    protected Space(Builder builder) {
+    protected Space(final Builder builder) {
         this.id = builder.id;
         this.name = builder.name;
         this.color = builder.color;
@@ -63,6 +62,10 @@ public class Space {
         this.textPosition = builder.textPosition;
         this.coordinate = builder.coordinate;
         this.map = builder.map;
+
+        if (map != null) {
+            map.addSpace(this);
+        }
     }
 
     public void update(final Space updateSpace) {
@@ -71,10 +74,9 @@ public class Space {
         this.description = updateSpace.description;
         this.area = updateSpace.area;
         this.setting = updateSpace.setting;
-        this.map = updateSpace.map;
     }
 
-    public boolean isNotBetweenAvailableTime(LocalDateTime startDateTime, LocalDateTime endDateTime) {
+    public boolean isNotBetweenAvailableTime(final LocalDateTime startDateTime, LocalDateTime endDateTime) {
         boolean isEqualOrAfterStartTime = startDateTime.toLocalTime().equals(getAvailableStartTime()) ||
                 startDateTime.toLocalTime().isAfter(getAvailableStartTime());
         boolean isEqualOrBeforeEndTime = endDateTime.toLocalTime().equals(getAvailableEndTime()) ||
@@ -82,15 +84,15 @@ public class Space {
         return !(isEqualOrAfterStartTime && isEqualOrBeforeEndTime);
     }
 
-    public boolean isIncorrectTimeUnit(int minute) {
+    public boolean isIncorrectTimeUnit(final int minute) {
         return minute != 0 && isNotDivideBy(minute);
     }
 
-    public boolean isIncorrectMinimumMaximumTimeUnit(int durationMinutes) {
+    public boolean isIncorrectMinimumMaximumTimeUnit(final int durationMinutes) {
         return durationMinutes < getReservationMinimumTimeUnit() || durationMinutes > getReservationMaximumTimeUnit();
     }
 
-    public boolean isNotDivideBy(int minute) {
+    public boolean isNotDivideBy(final int minute) {
         return minute % getReservationTimeUnit() != 0;
     }
 
@@ -121,6 +123,10 @@ public class Space {
                 .filter(dayOfWeek -> dayOfWeek.name().equals(dayOfWeekName.toUpperCase()))
                 .findAny()
                 .orElseThrow(NoSuchDayOfWeekException::new);
+    }
+
+    public boolean hasSameId(final Long spaceId) {
+        return id.equals(spaceId);
     }
 
     public Long getId() {
@@ -197,47 +203,47 @@ public class Space {
         public Builder() {
         }
 
-        public Space.Builder id(Long inputId) {
+        public Space.Builder id(final Long inputId) {
             id = inputId;
             return this;
         }
 
-        public Space.Builder name(String inputName) {
+        public Space.Builder name(final String inputName) {
             name = inputName;
             return this;
         }
 
-        public Space.Builder color(String inputColor) {
+        public Space.Builder color(final String inputColor) {
             color = inputColor;
             return this;
         }
 
-        public Space.Builder description(String inputDescription) {
+        public Space.Builder description(final String inputDescription) {
             description = inputDescription;
             return this;
         }
 
-        public Space.Builder area(String inputArea) {
+        public Space.Builder area(final String inputArea) {
             area = inputArea;
             return this;
         }
 
-        public Space.Builder setting(Setting inputSetting) {
+        public Space.Builder setting(final Setting inputSetting) {
             setting = inputSetting;
             return this;
         }
 
-        public Space.Builder textPosition(String inputTextPosition) {
+        public Space.Builder textPosition(final String inputTextPosition) {
             textPosition = inputTextPosition;
             return this;
         }
 
-        public Space.Builder coordinate(String inputCoordinate) {
+        public Space.Builder coordinate(final String inputCoordinate) {
             coordinate = inputCoordinate;
             return this;
         }
 
-        public Space.Builder map(Map inputMap) {
+        public Space.Builder map(final Map inputMap) {
             map = inputMap;
             return this;
         }
