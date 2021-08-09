@@ -17,7 +17,7 @@ public class CoordinateResponse {
         this.y = y;
     }
 
-    public static CoordinateResponse from(String coordinate) {
+    public static CoordinateResponse from(final String coordinate) {
         // todo 컬럼 삭제할 때 삭제하기
         if (coordinate == null) {
             return null;

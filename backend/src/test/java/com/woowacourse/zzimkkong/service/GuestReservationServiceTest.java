@@ -34,8 +34,8 @@ class GuestReservationServiceTest extends ServiceTest {
     private GuestReservationService guestReservationService;
 
     private ReservationCreateUpdateWithPasswordRequest reservationCreateUpdateWithPasswordRequest = new ReservationCreateUpdateWithPasswordRequest(
-            THE_DAY_AFTER_TOMORROW.atTime(13,0),
-            THE_DAY_AFTER_TOMORROW.atTime(14,0),
+            THE_DAY_AFTER_TOMORROW.atTime(13, 0),
+            THE_DAY_AFTER_TOMORROW.atTime(14, 0),
             RESERVATION_PASSWORD,
             USER_NAME,
             DESCRIPTION
@@ -479,8 +479,8 @@ class GuestReservationServiceTest extends ServiceTest {
                 luther.getId(),
                 be.getId(),
                 new ReservationCreateUpdateWithPasswordRequest(
-                        THE_DAY_AFTER_TOMORROW.atTime(10,0),
-                        THE_DAY_AFTER_TOMORROW.atTime(10,0).plusMinutes(duration),
+                        THE_DAY_AFTER_TOMORROW.atTime(10, 0),
+                        THE_DAY_AFTER_TOMORROW.atTime(10, 0).plusMinutes(duration),
                         RESERVATION_PASSWORD,
                         USER_NAME,
                         DESCRIPTION
@@ -491,8 +491,8 @@ class GuestReservationServiceTest extends ServiceTest {
                 be.getId(),
                 reservation.getId(),
                 new ReservationCreateUpdateWithPasswordRequest(
-                        THE_DAY_AFTER_TOMORROW.atTime(10,0),
-                        THE_DAY_AFTER_TOMORROW.atTime(10,0).plusMinutes(duration),
+                        THE_DAY_AFTER_TOMORROW.atTime(10, 0),
+                        THE_DAY_AFTER_TOMORROW.atTime(10, 0).plusMinutes(duration),
                         RESERVATION_PASSWORD,
                         USER_NAME,
                         DESCRIPTION
@@ -545,7 +545,7 @@ class GuestReservationServiceTest extends ServiceTest {
         assertThatThrownBy(() -> guestReservationService.findReservations(noneExistingMapId, be.getId(), THE_DAY_AFTER_TOMORROW))
                 .isInstanceOf(NoSuchMapException.class);
     }
-    
+
     @Test
     @DisplayName("특정 공간 예약 조회 요청 시, 해당하는 공간이 없으면 오류가 발생한다.")
     void findReservationsNotExistSpace() {
@@ -703,8 +703,8 @@ class GuestReservationServiceTest extends ServiceTest {
                 be.getId(),
                 reservation.getId(),
                 new ReservationCreateUpdateWithPasswordRequest(
-                        THE_DAY_AFTER_TOMORROW.atTime(10,0),
-                        THE_DAY_AFTER_TOMORROW.atTime(11,0),
+                        THE_DAY_AFTER_TOMORROW.atTime(10, 0),
+                        THE_DAY_AFTER_TOMORROW.atTime(11, 0),
                         reservation.getPassword(),
                         CHANGED_NAME,
                         CHANGED_DESCRIPTION)));
@@ -722,8 +722,8 @@ class GuestReservationServiceTest extends ServiceTest {
 
         //when
         ReservationCreateUpdateWithPasswordRequest reservationCreateUpdateWithPasswordRequest = new ReservationCreateUpdateWithPasswordRequest(
-                THE_DAY_AFTER_TOMORROW.atTime(12,0),
-                THE_DAY_AFTER_TOMORROW.atTime(12,0).minusHours(endTime),
+                THE_DAY_AFTER_TOMORROW.atTime(12, 0),
+                THE_DAY_AFTER_TOMORROW.atTime(12, 0).minusHours(endTime),
                 reservation.getPassword(),
                 CHANGED_NAME,
                 CHANGED_DESCRIPTION
