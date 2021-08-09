@@ -26,6 +26,7 @@ public class Preset {
         this.name = name;
         this.setting = setting;
         this.member = member;
+        this.member.addPreset(this);
     }
 
     public Preset(final Long id, final String name, final Setting setting, final Member member) {

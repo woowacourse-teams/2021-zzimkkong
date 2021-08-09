@@ -78,7 +78,6 @@ class PresetServiceTest extends ServiceTest {
     void delete() {
         //given
         Preset savedPreset = new Preset(1L, PRESET_NAME1, setting, pobi);
-        pobi.addPreset(savedPreset);
 
         //when, then
         assertDoesNotThrow(() -> presetService.deletePreset(savedPreset.getId(), pobi));
@@ -89,26 +88,11 @@ class PresetServiceTest extends ServiceTest {
     void deleteOwnerException() {
         //given
         Preset savedPreset = new Preset(1L, PRESET_NAME1, setting, pobi);
-        pobi.addPreset(savedPreset);
 
         Member jason = new Member(2L, "jason@email.com", PASSWORD, ORGANIZATION);
 
         //when, then
         assertThatThrownBy(() -> presetService.deletePreset(savedPreset.getId(), jason))
-                .isInstanceOf(NoSuchPresetException.class);
-    }
-
-    @Test
-    @DisplayName("프리셋 삭제 요청 시, 프리셋이 존재하지 않으면 예외가 발생한다.")
-    void deleteInvalidPresetException() {
-        //given
-        Preset savedPreset = new Preset(1L, PRESET_NAME1, setting, pobi);
-        pobi.addPreset(savedPreset);
-
-        Preset invalidPreset = new Preset(2L, PRESET_NAME1, setting, pobi);
-
-        //when, then
-        assertThatThrownBy(() -> presetService.deletePreset(invalidPreset.getId(), pobi))
                 .isInstanceOf(NoSuchPresetException.class);
     }
 }
