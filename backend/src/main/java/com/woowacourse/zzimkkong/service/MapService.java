@@ -10,6 +10,7 @@ import com.woowacourse.zzimkkong.dto.map.MapFindResponse;
 import com.woowacourse.zzimkkong.exception.authorization.NoAuthorityOnMapException;
 import com.woowacourse.zzimkkong.exception.map.NoSuchMapException;
 import com.woowacourse.zzimkkong.exception.space.ReservationExistOnSpaceException;
+import com.woowacourse.zzimkkong.infrastructure.SharingIdGenerator;
 import com.woowacourse.zzimkkong.infrastructure.StorageUploader;
 import com.woowacourse.zzimkkong.infrastructure.SvgConverter;
 import com.woowacourse.zzimkkong.infrastructure.TimeConverter;
@@ -21,6 +22,9 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.io.File;
 import java.util.List;
+
+import static java.util.stream.Collectors.collectingAndThen;
+import static java.util.stream.Collectors.toList;
 
 @Service
 @Transactional
@@ -34,6 +38,7 @@ public class MapService {
     private final StorageUploader storageUploader;
     private final SvgConverter svgConverter;
     private final TimeConverter timeConverter;
+    private final SharingIdGenerator sharingIdGenerator;
 
     public MapService(
             final MapRepository maps,
@@ -41,13 +46,15 @@ public class MapService {
             final ReservationRepository reservations,
             final StorageUploader storageUploader,
             final SvgConverter svgConverter,
-            final TimeConverter timeConverter) {
+            final TimeConverter timeConverter,
+            final SharingIdGenerator sharingIdGenerator) {
         this.maps = maps;
         this.spaces = spaces;
         this.reservations = reservations;
         this.storageUploader = storageUploader;
         this.svgConverter = svgConverter;
         this.timeConverter = timeConverter;
+        this.sharingIdGenerator = sharingIdGenerator;
     }
 
     public MapCreateResponse saveMap(final MapCreateUpdateRequest mapCreateUpdateRequest, final Member manager) {
@@ -69,13 +76,15 @@ public class MapService {
                 .orElseThrow(NoSuchMapException::new);
 
         validateManagerOfMap(map, manager);
-        return MapFindResponse.from(map);
+        return MapFindResponse.of(map, sharingIdGenerator.from(map));
     }
 
     @Transactional(readOnly = true)
     public MapFindAllResponse findAllMaps(final Member manager) {
         List<Map> findMaps = maps.findAllByMember(manager);
-        return MapFindAllResponse.of(findMaps, manager);
+        return findMaps.stream()
+                .map(map -> MapFindResponse.of(map, sharingIdGenerator.from(map)))
+                .collect(collectingAndThen(toList(), mapFindResponses -> MapFindAllResponse.of(mapFindResponses, manager)));
     }
 
     public void updateMap(final Long mapId, final MapCreateUpdateRequest mapCreateUpdateRequest, final Member manager) {
@@ -132,5 +141,12 @@ public class MapService {
     private void deleteThumbnail(Map map) {
         String fileName = map.getId().toString();
         storageUploader.delete(THUMBNAILS_DIRECTORY_NAME, fileName + THUMBNAIL_EXTENSION);
+    }
+
+    public MapFindResponse findMapBySharingId(String sharingMapId) {
+        Long mapId = sharingIdGenerator.parseIdFrom(sharingMapId);
+        Map map = maps.findById(mapId)
+                .orElseThrow(NoSuchMapException::new);
+        return MapFindResponse.of(map, sharingIdGenerator.from(map));
     }
 }
