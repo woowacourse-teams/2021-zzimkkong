@@ -6,7 +6,7 @@ public class SlackUrl {
     public SlackUrl() {
     }
 
-    public SlackUrl(String url) {
+    public SlackUrl(final String url) {
         this.url = url;
     }
 

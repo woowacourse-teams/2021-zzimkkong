@@ -9,7 +9,9 @@ import com.woowacourse.zzimkkong.dto.map.MapCreateUpdateRequest;
 import com.woowacourse.zzimkkong.dto.map.MapFindAllResponse;
 import com.woowacourse.zzimkkong.dto.map.MapFindResponse;
 import com.woowacourse.zzimkkong.exception.authorization.NoAuthorityOnMapException;
+import com.woowacourse.zzimkkong.exception.map.InvalidAccessLinkException;
 import com.woowacourse.zzimkkong.exception.space.ReservationExistOnSpaceException;
+import com.woowacourse.zzimkkong.infrastructure.SharingIdGenerator;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -21,6 +23,8 @@ import java.util.List;
 import java.util.Optional;
 
 import static com.woowacourse.zzimkkong.Constants.*;
+import static java.util.stream.Collectors.collectingAndThen;
+import static java.util.stream.Collectors.toList;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
@@ -82,13 +86,14 @@ class MapServiceTest extends ServiceTest {
                 .build();
     }
 
+    @Autowired
+    private SharingIdGenerator sharingIdGenerator;
+
     @Test
     @DisplayName("맵 생성 요청 시, 올바른 요청이 들어오면 맵을 생성한다.")
     void create() {
-        //given
+        //given, when
         MapCreateUpdateRequest mapCreateUpdateRequest = new MapCreateUpdateRequest(luther.getName(), luther.getMapDrawing(), MAP_SVG);
-
-        //when
         given(maps.save(any(Map.class)))
                 .willReturn(luther);
         given(storageUploader.upload(anyString(), any(File.class)))
@@ -110,8 +115,9 @@ class MapServiceTest extends ServiceTest {
         MapFindResponse mapFindResponse = mapService.findMap(luther.getId(), pobi);
 
         //then
-        assertThat(mapFindResponse).usingRecursiveComparison()
-                .isEqualTo(MapFindResponse.from(luther));
+        assertThat(mapFindResponse)
+                .usingRecursiveComparison()
+                .isEqualTo(MapFindResponse.of(luther, sharingIdGenerator.from(luther)));
     }
 
     @Test
@@ -127,7 +133,9 @@ class MapServiceTest extends ServiceTest {
 
         //then
         assertThat(mapFindAllResponse).usingRecursiveComparison()
-                .isEqualTo(MapFindAllResponse.of(expectedMaps, pobi));
+                .isEqualTo(expectedMaps.stream()
+                        .map(map -> MapFindResponse.of(map, sharingIdGenerator.from(map)))
+                        .collect(collectingAndThen(toList(), mapFindResponses -> MapFindAllResponse.of(mapFindResponses, pobi))));
     }
 
     @Test
@@ -165,10 +173,6 @@ class MapServiceTest extends ServiceTest {
         //given
         given(maps.findById(anyLong()))
                 .willReturn(Optional.of(luther));
-
-        given(spaces.findAllByMapId(anyLong()))
-                .willReturn(List.of(be, fe));
-
         given(reservations.existsBySpaceIdAndEndTimeAfter(anyLong(), any(LocalDateTime.class)))
                 .willReturn(false);
 
@@ -182,15 +186,40 @@ class MapServiceTest extends ServiceTest {
         //given
         given(maps.findById(anyLong()))
                 .willReturn(Optional.of(luther));
-
-        given(spaces.findAllByMapId(anyLong()))
-                .willReturn(List.of(be, fe));
-
         given(reservations.existsBySpaceIdAndEndTimeAfter(anyLong(), any(LocalDateTime.class)))
                 .willReturn(true);
 
         //when, then
         assertThatThrownBy(() -> mapService.deleteMap(luther.getId(), pobi))
                 .isInstanceOf(ReservationExistOnSpaceException.class);
+    }
+
+    @Test
+    @DisplayName("Sharing Id로부터 Map을 찾을 수 있다.")
+    void findMapBySharingId() {
+        // given
+        String sharingId = sharingIdGenerator.from(luther);
+        given(maps.findById(anyLong()))
+                .willReturn(Optional.of(luther));
+
+        // when
+        MapFindResponse actual = mapService.findMapBySharingId(sharingId);
+        MapFindResponse expected = MapFindResponse.of(luther, sharingIdGenerator.from(luther));
+
+        // then
+        assertThat(actual)
+                .usingRecursiveComparison()
+                .isEqualTo(expected);
+    }
+
+    @Test
+    @DisplayName("잘못된 Sharing Id가 주어지면 예외가 발생한다.")
+    void findMapByWrongSharingId() {
+        // given
+        String wrongSharingId = "zzimkkong";
+
+        // when, then
+        assertThatThrownBy(() -> mapService.findMapBySharingId(wrongSharingId))
+                .isInstanceOf(InvalidAccessLinkException.class);
     }
 }

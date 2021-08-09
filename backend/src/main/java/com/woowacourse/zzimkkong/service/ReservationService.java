@@ -1,11 +1,11 @@
 package com.woowacourse.zzimkkong.service;
 
+import com.woowacourse.zzimkkong.domain.Map;
 import com.woowacourse.zzimkkong.domain.Reservation;
 import com.woowacourse.zzimkkong.domain.Space;
 import com.woowacourse.zzimkkong.dto.reservation.ReservationCreateUpdateRequest;
 import com.woowacourse.zzimkkong.exception.map.NoSuchMapException;
 import com.woowacourse.zzimkkong.exception.reservation.*;
-import com.woowacourse.zzimkkong.exception.reservation.InvalidReservationEnableException;
 import com.woowacourse.zzimkkong.exception.space.NoSuchSpaceException;
 import com.woowacourse.zzimkkong.infrastructure.TimeConverter;
 import com.woowacourse.zzimkkong.repository.MapRepository;
@@ -146,15 +146,8 @@ public abstract class ReservationService {
         );
     }
 
-    // todo 이 메소드 없애기 -김샐
-    protected void validateMapExistence(final Long mapId) {
-        if (!maps.existsById(mapId)) {
-            throw new NoSuchMapException();
-        }
-    }
-
-    protected void validateSpaceExistence(final Long spaceId) {
-        if (!spaces.existsById(spaceId)) {
+    protected void validateSpaceExistence(final Map map, final Long spaceId) {
+        if (map.doesNotHaveSpaceId(spaceId)) {
             throw new NoSuchSpaceException();
         }
     }
