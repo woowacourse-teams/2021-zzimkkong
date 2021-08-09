@@ -64,6 +64,9 @@ class SpaceServiceTest extends ServiceTest {
     private Space be;
     private Space fe;
 
+    private Long noneExistingMapId;
+    private Long noneExistingSpaceId;
+
     @BeforeEach
     void setUp() {
         pobi = new Member(EMAIL, PASSWORD, ORGANIZATION);
@@ -108,24 +111,44 @@ class SpaceServiceTest extends ServiceTest {
                 .area(SPACE_DRAWING)
                 .setting(feSetting)
                 .build();
+
+        noneExistingMapId = luther.getId() + 1;
+        noneExistingSpaceId = (long) (luther.getSpaces().size() + 1);
     }
 
     @Test
     @DisplayName("공간 생성 요청 시, 공간을 생성한다.")
     void save() {
         // given
+        Setting setting = new Setting.Builder()
+                .availableStartTime(BE_AVAILABLE_START_TIME)
+                .availableEndTime(BE_AVAILABLE_END_TIME)
+                .reservationTimeUnit(BE_RESERVATION_TIME_UNIT)
+                .reservationMinimumTimeUnit(BE_RESERVATION_MINIMUM_TIME_UNIT)
+                .reservationMaximumTimeUnit(BE_RESERVATION_MAXIMUM_TIME_UNIT)
+                .reservationEnable(BE_RESERVATION_ENABLE)
+                .enabledDayOfWeek(BE_ENABLED_DAY_OF_WEEK)
+                .build();
+
+        Space newSpace = new Space.Builder()
+                .id(3L)
+                .name("새로운 공간")
+                .map(luther)
+                .description(BE_DESCRIPTION)
+                .area(SPACE_DRAWING)
+                .setting(setting)
+                .build();
+
         given(maps.findById(anyLong()))
                 .willReturn(Optional.of(luther));
         given(spaces.save(any(Space.class)))
-                .willReturn(be);
-        given(storageUploader.upload(anyString(), any(File.class)))
-                .willReturn(MAP_IMAGE_URL);
+                .willReturn(newSpace);
 
         // when
         SpaceCreateResponse spaceCreateResponse = spaceService.saveSpace(luther.getId(), spaceCreateUpdateRequest, pobi);
 
         // then
-        assertThat(spaceCreateResponse.getId()).isEqualTo(be.getId());
+        assertThat(spaceCreateResponse.getId()).isEqualTo(newSpace.getId());
     }
 
     @Test
@@ -136,7 +159,7 @@ class SpaceServiceTest extends ServiceTest {
                 .willReturn(Optional.empty());
 
         // when, then
-        assertThatThrownBy(() -> spaceService.saveSpace(luther.getId(), spaceCreateUpdateRequest, pobi))
+        assertThatThrownBy(() -> spaceService.saveSpace(noneExistingMapId, spaceCreateUpdateRequest, pobi))
                 .isInstanceOf(NoSuchMapException.class);
     }
 
@@ -177,11 +200,9 @@ class SpaceServiceTest extends ServiceTest {
         // given
         given(maps.findById(anyLong()))
                 .willReturn(Optional.of(luther));
-        given(spaces.findById(anyLong()))
-                .willReturn(Optional.empty());
 
         // when, then
-        assertThatThrownBy(() -> spaceService.findSpace(luther.getId(), be.getId(), pobi))
+        assertThatThrownBy(() -> spaceService.findSpace(luther.getId(), noneExistingSpaceId, pobi))
                 .isInstanceOf(NoSuchSpaceException.class);
     }
 
@@ -205,8 +226,6 @@ class SpaceServiceTest extends ServiceTest {
         // given
         given(maps.findById(anyLong()))
                 .willReturn(Optional.of(luther));
-        given(spaces.findAllByMapId(anyLong()))
-                .willReturn(List.of(be, fe));
 
         // when
         SpaceFindAllResponse actual = spaceService.findAllSpace(luther.getId(), pobi);
@@ -234,8 +253,6 @@ class SpaceServiceTest extends ServiceTest {
         // given
         given(maps.findById(anyLong()))
                 .willReturn(Optional.of(luther));
-        given(spaces.findAllByMapId(anyLong()))
-                .willReturn(List.of(be, fe));
 
         // when
         SpaceFindAllResponse actual = spaceService.findAllSpace(luther.getId());
@@ -325,7 +342,7 @@ class SpaceServiceTest extends ServiceTest {
         SpaceDeleteRequest spaceDeleteRequest = new SpaceDeleteRequest(MAP_SVG);
 
         //then
-        assertThatThrownBy(() -> spaceService.deleteSpace(luther.getId(), be.getId(), spaceDeleteRequest, pobi))
+        assertThatThrownBy(() -> spaceService.deleteSpace(luther.getId(), noneExistingSpaceId, spaceDeleteRequest, pobi))
                 .isInstanceOf(NoSuchSpaceException.class);
     }
 

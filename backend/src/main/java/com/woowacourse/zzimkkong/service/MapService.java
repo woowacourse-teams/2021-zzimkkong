@@ -15,7 +15,6 @@ import com.woowacourse.zzimkkong.infrastructure.ThumbnailManager;
 import com.woowacourse.zzimkkong.infrastructure.TimeConverter;
 import com.woowacourse.zzimkkong.repository.MapRepository;
 import com.woowacourse.zzimkkong.repository.ReservationRepository;
-import com.woowacourse.zzimkkong.repository.SpaceRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -28,7 +27,6 @@ import static java.util.stream.Collectors.toList;
 @Transactional
 public class MapService {
     private final MapRepository maps;
-    private final SpaceRepository spaces;
     private final ReservationRepository reservations;
     private final TimeConverter timeConverter;
     private final ThumbnailManager thumbnailManager;
@@ -36,13 +34,11 @@ public class MapService {
 
     public MapService(
             final MapRepository maps,
-            final SpaceRepository spaces,
             final ReservationRepository reservations,
             final TimeConverter timeConverter,
             final ThumbnailManager thumbnailManager,
             final SharingIdGenerator sharingIdGenerator) {
         this.maps = maps;
-        this.spaces = spaces;
         this.reservations = reservations;
         this.timeConverter = timeConverter;
         this.thumbnailManager = thumbnailManager;
@@ -66,7 +62,6 @@ public class MapService {
     public MapFindResponse findMap(final Long mapId, final Member manager) {
         Map map = maps.findById(mapId)
                 .orElseThrow(NoSuchMapException::new);
-
         validateManagerOfMap(map, manager);
         return MapFindResponse.of(map, sharingIdGenerator.from(map));
     }
@@ -83,7 +78,6 @@ public class MapService {
                           final Member manager) {
         Map map = maps.findById(mapId)
                 .orElseThrow(NoSuchMapException::new);
-
         validateManagerOfMap(map, manager);
 
         thumbnailManager.uploadMapThumbnail(mapCreateUpdateRequest.getMapImageSvg(), map);
@@ -96,18 +90,17 @@ public class MapService {
     public void deleteMap(final Long mapId, final Member manager) {
         Map map = maps.findById(mapId)
                 .orElseThrow(NoSuchMapException::new);
-
         validateManagerOfMap(map, manager);
 
-        validateExistReservations(mapId);
+        validateExistReservations(map);
 
-        maps.deleteById(mapId);
+        maps.delete(map);
 
         thumbnailManager.deleteThumbnail(map);
     }
 
-    private void validateExistReservations(final Long mapId) {
-        List<Space> findSpaces = spaces.findAllByMapId(mapId);
+    private void validateExistReservations(final Map map) {
+        List<Space> findSpaces = map.getSpaces();
 
         boolean isExistReservationInAnySpace = findSpaces.stream()
                 .anyMatch(space -> reservations.existsBySpaceIdAndEndTimeAfter(space.getId(), timeConverter.getNow()));
@@ -117,8 +110,8 @@ public class MapService {
         }
     }
 
-    private void validateManagerOfMap(final Map map, final Member manager) {
-        if (!manager.equals(map.getMember())) {   // TODO: ReservationService 와의 중복 제거 -김샐
+    public static void validateManagerOfMap(final Map map, final Member manager) {
+        if (map.isNotOwnedBy(manager)) {
             throw new NoAuthorityOnMapException();
         }
     }
