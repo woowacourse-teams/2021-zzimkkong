@@ -118,8 +118,8 @@ public class ManagerSpaceControllerTest extends AcceptanceTest {
     void save_default() {
         // given, when
         SettingsRequest settingsRequest = new SettingsRequest(
-                LocalTime.of(0,0),
-                LocalTime.of(18,0),
+                LocalTime.of(0, 0),
+                LocalTime.of(18, 0),
                 null,
                 null,
                 null,
