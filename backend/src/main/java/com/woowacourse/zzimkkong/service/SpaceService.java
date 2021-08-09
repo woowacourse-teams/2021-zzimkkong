@@ -8,6 +8,7 @@ import com.woowacourse.zzimkkong.dto.space.*;
 import com.woowacourse.zzimkkong.exception.map.NoSuchMapException;
 import com.woowacourse.zzimkkong.exception.space.NoSuchSpaceException;
 import com.woowacourse.zzimkkong.exception.space.ReservationExistOnSpaceException;
+import com.woowacourse.zzimkkong.infrastructure.ThumbnailManager;
 import com.woowacourse.zzimkkong.infrastructure.TimeConverter;
 import com.woowacourse.zzimkkong.repository.MapRepository;
 import com.woowacourse.zzimkkong.repository.ReservationRepository;
@@ -26,16 +27,19 @@ public class SpaceService {
     private final SpaceRepository spaces;
     private final ReservationRepository reservations;
     private final TimeConverter timeConverter;
+    private final ThumbnailManager thumbnailManager;
 
     public SpaceService(
             final MapRepository maps,
             final SpaceRepository spaces,
             final ReservationRepository reservations,
-            final TimeConverter timeConverter) {
+            final TimeConverter timeConverter,
+            final ThumbnailManager thumbnailManager) {
         this.maps = maps;
         this.spaces = spaces;
         this.reservations = reservations;
         this.timeConverter = timeConverter;
+        this.thumbnailManager = thumbnailManager;
     }
 
     public SpaceCreateResponse saveSpace(
@@ -117,11 +121,14 @@ public class SpaceService {
                 .build();
 
         space.update(updateSpace);
+
+        thumbnailManager.uploadMapThumbnail(spaceCreateUpdateRequest.getMapImageSvg(), map);
     }
 
     public void deleteSpace(
             final Long mapId,
             final Long spaceId,
+            final SpaceDeleteRequest spaceDeleteRequest,
             final Member manager) {
         Map map = maps.findById(mapId)
                 .orElseThrow(NoSuchMapException::new);
@@ -133,6 +140,8 @@ public class SpaceService {
         validateReservationExistence(spaceId);
 
         spaces.delete(space);
+
+        thumbnailManager.uploadMapThumbnail(spaceDeleteRequest.getMapImageSvg(), map);
     }
 
     private Setting getSetting(final SpaceCreateUpdateRequest spaceCreateUpdateRequest) {
