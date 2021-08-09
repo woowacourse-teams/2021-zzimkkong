@@ -12,14 +12,11 @@ public class MapFindResponse {
     public MapFindResponse() {
     }
 
-    private MapFindResponse(Long mapId, String mapName, String mapDrawing, String mapImageUrl) {
-        this.mapId = mapId;
-        this.mapName = mapName;
-        this.mapDrawing = mapDrawing;
-        this.mapImageUrl = mapImageUrl;
-    }
-
-    private MapFindResponse(Long mapId, String mapName, String mapDrawing, String mapImageUrl, String sharingMapId) {
+    private MapFindResponse(final Long mapId,
+                            final String mapName,
+                            final String mapDrawing,
+                            final String mapImageUrl,
+                            final String sharingMapId) {
         this.mapId = mapId;
         this.mapName = mapName;
         this.mapDrawing = mapDrawing;
@@ -27,7 +24,8 @@ public class MapFindResponse {
         this.sharingMapId = sharingMapId;
     }
 
-    public static MapFindResponse of(Map map, String sharingMapId) {
+    public static MapFindResponse of(final Map map,
+                                     final String sharingMapId) {
         return new MapFindResponse(
                 map.getId(),
                 map.getName(),
