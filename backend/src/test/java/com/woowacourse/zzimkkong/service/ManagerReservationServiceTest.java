@@ -2,8 +2,6 @@ package com.woowacourse.zzimkkong.service;
 
 import com.woowacourse.zzimkkong.domain.*;
 import com.woowacourse.zzimkkong.dto.reservation.*;
-import com.woowacourse.zzimkkong.exception.reservation.InvalidDurationTimeException;
-import com.woowacourse.zzimkkong.exception.reservation.InvalidTimeUnitException;
 import com.woowacourse.zzimkkong.exception.authorization.NoAuthorityOnMapException;
 import com.woowacourse.zzimkkong.exception.map.NoSuchMapException;
 import com.woowacourse.zzimkkong.exception.reservation.*;
@@ -237,8 +235,8 @@ public class ManagerReservationServiceTest extends ServiceTest {
     void saveEndTimeBeforeNow() {
         //given
         reservationCreateUpdateWithPasswordRequest = new ReservationCreateUpdateWithPasswordRequest(
-                THE_DAY_AFTER_TOMORROW.atTime(14,0),
-                THE_DAY_AFTER_TOMORROW.atTime(13,0),
+                THE_DAY_AFTER_TOMORROW.atTime(14, 0),
+                THE_DAY_AFTER_TOMORROW.atTime(13, 0),
                 RESERVATION_PASSWORD,
                 USER_NAME,
                 DESCRIPTION
@@ -261,8 +259,8 @@ public class ManagerReservationServiceTest extends ServiceTest {
     void saveStartTimeEqualsEndTime() {
         //given
         reservationCreateUpdateWithPasswordRequest = new ReservationCreateUpdateWithPasswordRequest(
-                THE_DAY_AFTER_TOMORROW.atTime(10,0),
-                THE_DAY_AFTER_TOMORROW.atTime(10,0),
+                THE_DAY_AFTER_TOMORROW.atTime(10, 0),
+                THE_DAY_AFTER_TOMORROW.atTime(10, 0),
                 RESERVATION_PASSWORD,
                 USER_NAME,
                 DESCRIPTION
@@ -285,8 +283,8 @@ public class ManagerReservationServiceTest extends ServiceTest {
     void saveStartTimeDateNotEqualsEndTimeDate() {
         //given
         reservationCreateUpdateWithPasswordRequest = new ReservationCreateUpdateWithPasswordRequest(
-                THE_DAY_AFTER_TOMORROW.atTime(10,0),
-                THE_DAY_AFTER_TOMORROW.atTime(10,0).plusDays(1),
+                THE_DAY_AFTER_TOMORROW.atTime(10, 0),
+                THE_DAY_AFTER_TOMORROW.atTime(10, 0).plusDays(1),
                 RESERVATION_PASSWORD,
                 USER_NAME,
                 DESCRIPTION
@@ -510,8 +508,8 @@ public class ManagerReservationServiceTest extends ServiceTest {
                 luther.getId(),
                 be.getId(),
                 new ReservationCreateUpdateWithPasswordRequest(
-                        THE_DAY_AFTER_TOMORROW.atTime(10,0),
-                        THE_DAY_AFTER_TOMORROW.atTime(10,0).plusMinutes(duration),
+                        THE_DAY_AFTER_TOMORROW.atTime(10, 0),
+                        THE_DAY_AFTER_TOMORROW.atTime(10, 0).plusMinutes(duration),
                         RESERVATION_PASSWORD,
                         USER_NAME,
                         DESCRIPTION
@@ -523,8 +521,8 @@ public class ManagerReservationServiceTest extends ServiceTest {
                 be.getId(),
                 reservation.getId(),
                 new ReservationCreateUpdateWithPasswordRequest(
-                        THE_DAY_AFTER_TOMORROW.atTime(10,0),
-                        THE_DAY_AFTER_TOMORROW.atTime(10,0).plusMinutes(duration),
+                        THE_DAY_AFTER_TOMORROW.atTime(10, 0),
+                        THE_DAY_AFTER_TOMORROW.atTime(10, 0).plusMinutes(duration),
                         RESERVATION_PASSWORD,
                         USER_NAME,
                         DESCRIPTION
@@ -803,8 +801,8 @@ public class ManagerReservationServiceTest extends ServiceTest {
 
         //when
         ReservationCreateUpdateRequest reservationCreateUpdateRequest = new ReservationCreateUpdateRequest(
-                THE_DAY_AFTER_TOMORROW.atTime(20,0),
-                THE_DAY_AFTER_TOMORROW.atTime(21,0),
+                THE_DAY_AFTER_TOMORROW.atTime(20, 0),
+                THE_DAY_AFTER_TOMORROW.atTime(21, 0),
                 CHANGED_NAME,
                 CHANGED_DESCRIPTION
         );
@@ -831,8 +829,8 @@ public class ManagerReservationServiceTest extends ServiceTest {
 
         //when
         ReservationCreateUpdateRequest reservationCreateUpdateRequest = new ReservationCreateUpdateRequest(
-                THE_DAY_AFTER_TOMORROW.atTime(12,0),
-                THE_DAY_AFTER_TOMORROW.atTime(12,0).minusHours(endTime),
+                THE_DAY_AFTER_TOMORROW.atTime(12, 0),
+                THE_DAY_AFTER_TOMORROW.atTime(12, 0).minusHours(endTime),
                 CHANGED_NAME,
                 CHANGED_DESCRIPTION
         );
@@ -858,8 +856,8 @@ public class ManagerReservationServiceTest extends ServiceTest {
 
         //when
         ReservationCreateUpdateRequest reservationCreateUpdateRequest = new ReservationCreateUpdateRequest(
-                THE_DAY_AFTER_TOMORROW.atTime(10,0),
-                THE_DAY_AFTER_TOMORROW.atTime(10,0).plusDays(1),
+                THE_DAY_AFTER_TOMORROW.atTime(10, 0),
+                THE_DAY_AFTER_TOMORROW.atTime(10, 0).plusDays(1),
                 CHANGED_NAME,
                 CHANGED_DESCRIPTION
         );
@@ -928,7 +926,7 @@ public class ManagerReservationServiceTest extends ServiceTest {
         //when
         ReservationCreateUpdateRequest reservationCreateUpdateRequest = new ReservationCreateUpdateRequest(
                 THE_DAY_AFTER_TOMORROW.atTime(startTime, 0),
-                THE_DAY_AFTER_TOMORROW.atTime(endTime,30),
+                THE_DAY_AFTER_TOMORROW.atTime(endTime, 30),
                 CHANGED_NAME,
                 CHANGED_DESCRIPTION
         );
@@ -1026,8 +1024,8 @@ public class ManagerReservationServiceTest extends ServiceTest {
     void deleteReservation() {
         //given
         Reservation reservationToDelete = makeReservation(
-                THE_DAY_AFTER_TOMORROW.atTime(10,0),
-                THE_DAY_AFTER_TOMORROW.atTime(12,0),
+                THE_DAY_AFTER_TOMORROW.atTime(10, 0),
+                THE_DAY_AFTER_TOMORROW.atTime(12, 0),
                 be);
 
         given(maps.findById(anyLong()))

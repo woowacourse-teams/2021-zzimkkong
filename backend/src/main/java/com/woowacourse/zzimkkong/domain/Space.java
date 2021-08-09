@@ -5,7 +5,6 @@ import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
 
 import javax.persistence.*;
-
 import java.time.DayOfWeek;
 import java.time.LocalDateTime;
 import java.time.LocalTime;

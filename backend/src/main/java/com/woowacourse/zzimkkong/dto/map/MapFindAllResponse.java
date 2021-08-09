@@ -1,12 +1,8 @@
 package com.woowacourse.zzimkkong.dto.map;
 
-import com.woowacourse.zzimkkong.domain.Map;
 import com.woowacourse.zzimkkong.domain.Member;
 
 import java.util.List;
-import java.util.stream.Collectors;
-
-import static java.util.stream.Collectors.toList;
 
 public class MapFindAllResponse {
     private List<MapFindResponse> maps;
@@ -20,10 +16,8 @@ public class MapFindAllResponse {
         this.organization = organization;
     }
 
-    public static MapFindAllResponse of(final List<Map> findMaps, final Member manager) {
-        return findMaps.stream()
-                .map(MapFindResponse::from)
-                .collect(Collectors.collectingAndThen(toList(), list -> new MapFindAllResponse(list, manager.getOrganization())));
+    public static MapFindAllResponse of(final List<MapFindResponse> mapFindResponses, final Member manager) {
+        return new MapFindAllResponse(mapFindResponses, manager.getOrganization());
     }
 
     public List<MapFindResponse> getMaps() {
