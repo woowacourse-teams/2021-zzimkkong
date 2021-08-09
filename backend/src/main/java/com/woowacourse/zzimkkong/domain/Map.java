@@ -60,7 +60,7 @@ public class Map {
                 .noneMatch(space -> space.hasSameId(spaceId));
     }
 
-    public Optional<Space> getSpaceById(final Long spaceId) {
+    public Optional<Space> findSpaceById(final Long spaceId) {
         return spaces.stream()
                 .filter(space -> space.hasSameId(spaceId))
                 .findFirst();

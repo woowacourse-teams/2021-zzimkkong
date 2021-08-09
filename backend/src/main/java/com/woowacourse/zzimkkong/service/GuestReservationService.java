@@ -38,7 +38,7 @@ public class GuestReservationService extends ReservationService {
                 .orElseThrow(NoSuchMapException::new);
         validateTime(reservationCreateUpdateWithPasswordRequest);
 
-        Space space = map.getSpaceById(spaceId)
+        Space space = map.findSpaceById(spaceId)
                 .orElseThrow(NoSuchSpaceException::new);
         validateAvailability(space, reservationCreateUpdateWithPasswordRequest);
 
@@ -77,7 +77,7 @@ public class GuestReservationService extends ReservationService {
         Map map = maps.findById(mapId)
                 .orElseThrow(NoSuchMapException::new);
 
-        Space space = map.getSpaceById(spaceId)
+        Space space = map.findSpaceById(spaceId)
                 .orElseThrow(NoSuchSpaceException::new);
         List<Reservation> reservations = getReservations(Collections.singletonList(space), date);
 
@@ -104,7 +104,7 @@ public class GuestReservationService extends ReservationService {
                 .orElseThrow(NoSuchMapException::new);
         validateTime(reservationCreateUpdateWithPasswordRequest);
 
-        Space space = map.getSpaceById(spaceId)
+        Space space = map.findSpaceById(spaceId)
                 .orElseThrow(NoSuchSpaceException::new);
         Reservation reservation = reservations
                 .findById(reservationId)

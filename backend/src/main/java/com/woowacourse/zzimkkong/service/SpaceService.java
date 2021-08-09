@@ -68,7 +68,7 @@ public class SpaceService {
                 .orElseThrow(NoSuchMapException::new);
         validateManagerOfMap(map, manager);
 
-        Space space = map.getSpaceById(spaceId)
+        Space space = map.findSpaceById(spaceId)
                 .orElseThrow(NoSuchSpaceException::new);
         return SpaceFindDetailResponse.from(space);
     }
@@ -104,7 +104,7 @@ public class SpaceService {
                 .orElseThrow(NoSuchMapException::new);
         validateManagerOfMap(map, manager);
 
-        Space space = map.getSpaceById(spaceId)
+        Space space = map.findSpaceById(spaceId)
                 .orElseThrow(NoSuchSpaceException::new);
 
         Setting setting = getSetting(spaceCreateUpdateRequest);
@@ -127,7 +127,7 @@ public class SpaceService {
                 .orElseThrow(NoSuchMapException::new);
         validateManagerOfMap(map, manager);
 
-        Space space = map.getSpaceById(spaceId)
+        Space space = map.findSpaceById(spaceId)
                 .orElseThrow(NoSuchSpaceException::new);
 
         validateReservationExistence(spaceId);

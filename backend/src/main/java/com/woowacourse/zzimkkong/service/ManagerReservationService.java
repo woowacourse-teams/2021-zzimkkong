@@ -42,7 +42,7 @@ public class ManagerReservationService extends ReservationService {
                 .orElseThrow(NoSuchMapException::new);
         validateManagerOfMap(map, manager);
 
-        Space space = map.getSpaceById(spaceId)
+        Space space = map.findSpaceById(spaceId)
                 .orElseThrow(NoSuchSpaceException::new);
         validateTime(reservationCreateUpdateWithPasswordRequest);
         validateAvailability(space, reservationCreateUpdateWithPasswordRequest);
@@ -85,7 +85,7 @@ public class ManagerReservationService extends ReservationService {
                 .orElseThrow(NoSuchMapException::new);
         validateManagerOfMap(map, manager);
 
-        Space space = map.getSpaceById(spaceId)
+        Space space = map.findSpaceById(spaceId)
                 .orElseThrow(NoSuchSpaceException::new);
         List<Reservation> reservations = getReservations(Collections.singletonList(space), date);
 
@@ -120,7 +120,7 @@ public class ManagerReservationService extends ReservationService {
                 .orElseThrow(NoSuchMapException::new);
         validateManagerOfMap(map, manager);
 
-        Space space = map.getSpaceById(spaceId)
+        Space space = map.findSpaceById(spaceId)
                 .orElseThrow(NoSuchSpaceException::new);
 
         validateTime(reservationCreateUpdateRequest);
