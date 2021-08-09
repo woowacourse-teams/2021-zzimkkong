@@ -5,6 +5,7 @@ import com.woowacourse.zzimkkong.domain.Preset;
 import com.woowacourse.zzimkkong.domain.Setting;
 import com.woowacourse.zzimkkong.dto.member.MemberSaveRequest;
 import com.woowacourse.zzimkkong.dto.member.PresetFindAllResponse;
+import com.woowacourse.zzimkkong.dto.member.PresetCreateRequest;
 import com.woowacourse.zzimkkong.dto.space.SettingsRequest;
 import com.woowacourse.zzimkkong.infrastructure.AuthorizationExtractor;
 import io.restassured.RestAssured;
@@ -24,15 +25,15 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.restdocs.restassured3.RestAssuredRestDocumentation.document;
 
 class MemberControllerTest extends AcceptanceTest {
-    private Preset bePreset;
-    private Preset fePreset;
-    private SettingsRequest beSettingsRequest;
-    private SettingsRequest feSettingsRequest;
+    private Member pobi;
+    private Setting setting;
+    private Preset firstPreset;
+    private Preset secondPreset;
 
     @BeforeEach
     void setUp() {
-        Member pobi = new Member(EMAIL, PASSWORD, ORGANIZATION);
-        Setting beSetting = new Setting.Builder()
+        pobi = new Member(EMAIL, PASSWORD, ORGANIZATION);
+        setting = new Setting.Builder()
                 .availableStartTime(BE_AVAILABLE_START_TIME)
                 .availableEndTime(BE_AVAILABLE_END_TIME)
                 .reservationTimeUnit(BE_RESERVATION_TIME_UNIT)
@@ -42,38 +43,8 @@ class MemberControllerTest extends AcceptanceTest {
                 .enabledDayOfWeek(BE_ENABLED_DAY_OF_WEEK)
                 .build();
 
-        Setting feSetting = new Setting.Builder()
-                .availableStartTime(FE_AVAILABLE_START_TIME)
-                .availableEndTime(FE_AVAILABLE_END_TIME)
-                .reservationTimeUnit(FE_RESERVATION_TIME_UNIT)
-                .reservationMinimumTimeUnit(FE_RESERVATION_MINIMUM_TIME_UNIT)
-                .reservationMaximumTimeUnit(FE_RESERVATION_MAXIMUM_TIME_UNIT)
-                .reservationEnable(FE_RESERVATION_ENABLE)
-                .enabledDayOfWeek(FE_ENABLED_DAY_OF_WEEK)
-                .build();
-
-        beSettingsRequest = new SettingsRequest(
-                BE_AVAILABLE_START_TIME,
-                BE_AVAILABLE_END_TIME,
-                BE_RESERVATION_TIME_UNIT,
-                BE_RESERVATION_MINIMUM_TIME_UNIT,
-                BE_RESERVATION_MAXIMUM_TIME_UNIT,
-                BE_RESERVATION_ENABLE,
-                BE_ENABLED_DAY_OF_WEEK
-        );
-
-        feSettingsRequest = new SettingsRequest(
-                FE_AVAILABLE_START_TIME,
-                FE_AVAILABLE_END_TIME,
-                FE_RESERVATION_TIME_UNIT,
-                FE_RESERVATION_MINIMUM_TIME_UNIT,
-                FE_RESERVATION_MAXIMUM_TIME_UNIT,
-                FE_RESERVATION_ENABLE,
-                FE_ENABLED_DAY_OF_WEEK
-        );
-
-        bePreset = new Preset(beSetting, pobi);
-        fePreset = new Preset(feSetting, pobi);
+        firstPreset = new Preset(PRESET_NAME1, setting, pobi);
+        secondPreset = new Preset(PRESET_NAME2, setting, pobi);
     }
 
     @Test
@@ -107,8 +78,21 @@ class MemberControllerTest extends AcceptanceTest {
     @Test
     @DisplayName("프리셋을 저장한다.")
     void createPreset() {
-        //given, when
-        ExtractableResponse<Response> response = savePreset(beSettingsRequest);
+        //given
+        SettingsRequest settingsRequest = new SettingsRequest(
+                BE_AVAILABLE_START_TIME,
+                BE_AVAILABLE_END_TIME,
+                BE_RESERVATION_TIME_UNIT,
+                BE_RESERVATION_MINIMUM_TIME_UNIT,
+                BE_RESERVATION_MAXIMUM_TIME_UNIT,
+                BE_RESERVATION_ENABLE,
+                BE_ENABLED_DAY_OF_WEEK
+        );
+
+        PresetCreateRequest presetCreateRequest = new PresetCreateRequest(PRESET_NAME1, settingsRequest);
+
+        //when
+        ExtractableResponse<Response> response = savePreset(presetCreateRequest);
 
         //then
         assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
@@ -118,17 +102,55 @@ class MemberControllerTest extends AcceptanceTest {
     @DisplayName("멤버가 가진 프리셋을 모두 조회한다.")
     void findAllPreset() {
         //given
-        savePreset(beSettingsRequest);
-        savePreset(feSettingsRequest);
+        SettingsRequest settingsRequest = new SettingsRequest(
+                BE_AVAILABLE_START_TIME,
+                BE_AVAILABLE_END_TIME,
+                BE_RESERVATION_TIME_UNIT,
+                BE_RESERVATION_MINIMUM_TIME_UNIT,
+                BE_RESERVATION_MAXIMUM_TIME_UNIT,
+                BE_RESERVATION_ENABLE,
+                BE_ENABLED_DAY_OF_WEEK
+        );
+
+        PresetCreateRequest presetCreateRequest = new PresetCreateRequest(PRESET_NAME1, settingsRequest);
+        PresetCreateRequest presetCreateRequest2 = new PresetCreateRequest(PRESET_NAME2, settingsRequest);
+
+        savePreset(presetCreateRequest);
+        savePreset(presetCreateRequest2);
 
         //when
         ExtractableResponse<Response> response = findAllPresets();
         PresetFindAllResponse actual = response.as(PresetFindAllResponse.class);
-        PresetFindAllResponse expected = PresetFindAllResponse.from(List.of(bePreset, fePreset));
+        PresetFindAllResponse expected = PresetFindAllResponse.from(List.of(firstPreset, secondPreset));
 
         //then
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
         assertThat(actual).usingRecursiveComparison().isEqualTo(expected);
+    }
+
+    @Test
+    @DisplayName("프리셋을 삭제한다.")
+    void delete() {
+        //given
+        SettingsRequest settingsRequest = new SettingsRequest(
+                BE_AVAILABLE_START_TIME,
+                BE_AVAILABLE_END_TIME,
+                BE_RESERVATION_TIME_UNIT,
+                BE_RESERVATION_MINIMUM_TIME_UNIT,
+                BE_RESERVATION_MAXIMUM_TIME_UNIT,
+                BE_RESERVATION_ENABLE,
+                BE_ENABLED_DAY_OF_WEEK
+        );
+
+        PresetCreateRequest presetCreateRequest = new PresetCreateRequest(PRESET_NAME1, settingsRequest);
+        ExtractableResponse<Response> saveResponse = savePreset(presetCreateRequest);
+        String api = saveResponse.header("location");
+
+        //when
+        ExtractableResponse<Response> response = deletePreset(api);
+
+        //then
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
     }
 
     static ExtractableResponse<Response> saveMember(final MemberSaveRequest memberSaveRequest) {
@@ -153,14 +175,14 @@ class MemberControllerTest extends AcceptanceTest {
                 .then().log().all().extract();
     }
 
-    private ExtractableResponse<Response> savePreset(final SettingsRequest settingsRequest) {
+    private ExtractableResponse<Response> savePreset(final PresetCreateRequest presetCreateRequest) {
         return RestAssured
                 .given(getRequestSpecification()).log().all()
                 .accept("application/json")
                 .header("Authorization", AuthorizationExtractor.AUTHENTICATION_TYPE + " " + accessToken)
                 .filter(document("preset/post", getRequestPreprocessor(), getResponsePreprocessor()))
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(settingsRequest)
+                .body(presetCreateRequest)
                 .when().post("/api/members/presets")
                 .then().log().all().extract();
     }
@@ -173,6 +195,17 @@ class MemberControllerTest extends AcceptanceTest {
                 .filter(document("preset/getAll", getRequestPreprocessor(), getResponsePreprocessor()))
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .when().get("/api/members/presets")
+                .then().log().all().extract();
+    }
+
+    private ExtractableResponse<Response> deletePreset(String api) {
+        return RestAssured
+                .given(getRequestSpecification()).log().all()
+                .accept("application/json")
+                .header("Authorization", AuthorizationExtractor.AUTHENTICATION_TYPE + " " + accessToken)
+                .filter(document("preset/delete", getRequestPreprocessor(), getResponsePreprocessor()))
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .when().delete(api)
                 .then().log().all().extract();
     }
 }

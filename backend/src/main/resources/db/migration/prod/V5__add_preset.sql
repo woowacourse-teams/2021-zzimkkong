@@ -1,6 +1,7 @@
 create table preset
 (
     id                            bigint       not null auto_increment primary key,
+    name                          varchar(20)  not null,
     available_start_time          time         not null,
     available_end_time            time         not null,
     reservation_time_unit         integer      not null,

@@ -3,6 +3,7 @@ package com.woowacourse.zzimkkong.domain;
 import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Entity
 public class Member {
@@ -43,8 +44,18 @@ public class Member {
         this.id = id;
     }
 
-    public boolean checkPassword(String password) {
+    public boolean checkPassword(final String password) {
         return this.password.equals(password);
+    }
+
+    public Optional<Preset> findPresetById(final Long presetId) {
+        return this.presets.stream()
+                .filter(preset -> preset.hasSameId(presetId))
+                .findAny();
+    }
+
+    public void addPreset(final Preset preset) {
+        this.presets.add(preset);
     }
 
     public Long getId() {

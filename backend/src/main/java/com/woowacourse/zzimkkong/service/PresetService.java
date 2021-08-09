@@ -6,6 +6,8 @@ import com.woowacourse.zzimkkong.domain.Setting;
 import com.woowacourse.zzimkkong.dto.member.PresetCreateResponse;
 import com.woowacourse.zzimkkong.dto.member.PresetFindAllResponse;
 import com.woowacourse.zzimkkong.dto.space.SettingsRequest;
+import com.woowacourse.zzimkkong.dto.member.PresetCreateRequest;
+import com.woowacourse.zzimkkong.exception.preset.NoSuchPresetException;
 import com.woowacourse.zzimkkong.repository.PresetRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -21,7 +23,8 @@ public class PresetService {
         this.presets = presets;
     }
 
-    public PresetCreateResponse savePreset(final SettingsRequest settingsRequest, final Member manager) {
+    public PresetCreateResponse savePreset(final PresetCreateRequest presetCreateRequest, final Member manager) {
+        SettingsRequest settingsRequest = presetCreateRequest.getSettingsRequest();
         Setting setting = new Setting.Builder()
                 .availableStartTime(settingsRequest.getAvailableStartTime())
                 .availableEndTime(settingsRequest.getAvailableEndTime())
@@ -32,7 +35,7 @@ public class PresetService {
                 .enabledDayOfWeek(settingsRequest.getEnabledDayOfWeek())
                 .build();
 
-        Preset preset = presets.save(new Preset(setting, manager));
+        Preset preset = presets.save(new Preset(presetCreateRequest.getName(), setting, manager));
 
         return PresetCreateResponse.from(preset);
     }
@@ -43,8 +46,10 @@ public class PresetService {
         return PresetFindAllResponse.from(findPresets);
     }
 
-    public void delete(Long presetId) {
-        Preset preset = presets.findById(presetId).orElseThrow(IllegalArgumentException::new);
+    public void deletePreset(final Long presetId, final Member manager) {
+        Preset preset = manager.findPresetById(presetId)
+                .orElseThrow(NoSuchPresetException::new);
+
         presets.delete(preset);
     }
 }
