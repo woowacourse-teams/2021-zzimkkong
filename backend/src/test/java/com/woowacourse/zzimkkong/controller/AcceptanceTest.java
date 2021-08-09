@@ -5,6 +5,7 @@ import com.woowacourse.zzimkkong.dto.member.LoginRequest;
 import com.woowacourse.zzimkkong.dto.member.MemberSaveRequest;
 import com.woowacourse.zzimkkong.dto.space.SettingsRequest;
 import com.woowacourse.zzimkkong.dto.space.SpaceCreateUpdateRequest;
+import com.woowacourse.zzimkkong.infrastructure.StorageUploader;
 import io.restassured.RestAssured;
 import io.restassured.builder.RequestSpecBuilder;
 import io.restassured.specification.RequestSpecification;
@@ -12,6 +13,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.boot.test.autoconfigure.restdocs.AutoConfigureRestDocs;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.boot.web.server.LocalServerPort;
 import org.springframework.restdocs.RestDocumentationContextProvider;
 import org.springframework.restdocs.RestDocumentationExtension;
@@ -19,10 +21,15 @@ import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
+import java.io.File;
+
 import static com.woowacourse.zzimkkong.Constants.*;
 import static com.woowacourse.zzimkkong.DocumentUtils.setRequestSpecification;
 import static com.woowacourse.zzimkkong.controller.AuthControllerTest.getToken;
 import static com.woowacourse.zzimkkong.controller.MemberControllerTest.saveMember;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.BDDMockito.given;
 import static org.springframework.restdocs.restassured3.RestAssuredRestDocumentation.documentationConfiguration;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
@@ -49,7 +56,8 @@ public class AcceptanceTest {
             BE_COLOR,
             BE_DESCRIPTION,
             SPACE_DRAWING,
-            beSettingsRequest
+            beSettingsRequest,
+            MAP_SVG
     );
     protected final SettingsRequest feSettingsRequest = new SettingsRequest(
             FE_AVAILABLE_START_TIME,
@@ -65,11 +73,15 @@ public class AcceptanceTest {
             FE_COLOR,
             FE_DESCRIPTION,
             SPACE_DRAWING,
-            feSettingsRequest
+            feSettingsRequest,
+            MAP_SVG
     );
 
     @LocalServerPort
     int port;
+
+    @MockBean
+    private StorageUploader storageUploader;
 
     @BeforeEach
     public void setUp(RestDocumentationContextProvider restDocumentation) {
@@ -81,5 +93,8 @@ public class AcceptanceTest {
 
         saveMember(memberSaveRequest);
         accessToken = getToken();
+
+        given(storageUploader.upload(anyString(), any(File.class)))
+                .willReturn(MAP_IMAGE_URL);
     }
 }

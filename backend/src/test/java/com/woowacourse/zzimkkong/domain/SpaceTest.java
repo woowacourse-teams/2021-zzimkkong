@@ -51,6 +51,17 @@ public class SpaceTest {
     }
 
     @Test
+    @DisplayName("공간의 Id가 동일한 Id면 true, 아니면 false를 반환한다")
+    void hasSameId() {
+        Space space = new Space.Builder()
+                .id(1L)
+                .build();
+
+        assertThat(space.hasSameId(space.getId())).isTrue();
+        assertThat(space.hasSameId(space.getId() + 1)).isFalse();
+    }
+
+    @Test
     @DisplayName("예약하려는 시간이 공간의 예약 가능한 시간 내에 있다면 false를 반환한다")
     void isNotBetweenAvailableTime() {
         Setting availableTimeSetting = new Setting.Builder()
