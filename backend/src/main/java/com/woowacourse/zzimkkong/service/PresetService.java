@@ -42,7 +42,7 @@ public class PresetService {
 
     @Transactional(readOnly = true)
     public PresetFindAllResponse findAllPresets(final Member manager) {
-        List<Preset> findPresets = presets.findAllByMember(manager);
+        List<Preset> findPresets = manager.getPresets();
         return PresetFindAllResponse.from(findPresets);
     }
 

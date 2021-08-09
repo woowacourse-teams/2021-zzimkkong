@@ -121,7 +121,6 @@ public class SpaceService {
                 .build();
 
         space.update(updateSpace);
-
         thumbnailManager.uploadMapThumbnail(spaceCreateUpdateRequest.getMapImageSvg(), map);
     }
 
@@ -140,7 +139,6 @@ public class SpaceService {
         validateReservationExistence(spaceId);
 
         spaces.delete(space);
-
         thumbnailManager.uploadMapThumbnail(spaceDeleteRequest.getMapImageSvg(), map);
     }
 
