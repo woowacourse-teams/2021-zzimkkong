@@ -1,29 +1,28 @@
 package com.woowacourse.zzimkkong.dto.member;
 
 import com.woowacourse.zzimkkong.domain.Preset;
-import com.woowacourse.zzimkkong.dto.space.SettingResponse;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
 public class PresetFindAllResponse {
-    private List<SettingResponse> presets;
+    private List<PresetFindResponse> presets;
 
     public PresetFindAllResponse() {
     }
 
-    private PresetFindAllResponse(final List<SettingResponse> presets) {
+    private PresetFindAllResponse(final List<PresetFindResponse> presets) {
         this.presets = presets;
     }
 
     public static PresetFindAllResponse from(final List<Preset> findPresets) {
-        List<SettingResponse> presetFindResponses = findPresets.stream()
-                .map(SettingResponse::from)
+        List<PresetFindResponse> presetFindResponses = findPresets.stream()
+                .map(PresetFindResponse::from)
                 .collect(Collectors.toList());
         return new PresetFindAllResponse(presetFindResponses);
     }
 
-    public List<SettingResponse> getPresets() {
+    public List<PresetFindResponse> getPresets() {
         return presets;
     }
 }

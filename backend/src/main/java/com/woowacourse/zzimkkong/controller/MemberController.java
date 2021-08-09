@@ -58,13 +58,13 @@ public class MemberController {
     }
 
     @GetMapping("/presets")
-    public ResponseEntity<PresetFindAllResponse> findPreset(@Manager final Member manager) {
+    public ResponseEntity<PresetFindAllResponse> findAllPresets(@Manager final Member manager) {
         PresetFindAllResponse presetFindAllResponse = presetService.findAllPresets(manager);
         return ResponseEntity.ok().body(presetFindAllResponse);
     }
 
     @DeleteMapping("/presets/{presetId}")
-    public ResponseEntity<Void> createPreset(
+    public ResponseEntity<Void> deletePreset(
             @PathVariable final Long presetId,
             @Manager final Member manager) {
         presetService.deletePreset(presetId, manager);
