@@ -294,7 +294,6 @@ export const DeleteButton = styled(Button)`
 `;
 
 export const BoardContainer = styled.svg<BoardContainerProps>`
-  outline: none;
   cursor: ${({ isDraggable, isDragging }) => {
     if (isDraggable) {
       if (isDragging) return 'grabbing';
