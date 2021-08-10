@@ -8,6 +8,7 @@ interface Option {
 }
 
 export interface Props {
+  name: string;
   label: string;
   options: PropsWithChildren<Option>[];
   maxheight?: string | number;
@@ -17,6 +18,7 @@ export interface Props {
 }
 
 const Select = ({
+  name,
   label,
   options,
   maxheight,
@@ -39,12 +41,12 @@ const Select = ({
 
   return (
     <Styled.Select>
-      <Styled.Label id="label">{label}</Styled.Label>
+      <Styled.Label id={`${name}-label`}>{label}</Styled.Label>
       <Styled.ListBoxButton
         type="button"
-        id="button"
+        id={`${name}-button`}
         aria-haspopup="listbox"
-        aria-labelledby="label button"
+        aria-labelledby={`${name}-label ${name}-button`}
         aria-expanded={open}
         disabled={options.length === 0 || disabled}
         onClick={handleToggle}
@@ -56,10 +58,10 @@ const Select = ({
       </Styled.ListBoxButton>
       {open && (
         <Styled.ListBox
-          tabIndex={-1}
+          tabIndex={0}
           role="listbox"
           aria-activedescendant={`${value}`}
-          aria-labelledby="label"
+          aria-labelledby={`${name}-label`}
           maxheight={maxheight}
         >
           {options.map((option) => (
