@@ -5,7 +5,7 @@ import com.woowacourse.zzimkkong.dto.ErrorResponse;
 import com.woowacourse.zzimkkong.dto.InputFieldErrorResponse;
 import com.woowacourse.zzimkkong.exception.InputFieldException;
 import com.woowacourse.zzimkkong.exception.ZzimkkongException;
-import com.woowacourse.zzimkkong.exception.infrastructure.InfrastructureException;
+import com.woowacourse.zzimkkong.exception.infrastructure.InfrastructureMalfunctionException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.dao.DataAccessException;
@@ -32,8 +32,8 @@ public class ControllerAdvice {
                 .body(InputFieldErrorResponse.from(exception));
     }
 
-    @ExceptionHandler(InfrastructureException.class)
-    public ResponseEntity<ErrorResponse> wrongConfigurationOfInfrastructureException(final InfrastructureException exception) {
+    @ExceptionHandler(InfrastructureMalfunctionException.class)
+    public ResponseEntity<ErrorResponse> wrongConfigurationOfInfrastructureException(final InfrastructureMalfunctionException exception) {
         logger.warn(exception.getMessage(), exception);
         return ResponseEntity
                 .status(exception.getStatus())
