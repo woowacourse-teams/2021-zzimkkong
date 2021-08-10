@@ -1,5 +1,6 @@
 import { AxiosError } from 'axios';
 import {
+  FocusEventHandler,
   FormEventHandler,
   MouseEvent,
   MouseEventHandler,
@@ -18,8 +19,11 @@ import { ReactComponent as MoveIcon } from 'assets/svg/move.svg';
 import { ReactComponent as PolylineIcon } from 'assets/svg/polyline.svg';
 import { ReactComponent as SelectIcon } from 'assets/svg/select.svg';
 import Button from 'components/Button/Button';
+import ColorPicker from 'components/ColorPicker/ColorPicker';
+import ColorPickerIcon from 'components/ColorPicker/ColorPickerIcon';
 import Header from 'components/Header/Header';
 import Layout from 'components/Layout/Layout';
+import { BOARD } from 'constants/editor';
 import PALETTE from 'constants/palette';
 import PATH from 'constants/path';
 import useInput from 'hooks/useInput';
@@ -50,13 +54,18 @@ const ManagerMapCreate = (): JSX.Element => {
   const [isPressSpacebar, setPressSpacebar] = useState(false);
   const isDraggable = mode === Mode.Move || isPressSpacebar;
 
+  const [color, setColor] = useState<Color>(PALETTE.BLACK[400]);
+  const [colorPickerOpen, setColorPickerOpen] = useState(false);
+
   const [coordinate, setCoordinate] = useState<Coordinate>({ x: 0, y: 0 });
+
+  const [stickyPointerView, setStickyPointerView] = useState(false);
+
   const stickyCoordinate: Coordinate = {
     x: Math.round(coordinate.x / GRID_SIZE) * GRID_SIZE,
     y: Math.round(coordinate.y / GRID_SIZE) * GRID_SIZE,
   };
 
-  const [color, setColor] = useState<Color>('#333333');
   const [drawingStatus, setDrawingStatus] = useState<DrawingStatus>({});
   const [mapElements, setMapElements] = useState<MapElement[]>([]);
 
@@ -363,6 +372,30 @@ const ManagerMapCreate = (): JSX.Element => {
     createMap.mutate({ mapName, mapDrawing, mapImageSvg });
   };
 
+  const handleWidthSize: FocusEventHandler<HTMLInputElement> = (event) => {
+    if (width > BOARD.MAX_WIDTH) {
+      event.target.value = String(BOARD.MAX_WIDTH);
+      onChangeWidthValue(event);
+    }
+
+    if (width < BOARD.MIN_WIDTH) {
+      event.target.value = String(BOARD.MIN_WIDTH);
+      onChangeWidthValue(event);
+    }
+  };
+
+  const handleHeightSize: FocusEventHandler<HTMLInputElement> = (event) => {
+    if (height > BOARD.MAX_HEIGHT) {
+      event.target.value = String(BOARD.MAX_HEIGHT);
+      onChangeHeightValue(event);
+    }
+
+    if (height < BOARD.MIN_HEIGHT) {
+      event.target.value = String(BOARD.MIN_HEIGHT);
+      onChangeHeightValue(event);
+    }
+  };
+
   useEffect(() => {
     const editorWidth = editorRef.current ? editorRef.current.offsetWidth : 0;
     const editorHeight = editorRef.current ? editorRef.current.offsetHeight : 0;
@@ -461,6 +494,15 @@ const ManagerMapCreate = (): JSX.Element => {
               >
                 <ItemsIcon />
               </Styled.ToolbarButton>
+              <Styled.ToolbarButton
+                text="색상선택"
+                onClick={() => setColorPickerOpen(!colorPickerOpen)}
+              >
+                <ColorPickerIcon color={color} />
+              </Styled.ToolbarButton>
+              <Styled.ColorPickerWrapper>
+                <ColorPicker open={colorPickerOpen} color={color} setColor={setColor} />
+              </Styled.ColorPickerWrapper>
             </Styled.Toolbar>
             <Styled.Editor ref={editorRef}>
               <Styled.BoardContainer
@@ -521,6 +563,8 @@ const ManagerMapCreate = (): JSX.Element => {
                     id="board"
                     transform={`matrix(${board.scale}, 0, 0, ${board.scale}, ${board.x}, ${board.y})`}
                     onClickCapture={handleClickBoard}
+                    onMouseEnter={() => setStickyPointerView(true)}
+                    onMouseLeave={() => setStickyPointerView(false)}
                   >
                     <rect width={`${width}px`} height={`${height}px`} fill="white" />
 
@@ -531,12 +575,12 @@ const ManagerMapCreate = (): JSX.Element => {
                       fill="url(#grid)"
                     />
 
-                    {mode === Mode.Line && (
+                    {mode === Mode.Line && stickyPointerView && (
                       <circle
                         cx={stickyCoordinate.x}
                         cy={stickyCoordinate.y}
-                        r={4}
-                        fill={PALETTE.OPACITY_BLACK[700]}
+                        r={3}
+                        fill={PALETTE.OPACITY_BLACK[300]}
                       />
                     )}
 
@@ -578,14 +622,22 @@ const ManagerMapCreate = (): JSX.Element => {
                   <Styled.LabelIcon>W</Styled.LabelIcon>
                   <Styled.LabelText>넓이</Styled.LabelText>
                 </Styled.Label>
-                <Styled.SizeInput value={widthValue} onChange={onChangeWidthValue} />
+                <Styled.SizeInput
+                  value={widthValue}
+                  onChange={onChangeWidthValue}
+                  onBlur={handleWidthSize}
+                />
               </Styled.InputWrapper>
               <Styled.InputWrapper>
                 <Styled.Label>
                   <Styled.LabelIcon>H</Styled.LabelIcon>
                   <Styled.LabelText>높이</Styled.LabelText>
                 </Styled.Label>
-                <Styled.SizeInput value={heightValue} onChange={onChangeHeightValue} />
+                <Styled.SizeInput
+                  value={heightValue}
+                  onChange={onChangeHeightValue}
+                  onBlur={handleHeightSize}
+                />
               </Styled.InputWrapper>
             </Styled.Toolbar>
           </Styled.EditorContent>
