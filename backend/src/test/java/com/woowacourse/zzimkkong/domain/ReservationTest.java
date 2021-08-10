@@ -17,7 +17,7 @@ class ReservationTest {
 
     @BeforeEach
     void setUp() {
-        reservation = new Reservation.Builder()
+        reservation = Reservation.builder()
                 .startTime(THE_DAY_AFTER_TOMORROW.atTime(8, 0))
                 .endTime(THE_DAY_AFTER_TOMORROW.atTime(9, 0))
                 .build();

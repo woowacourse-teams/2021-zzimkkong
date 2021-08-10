@@ -34,7 +34,7 @@ class MemberControllerTest extends AcceptanceTest {
     @BeforeEach
     void setUp() {
         pobi = new Member(EMAIL, PASSWORD, ORGANIZATION);
-        setting = new Setting.Builder()
+        setting = Setting.builder()
                 .availableStartTime(BE_AVAILABLE_START_TIME)
                 .availableEndTime(BE_AVAILABLE_END_TIME)
                 .reservationTimeUnit(BE_RESERVATION_TIME_UNIT)

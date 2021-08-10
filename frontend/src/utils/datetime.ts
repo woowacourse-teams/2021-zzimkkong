@@ -26,3 +26,12 @@ export const formatTime = (time: Date): string => {
 
   return `${hour < 10 ? `0${hour}` : `${hour}`}:${minute < 10 ? `0${minute}` : `${minute}`}`;
 };
+
+// Note: HH:MM:SS 형태로 변환함
+export const formatTimeWithSecond = (time: Date): string => {
+  const hour = `${time.getHours()}`.padStart(2, '0');
+  const minute = `${time.getMinutes()}`.padStart(2, '0');
+  const second = `${time.getSeconds()}`.padStart(2, '0');
+
+  return `${hour}:${minute}:${second}`;
+};
