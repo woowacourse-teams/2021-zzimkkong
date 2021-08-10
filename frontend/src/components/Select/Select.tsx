@@ -11,6 +11,7 @@ export interface Props {
   label: string;
   options: PropsWithChildren<Option>[];
   maxheight?: string | number;
+  disabled?: boolean;
   value: string;
   setValue: Dispatch<SetStateAction<string>>;
 }
@@ -19,6 +20,7 @@ const Select = ({
   label,
   options,
   maxheight,
+  disabled = false,
   value,
   setValue = () => null,
 }: Props): JSX.Element => {
@@ -44,6 +46,7 @@ const Select = ({
         aria-haspopup="listbox"
         aria-labelledby="label button"
         aria-expanded={open}
+        disabled={options.length === 0 || disabled}
         onClick={handleToggle}
       >
         <Styled.OptionChildrenWrapper>{selectedOption?.children}</Styled.OptionChildrenWrapper>
