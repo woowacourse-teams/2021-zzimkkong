@@ -1,5 +1,6 @@
 import { Link } from 'react-router-dom';
 import styled from 'styled-components';
+import Button from 'components/Button/Button';
 import Layout from 'components/Layout/Layout';
 import { Z_INDEX } from 'constants/style';
 
@@ -14,6 +15,7 @@ export const Header = styled.header`
 
 export const HeaderLayout = styled(Layout)`
   display: flex;
+  justify-content: space-between;
   align-items: center;
   height: 100%;
 `;
@@ -24,6 +26,11 @@ export const HeaderLink = styled(Link)`
   text-decoration: none;
   color: ${({ theme }) => theme.black[400]};
   cursor: pointer;
+`;
+
+export const TextButton = styled(Button)`
+  font-size: 0.75rem;
+  padding: 0.625rem 0.5rem;
 `;
 
 export const Logo = styled.div`
