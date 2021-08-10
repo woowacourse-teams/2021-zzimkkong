@@ -28,7 +28,7 @@ public abstract class ReservationService {
     protected ReservationRepository reservations;
     protected TimeConverter timeConverter;
 
-    public ReservationService(
+    protected ReservationService(
             final MapRepository maps,
             final SpaceRepository spaces,
             final ReservationRepository reservations,

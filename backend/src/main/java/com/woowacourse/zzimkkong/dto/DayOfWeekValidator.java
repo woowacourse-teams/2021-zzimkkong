@@ -35,7 +35,7 @@ public class DayOfWeekValidator implements ConstraintValidator<DayOfWeekConstrai
         return isValidDayOfWeekName(dayOfWeekInput);
     }
 
-    private Boolean hasDuplicates(List<String> dayOfWeekInput) {
+    private boolean hasDuplicates(List<String> dayOfWeekInput) {
         Set<String> uniqueDayOfWeekInput = new HashSet<>(dayOfWeekInput);
         return uniqueDayOfWeekInput.size() != dayOfWeekInput.size();
     }
