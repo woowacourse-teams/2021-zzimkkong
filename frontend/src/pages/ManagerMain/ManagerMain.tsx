@@ -110,7 +110,7 @@ const ManagerMain = (): JSX.Element => {
 
         {!getReservations.isLoading &&
           !reservations.length &&
-          (selectedMapId === undefined ? (
+          (selectedMapId === null ? (
             <Styled.NoticeWrapper>
               <Styled.NoticeMessage>생성한 맵이 없습니다.</Styled.NoticeMessage>
               <Styled.NoticeLink to={PATH.MANAGER_MAP_CREATE}>맵 생성하러 가기</Styled.NoticeLink>
