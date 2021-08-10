@@ -2,13 +2,12 @@ package com.woowacourse.zzimkkong.dto.member;
 
 import com.woowacourse.zzimkkong.domain.Preset;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 @Getter
+@NoArgsConstructor
 public class PresetCreateResponse {
     private Long id;
-
-    public PresetCreateResponse() {
-    }
 
     private PresetCreateResponse(final Long id) {
         this.id = id;

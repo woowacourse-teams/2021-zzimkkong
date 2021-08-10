@@ -2,6 +2,7 @@ package com.woowacourse.zzimkkong.dto;
 
 import com.woowacourse.zzimkkong.exception.ZzimkkongException;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 
 import javax.validation.ConstraintViolationException;
@@ -9,12 +10,10 @@ import javax.validation.ConstraintViolationException;
 import static com.woowacourse.zzimkkong.dto.ValidatorMessage.FORMAT_MESSAGE;
 
 @Getter
+@NoArgsConstructor
 public class ErrorResponse {
     private String message;
     private String field;
-
-    public ErrorResponse() {
-    }
 
     private ErrorResponse(final String message) {
         this(message, null);

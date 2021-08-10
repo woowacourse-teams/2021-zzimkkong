@@ -4,15 +4,14 @@ import com.woowacourse.zzimkkong.domain.Preset;
 import com.woowacourse.zzimkkong.domain.Setting;
 import com.woowacourse.zzimkkong.dto.space.SettingResponse;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 import java.time.LocalTime;
 
 @Getter
+@NoArgsConstructor
 public class PresetFindResponse extends SettingResponse {
     private String name;
-
-    public PresetFindResponse() {
-    }
 
     private PresetFindResponse(
             final LocalTime availableStartTime,

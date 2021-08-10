@@ -4,12 +4,14 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.woowacourse.zzimkkong.domain.Space;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 import java.time.LocalTime;
 
 import static com.woowacourse.zzimkkong.dto.ValidatorMessage.TIME_FORMAT;
 
 @Getter
+@NoArgsConstructor
 public class SettingResponse {
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = TIME_FORMAT)
     private LocalTime availableStartTime;
@@ -25,9 +27,6 @@ public class SettingResponse {
     private Boolean reservationEnable;
     @JsonProperty
     private String enabledDayOfWeek;
-
-    public SettingResponse() {
-    }
 
     protected SettingResponse(
             final LocalTime availableStartTime,

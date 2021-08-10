@@ -5,12 +5,14 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.woowacourse.zzimkkong.dto.DayOfWeekConstraint;
 import com.woowacourse.zzimkkong.dto.TimeUnit;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 import java.time.LocalTime;
 
 import static com.woowacourse.zzimkkong.dto.ValidatorMessage.TIME_FORMAT;
 
 @Getter
+@NoArgsConstructor
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class SettingsRequest {
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = TIME_FORMAT)
@@ -30,9 +32,6 @@ public class SettingsRequest {
 
     @DayOfWeekConstraint
     private String enabledDayOfWeek = "monday, tuesday, wednesday, thursday, friday, saturday, sunday";
-
-    public SettingsRequest() {
-    }
 
     public SettingsRequest(
             final LocalTime availableStartTime,

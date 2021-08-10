@@ -4,12 +4,14 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.woowacourse.zzimkkong.domain.Reservation;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
 
 import static com.woowacourse.zzimkkong.dto.ValidatorMessage.DATETIME_FORMAT;
 
 @Getter
+@NoArgsConstructor
 public class ReservationResponse {
     @JsonProperty
     private Long id;
@@ -21,9 +23,6 @@ public class ReservationResponse {
     private String name;
     @JsonProperty
     private String description;
-
-    public ReservationResponse() {
-    }
 
     private ReservationResponse(
             final Long id,
