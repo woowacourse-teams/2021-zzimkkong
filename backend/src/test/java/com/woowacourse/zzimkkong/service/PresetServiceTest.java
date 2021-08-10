@@ -3,9 +3,10 @@ package com.woowacourse.zzimkkong.service;
 import com.woowacourse.zzimkkong.domain.Member;
 import com.woowacourse.zzimkkong.domain.Preset;
 import com.woowacourse.zzimkkong.domain.Setting;
-import com.woowacourse.zzimkkong.dto.member.PresetCreateRequest;
 import com.woowacourse.zzimkkong.dto.member.PresetCreateResponse;
+import com.woowacourse.zzimkkong.dto.member.PresetFindAllResponse;
 import com.woowacourse.zzimkkong.dto.space.SettingsRequest;
+import com.woowacourse.zzimkkong.dto.member.PresetCreateRequest;
 import com.woowacourse.zzimkkong.exception.preset.NoSuchPresetException;
 import com.woowacourse.zzimkkong.repository.PresetRepository;
 import org.junit.jupiter.api.BeforeEach;
@@ -13,6 +14,8 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.mock.mockito.MockBean;
+
+import java.util.List;
 
 import static com.woowacourse.zzimkkong.Constants.*;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -71,6 +74,23 @@ class PresetServiceTest extends ServiceTest {
 
         //then
         assertThat(presetCreateResponse.getId()).isNotNull();
+    }
+
+    @Test
+    @DisplayName("모든 프리셋 조회 요청 시, member가 가진 모든 프리셋을 조회한다.")
+    void findAll() {
+        //given
+        Preset firstPreset = new Preset(1L, PRESET_NAME1, setting, pobi);
+        Preset secondPreset = new Preset(2L, PRESET_NAME2, setting, pobi);
+
+        List<Preset> expectedPresets = List.of(firstPreset, secondPreset);
+
+        //when
+        PresetFindAllResponse presetFindAllResponse = presetService.findAllPresets(pobi);
+
+        //then
+        assertThat(presetFindAllResponse).usingRecursiveComparison()
+                .isEqualTo(PresetFindAllResponse.from(expectedPresets));
     }
 
     @Test

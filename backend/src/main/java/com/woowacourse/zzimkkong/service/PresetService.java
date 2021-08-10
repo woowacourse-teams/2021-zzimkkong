@@ -3,13 +3,16 @@ package com.woowacourse.zzimkkong.service;
 import com.woowacourse.zzimkkong.domain.Member;
 import com.woowacourse.zzimkkong.domain.Preset;
 import com.woowacourse.zzimkkong.domain.Setting;
-import com.woowacourse.zzimkkong.dto.member.PresetCreateRequest;
 import com.woowacourse.zzimkkong.dto.member.PresetCreateResponse;
+import com.woowacourse.zzimkkong.dto.member.PresetFindAllResponse;
 import com.woowacourse.zzimkkong.dto.space.SettingsRequest;
+import com.woowacourse.zzimkkong.dto.member.PresetCreateRequest;
 import com.woowacourse.zzimkkong.exception.preset.NoSuchPresetException;
 import com.woowacourse.zzimkkong.repository.PresetRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
 
 @Service
 @Transactional
@@ -35,6 +38,12 @@ public class PresetService {
         Preset preset = presets.save(new Preset(presetCreateRequest.getName(), setting, manager));
 
         return PresetCreateResponse.from(preset);
+    }
+
+    @Transactional(readOnly = true)
+    public PresetFindAllResponse findAllPresets(final Member manager) {
+        List<Preset> findPresets = manager.getPresets();
+        return PresetFindAllResponse.from(findPresets);
     }
 
     public void deletePreset(final Long presetId, final Member manager) {

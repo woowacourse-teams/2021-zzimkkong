@@ -2,6 +2,7 @@ package com.woowacourse.zzimkkong.domain;
 
 import javax.persistence.*;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -75,6 +76,6 @@ public class Member {
     }
 
     public List<Preset> getPresets() {
-        return presets;
+        return Collections.unmodifiableList(presets);
     }
 }
