@@ -91,6 +91,7 @@ export const EditorContent = styled.div`
   flex: 1;
   border-top: 1px solid ${({ theme }) => theme.gray[400]};
   border-bottom: 1px solid ${({ theme }) => theme.gray[400]};
+  user-select: none;
 `;
 
 export const Toolbar = styled.div`
@@ -154,4 +155,11 @@ export const LabelIcon = styled.div``;
 
 export const LabelText = styled.div`
   font-size: 0.625rem;
+`;
+
+export const GripPoint = styled.circle`
+  fill: ${({ theme }) => theme.white};
+  stroke: ${({ theme }) => theme.black[100]};
+  stroke-width: 2px;
+  cursor: pointer;
 `;

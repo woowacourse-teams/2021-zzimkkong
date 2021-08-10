@@ -3,5 +3,6 @@ export enum Mode {
   Move = 'move',
   Line = 'line',
   Polyline = 'polyline',
+  Eraser = 'eraser',
   Decoration = 'decoration',
 }
