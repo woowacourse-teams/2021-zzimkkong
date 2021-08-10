@@ -35,16 +35,6 @@ const GuestReservation = (): JSX.Element => {
 
   const { mapId, spaceId, spaceName, selectedDate, scrollPosition } = location.state;
 
-  history.listen((location) => {
-    if (location.pathname === PATH.GUEST_MAIN || location.pathname === PATH.GUEST_MAIN + '/') {
-      location.state = {
-        spaceId,
-        targetDate: new Date(selectedDate),
-        scrollPosition,
-      };
-    }
-  });
-
   if (!mapId || !spaceId || !spaceName) history.replace(PATH.GUEST_MAIN);
 
   const now = new Date();
@@ -85,6 +75,18 @@ const GuestReservation = (): JSX.Element => {
 
     createReservation.mutate({ reservation, mapId, spaceId });
   };
+
+  useEffect(() => {
+    return history.listen((location) => {
+      if (location.pathname === PATH.GUEST_MAIN || location.pathname === PATH.GUEST_MAIN + '/') {
+        location.state = {
+          spaceId,
+          targetDate: new Date(selectedDate),
+          scrollPosition,
+        };
+      }
+    });
+  }, [history, scrollPosition, selectedDate, spaceId]);
 
   useEffect(() => {
     window.scrollTo(0, 0);
