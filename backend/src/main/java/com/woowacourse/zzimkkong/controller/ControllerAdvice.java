@@ -67,13 +67,13 @@ public class ControllerAdvice {
     }
 
     @ExceptionHandler(DataAccessException.class)
-    public ResponseEntity<InputFieldErrorResponse> invalidDataAccessHandler(final DataAccessException exception) {
+    public ResponseEntity<Void> invalidDataAccessHandler(final DataAccessException exception) {
         logger.warn(SERVER_ERROR_MESSAGE, exception);
         return ResponseEntity.internalServerError().build();
     }
 
     @ExceptionHandler(Exception.class)
-    public ResponseEntity<InputFieldErrorResponse> unhandledExceptionHandler(final Exception exception) {
+    public ResponseEntity<Void> unhandledExceptionHandler(final Exception exception) {
         logger.warn(exception.getMessage(), exception);
         return ResponseEntity.internalServerError().build();
     }
