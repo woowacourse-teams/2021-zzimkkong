@@ -1,5 +1,6 @@
 import { AxiosError } from 'axios';
 import {
+  FocusEventHandler,
   FormEventHandler,
   MouseEvent,
   MouseEventHandler,
@@ -363,6 +364,30 @@ const ManagerMapCreate = (): JSX.Element => {
     createMap.mutate({ mapName, mapDrawing, mapImageSvg });
   };
 
+  const handleWidthSize: FocusEventHandler<HTMLInputElement> = (event) => {
+    if (width > 5000) {
+      event.target.value = '5000';
+      onChangeWidthValue(event);
+    }
+
+    if (width < 100) {
+      event.target.value = '100';
+      onChangeWidthValue(event);
+    }
+  };
+
+  const handleHeightSize: FocusEventHandler<HTMLInputElement> = (event) => {
+    if (height > 5000) {
+      event.target.value = '5000';
+      onChangeHeightValue(event);
+    }
+
+    if (height < 100) {
+      event.target.value = '100';
+      onChangeHeightValue(event);
+    }
+  };
+
   useEffect(() => {
     const editorWidth = editorRef.current ? editorRef.current.offsetWidth : 0;
     const editorHeight = editorRef.current ? editorRef.current.offsetHeight : 0;
@@ -585,14 +610,22 @@ const ManagerMapCreate = (): JSX.Element => {
                   <Styled.LabelIcon>W</Styled.LabelIcon>
                   <Styled.LabelText>넓이</Styled.LabelText>
                 </Styled.Label>
-                <Styled.SizeInput value={widthValue} onChange={onChangeWidthValue} />
+                <Styled.SizeInput
+                  value={widthValue}
+                  onChange={onChangeWidthValue}
+                  onBlur={handleWidthSize}
+                />
               </Styled.InputWrapper>
               <Styled.InputWrapper>
                 <Styled.Label>
                   <Styled.LabelIcon>H</Styled.LabelIcon>
                   <Styled.LabelText>높이</Styled.LabelText>
                 </Styled.Label>
-                <Styled.SizeInput value={heightValue} onChange={onChangeHeightValue} />
+                <Styled.SizeInput
+                  value={heightValue}
+                  onChange={onChangeHeightValue}
+                  onBlur={handleHeightSize}
+                />
               </Styled.InputWrapper>
             </Styled.Toolbar>
           </Styled.EditorContent>
