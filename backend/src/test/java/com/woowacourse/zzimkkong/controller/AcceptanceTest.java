@@ -84,7 +84,7 @@ public class AcceptanceTest {
     private StorageUploader storageUploader;
 
     @BeforeEach
-    public void setUp(RestDocumentationContextProvider restDocumentation) {
+    void setUp(RestDocumentationContextProvider restDocumentation) {
         RestAssured.port = port;
         RequestSpecification spec = new RequestSpecBuilder()
                 .addFilter(documentationConfiguration(restDocumentation))

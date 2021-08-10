@@ -16,7 +16,7 @@ class ReservationCreateUpdateWithPasswordRequestTest extends RequestTest {
     @ParameterizedTest
     @NullAndEmptySource
     @DisplayName("예약 비밀번호에 빈 문자열이 들어오면 처리한다.")
-    public void blankReservationPassword(String password) {
+    void blankReservationPassword(String password) {
         ReservationCreateUpdateWithPasswordRequest reservationCreateUpdateWithPasswordRequest = new ReservationCreateUpdateWithPasswordRequest(
                 LocalDateTime.now(),
                 LocalDateTime.now(),
@@ -32,7 +32,7 @@ class ReservationCreateUpdateWithPasswordRequestTest extends RequestTest {
     @ParameterizedTest
     @CsvSource(value = {"12341:true", "123:true", "123!:true", "1234:false"}, delimiter = ':')
     @DisplayName("예약 비밀번호에 옳지 않은 형식의 비밀번호가 들어오면 처리한다.")
-    public void invalidEmail(String password, boolean flag) {
+    void invalidEmail(String password, boolean flag) {
         ReservationCreateUpdateWithPasswordRequest reservationCreateUpdateWithPasswordRequest = new ReservationCreateUpdateWithPasswordRequest(
                 LocalDateTime.now(),
                 LocalDateTime.now(),

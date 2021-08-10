@@ -36,10 +36,10 @@ class SpaceRepositoryTest extends RepositoryTest {
         be = new Space.Builder()
                 .name(BE_NAME)
                 .color(BE_COLOR)
-                .map(luther)
                 .description(BE_DESCRIPTION)
                 .area(SPACE_DRAWING)
                 .setting(beSetting)
+                .map(luther)
                 .build();
 
         Setting feSetting = new Setting.Builder()

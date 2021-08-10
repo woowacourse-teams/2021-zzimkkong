@@ -14,7 +14,7 @@ class MemberSaveRequestTest extends RequestTest {
     @ParameterizedTest
     @NullAndEmptySource
     @DisplayName("회원가입 이메일에 빈 문자열이 들어오면 처리한다.")
-    public void blankEmail(String email) {
+    void blankEmail(String email) {
         MemberSaveRequest memberSaveRequest = new MemberSaveRequest(email, "password1", "organization");
 
         assertThat(getConstraintViolations(memberSaveRequest).stream()
@@ -25,7 +25,7 @@ class MemberSaveRequestTest extends RequestTest {
     @ParameterizedTest
     @CsvSource(value = {"email:true", "email@email:false", "email@email.com:false"}, delimiter = ':')
     @DisplayName("회원가입 이메일에 옳지 않은 이메일 형식의 문자열이 들어오면 처리한다.")
-    public void invalidEmail(String email, boolean flag) {
+    void invalidEmail(String email, boolean flag) {
         MemberSaveRequest memberSaveRequest = new MemberSaveRequest(email, "password1", "organization");
 
         assertThat(getConstraintViolations(memberSaveRequest).stream()
@@ -36,7 +36,7 @@ class MemberSaveRequestTest extends RequestTest {
     @ParameterizedTest
     @NullSource
     @DisplayName("회원가입 비밀번호 빈 문자열이 들어오면 처리한다.")
-    public void blankPassword(String password) {
+    void blankPassword(String password) {
         MemberSaveRequest memberSaveRequest = new MemberSaveRequest("email@email.com", password, "organization");
 
         assertThat(getConstraintViolations(memberSaveRequest).stream()
@@ -47,7 +47,7 @@ class MemberSaveRequestTest extends RequestTest {
     @ParameterizedTest
     @CsvSource(value = {"test1234:false", "1234test:false", "testtest:true", "12341234:true", "test123:true", "test1234test1234test1:true", "test1234!:true", "한글도실패1231:true"}, delimiter = ':')
     @DisplayName("회원가입 비밀번호에 옳지 않은 비밀번호 형식의 문자열이 들어오면 처리한다.")
-    public void invalidPassword(String password, boolean flag) {
+    void invalidPassword(String password, boolean flag) {
         MemberSaveRequest memberSaveRequest = new MemberSaveRequest("email@email.com", password, "organization");
 
         assertThat(getConstraintViolations(memberSaveRequest).stream()
@@ -58,7 +58,7 @@ class MemberSaveRequestTest extends RequestTest {
     @ParameterizedTest
     @NullSource
     @DisplayName("회원가입 조직명에 빈 문자열이 들어오면 처리한다.")
-    public void blankOrganization(String organization) {
+    void blankOrganization(String organization) {
         MemberSaveRequest memberSaveRequest = new MemberSaveRequest("email@email.com", "password", organization);
 
         assertThat(getConstraintViolations(memberSaveRequest).stream()
@@ -69,7 +69,7 @@ class MemberSaveRequestTest extends RequestTest {
     @ParameterizedTest
     @CsvSource(value = {"hihellomorethantwenty:true", "한글조직:false", "hihello:false", "안 녕 하 세 요:false", "ㄱㄴ 힣 ㄷㄹ:false"}, delimiter = ':')
     @DisplayName("회원가입 조직명에 옳지 않은 형식의 문자열이 들어오면 처리한다.")
-    public void invalidOrganization(String organization, boolean flag) {
+    void invalidOrganization(String organization, boolean flag) {
         MemberSaveRequest memberSaveRequest = new MemberSaveRequest("email@email.com", "password", organization);
 
         assertThat(getConstraintViolations(memberSaveRequest).stream()
