@@ -22,7 +22,7 @@ const Toggle = ({
         <Styled.LabelText>{checked ? checkedText : text}</Styled.LabelText>
       )}
       <Styled.Toggle>
-        <Styled.Input type="checkbox" variant={variant} {...props} />
+        <Styled.Input type="checkbox" variant={variant} checked={checked} {...props} />
         <Styled.Slider />
       </Styled.Toggle>
       {textPosition === 'right' && (
