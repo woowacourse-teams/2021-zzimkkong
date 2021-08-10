@@ -5,6 +5,7 @@ export const theme: DefaultTheme = {
   primary: PALETTE.ORANGE,
   red: PALETTE.RED,
   green: PALETTE.GREEN,
+  blue: PALETTE.BLUE,
   black: PALETTE.BLACK,
   gray: PALETTE.GRAY,
   white: PALETTE.WHITE,
