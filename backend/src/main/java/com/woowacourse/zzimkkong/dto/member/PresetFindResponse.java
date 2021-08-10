@@ -3,9 +3,11 @@ package com.woowacourse.zzimkkong.dto.member;
 import com.woowacourse.zzimkkong.domain.Preset;
 import com.woowacourse.zzimkkong.domain.Setting;
 import com.woowacourse.zzimkkong.dto.space.SettingResponse;
+import lombok.Getter;
 
 import java.time.LocalTime;
 
+@Getter
 public class PresetFindResponse extends SettingResponse {
     private String name;
 
@@ -37,9 +39,5 @@ public class PresetFindResponse extends SettingResponse {
                 setting.getReservationEnable(),
                 setting.getEnabledDayOfWeek(),
                 preset.getName());
-    }
-
-    public String getName() {
-        return name;
     }
 }

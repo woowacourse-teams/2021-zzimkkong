@@ -3,11 +3,13 @@ package com.woowacourse.zzimkkong.dto.reservation;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.woowacourse.zzimkkong.domain.Reservation;
+import lombok.Getter;
 
 import java.time.LocalDateTime;
 
 import static com.woowacourse.zzimkkong.dto.ValidatorMessage.DATETIME_FORMAT;
 
+@Getter
 public class ReservationResponse {
     @JsonProperty
     private Long id;
@@ -44,25 +46,5 @@ public class ReservationResponse {
                 reservation.getUserName(),
                 reservation.getDescription()
         );
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public LocalDateTime getStartDateTime() {
-        return startDateTime;
-    }
-
-    public LocalDateTime getEndDateTime() {
-        return endDateTime;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public String getDescription() {
-        return description;
     }
 }

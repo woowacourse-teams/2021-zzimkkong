@@ -47,7 +47,7 @@ public class DataLoader implements CommandLineRunner {
                         pobi)
         );
 
-        Setting defaultSetting = new Setting.Builder()
+        Setting defaultSetting = Setting.builder()
                 .availableStartTime(LocalTime.of(0, 0))
                 .availableEndTime(LocalTime.of(23, 59))
                 .reservationTimeUnit(10)
@@ -57,98 +57,98 @@ public class DataLoader implements CommandLineRunner {
                 .enabledDayOfWeek(null)
                 .build();
 
-        Space be = new Space.Builder()
+        Space be = Space.builder()
                 .name("백엔드 강의실")
                 .color("#FED7D9")
                 .map(luther)
                 .setting(defaultSetting)
                 .build();
 
-        Space fe1 = new Space.Builder()
+        Space fe1 = Space.builder()
                 .name("프론트엔드 강의실1")
                 .color("#FED7D9")
                 .map(luther)
                 .setting(defaultSetting)
                 .build();
 
-        Space fe2 = new Space.Builder()
+        Space fe2 = Space.builder()
                 .name("프론트엔드 강의실2")
                 .color("#FED7D9")
                 .map(luther)
                 .setting(defaultSetting)
                 .build();
 
-        Space meetingRoom1 = new Space.Builder()
+        Space meetingRoom1 = Space.builder()
                 .name("회의실1")
                 .color("#FFE3AC")
                 .map(luther)
                 .setting(defaultSetting)
                 .build();
 
-        Space meetingRoom2 = new Space.Builder()
+        Space meetingRoom2 = Space.builder()
                 .name("회의실2")
                 .color("#FFE3AC")
                 .map(luther)
                 .setting(defaultSetting)
                 .build();
 
-        Space meetingRoom3 = new Space.Builder()
+        Space meetingRoom3 = Space.builder()
                 .name("회의실3")
                 .color("#FFE3AC")
                 .map(luther)
                 .setting(defaultSetting)
                 .build();
 
-        Space meetingRoom4 = new Space.Builder()
+        Space meetingRoom4 = Space.builder()
                 .name("회의실4")
                 .color("#FFE3AC")
                 .map(luther)
                 .setting(defaultSetting)
                 .build();
 
-        Space meetingRoom5 = new Space.Builder()
+        Space meetingRoom5 = Space.builder()
                 .name("회의실5")
                 .color("#FFE3AC")
                 .map(luther)
                 .setting(defaultSetting)
                 .build();
 
-        Space pairRoom1 = new Space.Builder()
+        Space pairRoom1 = Space.builder()
                 .name("페어룸1")
                 .color("#CCDFFB")
                 .map(luther)
                 .setting(defaultSetting)
                 .build();
 
-        Space pairRoom2 = new Space.Builder()
+        Space pairRoom2 = Space.builder()
                 .name("페어룸2")
                 .color("#CCDFFB")
                 .map(luther)
                 .setting(defaultSetting)
                 .build();
 
-        Space pairRoom3 = new Space.Builder()
+        Space pairRoom3 = Space.builder()
                 .name("페어룸3")
                 .color("#CCDFFB")
                 .map(luther)
                 .setting(defaultSetting)
                 .build();
 
-        Space pairRoom4 = new Space.Builder()
+        Space pairRoom4 = Space.builder()
                 .name("페어룸4")
                 .color("#CCDFFB")
                 .map(luther)
                 .setting(defaultSetting)
                 .build();
 
-        Space pairRoom5 = new Space.Builder()
+        Space pairRoom5 = Space.builder()
                 .name("페어룸5")
                 .color("#CCDFFB")
                 .map(luther)
                 .setting(defaultSetting)
                 .build();
 
-        Space trackRoom = new Space.Builder()
+        Space trackRoom = Space.builder()
                 .name("트랙방")
                 .color("#D8FBCC")
                 .map(luther)
@@ -169,7 +169,7 @@ public class DataLoader implements CommandLineRunner {
 
         LocalDate targetDate = LocalDate.now().plusDays(1L);
 
-        Reservation reservationBackEndTargetDate0To1 = new Reservation.Builder()
+        Reservation reservationBackEndTargetDate0To1 = Reservation.builder()
                 .startTime(targetDate.atStartOfDay())
                 .endTime(targetDate.atTime(1, 0, 0))
                 .description("찜꽁 1차 회의")
@@ -178,7 +178,7 @@ public class DataLoader implements CommandLineRunner {
                 .space(be)
                 .build();
 
-        Reservation reservationBackEndTargetDate13To14 = new Reservation.Builder()
+        Reservation reservationBackEndTargetDate13To14 = Reservation.builder()
                 .startTime(targetDate.atTime(13, 0, 0))
                 .endTime(targetDate.atTime(14, 0, 0))
                 .description("찜꽁 2차 회의")
@@ -187,7 +187,7 @@ public class DataLoader implements CommandLineRunner {
                 .space(be)
                 .build();
 
-        Reservation reservationBackEndTargetDate18To23 = new Reservation.Builder()
+        Reservation reservationBackEndTargetDate18To23 = Reservation.builder()
                 .startTime(targetDate.atTime(18, 0, 0))
                 .endTime(targetDate.atTime(23, 59, 59))
                 .description("찜꽁 3차 회의")
@@ -196,7 +196,7 @@ public class DataLoader implements CommandLineRunner {
                 .space(be)
                 .build();
 
-        Reservation reservationBackEndTheDayAfterTargetDate = new Reservation.Builder()
+        Reservation reservationBackEndTheDayAfterTargetDate = Reservation.builder()
                 .startTime(targetDate.plusDays(1L).atStartOfDay())
                 .endTime(targetDate.plusDays(1L).atTime(1, 0, 0))
                 .description("찜꽁 4차 회의")
@@ -205,7 +205,7 @@ public class DataLoader implements CommandLineRunner {
                 .space(be)
                 .build();
 
-        Reservation reservationFrontEnd1TargetDate0to1 = new Reservation.Builder()
+        Reservation reservationFrontEnd1TargetDate0to1 = Reservation.builder()
                 .startTime(targetDate.atStartOfDay())
                 .endTime(targetDate.atTime(1, 0, 0))
                 .description("찜꽁 5차 회의")

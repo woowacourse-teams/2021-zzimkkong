@@ -48,7 +48,7 @@ public class ManagerReservationService extends ReservationService {
         validateAvailability(space, reservationCreateUpdateWithPasswordRequest);
 
         Reservation reservation = reservations.save(
-                new Reservation.Builder()
+                Reservation.builder()
                         .startTime(reservationCreateUpdateWithPasswordRequest.getStartDateTime())
                         .endTime(reservationCreateUpdateWithPasswordRequest.getEndDateTime())
                         .password(reservationCreateUpdateWithPasswordRequest.getPassword())
@@ -130,7 +130,7 @@ public class ManagerReservationService extends ReservationService {
 
         validateAvailability(space, reservationCreateUpdateRequest, reservation);
 
-        Reservation updateReservation = new Reservation.Builder()
+        Reservation updateReservation = Reservation.builder()
                 .startTime(reservationCreateUpdateRequest.getStartDateTime())
                 .endTime(reservationCreateUpdateRequest.getEndDateTime())
                 .userName(reservationCreateUpdateRequest.getName())
