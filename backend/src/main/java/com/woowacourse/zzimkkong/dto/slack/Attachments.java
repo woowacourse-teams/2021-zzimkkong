@@ -10,13 +10,13 @@ public class Attachments {
     private static final String COLOR = "#FF7515";
     private static final String TITLE_LINK = "https://zzimkkong.o-r.kr/";
 
-    private List<Attachment> attachments;
+    private List<Attachment> messageBody;
 
     public Attachments() {
     }
 
-    private Attachments(final List<Attachment> attachments) {
-        this.attachments = attachments;
+    private Attachments(final List<Attachment> messageBody) {
+        this.messageBody = messageBody;
     }
 
     public static Attachments updateMessageFrom(final SlackResponse slackResponse) {
@@ -50,7 +50,7 @@ public class Attachments {
     @Override
     public String toString() {
         return "{ \"attachments\" : " +
-                attachments +
+                messageBody +
                 "}";
     }
 }
