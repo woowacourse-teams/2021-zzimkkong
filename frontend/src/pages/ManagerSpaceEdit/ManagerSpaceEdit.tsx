@@ -611,6 +611,8 @@ const ManagerSpaceEdit = (): JSX.Element => {
   );
 
   const handleKeyDown = useCallback((event: KeyboardEvent) => {
+    if ((event.target as HTMLElement).tagName === 'INPUT') return;
+
     if (event.key === KEY_SPACE) setDraggable(true);
   }, []);
 
