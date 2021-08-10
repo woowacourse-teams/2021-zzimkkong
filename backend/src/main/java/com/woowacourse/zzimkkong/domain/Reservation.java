@@ -36,7 +36,7 @@ public class Reservation {
     protected Reservation() {
     }
 
-    public Reservation(Long id, LocalDateTime startTime, LocalDateTime endTime, String password, String userName, String description, Space space) {
+    protected Reservation(Long id, LocalDateTime startTime, LocalDateTime endTime, String password, String userName, String description, Space space) {
         this.id = id;
         this.startTime = startTime;
         this.endTime = endTime;
