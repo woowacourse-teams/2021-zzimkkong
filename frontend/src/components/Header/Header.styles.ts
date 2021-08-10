@@ -1,3 +1,4 @@
+import { Link } from 'react-router-dom';
 import styled from 'styled-components';
 import Layout from 'components/Layout/Layout';
 import { Z_INDEX } from 'constants/style';
@@ -15,6 +16,14 @@ export const HeaderLayout = styled(Layout)`
   display: flex;
   align-items: center;
   height: 100%;
+`;
+
+export const HeaderLink = styled(Link)`
+  display: flex;
+  align-items: center;
+  text-decoration: none;
+  color: ${({ theme }) => theme.black[400]};
+  cursor: pointer;
 `;
 
 export const Logo = styled.div`

@@ -28,7 +28,7 @@ import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.BDDMockito.given;
 
-public class ManagerReservationServiceTest extends ServiceTest {
+class ManagerReservationServiceTest extends ServiceTest {
     private static final String CHANGED_NAME = "이름 변경";
     private static final String CHANGED_DESCRIPTION = "회의명 변경";
 
@@ -367,9 +367,7 @@ public class ManagerReservationServiceTest extends ServiceTest {
         Space closedSpace = new Space.Builder()
                 .id(3L)
                 .name("예약이 불가능한 공간")
-                .textPosition("bottom")
                 .color("#FED7D9")
-                .coordinate("100, 90")
                 .map(luther)
                 .description("시니컬하네")
                 .area(SPACE_DRAWING)
@@ -401,9 +399,7 @@ public class ManagerReservationServiceTest extends ServiceTest {
         Space invalidDayOfWeekSpace = new Space.Builder()
                 .id(3L)
                 .name("불가능한 요일")
-                .textPosition("bottom")
                 .color("#FED7D9")
-                .coordinate("100, 90")
                 .map(luther)
                 .description("시니컬하네")
                 .area(SPACE_DRAWING)
@@ -927,9 +923,7 @@ public class ManagerReservationServiceTest extends ServiceTest {
         Space closedSpace = new Space.Builder()
                 .id(3L)
                 .name("예약이 불가능한 공간")
-                .textPosition("bottom")
                 .color("#FED7D9")
-                .coordinate("100, 90")
                 .map(luther)
                 .description("시니컬하네")
                 .area(SPACE_DRAWING)
@@ -963,9 +957,7 @@ public class ManagerReservationServiceTest extends ServiceTest {
         Space invalidDayOfWeekSpace = new Space.Builder()
                 .id(3L)
                 .name("불가능한 요일")
-                .textPosition("bottom")
                 .color("#FED7D9")
-                .coordinate("100, 90")
                 .map(luther)
                 .description("시니컬하네")
                 .area(SPACE_DRAWING)

@@ -19,7 +19,6 @@ public class Preset {
     private Member member;
 
     protected Preset() {
-
     }
 
     public Preset(final String name, final Setting setting, final Member member) {
