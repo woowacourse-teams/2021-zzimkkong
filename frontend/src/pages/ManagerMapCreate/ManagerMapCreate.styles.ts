@@ -1,4 +1,3 @@
-import { config } from 'react-spring';
 import styled, { createGlobalStyle, css } from 'styled-components';
 import Button from 'components/Button/Button';
 import IconButton from 'components/IconButton/IconButton';

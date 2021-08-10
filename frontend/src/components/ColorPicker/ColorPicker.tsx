@@ -31,7 +31,7 @@ const ColorPicker = ({ color, setColor }: Props): JSX.Element => {
       <Styled.PickerIcon color={color} onClick={() => setOpen(!open)} />
       <Styled.PickerWrapper open={open}>
         {colors.map((color) => (
-          <Styled.PickerIcon onClick={() => setColor(color)} color={color} />
+          <Styled.PickerIcon key={color} onClick={() => setColor(color)} color={color} />
         ))}
         <Styled.InputWrapper>
           <Styled.Input type="text" maxLength={7} value={color} onChange={handleChangeColor} />

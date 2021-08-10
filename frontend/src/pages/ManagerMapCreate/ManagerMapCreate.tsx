@@ -56,6 +56,8 @@ const ManagerMapCreate = (): JSX.Element => {
 
   const [coordinate, setCoordinate] = useState<Coordinate>({ x: 0, y: 0 });
 
+  const [stickyPointerView, setStickyPointerView] = useState(false);
+
   const stickyCoordinate: Coordinate = {
     x: Math.round(coordinate.x / GRID_SIZE) * GRID_SIZE,
     y: Math.round(coordinate.y / GRID_SIZE) * GRID_SIZE,
@@ -551,7 +553,8 @@ const ManagerMapCreate = (): JSX.Element => {
                   <g
                     id="board"
                     transform={`matrix(${board.scale}, 0, 0, ${board.scale}, ${board.x}, ${board.y})`}
-                    onClickCapture={handleClickBoard}
+                    onMouseEnter={() => setStickyPointerView(true)}
+                    onMouseLeave={() => setStickyPointerView(false)}
                   >
                     <rect width={`${width}px`} height={`${height}px`} fill="white" />
 
@@ -562,7 +565,7 @@ const ManagerMapCreate = (): JSX.Element => {
                       fill="url(#grid)"
                     />
 
-                    {mode === Mode.Line && (
+                    {mode === Mode.Line && stickyPointerView && (
                       <circle
                         cx={stickyCoordinate.x}
                         cy={stickyCoordinate.y}
