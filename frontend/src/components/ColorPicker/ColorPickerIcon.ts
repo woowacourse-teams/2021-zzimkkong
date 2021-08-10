@@ -7,7 +7,6 @@ interface ColorPickerIconProps {
 const ColorPickerIcon = styled.div<ColorPickerIconProps>`
   width: 1.5rem;
   height: 1.5rem;
-  border: 1px solid ${({ color }) => color};
   border-radius: 50%;
   cursor: pointer;
   background-color: ${({ color }) => color};
