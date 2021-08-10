@@ -105,7 +105,7 @@ public class ManagerReservationServiceTest extends ServiceTest {
                 .setting(feSetting)
                 .build();
 
-        beAmZeroOne = new Reservation.Builder()
+        beAmZeroOne = Reservation.builder()
                 .id(1L)
                 .startTime(BE_AM_TEN_ELEVEN_START_TIME)
                 .endTime(BE_AM_TEN_ELEVEN_END_TIME)
@@ -115,7 +115,7 @@ public class ManagerReservationServiceTest extends ServiceTest {
                 .space(be)
                 .build();
 
-        bePmOneTwo = new Reservation.Builder()
+        bePmOneTwo = Reservation.builder()
                 .id(2L)
                 .startTime(BE_PM_ONE_TWO_START_TIME)
                 .endTime(BE_PM_ONE_TWO_END_TIME)
@@ -1031,7 +1031,7 @@ public class ManagerReservationServiceTest extends ServiceTest {
     }
 
     private Reservation makeReservation(final LocalDateTime startTime, final LocalDateTime endTime, final Space space) {
-        return new Reservation.Builder()
+        return Reservation.builder()
                 .id(3L)
                 .startTime(startTime)
                 .endTime(endTime)

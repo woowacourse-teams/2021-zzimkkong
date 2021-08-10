@@ -100,7 +100,7 @@ public class GuestReservationControllerTest extends AcceptanceTest {
 
         saveExampleReservations();
         savedReservationId = getReservationIdAfterSave(beReservationApi, reservationCreateUpdateWithPasswordRequest);
-        savedReservation = new Reservation.Builder()
+        savedReservation = Reservation.builder()
                 .startTime(reservationCreateUpdateWithPasswordRequest.getStartDateTime())
                 .endTime(reservationCreateUpdateWithPasswordRequest.getEndDateTime())
                 .password(reservationCreateUpdateWithPasswordRequest.getPassword())
@@ -191,7 +191,7 @@ public class GuestReservationControllerTest extends AcceptanceTest {
 
         ReservationResponse actualResponse = findResponse.as(ReservationResponse.class);
         ReservationResponse expectedResponse = ReservationResponse.from(
-                new Reservation.Builder()
+                Reservation.builder()
                         .id(savedReservationId)
                         .startTime(reservationCreateUpdateWithPasswordRequestSameSpace.getStartDateTime())
                         .endTime(reservationCreateUpdateWithPasswordRequestSameSpace.getEndDateTime())
@@ -228,7 +228,7 @@ public class GuestReservationControllerTest extends AcceptanceTest {
         ReservationFindResponse actualResponse = findResponse.as(ReservationFindResponse.class);
         ReservationFindResponse expectedResponse = ReservationFindResponse.from(
                 Arrays.asList(
-                        new Reservation.Builder()
+                        Reservation.builder()
                                 .startTime(reservationCreateUpdateWithPasswordRequestDifferentSpace.getStartDateTime())
                                 .endTime(reservationCreateUpdateWithPasswordRequestDifferentSpace.getEndDateTime())
                                 .description(reservationCreateUpdateWithPasswordRequestDifferentSpace.getDescription())
@@ -305,7 +305,7 @@ public class GuestReservationControllerTest extends AcceptanceTest {
                 FE1_AM_TEN_ELEVEN_USERNAME,
                 FE1_AM_TEN_ELEVEN_DESCRIPTION);
 
-        beAmZeroOne = new Reservation.Builder()
+        beAmZeroOne = Reservation.builder()
                 .id(getReservationIdAfterSave(beReservationApi, beAmZeroOneRequest))
                 .startTime(BE_AM_TEN_ELEVEN_START_TIME)
                 .endTime(BE_AM_TEN_ELEVEN_END_TIME)
@@ -315,7 +315,7 @@ public class GuestReservationControllerTest extends AcceptanceTest {
                 .space(be)
                 .build();
 
-        bePmOneTwo = new Reservation.Builder()
+        bePmOneTwo = Reservation.builder()
                 .id(getReservationIdAfterSave(beReservationApi, bePmOneTwoRequest))
                 .startTime(BE_PM_ONE_TWO_START_TIME)
                 .endTime(BE_PM_ONE_TWO_END_TIME)
@@ -327,7 +327,7 @@ public class GuestReservationControllerTest extends AcceptanceTest {
 
         getReservationIdAfterSave(beReservationApi, beNextDayAmSixTwelveRequest);
 
-        fe1ZeroOne = new Reservation.Builder()
+        fe1ZeroOne = Reservation.builder()
                 .id(getReservationIdAfterSave(fe1ReservationApi, feZeroOneRequest))
                 .startTime(FE1_AM_TEN_ELEVEN_START_TIME)
                 .endTime(FE1_AM_TEN_ELEVEN_END_TIME)

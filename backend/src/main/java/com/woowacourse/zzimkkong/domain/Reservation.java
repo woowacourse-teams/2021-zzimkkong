@@ -1,12 +1,13 @@
 package com.woowacourse.zzimkkong.domain;
 
+import lombok.Builder;
 import lombok.Getter;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
-import java.time.temporal.ChronoUnit;
 
 @Getter
+@Builder
 @Entity
 public class Reservation {
     @Id
@@ -35,14 +36,14 @@ public class Reservation {
     protected Reservation() {
     }
 
-    protected Reservation(final Builder builder) {
-        this.id = builder.id;
-        this.startTime = builder.startTime;
-        this.endTime = builder.endTime;
-        this.password = builder.password;
-        this.userName = builder.userName;
-        this.description = builder.description;
-        this.space = builder.space;
+    public Reservation(Long id, LocalDateTime startTime, LocalDateTime endTime, String password, String userName, String description, Space space) {
+        this.id = id;
+        this.startTime = startTime;
+        this.endTime = endTime;
+        this.password = password;
+        this.userName = userName;
+        this.description = description;
+        this.space = space;
     }
 
     public boolean hasConflictWith(final LocalDateTime startDateTime, final LocalDateTime endDateTime) {
@@ -74,59 +75,6 @@ public class Reservation {
         this.userName = updateReservation.userName;
         this.description = updateReservation.description;
         this.space = space;
-    }
-
-    public static class Builder {
-        private Long id = null;
-        private LocalDateTime startTime = null;
-        private LocalDateTime endTime = null;
-        private String password = null;
-        private String userName = null;
-        private String description = null;
-        private Space space = null;
-
-        public Builder() {
-        }
-
-        public Builder id(final Long inputId) {
-            id = inputId;
-            return this;
-        }
-
-        public Builder startTime(final LocalDateTime inputStartTime) {
-            startTime = inputStartTime.truncatedTo(ChronoUnit.SECONDS);
-            return this;
-        }
-
-        public Builder endTime(final LocalDateTime inputEndTime) {
-            endTime = inputEndTime.truncatedTo(ChronoUnit.SECONDS);
-            return this;
-        }
-
-        public Builder password(final String inputPassword) {
-            password = inputPassword;
-            return this;
-        }
-
-        public Builder userName(final String inputUserName) {
-            userName = inputUserName;
-            return this;
-        }
-
-        public Builder description(final String inputDescription) {
-            description = inputDescription;
-            return this;
-        }
-
-        public Builder space(final Space inputSpace) {
-            space = inputSpace;
-            return this;
-        }
-
-        public Reservation build() {
-            return new Reservation(this);
-        }
-
     }
 
     public boolean isWrongPassword(final String password) {

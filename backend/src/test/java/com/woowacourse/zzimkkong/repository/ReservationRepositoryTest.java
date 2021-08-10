@@ -71,7 +71,7 @@ class ReservationRepositoryTest extends RepositoryTest {
         spaces.save(be);
         spaces.save(fe);
 
-        beAmZeroOne = new Reservation.Builder()
+        beAmZeroOne = Reservation.builder()
                 .startTime(BE_AM_TEN_ELEVEN_START_TIME)
                 .endTime(BE_AM_TEN_ELEVEN_END_TIME)
                 .description(BE_AM_TEN_ELEVEN_DESCRIPTION)
@@ -80,7 +80,7 @@ class ReservationRepositoryTest extends RepositoryTest {
                 .space(be)
                 .build();
 
-        bePmOneTwo = new Reservation.Builder()
+        bePmOneTwo = Reservation.builder()
                 .startTime(BE_PM_ONE_TWO_START_TIME)
                 .endTime(BE_PM_ONE_TWO_END_TIME)
                 .description(BE_PM_ONE_TWO_DESCRIPTION)
@@ -89,7 +89,7 @@ class ReservationRepositoryTest extends RepositoryTest {
                 .space(be)
                 .build();
 
-        beNextDayAmSixTwelve = new Reservation.Builder()
+        beNextDayAmSixTwelve = Reservation.builder()
                 .startTime(BE_NEXT_DAY_PM_FOUR_TO_SIX_START_TIME)
                 .endTime(BE_NEXT_DAY_PM_FOUR_TO_SIX_END_TIME)
                 .description(BE_NEXT_DAY_PM_FOUR_TO_SIX_DESCRIPTION)
@@ -98,7 +98,7 @@ class ReservationRepositoryTest extends RepositoryTest {
                 .space(be)
                 .build();
 
-        fe1ZeroOne = new Reservation.Builder()
+        fe1ZeroOne = Reservation.builder()
                 .startTime(FE1_AM_TEN_ELEVEN_START_TIME)
                 .endTime(FE1_AM_TEN_ELEVEN_END_TIME)
                 .description(FE1_AM_TEN_ELEVEN_DESCRIPTION)
@@ -117,7 +117,7 @@ class ReservationRepositoryTest extends RepositoryTest {
     @DisplayName("예약을 추가할 수 있다.")
     void save() {
         //given
-        Reservation be_two_three = new Reservation.Builder()
+        Reservation be_two_three = Reservation.builder()
                 .startTime(THE_DAY_AFTER_TOMORROW.atTime(2, 0))
                 .endTime(THE_DAY_AFTER_TOMORROW.atTime(3, 0))
                 .description("찜꽁 4차 회의")
