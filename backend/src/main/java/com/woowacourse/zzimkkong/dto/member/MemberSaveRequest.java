@@ -1,5 +1,7 @@
 package com.woowacourse.zzimkkong.dto.member;
 
+import lombok.Getter;
+
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
@@ -7,6 +9,7 @@ import javax.validation.constraints.Pattern;
 
 import static com.woowacourse.zzimkkong.dto.ValidatorMessage.*;
 
+@Getter
 public class MemberSaveRequest {
     @NotBlank(message = EMPTY_MESSAGE)
     @Email(message = EMAIL_MESSAGE)
@@ -27,17 +30,5 @@ public class MemberSaveRequest {
         this.email = email;
         this.password = password;
         this.organization = organization;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
-    public String getOrganization() {
-        return organization;
     }
 }
