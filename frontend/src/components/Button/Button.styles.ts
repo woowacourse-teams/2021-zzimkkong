@@ -2,6 +2,7 @@ import styled, { css } from 'styled-components';
 
 interface Props {
   variant: 'primary' | 'primary-text' | 'text' | 'default';
+  shape: 'default' | 'round';
   size: 'small' | 'medium' | 'large';
   fullWidth: boolean;
 }
@@ -36,6 +37,15 @@ const variantCSS = {
   `,
 };
 
+const shapeCSS = {
+  default: css`
+    border-radius: 0.125rem;
+  `,
+  round: css`
+    border-radius: 3rem;
+  `,
+};
+
 const sizeCSS = {
   small: css`
     padding: 0.25rem 0.5rem;
@@ -52,8 +62,8 @@ const sizeCSS = {
 
 export const Button = styled.button<Props>`
   ${({ variant }) => variantCSS[variant]}
+  ${({ shape }) => shapeCSS[shape]}
   ${({ size }) => sizeCSS[size]}
   width: ${({ fullWidth }) => (fullWidth ? '100%' : 'auto')};
-  border-radius: 0.125rem;
   cursor: pointer;
 `;
