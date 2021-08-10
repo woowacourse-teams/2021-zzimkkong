@@ -1,5 +1,4 @@
 import styled from 'styled-components';
-import { WithControl } from './../MapListItem/MapListItem.stories';
 
 interface PickerWrapperProps {
   open: boolean;
@@ -16,9 +15,9 @@ export const Container = styled.div`
 export const PickerWrapper = styled.div<PickerWrapperProps>`
   display: ${({ open }) => (open ? 'flex' : 'none')};
   flex-wrap: wrap;
-  gap: 0.375rem;
+  gap: 0.75rem;
   position: absolute;
-  width: 9rem;
+  width: 10rem;
   border: 1px solid ${({ theme }) => theme.gray[400]};
   padding: 0.75rem;
   margin-top: -0.75rem;
@@ -56,7 +55,7 @@ export const Input = styled.input`
 
 export const ColorInputLabel = styled.label`
   display: inline-block;
-  margin-left: 0.5rem;
+  margin-left: 0.75rem;
   cursor: pointer;
 `;
 
