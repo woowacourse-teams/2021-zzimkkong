@@ -1,6 +1,7 @@
 package com.woowacourse.zzimkkong.domain;
 
 import com.woowacourse.zzimkkong.exception.space.NoSuchDayOfWeekException;
+import lombok.Builder;
 import lombok.Getter;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
@@ -15,6 +16,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Getter
+@Builder
 @DynamicInsert
 @DynamicUpdate
 @Entity
@@ -47,14 +49,21 @@ public class Space {
     protected Space() {
     }
 
-    protected Space(final Builder builder) {
-        this.id = builder.id;
-        this.name = builder.name;
-        this.color = builder.color;
-        this.description = builder.description;
-        this.area = builder.area;
-        this.setting = builder.setting;
-        this.map = builder.map;
+    protected Space(
+            final Long id,
+            final String name,
+            final String color,
+            final String description,
+            final String area,
+            final Setting setting,
+            final Map map) {
+        this.id = id;
+        this.name = name;
+        this.color = color;
+        this.description = description;
+        this.area = area;
+        this.setting = setting;
+        this.map = map;
 
         if (map != null) {
             map.addSpace(this);
@@ -148,57 +157,5 @@ public class Space {
 
     public String getEnabledDayOfWeek() {
         return setting.getEnabledDayOfWeek();
-    }
-
-    public static class Builder {
-        private Long id = null;
-        private String name = null;
-        private String color = null;
-        private Map map = null;
-        private String description = null;
-        private String area = null;
-        private Setting setting = null;
-
-        public Builder() {
-        }
-
-        public Space.Builder id(final Long inputId) {
-            id = inputId;
-            return this;
-        }
-
-        public Space.Builder name(final String inputName) {
-            name = inputName;
-            return this;
-        }
-
-        public Space.Builder color(final String inputColor) {
-            color = inputColor;
-            return this;
-        }
-
-        public Space.Builder description(final String inputDescription) {
-            description = inputDescription;
-            return this;
-        }
-
-        public Space.Builder area(final String inputArea) {
-            area = inputArea;
-            return this;
-        }
-
-        public Space.Builder setting(final Setting inputSetting) {
-            setting = inputSetting;
-            return this;
-        }
-
-        public Space.Builder map(final Map inputMap) {
-            map = inputMap;
-            return this;
-        }
-
-        public Space build() {
-            return new Space(this);
-        }
     }
 }

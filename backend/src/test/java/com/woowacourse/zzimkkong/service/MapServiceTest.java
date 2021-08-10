@@ -56,7 +56,7 @@ class MapServiceTest extends ServiceTest {
                 .enabledDayOfWeek(BE_ENABLED_DAY_OF_WEEK)
                 .build();
 
-        be = new Space.Builder()
+        be = Space.builder()
                 .id(1L)
                 .name(BE_NAME)
                 .map(luther)
@@ -75,7 +75,7 @@ class MapServiceTest extends ServiceTest {
                 .enabledDayOfWeek(FE_ENABLED_DAY_OF_WEEK)
                 .build();
 
-        fe = new Space.Builder()
+        fe = Space.builder()
                 .id(2L)
                 .name(FE_NAME)
                 .color(FE_COLOR)

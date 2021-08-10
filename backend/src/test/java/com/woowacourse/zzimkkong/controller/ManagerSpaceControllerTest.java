@@ -62,7 +62,7 @@ public class ManagerSpaceControllerTest extends AcceptanceTest {
                 .enabledDayOfWeek(FE_ENABLED_DAY_OF_WEEK)
                 .build();
 
-        be = new Space.Builder()
+        be = Space.builder()
                 .id(beSpaceId)
                 .name(BE_NAME)
                 .color(BE_COLOR)
@@ -72,7 +72,7 @@ public class ManagerSpaceControllerTest extends AcceptanceTest {
                 .setting(beSetting)
                 .build();
 
-        fe = new Space.Builder()
+        fe = Space.builder()
                 .id(feSpaceId)
                 .name(FE_NAME)
                 .color(FE_COLOR)
@@ -146,7 +146,7 @@ public class ManagerSpaceControllerTest extends AcceptanceTest {
                 .enabledDayOfWeek("monday, tuesday, wednesday, thursday, friday, saturday, sunday")
                 .build();
 
-        Space defaultSpace = new Space.Builder()
+        Space defaultSpace = Space.builder()
                 .name(defaultSpaceCreateUpdateRequest.getName())
                 .color(defaultSpaceCreateUpdateRequest.getColor())
                 .description(defaultSpaceCreateUpdateRequest.getDescription())

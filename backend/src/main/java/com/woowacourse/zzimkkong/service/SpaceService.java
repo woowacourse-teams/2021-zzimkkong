@@ -51,7 +51,7 @@ public class SpaceService {
         validateManagerOfMap(map, manager);
 
         Setting setting = getSetting(spaceCreateUpdateRequest);
-        Space space = new Space.Builder()
+        Space space = Space.builder()
                 .name(spaceCreateUpdateRequest.getName())
                 .color(spaceCreateUpdateRequest.getColor())
                 .description(spaceCreateUpdateRequest.getDescription())
@@ -112,7 +112,7 @@ public class SpaceService {
                 .orElseThrow(NoSuchSpaceException::new);
 
         Setting setting = getSetting(spaceCreateUpdateRequest);
-        Space updateSpace = new Space.Builder()
+        Space updateSpace = Space.builder()
                 .name(spaceCreateUpdateRequest.getName())
                 .color(spaceCreateUpdateRequest.getColor())
                 .description(spaceCreateUpdateRequest.getDescription())

@@ -72,7 +72,7 @@ public class ManagerReservationControllerTest extends AcceptanceTest {
                 .enabledDayOfWeek(BE_ENABLED_DAY_OF_WEEK)
                 .build();
 
-        be = new Space.Builder()
+        be = Space.builder()
                 .id(beSpaceId)
                 .name(BE_NAME)
                 .map(luther)
@@ -91,7 +91,7 @@ public class ManagerReservationControllerTest extends AcceptanceTest {
                 .enabledDayOfWeek(FE_ENABLED_DAY_OF_WEEK)
                 .build();
 
-        fe = new Space.Builder()
+        fe = Space.builder()
                 .id(feSpaceId)
                 .name(FE_NAME)
                 .color(FE_COLOR)
@@ -403,7 +403,7 @@ public class ManagerReservationControllerTest extends AcceptanceTest {
                 .then().log().all().extract();
     }
 
-    private ExtractableResponse<Response> findReservation( final String api) {
+    private ExtractableResponse<Response> findReservation(final String api) {
         return RestAssured
                 .given(getRequestSpecification()).log().all()
                 .accept("*/*")

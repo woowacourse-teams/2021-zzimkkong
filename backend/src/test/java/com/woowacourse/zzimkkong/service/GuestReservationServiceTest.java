@@ -69,7 +69,7 @@ class GuestReservationServiceTest extends ServiceTest {
                 .enabledDayOfWeek(BE_ENABLED_DAY_OF_WEEK)
                 .build();
 
-        be = new Space.Builder()
+        be = Space.builder()
                 .id(1L)
                 .name(BE_NAME)
                 .map(luther)
@@ -88,7 +88,7 @@ class GuestReservationServiceTest extends ServiceTest {
                 .enabledDayOfWeek(FE_ENABLED_DAY_OF_WEEK)
                 .build();
 
-        fe = new Space.Builder()
+        fe = Space.builder()
                 .id(2L)
                 .name(FE_NAME)
                 .color(FE_COLOR)
@@ -337,7 +337,7 @@ class GuestReservationServiceTest extends ServiceTest {
                 .enabledDayOfWeek(null)
                 .build();
 
-        Space closedSpace = new Space.Builder()
+        Space closedSpace = Space.builder()
                 .id(3L)
                 .name("백엔드 강의실")
                 .color("#FED7D9")
@@ -372,7 +372,7 @@ class GuestReservationServiceTest extends ServiceTest {
                 .enabledDayOfWeek(THE_DAY_AFTER_TOMORROW.plusDays(1L).getDayOfWeek().name())
                 .build();
 
-        Space invalidDayOfWeekSpace = new Space.Builder()
+        Space invalidDayOfWeekSpace = Space.builder()
                 .id(3L)
                 .name("불가능한 요일")
                 .color("#FED7D9")
@@ -862,7 +862,7 @@ class GuestReservationServiceTest extends ServiceTest {
                 .enabledDayOfWeek(null)
                 .build();
 
-        Space closedSpace = new Space.Builder()
+        Space closedSpace = Space.builder()
                 .id(3L)
                 .name("예약이 불가능한 공간")
                 .color("#FED7D9")
@@ -896,7 +896,7 @@ class GuestReservationServiceTest extends ServiceTest {
                 .enabledDayOfWeek(THE_DAY_AFTER_TOMORROW.plusDays(1L).getDayOfWeek().name())
                 .build();
 
-        Space invalidDayOfWeekSpace = new Space.Builder()
+        Space invalidDayOfWeekSpace = Space.builder()
                 .id(3L)
                 .name("불가능한 요일")
                 .color("#FED7D9")

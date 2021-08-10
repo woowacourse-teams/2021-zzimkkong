@@ -23,7 +23,7 @@ public class SpaceTest {
                 .availableStartTime(LocalTime.of(10, 0))
                 .availableEndTime(LocalTime.of(18, 0))
                 .build();
-        Space space = new Space.Builder()
+        Space space = Space.builder()
                 .name("와우")
                 .color("색깔입니다")
                 .description("잠실짱")
@@ -37,7 +37,7 @@ public class SpaceTest {
                 .availableEndTime(LocalTime.of(18, 0))
                 .reservationEnable(true)
                 .build();
-        Space updateSpace = new Space.Builder()
+        Space updateSpace = Space.builder()
                 .name("우와")
                 .color("색깔")
                 .description("루터짱")
@@ -53,7 +53,7 @@ public class SpaceTest {
     @Test
     @DisplayName("공간의 Id가 동일한 Id면 true, 아니면 false를 반환한다")
     void hasSameId() {
-        Space space = new Space.Builder()
+        Space space = Space.builder()
                 .id(1L)
                 .build();
 
@@ -68,7 +68,7 @@ public class SpaceTest {
                 .availableStartTime(LocalTime.of(10, 0))
                 .availableEndTime(LocalTime.of(18, 0))
                 .build();
-        Space availableTimeSpace = new Space.Builder().setting(availableTimeSetting).build();
+        Space availableTimeSpace = Space.builder().setting(availableTimeSetting).build();
 
         LocalDateTime startDateTime = THE_DAY_AFTER_TOMORROW.atTime(10, 0);
         LocalDateTime endDateTime = THE_DAY_AFTER_TOMORROW.atTime(18, 0);
@@ -84,7 +84,7 @@ public class SpaceTest {
                 .availableStartTime(LocalTime.of(10, 0))
                 .availableEndTime(LocalTime.of(18, 0))
                 .build();
-        Space availableTimeSpace = new Space.Builder().setting(availableTimeSetting).build();
+        Space availableTimeSpace = Space.builder().setting(availableTimeSetting).build();
 
         LocalDateTime startDateTime = THE_DAY_AFTER_TOMORROW.atTime(9, 59);
         LocalDateTime endDateTime = THE_DAY_AFTER_TOMORROW.atTime(18, 1);
@@ -100,7 +100,7 @@ public class SpaceTest {
         Setting availableTimeSetting = Setting.builder()
                 .reservationTimeUnit(10)
                 .build();
-        Space availableTimeSpace = new Space.Builder().setting(availableTimeSetting).build();
+        Space availableTimeSpace = Space.builder().setting(availableTimeSetting).build();
 
         boolean actual = availableTimeSpace.isIncorrectTimeUnit(minute);
 
@@ -114,7 +114,7 @@ public class SpaceTest {
         Setting availableTimeSetting = Setting.builder()
                 .reservationTimeUnit(10)
                 .build();
-        Space availableTimeSpace = new Space.Builder().setting(availableTimeSetting).build();
+        Space availableTimeSpace = Space.builder().setting(availableTimeSetting).build();
 
         boolean actual = availableTimeSpace.isIncorrectTimeUnit(minute);
 
@@ -129,7 +129,7 @@ public class SpaceTest {
                 .reservationMinimumTimeUnit(10)
                 .reservationMaximumTimeUnit(120)
                 .build();
-        Space availableTimeSpace = new Space.Builder().setting(availableTimeSetting).build();
+        Space availableTimeSpace = Space.builder().setting(availableTimeSetting).build();
 
         boolean actual = availableTimeSpace.isIncorrectMinimumMaximumTimeUnit(durationMinutes);
 
@@ -144,7 +144,7 @@ public class SpaceTest {
                 .reservationMinimumTimeUnit(10)
                 .reservationMaximumTimeUnit(120)
                 .build();
-        Space availableTimeSpace = new Space.Builder().setting(availableTimeSetting).build();
+        Space availableTimeSpace = Space.builder().setting(availableTimeSetting).build();
 
         boolean actual = availableTimeSpace.isIncorrectMinimumMaximumTimeUnit(durationMinutes);
 
@@ -157,7 +157,7 @@ public class SpaceTest {
         Setting availableTimeSetting = Setting.builder()
                 .reservationTimeUnit(10)
                 .build();
-        Space availableTimeSpace = new Space.Builder().setting(availableTimeSetting).build();
+        Space availableTimeSpace = Space.builder().setting(availableTimeSetting).build();
 
         int minute = 100;
         boolean actual = availableTimeSpace.isNotDivideBy(minute);
@@ -171,7 +171,7 @@ public class SpaceTest {
         Setting availableTimeSetting = Setting.builder()
                 .reservationTimeUnit(10)
                 .build();
-        Space availableTimeSpace = new Space.Builder().setting(availableTimeSetting).build();
+        Space availableTimeSpace = Space.builder().setting(availableTimeSetting).build();
 
         int minute = 12;
         boolean actual = availableTimeSpace.isNotDivideBy(minute);
@@ -183,7 +183,7 @@ public class SpaceTest {
     @DisplayName("예약이 가능한 공간이면 false를 반환한다")
     void isUnableToReserve() {
         Setting reservationEnableSetting = Setting.builder().reservationEnable(true).build();
-        Space reservationEnableSpace = new Space.Builder().setting(reservationEnableSetting).build();
+        Space reservationEnableSpace = Space.builder().setting(reservationEnableSetting).build();
 
         assertThat(reservationEnableSpace.isUnableToReserve()).isFalse();
     }
@@ -192,7 +192,7 @@ public class SpaceTest {
     @DisplayName("예약이 불가능한 공간이면 true를 반환한다")
     void isUnableToReserveFail() {
         Setting reservationUnableSetting = Setting.builder().reservationEnable(false).build();
-        Space reservationUnableSpace = new Space.Builder().setting(reservationUnableSetting).build();
+        Space reservationUnableSpace = Space.builder().setting(reservationUnableSetting).build();
 
         assertThat(reservationUnableSpace.isUnableToReserve()).isTrue();
     }
@@ -202,7 +202,7 @@ public class SpaceTest {
     @DisplayName("해당 요일에 예약이 가능하면 false를 반환한다")
     void isClosedOn(DayOfWeek dayOfWeek) {
         Setting setting = Setting.builder().enabledDayOfWeek("monday, wednesday").build();
-        Space space = new Space.Builder().setting(setting).build();
+        Space space = Space.builder().setting(setting).build();
 
         assertThat(space.isClosedOn(dayOfWeek)).isFalse();
     }
@@ -212,7 +212,7 @@ public class SpaceTest {
     @DisplayName("해당 요일에 예약이 불가능하면 true를 반환한다")
     void isClosedOnFail(DayOfWeek dayOfWeek) {
         Setting setting = Setting.builder().enabledDayOfWeek("monday, wednesday").build();
-        Space space = new Space.Builder().setting(setting).build();
+        Space space = Space.builder().setting(setting).build();
 
         assertThat(space.isClosedOn(dayOfWeek)).isTrue();
     }
@@ -222,7 +222,7 @@ public class SpaceTest {
     @DisplayName("예약 가능한 요일이 null이면 모든 요일에 대해서 true를 반환한다")
     void isClosedOn_nullEnabledDayOfWeek(DayOfWeek dayOfWeek) {
         Setting setting = Setting.builder().enabledDayOfWeek(null).build();
-        Space space = new Space.Builder().setting(setting).build();
+        Space space = Space.builder().setting(setting).build();
 
         assertThat(space.isClosedOn(dayOfWeek)).isTrue();
     }

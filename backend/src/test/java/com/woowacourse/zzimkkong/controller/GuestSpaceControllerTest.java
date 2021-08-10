@@ -61,7 +61,7 @@ public class GuestSpaceControllerTest extends AcceptanceTest {
                 .enabledDayOfWeek(FE_ENABLED_DAY_OF_WEEK)
                 .build();
 
-        be = new Space.Builder()
+        be = Space.builder()
                 .id(beSpaceId)
                 .name(BE_NAME)
                 .color(BE_COLOR)
@@ -71,7 +71,7 @@ public class GuestSpaceControllerTest extends AcceptanceTest {
                 .setting(beSetting)
                 .build();
 
-        fe = new Space.Builder()
+        fe = Space.builder()
                 .id(feSpaceId)
                 .name(FE_NAME)
                 .color(FE_COLOR)

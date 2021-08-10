@@ -38,7 +38,7 @@ class ReservationRepositoryTest extends RepositoryTest {
                 .enabledDayOfWeek(BE_ENABLED_DAY_OF_WEEK)
                 .build();
 
-        be = new Space.Builder()
+        be = Space.builder()
                 .name(BE_NAME)
                 .color(BE_COLOR)
                 .map(luther)
@@ -57,7 +57,7 @@ class ReservationRepositoryTest extends RepositoryTest {
                 .enabledDayOfWeek(FE_ENABLED_DAY_OF_WEEK)
                 .build();
 
-        fe = new Space.Builder()
+        fe = Space.builder()
                 .name(FE_NAME)
                 .color(FE_COLOR)
                 .map(luther)
