@@ -37,14 +37,14 @@ class MapServiceTest extends ServiceTest {
     private Member pobi;
     private Map luther;
     private Map smallHouse;
-    private Space be;
-    private Space fe;
+    private Long lutherId;
 
     @BeforeEach
     void setUp() {
         pobi = new Member(EMAIL, PASSWORD, ORGANIZATION);
         luther = new Map(1L, LUTHER_NAME, MAP_DRAWING_DATA, MAP_IMAGE_URL, pobi);
         smallHouse = new Map(2L, SMALL_HOUSE_NAME, MAP_DRAWING_DATA, MAP_IMAGE_URL, pobi);
+        lutherId = luther.getId();
 
         Setting beSetting = Setting.builder()
                 .availableStartTime(BE_AVAILABLE_START_TIME)
@@ -56,7 +56,7 @@ class MapServiceTest extends ServiceTest {
                 .enabledDayOfWeek(BE_ENABLED_DAY_OF_WEEK)
                 .build();
 
-        be = Space.builder()
+        Space be = Space.builder()
                 .id(1L)
                 .name(BE_NAME)
                 .map(luther)
@@ -75,7 +75,7 @@ class MapServiceTest extends ServiceTest {
                 .enabledDayOfWeek(FE_ENABLED_DAY_OF_WEEK)
                 .build();
 
-        fe = Space.builder()
+        Space fe = Space.builder()
                 .id(2L)
                 .name(FE_NAME)
                 .color(FE_COLOR)
@@ -163,7 +163,7 @@ class MapServiceTest extends ServiceTest {
                 .willReturn(Optional.of(luther));
 
         // when, then
-        assertThatThrownBy(() -> mapService.updateMap(luther.getId(), mapCreateUpdateRequest, anotherMember))
+        assertThatThrownBy(() -> mapService.updateMap(lutherId, mapCreateUpdateRequest, anotherMember))
                 .isInstanceOf(NoAuthorityOnMapException.class);
     }
 
@@ -190,7 +190,7 @@ class MapServiceTest extends ServiceTest {
                 .willReturn(true);
 
         //when, then
-        assertThatThrownBy(() -> mapService.deleteMap(luther.getId(), pobi))
+        assertThatThrownBy(() -> mapService.deleteMap(lutherId, pobi))
                 .isInstanceOf(ReservationExistOnSpaceException.class);
     }
 

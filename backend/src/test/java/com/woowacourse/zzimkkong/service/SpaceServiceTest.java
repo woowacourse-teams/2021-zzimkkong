@@ -64,6 +64,9 @@ class SpaceServiceTest extends ServiceTest {
     private Space be;
     private Space fe;
 
+
+    private Long lutherId;
+    private Long beId;
     private Long noneExistingMapId;
     private Long noneExistingSpaceId;
 
@@ -112,6 +115,8 @@ class SpaceServiceTest extends ServiceTest {
                 .setting(feSetting)
                 .build();
 
+        lutherId = luther.getId();
+        beId = be.getId();
         noneExistingMapId = luther.getId() + 1;
         noneExistingSpaceId = (long) (luther.getSpaces().size() + 1);
     }
@@ -173,7 +178,7 @@ class SpaceServiceTest extends ServiceTest {
                 .willReturn(be);
 
         // when, then
-        assertThatThrownBy(() -> spaceService.saveSpace(luther.getId(), spaceCreateUpdateRequest, sakjung))
+        assertThatThrownBy(() -> spaceService.saveSpace(lutherId, spaceCreateUpdateRequest, sakjung))
                 .isInstanceOf(NoAuthorityOnMapException.class);
     }
 
@@ -202,7 +207,7 @@ class SpaceServiceTest extends ServiceTest {
                 .willReturn(Optional.of(luther));
 
         // when, then
-        assertThatThrownBy(() -> spaceService.findSpace(luther.getId(), noneExistingSpaceId, pobi))
+        assertThatThrownBy(() -> spaceService.findSpace(lutherId, noneExistingSpaceId, pobi))
                 .isInstanceOf(NoSuchSpaceException.class);
     }
 
@@ -216,7 +221,7 @@ class SpaceServiceTest extends ServiceTest {
                 .willReturn(Optional.of(be));
 
         // when, then
-        assertThatThrownBy(() -> spaceService.findSpace(luther.getId(), be.getId(), sakjung))
+        assertThatThrownBy(() -> spaceService.findSpace(lutherId, beId, sakjung))
                 .isInstanceOf(NoAuthorityOnMapException.class);
     }
 
@@ -243,7 +248,7 @@ class SpaceServiceTest extends ServiceTest {
                 .willReturn(Optional.of(luther));
 
         // when, then
-        assertThatThrownBy(() -> spaceService.findAllSpace(luther.getId(), sakjung))
+        assertThatThrownBy(() -> spaceService.findAllSpace(lutherId, sakjung))
                 .isInstanceOf(NoAuthorityOnMapException.class);
     }
 
@@ -295,8 +300,8 @@ class SpaceServiceTest extends ServiceTest {
 
         // then
         assertThatThrownBy(() -> spaceService.updateSpace(
-                luther.getId(),
-                be.getId(),
+                lutherId,
+                beId,
                 updateSpaceCreateUpdateRequest,
                 sakjung))
                 .isInstanceOf(NoAuthorityOnMapException.class);
@@ -327,7 +332,7 @@ class SpaceServiceTest extends ServiceTest {
         SpaceDeleteRequest spaceDeleteRequest = new SpaceDeleteRequest(MAP_SVG);
 
         //then
-        assertThatThrownBy(() -> spaceService.deleteSpace(luther.getId(), be.getId(), spaceDeleteRequest, sakjung))
+        assertThatThrownBy(() -> spaceService.deleteSpace(lutherId, beId, spaceDeleteRequest, sakjung))
                 .isInstanceOf(NoAuthorityOnMapException.class);
     }
 
@@ -342,7 +347,7 @@ class SpaceServiceTest extends ServiceTest {
         SpaceDeleteRequest spaceDeleteRequest = new SpaceDeleteRequest(MAP_SVG);
 
         //then
-        assertThatThrownBy(() -> spaceService.deleteSpace(luther.getId(), noneExistingSpaceId, spaceDeleteRequest, pobi))
+        assertThatThrownBy(() -> spaceService.deleteSpace(lutherId, noneExistingSpaceId, spaceDeleteRequest, pobi))
                 .isInstanceOf(NoSuchSpaceException.class);
     }
 
@@ -358,7 +363,7 @@ class SpaceServiceTest extends ServiceTest {
                 .willReturn(true);
         SpaceDeleteRequest spaceDeleteRequest = new SpaceDeleteRequest(MAP_SVG);
 
-        assertThatThrownBy(() -> spaceService.deleteSpace(luther.getId(), be.getId(), spaceDeleteRequest, pobi))
+        assertThatThrownBy(() -> spaceService.deleteSpace(lutherId, beId, spaceDeleteRequest, pobi))
                 .isInstanceOf(ReservationExistOnSpaceException.class);
     }
 }

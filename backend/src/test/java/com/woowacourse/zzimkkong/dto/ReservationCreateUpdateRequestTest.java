@@ -43,17 +43,6 @@ class ReservationCreateUpdateRequestTest extends RequestTest {
     }
 
     @ParameterizedTest
-    @ValueSource(strings = {"2021-08-03T25:00:00", "2021/08/03T00:00:00", "2021-08-0300:00:00"})
-    @DisplayName("예약 생성에 옳지 않은 형식의 dateTime이 들어오면 처리한다.")
-    void invalidDateTime(String dateTime) {
-        assertThatThrownBy(() -> new ReservationCreateUpdateRequest(
-                LocalDateTime.parse(dateTime),
-                LocalDateTime.parse(dateTime),
-                "name",
-                "description")).isInstanceOf(DateTimeParseException.class);
-    }
-
-    @ParameterizedTest
     @NullAndEmptySource
     @DisplayName("예약 생성에 빈 이름이 들어오면 처리한다.")
     void blankName(String data) {

@@ -110,10 +110,10 @@ class PresetServiceTest extends ServiceTest {
         Preset savedPreset = new Preset(1L, PRESET_NAME1, setting, pobi);
 
         Member jason = new Member(2L, "jason@email.com", PASSWORD, ORGANIZATION);
+        Long savedPresetId = savedPreset.getId();
 
         //when, then
-        assertThatThrownBy(() -> presetService.deletePreset(savedPreset.getId(), jason))
-                .isInstanceOf(NoSuchPresetException.class);
+        assertThatThrownBy(() -> presetService.deletePreset(savedPresetId, jason)).isInstanceOf(NoSuchPresetException.class);
     }
 
     @Test
