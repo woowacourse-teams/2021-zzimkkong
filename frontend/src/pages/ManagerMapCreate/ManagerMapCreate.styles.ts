@@ -109,6 +109,7 @@ export const Toolbar = styled.div`
   border-left: 1px solid ${({ theme }) => theme.gray[400]};
   border-right: 1px solid ${({ theme }) => theme.gray[400]};
   display: flex;
+  position: relative;
   flex-direction: column;
   gap: 1rem;
 `;
@@ -138,8 +139,8 @@ export const InputWrapper = styled.div`
 
 export const ColorPickerWrapper = styled.div`
   position: absolute;
-  left: 5.25rem;
-  top: 32rem;
+  left: 4.25rem;
+  top: 22rem;
 `;
 
 export const SizeInput = styled(Input)`

@@ -500,10 +500,10 @@ const ManagerMapCreate = (): JSX.Element => {
               >
                 <ColorPickerIcon color={color} />
               </Styled.ToolbarButton>
+              <Styled.ColorPickerWrapper>
+                <ColorPicker open={colorPickerOpen} color={color} setColor={setColor} />
+              </Styled.ColorPickerWrapper>
             </Styled.Toolbar>
-            <Styled.ColorPickerWrapper>
-              <ColorPicker open={colorPickerOpen} color={color} setColor={setColor} />
-            </Styled.ColorPickerWrapper>
             <Styled.Editor ref={editorRef}>
               <Styled.BoardContainer
                 xmlns="http://www.w3.org/2000/svg"

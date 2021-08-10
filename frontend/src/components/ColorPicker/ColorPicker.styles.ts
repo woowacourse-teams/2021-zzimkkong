@@ -8,7 +8,7 @@ export const Container = styled.div<ContainerProps>`
   display: ${({ open }) => (open ? 'flex' : 'none')};
   flex-wrap: wrap;
   gap: 0.75rem;
-  width: 9.875rem;
+  width: 10rem;
   height: 7.5rem;
   border: 1px solid ${({ theme }) => theme.gray[400]};
   padding: 0.75rem;
