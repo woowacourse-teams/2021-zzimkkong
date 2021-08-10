@@ -1,3 +1,4 @@
+import { config } from 'react-spring';
 import styled, { createGlobalStyle, css } from 'styled-components';
 import Button from 'components/Button/Button';
 import IconButton from 'components/IconButton/IconButton';
@@ -74,6 +75,15 @@ export const MapNameInput = styled.input`
   border-radius: 0.125rem;
   font-size: 1.5rem;
   display: inline-block;
+  border: 2px solid transparent;
+
+  &:hover {
+    border-color: ${({ theme }) => theme.primary[400]};
+  }
+
+  &:focus {
+    outline-color: ${({ theme }) => theme.primary[400]};
+  }
 `;
 
 export const MapName = styled.h3`

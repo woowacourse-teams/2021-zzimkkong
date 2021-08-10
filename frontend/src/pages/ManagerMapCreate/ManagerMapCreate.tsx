@@ -461,6 +461,13 @@ const ManagerMapCreate = (): JSX.Element => {
               >
                 <ItemsIcon />
               </Styled.ToolbarButton>
+              {/* <Styled.ToolbarButton
+                text="색상선택"
+                selected={mode === Mode.SelectColor}
+                onClick={() => setMode(Mode.SelectColor)}
+              >
+                <ColorPicker> </ColorPicker>
+              </Styled.ToolbarButton> */}
             </Styled.Toolbar>
             <Styled.Editor ref={editorRef}>
               <Styled.BoardContainer
