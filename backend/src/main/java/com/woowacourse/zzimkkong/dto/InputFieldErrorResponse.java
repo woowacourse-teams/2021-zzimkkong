@@ -9,7 +9,7 @@ import javax.validation.ConstraintViolationException;
 import static com.woowacourse.zzimkkong.dto.ValidatorMessage.FORMAT_MESSAGE;
 
 public class InputFieldErrorResponse extends ErrorResponse {
-    private String field;
+    private final String field;
 
     private InputFieldErrorResponse(final String message, final String field) {
         super(message);

@@ -10,7 +10,7 @@ public class ZzimkkongException extends RuntimeException {
         this.status = status;
     }
 
-    public ZzimkkongException(String message, Throwable cause, HttpStatus status) {
+    public ZzimkkongException(final String message, final Throwable cause, final HttpStatus status) {
         super(message, cause);
         this.status = status;
     }

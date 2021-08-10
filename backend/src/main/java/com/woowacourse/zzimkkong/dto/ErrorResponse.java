@@ -5,13 +5,13 @@ import javax.validation.ConstraintViolationException;
 import static com.woowacourse.zzimkkong.dto.ValidatorMessage.FORMAT_MESSAGE;
 
 public class ErrorResponse {
-    private String message;
+    private final String message;
 
-    public ErrorResponse(String message) {
+    public ErrorResponse(final String message) {
         this.message = message;
     }
 
-    public static ErrorResponse from(RuntimeException exception) {
+    public static ErrorResponse from(final RuntimeException exception) {
         return new ErrorResponse(exception.getMessage());
     }
 
