@@ -18,3 +18,10 @@ export const MAP_COLOR_PALETTE = [
   PALETTE.BLUE[400],
   PALETTE.PURPLE[400],
 ];
+
+export const BOARD = {
+  MAX_WIDTH: 5000,
+  MIN_WIDTH: 100,
+  MAX_HEIGHT: 5000,
+  MIN_HEIGHT: 100,
+};

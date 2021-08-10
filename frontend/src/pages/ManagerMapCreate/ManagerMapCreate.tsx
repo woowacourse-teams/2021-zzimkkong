@@ -22,6 +22,7 @@ import Button from 'components/Button/Button';
 import ColorPicker from 'components/ColorPicker/ColorPicker';
 import Header from 'components/Header/Header';
 import Layout from 'components/Layout/Layout';
+import { BOARD } from 'constants/editor';
 import PALETTE from 'constants/palette';
 import PATH from 'constants/path';
 import useInput from 'hooks/useInput';
@@ -370,25 +371,25 @@ const ManagerMapCreate = (): JSX.Element => {
   };
 
   const handleWidthSize: FocusEventHandler<HTMLInputElement> = (event) => {
-    if (width > 5000) {
-      event.target.value = '5000';
+    if (width > BOARD.MAX_WIDTH) {
+      event.target.value = String(BOARD.MAX_WIDTH);
       onChangeWidthValue(event);
     }
 
-    if (width < 100) {
-      event.target.value = '100';
+    if (width < BOARD.MIN_WIDTH) {
+      event.target.value = String(BOARD.MIN_WIDTH);
       onChangeWidthValue(event);
     }
   };
 
   const handleHeightSize: FocusEventHandler<HTMLInputElement> = (event) => {
-    if (height > 5000) {
-      event.target.value = '5000';
+    if (height > BOARD.MAX_HEIGHT) {
+      event.target.value = String(BOARD.MAX_HEIGHT);
       onChangeHeightValue(event);
     }
 
-    if (height < 100) {
-      event.target.value = '100';
+    if (height < BOARD.MIN_HEIGHT) {
+      event.target.value = String(BOARD.MIN_HEIGHT);
       onChangeHeightValue(event);
     }
   };
