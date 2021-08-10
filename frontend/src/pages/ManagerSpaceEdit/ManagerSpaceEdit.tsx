@@ -124,6 +124,7 @@ const ManagerSpaceEdit = (): JSX.Element => {
 
   const updateSpace = useMutation(putManagerSpace, {
     onSuccess: () => {
+      managerSpaces.refetch();
       alert('공간 설정이 수정되었습니다');
     },
     onError: (error: AxiosError<ErrorResponse>) => {
@@ -191,8 +192,8 @@ const ManagerSpaceEdit = (): JSX.Element => {
     .join(',');
 
   const [board, setBoard] = useState({
-    width: 800,
-    height: 600,
+    width: 0,
+    height: 0,
     x: 0,
     y: 0,
     scale: 1,
@@ -570,6 +571,8 @@ const ManagerSpaceEdit = (): JSX.Element => {
             },
           },
         });
+
+        return;
       }
 
       if (selectedSpaceId && !isAddingSpace) {
@@ -746,6 +749,36 @@ const ManagerSpaceEdit = (): JSX.Element => {
                     >
                       <rect width={`${board.width}px`} height={`${board.height}px`} fill="white" />
 
+                      {/* Note: 새로 그려지는 중인 공간의 영역 */}
+                      {guideArea && (
+                        <rect
+                          x={guideArea.x}
+                          y={guideArea.y}
+                          width={guideArea.width}
+                          height={guideArea.height}
+                          fill={PALETTE.OPACITY_BLACK[100]}
+                        />
+                      )}
+
+                      {/* Note: 커서 위치 표시 */}
+                      {isDrawingArea && (
+                        <rect
+                          x={stickyCoordinate.x}
+                          y={stickyCoordinate.y}
+                          width={GRID_SIZE}
+                          height={GRID_SIZE}
+                          fill={PALETTE.OPACITY_BLACK[100]}
+                        />
+                      )}
+
+                      {/* Note: 모눈 표시 */}
+                      <rect
+                        width={`${board.width + 0.5}px`}
+                        height={`${board.height + 0.5}px`}
+                        fill="url(#grid)"
+                        pointerEvents="none"
+                      />
+
                       {/* Note: 현재 추가 혹은 삭제 중인 공간의 영역 */}
                       {area && (
                         <g>
@@ -767,28 +800,6 @@ const ManagerSpaceEdit = (): JSX.Element => {
                             {spaceName}
                           </Styled.SpaceAreaText>
                         </g>
-                      )}
-
-                      {/* Note: 새로 그려지는 중인 공간의 영역 */}
-                      {guideArea && (
-                        <rect
-                          x={guideArea.x}
-                          y={guideArea.y}
-                          width={guideArea.width}
-                          height={guideArea.height}
-                          fill={PALETTE.OPACITY_BLACK[100]}
-                        />
-                      )}
-
-                      {/* Note: 커서 위치 표시 */}
-                      {isDrawingArea && (
-                        <rect
-                          x={stickyCoordinate.x}
-                          y={stickyCoordinate.y}
-                          width={GRID_SIZE}
-                          height={GRID_SIZE}
-                          fill={PALETTE.OPACITY_BLACK[100]}
-                        />
                       )}
 
                       {/* Note: 공간 영역 */}
@@ -817,14 +828,6 @@ const ManagerSpaceEdit = (): JSX.Element => {
                           )}
                         </g>
                       ))}
-
-                      {/* Note: 모눈 표시 */}
-                      <rect
-                        width={`${board.width + 0.5}px`}
-                        height={`${board.height + 0.5}px`}
-                        fill="url(#grid)"
-                        pointerEvents="none"
-                      />
 
                       {/* Note: 맵 요소 */}
                       {mapElements?.map((element) => (
@@ -1102,7 +1105,7 @@ const ManagerSpaceEdit = (): JSX.Element => {
                           <DeleteIcon />
                           공간 삭제
                         </Styled.DeleteButton>
-                        <Button variant="primary">수정</Button>
+                        <Button variant="primary">저장</Button>
                       </Styled.FormSubmitContainer>
                     )}
                   </Styled.FormRow>
