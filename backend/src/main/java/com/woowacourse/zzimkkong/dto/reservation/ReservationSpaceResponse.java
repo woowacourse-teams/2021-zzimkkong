@@ -3,11 +3,13 @@ package com.woowacourse.zzimkkong.dto.reservation;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.woowacourse.zzimkkong.domain.Reservation;
 import com.woowacourse.zzimkkong.domain.Space;
+import lombok.Getter;
 
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+@Getter
 public class ReservationSpaceResponse {
     @JsonProperty
     private Long spaceId;
@@ -48,17 +50,5 @@ public class ReservationSpaceResponse {
                 space.getColor(),
                 reservations
         );
-    }
-
-    public Long getSpaceId() {
-        return spaceId;
-    }
-
-    public String getSpaceName() {
-        return spaceName;
-    }
-
-    public String getSpaceColor() {
-        return spaceColor;
     }
 }

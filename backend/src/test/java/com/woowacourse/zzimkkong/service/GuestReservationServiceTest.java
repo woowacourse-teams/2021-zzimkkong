@@ -21,7 +21,8 @@ import java.util.List;
 import java.util.Optional;
 
 import static com.woowacourse.zzimkkong.Constants.*;
-import static org.assertj.core.api.Assertions.*;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.BDDMockito.given;
@@ -58,7 +59,7 @@ class GuestReservationServiceTest extends ServiceTest {
         Member pobi = new Member(EMAIL, PASSWORD, ORGANIZATION);
         luther = new Map(1L, LUTHER_NAME, MAP_DRAWING_DATA, MAP_IMAGE_URL, pobi);
 
-        Setting beSetting = new Setting.Builder()
+        Setting beSetting = Setting.builder()
                 .availableStartTime(BE_AVAILABLE_START_TIME)
                 .availableEndTime(BE_AVAILABLE_END_TIME)
                 .reservationTimeUnit(BE_RESERVATION_TIME_UNIT)
@@ -68,7 +69,7 @@ class GuestReservationServiceTest extends ServiceTest {
                 .enabledDayOfWeek(BE_ENABLED_DAY_OF_WEEK)
                 .build();
 
-        be = new Space.Builder()
+        be = Space.builder()
                 .id(1L)
                 .name(BE_NAME)
                 .map(luther)
@@ -77,7 +78,7 @@ class GuestReservationServiceTest extends ServiceTest {
                 .setting(beSetting)
                 .build();
 
-        Setting feSetting = new Setting.Builder()
+        Setting feSetting = Setting.builder()
                 .availableStartTime(FE_AVAILABLE_START_TIME)
                 .availableEndTime(FE_AVAILABLE_END_TIME)
                 .reservationTimeUnit(FE_RESERVATION_TIME_UNIT)
@@ -87,7 +88,7 @@ class GuestReservationServiceTest extends ServiceTest {
                 .enabledDayOfWeek(FE_ENABLED_DAY_OF_WEEK)
                 .build();
 
-        fe = new Space.Builder()
+        fe = Space.builder()
                 .id(2L)
                 .name(FE_NAME)
                 .color(FE_COLOR)
@@ -97,7 +98,7 @@ class GuestReservationServiceTest extends ServiceTest {
                 .setting(feSetting)
                 .build();
 
-        beAmZeroOne = new Reservation.Builder()
+        beAmZeroOne = Reservation.builder()
                 .id(1L)
                 .startTime(BE_AM_TEN_ELEVEN_START_TIME)
                 .endTime(BE_AM_TEN_ELEVEN_END_TIME)
@@ -107,7 +108,7 @@ class GuestReservationServiceTest extends ServiceTest {
                 .space(be)
                 .build();
 
-        bePmOneTwo = new Reservation.Builder()
+        bePmOneTwo = Reservation.builder()
                 .id(2L)
                 .startTime(BE_PM_ONE_TWO_START_TIME)
                 .endTime(BE_PM_ONE_TWO_END_TIME)
@@ -326,7 +327,7 @@ class GuestReservationServiceTest extends ServiceTest {
     @DisplayName("예약 생성 요청 시, 예약이 불가능한 공간이면 에러를 반환한다.")
     void saveReservationUnable() {
         // given, when
-        Setting setting = new Setting.Builder()
+        Setting setting = Setting.builder()
                 .availableStartTime(LocalTime.of(0, 0))
                 .availableEndTime(LocalTime.of(18, 0))
                 .reservationTimeUnit(10)
@@ -336,7 +337,7 @@ class GuestReservationServiceTest extends ServiceTest {
                 .enabledDayOfWeek(null)
                 .build();
 
-        Space closedSpace = new Space.Builder()
+        Space closedSpace = Space.builder()
                 .id(3L)
                 .name("백엔드 강의실")
                 .color("#FED7D9")
@@ -361,7 +362,7 @@ class GuestReservationServiceTest extends ServiceTest {
     @DisplayName("예약 생성 요청 시, 예약이 불가능한 요일이면 에러를 반환한다.")
     void saveIllegalDayOfWeek() {
         // given, when
-        Setting setting = new Setting.Builder()
+        Setting setting = Setting.builder()
                 .availableStartTime(LocalTime.of(0, 0))
                 .availableEndTime(LocalTime.of(18, 0))
                 .reservationTimeUnit(10)
@@ -371,7 +372,7 @@ class GuestReservationServiceTest extends ServiceTest {
                 .enabledDayOfWeek(THE_DAY_AFTER_TOMORROW.plusDays(1L).getDayOfWeek().name())
                 .build();
 
-        Space invalidDayOfWeekSpace = new Space.Builder()
+        Space invalidDayOfWeekSpace = Space.builder()
                 .id(3L)
                 .name("불가능한 요일")
                 .color("#FED7D9")
@@ -851,7 +852,7 @@ class GuestReservationServiceTest extends ServiceTest {
     @DisplayName("예약 수정 요청 시, 예약이 불가능한 공간이면 에러를 반환한다.")
     void updateReservationUnable() {
         // given, when
-        Setting setting = new Setting.Builder()
+        Setting setting = Setting.builder()
                 .availableStartTime(LocalTime.of(0, 0))
                 .availableEndTime(LocalTime.of(18, 0))
                 .reservationTimeUnit(10)
@@ -861,7 +862,7 @@ class GuestReservationServiceTest extends ServiceTest {
                 .enabledDayOfWeek(null)
                 .build();
 
-        Space closedSpace = new Space.Builder()
+        Space closedSpace = Space.builder()
                 .id(3L)
                 .name("예약이 불가능한 공간")
                 .color("#FED7D9")
@@ -885,7 +886,7 @@ class GuestReservationServiceTest extends ServiceTest {
     @DisplayName("예약 수정 요청 시, 예약이 불가능한 요일이면 에러를 반환한다.")
     void updateIllegalDayOfWeek() {
         // given, when
-        Setting setting = new Setting.Builder()
+        Setting setting = Setting.builder()
                 .availableStartTime(LocalTime.of(0, 0))
                 .availableEndTime(LocalTime.of(18, 0))
                 .reservationTimeUnit(10)
@@ -895,7 +896,7 @@ class GuestReservationServiceTest extends ServiceTest {
                 .enabledDayOfWeek(THE_DAY_AFTER_TOMORROW.plusDays(1L).getDayOfWeek().name())
                 .build();
 
-        Space invalidDayOfWeekSpace = new Space.Builder()
+        Space invalidDayOfWeekSpace = Space.builder()
                 .id(3L)
                 .name("불가능한 요일")
                 .color("#FED7D9")
@@ -978,7 +979,7 @@ class GuestReservationServiceTest extends ServiceTest {
     }
 
     private Reservation makeReservation(final LocalDateTime startTime, final LocalDateTime endTime, final Space space) {
-        return new Reservation.Builder()
+        return Reservation.builder()
                 .id(3L)
                 .startTime(startTime)
                 .endTime(endTime)

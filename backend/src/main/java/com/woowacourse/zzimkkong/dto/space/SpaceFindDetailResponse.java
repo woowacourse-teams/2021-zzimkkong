@@ -1,7 +1,9 @@
 package com.woowacourse.zzimkkong.dto.space;
 
 import com.woowacourse.zzimkkong.domain.Space;
+import lombok.Getter;
 
+@Getter
 public class SpaceFindDetailResponse {
     private String name;
     private String color;
@@ -34,25 +36,5 @@ public class SpaceFindDetailResponse {
                 space.getDescription(),
                 space.getArea(),
                 settingResponse);
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public String getColor() {
-        return color;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public String getArea() {
-        return area;
-    }
-
-    public SettingResponse getSettings() {
-        return settings;
     }
 }

@@ -2,11 +2,13 @@ package com.woowacourse.zzimkkong.dto.reservation;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.woowacourse.zzimkkong.domain.Reservation;
+import lombok.Getter;
 
 import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
+@Getter
 public class ReservationFindResponse {
     @JsonProperty
     private List<ReservationResponse> reservations;

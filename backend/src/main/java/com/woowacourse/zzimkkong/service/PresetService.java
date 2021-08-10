@@ -25,7 +25,7 @@ public class PresetService {
 
     public PresetCreateResponse savePreset(final PresetCreateRequest presetCreateRequest, final Member manager) {
         SettingsRequest settingsRequest = presetCreateRequest.getSettingsRequest();
-        Setting setting = new Setting.Builder()
+        Setting setting = Setting.builder()
                 .availableStartTime(settingsRequest.getAvailableStartTime())
                 .availableEndTime(settingsRequest.getAvailableEndTime())
                 .reservationTimeUnit(settingsRequest.getReservationTimeUnit())

@@ -34,7 +34,7 @@ class MemberTest {
     void findPresetById() {
         //given, when
         Member member = new Member(1L, EMAIL, PASSWORD, ORGANIZATION);
-        Setting setting = new Setting.Builder()
+        Setting setting = Setting.builder()
                 .availableStartTime(BE_AVAILABLE_START_TIME)
                 .availableEndTime(BE_AVAILABLE_END_TIME)
                 .reservationTimeUnit(BE_RESERVATION_TIME_UNIT)
