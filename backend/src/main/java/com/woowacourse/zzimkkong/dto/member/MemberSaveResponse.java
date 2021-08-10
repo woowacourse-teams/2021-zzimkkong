@@ -1,7 +1,9 @@
 package com.woowacourse.zzimkkong.dto.member;
 
 import com.woowacourse.zzimkkong.domain.Member;
+import lombok.Getter;
 
+@Getter
 public class MemberSaveResponse {
     private Long id;
 
@@ -14,9 +16,5 @@ public class MemberSaveResponse {
 
     public static MemberSaveResponse from(final Member member) {
         return new MemberSaveResponse(member.getId());
-    }
-
-    public Long getId() {
-        return id;
     }
 }

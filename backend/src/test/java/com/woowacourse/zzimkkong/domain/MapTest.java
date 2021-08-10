@@ -14,7 +14,7 @@ class MapTest {
         Map luther = new Map(LUTHER_NAME, MAP_DRAWING_DATA, MAP_IMAGE_URL, pobi);
 
         assertThat(luther.getSpaces().size()).isZero();
-        new Space.Builder()
+        Space.builder()
                 .map(luther)
                 .build();
         assertThat(luther.getSpaces().size()).isEqualTo(1);

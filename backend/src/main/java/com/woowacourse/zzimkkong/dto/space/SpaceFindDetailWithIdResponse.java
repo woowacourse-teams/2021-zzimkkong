@@ -2,7 +2,9 @@ package com.woowacourse.zzimkkong.dto.space;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.woowacourse.zzimkkong.domain.Space;
+import lombok.Getter;
 
+@Getter
 public class SpaceFindDetailWithIdResponse extends SpaceFindDetailResponse {
     @JsonProperty
     private Long id;
@@ -31,9 +33,5 @@ public class SpaceFindDetailWithIdResponse extends SpaceFindDetailResponse {
                 space.getArea(),
                 settingResponse,
                 space.getId());
-    }
-
-    public Long getId() {
-        return id;
     }
 }

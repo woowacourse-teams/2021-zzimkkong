@@ -1,11 +1,14 @@
 package com.woowacourse.zzimkkong.dto.reservation;
 
+import lombok.Getter;
+
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Pattern;
 import java.time.LocalDateTime;
 
 import static com.woowacourse.zzimkkong.dto.ValidatorMessage.*;
 
+@Getter
 public class ReservationCreateUpdateWithPasswordRequest extends ReservationCreateUpdateRequest {
     @NotBlank(message = EMPTY_MESSAGE)
     @Pattern(regexp = RESERVATION_PASSWORD_FORMAT, message = RESERVATION_PASSWORD_MESSAGE)
@@ -22,9 +25,5 @@ public class ReservationCreateUpdateWithPasswordRequest extends ReservationCreat
             final String description) {
         super(startDateTime, endDateTime, name, description);
         this.password = password;
-    }
-
-    public String getPassword() {
-        return password;
     }
 }
