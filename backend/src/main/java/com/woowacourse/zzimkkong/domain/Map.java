@@ -1,6 +1,7 @@
 package com.woowacourse.zzimkkong.domain;
 
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import java.util.ArrayList;
@@ -9,6 +10,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Getter
+@NoArgsConstructor
 @Entity
 public class Map {
     @Id
@@ -32,9 +34,6 @@ public class Map {
 
     @OneToMany(mappedBy = "map", cascade = CascadeType.REMOVE, fetch = FetchType.EAGER)
     private List<Space> spaces = new ArrayList<>();
-
-    protected Map() {
-    }
 
     public Map(final String name, final String mapDrawing, final String mapImageUrl, final Member member) {
         this.name = name;

@@ -2,12 +2,14 @@ package com.woowacourse.zzimkkong.domain;
 
 import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
 
 @Getter
 @Builder
+@NoArgsConstructor
 @Entity
 public class Reservation {
     @Id
@@ -32,9 +34,6 @@ public class Reservation {
     @ManyToOne
     @JoinColumn(name = "space_id", foreignKey = @ForeignKey(name = "fk_reservation_space"), nullable = false)
     private Space space;
-
-    protected Reservation() {
-    }
 
     protected Reservation(
             final Long id,
