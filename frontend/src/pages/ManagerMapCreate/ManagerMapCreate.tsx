@@ -20,6 +20,7 @@ import { ReactComponent as PolylineIcon } from 'assets/svg/polyline.svg';
 import { ReactComponent as SelectIcon } from 'assets/svg/select.svg';
 import Button from 'components/Button/Button';
 import ColorPicker from 'components/ColorPicker/ColorPicker';
+import ColorPickerIcon from 'components/ColorPicker/ColorPickerIcon';
 import Header from 'components/Header/Header';
 import Layout from 'components/Layout/Layout';
 import { BOARD } from 'constants/editor';
@@ -395,12 +396,6 @@ const ManagerMapCreate = (): JSX.Element => {
     }
   };
 
-  const handleColorPicker: MouseEventHandler<HTMLButtonElement> = (event) => {
-    if (event.target === event.currentTarget) {
-      setColorPickerOpen(!colorPickerOpen);
-    }
-  };
-
   useEffect(() => {
     const editorWidth = editorRef.current ? editorRef.current.offsetWidth : 0;
     const editorHeight = editorRef.current ? editorRef.current.offsetHeight : 0;
@@ -499,15 +494,16 @@ const ManagerMapCreate = (): JSX.Element => {
               >
                 <ItemsIcon />
               </Styled.ToolbarButton>
-              <Styled.ToolbarButton text="색상선택" onClick={handleColorPicker}>
-                <ColorPicker
-                  open={colorPickerOpen}
-                  color={color}
-                  setColor={setColor}
-                  setOpen={setColorPickerOpen}
-                />
+              <Styled.ToolbarButton
+                text="색상선택"
+                onClick={() => setColorPickerOpen(!colorPickerOpen)}
+              >
+                <ColorPickerIcon color={color} />
               </Styled.ToolbarButton>
             </Styled.Toolbar>
+            <Styled.ColorPickerWrapper>
+              <ColorPicker open={colorPickerOpen} color={color} setColor={setColor} />
+            </Styled.ColorPickerWrapper>
             <Styled.Editor ref={editorRef}>
               <Styled.BoardContainer
                 xmlns="http://www.w3.org/2000/svg"
@@ -566,6 +562,7 @@ const ManagerMapCreate = (): JSX.Element => {
                   <g
                     id="board"
                     transform={`matrix(${board.scale}, 0, 0, ${board.scale}, ${board.x}, ${board.y})`}
+                    onClickCapture={handleClickBoard}
                     onMouseEnter={() => setStickyPointerView(true)}
                     onMouseLeave={() => setStickyPointerView(false)}
                   >

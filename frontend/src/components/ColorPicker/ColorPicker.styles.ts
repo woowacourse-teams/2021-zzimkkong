@@ -1,37 +1,18 @@
 import styled from 'styled-components';
 
-interface PickerWrapperProps {
+interface ContainerProps {
   open: boolean;
 }
 
-interface PickerIconProps {
-  color: string;
-}
-
-export const Container = styled.div`
-  display: flex;
-`;
-
-export const PickerWrapper = styled.div<PickerWrapperProps>`
+export const Container = styled.div<ContainerProps>`
   display: ${({ open }) => (open ? 'flex' : 'none')};
   flex-wrap: wrap;
   gap: 0.75rem;
-  position: absolute;
-  width: 10rem;
+  width: 9.875rem;
+  height: 7.5rem;
   border: 1px solid ${({ theme }) => theme.gray[400]};
   padding: 0.75rem;
-  margin-top: -0.75rem;
-  margin-left: 2.875rem;
   background-color: ${({ theme }) => theme.white};
-`;
-
-export const PickerIcon = styled.div<PickerIconProps>`
-  width: 1.5rem;
-  height: 1.5rem;
-  border: 1px solid ${({ color }) => color};
-  border-radius: 50%;
-  cursor: pointer;
-  background-color: ${({ color }) => color};
 `;
 
 export const InputWrapper = styled.div`

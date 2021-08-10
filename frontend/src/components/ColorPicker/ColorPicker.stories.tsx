@@ -9,4 +9,6 @@ export default {
 const Template: Story<Props> = (args) => <ColorPicker {...args} />;
 
 export const Default = Template.bind({});
-Default.args = {};
+Default.args = {
+  open: true,
+};

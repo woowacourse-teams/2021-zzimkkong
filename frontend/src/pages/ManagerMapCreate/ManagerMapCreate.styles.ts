@@ -136,6 +136,12 @@ export const InputWrapper = styled.div`
   margin: 0 0.25rem;
 `;
 
+export const ColorPickerWrapper = styled.div`
+  position: absolute;
+  left: 5.25rem;
+  top: 32rem;
+`;
+
 export const SizeInput = styled(Input)`
   border: 0;
   border-bottom: 2px solid ${({ theme }) => theme.gray[400]};
