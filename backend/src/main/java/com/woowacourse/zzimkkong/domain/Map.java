@@ -1,11 +1,14 @@
 package com.woowacourse.zzimkkong.domain;
 
+import lombok.Getter;
+
 import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
+@Getter
 @Entity
 public class Map {
     @Id
@@ -71,26 +74,6 @@ public class Map {
 
     public void addSpace(final Space space) {
         spaces.add(space);
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public Member getMember() {
-        return member;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public String getMapDrawing() {
-        return mapDrawing;
-    }
-
-    public String getMapImageUrl() {
-        return mapImageUrl;
     }
 
     public List<Space> getSpaces() {

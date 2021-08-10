@@ -1,9 +1,12 @@
 package com.woowacourse.zzimkkong.domain;
 
+import lombok.Getter;
+
 import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 
+@Getter
 @Entity
 public class Reservation {
     @Id
@@ -128,33 +131,5 @@ public class Reservation {
 
     public boolean isWrongPassword(final String password) {
         return !this.password.equals(password);
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public LocalDateTime getStartTime() {
-        return startTime;
-    }
-
-    public LocalDateTime getEndTime() {
-        return endTime;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public String getUserName() {
-        return userName;
-    }
-
-    public Space getSpace() {
-        return space;
     }
 }

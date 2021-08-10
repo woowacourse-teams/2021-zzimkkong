@@ -1,9 +1,12 @@
 package com.woowacourse.zzimkkong.domain;
 
+import lombok.Getter;
+
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
 import java.time.LocalTime;
 
+@Getter
 @Embeddable
 public class Setting {
     @Column(nullable = false)
@@ -38,34 +41,6 @@ public class Setting {
         this.reservationMaximumTimeUnit = builder.reservationMaximumTimeUnit;
         this.reservationEnable = builder.reservationEnable;
         this.enabledDayOfWeek = builder.enabledDayOfWeek;
-    }
-
-    public LocalTime getAvailableStartTime() {
-        return availableStartTime;
-    }
-
-    public LocalTime getAvailableEndTime() {
-        return availableEndTime;
-    }
-
-    public Integer getReservationTimeUnit() {
-        return reservationTimeUnit;
-    }
-
-    public Integer getReservationMinimumTimeUnit() {
-        return reservationMinimumTimeUnit;
-    }
-
-    public Integer getReservationMaximumTimeUnit() {
-        return reservationMaximumTimeUnit;
-    }
-
-    public Boolean getReservationEnable() {
-        return reservationEnable;
-    }
-
-    public String getEnabledDayOfWeek() {
-        return enabledDayOfWeek;
     }
 
     public static class Builder {

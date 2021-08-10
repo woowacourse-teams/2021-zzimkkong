@@ -1,6 +1,7 @@
 package com.woowacourse.zzimkkong.domain;
 
 import com.woowacourse.zzimkkong.exception.space.NoSuchDayOfWeekException;
+import lombok.Getter;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
 
@@ -13,6 +14,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
+@Getter
 @DynamicInsert
 @DynamicUpdate
 @Entity
@@ -120,26 +122,6 @@ public class Space {
         return id.equals(spaceId);
     }
 
-    public Long getId() {
-        return id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public String getColor() {
-        return color;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public String getArea() {
-        return area;
-    }
-
     public LocalTime getAvailableEndTime() {
         return setting.getAvailableEndTime();
     }
@@ -166,10 +148,6 @@ public class Space {
 
     public String getEnabledDayOfWeek() {
         return setting.getEnabledDayOfWeek();
-    }
-
-    public Map getMap() {
-        return map;
     }
 
     public static class Builder {
