@@ -57,6 +57,8 @@ test {
     outputs.dir snippetsDir
     useJUnitPlatform()
     jacoco {
+//        excludes = [']
+//                "**/DataLoader", "*.exception.*", "*.slack.*", "**/Config.*", "**/ZzimkkongApplication.*", "*.Advice.*"]
         destinationFile = file("$buildDir/jacoco/jacoco.exec")
     }
 
@@ -94,7 +96,11 @@ jacocoTestReport {
 jacocoTestCoverageVerification {
     violationRules {
         rule {
-            element = 'BUNDLE'
+            element = 'CLASS'
+            excludes = ["**.exception.**", "**.ControllerAdvice", "**.ErrorResponse", "**.ValidatorMessage",
+                    "**.ZzimkkongApplication", "**.*TimeConverter", "**.DataLoader", "**.*Config",
+                        "**.slack.**", "**.Slack*"]
+            //패키지 분리하면 더 멋있게 해보겠슴,,
 
             limit {
                 counter = 'BRANCH'
@@ -107,17 +113,11 @@ jacocoTestCoverageVerification {
                 value = 'COVEREDRATIO'
                 minimum = 0.79
             }
-
-            limit {
-                counter = 'LINE'
-                value = 'COVEREDRATIO'
-                minimum = 0.78
-            }
         }
     }
 }
 
-project.tasks["jacocoTestCoverageVerification"].finalizedBy "sonarqube"
+//project.tasks["jacocoTestCoverageVerification"].finalizedBy "sonarqube"
 sonarqube {
     def sonarProperties = new Properties()
     sonarProperties.load(new FileInputStream(file("src/main/resources/config/sonar.properties")))
