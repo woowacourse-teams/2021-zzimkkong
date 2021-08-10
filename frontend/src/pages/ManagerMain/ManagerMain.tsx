@@ -13,6 +13,7 @@ import Header from 'components/Header/Header';
 import IconButton from 'components/IconButton/IconButton';
 import Layout from 'components/Layout/Layout';
 import MapListItem from 'components/MapListItem/MapListItem';
+import PageHeader from 'components/PageHeader/PageHeader';
 import Panel from 'components/Panel/Panel';
 import ReservationListItem from 'components/ReservationListItem/ReservationListItem';
 import MESSAGE from 'constants/message';
@@ -109,15 +110,19 @@ const ManagerMain = (): JSX.Element => {
     <>
       <Header />
       <Layout>
-        <Styled.PageHeader>
-          <IconButton text="맵 목록" onClick={handleOpenDrawer}>
-            <MenuIcon width="100%" height="100%" />
-          </IconButton>
-          <Styled.PageTitle>{selectedMapName}</Styled.PageTitle>
-          <IconButton text="공유 링크" onClick={handleCopyLink}>
-            <Styled.PrimaryLinkIcon width="100%" height="100%" />
-          </IconButton>
-        </Styled.PageHeader>
+        <PageHeader
+          title={selectedMapName}
+          leftButtons={
+            <IconButton text="맵 목록" onClick={handleOpenDrawer}>
+              <MenuIcon width="100%" height="100%" />
+            </IconButton>
+          }
+          rightButtons={
+            <IconButton text="공유 링크" onClick={handleCopyLink}>
+              <Styled.PrimaryLinkIcon width="100%" height="100%" />
+            </IconButton>
+          }
+        />
         <Styled.DateInputWrapper>
           <DateInput date={date} setDate={setDate} />
         </Styled.DateInputWrapper>
