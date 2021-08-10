@@ -56,4 +56,8 @@ public class ReservationCreateUpdateRequest {
     public String getDescription() {
         return description;
     }
+
+    public String getPassword() {
+        return null;
+    }
 }

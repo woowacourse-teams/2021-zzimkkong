@@ -16,7 +16,7 @@ public class ReservationFindDto extends ReservationFindAllDto {
     }
 
     public static ReservationFindDto of(final Long mapId, final Long spaceId, final LocalDate date) {
-        return new ReservationFindDto(mapId, spaceId, date, null);
+        return new ReservationFindDto(mapId, spaceId, date, new Member());
     }
 
     public static ReservationFindDto of(final Long mapId, final Long spaceId, final LocalDate date, final Member manager) {

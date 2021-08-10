@@ -1,9 +1,9 @@
 package com.woowacourse.zzimkkong.controller;
 
 import com.woowacourse.zzimkkong.dto.reservation.*;
-import com.woowacourse.zzimkkong.infrastructure.GuestReservationCallback;
 import com.woowacourse.zzimkkong.service.GuestReservationService;
 import com.woowacourse.zzimkkong.service.ReservationService2;
+import com.woowacourse.zzimkkong.service.callback.GuestReservationCallback;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -23,11 +23,10 @@ public class GuestReservationController {
 
     public GuestReservationController(
             final GuestReservationService reservationService,
-            final ReservationService2 reservationService2,
-            final GuestReservationCallback guestCallback) {
+            final ReservationService2 reservationService2) {
         this.reservationService = reservationService;
         this.reservationService2 = reservationService2;
-        this.guestCallback = guestCallback;
+        this.guestCallback = new GuestReservationCallback();
     }
 
     @PostMapping("/{spaceId}/reservations")
@@ -76,11 +75,12 @@ public class GuestReservationController {
             @PathVariable final Long spaceId,
             @PathVariable final Long reservationId,
             @RequestBody @Valid final ReservationPasswordAuthenticationRequest reservationPasswordAuthenticationRequest) {
-        ReservationResponse reservationResponse = reservationService.findReservation(
+        ReservationAuthenticationDto reservationAuthenticationDto = ReservationAuthenticationDto.of(
                 mapId,
                 spaceId,
                 reservationId,
                 reservationPasswordAuthenticationRequest);
+        ReservationResponse reservationResponse = reservationService2.findReservation(reservationAuthenticationDto, guestCallback);
         return ResponseEntity.ok().body(reservationResponse);
     }
 
@@ -90,11 +90,13 @@ public class GuestReservationController {
             @PathVariable final Long spaceId,
             @PathVariable final Long reservationId,
             @RequestBody @Valid final ReservationCreateUpdateWithPasswordRequest reservationCreateUpdateWithPasswordRequest) {
-        reservationService.updateReservation(
+        ReservationUpdateDto reservationUpdateDto = ReservationUpdateDto.of(
                 mapId,
                 spaceId,
                 reservationId,
-                reservationCreateUpdateWithPasswordRequest);
+                reservationCreateUpdateWithPasswordRequest
+        );
+        reservationService2.updateReservation(reservationUpdateDto, guestCallback);
         return ResponseEntity.ok().build();
     }
 

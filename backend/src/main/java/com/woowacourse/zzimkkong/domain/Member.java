@@ -23,7 +23,7 @@ public class Member {
     @OneToMany(mappedBy = "member", cascade = CascadeType.REMOVE)
     private List<Preset> presets = new ArrayList<>();
 
-    protected Member() {
+    public Member() {
     }
 
     public Member(

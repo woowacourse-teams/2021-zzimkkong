@@ -31,7 +31,7 @@ public class ReservationFindAllDto {
     public static ReservationFindAllDto of(
             final Long mapId,
             final LocalDate date) {
-        return new ReservationFindAllDto(mapId, date, null);
+        return new ReservationFindAllDto(mapId, date, new Member());
     }
 
     public Long getMapId() {

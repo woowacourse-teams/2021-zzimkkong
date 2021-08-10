@@ -2,19 +2,21 @@ package com.woowacourse.zzimkkong.dto.reservation;
 
 import com.woowacourse.zzimkkong.domain.Member;
 
+import java.time.LocalDateTime;
+
 public class ReservationCreateDto {
-    private Long mapId;
-    private Long spaceId;
-    private ReservationCreateUpdateWithPasswordRequest request;
-    private Member manager;
+    protected Long mapId;
+    protected Long spaceId;
+    protected ReservationCreateUpdateRequest request;
+    protected Member manager;
 
     public ReservationCreateDto() {
     }
 
-    private ReservationCreateDto(
+    protected ReservationCreateDto(
             final Long mapId,
             final Long spaceId,
-            final ReservationCreateUpdateWithPasswordRequest request,
+            final ReservationCreateUpdateRequest request,
             final Member manager) {
         this.mapId = mapId;
         this.spaceId = spaceId;
@@ -25,16 +27,24 @@ public class ReservationCreateDto {
     public static ReservationCreateDto of(
             final Long mapId,
             final Long spaceId,
-            final ReservationCreateUpdateWithPasswordRequest reservationCreateUpdateWithPasswordRequest) {
-        return new ReservationCreateDto(mapId, spaceId, reservationCreateUpdateWithPasswordRequest, null);
+            final ReservationCreateUpdateRequest reservationCreateUpdateWithPasswordRequest) {
+        return new ReservationCreateDto(
+                mapId,
+                spaceId,
+                reservationCreateUpdateWithPasswordRequest,
+                new Member());
     }
 
     public static ReservationCreateDto of(
             final Long mapId,
             final Long spaceId,
-            final ReservationCreateUpdateWithPasswordRequest reservationCreateUpdateWithPasswordRequest,
+            final ReservationCreateUpdateRequest reservationCreateUpdateWithPasswordRequest,
             final Member manager) {
-        return new ReservationCreateDto(mapId, spaceId, reservationCreateUpdateWithPasswordRequest, manager);
+        return new ReservationCreateDto(
+                mapId,
+                spaceId,
+                reservationCreateUpdateWithPasswordRequest,
+                manager);
     }
 
     public Long getMapId() {
@@ -45,11 +55,27 @@ public class ReservationCreateDto {
         return spaceId;
     }
 
-    public ReservationCreateUpdateWithPasswordRequest getRequest() {
-        return request;
-    }
-
     public Member getManager() {
         return manager;
+    }
+
+    public LocalDateTime getStartDateTime() {
+        return request.getStartDateTime();
+    }
+
+    public LocalDateTime getEndDateTime() {
+        return request.getEndDateTime();
+    }
+
+    public String getPassword() {
+        return request.getPassword();
+    }
+
+    public String getName() {
+        return request.getName();
+    }
+
+    public String getDescription() {
+        return request.getDescription();
     }
 }

@@ -4,10 +4,10 @@ import com.woowacourse.zzimkkong.domain.Manager;
 import com.woowacourse.zzimkkong.domain.Member;
 import com.woowacourse.zzimkkong.dto.reservation.*;
 import com.woowacourse.zzimkkong.dto.slack.SlackResponse;
-import com.woowacourse.zzimkkong.infrastructure.ManagerReservationCallback;
 import com.woowacourse.zzimkkong.service.ManagerReservationService;
 import com.woowacourse.zzimkkong.service.ReservationService2;
 import com.woowacourse.zzimkkong.service.SlackService;
+import com.woowacourse.zzimkkong.service.callback.ManagerReservationCallback;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -29,12 +29,11 @@ public class ManagerReservationController {
     public ManagerReservationController(
             final ManagerReservationService reservationService,
             final SlackService slackService,
-            final ReservationService2 reservationService2,
-            final ManagerReservationCallback managerCallback) {
+            final ReservationService2 reservationService2) {
         this.reservationService = reservationService;
         this.slackService = slackService;
         this.reservationService2 = reservationService2;
-        this.managerCallback = managerCallback;
+        this.managerCallback = new ManagerReservationCallback();
     }
 
     @PostMapping("/{spaceId}/reservations")
@@ -89,11 +88,12 @@ public class ManagerReservationController {
             @PathVariable final Long spaceId,
             @PathVariable final Long reservationId,
             @Manager final Member manager) {
-        ReservationResponse reservationResponse = reservationService.findReservation(
+        ReservationAuthenticationDto reservationAuthenticationDto = ReservationAuthenticationDto.of(
                 mapId,
                 spaceId,
                 reservationId,
                 manager);
+        ReservationResponse reservationResponse = reservationService2.findReservation(reservationAuthenticationDto, managerCallback);
         return ResponseEntity.ok().body(reservationResponse);
     }
 
@@ -104,12 +104,14 @@ public class ManagerReservationController {
             @PathVariable final Long reservationId,
             @RequestBody @Valid final ReservationCreateUpdateRequest reservationCreateUpdateRequest,
             @Manager final Member manager) {
-        SlackResponse slackResponse = reservationService.updateReservation(
+        ReservationUpdateDto reservationUpdateDto = ReservationUpdateDto.of(
                 mapId,
                 spaceId,
                 reservationId,
                 reservationCreateUpdateRequest,
-                manager);
+                manager
+        );
+        SlackResponse slackResponse = reservationService2.updateReservation(reservationUpdateDto, managerCallback);
         slackService.sendUpdateMessage(slackResponse);
         return ResponseEntity.ok().build();
     }
