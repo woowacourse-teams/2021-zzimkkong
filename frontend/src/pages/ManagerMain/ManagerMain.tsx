@@ -25,7 +25,7 @@ import * as Styled from './ManagerMain.styles';
 const ManagerMain = (): JSX.Element => {
   const [date, setDate] = useState(new Date());
   const [open, setOpen] = useState(false);
-  const [selectedMapId, setSelectedMapId] = useState(0);
+  const [selectedMapId, setSelectedMapId] = useState<number | undefined>(undefined);
   const [selectedMapName, setSelectedMapName] = useState('');
 
   const onRequestError = (error: AxiosError<ErrorResponse>) => {
@@ -81,7 +81,7 @@ const ManagerMain = (): JSX.Element => {
   };
 
   useEffect(() => {
-    setSelectedMapId(maps.length ? maps[0].mapId : 0);
+    setSelectedMapId(maps.length ? maps[0].mapId : undefined);
     setSelectedMapName(maps.length ? maps[0].mapName : '');
   }, [maps]);
 
@@ -110,16 +110,16 @@ const ManagerMain = (): JSX.Element => {
 
         {!getReservations.isLoading &&
           !reservations.length &&
-          (selectedMapId ? (
+          (selectedMapId === undefined ? (
+            <Styled.NoticeWrapper>
+              <Styled.NoticeMessage>생성한 맵이 없습니다.</Styled.NoticeMessage>
+              <Styled.NoticeLink to={PATH.MANAGER_MAP_CREATE}>맵 생성하러 가기</Styled.NoticeLink>
+            </Styled.NoticeWrapper>
+          ) : (
             <Styled.NoticeWrapper>
               <Styled.NoticeMessage>생성한 공간이 없습니다.</Styled.NoticeMessage>
               {/* 공간 편집 페이지 완성되면 링크 바꿔야 함 */}
               <Styled.NoticeLink to={PATH.MANAGER_MAP_CREATE}>공간 생성하러 가기</Styled.NoticeLink>
-            </Styled.NoticeWrapper>
-          ) : (
-            <Styled.NoticeWrapper>
-              <Styled.NoticeMessage>생성한 맵이 없습니다.</Styled.NoticeMessage>
-              <Styled.NoticeLink to={PATH.MANAGER_MAP_CREATE}>맵 생성하러 가기</Styled.NoticeLink>
             </Styled.NoticeWrapper>
           ))}
 
