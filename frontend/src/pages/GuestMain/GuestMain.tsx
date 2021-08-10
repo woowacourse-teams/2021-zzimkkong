@@ -1,5 +1,5 @@
 import { AxiosError } from 'axios';
-import { FormEventHandler, useState } from 'react';
+import { FormEventHandler, useEffect, useRef, useState } from 'react';
 import { useMutation } from 'react-query';
 import { useHistory, useLocation } from 'react-router-dom';
 import { deleteReservation } from 'api/reservation';
@@ -20,7 +20,7 @@ import MESSAGE from 'constants/message';
 import PATH from 'constants/path';
 import useInput from 'hooks/useInput';
 import useReservations from 'hooks/useReservations';
-import { Reservation, Space } from 'types/common';
+import { Reservation, ScrollPosition, Space } from 'types/common';
 import { ErrorResponse } from 'types/response';
 import { formatDate } from 'utils/datetime';
 import * as Styled from './GuestMain.styles';
@@ -29,6 +29,7 @@ import spaceList from './spaceList';
 export interface GuestMainState {
   spaceId?: Space['spaceId'];
   targetDate?: Date;
+  scrollPosition?: ScrollPosition;
 }
 
 const GuestMain = (): JSX.Element => {
@@ -41,16 +42,27 @@ const GuestMain = (): JSX.Element => {
 
   const [passwordInput, onChangePasswordInput] = useInput('');
 
+  const mapRef = useRef<HTMLDivElement | null>(null);
+
   const history = useHistory();
   const location = useLocation<GuestMainState>();
   const spaceId = Number(location.state?.spaceId);
   const targetDate = location.state?.targetDate;
+  const scrollPosition = location.state?.scrollPosition;
 
   const now = new Date();
   const todayDate = new Date(now.getFullYear(), now.getMonth(), now.getDate());
 
   const [date, setDate] = useState(targetDate ? new Date(targetDate) : new Date());
-  const [selectedSpaceId, onChangeSelectedSpaceId] = useInput(`${spaceId ?? spaceList[0].spaceId}`);
+
+  const [mapScrollPosition, setMapScrollPosition] = useState<ScrollPosition>({
+    x: 0,
+    y: 0,
+  });
+
+  const [selectedSpaceId, onChangeSelectedSpaceId, setSelectedSpaceId] = useInput(
+    `${spaceId ?? spaceList[0].spaceId}`
+  );
   const getReservations = useReservations({
     mapId,
     spaceId: Number(selectedSpaceId),
@@ -108,6 +120,27 @@ const GuestMain = (): JSX.Element => {
     });
   };
 
+  const handleMapScroll = () => {
+    setMapScrollPosition({
+      x: mapRef?.current?.scrollLeft,
+      y: mapRef?.current?.scrollTop,
+    });
+  };
+
+  useEffect(() => {
+    setDate(targetDate ? new Date(targetDate) : new Date());
+  }, [targetDate]);
+
+  useEffect(() => {
+    setSelectedSpaceId(String(spaceId));
+  }, [setSelectedSpaceId, spaceId]);
+
+  useEffect(() => {
+    if (!scrollPosition) return;
+
+    mapRef?.current?.scrollTo(scrollPosition.x ?? 0, scrollPosition.y ?? 0);
+  }, [scrollPosition]);
+
   return (
     <>
       <Header />
@@ -115,7 +148,7 @@ const GuestMain = (): JSX.Element => {
         <Styled.PageWithBottomButton hasBottomButton={reservationAvailable}>
           <Styled.PageTitle>우아한테크코스 교육장</Styled.PageTitle>
           <DateInput date={date} setDate={setDate} />
-          <Styled.MapContainer>
+          <Styled.MapContainer ref={mapRef} onScroll={handleMapScroll}>
             <Styled.MapItem>
               {spaceList?.map(({ spaceId, spaceName, coordinate, textPosition }) => (
                 <PinRadio
@@ -185,6 +218,7 @@ const GuestMain = (): JSX.Element => {
                 spaceId: Number(selectedSpaceId),
                 spaceName: selectedSpace.spaceName,
                 selectedDate: formatDate(date),
+                scrollPosition: mapScrollPosition,
               },
             }}
           >
