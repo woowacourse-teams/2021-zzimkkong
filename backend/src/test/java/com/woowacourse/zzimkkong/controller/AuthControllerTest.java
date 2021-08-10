@@ -37,7 +37,7 @@ class AuthControllerTest extends AcceptanceTest {
     void validToken() {
         // given
         saveMember(memberSaveRequest);
-        String accessToken = getToken();
+        String accessToken = AuthorizationExtractor.AUTHENTICATION_TYPE + " " + getToken();
 
         //when
         ExtractableResponse<Response> response = token(accessToken, "success");
@@ -77,11 +77,11 @@ class AuthControllerTest extends AcceptanceTest {
                 .then().log().all().extract();
     }
 
-    private ExtractableResponse<Response> token(String token, String docName) {
+    private ExtractableResponse<Response> token(final String token, final String docName) {
         return RestAssured
                 .given(getRequestSpecification()).log().all()
                 .accept("application/json")
-                .header("Authorization", AuthorizationExtractor.AUTHENTICATION_TYPE + " " + token)
+                .header("Authorization", token)
                 .filter(document("member/token/" + docName, getRequestPreprocessor(), getResponsePreprocessor()))
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .when().post("/api/members/token")
