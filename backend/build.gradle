@@ -51,6 +51,10 @@ dependencies {
 
     //cryptor
     implementation 'commons-codec:commons-codec:1.15'
+
+    // lombok
+    compileOnly 'org.projectlombok:lombok'
+    annotationProcessor 'org.projectlombok:lombok'
 }
 
 test {
