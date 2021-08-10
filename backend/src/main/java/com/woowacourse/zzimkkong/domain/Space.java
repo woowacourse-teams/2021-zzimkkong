@@ -38,13 +38,6 @@ public class Space {
     @Embedded
     private Setting setting;
 
-    // TODO: map Editor 구현되면 column 삭제
-    @Column(nullable = true, length = 6)
-    private String textPosition;
-
-    @Column(nullable = true)
-    private String coordinate;
-
     @ManyToOne
     @JoinColumn(name = "map_id", foreignKey = @ForeignKey(name = "fk_space_map"), nullable = false)
     private Map map;
@@ -59,8 +52,6 @@ public class Space {
         this.description = builder.description;
         this.area = builder.area;
         this.setting = builder.setting;
-        this.textPosition = builder.textPosition;
-        this.coordinate = builder.coordinate;
         this.map = builder.map;
 
         if (map != null) {
@@ -149,14 +140,6 @@ public class Space {
         return area;
     }
 
-    public String getTextPosition() {
-        return textPosition;
-    }
-
-    public String getCoordinate() {
-        return coordinate;
-    }
-
     public LocalTime getAvailableEndTime() {
         return setting.getAvailableEndTime();
     }
@@ -192,9 +175,7 @@ public class Space {
     public static class Builder {
         private Long id = null;
         private String name = null;
-        private String textPosition = null;
         private String color = null;
-        private String coordinate = null;
         private Map map = null;
         private String description = null;
         private String area = null;
@@ -230,16 +211,6 @@ public class Space {
 
         public Space.Builder setting(final Setting inputSetting) {
             setting = inputSetting;
-            return this;
-        }
-
-        public Space.Builder textPosition(final String inputTextPosition) {
-            textPosition = inputTextPosition;
-            return this;
-        }
-
-        public Space.Builder coordinate(final String inputCoordinate) {
-            coordinate = inputCoordinate;
             return this;
         }
 
