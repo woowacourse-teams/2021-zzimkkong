@@ -6,7 +6,6 @@ public class MemberSaveResponse {
     private Long id;
 
     public MemberSaveResponse() {
-
     }
 
     private MemberSaveResponse(final Long id) {

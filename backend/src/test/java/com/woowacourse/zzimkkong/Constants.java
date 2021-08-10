@@ -50,6 +50,7 @@ public class Constants {
     public static final String FE_DESCRIPTION = "시니컬하네";
 
     public static final String PRESET_NAME1 = "프리셋1";
+    public static final String PRESET_NAME2 = "프리셋2";
 
     public static final LocalDateTime BE_AM_TEN_ELEVEN_START_TIME = THE_DAY_AFTER_TOMORROW.atTime(10,0);
     public static final LocalDateTime BE_AM_TEN_ELEVEN_END_TIME = THE_DAY_AFTER_TOMORROW.atTime(11,0);

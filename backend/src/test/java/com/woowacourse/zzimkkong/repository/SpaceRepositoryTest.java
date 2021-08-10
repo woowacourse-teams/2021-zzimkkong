@@ -75,18 +75,4 @@ class SpaceRepositoryTest extends RepositoryTest {
         assertThat(savedSpace.getId()).isNotNull();
         assertThat(savedSpace).isEqualTo(be);
     }
-
-    @Test
-    @DisplayName("맵의 Id를 이용해 모든 공간을 찾아온다.")
-    void findAllByMapId() {
-        // given
-        spaces.save(be);
-        spaces.save(fe);
-
-        // when
-        List<Space> actual = spaces.findAllByMapId(luther.getId());
-
-        // then
-        assertThat(actual).containsExactlyInAnyOrderElementsOf(List.of(be, fe));
-    }
 }

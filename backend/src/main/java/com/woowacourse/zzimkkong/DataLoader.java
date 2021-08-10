@@ -59,126 +59,98 @@ public class DataLoader implements CommandLineRunner {
 
         Space be = new Space.Builder()
                 .name("백엔드 강의실")
-                .textPosition("bottom")
                 .color("#FED7D9")
-                .coordinate("100, 90")
                 .map(luther)
                 .setting(defaultSetting)
                 .build();
 
         Space fe1 = new Space.Builder()
                 .name("프론트엔드 강의실1")
-                .textPosition("bottom")
                 .color("#FED7D9")
-                .coordinate("560, 40")
                 .map(luther)
                 .setting(defaultSetting)
                 .build();
 
         Space fe2 = new Space.Builder()
                 .name("프론트엔드 강의실2")
-                .textPosition("bottom")
                 .color("#FED7D9")
-                .coordinate("560, 140")
                 .map(luther)
                 .setting(defaultSetting)
                 .build();
 
         Space meetingRoom1 = new Space.Builder()
                 .name("회의실1")
-                .textPosition("bottom")
                 .color("#FFE3AC")
-                .coordinate("29, 229")
                 .map(luther)
                 .setting(defaultSetting)
                 .build();
 
         Space meetingRoom2 = new Space.Builder()
                 .name("회의실2")
-                .textPosition("bottom")
                 .color("#FFE3AC")
-                .coordinate("88, 229")
                 .map(luther)
                 .setting(defaultSetting)
                 .build();
 
         Space meetingRoom3 = new Space.Builder()
                 .name("회의실3")
-                .textPosition("bottom")
                 .color("#FFE3AC")
-                .coordinate("510, 220")
                 .map(luther)
                 .setting(defaultSetting)
                 .build();
 
         Space meetingRoom4 = new Space.Builder()
                 .name("회의실4")
-                .textPosition("bottom")
                 .color("#FFE3AC")
-                .coordinate("584, 220")
                 .map(luther)
                 .setting(defaultSetting)
                 .build();
 
         Space meetingRoom5 = new Space.Builder()
                 .name("회의실5")
-                .textPosition("bottom")
                 .color("#FFE3AC")
-                .coordinate("668, 335")
                 .map(luther)
                 .setting(defaultSetting)
                 .build();
 
         Space pairRoom1 = new Space.Builder()
                 .name("페어룸1")
-                .textPosition("left")
                 .color("#CCDFFB")
-                .coordinate("208, 289")
                 .map(luther)
                 .setting(defaultSetting)
                 .build();
 
         Space pairRoom2 = new Space.Builder()
                 .name("페어룸2")
-                .textPosition("left")
                 .color("#CCDFFB")
-                .coordinate("208, 318")
                 .map(luther)
                 .setting(defaultSetting)
                 .build();
 
         Space pairRoom3 = new Space.Builder()
                 .name("페어룸3")
-                .textPosition("left")
                 .color("#CCDFFB")
-                .coordinate("208, 347")
                 .map(luther)
                 .setting(defaultSetting)
                 .build();
 
         Space pairRoom4 = new Space.Builder()
                 .name("페어룸4")
-                .textPosition("left")
                 .color("#CCDFFB")
-                .coordinate("208, 376")
                 .map(luther)
                 .setting(defaultSetting)
                 .build();
 
         Space pairRoom5 = new Space.Builder()
                 .name("페어룸5")
-                .textPosition("left")
                 .color("#CCDFFB")
-                .coordinate("208, 404")
                 .map(luther)
                 .setting(defaultSetting)
                 .build();
 
         Space trackRoom = new Space.Builder()
                 .name("트랙방")
-                .textPosition("bottom")
                 .color("#D8FBCC")
-                .coordinate("259, 336")
                 .map(luther)
                 .setting(defaultSetting)
                 .build();

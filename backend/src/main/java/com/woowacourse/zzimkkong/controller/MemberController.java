@@ -2,10 +2,7 @@ package com.woowacourse.zzimkkong.controller;
 
 import com.woowacourse.zzimkkong.domain.Manager;
 import com.woowacourse.zzimkkong.domain.Member;
-import com.woowacourse.zzimkkong.dto.member.PresetCreateRequest;
-import com.woowacourse.zzimkkong.dto.member.MemberSaveRequest;
-import com.woowacourse.zzimkkong.dto.member.MemberSaveResponse;
-import com.woowacourse.zzimkkong.dto.member.PresetCreateResponse;
+import com.woowacourse.zzimkkong.dto.member.*;
 import com.woowacourse.zzimkkong.service.MemberService;
 import com.woowacourse.zzimkkong.service.PresetService;
 import org.springframework.http.ResponseEntity;
@@ -55,14 +52,19 @@ public class MemberController {
             @RequestBody @Valid final PresetCreateRequest presetCreateRequest,
             @Manager final Member manager) {
         PresetCreateResponse presetCreateResponse = presetService.savePreset(presetCreateRequest, manager);
-
         return ResponseEntity
                 .created(URI.create("/api/members/presets/" + presetCreateResponse.getId()))
                 .build();
     }
 
+    @GetMapping("/presets")
+    public ResponseEntity<PresetFindAllResponse> findAllPresets(@Manager final Member manager) {
+        PresetFindAllResponse presetFindAllResponse = presetService.findAllPresets(manager);
+        return ResponseEntity.ok().body(presetFindAllResponse);
+    }
+
     @DeleteMapping("/presets/{presetId}")
-    public ResponseEntity<Void> createPreset(
+    public ResponseEntity<Void> deletePreset(
             @PathVariable final Long presetId,
             @Manager final Member manager) {
         presetService.deletePreset(presetId, manager);
