@@ -216,6 +216,45 @@ const ManagerSpaceEdit = (): JSX.Element => {
     height: 0,
   });
 
+  const mapImageSvg = `
+    <svg
+      xmlns='http://www.w3.org/2000/svg'
+      version='1.1'
+      width='${width}px'
+      height='${height}px'
+      viewBox='0 0 ${width} ${height}'
+    >
+      ${spaces
+        ?.map(
+          ({ color, area }) => `
+        <g>
+          <rect
+            x='${area.x}'
+            y='${area.y}'
+            width='${area.width}'
+            height='${area.height}'
+            fill='${color}'
+            opacity='0.3'
+          />
+        </g>`
+        )
+        .join('')}
+      ${mapElements
+        ?.map(
+          ({ points, stroke }) => `
+            <polyline
+              points='${points.join(' ')}'
+              stroke='${stroke}'
+              strokeWidth='2'
+            />
+          `
+        )
+        .join('')}
+    </svg>
+  `
+    .replace(/(\r\n\t|\n|\r\t|\s{1,})/gm, ' ')
+    .replace(/\s{2,}/g, ' ');
+
   const handleWheel: WheelEventHandler<SVGElement> = useCallback((event) => {
     const { offsetX, offsetY, deltaY } = event.nativeEvent;
 
@@ -517,8 +556,9 @@ const ManagerSpaceEdit = (): JSX.Element => {
     deleteSpace.mutate({
       mapId: Number(mapId),
       spaceId: selectedSpaceId,
+      mapImageSvg,
     });
-  }, [deleteSpace, mapId, selectedSpaceId]);
+  }, [deleteSpace, mapId, mapImageSvg, selectedSpaceId]);
 
   const handleAddSpace = useCallback(() => {
     setArea(null);
@@ -562,6 +602,7 @@ const ManagerSpaceEdit = (): JSX.Element => {
               reservationEnable,
               enabledDayOfWeek,
             },
+            mapImageSvg,
           },
         });
 
@@ -586,6 +627,7 @@ const ManagerSpaceEdit = (): JSX.Element => {
               reservationEnable,
               enabledDayOfWeek,
             },
+            mapImageSvg,
           },
         });
       }
@@ -598,6 +640,7 @@ const ManagerSpaceEdit = (): JSX.Element => {
       enabledDayOfWeek,
       isAddingSpace,
       mapId,
+      mapImageSvg,
       reservationEnable,
       reservationMaximumTimeUnit,
       reservationMinimumTimeUnit,
@@ -891,6 +934,7 @@ const ManagerSpaceEdit = (): JSX.Element => {
                       value={spaceName}
                       onChange={onChangeSpaceName}
                       ref={spaceNameRef}
+                      required
                     />
                   </Styled.FormRow>
                   <Styled.FormRow>
@@ -901,6 +945,7 @@ const ManagerSpaceEdit = (): JSX.Element => {
                           type="color"
                           value={spaceColor}
                           onChange={onChangeSpaceColor}
+                          required
                         />
                       </Styled.ColorInputLabel>
                       {colorSelectOptions.map((color) => (
@@ -936,12 +981,14 @@ const ManagerSpaceEdit = (): JSX.Element => {
                         label="예약이 열릴 시간"
                         value={availableStartTime}
                         onChange={onChangeAvailableStartTime}
+                        required
                       />
                       <Input
                         type="time"
                         label="예약이 닫힐 시간"
                         value={availableEndTime}
                         onChange={onChangeAvailableEndTime}
+                        required
                       />
                     </Styled.InputWrapper>
                     <Styled.InputMessage>
@@ -960,6 +1007,7 @@ const ManagerSpaceEdit = (): JSX.Element => {
                             value="5"
                             onChange={onChangeReservationTimeUnit}
                             name="time-unit"
+                            required
                           />
                           <Styled.RadioLabelText>5분</Styled.RadioLabelText>
                         </Styled.RadioLabel>
@@ -1010,6 +1058,7 @@ const ManagerSpaceEdit = (): JSX.Element => {
                         label="최소 예약 가능 시간 (분)"
                         value={reservationMinimumTimeUnit}
                         onChange={onChangeReservationMinimumTimeUnit}
+                        required
                       />
                       <Input
                         type="number"
@@ -1019,6 +1068,7 @@ const ManagerSpaceEdit = (): JSX.Element => {
                         label="최대 예약 가능 시간 (분)"
                         value={reservationMaximumTimeUnit}
                         onChange={onChangeReservationMaximumTimeUnit}
+                        required
                       />
                     </Styled.InputWrapper>
                     <Styled.InputMessage>
