@@ -1,15 +1,15 @@
-import { useState, ChangeEventHandler, SetStateAction, Dispatch } from 'react';
+import { useState, ChangeEventHandler, Dispatch, SetStateAction } from 'react';
 
-const useInput = (
-  initialValue = ''
+const useToggle = (
+  initialValue = false
 ): [typeof value, ChangeEventHandler<HTMLInputElement>, Dispatch<SetStateAction<typeof value>>] => {
   const [value, setValue] = useState(initialValue);
 
   const onChange: ChangeEventHandler<HTMLInputElement> = (event) => {
-    setValue(event.target.value);
+    setValue(event.target.checked);
   };
 
   return [value, onChange, setValue];
 };
 
-export default useInput;
+export default useToggle;

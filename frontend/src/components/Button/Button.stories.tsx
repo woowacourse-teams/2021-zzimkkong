@@ -4,6 +4,20 @@ import Button, { Props } from './Button';
 export default {
   title: 'shared/Button',
   component: Button,
+  argTypes: {
+    variant: {
+      options: ['primary', 'text', 'default'],
+      control: { type: 'radio' },
+    },
+    shape: {
+      options: ['default', 'round'],
+      control: { type: 'radio' },
+    },
+    size: {
+      options: ['small', 'medium', 'large'],
+      control: { type: 'radio' },
+    },
+  },
 };
 
 const Template: Story<Props> = (args) => <Button {...args} />;
@@ -25,6 +39,14 @@ export const Primary = Template.bind({});
 Primary.args = {
   disabled: false,
   variant: 'primary',
+  children: 'Button Test',
+};
+
+export const PrimaryRound = Template.bind({});
+PrimaryRound.args = {
+  disabled: false,
+  variant: 'primary',
+  shape: 'round',
   children: 'Button Test',
 };
 
