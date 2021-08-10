@@ -292,11 +292,15 @@ const ManagerMapCreate = (): JSX.Element => {
   };
 
   const handleMouseDown = () => {
+    if (isDraggable) return;
+
     if (mode === Mode.Line) drawStart();
     if (mode === Mode.Eraser) eraseStart();
   };
 
   const handleMouseUp = () => {
+    if (isDraggable) return;
+
     if (mode === Mode.Line) drawEnd();
     if (mode === Mode.Eraser) eraseEnd();
   };
@@ -537,6 +541,7 @@ const ManagerMapCreate = (): JSX.Element => {
                         cy={stickyCoordinate.y}
                         r={4}
                         fill={PALETTE.OPACITY_BLACK[700]}
+                        pointerEvents="none"
                       />
                     )}
 
