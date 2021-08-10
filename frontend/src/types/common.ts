@@ -7,6 +7,18 @@ export interface Coordinate {
   y: number;
 }
 
+export interface ScrollPosition {
+  x?: number;
+  y?: number;
+}
+
+export interface MapItem {
+  mapId: number;
+  mapName: string;
+  mapDrawing: string;
+  mapImageUrl: string;
+}
+
 export interface Reservation {
   id: number;
   startDateTime: string;
