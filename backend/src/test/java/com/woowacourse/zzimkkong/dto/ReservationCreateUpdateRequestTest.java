@@ -16,7 +16,7 @@ import static com.woowacourse.zzimkkong.dto.ValidatorMessage.*;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
-public class ReservationCreateUpdateRequestTest extends RequestTest {
+class ReservationCreateUpdateRequestTest extends RequestTest {
     @ParameterizedTest
     @NullSource
     @DisplayName("예약 생성에 빈 dateTime이 들어오면 처리한다.")
@@ -109,7 +109,7 @@ public class ReservationCreateUpdateRequestTest extends RequestTest {
 
         assertThat(getConstraintViolations(reservationCreateUpdateRequest).stream()
                 .anyMatch(violation -> violation.getMessage().equals(DESCRIPTION_MESSAGE)))
-                .isEqualTo(true);
+                .isTrue();
     }
 }
 

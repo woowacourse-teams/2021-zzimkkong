@@ -20,7 +20,7 @@ import static com.woowacourse.zzimkkong.controller.MapControllerTest.saveMap;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.restdocs.restassured3.RestAssuredRestDocumentation.document;
 
-public class GuestReservationControllerTest extends AcceptanceTest {
+class GuestReservationControllerTest extends AcceptanceTest {
     private ReservationCreateUpdateWithPasswordRequest reservationCreateUpdateWithPasswordRequest;
     private Reservation savedReservation;
     private String beReservationApi;

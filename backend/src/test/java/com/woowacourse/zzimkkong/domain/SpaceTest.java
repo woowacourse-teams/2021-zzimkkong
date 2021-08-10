@@ -13,7 +13,7 @@ import java.time.LocalTime;
 import static com.woowacourse.zzimkkong.Constants.*;
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class SpaceTest {
+class SpaceTest {
     @Test
     void update() {
         Member member = new Member(EMAIL, PASSWORD, ORGANIZATION);

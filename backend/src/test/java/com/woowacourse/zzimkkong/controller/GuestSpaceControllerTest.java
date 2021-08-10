@@ -25,7 +25,7 @@ import static com.woowacourse.zzimkkong.controller.MapControllerTest.saveMap;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.restdocs.restassured3.RestAssuredRestDocumentation.document;
 
-public class GuestSpaceControllerTest extends AcceptanceTest {
+class GuestSpaceControllerTest extends AcceptanceTest {
     private String spaceApi;
     private Space be;
     private Space fe;

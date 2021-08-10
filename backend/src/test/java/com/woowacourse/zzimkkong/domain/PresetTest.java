@@ -24,7 +24,7 @@ class PresetTest {
         Member member = new Member(1L, EMAIL, PASSWORD, ORGANIZATION);
 
         //when
-        assertThat(member.getPresets().size()).isEqualTo(0);
+        assertThat(member.getPresets().size()).isZero();
         new Preset(1L, PRESET_NAME1, setting, member);
 
         //then

@@ -6,14 +6,14 @@ import org.junit.jupiter.api.Test;
 import static com.woowacourse.zzimkkong.Constants.*;
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class MapTest {
+class MapTest {
     @Test
     @DisplayName("Space가 생성되면 Map에 Space를 추가한다")
     void addSpace() {
         Member pobi = new Member(EMAIL, PASSWORD, ORGANIZATION);
         Map luther = new Map(LUTHER_NAME, MAP_DRAWING_DATA, MAP_IMAGE_URL, pobi);
 
-        assertThat(luther.getSpaces().size()).isEqualTo(0);
+        assertThat(luther.getSpaces().size()).isZero();
         new Space.Builder()
                 .map(luther)
                 .build();

@@ -37,7 +37,7 @@ import static org.springframework.restdocs.restassured3.RestAssuredRestDocumenta
 @ExtendWith({RestDocumentationExtension.class, SpringExtension.class})
 @AutoConfigureRestDocs
 @ActiveProfiles("test")
-public class AcceptanceTest {
+class AcceptanceTest {
     protected static String accessToken;
     protected static final MemberSaveRequest memberSaveRequest = new MemberSaveRequest(EMAIL, PASSWORD, ORGANIZATION);
     protected static final LoginRequest loginRequest = new LoginRequest(EMAIL, PASSWORD);

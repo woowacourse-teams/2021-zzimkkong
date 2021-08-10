@@ -13,7 +13,7 @@ import org.springframework.transaction.annotation.Transactional;
 @SpringBootTest
 @Transactional
 @ActiveProfiles("test")
-public class ServiceTest {
+class ServiceTest {
     @MockBean
     protected MemberRepository members;
 
