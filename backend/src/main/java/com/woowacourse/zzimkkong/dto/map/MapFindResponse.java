@@ -1,7 +1,9 @@
 package com.woowacourse.zzimkkong.dto.map;
 
 import com.woowacourse.zzimkkong.domain.Map;
+import lombok.Getter;
 
+@Getter
 public class MapFindResponse {
     private Long mapId;
     private String mapName;
@@ -33,25 +35,5 @@ public class MapFindResponse {
                 map.getMapImageUrl(),
                 sharingMapId
         );
-    }
-
-    public Long getMapId() {
-        return mapId;
-    }
-
-    public String getMapName() {
-        return mapName;
-    }
-
-    public String getMapDrawing() {
-        return mapDrawing;
-    }
-
-    public String getMapImageUrl() {
-        return mapImageUrl;
-    }
-
-    public String getSharingMapId() {
-        return sharingMapId;
     }
 }
