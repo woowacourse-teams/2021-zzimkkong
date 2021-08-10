@@ -1,23 +1,12 @@
 import { ChangeEventHandler, Dispatch, SetStateAction, useState } from 'react';
 import { ReactComponent as PaletteIcon } from 'assets/svg/palette.svg';
-import PALETTE from 'constants/palette';
+import { MAP_COLOR_PALETTE } from 'constants/editor';
 import * as Styled from './ColorPicker.styles';
 
 export interface Props {
   color: string;
   setColor: Dispatch<SetStateAction<string>>;
 }
-
-const colors = [
-  PALETTE.BLACK[400],
-  PALETTE.GRAY[400],
-  PALETTE.ORANGE[400],
-  PALETTE.RED[400],
-  PALETTE.YELLOW[500],
-  PALETTE.GREEN[400],
-  PALETTE.BLUE[400],
-  PALETTE.PURPLE[400],
-];
 
 const ColorPicker = ({ color, setColor }: Props): JSX.Element => {
   const [open, setOpen] = useState(false);
@@ -30,7 +19,7 @@ const ColorPicker = ({ color, setColor }: Props): JSX.Element => {
     <Styled.Container>
       <Styled.PickerIcon color={color} onClick={() => setOpen(!open)} />
       <Styled.PickerWrapper open={open}>
-        {colors.map((color) => (
+        {MAP_COLOR_PALETTE.map((color) => (
           <Styled.PickerIcon key={color} onClick={() => setColor(color)} color={color} />
         ))}
         <Styled.InputWrapper>
