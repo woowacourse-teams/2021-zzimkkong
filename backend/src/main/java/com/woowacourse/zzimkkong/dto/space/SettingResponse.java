@@ -27,7 +27,7 @@ public class SettingResponse {
     public SettingResponse() {
     }
 
-    private SettingResponse(
+    protected SettingResponse(
             final LocalTime availableStartTime,
             final LocalTime availableEndTime,
             final Integer reservationTimeUnit,
