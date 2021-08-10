@@ -7,7 +7,7 @@ import static com.woowacourse.zzimkkong.Constants.*;
 import static org.assertj.core.api.Assertions.assertThat;
 
 class PresetTest {
-    private final Setting setting = new Setting.Builder()
+    private final Setting setting = Setting.builder()
             .availableStartTime(BE_AVAILABLE_START_TIME)
             .availableEndTime(BE_AVAILABLE_END_TIME)
             .reservationTimeUnit(BE_RESERVATION_TIME_UNIT)

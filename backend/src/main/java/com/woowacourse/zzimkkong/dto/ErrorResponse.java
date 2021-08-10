@@ -1,12 +1,14 @@
 package com.woowacourse.zzimkkong.dto;
 
 import com.woowacourse.zzimkkong.exception.ZzimkkongException;
+import lombok.Getter;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 
 import javax.validation.ConstraintViolationException;
 
 import static com.woowacourse.zzimkkong.dto.ValidatorMessage.FORMAT_MESSAGE;
 
+@Getter
 public class ErrorResponse {
     private String message;
     private String field;
@@ -44,13 +46,5 @@ public class ErrorResponse {
 
     public static ErrorResponse invalidFormat() {
         return new ErrorResponse(FORMAT_MESSAGE);
-    }
-
-    public String getMessage() {
-        return message;
-    }
-
-    public String getField() {
-        return field;
     }
 }

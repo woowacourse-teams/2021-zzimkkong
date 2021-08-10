@@ -1,10 +1,12 @@
 package com.woowacourse.zzimkkong.dto.member;
 
 import com.woowacourse.zzimkkong.domain.Preset;
+import lombok.Getter;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
+@Getter
 public class PresetFindAllResponse {
     private List<PresetFindResponse> presets;
 
@@ -20,9 +22,5 @@ public class PresetFindAllResponse {
                 .map(PresetFindResponse::from)
                 .collect(Collectors.toList());
         return new PresetFindAllResponse(presetFindResponses);
-    }
-
-    public List<PresetFindResponse> getPresets() {
-        return presets;
     }
 }

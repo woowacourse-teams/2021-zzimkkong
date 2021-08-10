@@ -1,10 +1,13 @@
 package com.woowacourse.zzimkkong.dto.space;
 
+import lombok.Getter;
+
 import javax.validation.Valid;
 import javax.validation.constraints.NotBlank;
 
 import static com.woowacourse.zzimkkong.dto.ValidatorMessage.EMPTY_MESSAGE;
 
+@Getter
 public class SpaceCreateUpdateRequest {
     @NotBlank(message = EMPTY_MESSAGE)
     private String name;
@@ -40,29 +43,5 @@ public class SpaceCreateUpdateRequest {
         this.area = area;
         this.settingsRequest = settingsRequest;
         this.mapImageSvg = mapImageSvg;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public String getColor() {
-        return color;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public String getArea() {
-        return area;
-    }
-
-    public SettingsRequest getSettingsRequest() {
-        return settingsRequest;
-    }
-
-    public String getMapImageSvg() {
-        return mapImageSvg;
     }
 }

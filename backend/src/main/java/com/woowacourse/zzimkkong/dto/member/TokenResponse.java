@@ -1,5 +1,8 @@
 package com.woowacourse.zzimkkong.dto.member;
 
+import lombok.Getter;
+
+@Getter
 public class TokenResponse {
     private String accessToken;
 
@@ -8,10 +11,6 @@ public class TokenResponse {
 
     public TokenResponse(final String accessToken) {
         this.accessToken = accessToken;
-    }
-
-    public String getAccessToken() {
-        return accessToken;
     }
 
     public static TokenResponse from(final String token) {

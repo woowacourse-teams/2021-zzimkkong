@@ -1,5 +1,8 @@
 package com.woowacourse.zzimkkong.domain;
 
+import lombok.Getter;
+
+@Getter
 public class SlackUrl {
     private String url;
 
@@ -8,9 +11,5 @@ public class SlackUrl {
 
     public SlackUrl(final String url) {
         this.url = url;
-    }
-
-    public String getUrl() {
-        return url;
     }
 }

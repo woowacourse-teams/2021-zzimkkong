@@ -1,9 +1,12 @@
 package com.woowacourse.zzimkkong.dto.map;
 
+import lombok.Getter;
+
 import javax.validation.constraints.NotBlank;
 
 import static com.woowacourse.zzimkkong.dto.ValidatorMessage.EMPTY_MESSAGE;
 
+@Getter
 public class MapCreateUpdateRequest {
     @NotBlank(message = EMPTY_MESSAGE)
     private String mapName;
@@ -21,17 +24,5 @@ public class MapCreateUpdateRequest {
         this.mapName = mapName;
         this.mapDrawing = mapDrawing;
         this.mapImageSvg = mapImageSvg;
-    }
-
-    public String getMapName() {
-        return mapName;
-    }
-
-    public String getMapDrawing() {
-        return mapDrawing;
-    }
-
-    public String getMapImageSvg() {
-        return mapImageSvg;
     }
 }

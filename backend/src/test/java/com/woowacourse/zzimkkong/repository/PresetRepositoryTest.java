@@ -8,8 +8,6 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import java.util.List;
-
 import static com.woowacourse.zzimkkong.Constants.*;
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -24,7 +22,7 @@ class PresetRepositoryTest extends RepositoryTest {
         Member pobi = new Member(EMAIL, PASSWORD, ORGANIZATION);
         members.save(pobi);
 
-        Setting setting = new Setting.Builder()
+        Setting setting = Setting.builder()
                 .availableStartTime(BE_AVAILABLE_START_TIME)
                 .availableEndTime(BE_AVAILABLE_END_TIME)
                 .reservationTimeUnit(BE_RESERVATION_TIME_UNIT)
