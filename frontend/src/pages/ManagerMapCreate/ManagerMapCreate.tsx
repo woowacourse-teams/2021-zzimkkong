@@ -54,6 +54,7 @@ const ManagerMapCreate = (): JSX.Element => {
   const isDraggable = mode === Mode.Move || isPressSpacebar;
 
   const [color, setColor] = useState<Color>(PALETTE.BLACK[400]);
+  const [colorPickerOpen, setColorPickerOpen] = useState(false);
 
   const [coordinate, setCoordinate] = useState<Coordinate>({ x: 0, y: 0 });
 
@@ -394,6 +395,12 @@ const ManagerMapCreate = (): JSX.Element => {
     }
   };
 
+  const handleColorPicker: MouseEventHandler<HTMLButtonElement> = (event) => {
+    if (event.target === event.currentTarget) {
+      setColorPickerOpen(!colorPickerOpen);
+    }
+  };
+
   useEffect(() => {
     const editorWidth = editorRef.current ? editorRef.current.offsetWidth : 0;
     const editorHeight = editorRef.current ? editorRef.current.offsetHeight : 0;
@@ -492,8 +499,13 @@ const ManagerMapCreate = (): JSX.Element => {
               >
                 <ItemsIcon />
               </Styled.ToolbarButton>
-              <Styled.ToolbarButton text="색상선택">
-                <ColorPicker color={color} setColor={setColor} />
+              <Styled.ToolbarButton text="색상선택" onClick={handleColorPicker}>
+                <ColorPicker
+                  open={colorPickerOpen}
+                  color={color}
+                  setColor={setColor}
+                  setOpen={setColorPickerOpen}
+                />
               </Styled.ToolbarButton>
             </Styled.Toolbar>
             <Styled.Editor ref={editorRef}>
