@@ -36,3 +36,37 @@ export interface Space {
 export interface SpaceReservation extends Space {
   reservations: Reservation[];
 }
+
+export interface MapItem {
+  mapId: number;
+  mapName: string;
+  mapDrawing: string;
+  mapImageUrl: string;
+}
+
+export interface DrawingStatus {
+  start?: Coordinate;
+  end?: Coordinate;
+}
+
+export interface MapElement {
+  id: number;
+  type: 'polyline';
+  stroke: Color;
+  points: string[];
+}
+
+export interface GripPoint {
+  id: number;
+  mapElementId: MapElement['id'];
+  x: number;
+  y: number;
+}
+
+export interface EditorBoard {
+  width: number;
+  height: number;
+  x: number;
+  y: number;
+  scale: number;
+}

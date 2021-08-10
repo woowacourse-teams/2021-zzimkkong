@@ -74,6 +74,15 @@ export const MapNameInput = styled.input`
   border-radius: 0.125rem;
   font-size: 1.5rem;
   display: inline-block;
+  border: 2px solid transparent;
+
+  &:hover {
+    border-color: ${({ theme }) => theme.primary[400]};
+  }
+
+  &:focus {
+    outline-color: ${({ theme }) => theme.primary[400]};
+  }
 `;
 
 export const MapName = styled.h3`
@@ -91,6 +100,7 @@ export const EditorContent = styled.div`
   flex: 1;
   border-top: 1px solid ${({ theme }) => theme.gray[400]};
   border-bottom: 1px solid ${({ theme }) => theme.gray[400]};
+  user-select: none;
 `;
 
 export const Toolbar = styled.div`
@@ -99,6 +109,7 @@ export const Toolbar = styled.div`
   border-left: 1px solid ${({ theme }) => theme.gray[400]};
   border-right: 1px solid ${({ theme }) => theme.gray[400]};
   display: flex;
+  position: relative;
   flex-direction: column;
   gap: 1rem;
 `;
@@ -126,6 +137,12 @@ export const InputWrapper = styled.div`
   margin: 0 0.25rem;
 `;
 
+export const ColorPickerWrapper = styled.div`
+  position: absolute;
+  left: 4.25rem;
+  top: 22rem;
+`;
+
 export const SizeInput = styled(Input)`
   border: 0;
   border-bottom: 2px solid ${({ theme }) => theme.gray[400]};
@@ -148,10 +165,18 @@ export const SizeInput = styled(Input)`
 export const Label = styled.div`
   color: ${({ theme }) => theme.gray[500]};
   text-align: center;
+  user-select: none;
 `;
 
 export const LabelIcon = styled.div``;
 
 export const LabelText = styled.div`
   font-size: 0.625rem;
+`;
+
+export const GripPoint = styled.circle`
+  fill: ${({ theme }) => theme.white};
+  stroke: ${({ theme }) => theme.black[100]};
+  stroke-width: 2px;
+  cursor: pointer;
 `;

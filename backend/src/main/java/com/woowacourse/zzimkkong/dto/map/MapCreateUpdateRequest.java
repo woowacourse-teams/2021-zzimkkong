@@ -17,7 +17,7 @@ public class MapCreateUpdateRequest {
     public MapCreateUpdateRequest() {
     }
 
-    public MapCreateUpdateRequest(String mapName, String mapDrawing, String mapImageSvg) {
+    public MapCreateUpdateRequest(final String mapName, final String mapDrawing, final String mapImageSvg) {
         this.mapName = mapName;
         this.mapDrawing = mapDrawing;
         this.mapImageSvg = mapImageSvg;

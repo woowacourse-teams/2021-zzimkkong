@@ -9,7 +9,7 @@ public class ReservationCreateResponse {
 
     }
 
-    private ReservationCreateResponse(Long id) {
+    private ReservationCreateResponse(final Long id) {
         this.id = id;
     }
 

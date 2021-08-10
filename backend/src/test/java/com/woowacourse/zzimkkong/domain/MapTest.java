@@ -8,6 +8,19 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 public class MapTest {
     @Test
+    @DisplayName("Space가 생성되면 Map에 Space를 추가한다")
+    void addSpace() {
+        Member pobi = new Member(EMAIL, PASSWORD, ORGANIZATION);
+        Map luther = new Map(LUTHER_NAME, MAP_DRAWING_DATA, MAP_IMAGE_URL, pobi);
+
+        assertThat(luther.getSpaces().size()).isEqualTo(0);
+        new Space.Builder()
+                .map(luther)
+                .build();
+        assertThat(luther.getSpaces().size()).isEqualTo(1);
+    }
+
+    @Test
     @DisplayName("맵의 관리자가 아니면 true, 맞으면 false")
     void isNotOwnedBy() {
         Member pobi = new Member(EMAIL, PASSWORD, ORGANIZATION);
