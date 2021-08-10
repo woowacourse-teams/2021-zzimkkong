@@ -108,7 +108,7 @@ const ManagerSpaceEdit = (): JSX.Element => {
   const createSpace = useMutation(postManagerSpace, {
     onSuccess: (response) => {
       const { location } = response.headers as CreateResponseHeaders;
-      const newSpaceId = location.split('/').pop() ?? '';
+      const newSpaceId = Number(location.split('/').pop() ?? '');
 
       initializeDrawingStatus();
       setAddingSpace(false);
@@ -134,7 +134,7 @@ const ManagerSpaceEdit = (): JSX.Element => {
 
   const deleteSpace = useMutation(deleteManagerSpace, {
     onSuccess: () => {
-      setSelectedSpaceId('');
+      setSelectedSpaceId(null);
       setArea(null);
 
       managerSpaces.refetch();
@@ -150,7 +150,7 @@ const ManagerSpaceEdit = (): JSX.Element => {
   const [dragOffsetX, setDragOffsetX] = useState(0);
   const [dragOffsetY, setDragOffsetY] = useState(0);
 
-  const [selectedSpaceId, setSelectedSpaceId] = useState('');
+  const [selectedSpaceId, setSelectedSpaceId] = useState<number | null>(null);
 
   const [isDrawingArea, setDrawingArea] = useState(false);
   const [isAddingSpace, setAddingSpace] = useState(false);
@@ -353,8 +353,10 @@ const ManagerSpaceEdit = (): JSX.Element => {
   ]);
 
   const selectSpace = useCallback(
-    (id: ManagerSpace['id']) => {
-      setSelectedSpaceId(`${id === 0 ? '' : id}`);
+    (id: number | null) => {
+      setSelectedSpaceId(id);
+
+      if (id === null) return;
 
       const selectedSpace = spaces.find((space) => space.id === id);
       if (!selectedSpace?.id) return;
@@ -506,11 +508,11 @@ const ManagerSpaceEdit = (): JSX.Element => {
 
     initializeDrawingStatus();
     setAddingSpace(false);
-    selectSpace(Number(selectedSpaceId));
+    selectSpace(selectedSpaceId);
   }, [initializeDrawingStatus, selectSpace, selectedSpaceId]);
 
   const handleCancelAddingSpace = useCallback(() => {
-    if (selectedSpaceId) selectSpace(Number(selectedSpaceId));
+    if (selectedSpaceId) selectSpace(selectedSpaceId);
 
     initializeDrawingStatus();
     setAddingSpace(false);
@@ -523,7 +525,7 @@ const ManagerSpaceEdit = (): JSX.Element => {
 
     deleteSpace.mutate({
       mapId: Number(mapId),
-      spaceId: Number(selectedSpaceId),
+      spaceId: selectedSpaceId,
     });
   }, [deleteSpace, mapId, selectedSpaceId]);
 
@@ -578,7 +580,7 @@ const ManagerSpaceEdit = (): JSX.Element => {
       if (selectedSpaceId && !isAddingSpace) {
         updateSpace.mutate({
           mapId: Number(mapId),
-          spaceId: Number(selectedSpaceId),
+          spaceId: selectedSpaceId,
           space: {
             name: spaceName,
             color: spaceColor,
@@ -811,14 +813,14 @@ const ManagerSpaceEdit = (): JSX.Element => {
                             width={area.width}
                             height={area.height}
                             fill={
-                              !isAddingSpace && id === Number(selectedSpaceId)
+                              !isAddingSpace && id === selectedSpaceId
                                 ? spaceColor
                                 : color ?? PALETTE.GRAY[200]
                             }
                             onClick={() => handleClickSpaceArea(id)}
-                            disabled={isAddingSpace || id === Number(selectedSpaceId)}
+                            disabled={isAddingSpace || id === selectedSpaceId}
                           />
-                          {(isAddingSpace || id !== Number(selectedSpaceId)) && (
+                          {(isAddingSpace || id !== selectedSpaceId) && (
                             <Styled.SpaceAreaText
                               x={area.x + area.width / 2}
                               y={area.y + area.height / 2}
@@ -851,9 +853,8 @@ const ManagerSpaceEdit = (): JSX.Element => {
                     label="공간 선택"
                     options={spaceOptions}
                     disabled={isAddingSpace}
-                    value={selectedSpaceId}
+                    value={`${selectedSpaceId ?? ''}`}
                     onChange={(id) => selectSpace(Number(id))}
-                    setValue={setSelectedSpaceId}
                   />
                 </Styled.SpaceSelectWrapper>
                 <Styled.AddButtonWrapper>
