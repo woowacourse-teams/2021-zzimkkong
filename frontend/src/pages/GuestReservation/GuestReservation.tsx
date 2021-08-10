@@ -1,5 +1,5 @@
 import { AxiosError } from 'axios';
-import { FormEventHandler } from 'react';
+import { FormEventHandler, useEffect } from 'react';
 import { useMutation } from 'react-query';
 import { useHistory, useLocation } from 'react-router-dom';
 import { postReservation } from 'api/reservation';
@@ -85,6 +85,10 @@ const GuestReservation = (): JSX.Element => {
 
     createReservation.mutate({ reservation, mapId, spaceId });
   };
+
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
 
   return (
     <>
