@@ -7,6 +7,6 @@ public class InsufficientSecretKeyLengthException extends InfrastructureExceptio
             "관리자는 설정 파일(config/aes256Transcoder.properties)의 키값을 재설정한 후 다시 서버를 구동해주시기 바랍니다.";
 
     public InsufficientSecretKeyLengthException() {
-        super(MESSAGE, HttpStatus.INTERNAL_SERVER_ERROR, SECRET_KEY);
+        super(MESSAGE, HttpStatus.INTERNAL_SERVER_ERROR);
     }
 }

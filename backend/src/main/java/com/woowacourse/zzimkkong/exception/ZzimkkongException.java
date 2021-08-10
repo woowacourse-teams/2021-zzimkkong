@@ -4,25 +4,18 @@ import org.springframework.http.HttpStatus;
 
 public class ZzimkkongException extends RuntimeException {
     private final HttpStatus status;
-    private final String field;
 
-    public ZzimkkongException(final String message, final HttpStatus status, final String field) {
+    public ZzimkkongException(final String message, final HttpStatus status) {
         super(message);
         this.status = status;
-        this.field = field;
     }
 
-    public ZzimkkongException(String message, Throwable cause, HttpStatus status, String field) {
+    public ZzimkkongException(String message, Throwable cause, HttpStatus status) {
         super(message, cause);
         this.status = status;
-        this.field = field;
     }
 
     public HttpStatus getStatus() {
         return status;
-    }
-
-    public String getField() {
-        return field;
     }
 }
