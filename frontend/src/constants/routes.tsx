@@ -6,6 +6,7 @@ import ManagerJoin from 'pages/ManagerJoin/ManagerJoin';
 import ManagerLogin from 'pages/ManagerLogin/ManagerLogin';
 import ManagerMain from 'pages/ManagerMain/ManagerMain';
 import ManagerMapCreate from 'pages/ManagerMapCreate/ManagerMapCreate';
+import ManagerSpaceEdit from 'pages/ManagerSpaceEdit/ManagerSpaceEdit';
 import PATH from './path';
 
 interface Route {
@@ -53,6 +54,11 @@ export const PRIVATE_ROUTES: PrivateRoute[] = [
   {
     path: PATH.MANAGER_MAP_CREATE,
     component: <ManagerMapCreate />,
+    redirectPath: PATH.MANAGER_LOGIN,
+  },
+  {
+    path: PATH.MANAGER_SPACE_EDIT,
+    component: <ManagerSpaceEdit />,
     redirectPath: PATH.MANAGER_LOGIN,
   },
 ];
