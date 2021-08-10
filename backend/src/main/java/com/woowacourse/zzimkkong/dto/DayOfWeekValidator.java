@@ -41,10 +41,10 @@ public class DayOfWeekValidator implements ConstraintValidator<DayOfWeekConstrai
     }
 
     private Boolean isValidDayOfWeekName(final List<String> dayOfWeekInput) {
-        List<String> AllDaysOfWeekNames = Arrays.stream(DayOfWeek.values())
+        List<String> allDaysOfWeekNames = Arrays.stream(DayOfWeek.values())
                 .map(DayOfWeek::name)
                 .collect(Collectors.toList());
 
-        return AllDaysOfWeekNames.containsAll(dayOfWeekInput);
+        return allDaysOfWeekNames.containsAll(dayOfWeekInput);
     }
 }
