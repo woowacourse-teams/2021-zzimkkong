@@ -901,6 +901,7 @@ const ManagerSpaceEdit = (): JSX.Element => {
                 <Styled.FormHeader>공간 선택</Styled.FormHeader>
                 <Styled.SpaceSelectWrapper>
                   <Select
+                    name="space"
                     label="공간 선택"
                     options={spaceOptions}
                     disabled={isAddingSpace}
