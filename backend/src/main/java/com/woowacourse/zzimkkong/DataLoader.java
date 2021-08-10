@@ -34,16 +34,19 @@ public class DataLoader implements CommandLineRunner {
 
     @Override
     public void run(String... args) {
+        String lectureRoomColor = "#FED7D9";
+        String pairRoomColor = "#CCDFFB";
+        String meetingRoomColor = "#FFE3AC";
+
         Member pobi = members.save(
                 new Member("pobi@woowa.com", "test1234", "woowacourse")
         );
 
         Map luther = maps.save(
-                // todo 에디터로 만든 png 데이터를 넣기
                 new Map(
                         "루터회관",
                         "{'id': '1', 'type': 'polyline', 'fill': '', 'stroke': 'rgba(111, 111, 111, 1)', 'points': '['60,250', '1,231', '242,252']', 'd': '[]', 'transform': ''}",
-                        "https://zzimkkong-personal.s3.ap-northeast-2.amazonaws.com/thumbnails/dummy_luther.png",
+                        "https://d1dgzmdd5f1fx6.cloudfront.net/thumbnails/1.png",
                         pobi)
         );
 
@@ -59,91 +62,91 @@ public class DataLoader implements CommandLineRunner {
 
         Space be = new Space.Builder()
                 .name("백엔드 강의실")
-                .color("#FED7D9")
+                .color(lectureRoomColor)
                 .map(luther)
                 .setting(defaultSetting)
                 .build();
 
         Space fe1 = new Space.Builder()
                 .name("프론트엔드 강의실1")
-                .color("#FED7D9")
+                .color(lectureRoomColor)
                 .map(luther)
                 .setting(defaultSetting)
                 .build();
 
         Space fe2 = new Space.Builder()
                 .name("프론트엔드 강의실2")
-                .color("#FED7D9")
+                .color(lectureRoomColor)
                 .map(luther)
                 .setting(defaultSetting)
                 .build();
 
         Space meetingRoom1 = new Space.Builder()
                 .name("회의실1")
-                .color("#FFE3AC")
+                .color(meetingRoomColor)
                 .map(luther)
                 .setting(defaultSetting)
                 .build();
 
         Space meetingRoom2 = new Space.Builder()
                 .name("회의실2")
-                .color("#FFE3AC")
+                .color(meetingRoomColor)
                 .map(luther)
                 .setting(defaultSetting)
                 .build();
 
         Space meetingRoom3 = new Space.Builder()
                 .name("회의실3")
-                .color("#FFE3AC")
+                .color(meetingRoomColor)
                 .map(luther)
                 .setting(defaultSetting)
                 .build();
 
         Space meetingRoom4 = new Space.Builder()
                 .name("회의실4")
-                .color("#FFE3AC")
+                .color(meetingRoomColor)
                 .map(luther)
                 .setting(defaultSetting)
                 .build();
 
         Space meetingRoom5 = new Space.Builder()
                 .name("회의실5")
-                .color("#FFE3AC")
+                .color(meetingRoomColor)
                 .map(luther)
                 .setting(defaultSetting)
                 .build();
 
         Space pairRoom1 = new Space.Builder()
                 .name("페어룸1")
-                .color("#CCDFFB")
+                .color(pairRoomColor)
                 .map(luther)
                 .setting(defaultSetting)
                 .build();
 
         Space pairRoom2 = new Space.Builder()
                 .name("페어룸2")
-                .color("#CCDFFB")
+                .color(pairRoomColor)
                 .map(luther)
                 .setting(defaultSetting)
                 .build();
 
         Space pairRoom3 = new Space.Builder()
                 .name("페어룸3")
-                .color("#CCDFFB")
+                .color(pairRoomColor)
                 .map(luther)
                 .setting(defaultSetting)
                 .build();
 
         Space pairRoom4 = new Space.Builder()
                 .name("페어룸4")
-                .color("#CCDFFB")
+                .color(pairRoomColor)
                 .map(luther)
                 .setting(defaultSetting)
                 .build();
 
         Space pairRoom5 = new Space.Builder()
                 .name("페어룸5")
-                .color("#CCDFFB")
+                .color(pairRoomColor)
                 .map(luther)
                 .setting(defaultSetting)
                 .build();
@@ -155,7 +158,7 @@ public class DataLoader implements CommandLineRunner {
                 .setting(defaultSetting)
                 .build();
 
-        List<Space> spaces = List.of(
+        List<Space> sampleSpaces = List.of(
                 be,
                 fe1, fe2,
                 meetingRoom1, meetingRoom2, meetingRoom3, meetingRoom4, meetingRoom5,
@@ -163,8 +166,8 @@ public class DataLoader implements CommandLineRunner {
                 trackRoom
         );
 
-        for (Space space : spaces) {
-            this.spaces.save(space);
+        for (Space space : sampleSpaces) {
+            spaces.save(space);
         }
 
         LocalDate targetDate = LocalDate.now().plusDays(1L);
