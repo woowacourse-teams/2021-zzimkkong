@@ -1,5 +1,6 @@
 package com.woowacourse.zzimkkong.infrastructure;
 
+import com.woowacourse.zzimkkong.exception.infrastructure.SvgToPngConvertException;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -10,6 +11,7 @@ import org.springframework.test.context.ActiveProfiles;
 import java.io.File;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 @SpringBootTest
 @ActiveProfiles("test")
@@ -32,8 +34,22 @@ class BatikConverterTest {
         assertThat(testFile).isEqualTo(new File(batikConverter.getSaveDirectoryPath() + "testPngFileName.png"));
     }
 
+    @Test
+    @DisplayName("옳지 않은 svg 데이터가 들어오면 오류가 발생한다.")
+    void convertException() {
+        // given
+        String rawSvgData = "strangeSvgData";
+
+        // when, then
+        assertThatThrownBy(() -> batikConverter.convertSvgToPngFile(rawSvgData, "testPngFileName"))
+                .isInstanceOf(SvgToPngConvertException.class);
+    }
+
     @AfterEach
     void deleteFile() {
-        testFile.delete();
+        try {
+            testFile.delete();
+        } catch (NullPointerException ignored) {
+        }
     }
 }
