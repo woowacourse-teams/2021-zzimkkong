@@ -8,8 +8,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import java.util.List;
-
 import static com.woowacourse.zzimkkong.Constants.*;
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -23,7 +21,7 @@ class SpaceRepositoryTest extends RepositoryTest {
         Member pobi = new Member(EMAIL, PASSWORD, ORGANIZATION);
         luther = new Map(LUTHER_NAME, MAP_DRAWING_DATA, MAP_IMAGE_URL, pobi);
 
-        Setting beSetting = new Setting.Builder()
+        Setting beSetting = Setting.builder()
                 .availableStartTime(BE_AVAILABLE_START_TIME)
                 .availableEndTime(BE_AVAILABLE_END_TIME)
                 .reservationTimeUnit(BE_RESERVATION_TIME_UNIT)
@@ -42,7 +40,7 @@ class SpaceRepositoryTest extends RepositoryTest {
                 .setting(beSetting)
                 .build();
 
-        Setting feSetting = new Setting.Builder()
+        Setting feSetting = Setting.builder()
                 .availableStartTime(FE_AVAILABLE_START_TIME)
                 .availableEndTime(FE_AVAILABLE_END_TIME)
                 .reservationTimeUnit(FE_RESERVATION_TIME_UNIT)

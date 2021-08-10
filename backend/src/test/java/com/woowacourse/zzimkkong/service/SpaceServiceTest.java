@@ -73,7 +73,7 @@ class SpaceServiceTest extends ServiceTest {
         sakjung = new Member(NEW_EMAIL, PASSWORD, ORGANIZATION);
         luther = new Map(1L, LUTHER_NAME, MAP_DRAWING_DATA, MAP_IMAGE_URL, pobi);
 
-        Setting beSetting = new Setting.Builder()
+        Setting beSetting = Setting.builder()
                 .availableStartTime(BE_AVAILABLE_START_TIME)
                 .availableEndTime(BE_AVAILABLE_END_TIME)
                 .reservationTimeUnit(BE_RESERVATION_TIME_UNIT)
@@ -92,7 +92,7 @@ class SpaceServiceTest extends ServiceTest {
                 .setting(beSetting)
                 .build();
 
-        Setting feSetting = new Setting.Builder()
+        Setting feSetting = Setting.builder()
                 .availableStartTime(FE_AVAILABLE_START_TIME)
                 .availableEndTime(FE_AVAILABLE_END_TIME)
                 .reservationTimeUnit(FE_RESERVATION_TIME_UNIT)
@@ -120,7 +120,7 @@ class SpaceServiceTest extends ServiceTest {
     @DisplayName("공간 생성 요청 시, 공간을 생성한다.")
     void save() {
         // given
-        Setting setting = new Setting.Builder()
+        Setting setting = Setting.builder()
                 .availableStartTime(BE_AVAILABLE_START_TIME)
                 .availableEndTime(BE_AVAILABLE_END_TIME)
                 .reservationTimeUnit(BE_RESERVATION_TIME_UNIT)
@@ -327,7 +327,7 @@ class SpaceServiceTest extends ServiceTest {
         SpaceDeleteRequest spaceDeleteRequest = new SpaceDeleteRequest(MAP_SVG);
 
         //then
-        assertThatThrownBy(() -> spaceService.deleteSpace(luther.getId(), be.getId(), spaceDeleteRequest ,sakjung))
+        assertThatThrownBy(() -> spaceService.deleteSpace(luther.getId(), be.getId(), spaceDeleteRequest, sakjung))
                 .isInstanceOf(NoAuthorityOnMapException.class);
     }
 

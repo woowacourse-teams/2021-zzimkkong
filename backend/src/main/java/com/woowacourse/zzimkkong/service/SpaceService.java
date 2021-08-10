@@ -145,7 +145,7 @@ public class SpaceService {
     private Setting getSetting(final SpaceCreateUpdateRequest spaceCreateUpdateRequest) {
         SettingsRequest settingsRequest = spaceCreateUpdateRequest.getSettingsRequest();
 
-        return new Setting.Builder()
+        return Setting.builder()
                 .availableStartTime(settingsRequest.getAvailableStartTime())
                 .availableEndTime(settingsRequest.getAvailableEndTime())
                 .reservationTimeUnit(settingsRequest.getReservationTimeUnit())

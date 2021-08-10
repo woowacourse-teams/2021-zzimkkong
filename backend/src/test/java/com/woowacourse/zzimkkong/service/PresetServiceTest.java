@@ -3,10 +3,10 @@ package com.woowacourse.zzimkkong.service;
 import com.woowacourse.zzimkkong.domain.Member;
 import com.woowacourse.zzimkkong.domain.Preset;
 import com.woowacourse.zzimkkong.domain.Setting;
+import com.woowacourse.zzimkkong.dto.member.PresetCreateRequest;
 import com.woowacourse.zzimkkong.dto.member.PresetCreateResponse;
 import com.woowacourse.zzimkkong.dto.member.PresetFindAllResponse;
 import com.woowacourse.zzimkkong.dto.space.SettingsRequest;
-import com.woowacourse.zzimkkong.dto.member.PresetCreateRequest;
 import com.woowacourse.zzimkkong.exception.preset.NoSuchPresetException;
 import com.woowacourse.zzimkkong.repository.PresetRepository;
 import org.junit.jupiter.api.BeforeEach;
@@ -41,7 +41,7 @@ class PresetServiceTest extends ServiceTest {
             BE_ENABLED_DAY_OF_WEEK
     );
 
-    private final Setting setting = new Setting.Builder()
+    private final Setting setting = Setting.builder()
             .availableStartTime(BE_AVAILABLE_START_TIME)
             .availableEndTime(BE_AVAILABLE_END_TIME)
             .reservationTimeUnit(BE_RESERVATION_TIME_UNIT)

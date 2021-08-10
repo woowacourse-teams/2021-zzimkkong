@@ -47,7 +47,7 @@ public class DataLoader implements CommandLineRunner {
                         pobi)
         );
 
-        Setting defaultSetting = new Setting.Builder()
+        Setting defaultSetting = Setting.builder()
                 .availableStartTime(LocalTime.of(0, 0))
                 .availableEndTime(LocalTime.of(23, 59))
                 .reservationTimeUnit(10)

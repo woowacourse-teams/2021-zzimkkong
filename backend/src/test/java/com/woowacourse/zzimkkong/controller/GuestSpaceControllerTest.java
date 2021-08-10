@@ -18,7 +18,6 @@ import org.springframework.http.MediaType;
 import java.util.List;
 
 import static com.woowacourse.zzimkkong.Constants.*;
-import static com.woowacourse.zzimkkong.Constants.SPACE_DRAWING;
 import static com.woowacourse.zzimkkong.DocumentUtils.*;
 import static com.woowacourse.zzimkkong.controller.ManagerSpaceControllerTest.saveSpace;
 import static com.woowacourse.zzimkkong.controller.MapControllerTest.saveMap;
@@ -42,7 +41,7 @@ public class GuestSpaceControllerTest extends AcceptanceTest {
 
         Member pobi = new Member(EMAIL, PASSWORD, ORGANIZATION);
         Map luther = new Map(LUTHER_NAME, MAP_DRAWING_DATA, MAP_IMAGE_URL, pobi);
-        Setting beSetting = new Setting.Builder()
+        Setting beSetting = Setting.builder()
                 .availableStartTime(BE_AVAILABLE_START_TIME)
                 .availableEndTime(BE_AVAILABLE_END_TIME)
                 .reservationTimeUnit(BE_RESERVATION_TIME_UNIT)
@@ -52,7 +51,7 @@ public class GuestSpaceControllerTest extends AcceptanceTest {
                 .enabledDayOfWeek(BE_ENABLED_DAY_OF_WEEK)
                 .build();
 
-        Setting feSetting = new Setting.Builder()
+        Setting feSetting = Setting.builder()
                 .availableStartTime(FE_AVAILABLE_START_TIME)
                 .availableEndTime(FE_AVAILABLE_END_TIME)
                 .reservationTimeUnit(FE_RESERVATION_TIME_UNIT)

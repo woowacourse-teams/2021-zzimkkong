@@ -66,7 +66,7 @@ public class ManagerReservationServiceTest extends ServiceTest {
         sakjung = new Member(NEW_EMAIL, PASSWORD, ORGANIZATION);
         luther = new Map(1L, LUTHER_NAME, MAP_DRAWING_DATA, MAP_IMAGE_URL, pobi);
 
-        Setting beSetting = new Setting.Builder()
+        Setting beSetting = Setting.builder()
                 .availableStartTime(BE_AVAILABLE_START_TIME)
                 .availableEndTime(BE_AVAILABLE_END_TIME)
                 .reservationTimeUnit(BE_RESERVATION_TIME_UNIT)
@@ -85,7 +85,7 @@ public class ManagerReservationServiceTest extends ServiceTest {
                 .setting(beSetting)
                 .build();
 
-        Setting feSetting = new Setting.Builder()
+        Setting feSetting = Setting.builder()
                 .availableStartTime(FE_AVAILABLE_START_TIME)
                 .availableEndTime(FE_AVAILABLE_END_TIME)
                 .reservationTimeUnit(FE_RESERVATION_TIME_UNIT)
@@ -354,7 +354,7 @@ public class ManagerReservationServiceTest extends ServiceTest {
     @DisplayName("예약 생성 요청 시, 예약이 불가능한 공간이면 에러를 반환한다.")
     void saveReservationUnable() {
         // given, when
-        Setting setting = new Setting.Builder()
+        Setting setting = Setting.builder()
                 .availableStartTime(LocalTime.of(0, 0))
                 .availableEndTime(LocalTime.of(18, 0))
                 .reservationTimeUnit(10)
@@ -386,7 +386,7 @@ public class ManagerReservationServiceTest extends ServiceTest {
     @DisplayName("예약 생성 요청 시, 예약이 불가능한 요일이면 에러를 반환한다.")
     void saveIllegalDayOfWeek() {
         // given, when
-        Setting setting = new Setting.Builder()
+        Setting setting = Setting.builder()
                 .availableStartTime(LocalTime.of(0, 0))
                 .availableEndTime(LocalTime.of(18, 0))
                 .reservationTimeUnit(10)
@@ -910,7 +910,7 @@ public class ManagerReservationServiceTest extends ServiceTest {
     @DisplayName("예약 수정 요청 시, 예약이 불가능한 공간이면 에러를 반환한다.")
     void updateReservationUnable() {
         // given, when
-        Setting setting = new Setting.Builder()
+        Setting setting = Setting.builder()
                 .availableStartTime(LocalTime.of(0, 0))
                 .availableEndTime(LocalTime.of(18, 0))
                 .reservationTimeUnit(10)
@@ -944,7 +944,7 @@ public class ManagerReservationServiceTest extends ServiceTest {
     @DisplayName("예약 수정 요청 시, 예약이 불가능한 요일이면 에러를 반환한다.")
     void updateIllegalDayOfWeek() {
         // given, when
-        Setting setting = new Setting.Builder()
+        Setting setting = Setting.builder()
                 .availableStartTime(LocalTime.of(0, 0))
                 .availableEndTime(LocalTime.of(18, 0))
                 .reservationTimeUnit(10)
