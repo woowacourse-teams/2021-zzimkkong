@@ -37,6 +37,11 @@ export const ListBoxButton = styled.button`
     border-color: ${({ theme }) => theme.primary[400]};
     box-shadow: inset 0px 0px 0px 1px ${({ theme }) => theme.primary[400]};
   }
+
+  &:disabled {
+    background-color: ${({ theme }) => theme.gray[200]};
+    cursor: default;
+  }
 `;
 
 export const OptionChildrenWrapper = styled.div`
