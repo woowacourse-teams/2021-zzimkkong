@@ -36,7 +36,14 @@ public class Reservation {
     protected Reservation() {
     }
 
-    protected Reservation(Long id, LocalDateTime startTime, LocalDateTime endTime, String password, String userName, String description, Space space) {
+    protected Reservation(
+            final Long id,
+            final LocalDateTime startTime,
+            final LocalDateTime endTime,
+            final String password,
+            final String userName,
+            final String description,
+            final Space space) {
         this.id = id;
         this.startTime = startTime;
         this.endTime = endTime;
