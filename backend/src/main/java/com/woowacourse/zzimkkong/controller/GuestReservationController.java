@@ -1,7 +1,9 @@
 package com.woowacourse.zzimkkong.controller;
 
 import com.woowacourse.zzimkkong.dto.reservation.*;
+import com.woowacourse.zzimkkong.infrastructure.GuestReservationCallback;
 import com.woowacourse.zzimkkong.service.GuestReservationService;
+import com.woowacourse.zzimkkong.service.ReservationService2;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -16,9 +18,16 @@ import static com.woowacourse.zzimkkong.dto.ValidatorMessage.DATE_FORMAT;
 @RequestMapping("/api/guests/maps/{mapId}/spaces")
 public class GuestReservationController {
     private final GuestReservationService reservationService;
+    private final ReservationService2 reservationService2;
+    private final GuestReservationCallback guestCallback;
 
-    public GuestReservationController(final GuestReservationService reservationService) {
+    public GuestReservationController(
+            final GuestReservationService reservationService,
+            final ReservationService2 reservationService2,
+            final GuestReservationCallback guestCallback) {
         this.reservationService = reservationService;
+        this.reservationService2 = reservationService2;
+        this.guestCallback = guestCallback;
     }
 
     @PostMapping("/{spaceId}/reservations")
@@ -26,10 +35,11 @@ public class GuestReservationController {
             @PathVariable final Long mapId,
             @PathVariable final Long spaceId,
             @RequestBody @Valid final ReservationCreateUpdateWithPasswordRequest reservationCreateUpdateWithPasswordRequest) {
-        ReservationCreateResponse reservationCreateResponse = reservationService.saveReservation(
+        ReservationCreateDto reservationCreateDto = ReservationCreateDto.of(
                 mapId,
                 spaceId,
                 reservationCreateUpdateWithPasswordRequest);
+        ReservationCreateResponse reservationCreateResponse = reservationService2.saveReservation(reservationCreateDto, guestCallback);
         return ResponseEntity
                 .created(URI.create("/api/guests/maps/" + mapId + "/spaces/" + spaceId + "/reservations/" + reservationCreateResponse.getId()))
                 .build();

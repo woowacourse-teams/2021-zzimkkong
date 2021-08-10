@@ -4,7 +4,9 @@ import com.woowacourse.zzimkkong.domain.Manager;
 import com.woowacourse.zzimkkong.domain.Member;
 import com.woowacourse.zzimkkong.dto.reservation.*;
 import com.woowacourse.zzimkkong.dto.slack.SlackResponse;
+import com.woowacourse.zzimkkong.infrastructure.ManagerReservationCallback;
 import com.woowacourse.zzimkkong.service.ManagerReservationService;
+import com.woowacourse.zzimkkong.service.ReservationService2;
 import com.woowacourse.zzimkkong.service.SlackService;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
@@ -21,10 +23,18 @@ import static com.woowacourse.zzimkkong.dto.ValidatorMessage.DATE_FORMAT;
 public class ManagerReservationController {
     private final ManagerReservationService reservationService;
     private final SlackService slackService;
+    private final ReservationService2 reservationService2;
+    private final ManagerReservationCallback managerCallback;
 
-    public ManagerReservationController(final ManagerReservationService reservationService, final SlackService slackService) {
+    public ManagerReservationController(
+            final ManagerReservationService reservationService,
+            final SlackService slackService,
+            final ReservationService2 reservationService2,
+            final ManagerReservationCallback managerCallback) {
         this.reservationService = reservationService;
         this.slackService = slackService;
+        this.reservationService2 = reservationService2;
+        this.managerCallback = managerCallback;
     }
 
     @PostMapping("/{spaceId}/reservations")
@@ -33,11 +43,12 @@ public class ManagerReservationController {
             @PathVariable final Long spaceId,
             @RequestBody @Valid final ReservationCreateUpdateWithPasswordRequest reservationCreateUpdateWithPasswordRequest,
             @Manager final Member manager) {
-        ReservationCreateResponse reservationCreateResponse = reservationService.saveReservation(
+        ReservationCreateDto reservationCreateDto = ReservationCreateDto.of(
                 mapId,
                 spaceId,
                 reservationCreateUpdateWithPasswordRequest,
                 manager);
+        ReservationCreateResponse reservationCreateResponse = reservationService2.saveReservation(reservationCreateDto, managerCallback);
         return ResponseEntity
                 .created(URI.create("/api/managers/maps/" + mapId + "/spaces/" + spaceId + "/reservations/" + reservationCreateResponse.getId()))
                 .build();

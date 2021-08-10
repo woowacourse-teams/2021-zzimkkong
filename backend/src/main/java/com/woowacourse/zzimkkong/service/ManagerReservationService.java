@@ -54,7 +54,7 @@ public class ManagerReservationService extends ReservationService {
                         .password(reservationCreateUpdateWithPasswordRequest.getPassword())
                         .userName(reservationCreateUpdateWithPasswordRequest.getName())
                         .description(reservationCreateUpdateWithPasswordRequest.getDescription())
-                        .space(space)
+                        .space(space) 
                         .build());
 
         return ReservationCreateResponse.from(reservation);
