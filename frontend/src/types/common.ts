@@ -6,8 +6,8 @@ export interface Coordinate {
 }
 
 export interface ScrollPosition {
-  x: number | undefined;
-  y: number | undefined;
+  x?: number;
+  y?: number;
 }
 
 export interface MapItem {
