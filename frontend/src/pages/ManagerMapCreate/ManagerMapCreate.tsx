@@ -52,7 +52,7 @@ const ManagerMapCreate = (): JSX.Element => {
   const [isPressSpacebar, setPressSpacebar] = useState(false);
   const isDraggable = mode === Mode.Move || isPressSpacebar;
 
-  const [color, setColor] = useState<Color>('#333333');
+  const [color, setColor] = useState<Color>(PALETTE.GRAY[400]);
 
   const [coordinate, setCoordinate] = useState<Coordinate>({ x: 0, y: 0 });
 
