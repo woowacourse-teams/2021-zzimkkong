@@ -49,7 +49,10 @@ public class GuestReservationController {
     public ResponseEntity<ReservationFindAllResponse> findAll(
             @PathVariable final Long mapId,
             @RequestParam @DateTimeFormat(pattern = DATE_FORMAT) final LocalDate date) {
-        ReservationFindAllResponse reservationFindAllResponse = reservationService.findAllReservations(mapId, date);
+        ReservationFindAllDto reservationFindAllDto = ReservationFindAllDto.of(
+                mapId,
+                date);
+        ReservationFindAllResponse reservationFindAllResponse = reservationService2.findAllReservations(reservationFindAllDto, guestCallback);
         return ResponseEntity.ok().body(reservationFindAllResponse);
     }
 
@@ -58,7 +61,12 @@ public class GuestReservationController {
             @PathVariable final Long mapId,
             @PathVariable final Long spaceId,
             @RequestParam @DateTimeFormat(pattern = DATE_FORMAT) final LocalDate date) {
-        ReservationFindResponse reservationFindResponse = reservationService.findReservations(mapId, spaceId, date);
+        ReservationFindDto reservationFindDto = ReservationFindDto.of(
+                mapId,
+                spaceId,
+                date
+        );
+        ReservationFindResponse reservationFindResponse = reservationService2.findReservations(reservationFindDto, guestCallback);
         return ResponseEntity.ok().body(reservationFindResponse);
     }
 

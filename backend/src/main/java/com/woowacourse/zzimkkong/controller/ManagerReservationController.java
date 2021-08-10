@@ -59,10 +59,11 @@ public class ManagerReservationController {
             @PathVariable final Long mapId,
             @RequestParam @DateTimeFormat(pattern = DATE_FORMAT) final LocalDate date,
             @Manager final Member manager) {
-        ReservationFindAllResponse reservationFindAllResponse = reservationService.findAllReservations(
+        ReservationFindAllDto reservationFindAllDto = ReservationFindAllDto.of(
                 mapId,
                 date,
                 manager);
+        ReservationFindAllResponse reservationFindAllResponse = reservationService2.findAllReservations(reservationFindAllDto, managerCallback);
         return ResponseEntity.ok().body(reservationFindAllResponse);
     }
 
@@ -72,11 +73,13 @@ public class ManagerReservationController {
             @PathVariable final Long spaceId,
             @RequestParam @DateTimeFormat(pattern = DATE_FORMAT) final LocalDate date,
             @Manager final Member manager) {
-        ReservationFindResponse reservationFindResponse = reservationService.findReservations(
+        ReservationFindDto reservationFindDto = ReservationFindDto.of(
                 mapId,
                 spaceId,
                 date,
-                manager);
+                manager
+        );
+        ReservationFindResponse reservationFindResponse = reservationService2.findReservations(reservationFindDto, managerCallback);
         return ResponseEntity.ok().body(reservationFindResponse);
     }
 

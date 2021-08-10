@@ -4,13 +4,11 @@ import com.woowacourse.zzimkkong.domain.Map;
 import com.woowacourse.zzimkkong.domain.Member;
 import com.woowacourse.zzimkkong.domain.Reservation;
 import com.woowacourse.zzimkkong.domain.Space;
-import com.woowacourse.zzimkkong.dto.reservation.ReservationCreateDto;
-import com.woowacourse.zzimkkong.dto.reservation.ReservationCreateResponse;
-import com.woowacourse.zzimkkong.dto.reservation.ReservationCreateUpdateRequest;
-import com.woowacourse.zzimkkong.dto.reservation.ReservationCreateUpdateWithPasswordRequest;
+import com.woowacourse.zzimkkong.dto.reservation.*;
 import com.woowacourse.zzimkkong.exception.map.NoSuchMapException;
 import com.woowacourse.zzimkkong.exception.reservation.*;
 import com.woowacourse.zzimkkong.exception.space.NoSuchSpaceException;
+import com.woowacourse.zzimkkong.infrastructure.GuestReservationCallback;
 import com.woowacourse.zzimkkong.infrastructure.ReservationCallback;
 import com.woowacourse.zzimkkong.infrastructure.TimeConverter;
 import com.woowacourse.zzimkkong.repository.MapRepository;
@@ -26,6 +24,8 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
+
+import static com.woowacourse.zzimkkong.service.MapService.validateManagerOfMap;
 
 @Service
 @Transactional
@@ -74,6 +74,42 @@ public class ReservationService2 {
                         .build());
 
         return ReservationCreateResponse.from(reservation);
+    }
+
+    @Transactional(readOnly = true)
+    public ReservationFindAllResponse findAllReservations(
+            final ReservationFindAllDto reservationFindAllDto,
+            final ReservationCallback callback) {
+        Long mapId = reservationFindAllDto.getMapId();
+        Member manager = reservationFindAllDto.getManager();
+        Map map = maps.findById(mapId)
+                .orElseThrow(NoSuchMapException::new);
+        callback.validateManagerOfMap(map, manager);
+
+        List<Space> findSpaces = map.getSpaces();
+        LocalDate date = reservationFindAllDto.getDate();
+        List<Reservation> reservations = getReservations(findSpaces, date);
+
+        return ReservationFindAllResponse.of(findSpaces, reservations);
+    }
+
+    @Transactional(readOnly = true)
+    public ReservationFindResponse findReservations(
+            final ReservationFindDto reservationFindDto,
+            final  ReservationCallback callback) {
+        Long mapId = reservationFindDto.getMapId();
+        Member manager = reservationFindDto.getManager();
+        Map map = maps.findById(mapId)
+                .orElseThrow(NoSuchMapException::new);
+        callback.validateManagerOfMap(map, manager);
+
+        Long spaceId = reservationFindDto.getSpaceId();
+        LocalDate date = reservationFindDto.getDate();
+        Space space = map.findSpaceById(spaceId)
+                .orElseThrow(NoSuchSpaceException::new);
+        List<Reservation> reservations = getReservations(Collections.singletonList(space), date);
+
+        return ReservationFindResponse.from(reservations);
     }
 
     private void validateTime(final ReservationCreateUpdateRequest reservationCreateUpdateRequest) {
