@@ -58,10 +58,10 @@ const Select = ({
       </Styled.ListBoxButton>
       {open && (
         <Styled.ListBox
-          tabIndex={-1}
+          tabIndex={0}
           role="listbox"
           aria-activedescendant={`${value}`}
-          aria-labelledby="label"
+          aria-labelledby={`${name}-label`}
           maxheight={maxheight}
         >
           {options.map((option) => (
