@@ -5,7 +5,7 @@ import { QueryManagerReservationsSuccess, QueryReservationsSuccess } from 'types
 import api from './api';
 
 export interface QueryMapReservationsParams {
-  mapId: number | undefined;
+  mapId: number | null;
   date: string;
 }
 

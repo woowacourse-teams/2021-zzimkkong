@@ -47,10 +47,7 @@ export const Input = styled.input`
   text-align: center;
   border: none;
   border-bottom: 1px solid ${({ theme }) => theme.gray[400]};
-
-  &:focus {
-    outline: none;
-  }
+  outline: none;
 `;
 
 export const ColorInputLabel = styled.label`

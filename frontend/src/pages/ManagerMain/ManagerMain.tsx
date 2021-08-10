@@ -25,7 +25,7 @@ import * as Styled from './ManagerMain.styles';
 const ManagerMain = (): JSX.Element => {
   const [date, setDate] = useState(new Date());
   const [open, setOpen] = useState(false);
-  const [selectedMapId, setSelectedMapId] = useState<number | undefined>(undefined);
+  const [selectedMapId, setSelectedMapId] = useState<number | null>(null);
   const [selectedMapName, setSelectedMapName] = useState('');
 
   const onRequestError = (error: AxiosError<ErrorResponse>) => {
@@ -81,7 +81,7 @@ const ManagerMain = (): JSX.Element => {
   };
 
   useEffect(() => {
-    setSelectedMapId(maps.length ? maps[0].mapId : undefined);
+    setSelectedMapId(maps.length ? maps[0].mapId : null);
     setSelectedMapName(maps.length ? maps[0].mapName : '');
   }, [maps]);
 
