@@ -17,6 +17,6 @@ export const ButtonContainer = styled.div`
 
 export const Title = styled.h2<TitleProps>`
   font-size: 1.25rem;
-  padding: ${({ hasLeftButton }) => (hasLeftButton ? '0 0.5rem' : '0 0.5rem 0 0')};
+  padding: ${({ hasLeftButton }) => (hasLeftButton ? '0 0.75rem' : '0 0.75rem 0 0')};
   flex-grow: 1;
 `;

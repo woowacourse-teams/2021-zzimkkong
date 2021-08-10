@@ -8,6 +8,25 @@ export const PrimaryLinkIcon = styled(LinkIcon)`
   fill: ${({ theme }) => theme.primary[400]};
 `;
 
+export const RightIconButton = styled(IconButton)`
+  margin: 0 0.25rem;
+
+  &:first-child {
+    margin-left: 0;
+  }
+
+  &:last-child {
+    margin-right: 0;
+  }
+`;
+
+export const VerticalBar = styled.div`
+  width: 1px;
+  height: 1.5rem;
+  margin: 0 0.25rem;
+  background-color: ${({ theme }) => theme.gray[400]};
+`;
+
 export const DateInputWrapper = styled.div`
   margin: 1rem 0;
 `;
@@ -46,16 +65,6 @@ export const SpaceReservationWrapper = styled.div``;
 
 export const SpaceWrapper = styled.div`
   margin: 2.5rem 0;
-`;
-
-export const MapListItemControlButton = styled(IconButton)`
-  & > svg {
-    fill: ${({ theme }) => theme.gray[500]};
-
-    &:hover {
-      fill: ${({ theme }) => theme.primary[400]};
-    }
-  }
 `;
 
 export const PlusIcon = styled(Plus)`

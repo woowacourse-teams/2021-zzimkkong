@@ -14,6 +14,7 @@ export const Button = styled.button<Props>`
   border: none;
   border-radius: 50%;
   background-color: transparent;
+  padding: 0;
   cursor: pointer;
   display: inline-flex;
   flex-direction: column;

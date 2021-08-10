@@ -113,14 +113,23 @@ const ManagerMain = (): JSX.Element => {
         <PageHeader
           title={selectedMapName}
           leftButtons={
-            <IconButton text="맵 목록" onClick={handleOpenDrawer}>
+            <IconButton text="맵 목록" size="small" onClick={handleOpenDrawer}>
               <MenuIcon width="100%" height="100%" />
             </IconButton>
           }
           rightButtons={
-            <IconButton text="공유 링크" onClick={handleCopyLink}>
-              <Styled.PrimaryLinkIcon width="100%" height="100%" />
-            </IconButton>
+            <>
+              <Styled.RightIconButton text="맵 편집" size="small">
+                <Styled.PrimaryLinkIcon width="100%" height="100%" />
+              </Styled.RightIconButton>
+              <Styled.RightIconButton text="공간 편집" size="small">
+                <Styled.PrimaryLinkIcon width="100%" height="100%" />
+              </Styled.RightIconButton>
+              <Styled.VerticalBar />
+              <Styled.RightIconButton text="공유 링크" size="small" onClick={handleCopyLink}>
+                <Styled.PrimaryLinkIcon width="100%" height="100%" />
+              </Styled.RightIconButton>
+            </>
           }
         />
         <Styled.DateInputWrapper>
@@ -197,18 +206,12 @@ const ManagerMain = (): JSX.Element => {
                 selected={mapId === selectedMapId}
                 control={
                   <>
-                    <Styled.MapListItemControlButton
-                      size="small"
-                      onClick={() => history.push(HREF.MANAGER_MAP_EDIT(mapId))}
-                    >
+                    <IconButton size="small">
                       <EditIcon width="100%" height="100%" />
-                    </Styled.MapListItemControlButton>
-                    <Styled.MapListItemControlButton
-                      size="small"
-                      onClick={() => handleDeleteMap(mapId)}
-                    >
+                    </IconButton>
+                    <IconButton size="small" onClick={() => handleDeleteMap(mapId)}>
                       <DeleteIcon width="100%" height="100%" />
-                    </Styled.MapListItemControlButton>
+                    </IconButton>
                   </>
                 }
               />
