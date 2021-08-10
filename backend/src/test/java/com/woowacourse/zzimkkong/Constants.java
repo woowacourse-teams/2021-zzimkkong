@@ -5,6 +5,9 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 
 public class Constants {
+    private Constants() {
+    }
+
     public static final String SALLY_PASSWORD = "1230";
     public static final String SALLY_NAME = "샐리";
     public static final String SALLY_DESCRIPTION = "집 가고 싶은 회의";
