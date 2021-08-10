@@ -542,8 +542,8 @@ const ManagerMapCreate = (): JSX.Element => {
                       <circle
                         cx={stickyCoordinate.x}
                         cy={stickyCoordinate.y}
-                        r={4}
-                        fill={PALETTE.OPACITY_BLACK[700]}
+                        r={3}
+                        fill={PALETTE.OPACITY_BLACK[300]}
                       />
                     )}
 
