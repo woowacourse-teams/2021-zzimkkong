@@ -1,7 +1,6 @@
 package com.woowacourse.zzimkkong.infrastructure;
 
 import com.woowacourse.zzimkkong.domain.Map;
-import com.woowacourse.zzimkkong.exception.infrastructure.PngDeleteException;
 import org.springframework.stereotype.Component;
 
 import java.io.File;
@@ -20,15 +19,13 @@ public class ThumbnailManager {
         this.storageUploader = storageUploader;
     }
 
-    public String uploadMapThumbnail(final String svgData, final Map map)  {
+    public String uploadMapThumbnail(final String svgData, final Map map) {
         String fileName = makeThumbnailFileName(map);
         File pngFile = svgConverter.convertSvgToPngFile(svgData, fileName);
 
         String thumbnailUrl = storageUploader.upload(THUMBNAILS_DIRECTORY_NAME, pngFile);
 
-        if(!pngFile.delete()) {
-            throw new PngDeleteException();
-        }
+        pngFile.delete();
         return thumbnailUrl;
     }
 

@@ -1,8 +1,8 @@
 import { AxiosError } from 'axios';
 import { FormEventHandler } from 'react';
 import { useMutation } from 'react-query';
-import { useHistory, useLocation } from 'react-router-dom';
-import { putReservation } from 'api/reservation';
+import { useHistory, useLocation, useParams } from 'react-router-dom';
+import { putReservation } from 'api/guestReservation';
 import { ReactComponent as CalendarIcon } from 'assets/svg/calendar.svg';
 import Button from 'components/Button/Button';
 import Header from 'components/Header/Header';
@@ -10,13 +10,12 @@ import Input from 'components/Input/Input';
 import Layout from 'components/Layout/Layout';
 import ReservationListItem from 'components/ReservationListItem/ReservationListItem';
 import MESSAGE from 'constants/message';
-import PATH from 'constants/path';
 import REGEXP from 'constants/regexp';
 import RESERVATION from 'constants/reservation';
+import useGuestReservations from 'hooks/useGuestReservations';
 import useInput from 'hooks/useInput';
-import useReservations from 'hooks/useReservations';
-import { GuestMainState } from 'pages/GuestMain/GuestMain';
-import { Reservation, Space } from 'types/common';
+import { GuestMapState } from 'pages/GuestMap/GuestMap';
+import { MapItem, Reservation, Space } from 'types/common';
 import { ErrorResponse } from 'types/response';
 import { formatDate, formatTime } from 'utils/datetime';
 import * as Styled from './GuestReservationEdit.styles';
@@ -24,18 +23,23 @@ import * as Styled from './GuestReservationEdit.styles';
 interface GuestReservationEditState {
   mapId: number;
   reservation: Reservation;
-  spaceId: Space['spaceId'];
-  spaceName: Space['spaceName'];
+  spaceId: Space['id'];
+  spaceName: Space['name'];
   selectedDate: string;
+}
+
+interface URLParameter {
+  sharingMapId: MapItem['sharingMapId'];
 }
 
 const GuestReservationEdit = (): JSX.Element => {
   const location = useLocation<GuestReservationEditState>();
-  const history = useHistory<GuestMainState>();
+  const history = useHistory<GuestMapState>();
+  const { sharingMapId } = useParams<URLParameter>();
 
   const { mapId, spaceId, reservation, spaceName, selectedDate } = location.state;
 
-  if (!mapId || !spaceId || !spaceName || !reservation) history.replace(PATH.GUEST_MAIN);
+  if (!mapId || !spaceId || !spaceName || !reservation) history.replace(`/guest/${sharingMapId}`);
 
   const now = new Date();
 
@@ -49,12 +53,12 @@ const GuestReservationEdit = (): JSX.Element => {
   const startDateTime = new Date(`${date}T${startTime}Z`);
   const endDateTime = new Date(`${date}T${endTime}Z`);
 
-  const getReservations = useReservations({ mapId, spaceId, date });
+  const getReservations = useGuestReservations({ mapId, spaceId, date });
   const reservations = getReservations.data?.data?.reservations ?? [];
 
   const editReservation = useMutation(putReservation, {
     onSuccess: () => {
-      history.push(PATH.GUEST_MAIN, {
+      history.push(`/guest/${sharingMapId}`, {
         spaceId,
         targetDate: new Date(`${date}T${startTime}`),
       });

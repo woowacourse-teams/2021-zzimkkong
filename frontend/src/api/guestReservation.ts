@@ -1,7 +1,7 @@
 import { AxiosResponse } from 'axios';
 import { QueryFunction, QueryKey } from 'react-query';
 import MESSAGE from 'constants/message';
-import { QueryManagerReservationsSuccess, QueryReservationsSuccess } from 'types/response';
+import { QueryGuestReservationsSuccess } from 'types/response';
 import api from './api';
 
 export interface QueryMapReservationsParams {
@@ -14,7 +14,6 @@ export interface QuerySpaceReservationsParams extends QueryMapReservationsParams
 }
 
 interface ReservationParams {
-  spaceId: number;
   reservation: {
     startDateTime: Date;
     endDateTime: Date;
@@ -26,10 +25,12 @@ interface ReservationParams {
 
 interface PostReservationParams extends ReservationParams {
   mapId: number;
+  spaceId: number;
 }
 
 interface PutReservationParams extends ReservationParams {
   mapId: number;
+  spaceId: number;
   reservationId: number;
 }
 
@@ -41,7 +42,7 @@ interface DeleteReservationParams {
 }
 
 export const queryGuestReservations: QueryFunction<
-  AxiosResponse<QueryReservationsSuccess>,
+  AxiosResponse<QueryGuestReservationsSuccess>,
   [QueryKey, QuerySpaceReservationsParams]
 > = ({ queryKey }) => {
   const [, data] = queryKey;
@@ -52,20 +53,6 @@ export const queryGuestReservations: QueryFunction<
   }
 
   return api.get(`/guests/maps/${mapId}/spaces/${spaceId}/reservations?date=${date}`);
-};
-
-export const queryManagerReservations: QueryFunction<
-  AxiosResponse<QueryManagerReservationsSuccess>,
-  [QueryKey, QueryMapReservationsParams]
-> = ({ queryKey }) => {
-  const [, data] = queryKey;
-  const { mapId, date } = data;
-
-  if (!mapId) {
-    throw new Error(MESSAGE.RESERVATION.INVALID_MAP_ID);
-  }
-
-  return api.get(`/managers/maps/${mapId}/spaces/reservations?date=${date}`);
 };
 
 export const postReservation = ({
