@@ -171,47 +171,49 @@ const GuestMap = (): JSX.Element => {
           <DateInput date={date} setDate={setDate} />
           <Styled.MapContainer>
             {mapDrawing && (
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                version="1.1"
-                width={mapDrawing.width}
-                height={mapDrawing.height}
-              >
-                {mapDrawing.mapElements.map((element) => (
-                  <polyline
-                    key={`polyline-${element.id}`}
-                    points={element.points.join(' ')}
-                    stroke={element.stroke}
-                    strokeWidth="2"
-                  />
-                ))}
-
-                {spaceList.length > 0 &&
-                  spaceList.map(({ id, area, color, name }) => (
-                    <Styled.Space key={`area-${id}`} onClick={() => handleClickSpaceArea(id)}>
-                      {area.shape === 'rect' && (
-                        <Styled.SpaceArea
-                          x={area.x}
-                          y={area.y}
-                          width={area.width}
-                          height={area.height}
-                          fill={color ?? PALETTE.RED[200]}
-                          opacity="0.3"
-                        />
-                      )}
-
-                      <Styled.SpaceAreaText
-                        x={area.x + area.width / 2}
-                        y={area.y + area.height / 2}
-                      >
-                        {name}
-                      </Styled.SpaceAreaText>
-                    </Styled.Space>
+              <Styled.MapContainerInner width={mapDrawing.width} height={mapDrawing.height}>
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  version="1.1"
+                  width={mapDrawing.width}
+                  height={mapDrawing.height}
+                >
+                  {mapDrawing.mapElements.map((element) => (
+                    <polyline
+                      key={`polyline-${element.id}`}
+                      points={element.points.join(' ')}
+                      stroke={element.stroke}
+                      strokeWidth="2"
+                    />
                   ))}
-              </svg>
+
+                  {spaceList.length > 0 &&
+                    spaceList.map(({ id, area, color, name }) => (
+                      <Styled.Space key={`area-${id}`} onClick={() => handleClickSpaceArea(id)}>
+                        {area.shape === 'rect' && (
+                          <Styled.SpaceArea
+                            x={area.x}
+                            y={area.y}
+                            width={area.width}
+                            height={area.height}
+                            fill={color ?? PALETTE.RED[200]}
+                            opacity="0.3"
+                          />
+                        )}
+
+                        <Styled.SpaceAreaText
+                          x={area.x + area.width / 2}
+                          y={area.y + area.height / 2}
+                        >
+                          {name}
+                        </Styled.SpaceAreaText>
+                      </Styled.Space>
+                    ))}
+                </svg>
+              </Styled.MapContainerInner>
             )}
           </Styled.MapContainer>
-          {spaceList.length > 0 && selectedSpaceId && (
+          {spaceList.length > 0 && selectedSpaceId !== null && (
             <Styled.PanelContainer>
               <Panel>
                 <Panel.Header dotColor={spaces[selectedSpaceId].color}>
@@ -257,7 +259,7 @@ const GuestMap = (): JSX.Element => {
             </Styled.PanelContainer>
           )}
         </Styled.PageWithBottomButton>
-        {spaceList.length && selectedSpaceId && reservationAvailable && (
+        {spaceList.length > 0 && selectedSpaceId !== null && reservationAvailable && (
           <Styled.ReservationLink
             to={{
               pathname: `/guest/${sharingMapId}/reservation`,

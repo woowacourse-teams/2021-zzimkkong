@@ -19,9 +19,19 @@ export const MapContainer = styled.div`
   overflow: auto;
   display: flex;
   justify-content: center;
+  position: relative;
+`;
 
-  @media (max-width: ${(props) => props.theme.breakpoints.md}px) {
-    height: auto;
+export const MapContainerInner = styled.div<{ width: number; height: number }>`
+  min-width: ${({ width }) => width}px;
+  min-height: ${({ height }) => height}px;
+  display: flex;
+  justify-content: center;
+
+  @media (max-width: ${({ width }) => width}px) {
+    position: absolute;
+    top: 0;
+    left: 0;
   }
 `;
 
