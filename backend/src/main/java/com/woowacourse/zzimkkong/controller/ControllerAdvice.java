@@ -2,13 +2,10 @@ package com.woowacourse.zzimkkong.controller;
 
 import com.fasterxml.jackson.databind.exc.InvalidFormatException;
 import com.woowacourse.zzimkkong.dto.ErrorResponse;
+import com.woowacourse.zzimkkong.dto.InputFieldErrorResponse;
+import com.woowacourse.zzimkkong.exception.InputFieldException;
 import com.woowacourse.zzimkkong.exception.ZzimkkongException;
-import com.woowacourse.zzimkkong.exception.authorization.AuthorizationException;
-import com.woowacourse.zzimkkong.exception.infrastructure.*;
-import com.woowacourse.zzimkkong.exception.map.MapException;
-import com.woowacourse.zzimkkong.exception.member.MemberException;
-import com.woowacourse.zzimkkong.exception.reservation.ReservationException;
-import com.woowacourse.zzimkkong.exception.space.SpaceException;
+import com.woowacourse.zzimkkong.exception.infrastructure.InfrastructureMalfunctionException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.dao.DataAccessException;
@@ -27,7 +24,23 @@ import static com.woowacourse.zzimkkong.dto.ValidatorMessage.SERVER_ERROR_MESSAG
 public class ControllerAdvice {
     private final Logger logger = LoggerFactory.getLogger(ControllerAdvice.class);
 
-    @ExceptionHandler({MemberException.class, MapException.class, SpaceException.class, ReservationException.class, AuthorizationException.class})
+    @ExceptionHandler(InputFieldException.class)
+    public ResponseEntity<InputFieldErrorResponse> inputFieldExceptionHandler(final InputFieldException exception) {
+        logger.info(exception.getMessage());
+        return ResponseEntity
+                .status(exception.getStatus())
+                .body(InputFieldErrorResponse.from(exception));
+    }
+
+    @ExceptionHandler(InfrastructureMalfunctionException.class)
+    public ResponseEntity<ErrorResponse> wrongConfigurationOfInfrastructureException(final InfrastructureMalfunctionException exception) {
+        logger.warn(exception.getMessage(), exception);
+        return ResponseEntity
+                .status(exception.getStatus())
+                .body(ErrorResponse.from(exception));
+    }
+
+    @ExceptionHandler(ZzimkkongException.class)
     public ResponseEntity<ErrorResponse> zzimkkongExceptionHandler(final ZzimkkongException exception) {
         logger.info(exception.getMessage());
         return ResponseEntity
@@ -35,18 +48,10 @@ public class ControllerAdvice {
                 .body(ErrorResponse.from(exception));
     }
 
-    @ExceptionHandler({S3UploadException.class, EncodingException.class, DecodingException.class, SvgToPngConvertException.class})
-    public ResponseEntity<ErrorResponse> invalidInfrastructureConfigHandler(final InfrastructureException exception) {
-        logger.warn(exception.getMessage(), exception);
-        return ResponseEntity
-                .status(exception.getStatus())
-                .body(ErrorResponse.from(exception));
-    }
-
     @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ResponseEntity<ErrorResponse> invalidArgumentHandler(final MethodArgumentNotValidException exception) {
+    public ResponseEntity<InputFieldErrorResponse> invalidArgumentHandler(final MethodArgumentNotValidException exception) {
         logger.info(exception.getMessage());
-        return ResponseEntity.badRequest().body(ErrorResponse.from(exception));
+        return ResponseEntity.badRequest().body(InputFieldErrorResponse.from(exception));
     }
 
     @ExceptionHandler(ConstraintViolationException.class)
@@ -62,13 +67,13 @@ public class ControllerAdvice {
     }
 
     @ExceptionHandler(DataAccessException.class)
-    public ResponseEntity<ErrorResponse> invalidDataAccessHandler(final DataAccessException exception) {
+    public ResponseEntity<Void> invalidDataAccessHandler(final DataAccessException exception) {
         logger.warn(SERVER_ERROR_MESSAGE, exception);
         return ResponseEntity.internalServerError().build();
     }
 
     @ExceptionHandler(Exception.class)
-    public ResponseEntity<ErrorResponse> unhandledExceptionHandler(final Exception exception) {
+    public ResponseEntity<Void> unhandledExceptionHandler(final Exception exception) {
         logger.warn(exception.getMessage(), exception);
         return ResponseEntity.internalServerError().build();
     }

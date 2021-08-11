@@ -1,8 +1,9 @@
 package com.woowacourse.zzimkkong.exception.reservation;
 
+import com.woowacourse.zzimkkong.exception.InputFieldException;
 import org.springframework.http.HttpStatus;
 
-public class ImpossibleEndTimeException extends ReservationException {
+public class ImpossibleEndTimeException extends InputFieldException {
     private static final String MESSAGE = "종료 시간을 확인해주세요.";
 
     public ImpossibleEndTimeException() {
