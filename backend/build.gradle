@@ -97,7 +97,7 @@ jacocoTestCoverageVerification {
     violationRules {
         rule {
             element = 'CLASS'
-            excludes = ["**.exception.**", "**.ControllerAdvice", "**.ErrorResponse", "**.ValidatorMessage",
+            excludes = ["**.exception.**", "**.ControllerAdvice", "**.*ErrorResponse", "**.ValidatorMessage",
                         "**.ZzimkkongApplication", "**.*TimeConverter", "**.DataLoader", "**.*Config",
                         "**.LoginInterceptor", "**.AuthenticationPrincipalArgumentResolver",
                         "**.slack.**", "**.Slack*"]

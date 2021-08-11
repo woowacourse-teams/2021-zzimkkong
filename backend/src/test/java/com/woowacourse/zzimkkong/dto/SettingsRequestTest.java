@@ -56,7 +56,7 @@ class SettingsRequestTest extends RequestTest {
     @ParameterizedTest
     @NullSource
     @ValueSource(strings = {"Monday, Tuesday, Wednesday", "Monday,tuesday", "monday"})
-    @DisplayName("공간의 예약 설정에 예약 가능 요일이 올바르게 들어온다.")
+    @DisplayName("공간의 예약 설정에 예약 가능 요일이 올바르지 않게 들어온다.")
     void validEnabledDayOfWeek(String days) {
         SettingsRequest settingsRequest = new SettingsRequest(
                 LocalTime.of(10, 0),
