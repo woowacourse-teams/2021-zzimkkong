@@ -16,7 +16,7 @@ class MemberRepositoryTest extends RepositoryTest {
 
     @BeforeEach
     void setUp() {
-        pobi = new Member(EMAIL, PASSWORD, ORGANIZATION);
+        pobi = new Member(EMAIL, PW, ORGANIZATION);
     }
 
     @Test

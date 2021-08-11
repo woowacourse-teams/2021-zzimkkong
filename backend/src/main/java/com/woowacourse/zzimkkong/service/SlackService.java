@@ -3,7 +3,6 @@ package com.woowacourse.zzimkkong.service;
 import com.woowacourse.zzimkkong.domain.SlackUrl;
 import com.woowacourse.zzimkkong.dto.slack.Attachments;
 import com.woowacourse.zzimkkong.dto.slack.SlackResponse;
-import com.woowacourse.zzimkkong.repository.ReservationRepository;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
@@ -15,11 +14,9 @@ import org.springframework.web.client.RestTemplate;
 @Service
 @Transactional(readOnly = true)
 public class SlackService {
-    private final ReservationRepository reservations;
     private final SlackUrl slackUrl;
 
-    public SlackService(final ReservationRepository reservations, final SlackUrl slackUrl) {
-        this.reservations = reservations;
+    public SlackService(final SlackUrl slackUrl) {
         this.slackUrl = slackUrl;
     }
 

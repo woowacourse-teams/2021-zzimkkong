@@ -16,11 +16,11 @@ import static com.woowacourse.zzimkkong.dto.ValidatorMessage.*;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
-public class ReservationCreateUpdateRequestTest extends RequestTest {
+class ReservationCreateUpdateRequestTest extends RequestTest {
     @ParameterizedTest
     @NullSource
     @DisplayName("예약 생성에 빈 dateTime이 들어오면 처리한다.")
-    public void blankDateTime(LocalDateTime dateTime) {
+    void blankDateTime(LocalDateTime dateTime) {
         ReservationCreateUpdateRequest startTime = new ReservationCreateUpdateRequest(
                 dateTime,
                 LocalDateTime.now(),
@@ -43,20 +43,9 @@ public class ReservationCreateUpdateRequestTest extends RequestTest {
     }
 
     @ParameterizedTest
-    @ValueSource(strings = {"2021-08-03T25:00:00", "2021/08/03T00:00:00", "2021-08-0300:00:00"})
-    @DisplayName("예약 생성에 옳지 않은 형식의 dateTime이 들어오면 처리한다.")
-    public void invalidDateTime(String dateTime) {
-        assertThatThrownBy(() -> new ReservationCreateUpdateRequest(
-                LocalDateTime.parse(dateTime),
-                LocalDateTime.parse(dateTime),
-                "name",
-                "description")).isInstanceOf(DateTimeParseException.class);
-    }
-
-    @ParameterizedTest
     @NullAndEmptySource
     @DisplayName("예약 생성에 빈 이름이 들어오면 처리한다.")
-    public void blankName(String data) {
+    void blankName(String data) {
         ReservationCreateUpdateRequest nameRequest = new ReservationCreateUpdateRequest(
                 LocalDateTime.now(),
                 LocalDateTime.now(),
@@ -71,7 +60,7 @@ public class ReservationCreateUpdateRequestTest extends RequestTest {
     @ParameterizedTest
     @CsvSource(value = {"hihellomorethantwenty:true", "hi~~~~:true", "hihello!:false"}, delimiter = ':')
     @DisplayName("예약 생성의 이름에 옳지 않은 형식의 문자열이 들어오면 처리한다.")
-    public void invalidName(String name, boolean flag) {
+    void invalidName(String name, boolean flag) {
         ReservationCreateUpdateRequest reservationCreateUpdateRequest = new ReservationCreateUpdateRequest(
                 LocalDateTime.now(),
                 LocalDateTime.now(),
@@ -86,7 +75,7 @@ public class ReservationCreateUpdateRequestTest extends RequestTest {
     @ParameterizedTest
     @NullAndEmptySource
     @DisplayName("예약 생성에 빈 이름이 들어오면 처리한다.")
-    public void blankDescription(String description) {
+    void blankDescription(String description) {
         ReservationCreateUpdateRequest descriptionRequest = new ReservationCreateUpdateRequest(
                 LocalDateTime.now(),
                 LocalDateTime.now(),
@@ -100,7 +89,7 @@ public class ReservationCreateUpdateRequestTest extends RequestTest {
 
     @Test
     @DisplayName("예약 생성의 이름에 옳지 않은 형식의 문자열이 들어오면 처리한다.")
-    public void invalidDescription() {
+    void invalidDescription() {
         ReservationCreateUpdateRequest reservationCreateUpdateRequest = new ReservationCreateUpdateRequest(
                 LocalDateTime.now(),
                 LocalDateTime.now(),
@@ -109,7 +98,7 @@ public class ReservationCreateUpdateRequestTest extends RequestTest {
 
         assertThat(getConstraintViolations(reservationCreateUpdateRequest).stream()
                 .anyMatch(violation -> violation.getMessage().equals(DESCRIPTION_MESSAGE)))
-                .isEqualTo(true);
+                .isTrue();
     }
 }
 

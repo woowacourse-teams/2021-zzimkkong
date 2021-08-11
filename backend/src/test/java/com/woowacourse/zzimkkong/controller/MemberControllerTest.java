@@ -33,7 +33,7 @@ class MemberControllerTest extends AcceptanceTest {
 
     @BeforeEach
     void setUp() {
-        pobi = new Member(EMAIL, PASSWORD, ORGANIZATION);
+        pobi = new Member(EMAIL, PW, ORGANIZATION);
         setting = Setting.builder()
                 .availableStartTime(BE_AVAILABLE_START_TIME)
                 .availableEndTime(BE_AVAILABLE_END_TIME)
@@ -60,7 +60,7 @@ class MemberControllerTest extends AcceptanceTest {
     @DisplayName("정상적인 회원가입 입력이 들어오면 회원 정보를 저장한다.")
     void join() {
         //given
-        MemberSaveRequest newMemberSaveRequest = new MemberSaveRequest(NEW_EMAIL, PASSWORD, ORGANIZATION);
+        MemberSaveRequest newMemberSaveRequest = new MemberSaveRequest(NEW_EMAIL, PW, ORGANIZATION);
 
         // when
         ExtractableResponse<Response> response = saveMember(newMemberSaveRequest);
@@ -73,7 +73,7 @@ class MemberControllerTest extends AcceptanceTest {
     @DisplayName("이메일 중복 확인 시, 중복되지 않은 이메일을 입력하면 통과한다.")
     void getMembers() {
         //given
-        MemberSaveRequest newMemberSaveRequest = new MemberSaveRequest(NEW_EMAIL, PASSWORD, ORGANIZATION);
+        MemberSaveRequest newMemberSaveRequest = new MemberSaveRequest(NEW_EMAIL, PW, ORGANIZATION);
         saveMember(newMemberSaveRequest);
 
         // when

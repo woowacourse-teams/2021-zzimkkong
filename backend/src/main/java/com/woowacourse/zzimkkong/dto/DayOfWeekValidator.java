@@ -35,16 +35,16 @@ public class DayOfWeekValidator implements ConstraintValidator<DayOfWeekConstrai
         return isValidDayOfWeekName(dayOfWeekInput);
     }
 
-    private Boolean hasDuplicates(List<String> dayOfWeekInput) {
+    private boolean hasDuplicates(List<String> dayOfWeekInput) {
         Set<String> uniqueDayOfWeekInput = new HashSet<>(dayOfWeekInput);
         return uniqueDayOfWeekInput.size() != dayOfWeekInput.size();
     }
 
     private Boolean isValidDayOfWeekName(final List<String> dayOfWeekInput) {
-        List<String> AllDaysOfWeekNames = Arrays.stream(DayOfWeek.values())
+        List<String> allDaysOfWeekNames = Arrays.stream(DayOfWeek.values())
                 .map(DayOfWeek::name)
                 .collect(Collectors.toList());
 
-        return AllDaysOfWeekNames.containsAll(dayOfWeekInput);
+        return allDaysOfWeekNames.containsAll(dayOfWeekInput);
     }
 }
