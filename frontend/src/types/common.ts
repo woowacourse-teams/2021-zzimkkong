@@ -119,12 +119,6 @@ export interface EditorBoard {
   scale: number;
 }
 
-export interface MapDrawing {
-  width: number;
-  height: number;
-  mapElements: MapElement[];
-}
-
 export interface SpaceArea {
   shape: DrawingAreaShape;
   x: number;

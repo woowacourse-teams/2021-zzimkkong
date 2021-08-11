@@ -4,7 +4,7 @@ import { queryGuestMap, QueryGuestMapParams } from 'api/guestMap';
 import { ErrorResponse, QueryGuestMapSuccess } from 'types/response';
 
 const useGuestMap = <TData = AxiosResponse<QueryGuestMapSuccess>>(
-  publicMapId: string,
+  { publicMapId }: QueryGuestMapParams,
   options?: UseQueryOptions<
     AxiosResponse<QueryGuestMapSuccess>,
     AxiosError<ErrorResponse>,

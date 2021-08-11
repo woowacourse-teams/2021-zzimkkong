@@ -80,10 +80,10 @@ const ManagerMain = (): JSX.Element => {
       .writeText(`${window.location.origin}/guest/${getSelectedPublicMapId()}`)
       .then(
         () => {
-          alert('클립보드 복사 성공!');
+          alert('맵의 공유링크가 클립보드에 복사되었습니다!');
         },
         () => {
-          alert('클립보드 복사 실패!');
+          alert('공유링크를 복사하는데 문제가 발생했습니다.');
         }
       );
   };
