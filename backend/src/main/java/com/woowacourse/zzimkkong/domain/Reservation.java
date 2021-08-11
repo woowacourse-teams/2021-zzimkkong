@@ -45,8 +45,8 @@ public class Reservation {
             final String description,
             final Space space) {
         this.id = id;
-        this.startTime = startTime;
-        this.endTime = endTime;
+        this.startTime = startTime.withSecond(0).withNano(0);
+        this.endTime = endTime.withSecond(0).withNano(0);
         this.password = password;
         this.userName = userName;
         this.description = description;
