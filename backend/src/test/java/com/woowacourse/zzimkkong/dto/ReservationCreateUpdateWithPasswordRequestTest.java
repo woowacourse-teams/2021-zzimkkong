@@ -9,7 +9,7 @@ import org.junit.jupiter.params.provider.NullAndEmptySource;
 import java.time.LocalDateTime;
 
 import static com.woowacourse.zzimkkong.dto.ValidatorMessage.EMPTY_MESSAGE;
-import static com.woowacourse.zzimkkong.dto.ValidatorMessage.RESERVATION_PASSWORD_MESSAGE;
+import static com.woowacourse.zzimkkong.dto.ValidatorMessage.RESERVATION_PW_MESSAGE;
 import static org.assertj.core.api.Assertions.assertThat;
 
 class ReservationCreateUpdateWithPasswordRequestTest extends RequestTest {
@@ -41,7 +41,7 @@ class ReservationCreateUpdateWithPasswordRequestTest extends RequestTest {
                 "description");
 
         assertThat(getConstraintViolations(reservationCreateUpdateWithPasswordRequest).stream()
-                .anyMatch(violation -> violation.getMessage().equals(RESERVATION_PASSWORD_MESSAGE)))
+                .anyMatch(violation -> violation.getMessage().equals(RESERVATION_PW_MESSAGE)))
                 .isEqualTo(flag);
     }
 }

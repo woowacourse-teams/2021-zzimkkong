@@ -16,7 +16,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 class SpaceTest {
     @Test
     void update() {
-        Member member = new Member(EMAIL, PASSWORD, ORGANIZATION);
+        Member member = new Member(EMAIL, PW, ORGANIZATION);
         Map map = new Map(LUTHER_NAME, MAP_DRAWING_DATA, MAP_IMAGE_URL, member);
 
         Setting setting = Setting.builder()

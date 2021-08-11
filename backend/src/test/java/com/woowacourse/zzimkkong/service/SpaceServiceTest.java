@@ -72,8 +72,8 @@ class SpaceServiceTest extends ServiceTest {
 
     @BeforeEach
     void setUp() {
-        pobi = new Member(EMAIL, PASSWORD, ORGANIZATION);
-        sakjung = new Member(NEW_EMAIL, PASSWORD, ORGANIZATION);
+        pobi = new Member(EMAIL, PW, ORGANIZATION);
+        sakjung = new Member(NEW_EMAIL, PW, ORGANIZATION);
         luther = new Map(1L, LUTHER_NAME, MAP_DRAWING_DATA, MAP_IMAGE_URL, pobi);
 
         Setting beSetting = Setting.builder()

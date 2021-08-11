@@ -39,8 +39,8 @@ import static org.springframework.restdocs.restassured3.RestAssuredRestDocumenta
 @ActiveProfiles("test")
 class AcceptanceTest {
     protected static String accessToken;
-    protected static final MemberSaveRequest memberSaveRequest = new MemberSaveRequest(EMAIL, PASSWORD, ORGANIZATION);
-    protected static final LoginRequest loginRequest = new LoginRequest(EMAIL, PASSWORD);
+    protected static final MemberSaveRequest memberSaveRequest = new MemberSaveRequest(EMAIL, PW, ORGANIZATION);
+    protected static final LoginRequest loginRequest = new LoginRequest(EMAIL, PW);
     protected final MapCreateUpdateRequest mapCreateUpdateRequest = new MapCreateUpdateRequest(LUTHER_NAME, MAP_DRAWING_DATA, MAP_SVG);
     protected final SettingsRequest beSettingsRequest = new SettingsRequest(
             BE_AVAILABLE_START_TIME,

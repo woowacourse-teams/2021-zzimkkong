@@ -41,7 +41,7 @@ class MapServiceTest extends ServiceTest {
 
     @BeforeEach
     void setUp() {
-        pobi = new Member(EMAIL, PASSWORD, ORGANIZATION);
+        pobi = new Member(EMAIL, PW, ORGANIZATION);
         luther = new Map(1L, LUTHER_NAME, MAP_DRAWING_DATA, MAP_IMAGE_URL, pobi);
         smallHouse = new Map(2L, SMALL_HOUSE_NAME, MAP_DRAWING_DATA, MAP_IMAGE_URL, pobi);
         lutherId = luther.getId();

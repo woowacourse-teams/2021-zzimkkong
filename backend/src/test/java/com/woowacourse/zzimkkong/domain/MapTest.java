@@ -10,7 +10,7 @@ class MapTest {
     @Test
     @DisplayName("Space가 생성되면 Map에 Space를 추가한다")
     void addSpace() {
-        Member pobi = new Member(EMAIL, PASSWORD, ORGANIZATION);
+        Member pobi = new Member(EMAIL, PW, ORGANIZATION);
         Map luther = new Map(LUTHER_NAME, MAP_DRAWING_DATA, MAP_IMAGE_URL, pobi);
 
         assertThat(luther.getSpaces().size()).isZero();
@@ -23,7 +23,7 @@ class MapTest {
     @Test
     @DisplayName("맵의 관리자가 아니면 true, 맞으면 false")
     void isNotOwnedBy() {
-        Member pobi = new Member(EMAIL, PASSWORD, ORGANIZATION);
+        Member pobi = new Member(EMAIL, PW, ORGANIZATION);
         Map luther = new Map(LUTHER_NAME, MAP_DRAWING_DATA, MAP_IMAGE_URL, pobi);
 
         boolean result = luther.isNotOwnedBy(new Member("삭정이", "test1234", "잠실"));

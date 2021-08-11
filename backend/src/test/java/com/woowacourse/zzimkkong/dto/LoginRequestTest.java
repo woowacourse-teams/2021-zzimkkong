@@ -51,7 +51,7 @@ class LoginRequestTest extends RequestTest {
         LoginRequest loginRequest = new LoginRequest("email@email.com", password);
 
         assertThat(getConstraintViolations(loginRequest).stream()
-                .anyMatch(violation -> violation.getMessage().equals(MEMBER_PASSWORD_MESSAGE)))
+                .anyMatch(violation -> violation.getMessage().equals(MEMBER_PW_MESSAGE)))
                 .isEqualTo(flag);
     }
 }

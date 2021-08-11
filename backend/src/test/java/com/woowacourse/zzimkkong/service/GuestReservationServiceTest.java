@@ -37,13 +37,13 @@ class GuestReservationServiceTest extends ServiceTest {
     private ReservationCreateUpdateWithPasswordRequest reservationCreateUpdateWithPasswordRequest = new ReservationCreateUpdateWithPasswordRequest(
             THE_DAY_AFTER_TOMORROW.atTime(13, 0),
             THE_DAY_AFTER_TOMORROW.atTime(14, 0),
-            RESERVATION_PASSWORD,
+            RESERVATION_PW,
             USER_NAME,
             DESCRIPTION
     );
 
     private final ReservationPasswordAuthenticationRequest reservationPasswordAuthenticationRequest
-            = new ReservationPasswordAuthenticationRequest(RESERVATION_PASSWORD);
+            = new ReservationPasswordAuthenticationRequest(RESERVATION_PW);
     private Map luther;
     private Space be;
     private Space fe;
@@ -58,7 +58,7 @@ class GuestReservationServiceTest extends ServiceTest {
 
     @BeforeEach
     void setUp() {
-        Member pobi = new Member(EMAIL, PASSWORD, ORGANIZATION);
+        Member pobi = new Member(EMAIL, PW, ORGANIZATION);
         luther = new Map(1L, LUTHER_NAME, MAP_DRAWING_DATA, MAP_IMAGE_URL, pobi);
         
         Setting beSetting = Setting.builder()
@@ -106,7 +106,7 @@ class GuestReservationServiceTest extends ServiceTest {
                 .endTime(BE_AM_TEN_ELEVEN_END_TIME)
                 .description(BE_AM_TEN_ELEVEN_DESCRIPTION)
                 .userName(BE_AM_TEN_ELEVEN_USERNAME)
-                .password(BE_AM_TEN_ELEVEN_PASSWORD)
+                .password(BE_AM_TEN_ELEVEN_PW)
                 .space(be)
                 .build();
 
@@ -116,7 +116,7 @@ class GuestReservationServiceTest extends ServiceTest {
                 .endTime(BE_PM_ONE_TWO_END_TIME)
                 .description(BE_PM_ONE_TWO_DESCRIPTION)
                 .userName(BE_PM_ONE_TWO_USERNAME)
-                .password(BE_PM_ONE_TWO_PASSWORD)
+                .password(BE_PM_ONE_TWO_PW)
                 .space(be)
                 .build();
 
@@ -191,7 +191,7 @@ class GuestReservationServiceTest extends ServiceTest {
         reservationCreateUpdateWithPasswordRequest = new ReservationCreateUpdateWithPasswordRequest(
                 LocalDateTime.now().minusHours(3),
                 LocalDateTime.now().plusHours(3),
-                RESERVATION_PASSWORD,
+                RESERVATION_PW,
                 USER_NAME,
                 DESCRIPTION
         );
@@ -215,7 +215,7 @@ class GuestReservationServiceTest extends ServiceTest {
         reservationCreateUpdateWithPasswordRequest = new ReservationCreateUpdateWithPasswordRequest(
                 THE_DAY_AFTER_TOMORROW.atTime(14, 0),
                 THE_DAY_AFTER_TOMORROW.atTime(13, 0),
-                RESERVATION_PASSWORD,
+                RESERVATION_PW,
                 USER_NAME,
                 DESCRIPTION
         );
@@ -239,7 +239,7 @@ class GuestReservationServiceTest extends ServiceTest {
         reservationCreateUpdateWithPasswordRequest = new ReservationCreateUpdateWithPasswordRequest(
                 THE_DAY_AFTER_TOMORROW.atTime(10, 0),
                 THE_DAY_AFTER_TOMORROW.atTime(10, 0),
-                RESERVATION_PASSWORD,
+                RESERVATION_PW,
                 USER_NAME,
                 DESCRIPTION
         );
@@ -263,7 +263,7 @@ class GuestReservationServiceTest extends ServiceTest {
         reservationCreateUpdateWithPasswordRequest = new ReservationCreateUpdateWithPasswordRequest(
                 THE_DAY_AFTER_TOMORROW.atTime(10, 0),
                 THE_DAY_AFTER_TOMORROW.atTime(10, 0).plusDays(1),
-                RESERVATION_PASSWORD,
+                RESERVATION_PW,
                 USER_NAME,
                 DESCRIPTION
         );
@@ -288,7 +288,7 @@ class GuestReservationServiceTest extends ServiceTest {
         reservationCreateUpdateWithPasswordRequest = new ReservationCreateUpdateWithPasswordRequest(
                 THE_DAY_AFTER_TOMORROW.atTime(startTime, 0),
                 THE_DAY_AFTER_TOMORROW.atTime(endTime, 30),
-                RESERVATION_PASSWORD,
+                RESERVATION_PW,
                 USER_NAME,
                 DESCRIPTION
         );
@@ -447,7 +447,7 @@ class GuestReservationServiceTest extends ServiceTest {
         ReservationCreateUpdateWithPasswordRequest reservationCreateUpdateWithPasswordRequest = new ReservationCreateUpdateWithPasswordRequest(
                 theDayAfterTomorrowTen.plusMinutes(minute),
                 theDayAfterTomorrowTen.plusMinutes(minute).plusMinutes(60),
-                RESERVATION_PASSWORD,
+                RESERVATION_PW,
                 USER_NAME,
                 DESCRIPTION
         );
@@ -481,7 +481,7 @@ class GuestReservationServiceTest extends ServiceTest {
         ReservationCreateUpdateWithPasswordRequest reservationCreateUpdateWithPasswordRequest = new ReservationCreateUpdateWithPasswordRequest(
                 THE_DAY_AFTER_TOMORROW.atTime(10, 0),
                 THE_DAY_AFTER_TOMORROW.atTime(10, 0).plusMinutes(duration),
-                RESERVATION_PASSWORD,
+                RESERVATION_PW,
                 USER_NAME,
                 DESCRIPTION
         );
@@ -849,7 +849,7 @@ class GuestReservationServiceTest extends ServiceTest {
         ReservationCreateUpdateWithPasswordRequest reservationCreateUpdateWithPasswordRequest = new ReservationCreateUpdateWithPasswordRequest(
                 THE_DAY_AFTER_TOMORROW.atTime(startTime, 0),
                 THE_DAY_AFTER_TOMORROW.atTime(endTime, 30),
-                RESERVATION_PASSWORD,
+                RESERVATION_PW,
                 CHANGED_NAME,
                 CHANGED_DESCRIPTION
         );

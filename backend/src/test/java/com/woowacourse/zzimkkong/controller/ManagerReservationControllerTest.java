@@ -55,11 +55,11 @@ class ManagerReservationControllerTest extends AcceptanceTest {
         ReservationCreateUpdateWithPasswordRequest reservationCreateUpdateWithPasswordRequest = new ReservationCreateUpdateWithPasswordRequest(
                 THE_DAY_AFTER_TOMORROW.atTime(15, 0),
                 THE_DAY_AFTER_TOMORROW.atTime(16, 0),
-                SALLY_PASSWORD,
+                SALLY_PW,
                 SALLY_NAME,
                 SALLY_DESCRIPTION);
 
-        Member pobi = new Member(EMAIL, PASSWORD, ORGANIZATION);
+        Member pobi = new Member(EMAIL, PW, ORGANIZATION);
         Map luther = new Map(LUTHER_NAME, MAP_DRAWING_DATA, MAP_IMAGE_URL, pobi);
 
         Setting beSetting = Setting.builder()
@@ -120,7 +120,7 @@ class ManagerReservationControllerTest extends AcceptanceTest {
         ReservationCreateUpdateWithPasswordRequest newReservationCreateUpdateWithPasswordRequest = new ReservationCreateUpdateWithPasswordRequest(
                 THE_DAY_AFTER_TOMORROW.atTime(19, 0),
                 THE_DAY_AFTER_TOMORROW.atTime(20, 0),
-                SALLY_PASSWORD,
+                SALLY_PW,
                 SALLY_NAME,
                 SALLY_DESCRIPTION);
 
@@ -233,7 +233,7 @@ class ManagerReservationControllerTest extends AcceptanceTest {
         ReservationCreateUpdateWithPasswordRequest reservationCreateUpdateWithPasswordRequestDifferentSpace = new ReservationCreateUpdateWithPasswordRequest(
                 THE_DAY_AFTER_TOMORROW.atTime(19, 30),
                 THE_DAY_AFTER_TOMORROW.atTime(20, 30),
-                SALLY_PASSWORD,
+                SALLY_PW,
                 "sally",
                 "회의입니다."
         );
@@ -273,7 +273,7 @@ class ManagerReservationControllerTest extends AcceptanceTest {
     void delete() {
         //given, when
         ReservationPasswordAuthenticationRequest reservationPasswordAuthenticationRequest
-                = new ReservationPasswordAuthenticationRequest(SALLY_PASSWORD);
+                = new ReservationPasswordAuthenticationRequest(SALLY_PW);
 
         String api = beReservationApi + "/" + savedReservationId;
 
@@ -286,28 +286,28 @@ class ManagerReservationControllerTest extends AcceptanceTest {
         ReservationCreateUpdateWithPasswordRequest beAmZeroOneRequest = new ReservationCreateUpdateWithPasswordRequest(
                 BE_AM_TEN_ELEVEN_START_TIME,
                 BE_AM_TEN_ELEVEN_END_TIME,
-                BE_AM_TEN_ELEVEN_PASSWORD,
+                BE_AM_TEN_ELEVEN_PW,
                 BE_AM_TEN_ELEVEN_USERNAME,
                 BE_AM_TEN_ELEVEN_DESCRIPTION);
 
         ReservationCreateUpdateWithPasswordRequest bePmOneTwoRequest = new ReservationCreateUpdateWithPasswordRequest(
                 BE_PM_ONE_TWO_START_TIME,
                 BE_PM_ONE_TWO_END_TIME,
-                BE_PM_ONE_TWO_PASSWORD,
+                BE_PM_ONE_TWO_PW,
                 BE_PM_ONE_TWO_USERNAME,
                 BE_PM_ONE_TWO_DESCRIPTION);
 
         ReservationCreateUpdateWithPasswordRequest beNextDayAmSixTwelveRequest = new ReservationCreateUpdateWithPasswordRequest(
                 BE_NEXT_DAY_PM_FOUR_TO_SIX_START_TIME,
                 BE_NEXT_DAY_PM_FOUR_TO_SIX_END_TIME,
-                BE_NEXT_DAY_PM_FOUR_TO_SIX_PASSWORD,
+                BE_NEXT_DAY_PM_FOUR_TO_SIX_PW,
                 BE_NEXT_DAY_PM_FOUR_TO_SIX_USERNAME,
                 BE_NEXT_DAY_PM_FOUR_TO_SIX_DESCRIPTION);
 
         ReservationCreateUpdateWithPasswordRequest feZeroOneRequest = new ReservationCreateUpdateWithPasswordRequest(
                 FE1_AM_TEN_ELEVEN_START_TIME,
                 FE1_AM_TEN_ELEVEN_END_TIME,
-                FE1_AM_TEN_ELEVEN_PASSWORD,
+                FE1_AM_TEN_ELEVEN_PW,
                 FE1_AM_TEN_ELEVEN_USERNAME,
                 FE1_AM_TEN_ELEVEN_DESCRIPTION);
 
@@ -317,7 +317,7 @@ class ManagerReservationControllerTest extends AcceptanceTest {
                 .endTime(BE_AM_TEN_ELEVEN_END_TIME)
                 .description(BE_AM_TEN_ELEVEN_DESCRIPTION)
                 .userName(BE_AM_TEN_ELEVEN_USERNAME)
-                .password(BE_AM_TEN_ELEVEN_PASSWORD)
+                .password(BE_AM_TEN_ELEVEN_PW)
                 .space(be)
                 .build();
 
@@ -327,7 +327,7 @@ class ManagerReservationControllerTest extends AcceptanceTest {
                 .endTime(BE_PM_ONE_TWO_END_TIME)
                 .description(BE_PM_ONE_TWO_DESCRIPTION)
                 .userName(BE_PM_ONE_TWO_USERNAME)
-                .password(BE_PM_ONE_TWO_PASSWORD)
+                .password(BE_PM_ONE_TWO_PW)
                 .space(be)
                 .build();
 
@@ -339,7 +339,7 @@ class ManagerReservationControllerTest extends AcceptanceTest {
                 .endTime(FE1_AM_TEN_ELEVEN_END_TIME)
                 .description(FE1_AM_TEN_ELEVEN_DESCRIPTION)
                 .userName(FE1_AM_TEN_ELEVEN_USERNAME)
-                .password(FE1_AM_TEN_ELEVEN_PASSWORD)
+                .password(FE1_AM_TEN_ELEVEN_PW)
                 .space(fe)
                 .build();
     }

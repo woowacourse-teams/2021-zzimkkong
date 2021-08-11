@@ -23,7 +23,7 @@ class AuthServiceTest extends ServiceTest {
 
     @BeforeEach
     void setUp() {
-        pobi = new Member(EMAIL, PASSWORD, ORGANIZATION);
+        pobi = new Member(EMAIL, PW, ORGANIZATION);
     }
 
     @Autowired
@@ -33,7 +33,7 @@ class AuthServiceTest extends ServiceTest {
     @DisplayName("회원 로그인 요청이 옳다면 토큰을 발급한다.")
     void login() {
         //given
-        LoginRequest loginRequest = new LoginRequest(EMAIL, PASSWORD);
+        LoginRequest loginRequest = new LoginRequest(EMAIL, PW);
         given(members.findByEmail(anyString()))
                 .willReturn(Optional.of(pobi));
 
@@ -48,7 +48,7 @@ class AuthServiceTest extends ServiceTest {
     @DisplayName("이메일이 존재하지 않는 회원이 회원 로그인을 요청한다면 오류가 발생한다.")
     void loginException() {
         //given
-        LoginRequest loginRequest = new LoginRequest(EMAIL, PASSWORD);
+        LoginRequest loginRequest = new LoginRequest(EMAIL, PW);
 
         //when
         given(members.findByEmail(anyString()))
@@ -64,7 +64,7 @@ class AuthServiceTest extends ServiceTest {
     @DisplayName("회원 로그인 요청 시, 이메일과 비밀번호가 일치하지 않으면 오류가 발생한다.")
     void loginMismatchException() {
         //given
-        LoginRequest loginRequest = new LoginRequest(EMAIL, PASSWORD);
+        LoginRequest loginRequest = new LoginRequest(EMAIL, PW);
 
         //when
         given(members.findByEmail(anyString()))

@@ -51,7 +51,7 @@ class MemberSaveRequestTest extends RequestTest {
         MemberSaveRequest memberSaveRequest = new MemberSaveRequest("email@email.com", password, "organization");
 
         assertThat(getConstraintViolations(memberSaveRequest).stream()
-                .anyMatch(violation -> violation.getMessage().equals(MEMBER_PASSWORD_MESSAGE)))
+                .anyMatch(violation -> violation.getMessage().equals(MEMBER_PW_MESSAGE)))
                 .isEqualTo(flag);
     }
 
