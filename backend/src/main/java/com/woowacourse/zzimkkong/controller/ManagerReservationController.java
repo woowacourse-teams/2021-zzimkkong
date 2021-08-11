@@ -122,12 +122,13 @@ public class ManagerReservationController {
             @PathVariable final Long spaceId,
             @PathVariable final Long reservationId,
             @Manager final Member manager) {
-        SlackResponse slackResponse = reservationService.deleteReservation(
+        ReservationAuthenticationDto reservationAuthenticationDto = ReservationAuthenticationDto.of(
                 mapId,
                 spaceId,
                 reservationId,
                 manager);
-        slackService.sendDeleteMessage(slackResponse);
+        SlackResponse slackResponse = reservationService2.deleteReservation(reservationAuthenticationDto, managerCallback);
+        slackService.sendUpdateMessage(slackResponse);
         return ResponseEntity.noContent().build();
     }
 }

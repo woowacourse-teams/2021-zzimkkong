@@ -106,11 +106,12 @@ public class GuestReservationController {
             @PathVariable final Long spaceId,
             @PathVariable final Long reservationId,
             @RequestBody @Valid ReservationPasswordAuthenticationRequest reservationPasswordAuthenticationRequest) {
-        reservationService.deleteReservation(
+        ReservationAuthenticationDto reservationAuthenticationDto = ReservationAuthenticationDto.of(
                 mapId,
                 spaceId,
                 reservationId,
                 reservationPasswordAuthenticationRequest);
+        reservationService2.deleteReservation(reservationAuthenticationDto, guestCallback);
         return ResponseEntity.noContent().build();
     }
 }

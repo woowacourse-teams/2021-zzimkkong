@@ -13,10 +13,7 @@ import com.woowacourse.zzimkkong.infrastructure.TimeConverter;
 import com.woowacourse.zzimkkong.repository.MapRepository;
 import com.woowacourse.zzimkkong.repository.ReservationRepository;
 import com.woowacourse.zzimkkong.repository.SpaceRepository;
-import com.woowacourse.zzimkkong.service.callback.ReservationControllerCallback;
-import com.woowacourse.zzimkkong.service.callback.ReservationCreateCallback;
-import com.woowacourse.zzimkkong.service.callback.ReservationServiceCallback;
-import com.woowacourse.zzimkkong.service.callback.ReservationUpdateCallback;
+import com.woowacourse.zzimkkong.service.callback.*;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -27,6 +24,8 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
+
+import static com.woowacourse.zzimkkong.service.MapService.validateManagerOfMap;
 
 @Service
 @Transactional
@@ -167,6 +166,26 @@ public class ReservationService2 {
 
         reservation.update(updateReservation, space);
 
+        return reservationControllerCallback.createSlackResponse(reservation);
+    }
+
+    public SlackResponse deleteReservation(
+            final ReservationAuthenticationDto reservationAuthenticationDto,
+            final ReservationControllerCallback reservationControllerCallback) {
+        Long mapId = reservationAuthenticationDto.getMapId();
+        Member manager = reservationAuthenticationDto.getManager();
+        Map map = maps.findById(mapId)
+                .orElseThrow(NoSuchMapException::new);
+        reservationControllerCallback.validateManagerOfMap(map, manager);
+
+        Long spaceId = reservationAuthenticationDto.getSpaceId();
+        validateSpaceExistence(map, spaceId);
+
+        Long reservationId = reservationAuthenticationDto.getReservationId();
+        Reservation reservation = reservations
+                .findById(reservationId)
+                .orElseThrow(NoSuchReservationException::new);
+        reservations.delete(reservation);
         return reservationControllerCallback.createSlackResponse(reservation);
     }
 
