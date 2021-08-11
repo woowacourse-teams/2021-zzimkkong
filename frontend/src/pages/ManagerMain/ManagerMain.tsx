@@ -78,14 +78,12 @@ const ManagerMain = (): JSX.Element => {
   const handleCopyLink = () => {
     navigator.clipboard
       .writeText(`${window.location.origin}/guest/${getSelectedSharingMapId()}`)
-      .then(
-        () => {
-          alert('맵의 공유링크가 클립보드에 복사되었습니다!');
-        },
-        () => {
-          alert('공유링크를 복사하는데 문제가 발생했습니다.');
-        }
-      );
+      .then(() => {
+        alert('맵의 공유링크가 클립보드에 복사되었습니다!');
+      })
+      .catch(() => {
+        alert('공유링크를 복사하는데 문제가 발생했습니다.');
+      });
   };
 
   const handleOpenDrawer = () => {
