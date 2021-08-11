@@ -602,9 +602,14 @@ class ManagerReservationServiceTest extends ServiceTest {
                 .willReturn(Optional.of(luther));
         given(maps.existsById(anyLong()))
                 .willReturn(true);
+        Long reservationId = reservation.getId();
 
         //then
-        assertThatThrownBy(() -> managerReservationService.findReservation(luther.getId(), noneExistingSpaceId, reservation.getId(), pobi))
+        assertThatThrownBy(() -> managerReservationService.findReservation(
+                lutherId,
+                noneExistingSpaceId,
+                reservationId,
+                pobi))
                 .isInstanceOf(NoSuchSpaceException.class);
     }
 
