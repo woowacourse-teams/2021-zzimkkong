@@ -20,7 +20,7 @@ import useGuestMap from 'hooks/useGuestMap';
 import useInput from 'hooks/useInput';
 import useReservations from 'hooks/useReservations';
 import useSpaces from 'hooks/useSpaces';
-import { Area, MapDrawing, MapItem, Reservation, Space } from 'types/common';
+import { Area, MapDrawing, MapItem, Reservation, ScrollPosition, Space } from 'types/common';
 import { ErrorResponse } from 'types/response';
 import { formatDate } from 'utils/datetime';
 import * as Styled from './GuestMap.styles';
@@ -28,6 +28,7 @@ import * as Styled from './GuestMap.styles';
 export interface GuestMapState {
   spaceId?: Space['id'];
   targetDate?: Date;
+  scrollPosition?: ScrollPosition;
 }
 
 export interface URLParameter {
@@ -105,7 +106,7 @@ const GuestMap = (): JSX.Element => {
       date: formatDate(date),
     },
     {
-      enabled: map?.mapId !== undefined && selectedSpaceId !== undefined,
+      enabled: map?.mapId !== undefined && selectedSpaceId !== null,
     }
   );
   const reservations = getReservations.data?.data?.reservations ?? [];

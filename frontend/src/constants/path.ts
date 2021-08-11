@@ -5,7 +5,6 @@ const PATH = {
   MANAGER_MAP_CREATE: '/map/create',
   MANAGER_MAP_EDIT: '/map/:mapId/edit',
   MANAGER_SPACE_EDIT: '/map/:mapId/space/edit',
-  GUEST_MAIN: '/guest',
   GUEST_MAP: '/guest/:sharingMapId',
   GUEST_RESERVATION: '/guest/:sharingMapId/reservation',
   GUEST_RESERVATION_EDIT: '/guest/:sharingMapId/reservation/edit',

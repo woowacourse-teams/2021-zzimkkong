@@ -10,12 +10,11 @@ import Input from 'components/Input/Input';
 import Layout from 'components/Layout/Layout';
 import ReservationListItem from 'components/ReservationListItem/ReservationListItem';
 import MESSAGE from 'constants/message';
-import PATH from 'constants/path';
 import REGEXP from 'constants/regexp';
 import RESERVATION from 'constants/reservation';
 import useInput from 'hooks/useInput';
 import useReservations from 'hooks/useReservations';
-import { GuestMainState } from 'pages/GuestMain/GuestMain';
+import { GuestMapState } from 'pages/GuestMap/GuestMap';
 import { MapItem, ScrollPosition, Space } from 'types/common';
 import { ErrorResponse } from 'types/response';
 import { formatDate, formatTime } from 'utils/datetime';
@@ -35,12 +34,12 @@ interface URLParameter {
 
 const GuestReservation = (): JSX.Element => {
   const location = useLocation<GuestReservationState>();
-  const history = useHistory<GuestMainState>();
+  const history = useHistory<GuestMapState>();
   const { sharingMapId } = useParams<URLParameter>();
 
   const { mapId, spaceId, spaceName, selectedDate, scrollPosition } = location.state;
 
-  if (!mapId || !spaceId || !spaceName) history.replace(PATH.GUEST_MAIN);
+  if (!mapId || !spaceId || !spaceName) history.replace(`/guest/${sharingMapId}`);
 
   const now = new Date();
   const initialStartTime = formatTime(now);
@@ -83,7 +82,10 @@ const GuestReservation = (): JSX.Element => {
 
   useEffect(() => {
     return history.listen((location) => {
-      if (location.pathname === PATH.GUEST_MAIN || location.pathname === PATH.GUEST_MAIN + '/') {
+      if (
+        location.pathname === `/guest/${sharingMapId}` ||
+        location.pathname === `/guest/${sharingMapId}/`
+      ) {
         location.state = {
           spaceId,
           targetDate: new Date(selectedDate),
@@ -91,7 +93,7 @@ const GuestReservation = (): JSX.Element => {
         };
       }
     });
-  }, [history, scrollPosition, selectedDate, spaceId]);
+  }, [history, scrollPosition, selectedDate, spaceId, sharingMapId]);
 
   useEffect(() => {
     window.scrollTo(0, 0);
