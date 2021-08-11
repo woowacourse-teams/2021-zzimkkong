@@ -5,7 +5,6 @@ import api from './api';
 
 export interface QuerySpacesParams {
   mapId: number;
-  date: string;
 }
 
 export const querySpaces: QueryFunction<
@@ -13,7 +12,7 @@ export const querySpaces: QueryFunction<
   [QueryKey, QuerySpacesParams]
 > = ({ queryKey }) => {
   const [, data] = queryKey;
-  const { mapId, date } = data;
+  const { mapId } = data;
 
-  return api.get(`/maps/${mapId}/reservations?date=${date}`);
+  return api.get(`/managers/maps/${mapId}/spaces`);
 };

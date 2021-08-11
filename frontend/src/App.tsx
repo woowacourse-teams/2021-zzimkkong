@@ -4,6 +4,7 @@ import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
 import { RecoilRoot } from 'recoil';
 import { ThemeProvider } from 'styled-components';
 import PrivateRoute from 'PrivateRoute';
+import PATH from 'constants/path';
 import { PRIVATE_ROUTES, PUBLIC_ROUTES } from 'constants/routes';
 import { GlobalStyle, theme } from './App.styles';
 import NotFound from './pages/NotFound/NotFound';
@@ -30,7 +31,7 @@ const App = (): JSX.Element => {
                 </PrivateRoute>
               ))}
 
-              <Route component={NotFound} />
+              <Route path={PATH.NOT_FOUND} component={NotFound} />
             </Switch>
           </Router>
         </ThemeProvider>

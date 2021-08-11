@@ -1,6 +1,6 @@
 import { AxiosError, AxiosResponse } from 'axios';
 import { QueryKey, useQuery, UseQueryOptions, UseQueryResult } from 'react-query';
-import { queryManagerReservations, QueryMapReservationsParams } from 'api/reservation';
+import { queryManagerReservations, QueryMapReservationsParams } from 'api/managerReservation';
 import { ErrorResponse, QueryManagerReservationsSuccess } from 'types/response';
 
 const useManagerReservations = <TData = AxiosResponse<QueryManagerReservationsSuccess>>(
