@@ -18,8 +18,8 @@ import MESSAGE from 'constants/message';
 import PALETTE from 'constants/palette';
 import useGuestMap from 'hooks/useGuestMap';
 import useGuestReservations from 'hooks/useGuestReservations';
+import useGuestSpaces from 'hooks/useGuestSpaces';
 import useInput from 'hooks/useInput';
-import useSpaces from 'hooks/useSpaces';
 import { Area, MapDrawing, MapItem, Reservation, ScrollPosition, Space } from 'types/common';
 import { ErrorResponse } from 'types/response';
 import { formatDate } from 'utils/datetime';
@@ -81,7 +81,7 @@ const GuestMap = (): JSX.Element => {
     return result;
   }, [spaceList]);
 
-  const getSpaces = useSpaces(
+  const getSpaces = useGuestSpaces(
     { mapId: map?.mapId as number },
     {
       enabled: map?.mapId !== undefined,
