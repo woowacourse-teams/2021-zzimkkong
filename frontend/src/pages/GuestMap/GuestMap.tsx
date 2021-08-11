@@ -155,9 +155,11 @@ const GuestMap = (): JSX.Element => {
   const handleDeleteReservation: FormEventHandler<HTMLFormElement> = (event) => {
     event.preventDefault();
 
+    if (selectedSpaceId === null) return;
+
     removeReservation.mutate({
       mapId: map?.mapId as number,
-      spaceId: selectedSpaceId as number,
+      spaceId: selectedSpaceId,
       password: passwordInput,
       reservationId: Number(selectedReservation?.id),
     });
