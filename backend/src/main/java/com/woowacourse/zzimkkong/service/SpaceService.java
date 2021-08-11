@@ -60,6 +60,8 @@ public class SpaceService {
                 .map(map)
                 .build();
         Space saveSpace = spaces.save(space);
+
+        thumbnailManager.uploadMapThumbnail(spaceCreateUpdateRequest.getMapImageSvg(), map);
         return SpaceCreateResponse.from(saveSpace);
     }
 
