@@ -13,7 +13,7 @@ class SpaceCreateUpdateRequestTest extends RequestTest {
     @ParameterizedTest
     @NullAndEmptySource
     @DisplayName("공간 이름에 빈 문자열이 들어오면 처리한다.")
-    public void blankReservationPassword(String name) {
+    void blankReservationPassword(String name) {
         SpaceCreateUpdateRequest spaceCreateUpdateRequest = new SpaceCreateUpdateRequest(
                 name,
                 "color",
@@ -30,7 +30,7 @@ class SpaceCreateUpdateRequestTest extends RequestTest {
     @ParameterizedTest
     @NullAndEmptySource
     @DisplayName("공간 설명에 빈 문자열이 들어오면 처리한다.")
-    public void blankReservationDescription(String description) {
+    void blankReservationDescription(String description) {
         SpaceCreateUpdateRequest spaceCreateUpdateRequest = new SpaceCreateUpdateRequest(
                 "name",
                 "color",
@@ -47,7 +47,7 @@ class SpaceCreateUpdateRequestTest extends RequestTest {
     @ParameterizedTest
     @NullAndEmptySource
     @DisplayName("공간 area에 빈 문자열이 들어오면 처리한다.")
-    public void blankReservationArea(String area) {
+    void blankReservationArea(String area) {
         SpaceCreateUpdateRequest spaceCreateUpdateRequest = new SpaceCreateUpdateRequest(
                 "name",
                 "color",
@@ -64,7 +64,7 @@ class SpaceCreateUpdateRequestTest extends RequestTest {
     @ParameterizedTest
     @NullAndEmptySource
     @DisplayName("맵의 Svg 정보에 빈 문자열이 들어오면 처리한다.")
-    public void blankMapImageSvg(String mapImageSvg) {
+    void blankMapImageSvg(String mapImageSvg) {
         SpaceCreateUpdateRequest spaceCreateUpdateRequest = new SpaceCreateUpdateRequest(
                 "name",
                 "color",

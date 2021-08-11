@@ -13,27 +13,27 @@ class MemberTest {
     @DisplayName("비밀번호가 일치하면 true를 반환한다.")
     void checkPassword() {
         //given
-        Member member = new Member(EMAIL, PASSWORD, ORGANIZATION);
+        Member member = new Member(EMAIL, PW, ORGANIZATION);
 
         //when, then
-        assertThat(member.checkPassword(PASSWORD)).isTrue();
+        assertThat(member.checkPassword(PW)).isTrue();
     }
 
     @Test
     @DisplayName("비밀번호가 일치하지 않으면 false를 반환한다.")
     void checkWrongPassword() {
         //given
-        Member member = new Member(EMAIL, PASSWORD, ORGANIZATION);
+        Member member = new Member(EMAIL, PW, ORGANIZATION);
 
         //when, then
-        assertThat(member.checkPassword(PASSWORD + "%")).isFalse();
+        assertThat(member.checkPassword(PW + "%")).isFalse();
     }
 
     @Test
     @DisplayName("자신의 preset 중에 id가 같은 것을 반환한다.")
     void findPresetById() {
         //given, when
-        Member member = new Member(1L, EMAIL, PASSWORD, ORGANIZATION);
+        Member member = new Member(1L, EMAIL, PW, ORGANIZATION);
         Setting setting = Setting.builder()
                 .availableStartTime(BE_AVAILABLE_START_TIME)
                 .availableEndTime(BE_AVAILABLE_END_TIME)

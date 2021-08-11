@@ -18,7 +18,7 @@ class SpaceRepositoryTest extends RepositoryTest {
 
     @BeforeEach
     void setUp() {
-        Member pobi = new Member(EMAIL, PASSWORD, ORGANIZATION);
+        Member pobi = new Member(EMAIL, PW, ORGANIZATION);
         luther = new Map(LUTHER_NAME, MAP_DRAWING_DATA, MAP_IMAGE_URL, pobi);
 
         Setting beSetting = Setting.builder()
@@ -34,10 +34,10 @@ class SpaceRepositoryTest extends RepositoryTest {
         be = Space.builder()
                 .name(BE_NAME)
                 .color(BE_COLOR)
-                .map(luther)
                 .description(BE_DESCRIPTION)
                 .area(SPACE_DRAWING)
                 .setting(beSetting)
+                .map(luther)
                 .build();
 
         Setting feSetting = Setting.builder()

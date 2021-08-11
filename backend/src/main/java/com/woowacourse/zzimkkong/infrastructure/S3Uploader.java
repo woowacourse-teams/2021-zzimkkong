@@ -13,6 +13,7 @@ import java.io.File;
 @Component
 public class S3Uploader implements StorageUploader {
     private static final String S3_DOMAIN_FORMAT = "https://%s.s3.%s.amazonaws.com";
+    private static final String PATH_DELIMITER = "/";
 
     private final AmazonS3 amazonS3;
     private final String bucketName;
@@ -32,7 +33,7 @@ public class S3Uploader implements StorageUploader {
 
     @Override
     public String upload(final String directoryName, final File uploadFile) {
-        String fileName = directoryName + "/" + uploadFile.getName();
+        String fileName = directoryName + PATH_DELIMITER + uploadFile.getName();
 
         try {
             String resourceUrl = putS3(uploadFile, fileName);

@@ -26,6 +26,7 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-web'
 
     implementation 'org.springframework.cloud:spring-cloud-starter-aws:2.2.6.RELEASE'
+    implementation 'org.projectlombok:lombok:1.18.18'
 
     //database
     runtimeOnly 'mysql:mysql-connector-java'

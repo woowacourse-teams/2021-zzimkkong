@@ -37,10 +37,10 @@ import static org.springframework.restdocs.restassured3.RestAssuredRestDocumenta
 @ExtendWith({RestDocumentationExtension.class, SpringExtension.class})
 @AutoConfigureRestDocs
 @ActiveProfiles("test")
-public class AcceptanceTest {
+class AcceptanceTest {
     protected static String accessToken;
-    protected static final MemberSaveRequest memberSaveRequest = new MemberSaveRequest(EMAIL, PASSWORD, ORGANIZATION);
-    protected static final LoginRequest loginRequest = new LoginRequest(EMAIL, PASSWORD);
+    protected static final MemberSaveRequest memberSaveRequest = new MemberSaveRequest(EMAIL, PW, ORGANIZATION);
+    protected static final LoginRequest loginRequest = new LoginRequest(EMAIL, PW);
     protected final MapCreateUpdateRequest mapCreateUpdateRequest = new MapCreateUpdateRequest(LUTHER_NAME, MAP_DRAWING_DATA, MAP_SVG);
     protected final SettingsRequest beSettingsRequest = new SettingsRequest(
             BE_AVAILABLE_START_TIME,
@@ -84,7 +84,7 @@ public class AcceptanceTest {
     private StorageUploader storageUploader;
 
     @BeforeEach
-    public void setUp(RestDocumentationContextProvider restDocumentation) {
+    void setUp(RestDocumentationContextProvider restDocumentation) {
         RestAssured.port = port;
         RequestSpecification spec = new RequestSpecBuilder()
                 .addFilter(documentationConfiguration(restDocumentation))

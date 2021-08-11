@@ -55,7 +55,7 @@ class PresetServiceTest extends ServiceTest {
 
     @BeforeEach
     void setUp() {
-        pobi = new Member(1L, EMAIL, PASSWORD, ORGANIZATION);
+        pobi = new Member(1L, EMAIL, PW, ORGANIZATION);
     }
 
     @Test
@@ -109,11 +109,11 @@ class PresetServiceTest extends ServiceTest {
         //given
         Preset savedPreset = new Preset(1L, PRESET_NAME1, setting, pobi);
 
-        Member jason = new Member(2L, "jason@email.com", PASSWORD, ORGANIZATION);
+        Member jason = new Member(2L, "jason@email.com", PW, ORGANIZATION);
+        Long savedPresetId = savedPreset.getId();
 
         //when, then
-        assertThatThrownBy(() -> presetService.deletePreset(savedPreset.getId(), jason))
-                .isInstanceOf(NoSuchPresetException.class);
+        assertThatThrownBy(() -> presetService.deletePreset(savedPresetId, jason)).isInstanceOf(NoSuchPresetException.class);
     }
 
     @Test

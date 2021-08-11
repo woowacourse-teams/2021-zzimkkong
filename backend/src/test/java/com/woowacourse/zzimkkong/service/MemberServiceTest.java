@@ -23,7 +23,7 @@ class MemberServiceTest extends ServiceTest {
     @DisplayName("회원이 올바르게 저장을 요청하면 저장한다.")
     void saveMember() {
         //given
-        MemberSaveRequest memberSaveRequest = new MemberSaveRequest(EMAIL, PASSWORD, ORGANIZATION);
+        MemberSaveRequest memberSaveRequest = new MemberSaveRequest(EMAIL, PW, ORGANIZATION);
         Member member = new Member(
                 memberSaveRequest.getEmail(),
                 memberSaveRequest.getPassword(),
@@ -50,7 +50,7 @@ class MemberServiceTest extends ServiceTest {
     @DisplayName("회원이 중복된 이메일로 저장을 요청하면 오류가 발생한다.")
     void saveMemberException() {
         //given
-        MemberSaveRequest memberSaveRequest = new MemberSaveRequest(EMAIL, PASSWORD, ORGANIZATION);
+        MemberSaveRequest memberSaveRequest = new MemberSaveRequest(EMAIL, PW, ORGANIZATION);
 
         //when
         given(members.existsByEmail(anyString()))
