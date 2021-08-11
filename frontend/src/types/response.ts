@@ -30,7 +30,7 @@ export interface QueryManagerReservationsSuccess {
   data: SpaceReservation[];
 }
 
-export interface QueryReservationsSuccess {
+export interface QueryGuestReservationsSuccess {
   reservations: Reservation[];
 }
 

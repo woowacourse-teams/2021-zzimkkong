@@ -2,7 +2,7 @@ import { AxiosError } from 'axios';
 import { FormEventHandler, useMemo, useState } from 'react';
 import { useMutation } from 'react-query';
 import { useHistory, useLocation, useParams } from 'react-router-dom';
-import { deleteReservation } from 'api/reservation';
+import { deleteReservation } from 'api/guestReservation';
 import { ReactComponent as Delete } from 'assets/svg/delete.svg';
 import { ReactComponent as Edit } from 'assets/svg/edit.svg';
 import { ReactComponent as More } from 'assets/svg/more.svg';
@@ -17,8 +17,8 @@ import ReservationListItem from 'components/ReservationListItem/ReservationListI
 import MESSAGE from 'constants/message';
 import PALETTE from 'constants/palette';
 import useGuestMap from 'hooks/useGuestMap';
+import useGuestReservations from 'hooks/useGuestReservations';
 import useInput from 'hooks/useInput';
-import useReservations from 'hooks/useReservations';
 import useSpaces from 'hooks/useSpaces';
 import { Area, MapDrawing, MapItem, Reservation, ScrollPosition, Space } from 'types/common';
 import { ErrorResponse } from 'types/response';
@@ -52,7 +52,7 @@ const GuestMap = (): JSX.Element => {
   const now = new Date();
   const todayDate = new Date(now.getFullYear(), now.getMonth(), now.getDate());
 
-  const [map, setMap] = useState<MapItem>();
+  const [map, setMap] = useState<MapItem | null>(null);
   const mapDrawing = map?.mapDrawing;
   const getMap = useGuestMap(
     { sharingMapId },
@@ -99,7 +99,7 @@ const GuestMap = (): JSX.Element => {
 
   const [date, setDate] = useState(targetDate ? new Date(targetDate) : new Date());
 
-  const getReservations = useReservations(
+  const getReservations = useGuestReservations(
     {
       mapId: map?.mapId as number,
       spaceId: Number(selectedSpaceId),

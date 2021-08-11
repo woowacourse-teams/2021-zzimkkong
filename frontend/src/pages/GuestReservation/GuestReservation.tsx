@@ -2,7 +2,7 @@ import { AxiosError } from 'axios';
 import { FormEventHandler, useEffect } from 'react';
 import { useMutation } from 'react-query';
 import { useHistory, useLocation, useParams } from 'react-router-dom';
-import { postReservation } from 'api/reservation';
+import { postReservation } from 'api/guestReservation';
 import { ReactComponent as CalendarIcon } from 'assets/svg/calendar.svg';
 import Button from 'components/Button/Button';
 import Header from 'components/Header/Header';
@@ -12,8 +12,8 @@ import ReservationListItem from 'components/ReservationListItem/ReservationListI
 import MESSAGE from 'constants/message';
 import REGEXP from 'constants/regexp';
 import RESERVATION from 'constants/reservation';
+import useGuestReservations from 'hooks/useGuestReservations';
 import useInput from 'hooks/useInput';
-import useReservations from 'hooks/useReservations';
 import { GuestMapState } from 'pages/GuestMap/GuestMap';
 import { MapItem, ScrollPosition, Space } from 'types/common';
 import { ErrorResponse } from 'types/response';
@@ -55,7 +55,7 @@ const GuestReservation = (): JSX.Element => {
   const startDateTime = new Date(`${date}T${startTime}Z`);
   const endDateTime = new Date(`${date}T${endTime}Z`);
 
-  const getReservations = useReservations({ mapId, spaceId, date });
+  const getReservations = useGuestReservations({ mapId, spaceId, date });
   const reservations = getReservations.data?.data?.reservations ?? [];
 
   const createReservation = useMutation(postReservation, {
