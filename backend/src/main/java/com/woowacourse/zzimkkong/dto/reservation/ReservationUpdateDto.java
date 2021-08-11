@@ -1,12 +1,13 @@
 package com.woowacourse.zzimkkong.dto.reservation;
 
 import com.woowacourse.zzimkkong.domain.Member;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
+@Getter
+@NoArgsConstructor
 public class ReservationUpdateDto extends ReservationCreateDto {
     private Long reservationId;
-
-    public ReservationUpdateDto() {
-    }
 
     private ReservationUpdateDto(
             final Long mapId,
@@ -43,9 +44,5 @@ public class ReservationUpdateDto extends ReservationCreateDto {
                 reservationId,
                 request,
                 new Member());
-    }
-
-    public Long getReservationId() {
-        return reservationId;
     }
 }

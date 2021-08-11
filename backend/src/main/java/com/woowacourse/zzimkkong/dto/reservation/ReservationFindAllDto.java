@@ -1,16 +1,17 @@
 package com.woowacourse.zzimkkong.dto.reservation;
 
 import com.woowacourse.zzimkkong.domain.Member;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
 
+@Getter
+@NoArgsConstructor
 public class ReservationFindAllDto {
     protected Long mapId;
     protected LocalDate date;
     protected Member manager;
-
-    public ReservationFindAllDto() {
-    }
 
     protected ReservationFindAllDto(
             final Long mapId,
@@ -32,17 +33,5 @@ public class ReservationFindAllDto {
             final Long mapId,
             final LocalDate date) {
         return new ReservationFindAllDto(mapId, date, new Member());
-    }
-
-    public Long getMapId() {
-        return mapId;
-    }
-
-    public LocalDate getDate() {
-        return date;
-    }
-
-    public Member getManager() {
-        return manager;
     }
 }

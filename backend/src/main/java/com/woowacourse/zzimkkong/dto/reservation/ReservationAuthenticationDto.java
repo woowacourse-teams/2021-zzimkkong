@@ -1,16 +1,17 @@
 package com.woowacourse.zzimkkong.dto.reservation;
 
 import com.woowacourse.zzimkkong.domain.Member;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
+@Getter
+@NoArgsConstructor
 public class ReservationAuthenticationDto {
     private Long mapId;
     private Long spaceId;
     private Long reservationId;
     private ReservationPasswordAuthenticationRequest request;
     private Member manager;
-
-    public ReservationAuthenticationDto() {
-    }
 
     private ReservationAuthenticationDto(
             final Long mapId,
@@ -49,26 +50,6 @@ public class ReservationAuthenticationDto {
                 reservationId,
                 new ReservationPasswordAuthenticationRequest(),
                 manager);
-    }
-
-    public Long getMapId() {
-        return mapId;
-    }
-
-    public Long getSpaceId() {
-        return spaceId;
-    }
-
-    public Long getReservationId() {
-        return reservationId;
-    }
-
-    public ReservationPasswordAuthenticationRequest getRequest() {
-        return request;
-    }
-
-    public Member getManager() {
-        return manager;
     }
 
     public String getPassword() {

@@ -1,17 +1,18 @@
 package com.woowacourse.zzimkkong.dto.reservation;
 
 import com.woowacourse.zzimkkong.domain.Member;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
 
+@Getter
+@NoArgsConstructor
 public class ReservationCreateDto {
     protected Long mapId;
     protected Long spaceId;
     protected ReservationCreateUpdateRequest request;
     protected Member manager;
-
-    public ReservationCreateDto() {
-    }
 
     protected ReservationCreateDto(
             final Long mapId,
@@ -45,18 +46,6 @@ public class ReservationCreateDto {
                 spaceId,
                 reservationCreateUpdateWithPasswordRequest,
                 manager);
-    }
-
-    public Long getMapId() {
-        return mapId;
-    }
-
-    public Long getSpaceId() {
-        return spaceId;
-    }
-
-    public Member getManager() {
-        return manager;
     }
 
     public LocalDateTime getStartDateTime() {
