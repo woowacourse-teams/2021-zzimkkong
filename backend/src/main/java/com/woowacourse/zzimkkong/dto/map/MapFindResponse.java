@@ -2,17 +2,16 @@ package com.woowacourse.zzimkkong.dto.map;
 
 import com.woowacourse.zzimkkong.domain.Map;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 @Getter
+@NoArgsConstructor
 public class MapFindResponse {
     private Long mapId;
     private String mapName;
     private String mapDrawing;
     private String mapImageUrl;
     private String sharingMapId;
-
-    public MapFindResponse() {
-    }
 
     private MapFindResponse(final Long mapId,
                             final String mapName,

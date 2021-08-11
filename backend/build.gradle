@@ -64,7 +64,6 @@ test {
     jacoco {
         destinationFile = file("$buildDir/jacoco/jacoco.exec")
     }
-
     finalizedBy jacocoTestReport
 }
 
@@ -87,8 +86,7 @@ bootJar {
 }
 
 jacocoTestReport {
-    dependsOn test
-    reports{
+    reports {
         html.enabled true
         xml.enabled true
         csv.enabled false
@@ -99,24 +97,23 @@ jacocoTestReport {
 jacocoTestCoverageVerification {
     violationRules {
         rule {
-            element = 'BUNDLE'
+            element = 'CLASS'
+            excludes = ["**.exception.**", "**.ControllerAdvice", "**.*ErrorResponse", "**.ValidatorMessage",
+                        "**.ZzimkkongApplication", "**.*TimeConverter", "**.DataLoader", "**.*Config",
+                        "**.LoginInterceptor", "**.AuthenticationPrincipalArgumentResolver",
+                        "**.slack.**", "**.Slack*"]
+            //todo: 패키지 분리하면 더 멋있게 해보겠슴,,
 
             limit {
                 counter = 'BRANCH'
                 value = 'COVEREDRATIO'
-                minimum = 0.90
+                minimum = 1.0
             }
 
             limit {
                 counter = 'INSTRUCTION'
                 value = 'COVEREDRATIO'
-                minimum = 0.79
-            }
-
-            limit {
-                counter = 'LINE'
-                value = 'COVEREDRATIO'
-                minimum = 0.78
+                minimum = 0.9
             }
         }
     }

@@ -28,10 +28,6 @@ export const PUBLIC_ROUTES: Route[] = [
     component: <ManagerJoin />,
   },
   {
-    path: PATH.MANAGER_MAP_CREATE,
-    component: <ManagerMapCreate />,
-  },
-  {
     path: PATH.GUEST_MAIN,
     component: <GuestMain />,
   },
@@ -53,6 +49,11 @@ export const PRIVATE_ROUTES: PrivateRoute[] = [
   },
   {
     path: PATH.MANAGER_MAP_CREATE,
+    component: <ManagerMapCreate />,
+    redirectPath: PATH.MANAGER_LOGIN,
+  },
+  {
+    path: PATH.MANAGER_MAP_EDIT,
     component: <ManagerMapCreate />,
     redirectPath: PATH.MANAGER_LOGIN,
   },

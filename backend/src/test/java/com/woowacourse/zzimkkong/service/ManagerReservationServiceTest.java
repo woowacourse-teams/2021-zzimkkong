@@ -595,6 +595,20 @@ class ManagerReservationServiceTest extends ServiceTest {
     }
 
     @Test
+    @DisplayName("특정 공간 예약 조회 요청 시, 해당하는 공간이 없으면 오류가 발생한다.")
+    void findReservationsWithInvalidSpace() {
+        //given, when
+        given(maps.findById(anyLong()))
+                .willReturn(Optional.of(luther));
+        given(maps.existsById(anyLong()))
+                .willReturn(true);
+
+        //then
+        assertThatThrownBy(() -> managerReservationService.findReservation(luther.getId(), noneExistingSpaceId, reservation.getId(), pobi))
+                .isInstanceOf(NoSuchSpaceException.class);
+    }
+
+    @Test
     @DisplayName("전체 예약이나 특정 공간 예약 조회 요청 시, 해당하는 예약이 없으면 빈 정보가 조회된다.")
     void findEmptyReservations() {
         //given, when

@@ -9,6 +9,10 @@ public class TimeUnitValidator implements ConstraintValidator<TimeUnit, Integer>
 
     @Override
     public boolean isValid(Integer value, ConstraintValidatorContext context) {
+        if(value == null){
+            return true;
+        }
+
         return TIME_UNITS.contains(value);
     }
 }

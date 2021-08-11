@@ -3,14 +3,13 @@ package com.woowacourse.zzimkkong.dto.space;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.woowacourse.zzimkkong.domain.Space;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 @Getter
+@NoArgsConstructor
 public class SpaceFindDetailWithIdResponse extends SpaceFindDetailResponse {
     @JsonProperty
     private Long id;
-
-    public SpaceFindDetailWithIdResponse() {
-    }
 
     private SpaceFindDetailWithIdResponse(
             final String name,

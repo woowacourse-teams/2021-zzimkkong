@@ -2,13 +2,12 @@ package com.woowacourse.zzimkkong.dto.member;
 
 import com.woowacourse.zzimkkong.domain.Member;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 @Getter
+@NoArgsConstructor
 public class MemberSaveResponse {
     private Long id;
-
-    public MemberSaveResponse() {
-    }
 
     private MemberSaveResponse(final Long id) {
         this.id = id;

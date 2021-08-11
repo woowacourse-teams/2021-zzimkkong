@@ -1,13 +1,12 @@
 package com.woowacourse.zzimkkong.dto.member;
 
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 @Getter
+@NoArgsConstructor
 public class TokenResponse {
     private String accessToken;
-
-    public TokenResponse() {
-    }
 
     public TokenResponse(final String accessToken) {
         this.accessToken = accessToken;
