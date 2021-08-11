@@ -672,7 +672,7 @@ const ManagerMapCreate = (): JSX.Element => {
                       fill="url(#grid)"
                     />
 
-                    {mode === Mode.Line && stickyPointerView && (
+                    {[Mode.Line, Mode.Square].includes(mode) && stickyPointerView && (
                       <circle
                         cx={stickyCoordinate.x}
                         cy={stickyCoordinate.y}
