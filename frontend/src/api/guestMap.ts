@@ -14,5 +14,5 @@ export const queryGuestMap: QueryFunction<
   const [, data] = queryKey;
   const { sharingMapId } = data;
 
-  return api.get(`/guests/maps?publicMapId=${sharingMapId}`);
+  return api.get(`/guests/maps?sharingMapId=${sharingMapId}`);
 };
