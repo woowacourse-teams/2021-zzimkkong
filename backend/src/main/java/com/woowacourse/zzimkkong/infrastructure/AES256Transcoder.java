@@ -15,6 +15,7 @@ import java.nio.charset.StandardCharsets;
 import java.security.InvalidAlgorithmParameterException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
+import java.security.SecureRandom;
 
 @Component
 @PropertySource("classpath:config/AES256Transcoder.properties")
@@ -26,9 +27,13 @@ public class AES256Transcoder implements Transcoder {
     private final IvParameterSpec ivParameterSpec;
 
     public AES256Transcoder(@Value("${transcoder.secret-key}") String secretKey) {
+        SecureRandom random = new SecureRandom();
+        byte[] bytesIV = new byte[LENGTH_OF_INITIALIZATION_VECTOR];
+        random.nextBytes(bytesIV);
+
         validateLengthOfSecretKey(secretKey);
         this.secureKey = new SecretKeySpec(secretKey.substring(0, MINIMUM_LENGTH_OF_SECRET_KEY).getBytes(), "AES");
-        this.ivParameterSpec = new IvParameterSpec(secretKey.substring(0, LENGTH_OF_INITIALIZATION_VECTOR).getBytes());
+        this.ivParameterSpec = new IvParameterSpec(bytesIV);
     }
 
     private void validateLengthOfSecretKey(String secretKey) {
