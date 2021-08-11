@@ -3,6 +3,7 @@ package com.woowacourse.zzimkkong.domain;
 import com.woowacourse.zzimkkong.exception.space.NoSuchDayOfWeekException;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
 
@@ -17,6 +18,7 @@ import java.util.stream.Collectors;
 
 @Getter
 @Builder
+@NoArgsConstructor
 @DynamicInsert
 @DynamicUpdate
 @Entity
@@ -45,9 +47,6 @@ public class Space {
     @ManyToOne
     @JoinColumn(name = "map_id", foreignKey = @ForeignKey(name = "fk_space_map"), nullable = false)
     private Map map;
-
-    protected Space() {
-    }
 
     protected Space(
             final Long id,

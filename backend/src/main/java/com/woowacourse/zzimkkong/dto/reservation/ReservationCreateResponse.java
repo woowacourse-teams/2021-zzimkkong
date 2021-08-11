@@ -2,14 +2,12 @@ package com.woowacourse.zzimkkong.dto.reservation;
 
 import com.woowacourse.zzimkkong.domain.Reservation;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 @Getter
+@NoArgsConstructor
 public class ReservationCreateResponse {
     private Long id;
-
-    public ReservationCreateResponse() {
-
-    }
 
     private ReservationCreateResponse(final Long id) {
         this.id = id;

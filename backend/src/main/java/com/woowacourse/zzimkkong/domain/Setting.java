@@ -2,6 +2,7 @@ package com.woowacourse.zzimkkong.domain;
 
 import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
@@ -9,6 +10,7 @@ import java.time.LocalTime;
 
 @Getter
 @Builder
+@NoArgsConstructor
 @Embeddable
 public class Setting {
     @Column(nullable = false)
@@ -29,11 +31,8 @@ public class Setting {
     @Column(nullable = false)
     private Boolean reservationEnable;
 
-    @Column(nullable = true)
+    @Column(nullable = false)
     private String enabledDayOfWeek;
-
-    protected Setting() {
-    }
 
     protected Setting(
             final LocalTime availableStartTime,
