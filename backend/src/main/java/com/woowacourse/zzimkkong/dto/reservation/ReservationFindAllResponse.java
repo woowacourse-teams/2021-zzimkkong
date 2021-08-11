@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.woowacourse.zzimkkong.domain.Reservation;
 import com.woowacourse.zzimkkong.domain.Space;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 import java.util.Collections;
 import java.util.Comparator;
@@ -13,13 +14,11 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 @Getter
+@NoArgsConstructor
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class ReservationFindAllResponse {
     @JsonProperty
     private List<ReservationSpaceResponse> data;
-
-    public ReservationFindAllResponse() {
-    }
 
     private ReservationFindAllResponse(final List<ReservationSpaceResponse> data) {
         this.data = data;

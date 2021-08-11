@@ -2,17 +2,16 @@ package com.woowacourse.zzimkkong.dto.space;
 
 import com.woowacourse.zzimkkong.domain.Space;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 @Getter
+@NoArgsConstructor
 public class SpaceFindDetailResponse {
     private String name;
     private String color;
     private String description;
     private String area;
     private SettingResponse settings;
-
-    public SpaceFindDetailResponse() {
-    }
 
     protected SpaceFindDetailResponse(
             final String name,
