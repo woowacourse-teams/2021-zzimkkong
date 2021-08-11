@@ -14,6 +14,7 @@ import {
 import { useMutation } from 'react-query';
 import { useHistory, useParams } from 'react-router-dom';
 import { postMap, putMap } from 'api/managerMap';
+import { ReactComponent as EraserIcon } from 'assets/svg/eraser.svg';
 import { ReactComponent as ItemsIcon } from 'assets/svg/items.svg';
 import { ReactComponent as LineIcon } from 'assets/svg/line.svg';
 import { ReactComponent as MoveIcon } from 'assets/svg/move.svg';
@@ -364,11 +365,15 @@ const ManagerMapCreate = (): JSX.Element => {
   };
 
   const handleMouseDown = () => {
+    if (isDraggable) return;
+
     if (mode === Mode.Line) drawStart();
     if (mode === Mode.Eraser) eraseStart();
   };
 
   const handleMouseUp = () => {
+    if (isDraggable) return;
+
     if (mode === Mode.Line) drawEnd();
     if (mode === Mode.Eraser) eraseEnd();
   };
@@ -575,7 +580,7 @@ const ManagerMapCreate = (): JSX.Element => {
                 selected={mode === Mode.Eraser}
                 onClick={() => selectMode(Mode.Eraser)}
               >
-                <SelectIcon />
+                <EraserIcon />
               </Styled.ToolbarButton>
               <Styled.ToolbarButton
                 text="장식"
@@ -671,6 +676,7 @@ const ManagerMapCreate = (): JSX.Element => {
                         cy={stickyCoordinate.y}
                         r={3}
                         fill={PALETTE.OPACITY_BLACK[300]}
+                        pointerEvents="none"
                       />
                     )}
 
@@ -708,6 +714,7 @@ const ManagerMapCreate = (): JSX.Element => {
                         strokeLinecap="round"
                         cursor={mode === Mode.Select ? 'pointer' : 'default'}
                         opacity={erasingMapElementIds.includes(element.id) ? '0.3' : '1'}
+                        pointerEvents={isDraggable ? 'none' : 'auto'}
                         onClickCapture={(event) => handleSelectMapElement(event, element.id)}
                         onMouseOverCapture={() => handleSelectErasingElement(element.id)}
                       />
