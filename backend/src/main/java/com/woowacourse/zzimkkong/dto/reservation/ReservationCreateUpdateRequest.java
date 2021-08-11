@@ -1,5 +1,6 @@
 package com.woowacourse.zzimkkong.dto.reservation;
 
+import lombok.Getter;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.validation.constraints.NotBlank;
@@ -10,6 +11,7 @@ import java.time.LocalDateTime;
 
 import static com.woowacourse.zzimkkong.dto.ValidatorMessage.*;
 
+@Getter
 public class ReservationCreateUpdateRequest {
     @DateTimeFormat(pattern = DATETIME_FORMAT)
     @NotNull(message = EMPTY_MESSAGE)

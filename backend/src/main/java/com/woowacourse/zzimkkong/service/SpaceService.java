@@ -51,7 +51,7 @@ public class SpaceService {
         validateManagerOfMap(map, manager);
 
         Setting setting = getSetting(spaceCreateUpdateRequest);
-        Space space = new Space.Builder()
+        Space space = Space.builder()
                 .name(spaceCreateUpdateRequest.getName())
                 .color(spaceCreateUpdateRequest.getColor())
                 .description(spaceCreateUpdateRequest.getDescription())
@@ -112,7 +112,7 @@ public class SpaceService {
                 .orElseThrow(NoSuchSpaceException::new);
 
         Setting setting = getSetting(spaceCreateUpdateRequest);
-        Space updateSpace = new Space.Builder()
+        Space updateSpace = Space.builder()
                 .name(spaceCreateUpdateRequest.getName())
                 .color(spaceCreateUpdateRequest.getColor())
                 .description(spaceCreateUpdateRequest.getDescription())
@@ -121,7 +121,6 @@ public class SpaceService {
                 .build();
 
         space.update(updateSpace);
-
         thumbnailManager.uploadMapThumbnail(spaceCreateUpdateRequest.getMapImageSvg(), map);
     }
 
@@ -140,14 +139,13 @@ public class SpaceService {
         validateReservationExistence(spaceId);
 
         spaces.delete(space);
-
         thumbnailManager.uploadMapThumbnail(spaceDeleteRequest.getMapImageSvg(), map);
     }
 
     private Setting getSetting(final SpaceCreateUpdateRequest spaceCreateUpdateRequest) {
         SettingsRequest settingsRequest = spaceCreateUpdateRequest.getSettingsRequest();
 
-        return new Setting.Builder()
+        return Setting.builder()
                 .availableStartTime(settingsRequest.getAvailableStartTime())
                 .availableEndTime(settingsRequest.getAvailableEndTime())
                 .reservationTimeUnit(settingsRequest.getReservationTimeUnit())

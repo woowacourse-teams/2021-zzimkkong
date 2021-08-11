@@ -18,12 +18,24 @@ const MESSAGE = {
     UNEXPECTED_ERROR: '예약하는 중에 문제가 발생했습니다. 잠시 후에 다시 시도해주세요.',
     UNEXPECTED_DELETE_ERROR:
       '예약을 삭제하는 중에 문제가 발생했습니다. 잠시 후에 다시 시도해주세요.',
+    INVALID_MAP_ID: '맵 ID가 올바르지 않습니다. 다시 확인해주세요.',
   },
   MANAGER_MAIN: {
     UNEXPECTED_GET_DATA_ERROR:
       '정보를 불러오는 중에 문제가 발생했습니다. 잠시 후에 다시 시도해주세요.',
     UNEXPECTED_MAP_DELETE_ERROR:
       '맵을 삭제하는 중에 문제가 발생했습니다. 잠시 후에 다시 시도해주세요.',
+  },
+  MANAGER_SPACE: {
+    GET_UNEXPECTED_ERROR:
+      '공간 데이터를 불러오는 데 문제가 발생했습니다. 잠시 후에 다시 시도해주세요.',
+    ADD_UNEXPECTED_ERROR: '공간을 생성하는 중에 문제가 발생했습니다. 잠시 후에 다시 시도해주세요.',
+    EDIT_UNEXPECTED_ERROR:
+      '공간 설정을 수정하는 중에 문제가 발생했습니다. 잠시 후에 다시 시도해주세요.',
+    DELETE_UNEXPECTED_ERROR:
+      '공간을 삭제하는 중에 문제가 발생했습니다. 잠시 후에 다시 시도해주세요.',
+    CANCEL_ADD_SPACE_CONFIRM: '입력한 공간 설정은 저장되지 않습니다. 공간 추가를 취소하시겠습니까?',
+    DELETE_SPACE_CONFIRM: '공간을 삭제하시겠습니까?',
   },
 };
 

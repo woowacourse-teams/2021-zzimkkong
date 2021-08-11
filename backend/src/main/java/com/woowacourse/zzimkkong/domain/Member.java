@@ -1,10 +1,14 @@
 package com.woowacourse.zzimkkong.domain;
 
+import lombok.Getter;
+
 import javax.persistence.*;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
+@Getter
 @Entity
 public class Member {
     @Id
@@ -58,23 +62,7 @@ public class Member {
         this.presets.add(preset);
     }
 
-    public Long getId() {
-        return id;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
-    public String getOrganization() {
-        return organization;
-    }
-
     public List<Preset> getPresets() {
-        return presets;
+        return Collections.unmodifiableList(presets);
     }
 }

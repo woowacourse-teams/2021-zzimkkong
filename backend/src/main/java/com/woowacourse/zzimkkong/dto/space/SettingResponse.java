@@ -3,11 +3,13 @@ package com.woowacourse.zzimkkong.dto.space;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.woowacourse.zzimkkong.domain.Space;
+import lombok.Getter;
 
 import java.time.LocalTime;
 
 import static com.woowacourse.zzimkkong.dto.ValidatorMessage.TIME_FORMAT;
 
+@Getter
 public class SettingResponse {
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = TIME_FORMAT)
     private LocalTime availableStartTime;
@@ -27,7 +29,7 @@ public class SettingResponse {
     public SettingResponse() {
     }
 
-    private SettingResponse(
+    protected SettingResponse(
             final LocalTime availableStartTime,
             final LocalTime availableEndTime,
             final Integer reservationTimeUnit,

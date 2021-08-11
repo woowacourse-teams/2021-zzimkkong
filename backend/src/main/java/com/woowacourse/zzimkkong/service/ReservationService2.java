@@ -64,7 +64,7 @@ public class ReservationService2 {
         validateAvailability(space, reservationCreateDto, new ReservationCreateCallback());
 
         Reservation reservation = reservations.save(
-                new Reservation.Builder()
+                Reservation.builder()
                         .startTime(reservationCreateDto.getStartDateTime())
                         .endTime(reservationCreateDto.getEndDateTime())
                         .password(reservationCreateDto.getPassword())
@@ -157,7 +157,7 @@ public class ReservationService2 {
 
         validateAvailability(space, reservationUpdateDto, new ReservationUpdateCallback(reservation));
 
-        Reservation updateReservation = new Reservation.Builder()
+        Reservation updateReservation = Reservation.builder()
                 .startTime(reservationUpdateDto.getStartDateTime())
                 .endTime(reservationUpdateDto.getEndDateTime())
                 .userName(reservationUpdateDto.getName())

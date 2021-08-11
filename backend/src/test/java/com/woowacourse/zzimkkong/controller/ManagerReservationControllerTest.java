@@ -62,7 +62,7 @@ public class ManagerReservationControllerTest extends AcceptanceTest {
         Member pobi = new Member(EMAIL, PASSWORD, ORGANIZATION);
         Map luther = new Map(LUTHER_NAME, MAP_DRAWING_DATA, MAP_IMAGE_URL, pobi);
 
-        Setting beSetting = new Setting.Builder()
+        Setting beSetting = Setting.builder()
                 .availableStartTime(BE_AVAILABLE_START_TIME)
                 .availableEndTime(BE_AVAILABLE_END_TIME)
                 .reservationTimeUnit(BE_RESERVATION_TIME_UNIT)
@@ -72,7 +72,7 @@ public class ManagerReservationControllerTest extends AcceptanceTest {
                 .enabledDayOfWeek(BE_ENABLED_DAY_OF_WEEK)
                 .build();
 
-        be = new Space.Builder()
+        be = Space.builder()
                 .id(beSpaceId)
                 .name(BE_NAME)
                 .map(luther)
@@ -81,7 +81,7 @@ public class ManagerReservationControllerTest extends AcceptanceTest {
                 .setting(beSetting)
                 .build();
 
-        Setting feSetting = new Setting.Builder()
+        Setting feSetting = Setting.builder()
                 .availableStartTime(FE_AVAILABLE_START_TIME)
                 .availableEndTime(FE_AVAILABLE_END_TIME)
                 .reservationTimeUnit(FE_RESERVATION_TIME_UNIT)
@@ -91,7 +91,7 @@ public class ManagerReservationControllerTest extends AcceptanceTest {
                 .enabledDayOfWeek(FE_ENABLED_DAY_OF_WEEK)
                 .build();
 
-        fe = new Space.Builder()
+        fe = Space.builder()
                 .id(feSpaceId)
                 .name(FE_NAME)
                 .color(FE_COLOR)
@@ -103,7 +103,7 @@ public class ManagerReservationControllerTest extends AcceptanceTest {
 
         saveExampleReservations();
         savedReservationId = getReservationIdAfterSave(beReservationApi, reservationCreateUpdateWithPasswordRequest);
-        savedReservation = new Reservation.Builder()
+        savedReservation = Reservation.builder()
                 .startTime(reservationCreateUpdateWithPasswordRequest.getStartDateTime())
                 .endTime(reservationCreateUpdateWithPasswordRequest.getEndDateTime())
                 .password(reservationCreateUpdateWithPasswordRequest.getPassword())
@@ -209,7 +209,7 @@ public class ManagerReservationControllerTest extends AcceptanceTest {
 
         ReservationResponse actualResponse = findResponse.as(ReservationResponse.class);
         ReservationResponse expectedResponse = ReservationResponse.from(
-                new Reservation.Builder()
+                Reservation.builder()
                         .id(savedReservationId)
                         .startTime(reservationCreateUpdateRequestSameSpace.getStartDateTime())
                         .endTime(reservationCreateUpdateRequestSameSpace.getEndDateTime())
@@ -249,7 +249,7 @@ public class ManagerReservationControllerTest extends AcceptanceTest {
         ReservationFindResponse actualResponse = findResponse.as(ReservationFindResponse.class);
         ReservationFindResponse expectedResponse = ReservationFindResponse.from(
                 Arrays.asList(
-                        new Reservation.Builder()
+                        Reservation.builder()
                                 .startTime(reservationCreateUpdateWithPasswordRequestDifferentSpace.getStartDateTime())
                                 .endTime(reservationCreateUpdateWithPasswordRequestDifferentSpace.getEndDateTime())
                                 .description(reservationCreateUpdateWithPasswordRequestDifferentSpace.getDescription())
@@ -311,7 +311,7 @@ public class ManagerReservationControllerTest extends AcceptanceTest {
                 FE1_AM_TEN_ELEVEN_USERNAME,
                 FE1_AM_TEN_ELEVEN_DESCRIPTION);
 
-        beAmZeroOne = new Reservation.Builder()
+        beAmZeroOne = Reservation.builder()
                 .id(getReservationIdAfterSave(beReservationApi, beAmZeroOneRequest))
                 .startTime(BE_AM_TEN_ELEVEN_START_TIME)
                 .endTime(BE_AM_TEN_ELEVEN_END_TIME)
@@ -321,7 +321,7 @@ public class ManagerReservationControllerTest extends AcceptanceTest {
                 .space(be)
                 .build();
 
-        bePmOneTwo = new Reservation.Builder()
+        bePmOneTwo = Reservation.builder()
                 .id(getReservationIdAfterSave(beReservationApi, bePmOneTwoRequest))
                 .startTime(BE_PM_ONE_TWO_START_TIME)
                 .endTime(BE_PM_ONE_TWO_END_TIME)
@@ -333,7 +333,7 @@ public class ManagerReservationControllerTest extends AcceptanceTest {
 
         getReservationIdAfterSave(beReservationApi, beNextDayAmSixTwelveRequest);
 
-        fe1ZeroOne = new Reservation.Builder()
+        fe1ZeroOne = Reservation.builder()
                 .id(getReservationIdAfterSave(fe1ReservationApi, feZeroOneRequest))
                 .startTime(FE1_AM_TEN_ELEVEN_START_TIME)
                 .endTime(FE1_AM_TEN_ELEVEN_END_TIME)
@@ -403,7 +403,7 @@ public class ManagerReservationControllerTest extends AcceptanceTest {
                 .then().log().all().extract();
     }
 
-    private ExtractableResponse<Response> findReservation( final String api) {
+    private ExtractableResponse<Response> findReservation(final String api) {
         return RestAssured
                 .given(getRequestSpecification()).log().all()
                 .accept("*/*")

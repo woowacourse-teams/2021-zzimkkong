@@ -1,5 +1,5 @@
 import { AxiosError } from 'axios';
-import { FormEventHandler } from 'react';
+import { FormEventHandler, useEffect } from 'react';
 import { useMutation } from 'react-query';
 import { useHistory, useLocation } from 'react-router-dom';
 import { postReservation } from 'api/reservation';
@@ -16,7 +16,7 @@ import RESERVATION from 'constants/reservation';
 import useInput from 'hooks/useInput';
 import useReservations from 'hooks/useReservations';
 import { GuestMainState } from 'pages/GuestMain/GuestMain';
-import { Space } from 'types/common';
+import { ScrollPosition, Space } from 'types/common';
 import { ErrorResponse } from 'types/response';
 import { formatDate, formatTime } from 'utils/datetime';
 import * as Styled from './GuestReservation.styles';
@@ -26,13 +26,14 @@ interface GuestReservationState {
   spaceId: Space['spaceId'];
   spaceName: Space['spaceName'];
   selectedDate: string;
+  scrollPosition: ScrollPosition;
 }
 
 const GuestReservation = (): JSX.Element => {
   const location = useLocation<GuestReservationState>();
   const history = useHistory<GuestMainState>();
 
-  const { mapId, spaceId, spaceName, selectedDate } = location.state;
+  const { mapId, spaceId, spaceName, selectedDate, scrollPosition } = location.state;
 
   if (!mapId || !spaceId || !spaceName) history.replace(PATH.GUEST_MAIN);
 
@@ -74,6 +75,22 @@ const GuestReservation = (): JSX.Element => {
 
     createReservation.mutate({ reservation, mapId, spaceId });
   };
+
+  useEffect(() => {
+    return history.listen((location) => {
+      if (location.pathname === PATH.GUEST_MAIN || location.pathname === PATH.GUEST_MAIN + '/') {
+        location.state = {
+          spaceId,
+          targetDate: new Date(selectedDate),
+          scrollPosition,
+        };
+      }
+    });
+  }, [history, scrollPosition, selectedDate, spaceId]);
+
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
 
   return (
     <>

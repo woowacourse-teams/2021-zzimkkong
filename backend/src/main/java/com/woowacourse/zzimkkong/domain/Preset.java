@@ -1,7 +1,10 @@
 package com.woowacourse.zzimkkong.domain;
 
+import lombok.Getter;
+
 import javax.persistence.*;
 
+@Getter
 @Entity
 public class Preset {
     @Id
@@ -19,7 +22,6 @@ public class Preset {
     private Member member;
 
     protected Preset() {
-
     }
 
     public Preset(final String name, final Setting setting, final Member member) {
@@ -40,21 +42,5 @@ public class Preset {
 
     public boolean hasSameId(final Long presetId) {
         return this.id.equals(presetId);
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public Member getMember() {
-        return member;
-    }
-
-    public Setting getSetting() {
-        return setting;
     }
 }
