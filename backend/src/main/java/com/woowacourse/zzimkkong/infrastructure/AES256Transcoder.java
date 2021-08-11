@@ -49,7 +49,8 @@ public class AES256Transcoder implements Transcoder {
         } catch (InvalidKeyException |
                 IllegalBlockSizeException | BadPaddingException |
                 NoSuchPaddingException | NoSuchAlgorithmException |
-                InvalidAlgorithmParameterException exception) {
+                InvalidAlgorithmParameterException |
+                NullPointerException exception) {
             throw new EncodingException(exception);
         }
     }

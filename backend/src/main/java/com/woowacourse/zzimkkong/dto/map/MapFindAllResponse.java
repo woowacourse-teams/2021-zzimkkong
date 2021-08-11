@@ -2,16 +2,15 @@ package com.woowacourse.zzimkkong.dto.map;
 
 import com.woowacourse.zzimkkong.domain.Member;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 import java.util.List;
 
 @Getter
+@NoArgsConstructor
 public class MapFindAllResponse {
     private List<MapFindResponse> maps;
     private String organization;
-
-    public MapFindAllResponse() {
-    }
 
     private MapFindAllResponse(final List<MapFindResponse> maps, final String organization) {
         this.maps = maps;

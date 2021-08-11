@@ -1,6 +1,7 @@
 package com.woowacourse.zzimkkong.dto.reservation;
 
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.validation.constraints.NotBlank;
@@ -12,6 +13,7 @@ import java.time.LocalDateTime;
 import static com.woowacourse.zzimkkong.dto.ValidatorMessage.*;
 
 @Getter
+@NoArgsConstructor
 public class ReservationCreateUpdateRequest {
     @DateTimeFormat(pattern = DATETIME_FORMAT)
     @NotNull(message = EMPTY_MESSAGE)
@@ -28,9 +30,6 @@ public class ReservationCreateUpdateRequest {
     @NotBlank(message = EMPTY_MESSAGE)
     @Size(max = 100, message = DESCRIPTION_MESSAGE)
     protected String description;
-
-    public ReservationCreateUpdateRequest() {
-    }
 
     public ReservationCreateUpdateRequest(
             final LocalDateTime startDateTime,

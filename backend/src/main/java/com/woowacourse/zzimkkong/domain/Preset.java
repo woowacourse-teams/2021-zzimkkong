@@ -1,10 +1,12 @@
 package com.woowacourse.zzimkkong.domain;
 
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 
 @Getter
+@NoArgsConstructor
 @Entity
 public class Preset {
     @Id
@@ -20,9 +22,6 @@ public class Preset {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_id", foreignKey = @ForeignKey(name = "fk_preset_member"), nullable = false)
     private Member member;
-
-    protected Preset() {
-    }
 
     public Preset(final String name, final Setting setting, final Member member) {
         this.name = name;

@@ -1,6 +1,8 @@
 package com.woowacourse.zzimkkong.infrastructure;
 
 import com.woowacourse.zzimkkong.exception.infrastructure.DecodingException;
+import com.woowacourse.zzimkkong.exception.infrastructure.EncodingException;
+import com.woowacourse.zzimkkong.exception.infrastructure.InsufficientSecretKeyLengthException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -52,5 +54,19 @@ class AES256TranscoderTest {
         // when, then
         assertThatThrownBy(() -> aes256Transcoder.decode(wrongSharingId))
                 .isInstanceOf(DecodingException.class);
+    }
+
+    @Test
+    @DisplayName("옳지 않은 길이의 key가 들어오면 오류가 발생한다.")
+    void invalidLength() {
+        assertThatThrownBy(() -> new AES256Transcoder("shortsecretkey"))
+                .isInstanceOf(InsufficientSecretKeyLengthException.class);
+    }
+
+    @Test
+    @DisplayName("옳지 않은 길이의 input이 들어오면 오류가 발생한다.")
+    void invalidKey() {
+        assertThatThrownBy(() -> aes256Transcoder.encode(null))
+                .isInstanceOf(EncodingException.class);
     }
 }

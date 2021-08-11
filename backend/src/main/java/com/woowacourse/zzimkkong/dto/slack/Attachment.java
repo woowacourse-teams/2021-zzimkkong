@@ -1,8 +1,10 @@
 package com.woowacourse.zzimkkong.dto.slack;
 
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 @Getter
+@NoArgsConstructor
 public class Attachment {
     private String fallback;
     private String color;
@@ -10,9 +12,6 @@ public class Attachment {
     private String title;
     private String titleLink;
     private SlackResponse slackResponse;
-
-    public Attachment() {
-    }
 
     private Attachment(
             final String fallback,

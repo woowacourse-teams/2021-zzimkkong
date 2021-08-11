@@ -1,6 +1,7 @@
 package com.woowacourse.zzimkkong.domain;
 
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import java.util.ArrayList;
@@ -9,6 +10,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Getter
+@NoArgsConstructor
 @Entity
 public class Member {
     @Id
@@ -26,9 +28,6 @@ public class Member {
 
     @OneToMany(mappedBy = "member", cascade = CascadeType.REMOVE)
     private List<Preset> presets = new ArrayList<>();
-
-    public Member() {
-    }
 
     public Member(
             final String email,
