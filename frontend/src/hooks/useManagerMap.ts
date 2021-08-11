@@ -12,6 +12,6 @@ const useManagerMap = <TData = AxiosResponse<QueryManagerMapSuccess>>(
     [QueryKey, QueryManagerMapParams]
   >
 ): UseQueryResult<TData, AxiosError<ErrorResponse>> =>
-  useQuery(['getMap', { mapId }], queryManagerMap, options);
+  useQuery(['getManagerMap', { mapId }], queryManagerMap, options);
 
 export default useManagerMap;

@@ -6,13 +6,15 @@ import {
   MouseEventHandler,
   useCallback,
   useEffect,
+  useMemo,
   useRef,
   useState,
   WheelEventHandler,
 } from 'react';
 import { useMutation } from 'react-query';
-import { useHistory } from 'react-router-dom';
-import { postMap } from 'api/map';
+import { useHistory, useParams } from 'react-router-dom';
+import { postMap, putMap } from 'api/managerMap';
+import { ReactComponent as EraserIcon } from 'assets/svg/eraser.svg';
 import { ReactComponent as ItemsIcon } from 'assets/svg/items.svg';
 import { ReactComponent as LineIcon } from 'assets/svg/line.svg';
 import { ReactComponent as MoveIcon } from 'assets/svg/move.svg';
@@ -24,10 +26,23 @@ import ColorPickerIcon from 'components/ColorPicker/ColorPickerIcon';
 import Header from 'components/Header/Header';
 import Layout from 'components/Layout/Layout';
 import { BOARD } from 'constants/editor';
+import MESSAGE from 'constants/message';
 import PALETTE from 'constants/palette';
-import PATH from 'constants/path';
+import PATH, { HREF } from 'constants/path';
 import useInput from 'hooks/useInput';
-import { Color, Coordinate, DrawingStatus, EditorBoard, GripPoint, MapElement } from 'types/common';
+import useManagerMap from 'hooks/useManagerMap';
+import useManagerSpaces from 'hooks/useManagerSpaces';
+import {
+  Color,
+  Coordinate,
+  DrawingStatus,
+  EditorBoard,
+  GripPoint,
+  ManagerSpace,
+  MapDrawing,
+  MapElement,
+  SpaceArea,
+} from 'types/common';
 import { Mode } from 'types/editor';
 import { ErrorResponse } from 'types/response';
 import * as Styled from './ManagerMapCreate.styles';
@@ -40,12 +55,19 @@ const LINE_WIDTH = 3;
 const KEY_DELETE = 'Delete';
 const KEY_SPACE = ' ';
 
+interface Params {
+  mapId?: string;
+}
+
 const ManagerMapCreate = (): JSX.Element => {
   const editorRef = useRef<HTMLDivElement | null>(null);
 
   const history = useHistory();
+  const params = useParams<Params>();
+  const mapId = params?.mapId;
+  const isEdit = !!mapId;
 
-  const [mapName, onChangeMapName] = useInput('');
+  const [mapName, onChangeMapName, setMapName] = useInput('');
 
   const [mode, setMode] = useState(Mode.Select);
   const [dragOffsetX, setDragOffsetX] = useState(0);
@@ -77,8 +99,8 @@ const ManagerMapCreate = (): JSX.Element => {
   const nextMapElementId = Math.max(...mapElements.map(({ id }) => id), 1) + 1;
   const nextGripPointId = Math.max(...gripPoints.map(({ id }) => id), 1) + 1;
 
-  const [widthValue, onChangeWidthValue] = useInput('800');
-  const [heightValue, onChangeHeightValue] = useInput('600');
+  const [widthValue, onChangeWidthValue, setWidthValue] = useInput('800');
+  const [heightValue, onChangeHeightValue, setHeightValue] = useInput('600');
 
   const width = Number(widthValue);
   const height = Number(heightValue);
@@ -91,18 +113,60 @@ const ManagerMapCreate = (): JSX.Element => {
     scale: 1,
   });
 
+  const managerSpaces = useManagerSpaces({ mapId: Number(mapId) }, { enabled: isEdit });
+  const spaces: ManagerSpace[] = useMemo(
+    () =>
+      managerSpaces.data?.data.spaces.map((space) => ({
+        ...space,
+        area: JSON.parse(space.area) as SpaceArea,
+      })) ?? [],
+    [managerSpaces.data?.data.spaces]
+  );
+
+  const managerMap = useManagerMap(
+    { mapId: Number(mapId) },
+    {
+      enabled: isEdit,
+      onSuccess: ({ data }) => {
+        const { mapName, mapDrawing } = data;
+
+        setMapName(mapName ?? '');
+
+        try {
+          const { mapElements, width, height } = JSON.parse(mapDrawing) as MapDrawing;
+
+          setMapElements(mapElements);
+          setWidthValue(`${width}`);
+          setHeightValue(`${height}`);
+        } catch (error) {
+          console.error(error);
+          setMapElements([]);
+        }
+      },
+    }
+  );
+
   const createMap = useMutation(postMap, {
     onSuccess: (response) => {
-      if (window.confirm('맵 생성 완료! 공간을 편집하러 가시겠어요?')) {
+      if (window.confirm(MESSAGE.MANAGER_MAP.CREATE_SUCCESS_CONFIRM)) {
         const headers = response.headers as { location: string };
-        const mapId = headers.location.split('/').pop() ?? '';
+        const mapId = Number(headers.location.split('/').pop());
 
-        history.push(`/map/${mapId}/space/edit`);
+        history.push(HREF.MANAGER_SPACE_EDIT(mapId));
 
         return;
       }
 
       history.push(PATH.MANAGER_MAIN);
+    },
+    onError: (error: AxiosError<ErrorResponse>) => {
+      console.error(error);
+    },
+  });
+
+  const updateMap = useMutation(putMap, {
+    onSuccess: () => {
+      alert(MESSAGE.MANAGER_MAP.UPDATE_SUCCESS);
     },
     onError: (error: AxiosError<ErrorResponse>) => {
       console.error(error);
@@ -301,11 +365,15 @@ const ManagerMapCreate = (): JSX.Element => {
   };
 
   const handleMouseDown = () => {
+    if (isDraggable) return;
+
     if (mode === Mode.Line) drawStart();
     if (mode === Mode.Eraser) eraseStart();
   };
 
   const handleMouseUp = () => {
+    if (isDraggable) return;
+
     if (mode === Mode.Line) drawEnd();
     if (mode === Mode.Eraser) eraseEnd();
   };
@@ -339,6 +407,12 @@ const ManagerMapCreate = (): JSX.Element => {
     }
   }, []);
 
+  const handleClickCancel = () => {
+    if (!window.confirm(MESSAGE.MANAGER_MAP.CANCEL_CONFIRM)) return;
+
+    history.push(PATH.MANAGER_MAIN);
+  };
+
   const handleSubmit: FormEventHandler<HTMLFormElement> = (event) => {
     event.preventDefault();
 
@@ -352,6 +426,21 @@ const ManagerMapCreate = (): JSX.Element => {
         height='${height}px'
         viewBox='0 0 ${width} ${height}'
       >
+        ${spaces
+          ?.map(
+            ({ color, area }) => `
+              <g>
+                <rect
+                  x='${area.x}'
+                  y='${area.y}'
+                  width='${area.width}'
+                  height='${area.height}'
+                  fill='${color}'
+                  opacity='0.3'
+                />
+              </g>`
+          )
+          .join('')}
         ${mapElements
           .map(
             ({ points, stroke }) => `
@@ -368,6 +457,11 @@ const ManagerMapCreate = (): JSX.Element => {
     `
       .replace(/(\r\n\t|\n|\r\t|\s{1,})/gm, ' ')
       .replace(/\s{2,}/g, ' ');
+
+    if (isEdit) {
+      updateMap.mutate({ mapId: Number(mapId), mapName, mapDrawing, mapImageSvg });
+      return;
+    }
 
     createMap.mutate({ mapName, mapDrawing, mapImageSvg });
   };
@@ -431,6 +525,7 @@ const ManagerMapCreate = (): JSX.Element => {
                     placeholder="맵 이름을 입력해주세요"
                     value={mapName}
                     onChange={onChangeMapName}
+                    required
                   />
                 </Styled.MapNameContainer>
                 <Styled.TempSaveContainer>
@@ -442,10 +537,10 @@ const ManagerMapCreate = (): JSX.Element => {
               </Styled.HeaderContent>
               <Styled.HeaderContent>
                 <Styled.ButtonContainer>
-                  <Button type="button" variant="text">
+                  <Button type="button" variant="text" onClick={handleClickCancel}>
                     취소
                   </Button>
-                  <Button variant="primary">완료</Button>
+                  <Button variant="primary">{isEdit ? '수정' : '완료'}</Button>
                 </Styled.ButtonContainer>
               </Styled.HeaderContent>
             </Styled.Form>
@@ -485,7 +580,7 @@ const ManagerMapCreate = (): JSX.Element => {
                 selected={mode === Mode.Eraser}
                 onClick={() => selectMode(Mode.Eraser)}
               >
-                <SelectIcon />
+                <EraserIcon />
               </Styled.ToolbarButton>
               <Styled.ToolbarButton
                 text="장식"
@@ -581,8 +676,34 @@ const ManagerMapCreate = (): JSX.Element => {
                         cy={stickyCoordinate.y}
                         r={3}
                         fill={PALETTE.OPACITY_BLACK[300]}
+                        pointerEvents="none"
                       />
                     )}
+
+                    {/* Note: 공간 영역 */}
+                    {spaces.map(({ id, color, area, name }) => (
+                      <g key={id} pointerEvents="none">
+                        <rect
+                          x={area.x}
+                          y={area.y}
+                          width={area.width}
+                          height={area.height}
+                          fill={color}
+                          opacity="0.1"
+                        />
+                        <text
+                          x={area.x + area.width / 2}
+                          y={area.y + area.height / 2}
+                          dominantBaseline="middle"
+                          textAnchor="middle"
+                          fill={PALETTE.BLACK[700]}
+                          fontSize="1rem"
+                          opacity="0.3"
+                        >
+                          {name}
+                        </text>
+                      </g>
+                    ))}
 
                     {mapElements.map((element) => (
                       <polyline
@@ -593,6 +714,7 @@ const ManagerMapCreate = (): JSX.Element => {
                         strokeLinecap="round"
                         cursor={mode === Mode.Select ? 'pointer' : 'default'}
                         opacity={erasingMapElementIds.includes(element.id) ? '0.3' : '1'}
+                        pointerEvents={isDraggable ? 'none' : 'auto'}
                         onClickCapture={(event) => handleSelectMapElement(event, element.id)}
                         onMouseOverCapture={() => handleSelectErasingElement(element.id)}
                       />

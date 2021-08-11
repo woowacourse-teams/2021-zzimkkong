@@ -1,6 +1,6 @@
 import { AxiosError, AxiosResponse } from 'axios';
 import { QueryKey, useQuery, UseQueryOptions, UseQueryResult } from 'react-query';
-import { queryManagerMaps } from 'api/map';
+import { queryManagerMaps } from 'api/managerMap';
 import { ErrorResponse, QueryManagerMapsSuccess } from 'types/response';
 
 const useManagerMaps = <TData = AxiosResponse<QueryManagerMapsSuccess>>(

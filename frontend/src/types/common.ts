@@ -81,6 +81,12 @@ export interface MapElement {
   points: string[];
 }
 
+export interface MapDrawing {
+  width: number;
+  height: number;
+  mapElements: MapElement[];
+}
+
 export interface GripPoint {
   id: number;
   mapElementId: MapElement['id'];
