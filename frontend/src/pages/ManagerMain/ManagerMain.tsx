@@ -5,8 +5,10 @@ import { useHistory } from 'react-router-dom';
 import { deleteMap } from 'api/managerMap';
 import { ReactComponent as DeleteIcon } from 'assets/svg/delete.svg';
 import { ReactComponent as EditIcon } from 'assets/svg/edit.svg';
+import { ReactComponent as MapEditorIcon } from 'assets/svg/map-editor.svg';
 import { ReactComponent as MenuIcon } from 'assets/svg/menu.svg';
 import { ReactComponent as MoreIcon } from 'assets/svg/more.svg';
+import { ReactComponent as SpaceEditorIcon } from 'assets/svg/space-editor.svg';
 import DateInput from 'components/DateInput/DateInput';
 import Drawer from 'components/Drawer/Drawer';
 import Header from 'components/Header/Header';
@@ -76,6 +78,18 @@ const ManagerMain = (): JSX.Element => {
     return selectedMap?.sharingMapId ?? '';
   };
 
+  const handleClickMapEditorIcon = () => {
+    if (selectedMapId === null) return;
+
+    history.push(HREF.MANAGER_MAP_EDIT(selectedMapId));
+  };
+
+  const handleClickSpaceEditorIcon = () => {
+    if (selectedMapId === null) return;
+
+    history.push(HREF.MANAGER_SPACE_EDIT(selectedMapId));
+  };
+
   const handleCopyLink = () => {
     navigator.clipboard
       .writeText(`${window.location.origin}/guest/${getSelectedSharingMapId()}`)
@@ -119,11 +133,19 @@ const ManagerMain = (): JSX.Element => {
           }
           rightButtons={
             <>
-              <Styled.RightIconButton text="맵 편집" size="small">
-                <Styled.PrimaryLinkIcon width="100%" height="100%" />
+              <Styled.RightIconButton
+                text="맵 편집"
+                size="small"
+                onClick={handleClickMapEditorIcon}
+              >
+                <MapEditorIcon width="100%" height="100%" />
               </Styled.RightIconButton>
-              <Styled.RightIconButton text="공간 편집" size="small">
-                <Styled.PrimaryLinkIcon width="100%" height="100%" />
+              <Styled.RightIconButton
+                text="공간 편집"
+                size="small"
+                onClick={handleClickSpaceEditorIcon}
+              >
+                <SpaceEditorIcon width="100%" height="100%" />
               </Styled.RightIconButton>
               <Styled.VerticalBar />
               <Styled.RightIconButton text="공유 링크" size="small" onClick={handleCopyLink}>

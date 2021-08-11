@@ -67,4 +67,5 @@ export const Text = styled.div<Props>`
   user-select: none;
   white-space: nowrap;
   text-align: center;
+  margin-top: 0.125rem;
 `;
