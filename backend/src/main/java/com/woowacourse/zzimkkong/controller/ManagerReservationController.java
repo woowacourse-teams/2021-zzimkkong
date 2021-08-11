@@ -21,16 +21,13 @@ import static com.woowacourse.zzimkkong.dto.ValidatorMessage.DATE_FORMAT;
 @RestController
 @RequestMapping("/api/managers/maps/{mapId}/spaces")
 public class ManagerReservationController {
-    private final ManagerReservationService reservationService;
     private final SlackService slackService;
     private final ReservationService2 reservationService2;
     private final ManagerReservationCallback managerCallback;
 
     public ManagerReservationController(
-            final ManagerReservationService reservationService,
             final SlackService slackService,
             final ReservationService2 reservationService2) {
-        this.reservationService = reservationService;
         this.slackService = slackService;
         this.reservationService2 = reservationService2;
         this.managerCallback = new ManagerReservationCallback();

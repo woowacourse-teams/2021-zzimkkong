@@ -17,14 +17,10 @@ import static com.woowacourse.zzimkkong.dto.ValidatorMessage.DATE_FORMAT;
 @RestController
 @RequestMapping("/api/guests/maps/{mapId}/spaces")
 public class GuestReservationController {
-    private final GuestReservationService reservationService;
     private final ReservationService2 reservationService2;
     private final GuestReservationCallback guestCallback;
 
-    public GuestReservationController(
-            final GuestReservationService reservationService,
-            final ReservationService2 reservationService2) {
-        this.reservationService = reservationService;
+    public GuestReservationController(final ReservationService2 reservationService2) {
         this.reservationService2 = reservationService2;
         this.guestCallback = new GuestReservationCallback();
     }

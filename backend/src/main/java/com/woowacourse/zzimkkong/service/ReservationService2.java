@@ -13,7 +13,10 @@ import com.woowacourse.zzimkkong.infrastructure.TimeConverter;
 import com.woowacourse.zzimkkong.repository.MapRepository;
 import com.woowacourse.zzimkkong.repository.ReservationRepository;
 import com.woowacourse.zzimkkong.repository.SpaceRepository;
-import com.woowacourse.zzimkkong.service.callback.*;
+import com.woowacourse.zzimkkong.service.callback.ReservationControllerCallback;
+import com.woowacourse.zzimkkong.service.callback.ReservationCreateCallback;
+import com.woowacourse.zzimkkong.service.callback.ReservationServiceCallback;
+import com.woowacourse.zzimkkong.service.callback.ReservationUpdateCallback;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -24,8 +27,6 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
-
-import static com.woowacourse.zzimkkong.service.MapService.validateManagerOfMap;
 
 @Service
 @Transactional
@@ -258,7 +259,7 @@ public class ReservationService2 {
         }
     }
 
-    protected List<Reservation> getReservations(final Collection<Space> findSpaces, final LocalDate date) {
+    private List<Reservation> getReservations(final Collection<Space> findSpaces, final LocalDate date) {
         LocalDateTime minimumDateTime = date.atStartOfDay();
         LocalDateTime maximumDateTime = minimumDateTime.plusDays(ONE_DAY);
         List<Long> spaceIds = findSpaces.stream()
@@ -274,7 +275,7 @@ public class ReservationService2 {
         );
     }
 
-    protected void validateSpaceExistence(final Map map, final Long spaceId) {
+    private void validateSpaceExistence(final Map map, final Long spaceId) {
         if (map.doesNotHaveSpaceId(spaceId)) {
             throw new NoSuchSpaceException();
         }
