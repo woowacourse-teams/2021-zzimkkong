@@ -1,5 +1,5 @@
 import { ReactNode } from 'react';
-import GuestMain from 'pages/GuestMain/GuestMain';
+import GuestMap from 'pages/GuestMap/GuestMap';
 import GuestReservation from 'pages/GuestReservation/GuestReservation';
 import GuestReservationEdit from 'pages/GuestReservationEdit/GuestReservationEdit';
 import ManagerJoin from 'pages/ManagerJoin/ManagerJoin';
@@ -28,12 +28,8 @@ export const PUBLIC_ROUTES: Route[] = [
     component: <ManagerJoin />,
   },
   {
-    path: PATH.MANAGER_MAP_CREATE,
-    component: <ManagerMapCreate />,
-  },
-  {
-    path: PATH.GUEST_MAIN,
-    component: <GuestMain />,
+    path: PATH.GUEST_MAP,
+    component: <GuestMap />,
   },
   {
     path: PATH.GUEST_RESERVATION,
@@ -53,6 +49,11 @@ export const PRIVATE_ROUTES: PrivateRoute[] = [
   },
   {
     path: PATH.MANAGER_MAP_CREATE,
+    component: <ManagerMapCreate />,
+    redirectPath: PATH.MANAGER_LOGIN,
+  },
+  {
+    path: PATH.MANAGER_MAP_EDIT,
     component: <ManagerMapCreate />,
     redirectPath: PATH.MANAGER_LOGIN,
   },
