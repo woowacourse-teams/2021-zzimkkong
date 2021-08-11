@@ -19,7 +19,7 @@ import MESSAGE from 'constants/message';
 import PATH, { HREF } from 'constants/path';
 import useManagerMaps from 'hooks/useManagerMaps';
 import useManagerReservations from 'hooks/useManagerReservations';
-import { ErrorResponse } from 'types/response';
+import { ErrorResponse, MapItemResponse } from 'types/response';
 import { formatDate } from 'utils/datetime';
 import * as Styled from './ManagerMain.styles';
 
@@ -40,7 +40,7 @@ const ManagerMain = (): JSX.Element => {
   });
 
   const organization = getMaps.data?.data.organization ?? '';
-  const maps = useMemo(() => getMaps.data?.data.maps ?? [], [getMaps]);
+  const maps = useMemo((): MapItemResponse[] => getMaps.data?.data.maps ?? [], [getMaps]);
 
   const getReservations = useManagerReservations(
     {
@@ -69,18 +69,35 @@ const ManagerMain = (): JSX.Element => {
     removeMap.mutate({ mapId });
   };
 
-  const onOpenDrawer = () => {
+  const getSelectedSharingMapId = () => {
+    const selectedMap = maps.find((map) => map.mapId === selectedMapId);
+
+    return selectedMap?.sharingMapId ?? '';
+  };
+
+  const handleCopyLink = () => {
+    navigator.clipboard
+      .writeText(`${window.location.origin}/guest/${getSelectedSharingMapId()}`)
+      .then(() => {
+        alert('맵의 공유링크가 클립보드에 복사되었습니다!');
+      })
+      .catch(() => {
+        alert('공유링크를 복사하는데 문제가 발생했습니다.');
+      });
+  };
+
+  const handleOpenDrawer = () => {
     setOpen(true);
   };
 
-  const onCloseDrawer = () => {
+  const handleCloseDrawer = () => {
     setOpen(false);
   };
 
   const handleSelectMap = (mapId: number, mapName: string) => {
     setSelectedMapId(mapId);
     setSelectedMapName(mapName);
-    onCloseDrawer();
+    handleCloseDrawer();
   };
 
   useEffect(() => {
@@ -93,11 +110,11 @@ const ManagerMain = (): JSX.Element => {
       <Header />
       <Layout>
         <Styled.PageHeader>
-          <IconButton text="맵 목록" onClick={onOpenDrawer}>
+          <IconButton text="맵 목록" onClick={handleOpenDrawer}>
             <MenuIcon width="100%" height="100%" />
           </IconButton>
           <Styled.PageTitle>{selectedMapName}</Styled.PageTitle>
-          <IconButton text="공유 링크">
+          <IconButton text="공유 링크" onClick={handleCopyLink}>
             <Styled.PrimaryLinkIcon width="100%" height="100%" />
           </IconButton>
         </Styled.PageHeader>
@@ -160,7 +177,7 @@ const ManagerMain = (): JSX.Element => {
         </Styled.SpaceList>
       </Layout>
 
-      <Drawer open={open} placement="left" maxwidth="450px" onClose={onCloseDrawer}>
+      <Drawer open={open} placement="left" maxwidth="450px" onClose={handleCloseDrawer}>
         <Drawer.Inner>
           <Drawer.Header>
             <Drawer.HeaderText>{organization}</Drawer.HeaderText>
