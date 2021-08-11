@@ -14,6 +14,7 @@ import {
 import { useMutation } from 'react-query';
 import { useHistory, useParams } from 'react-router-dom';
 import { postMap, putMap } from 'api/managerMap';
+import { ReactComponent as EraserIcon } from 'assets/svg/eraser.svg';
 import { ReactComponent as ItemsIcon } from 'assets/svg/items.svg';
 import { ReactComponent as LineIcon } from 'assets/svg/line.svg';
 import { ReactComponent as MoveIcon } from 'assets/svg/move.svg';
@@ -579,7 +580,7 @@ const ManagerMapCreate = (): JSX.Element => {
                 selected={mode === Mode.Eraser}
                 onClick={() => selectMode(Mode.Eraser)}
               >
-                <SelectIcon />
+                <EraserIcon />
               </Styled.ToolbarButton>
               <Styled.ToolbarButton
                 text="장식"
