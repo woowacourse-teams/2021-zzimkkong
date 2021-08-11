@@ -47,9 +47,9 @@ class BatikConverterTest {
 
     @AfterEach
     void deleteFile() {
-        try {
+        if (testFile != null) {
             testFile.delete();
-        } catch (NullPointerException ignored) {
+            testFile = null;
         }
     }
 }
