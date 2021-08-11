@@ -216,45 +216,6 @@ const ManagerSpaceEdit = (): JSX.Element => {
     height: 0,
   });
 
-  const mapImageSvg = `
-    <svg
-      xmlns='http://www.w3.org/2000/svg'
-      version='1.1'
-      width='${width}px'
-      height='${height}px'
-      viewBox='0 0 ${width} ${height}'
-    >
-      ${spaces
-        ?.map(
-          ({ color, area }) => `
-        <g>
-          <rect
-            x='${area.x}'
-            y='${area.y}'
-            width='${area.width}'
-            height='${area.height}'
-            fill='${color}'
-            opacity='0.3'
-          />
-        </g>`
-        )
-        .join('')}
-      ${mapElements
-        ?.map(
-          ({ points, stroke }) => `
-            <polyline
-              points='${points.join(' ')}'
-              stroke='${stroke}'
-              strokeWidth='2'
-            />
-          `
-        )
-        .join('')}
-    </svg>
-  `
-    .replace(/(\r\n\t|\n|\r\t|\s{1,})/gm, ' ')
-    .replace(/\s{2,}/g, ' ');
-
   const handleWheel: WheelEventHandler<SVGElement> = useCallback((event) => {
     const { offsetX, offsetY, deltaY } = event.nativeEvent;
 
@@ -553,12 +514,53 @@ const ManagerSpaceEdit = (): JSX.Element => {
     if (!selectedSpaceId) return;
     if (!window.confirm(MESSAGE.MANAGER_SPACE.DELETE_SPACE_CONFIRM)) return;
 
+    const mapImageSvg = `
+  <svg
+    xmlns='http://www.w3.org/2000/svg'
+    version='1.1'
+    width='${width}px'
+    height='${height}px'
+    viewBox='0 0 ${width} ${height}'
+  >
+    ${spaces
+      .filter(({ id }) => id !== selectedSpaceId)
+      .map(
+        ({ color, area }) => `
+          <g>
+            <rect
+              x='${area.x}'
+              y='${area.y}'
+              width='${area.width}'
+              height='${area.height}'
+              fill='${color}'
+              opacity='0.3'
+            />
+          </g>
+        `
+      )
+      .join('')}
+    ${mapElements
+      ?.map(
+        ({ points, stroke }) => `
+          <polyline
+            points='${points.join(' ')}'
+            stroke='${stroke}'
+            strokeWidth='2'
+          />
+        `
+      )
+      .join('')}
+  </svg>
+`
+      .replace(/(\r\n\t|\n|\r\t|\s{1,})/gm, ' ')
+      .replace(/\s{2,}/g, ' ');
+
     deleteSpace.mutate({
       mapId: Number(mapId),
       spaceId: selectedSpaceId,
       mapImageSvg,
     });
-  }, [deleteSpace, mapId, mapImageSvg, selectedSpaceId]);
+  }, [deleteSpace, height, mapElements, mapId, selectedSpaceId, spaces, width]);
 
   const handleAddSpace = useCallback(() => {
     setArea(null);
@@ -584,6 +586,64 @@ const ManagerSpaceEdit = (): JSX.Element => {
         start: formatTimeWithSecond(new Date(`${todayDate}T${availableStartTime}`)),
         end: formatTimeWithSecond(new Date(`${todayDate}T${availableEndTime}`)),
       };
+
+      const mapImageSvg = `
+    <svg
+      xmlns='http://www.w3.org/2000/svg'
+      version='1.1'
+      width='${width}px'
+      height='${height}px'
+      viewBox='0 0 ${width} ${height}'
+    >
+    ${
+      area
+        ? `
+        <g>
+          <rect
+            x='${area.x}'
+            y='${area.y}'
+            width='${area.width}'
+            height='${area.height}'
+            fill='${spaceColor}'
+            opacity='0.3'
+          />
+        </g>
+      `
+        : ''
+    }
+
+      ${spaces
+        .filter(({ id }) => selectedSpaceId !== id)
+        .map(
+          ({ color, area }) => `
+            <g>
+              <rect
+                x='${area.x}'
+                y='${area.y}'
+                width='${area.width}'
+                height='${area.height}'
+                fill='${color}'
+                opacity='0.3'
+              />
+            </g>
+          `
+        )
+        .join('')}
+      ${mapElements
+        ?.map(
+          ({ points, stroke }) => `
+            <polyline
+              points='${points.join(' ')}'
+              stroke='${stroke}'
+              strokeWidth='2'
+            />
+          `
+        )
+        .join('')}
+    </svg>
+  `
+        .replace(/(\r\n\t|\n|\r\t|\s{1,})/gm, ' ')
+        .replace(/\s{2,}/g, ' ');
 
       if (isAddingSpace) {
         createSpace.mutate({
@@ -638,9 +698,10 @@ const ManagerSpaceEdit = (): JSX.Element => {
       availableStartTime,
       createSpace,
       enabledDayOfWeek,
+      height,
       isAddingSpace,
+      mapElements,
       mapId,
-      mapImageSvg,
       reservationEnable,
       reservationMaximumTimeUnit,
       reservationMinimumTimeUnit,
@@ -648,8 +709,10 @@ const ManagerSpaceEdit = (): JSX.Element => {
       selectedSpaceId,
       spaceColor,
       spaceName,
+      spaces,
       todayDate,
       updateSpace,
+      width,
     ]
   );
 
