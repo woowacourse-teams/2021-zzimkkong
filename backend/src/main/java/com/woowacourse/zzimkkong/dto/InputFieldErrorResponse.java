@@ -1,13 +1,10 @@
 package com.woowacourse.zzimkkong.dto;
 
 import com.woowacourse.zzimkkong.exception.InputFieldException;
-import com.woowacourse.zzimkkong.exception.ZzimkkongException;
+import lombok.Getter;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 
-import javax.validation.ConstraintViolationException;
-
-import static com.woowacourse.zzimkkong.dto.ValidatorMessage.FORMAT_MESSAGE;
-
+@Getter
 public class InputFieldErrorResponse extends ErrorResponse {
     private final String field;
 
@@ -24,9 +21,5 @@ public class InputFieldErrorResponse extends ErrorResponse {
         String message = exception.getBindingResult().getAllErrors().get(0).getDefaultMessage();
         String field = exception.getFieldErrors().get(0).getField();
         return new InputFieldErrorResponse(message, field);
-    }
-
-    public String getField() {
-        return field;
     }
 }
