@@ -4,7 +4,7 @@ import { QueryGuestMapSuccess } from 'types/response';
 import api from './api';
 
 export interface QueryGuestMapParams {
-  publicMapId: string;
+  sharingMapId: string;
 }
 
 export const queryGuestMap: QueryFunction<
@@ -12,7 +12,7 @@ export const queryGuestMap: QueryFunction<
   [QueryKey, QueryGuestMapParams]
 > = ({ queryKey }) => {
   const [, data] = queryKey;
-  const { publicMapId } = data;
+  const { sharingMapId } = data;
 
-  return api.get(`/guests/maps?publicMapId=${publicMapId}`);
+  return api.get(`/guests/maps?publicMapId=${sharingMapId}`);
 };

@@ -69,15 +69,15 @@ const ManagerMain = (): JSX.Element => {
     removeMap.mutate({ mapId });
   };
 
-  const getSelectedPublicMapId = () => {
+  const getSelectedSharingMapId = () => {
     const selectedMap = maps.find((map) => map.mapId === selectedMapId);
 
-    return selectedMap?.publicMapId ?? '';
+    return selectedMap?.sharingMapId ?? '';
   };
 
   const handleCopyLink = () => {
     navigator.clipboard
-      .writeText(`${window.location.origin}/guest/${getSelectedPublicMapId()}`)
+      .writeText(`${window.location.origin}/guest/${getSelectedSharingMapId()}`)
       .then(
         () => {
           alert('맵의 공유링크가 클립보드에 복사되었습니다!');
@@ -141,17 +141,19 @@ const ManagerMain = (): JSX.Element => {
             <Styled.NoticeWrapper>
               <Styled.NoticeMessage>생성한 공간이 없습니다.</Styled.NoticeMessage>
               {/* 공간 편집 페이지 완성되면 링크 바꿔야 함 */}
-              <Styled.NoticeLink to={PATH.MANAGER_MAP_CREATE}>공간 생성하러 가기</Styled.NoticeLink>
+              <Styled.NoticeLink to={`/map/${selectedMapId}/space/edit`}>
+                공간 생성하러 가기
+              </Styled.NoticeLink>
             </Styled.NoticeWrapper>
           ))}
 
         <Styled.SpaceList>
           {reservations &&
-            reservations.map(({ id, name, color, reservations }, index) => (
-              <Styled.SpaceReservationWrapper key={`space-${id}`}>
+            reservations.map(({ spaceId, spaceName, spaceColor, reservations }, index) => (
+              <Styled.SpaceReservationWrapper key={`space-${spaceId}`}>
                 <Panel expandable initialExpanded={!index}>
-                  <Panel.Header dotColor={color}>
-                    <Panel.Title>{name}</Panel.Title>
+                  <Panel.Header dotColor={spaceColor}>
+                    <Panel.Title>{spaceName}</Panel.Title>
                   </Panel.Header>
                   <Panel.Content>
                     {reservations.length === 0 ? (

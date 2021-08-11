@@ -16,7 +16,7 @@ import RESERVATION from 'constants/reservation';
 import useInput from 'hooks/useInput';
 import useReservations from 'hooks/useReservations';
 import { GuestMainState } from 'pages/GuestMain/GuestMain';
-import { ScrollPosition, Space } from 'types/common';
+import { MapItem, ScrollPosition, Space } from 'types/common';
 import { ErrorResponse } from 'types/response';
 import { formatDate, formatTime } from 'utils/datetime';
 import * as Styled from './GuestReservation.styles';
@@ -29,14 +29,14 @@ interface GuestReservationState {
   scrollPosition: ScrollPosition;
 }
 
-export interface URLParameter {
-  publicMapId: string;
+interface URLParameter {
+  sharingMapId: MapItem['sharingMapId'];
 }
 
 const GuestReservation = (): JSX.Element => {
   const location = useLocation<GuestReservationState>();
   const history = useHistory<GuestMainState>();
-  const { publicMapId } = useParams<URLParameter>();
+  const { sharingMapId } = useParams<URLParameter>();
 
   const { mapId, spaceId, spaceName, selectedDate, scrollPosition } = location.state;
 
@@ -61,7 +61,7 @@ const GuestReservation = (): JSX.Element => {
 
   const createReservation = useMutation(postReservation, {
     onSuccess: () => {
-      history.push(`/guest/${publicMapId}`, {
+      history.push(`/guest/${sharingMapId}`, {
         spaceId,
         targetDate: new Date(`${date}T${startTime}`),
       });

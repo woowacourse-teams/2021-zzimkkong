@@ -29,15 +29,7 @@ export interface MapItem {
   mapName: string;
   mapDrawing: MapDrawing;
   mapImageUrl: string;
-  publicMapId: string;
-}
-
-export interface Reservation {
-  id: number;
-  startDateTime: string;
-  endDateTime: string;
-  name: string;
-  description: string;
+  sharingMapId: string;
 }
 
 interface SpaceSetting {
@@ -67,7 +59,18 @@ export interface Space {
   settings: SpaceSetting;
 }
 
-export interface SpaceReservation extends Space {
+export interface Reservation {
+  id: number;
+  startDateTime: string;
+  endDateTime: string;
+  name: string;
+  description: string;
+}
+
+export interface SpaceReservation {
+  spaceId: number;
+  spaceName: string;
+  spaceColor: Color;
   reservations: Reservation[];
 }
 

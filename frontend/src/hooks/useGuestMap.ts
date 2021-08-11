@@ -4,7 +4,7 @@ import { queryGuestMap, QueryGuestMapParams } from 'api/guestMap';
 import { ErrorResponse, QueryGuestMapSuccess } from 'types/response';
 
 const useGuestMap = <TData = AxiosResponse<QueryGuestMapSuccess>>(
-  { publicMapId }: QueryGuestMapParams,
+  { sharingMapId }: QueryGuestMapParams,
   options?: UseQueryOptions<
     AxiosResponse<QueryGuestMapSuccess>,
     AxiosError<ErrorResponse>,
@@ -12,6 +12,6 @@ const useGuestMap = <TData = AxiosResponse<QueryGuestMapSuccess>>(
     [QueryKey, QueryGuestMapParams]
   >
 ): UseQueryResult<TData, AxiosError<ErrorResponse>> =>
-  useQuery(['getGuestMap', { publicMapId }], queryGuestMap, options);
+  useQuery(['getGuestMap', { sharingMapId }], queryGuestMap, options);
 
 export default useGuestMap;

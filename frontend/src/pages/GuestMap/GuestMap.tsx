@@ -16,7 +16,6 @@ import Panel from 'components/Panel/Panel';
 import ReservationListItem from 'components/ReservationListItem/ReservationListItem';
 import MESSAGE from 'constants/message';
 import PALETTE from 'constants/palette';
-import PATH from 'constants/path';
 import useGuestMap from 'hooks/useGuestMap';
 import useInput from 'hooks/useInput';
 import useReservations from 'hooks/useReservations';
@@ -32,7 +31,7 @@ export interface GuestMapState {
 }
 
 export interface URLParameter {
-  publicMapId: string;
+  sharingMapId: MapItem['sharingMapId'];
 }
 
 const GuestMap = (): JSX.Element => {
@@ -44,7 +43,7 @@ const GuestMap = (): JSX.Element => {
 
   const history = useHistory();
   const location = useLocation<GuestMapState>();
-  const { publicMapId } = useParams<URLParameter>();
+  const { sharingMapId } = useParams<URLParameter>();
 
   const spaceId = location.state?.spaceId;
   const targetDate = location.state?.targetDate;
@@ -55,7 +54,7 @@ const GuestMap = (): JSX.Element => {
   const [map, setMap] = useState<MapItem>();
   const mapDrawing = map?.mapDrawing;
   const getMap = useGuestMap(
-    { publicMapId },
+    { sharingMapId },
     {
       onError: () => {
         history.push('/not-found');
@@ -73,13 +72,14 @@ const GuestMap = (): JSX.Element => {
   );
 
   const [spaceList, setSpaceList] = useState<Space[]>([]);
-  const [selectedSpaceId, setSelectedSpaceId] = useState(spaceId);
+  const [selectedSpaceId, setSelectedSpaceId] = useState<Space['id'] | null>(spaceId ?? null);
   const spaces = useMemo(() => {
     const result: { [key: string]: Space } = {};
     spaceList.forEach((item) => (result[item.id] = item));
 
     return result;
   }, [spaceList]);
+
   const getSpaces = useSpaces(
     { mapId: map?.mapId as number },
     {
@@ -89,7 +89,7 @@ const GuestMap = (): JSX.Element => {
 
         setSpaceList(spaces.map((space) => ({ ...space, area: JSON.parse(space.area) as Area })));
 
-        if (!selectedSpaceId) {
+        if (selectedSpaceId === null) {
           setSelectedSpaceId(spaces[0].id);
         }
       },
@@ -136,7 +136,7 @@ const GuestMap = (): JSX.Element => {
     if (!selectedSpaceId) return;
 
     history.push({
-      pathname: PATH.GUEST_RESERVATION_EDIT,
+      pathname: `/guest/${sharingMapId}/reservation/edit`,
       state: {
         mapId: map?.mapId,
         spaceId: Number(selectedSpaceId),
@@ -211,7 +211,7 @@ const GuestMap = (): JSX.Element => {
               </svg>
             )}
           </Styled.MapContainer>
-          {selectedSpaceId && (
+          {spaceList.length > 0 && selectedSpaceId && (
             <Styled.PanelContainer>
               <Panel>
                 <Panel.Header dotColor={spaces[selectedSpaceId].color}>
@@ -257,10 +257,10 @@ const GuestMap = (): JSX.Element => {
             </Styled.PanelContainer>
           )}
         </Styled.PageWithBottomButton>
-        {selectedSpaceId && reservationAvailable && (
+        {spaceList.length && selectedSpaceId && reservationAvailable && (
           <Styled.ReservationLink
             to={{
-              pathname: `/guest/${publicMapId}/reservation`,
+              pathname: `/guest/${sharingMapId}/reservation`,
               state: {
                 mapId: map?.mapId,
                 spaceId: selectedSpaceId,
