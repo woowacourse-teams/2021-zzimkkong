@@ -4,8 +4,7 @@ import com.woowacourse.zzimkkong.domain.Manager;
 import com.woowacourse.zzimkkong.domain.Member;
 import com.woowacourse.zzimkkong.dto.reservation.*;
 import com.woowacourse.zzimkkong.dto.slack.SlackResponse;
-import com.woowacourse.zzimkkong.service.ManagerReservationService;
-import com.woowacourse.zzimkkong.service.ReservationService2;
+import com.woowacourse.zzimkkong.service.ReservationService;
 import com.woowacourse.zzimkkong.service.SlackService;
 import com.woowacourse.zzimkkong.service.callback.ManagerReservationCallback;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -22,14 +21,14 @@ import static com.woowacourse.zzimkkong.dto.ValidatorMessage.DATE_FORMAT;
 @RequestMapping("/api/managers/maps/{mapId}/spaces")
 public class ManagerReservationController {
     private final SlackService slackService;
-    private final ReservationService2 reservationService2;
+    private final ReservationService reservationService;
     private final ManagerReservationCallback managerCallback;
 
     public ManagerReservationController(
             final SlackService slackService,
-            final ReservationService2 reservationService2) {
+            final ReservationService reservationService) {
         this.slackService = slackService;
-        this.reservationService2 = reservationService2;
+        this.reservationService = reservationService;
         this.managerCallback = new ManagerReservationCallback();
     }
 
@@ -44,7 +43,7 @@ public class ManagerReservationController {
                 spaceId,
                 reservationCreateUpdateWithPasswordRequest,
                 manager);
-        ReservationCreateResponse reservationCreateResponse = reservationService2.saveReservation(reservationCreateDto, managerCallback);
+        ReservationCreateResponse reservationCreateResponse = reservationService.saveReservation(reservationCreateDto, managerCallback);
         return ResponseEntity
                 .created(URI.create("/api/managers/maps/" + mapId + "/spaces/" + spaceId + "/reservations/" + reservationCreateResponse.getId()))
                 .build();
@@ -59,7 +58,7 @@ public class ManagerReservationController {
                 mapId,
                 date,
                 manager);
-        ReservationFindAllResponse reservationFindAllResponse = reservationService2.findAllReservations(reservationFindAllDto, managerCallback);
+        ReservationFindAllResponse reservationFindAllResponse = reservationService.findAllReservations(reservationFindAllDto, managerCallback);
         return ResponseEntity.ok().body(reservationFindAllResponse);
     }
 
@@ -75,7 +74,7 @@ public class ManagerReservationController {
                 date,
                 manager
         );
-        ReservationFindResponse reservationFindResponse = reservationService2.findReservations(reservationFindDto, managerCallback);
+        ReservationFindResponse reservationFindResponse = reservationService.findReservations(reservationFindDto, managerCallback);
         return ResponseEntity.ok().body(reservationFindResponse);
     }
 
@@ -90,7 +89,7 @@ public class ManagerReservationController {
                 spaceId,
                 reservationId,
                 manager);
-        ReservationResponse reservationResponse = reservationService2.findReservation(reservationAuthenticationDto, managerCallback);
+        ReservationResponse reservationResponse = reservationService.findReservation(reservationAuthenticationDto, managerCallback);
         return ResponseEntity.ok().body(reservationResponse);
     }
 
@@ -108,7 +107,7 @@ public class ManagerReservationController {
                 reservationCreateUpdateRequest,
                 manager
         );
-        SlackResponse slackResponse = reservationService2.updateReservation(reservationUpdateDto, managerCallback);
+        SlackResponse slackResponse = reservationService.updateReservation(reservationUpdateDto, managerCallback);
         slackService.sendUpdateMessage(slackResponse);
         return ResponseEntity.ok().build();
     }
@@ -124,7 +123,7 @@ public class ManagerReservationController {
                 spaceId,
                 reservationId,
                 manager);
-        SlackResponse slackResponse = reservationService2.deleteReservation(reservationAuthenticationDto, managerCallback);
+        SlackResponse slackResponse = reservationService.deleteReservation(reservationAuthenticationDto, managerCallback);
         slackService.sendUpdateMessage(slackResponse);
         return ResponseEntity.noContent().build();
     }
