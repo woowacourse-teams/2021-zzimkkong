@@ -9,6 +9,8 @@ export interface LoginSuccess {
   accessToken: string;
 }
 
+export type QueryManagerMapSuccess = MapItem;
+
 export interface QueryManagerMapsSuccess {
   maps: MapItem[];
   organization: string;
@@ -33,5 +35,3 @@ export interface QueryManagerSpaceSuccess {
 export interface QueryManagerSpacesSuccess {
   spaces: ManagerSpaceAPI[];
 }
-
-export type QueryManagerMapSuccess = MapItem;
