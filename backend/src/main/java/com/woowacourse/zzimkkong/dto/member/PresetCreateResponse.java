@@ -1,7 +1,9 @@
 package com.woowacourse.zzimkkong.dto.member;
 
 import com.woowacourse.zzimkkong.domain.Preset;
+import lombok.Getter;
 
+@Getter
 public class PresetCreateResponse {
     private Long id;
 
@@ -14,9 +16,5 @@ public class PresetCreateResponse {
 
     public static PresetCreateResponse from(final Preset preset) {
         return new PresetCreateResponse(preset.getId());
-    }
-
-    public Long getId() {
-        return id;
     }
 }

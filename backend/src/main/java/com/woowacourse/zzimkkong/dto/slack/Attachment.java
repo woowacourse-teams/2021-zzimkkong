@@ -1,5 +1,8 @@
 package com.woowacourse.zzimkkong.dto.slack;
 
+import lombok.Getter;
+
+@Getter
 public class Attachment {
     private String fallback;
     private String color;

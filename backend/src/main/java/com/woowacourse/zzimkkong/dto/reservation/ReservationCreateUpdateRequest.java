@@ -1,5 +1,6 @@
 package com.woowacourse.zzimkkong.dto.reservation;
 
+import lombok.Getter;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.validation.constraints.NotBlank;
@@ -10,6 +11,7 @@ import java.time.LocalDateTime;
 
 import static com.woowacourse.zzimkkong.dto.ValidatorMessage.*;
 
+@Getter
 public class ReservationCreateUpdateRequest {
     @DateTimeFormat(pattern = DATETIME_FORMAT)
     @NotNull(message = EMPTY_MESSAGE)
@@ -39,21 +41,5 @@ public class ReservationCreateUpdateRequest {
         this.endDateTime = endDateTime;
         this.name = name;
         this.description = description;
-    }
-
-    public LocalDateTime getStartDateTime() {
-        return startDateTime;
-    }
-
-    public LocalDateTime getEndDateTime() {
-        return endDateTime;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public String getDescription() {
-        return description;
     }
 }

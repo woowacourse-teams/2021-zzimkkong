@@ -43,7 +43,7 @@ public class GuestReservationService extends ReservationService {
         validateAvailability(space, reservationCreateUpdateWithPasswordRequest);
 
         Reservation reservation = reservations.save(
-                new Reservation.Builder()
+                Reservation.builder()
                         .startTime(reservationCreateUpdateWithPasswordRequest.getStartDateTime())
                         .endTime(reservationCreateUpdateWithPasswordRequest.getEndDateTime())
                         .password(reservationCreateUpdateWithPasswordRequest.getPassword())
@@ -113,7 +113,7 @@ public class GuestReservationService extends ReservationService {
         checkCorrectPassword(reservation, reservationCreateUpdateWithPasswordRequest.getPassword());
         validateAvailability(space, reservationCreateUpdateWithPasswordRequest, reservation);
 
-        Reservation updateReservation = new Reservation.Builder()
+        Reservation updateReservation = Reservation.builder()
                 .startTime(reservationCreateUpdateWithPasswordRequest.getStartDateTime())
                 .endTime(reservationCreateUpdateWithPasswordRequest.getEndDateTime())
                 .userName(reservationCreateUpdateWithPasswordRequest.getName())

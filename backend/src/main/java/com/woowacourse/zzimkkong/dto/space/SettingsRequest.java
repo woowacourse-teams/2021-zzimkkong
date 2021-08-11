@@ -4,11 +4,13 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.woowacourse.zzimkkong.dto.DayOfWeekConstraint;
 import com.woowacourse.zzimkkong.dto.TimeUnit;
+import lombok.Getter;
 
 import java.time.LocalTime;
 
 import static com.woowacourse.zzimkkong.dto.ValidatorMessage.TIME_FORMAT;
 
+@Getter
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class SettingsRequest {
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = TIME_FORMAT)
@@ -47,33 +49,5 @@ public class SettingsRequest {
         this.reservationMaximumTimeUnit = reservationMaximumTimeUnit;
         this.reservationEnable = reservationEnable;
         this.enabledDayOfWeek = enabledDayOfWeek;
-    }
-
-    public LocalTime getAvailableStartTime() {
-        return availableStartTime;
-    }
-
-    public LocalTime getAvailableEndTime() {
-        return availableEndTime;
-    }
-
-    public Integer getReservationTimeUnit() {
-        return reservationTimeUnit;
-    }
-
-    public Integer getReservationMinimumTimeUnit() {
-        return reservationMinimumTimeUnit;
-    }
-
-    public Integer getReservationMaximumTimeUnit() {
-        return reservationMaximumTimeUnit;
-    }
-
-    public Boolean getReservationEnable() {
-        return reservationEnable;
-    }
-
-    public String getEnabledDayOfWeek() {
-        return enabledDayOfWeek;
     }
 }

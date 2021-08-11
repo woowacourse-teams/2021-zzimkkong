@@ -42,7 +42,7 @@ public class ManagerSpaceControllerTest extends AcceptanceTest {
 
         Member pobi = new Member(EMAIL, PASSWORD, ORGANIZATION);
         Map luther = new Map(LUTHER_NAME, MAP_DRAWING_DATA, MAP_IMAGE_URL, pobi);
-        Setting beSetting = new Setting.Builder()
+        Setting beSetting = Setting.builder()
                 .availableStartTime(BE_AVAILABLE_START_TIME)
                 .availableEndTime(BE_AVAILABLE_END_TIME)
                 .reservationTimeUnit(BE_RESERVATION_TIME_UNIT)
@@ -52,7 +52,7 @@ public class ManagerSpaceControllerTest extends AcceptanceTest {
                 .enabledDayOfWeek(BE_ENABLED_DAY_OF_WEEK)
                 .build();
 
-        Setting feSetting = new Setting.Builder()
+        Setting feSetting = Setting.builder()
                 .availableStartTime(FE_AVAILABLE_START_TIME)
                 .availableEndTime(FE_AVAILABLE_END_TIME)
                 .reservationTimeUnit(FE_RESERVATION_TIME_UNIT)
@@ -62,7 +62,7 @@ public class ManagerSpaceControllerTest extends AcceptanceTest {
                 .enabledDayOfWeek(FE_ENABLED_DAY_OF_WEEK)
                 .build();
 
-        be = new Space.Builder()
+        be = Space.builder()
                 .id(beSpaceId)
                 .name(BE_NAME)
                 .color(BE_COLOR)
@@ -72,7 +72,7 @@ public class ManagerSpaceControllerTest extends AcceptanceTest {
                 .setting(beSetting)
                 .build();
 
-        fe = new Space.Builder()
+        fe = Space.builder()
                 .id(feSpaceId)
                 .name(FE_NAME)
                 .color(FE_COLOR)
@@ -136,7 +136,7 @@ public class ManagerSpaceControllerTest extends AcceptanceTest {
                 MAP_SVG
         );
 
-        Setting defaultSetting = new Setting.Builder()
+        Setting defaultSetting = Setting.builder()
                 .availableStartTime(LocalTime.of(0, 0))
                 .availableEndTime(LocalTime.of(18, 0))
                 .reservationTimeUnit(10)
@@ -146,7 +146,7 @@ public class ManagerSpaceControllerTest extends AcceptanceTest {
                 .enabledDayOfWeek("monday, tuesday, wednesday, thursday, friday, saturday, sunday")
                 .build();
 
-        Space defaultSpace = new Space.Builder()
+        Space defaultSpace = Space.builder()
                 .name(defaultSpaceCreateUpdateRequest.getName())
                 .color(defaultSpaceCreateUpdateRequest.getColor())
                 .description(defaultSpaceCreateUpdateRequest.getDescription())
