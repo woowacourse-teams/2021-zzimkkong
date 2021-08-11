@@ -55,11 +55,6 @@ const GuestMain = (): JSX.Element => {
 
   const [date, setDate] = useState(targetDate ? new Date(targetDate) : new Date());
 
-  const [mapScrollPosition, setMapScrollPosition] = useState<ScrollPosition>({
-    x: 0,
-    y: 0,
-  });
-
   const [selectedSpaceId, onChangeSelectedSpaceId, setSelectedSpaceId] = useInput(
     `${spaceId ?? spaceList[0].spaceId}`
   );
@@ -120,13 +115,6 @@ const GuestMain = (): JSX.Element => {
     });
   };
 
-  const handleMapScroll = () => {
-    setMapScrollPosition({
-      x: mapRef?.current?.scrollLeft,
-      y: mapRef?.current?.scrollTop,
-    });
-  };
-
   useEffect(() => {
     setDate(targetDate ? new Date(targetDate) : new Date());
   }, [targetDate]);
@@ -148,7 +136,7 @@ const GuestMain = (): JSX.Element => {
         <Styled.PageWithBottomButton hasBottomButton={reservationAvailable}>
           <Styled.PageTitle>우아한테크코스 교육장</Styled.PageTitle>
           <DateInput date={date} setDate={setDate} />
-          <Styled.MapContainer ref={mapRef} onScroll={handleMapScroll}>
+          <Styled.MapContainer ref={mapRef}>
             <Styled.MapItem>
               {spaceList?.map(({ spaceId, spaceName, coordinate, textPosition }) => (
                 <PinRadio
@@ -218,7 +206,7 @@ const GuestMain = (): JSX.Element => {
                 spaceId: Number(selectedSpaceId),
                 spaceName: selectedSpace.spaceName,
                 selectedDate: formatDate(date),
-                scrollPosition: mapScrollPosition,
+                scrollPosition: { x: mapRef?.current?.scrollLeft, y: mapRef?.current?.scrollTop },
               },
             }}
           >
