@@ -278,12 +278,14 @@ const ManagerMapCreate = (): JSX.Element => {
     const target = event.target as SVGPolylineElement;
     const points = Object.values<Coordinate>(target?.points).map(({ x, y }) => ({ x, y }));
 
-    const newGripPoints = points.map((point, index) => ({
-      id: nextGripPointId + index,
-      mapElementId: id,
-      x: point.x,
-      y: point.y,
-    }));
+    const newGripPoints = points.map(
+      (point, index): GripPoint => ({
+        id: nextGripPointId + index,
+        mapElementId: id,
+        x: point.x,
+        y: point.y,
+      })
+    );
 
     setSelectedMapElementId(id);
     setGripPoints([...newGripPoints]);
