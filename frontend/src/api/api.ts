@@ -43,6 +43,8 @@ api.interceptors.response.use(
       localStorage.removeItem(LOCAL_STORAGE_KEY.ACCESS_TOKEN);
       window.history.pushState(null, '', PATH.MANAGER_LOGIN);
     }
+
+    return Promise.reject(error);
   }
 );
 

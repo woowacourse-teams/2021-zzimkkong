@@ -4,7 +4,7 @@ import { querySpaces, QuerySpacesParams } from 'api/space';
 import { ErrorResponse, QuerySpacesSuccess } from 'types/response';
 
 const useSpaces = <TData = AxiosResponse<QuerySpacesSuccess>>(
-  { mapId, date }: QuerySpacesParams,
+  { mapId }: QuerySpacesParams,
   options?: UseQueryOptions<
     AxiosResponse<QuerySpacesSuccess>,
     AxiosError<ErrorResponse>,
@@ -12,6 +12,6 @@ const useSpaces = <TData = AxiosResponse<QuerySpacesSuccess>>(
     [QueryKey, QuerySpacesParams]
   >
 ): UseQueryResult<TData, AxiosError<ErrorResponse>> =>
-  useQuery(['getSpaces', { mapId, date }], querySpaces, options);
+  useQuery(['getSpaces', { mapId }], querySpaces, options);
 
 export default useSpaces;

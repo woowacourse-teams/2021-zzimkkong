@@ -5,9 +5,10 @@ const PATH = {
   MANAGER_MAP_CREATE: '/map/create',
   MANAGER_MAP_EDIT: '/map/:mapId/edit',
   MANAGER_SPACE_EDIT: '/map/:mapId/space/edit',
-  GUEST_MAIN: '/guest',
-  GUEST_RESERVATION: '/guest/reservation',
-  GUEST_RESERVATION_EDIT: '/guest/reservation/edit',
+  GUEST_MAP: '/guest/:sharingMapId',
+  GUEST_RESERVATION: '/guest/:sharingMapId/reservation',
+  GUEST_RESERVATION_EDIT: '/guest/:sharingMapId/reservation/edit',
+  NOT_FOUND: ['*', '/not-found'],
 };
 
 export const HREF = {

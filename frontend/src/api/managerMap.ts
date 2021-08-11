@@ -24,6 +24,9 @@ interface DeleteMapParams {
   mapId: number;
 }
 
+export const queryManagerMaps: QueryFunction<AxiosResponse<QueryManagerMapsSuccess>> = () =>
+  api.get('/managers/maps');
+
 export const queryManagerMap: QueryFunction<
   AxiosResponse<QueryManagerMapSuccess>,
   [QueryKey, QueryManagerMapParams]
@@ -33,9 +36,6 @@ export const queryManagerMap: QueryFunction<
 
   return api.get(`/managers/maps/${mapId}`);
 };
-
-export const queryManagerMaps: QueryFunction<AxiosResponse<QueryManagerMapsSuccess>> = () =>
-  api.get('/managers/maps');
 
 export const postMap = ({
   mapName,
