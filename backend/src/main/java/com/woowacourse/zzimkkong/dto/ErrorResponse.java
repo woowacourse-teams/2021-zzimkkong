@@ -1,16 +1,18 @@
 package com.woowacourse.zzimkkong.dto;
 
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 import javax.validation.ConstraintViolationException;
 
 import static com.woowacourse.zzimkkong.dto.ValidatorMessage.FORMAT_MESSAGE;
 
 @Getter
+@NoArgsConstructor
 public class ErrorResponse {
-    private final String message;
+    private String message;
 
-    public ErrorResponse(final String message) {
+    protected ErrorResponse(final String message) {
         this.message = message;
     }
 

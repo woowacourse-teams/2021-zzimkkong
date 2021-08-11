@@ -2,18 +2,17 @@ package com.woowacourse.zzimkkong.dto.slack;
 
 import com.woowacourse.zzimkkong.domain.Reservation;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
 
 @Getter
+@NoArgsConstructor
 public class SlackResponse {
     private String spaceName;
     private String userName;
     private String reservationTime;
     private String description;
-
-    public SlackResponse() {
-    }
 
     private SlackResponse(
             final String spaceName,

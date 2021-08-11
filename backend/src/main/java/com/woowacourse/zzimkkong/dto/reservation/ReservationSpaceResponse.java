@@ -4,12 +4,14 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.woowacourse.zzimkkong.domain.Reservation;
 import com.woowacourse.zzimkkong.domain.Space;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
 @Getter
+@NoArgsConstructor
 public class ReservationSpaceResponse {
     @JsonProperty
     private Long spaceId;
@@ -22,9 +24,6 @@ public class ReservationSpaceResponse {
 
     @JsonProperty
     private List<ReservationResponse> reservations;
-
-    public ReservationSpaceResponse() {
-    }
 
     public ReservationSpaceResponse(final Long spaceId,
                                     final String spaceName,

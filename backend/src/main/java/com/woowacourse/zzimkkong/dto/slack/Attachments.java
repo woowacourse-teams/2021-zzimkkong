@@ -1,19 +1,18 @@
 package com.woowacourse.zzimkkong.dto.slack;
 
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 import java.util.ArrayList;
 import java.util.List;
 
 @Getter
+@NoArgsConstructor
 public class Attachments {
     private static final String COLOR = "#FF7515";
     private static final String TITLE_LINK = "https://zzimkkong.o-r.kr/";
 
     private List<Attachment> attachments;
-
-    public Attachments() {
-    }
 
     private Attachments(final List<Attachment> attachments) {
         this.attachments = attachments;
