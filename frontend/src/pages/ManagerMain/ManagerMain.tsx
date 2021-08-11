@@ -121,8 +121,9 @@ const ManagerMain = (): JSX.Element => {
           ) : (
             <Styled.NoticeWrapper>
               <Styled.NoticeMessage>생성한 공간이 없습니다.</Styled.NoticeMessage>
-              {/* 공간 편집 페이지 완성되면 링크 바꿔야 함 */}
-              <Styled.NoticeLink to={PATH.MANAGER_MAP_CREATE}>공간 생성하러 가기</Styled.NoticeLink>
+              <Styled.NoticeLink to={HREF.MANAGER_SPACE_EDIT(selectedMapId)}>
+                공간 생성하러 가기
+              </Styled.NoticeLink>
             </Styled.NoticeWrapper>
           ))}
 
