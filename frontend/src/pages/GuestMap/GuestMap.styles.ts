@@ -5,12 +5,6 @@ export const PageWithBottomButton = styled.div<{ hasBottomButton: boolean }>`
   margin-bottom: ${({ hasBottomButton }) => (hasBottomButton ? '5rem' : '2rem')};
 `;
 
-export const PageTitle = styled.h2`
-  font-size: 1.5rem;
-  font-weight: 700;
-  margin: 1.5rem auto;
-`;
-
 export const MapContainer = styled.div`
   width: 100%;
   height: 50vh;

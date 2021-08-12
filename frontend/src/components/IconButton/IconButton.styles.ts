@@ -14,6 +14,7 @@ export const Button = styled.button<Props>`
   border: none;
   border-radius: 50%;
   background-color: transparent;
+  padding: 0;
   cursor: pointer;
   display: inline-flex;
   flex-direction: column;
@@ -66,4 +67,5 @@ export const Text = styled.div<Props>`
   user-select: none;
   white-space: nowrap;
   text-align: center;
+  margin-top: 0.125rem;
 `;
