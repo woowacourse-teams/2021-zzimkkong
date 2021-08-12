@@ -592,10 +592,6 @@ const ManagerMapCreate = (): JSX.Element => {
     };
   }, [handleKeyDown, handleKeyUp]);
 
-  useEffect(() => {
-    console.log(mapElements);
-  }, [mapElements]);
-
   return (
     <>
       <Styled.PageGlobalStyle />
@@ -834,20 +830,30 @@ const ManagerMapCreate = (): JSX.Element => {
                       />
                     )}
 
-                    {drawingStatus.start && mode === Mode.Square && (
-                      <rect
-                        key="preview-square"
-                        // points={`${drawingStatus.start.x},${drawingStatus.start.y} ${stickyCoordinate.x},${stickyCoordinate.y}`}
-                        x={Math.min(drawingStatus.start.x, stickyCoordinate.x)}
-                        y={Math.min(drawingStatus.start.y, stickyCoordinate.y)}
-                        width={Math.abs(drawingStatus.start.x - stickyCoordinate.x)}
-                        height={Math.abs(drawingStatus.start.y - stickyCoordinate.y)}
-                        stroke={PALETTE.OPACITY_BLACK[200]}
-                        strokeWidth={LINE_WIDTH}
-                        strokeLinecap="round"
-                        fill="none"
-                      />
-                    )}
+                    {drawingStatus.start &&
+                      mode === Mode.Square &&
+                      (Math.abs(drawingStatus.start.x - stickyCoordinate.x) &&
+                      Math.abs(drawingStatus.start.y - stickyCoordinate.y) ? (
+                        <rect
+                          key="preview-square"
+                          x={Math.min(drawingStatus.start.x, stickyCoordinate.x)}
+                          y={Math.min(drawingStatus.start.y, stickyCoordinate.y)}
+                          width={Math.abs(drawingStatus.start.x - stickyCoordinate.x)}
+                          height={Math.abs(drawingStatus.start.y - stickyCoordinate.y)}
+                          stroke={PALETTE.OPACITY_BLACK[200]}
+                          strokeWidth={LINE_WIDTH}
+                          strokeLinecap="round"
+                          fill="none"
+                        />
+                      ) : (
+                        <polyline
+                          key="preview-line"
+                          points={`${drawingStatus.start.x},${drawingStatus.start.y} ${stickyCoordinate.x},${stickyCoordinate.y}`}
+                          stroke={PALETTE.OPACITY_BLACK[200]}
+                          strokeWidth={LINE_WIDTH}
+                          strokeLinecap="round"
+                        />
+                      ))}
                   </g>
                 </svg>
               </Styled.BoardContainer>
