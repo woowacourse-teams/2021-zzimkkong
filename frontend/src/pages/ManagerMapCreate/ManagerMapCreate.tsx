@@ -25,7 +25,7 @@ import ColorPicker from 'components/ColorPicker/ColorPicker';
 import ColorPickerIcon from 'components/ColorPicker/ColorPickerIcon';
 import Header from 'components/Header/Header';
 import Layout from 'components/Layout/Layout';
-import { BOARD } from 'constants/editor';
+import { BOARD, EDITOR, KEY } from 'constants/editor';
 import MESSAGE from 'constants/message';
 import PALETTE from 'constants/palette';
 import PATH, { HREF } from 'constants/path';
@@ -46,14 +46,6 @@ import {
 import { Mode } from 'types/editor';
 import { ErrorResponse } from 'types/response';
 import * as Styled from './ManagerMapCreate.styles';
-
-const GRID_SIZE = 10;
-const SCALE_DELTA = 0.001;
-const MIN_SCALE = 0.5;
-const MAX_SCALE = 3.0;
-const LINE_WIDTH = 3;
-const KEY_DELETE = 'Delete';
-const KEY_SPACE = ' ';
 
 interface Params {
   mapId?: string;
@@ -86,8 +78,8 @@ const ManagerMapCreate = (): JSX.Element => {
   const [stickyPointerView, setStickyPointerView] = useState(false);
 
   const stickyCoordinate: Coordinate = {
-    x: Math.round(coordinate.x / GRID_SIZE) * GRID_SIZE,
-    y: Math.round(coordinate.y / GRID_SIZE) * GRID_SIZE,
+    x: Math.round(coordinate.x / EDITOR.GRID_SIZE) * EDITOR.GRID_SIZE,
+    y: Math.round(coordinate.y / EDITOR.GRID_SIZE) * EDITOR.GRID_SIZE,
   };
 
   const [drawingStatus, setDrawingStatus] = useState<DrawingStatus>({});
@@ -213,9 +205,9 @@ const ManagerMapCreate = (): JSX.Element => {
     setBoard((prevState) => {
       const { scale, x, y, width, height } = prevState;
 
-      const nextScale = scale - deltaY * SCALE_DELTA;
+      const nextScale = scale - deltaY * EDITOR.SCALE_DELTA;
 
-      if (nextScale <= MIN_SCALE || nextScale >= MAX_SCALE) {
+      if (nextScale <= EDITOR.MIN_SCALE || nextScale >= EDITOR.MAX_SCALE) {
         return {
           ...prevState,
           scale: prevState.scale,
@@ -472,10 +464,10 @@ const ManagerMapCreate = (): JSX.Element => {
     (event: KeyboardEvent) => {
       if ((event.target as HTMLElement).tagName === 'INPUT') return;
 
-      if (event.key === KEY_DELETE) {
+      if (event.key === KEY.DELETE) {
         deleteMapElement();
       }
-      if (event.key === KEY_SPACE) {
+      if (event.key === KEY.SPACE) {
         setPressSpacebar(true);
       }
     },
@@ -483,7 +475,7 @@ const ManagerMapCreate = (): JSX.Element => {
   );
 
   const handleKeyUp = useCallback((event: KeyboardEvent) => {
-    if (event.key === KEY_SPACE) {
+    if (event.key === KEY.SPACE) {
       setPressSpacebar(false);
     }
   }, []);
@@ -528,7 +520,7 @@ const ManagerMapCreate = (): JSX.Element => {
               <polyline
                 points='${points.join(' ')}'
                 stroke='${stroke}'
-                strokeWidth='${LINE_WIDTH}'
+                strokeWidth='${EDITOR.STROKE_WIDTH}'
                 strokeLinecap='round'
               />
             `
@@ -705,12 +697,12 @@ const ManagerMapCreate = (): JSX.Element => {
                   <defs>
                     <pattern
                       id="smallGrid"
-                      width={`${GRID_SIZE}px`}
-                      height={`${GRID_SIZE}px`}
+                      width={`${EDITOR.GRID_SIZE}px`}
+                      height={`${EDITOR.GRID_SIZE}px`}
                       patternUnits="userSpaceOnUse"
                     >
                       <path
-                        d={`M ${GRID_SIZE} 0 L 0 0 0 ${GRID_SIZE}`}
+                        d={`M ${EDITOR.GRID_SIZE} 0 L 0 0 0 ${EDITOR.GRID_SIZE}`}
                         fill="none"
                         stroke={PALETTE.GRAY[300]}
                         strokeWidth="0.5"
@@ -718,17 +710,17 @@ const ManagerMapCreate = (): JSX.Element => {
                     </pattern>
                     <pattern
                       id="grid"
-                      width={`${GRID_SIZE * 10}px`}
-                      height={`${GRID_SIZE * 10}px`}
+                      width={`${EDITOR.GRID_SIZE * 10}px`}
+                      height={`${EDITOR.GRID_SIZE * 10}px`}
                       patternUnits="userSpaceOnUse"
                     >
                       <rect
-                        width={`${GRID_SIZE * 10}px`}
-                        height={`${GRID_SIZE * 10}px`}
+                        width={`${EDITOR.GRID_SIZE * 10}px`}
+                        height={`${EDITOR.GRID_SIZE * 10}px`}
                         fill="url(#smallGrid)"
                       />
                       <path
-                        d={`M ${GRID_SIZE * 10} 0 L 0 0 0 ${GRID_SIZE * 10}`}
+                        d={`M ${EDITOR.GRID_SIZE * 10} 0 L 0 0 0 ${EDITOR.GRID_SIZE * 10}`}
                         fill="none"
                         stroke={PALETTE.GRAY[300]}
                         strokeWidth="1"
@@ -792,7 +784,7 @@ const ManagerMapCreate = (): JSX.Element => {
                           key={`polyline-${element.id}`}
                           points={element.points.join(' ')}
                           stroke={element.stroke}
-                          strokeWidth={LINE_WIDTH}
+                          strokeWidth={EDITOR.STROKE_WIDTH}
                           strokeLinecap="round"
                           cursor={mode === Mode.Select ? 'pointer' : 'default'}
                           opacity={erasingMapElementIds.includes(element.id) ? '0.3' : '1'}
@@ -809,7 +801,7 @@ const ManagerMapCreate = (): JSX.Element => {
                           height={element?.height}
                           stroke={element.stroke}
                           fill="none"
-                          strokeWidth={LINE_WIDTH}
+                          strokeWidth={EDITOR.STROKE_WIDTH}
                           strokeLinecap="round"
                         />
                       )
@@ -825,7 +817,7 @@ const ManagerMapCreate = (): JSX.Element => {
                         key="preview-line"
                         points={`${drawingStatus.start.x},${drawingStatus.start.y} ${stickyCoordinate.x},${stickyCoordinate.y}`}
                         stroke={PALETTE.OPACITY_BLACK[200]}
-                        strokeWidth={LINE_WIDTH}
+                        strokeWidth={EDITOR.STROKE_WIDTH}
                         strokeLinecap="round"
                       />
                     )}
@@ -841,7 +833,7 @@ const ManagerMapCreate = (): JSX.Element => {
                           width={Math.abs(drawingStatus.start.x - stickyCoordinate.x)}
                           height={Math.abs(drawingStatus.start.y - stickyCoordinate.y)}
                           stroke={PALETTE.OPACITY_BLACK[200]}
-                          strokeWidth={LINE_WIDTH}
+                          strokeWidth={EDITOR.STROKE_WIDTH}
                           strokeLinecap="round"
                           fill="none"
                         />
@@ -850,7 +842,7 @@ const ManagerMapCreate = (): JSX.Element => {
                           key="preview-line"
                           points={`${drawingStatus.start.x},${drawingStatus.start.y} ${stickyCoordinate.x},${stickyCoordinate.y}`}
                           stroke={PALETTE.OPACITY_BLACK[200]}
-                          strokeWidth={LINE_WIDTH}
+                          strokeWidth={EDITOR.STROKE_WIDTH}
                           strokeLinecap="round"
                         />
                       ))}
