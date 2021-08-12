@@ -82,7 +82,7 @@ export const ReservationLink = styled(Link)`
   position: sticky;
   bottom: 0;
   left: 0;
-  width: 100vw;
+  width: 100%;
   text-align: center;
   display: block;
   background: ${({ theme }) => theme.primary[400]};
