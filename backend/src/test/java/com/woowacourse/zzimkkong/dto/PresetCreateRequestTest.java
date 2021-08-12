@@ -26,7 +26,7 @@ class PresetCreateRequestTest extends RequestTest {
     @ParameterizedTest
     @NullSource
     @DisplayName("프리셋 생성에 빈 이름이 들어오면 처리한다.")
-    public void blankName(String name) {
+    void blankName(String name) {
         PresetCreateRequest nameRequest = new PresetCreateRequest(name, settingsRequest);
 
         assertThat(getConstraintViolations(nameRequest).stream()
@@ -37,7 +37,7 @@ class PresetCreateRequestTest extends RequestTest {
     @ParameterizedTest
     @CsvSource(value = {"옳지 않은 프리셋!:true", "옳지않은프리셋옳지않은프리셋옳지않은프리셋:true", "옳은프리셋!:false"}, delimiter = ':')
     @DisplayName("예약 생성의 이름에 옳지 않은 형식의 문자열이 들어오면 처리한다.")
-    public void invalidName(String name, boolean flag) {
+    void invalidName(String name, boolean flag) {
         PresetCreateRequest nameRequest = new PresetCreateRequest(name, settingsRequest);
 
         assertThat(getConstraintViolations(nameRequest).stream()

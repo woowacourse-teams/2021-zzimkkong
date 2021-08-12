@@ -13,12 +13,6 @@ export const Section = styled.section`
   margin: 1.5rem 0;
 `;
 
-export const PageHeader = styled.h2`
-  font-size: 1.625rem;
-  font-weight: 700;
-  margin: 1.5rem 0;
-`;
-
 export const InputWrapper = styled.div`
   position: relative;
   display: flex;
@@ -31,15 +25,7 @@ export const InputWrapper = styled.div`
 `;
 
 export const ReservationList = styled.div`
-  border: 1px solid ${({ theme }) => theme.black[400]};
-
-  [role='listitem'] {
-    border-bottom: 1px solid ${({ theme }) => theme.black[400]};
-
-    &:last-of-type {
-      border-bottom: none;
-    }
-  }
+  border-top: 1px solid ${({ theme }) => theme.gray[400]};
 `;
 
 export const ButtonWrapper = styled.div`

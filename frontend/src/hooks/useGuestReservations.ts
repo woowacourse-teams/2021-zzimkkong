@@ -12,6 +12,6 @@ const useGuestReservations = <TData = AxiosResponse<QueryGuestReservationsSucces
     [QueryKey, QuerySpaceReservationsParams]
   >
 ): UseQueryResult<TData, AxiosError<ErrorResponse>> =>
-  useQuery(['getReservations', { mapId, spaceId, date }], queryGuestReservations, options);
+  useQuery(['getGuestReservations', { mapId, spaceId, date }], queryGuestReservations, options);
 
 export default useGuestReservations;

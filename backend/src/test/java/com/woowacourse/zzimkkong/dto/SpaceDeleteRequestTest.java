@@ -12,7 +12,7 @@ class SpaceDeleteRequestTest extends RequestTest {
     @ParameterizedTest
     @NullAndEmptySource
     @DisplayName("맵의 Svg 정보에 빈 문자열이 들어오면 처리한다.")
-    public void blankMapImage(String mapImageSvg) {
+    void blankMapImage(String mapImageSvg) {
         SpaceDeleteRequest spaceDeleteRequest = new SpaceDeleteRequest(mapImageSvg);
 
         assertThat(getConstraintViolations(spaceDeleteRequest).stream()

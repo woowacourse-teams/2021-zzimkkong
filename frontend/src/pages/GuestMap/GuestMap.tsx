@@ -3,9 +3,9 @@ import { FormEventHandler, useMemo, useState } from 'react';
 import { useMutation } from 'react-query';
 import { useHistory, useLocation, useParams } from 'react-router-dom';
 import { deleteReservation } from 'api/guestReservation';
-import { ReactComponent as Delete } from 'assets/svg/delete.svg';
-import { ReactComponent as Edit } from 'assets/svg/edit.svg';
-import { ReactComponent as More } from 'assets/svg/more.svg';
+import { ReactComponent as DeleteIcon } from 'assets/svg/delete.svg';
+import { ReactComponent as EditIcon } from 'assets/svg/edit.svg';
+import { ReactComponent as MoreIcon } from 'assets/svg/more.svg';
 import Button from 'components/Button/Button';
 import DateInput from 'components/DateInput/DateInput';
 import Drawer from 'components/Drawer/Drawer';
@@ -13,14 +13,15 @@ import Header from 'components/Header/Header';
 import Input from 'components/Input/Input';
 import Layout from 'components/Layout/Layout';
 import Modal from 'components/Modal/Modal';
+import PageHeader from 'components/PageHeader/PageHeader';
 import Panel from 'components/Panel/Panel';
 import ReservationListItem from 'components/ReservationListItem/ReservationListItem';
 import MESSAGE from 'constants/message';
 import PALETTE from 'constants/palette';
 import useGuestMap from 'hooks/useGuestMap';
 import useGuestReservations from 'hooks/useGuestReservations';
+import useGuestSpaces from 'hooks/useGuestSpaces';
 import useInput from 'hooks/useInput';
-import useSpaces from 'hooks/useSpaces';
 import { Area, MapDrawing, MapItem, Reservation, ScrollPosition, Space } from 'types/common';
 import { ErrorResponse } from 'types/response';
 import { formatDate } from 'utils/datetime';
@@ -83,7 +84,7 @@ const GuestMap = (): JSX.Element => {
     return result;
   }, [spaceList]);
 
-  const getSpaces = useSpaces(
+  const getSpaces = useGuestSpaces(
     { mapId: map?.mapId as number },
     {
       enabled: map?.mapId !== undefined,
@@ -220,6 +221,7 @@ const GuestMap = (): JSX.Element => {
           </Styled.MapContainer>
         </Styled.Page>
       </Layout>
+      
       <Drawer open={detailOpen} placement="bottom" onClose={() => setDetailOpen(false)}>
         {spaceList.length > 0 && selectedSpaceId !== null && (
           <>
@@ -278,18 +280,20 @@ const GuestMap = (): JSX.Element => {
           </Styled.ReservationLink>
         )}
       </Drawer>
+      
       <Modal open={modalOpen} isClosableDimmer={true} onClose={() => setModalOpen(false)}>
         <Styled.SelectBox>
           <Styled.SelectButton onClick={handleSelectEdit}>
-            <Edit />
+            <EditIcon />
             수정하기
           </Styled.SelectButton>
           <Styled.SelectButton onClick={handleSelectDelete}>
-            <Delete />
+            <DeleteIcon />
             삭제하기
           </Styled.SelectButton>
         </Styled.SelectBox>
       </Modal>
+      
       <Modal
         open={passwordInputModalOpen}
         isClosableDimmer={true}

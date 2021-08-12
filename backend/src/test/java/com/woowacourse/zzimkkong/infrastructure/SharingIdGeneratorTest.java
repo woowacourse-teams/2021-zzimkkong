@@ -28,7 +28,7 @@ class SharingIdGeneratorTest {
 
     @BeforeEach
     void setUp() {
-        pobi = new Member(1L, EMAIL, PASSWORD, ORGANIZATION);
+        pobi = new Member(1L, EMAIL, PW, ORGANIZATION);
         luther = new Map(1L,
                 LUTHER_NAME,
                 MAP_DRAWING_DATA,
