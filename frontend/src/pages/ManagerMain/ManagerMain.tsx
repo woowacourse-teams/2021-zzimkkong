@@ -5,14 +5,17 @@ import { useHistory } from 'react-router-dom';
 import { deleteMap } from 'api/managerMap';
 import { ReactComponent as DeleteIcon } from 'assets/svg/delete.svg';
 import { ReactComponent as EditIcon } from 'assets/svg/edit.svg';
+import { ReactComponent as MapEditorIcon } from 'assets/svg/map-editor.svg';
 import { ReactComponent as MenuIcon } from 'assets/svg/menu.svg';
 import { ReactComponent as MoreIcon } from 'assets/svg/more.svg';
+import { ReactComponent as SpaceEditorIcon } from 'assets/svg/space-editor.svg';
 import DateInput from 'components/DateInput/DateInput';
 import Drawer from 'components/Drawer/Drawer';
 import Header from 'components/Header/Header';
 import IconButton from 'components/IconButton/IconButton';
 import Layout from 'components/Layout/Layout';
 import MapListItem from 'components/MapListItem/MapListItem';
+import PageHeader from 'components/PageHeader/PageHeader';
 import Panel from 'components/Panel/Panel';
 import ReservationListItem from 'components/ReservationListItem/ReservationListItem';
 import MESSAGE from 'constants/message';
@@ -75,6 +78,18 @@ const ManagerMain = (): JSX.Element => {
     return selectedMap?.sharingMapId ?? '';
   };
 
+  const handleClickMapEditorIcon = () => {
+    if (selectedMapId === null) return;
+
+    history.push(HREF.MANAGER_MAP_EDIT(selectedMapId));
+  };
+
+  const handleClickSpaceEditorIcon = () => {
+    if (selectedMapId === null) return;
+
+    history.push(HREF.MANAGER_SPACE_EDIT(selectedMapId));
+  };
+
   const handleCopyLink = () => {
     navigator.clipboard
       .writeText(`${window.location.origin}/guest/${getSelectedSharingMapId()}`)
@@ -109,15 +124,36 @@ const ManagerMain = (): JSX.Element => {
     <>
       <Header />
       <Layout>
-        <Styled.PageHeader>
-          <IconButton text="맵 목록" onClick={handleOpenDrawer}>
-            <MenuIcon width="100%" height="100%" />
-          </IconButton>
-          <Styled.PageTitle>{selectedMapName}</Styled.PageTitle>
-          <IconButton text="공유 링크" onClick={handleCopyLink}>
-            <Styled.PrimaryLinkIcon width="100%" height="100%" />
-          </IconButton>
-        </Styled.PageHeader>
+        <PageHeader
+          title={selectedMapName}
+          leftButtons={
+            <IconButton text="맵 목록" size="small" onClick={handleOpenDrawer}>
+              <MenuIcon width="100%" height="100%" />
+            </IconButton>
+          }
+          rightButtons={
+            <>
+              <Styled.RightIconButton
+                text="맵 편집"
+                size="small"
+                onClick={handleClickMapEditorIcon}
+              >
+                <MapEditorIcon width="100%" height="100%" />
+              </Styled.RightIconButton>
+              <Styled.RightIconButton
+                text="공간 편집"
+                size="small"
+                onClick={handleClickSpaceEditorIcon}
+              >
+                <SpaceEditorIcon width="100%" height="100%" />
+              </Styled.RightIconButton>
+              <Styled.VerticalBar />
+              <Styled.RightIconButton text="공유 링크" size="small" onClick={handleCopyLink}>
+                <Styled.PrimaryLinkIcon width="100%" height="100%" />
+              </Styled.RightIconButton>
+            </>
+          }
+        />
         <Styled.DateInputWrapper>
           <DateInput date={date} setDate={setDate} />
         </Styled.DateInputWrapper>
@@ -192,18 +228,12 @@ const ManagerMain = (): JSX.Element => {
                 selected={mapId === selectedMapId}
                 control={
                   <>
-                    <Styled.MapListItemControlButton
-                      size="small"
-                      onClick={() => history.push(HREF.MANAGER_MAP_EDIT(mapId))}
-                    >
+                    <IconButton size="small">
                       <EditIcon width="100%" height="100%" />
-                    </Styled.MapListItemControlButton>
-                    <Styled.MapListItemControlButton
-                      size="small"
-                      onClick={() => handleDeleteMap(mapId)}
-                    >
+                    </IconButton>
+                    <IconButton size="small" onClick={() => handleDeleteMap(mapId)}>
                       <DeleteIcon width="100%" height="100%" />
-                    </Styled.MapListItemControlButton>
+                    </IconButton>
                   </>
                 }
               />

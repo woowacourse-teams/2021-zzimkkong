@@ -3,15 +3,16 @@ import { FormEventHandler, useMemo, useState } from 'react';
 import { useMutation } from 'react-query';
 import { useHistory, useLocation, useParams } from 'react-router-dom';
 import { deleteReservation } from 'api/guestReservation';
-import { ReactComponent as Delete } from 'assets/svg/delete.svg';
-import { ReactComponent as Edit } from 'assets/svg/edit.svg';
-import { ReactComponent as More } from 'assets/svg/more.svg';
+import { ReactComponent as DeleteIcon } from 'assets/svg/delete.svg';
+import { ReactComponent as EditIcon } from 'assets/svg/edit.svg';
+import { ReactComponent as MoreIcon } from 'assets/svg/more.svg';
 import Button from 'components/Button/Button';
 import DateInput from 'components/DateInput/DateInput';
 import Header from 'components/Header/Header';
 import Input from 'components/Input/Input';
 import Layout from 'components/Layout/Layout';
 import Modal from 'components/Modal/Modal';
+import PageHeader from 'components/PageHeader/PageHeader';
 import Panel from 'components/Panel/Panel';
 import ReservationListItem from 'components/ReservationListItem/ReservationListItem';
 import MESSAGE from 'constants/message';
@@ -170,7 +171,7 @@ const GuestMap = (): JSX.Element => {
       <Header />
       <Layout>
         <Styled.PageWithBottomButton hasBottomButton={reservationAvailable}>
-          <Styled.PageTitle>{map?.mapName}</Styled.PageTitle>
+          {map?.mapName && <PageHeader title={map?.mapName} />}
           <DateInput date={date} setDate={setDate} />
           <Styled.MapContainer>
             {mapDrawing && (
@@ -249,7 +250,7 @@ const GuestMap = (): JSX.Element => {
                                 size="small"
                                 onClick={() => handleSelectModal(reservation)}
                               >
-                                <More />
+                                <MoreIcon />
                               </Button>
                             }
                           />
@@ -281,11 +282,11 @@ const GuestMap = (): JSX.Element => {
       <Modal open={modalOpen} isClosableDimmer={true} onClose={() => setModalOpen(false)}>
         <Styled.SelectBox>
           <Styled.SelectButton onClick={handleSelectEdit}>
-            <Edit />
+            <EditIcon />
             수정하기
           </Styled.SelectButton>
           <Styled.SelectButton onClick={handleSelectDelete}>
-            <Delete />
+            <DeleteIcon />
             삭제하기
           </Styled.SelectButton>
         </Styled.SelectBox>

@@ -8,6 +8,7 @@ import Button from 'components/Button/Button';
 import Header from 'components/Header/Header';
 import Input from 'components/Input/Input';
 import Layout from 'components/Layout/Layout';
+import PageHeader from 'components/PageHeader/PageHeader';
 import ReservationListItem from 'components/ReservationListItem/ReservationListItem';
 import MESSAGE from 'constants/message';
 import REGEXP from 'constants/regexp';
@@ -94,9 +95,9 @@ const GuestReservationEdit = (): JSX.Element => {
     <>
       <Header />
       <Layout>
+        <PageHeader title={spaceName} />
         <Styled.ReservationForm onSubmit={handleSubmit}>
           <Styled.Section>
-            <Styled.PageHeader>{spaceName}</Styled.PageHeader>
             <Styled.InputWrapper>
               <Input
                 label="이름"
@@ -159,10 +160,7 @@ const GuestReservationEdit = (): JSX.Element => {
             </Styled.InputWrapper>
           </Styled.Section>
           <Styled.Section>
-            <Styled.PageHeader>
-              {date}
-              {date && '의'} 예약 목록
-            </Styled.PageHeader>
+            <PageHeader title={`${date}${date && '의'} 예약 목록`} />
             {getReservations.isLoadingError && (
               <Styled.Message>
                 예약 목록을 불러오는 데 문제가 생겼어요!
