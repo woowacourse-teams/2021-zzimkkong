@@ -219,6 +219,7 @@ const GuestMap = (): JSX.Element => {
           </Styled.MapContainer>
         </Styled.Page>
       </Layout>
+
       <Drawer open={detailOpen} placement="bottom" onClose={() => setDetailOpen(false)}>
         {spaceList.length > 0 && selectedSpaceId !== null && (
           <>
@@ -277,6 +278,7 @@ const GuestMap = (): JSX.Element => {
           </Styled.ReservationLink>
         )}
       </Drawer>
+
       <Modal open={modalOpen} isClosableDimmer={true} onClose={() => setModalOpen(false)}>
         <Styled.SelectBox>
           <Styled.SelectButton onClick={handleSelectEdit}>
@@ -289,6 +291,7 @@ const GuestMap = (): JSX.Element => {
           </Styled.SelectButton>
         </Styled.SelectBox>
       </Modal>
+
       <Modal
         open={passwordInputModalOpen}
         isClosableDimmer={true}
