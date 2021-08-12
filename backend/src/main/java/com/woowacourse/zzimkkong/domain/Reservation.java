@@ -50,6 +50,10 @@ public class Reservation {
         this.userName = userName;
         this.description = description;
         this.space = space;
+
+        if (space != null) {
+            this.space.addReservation(this);
+        }
     }
 
     public boolean hasConflictWith(final LocalDateTime startDateTime, final LocalDateTime endDateTime) {
