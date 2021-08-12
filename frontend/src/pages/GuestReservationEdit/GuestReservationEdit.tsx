@@ -23,9 +23,8 @@ import * as Styled from './GuestReservationEdit.styles';
 
 interface GuestReservationEditState {
   mapId: number;
+  space: Space;
   reservation: Reservation;
-  spaceId: Space['id'];
-  spaceName: Space['name'];
   selectedDate: string;
 }
 
@@ -38,9 +37,10 @@ const GuestReservationEdit = (): JSX.Element => {
   const history = useHistory<GuestMapState>();
   const { sharingMapId } = useParams<URLParameter>();
 
-  const { mapId, spaceId, reservation, spaceName, selectedDate } = location.state;
+  const { mapId, space, reservation, selectedDate } = location.state;
+  const { availableStartTime, availableEndTime, reservationTimeUnit } = space.settings;
 
-  if (!mapId || !spaceId || !spaceName || !reservation) history.replace(`/guest/${sharingMapId}`);
+  if (!mapId || !space || !reservation) history.replace(`/guest/${sharingMapId}`);
 
   const now = new Date();
 
@@ -49,18 +49,18 @@ const GuestReservationEdit = (): JSX.Element => {
   const [date, onChangeDate] = useInput(selectedDate);
   const [startTime, onChangeStartTime] = useInput(formatTime(new Date(reservation.startDateTime)));
   const [endTime, onChangeEndTime] = useInput(formatTime(new Date(reservation.endDateTime)));
-  const [password, onChangePassword] = useInput();
+  const [password, onChangePassword] = useInput('');
 
   const startDateTime = new Date(`${date}T${startTime}Z`);
   const endDateTime = new Date(`${date}T${endTime}Z`);
 
-  const getReservations = useGuestReservations({ mapId, spaceId, date });
+  const getReservations = useGuestReservations({ mapId, spaceId: space.id, date });
   const reservations = getReservations.data?.data?.reservations ?? [];
 
   const editReservation = useMutation(putReservation, {
     onSuccess: () => {
       history.push(`/guest/${sharingMapId}`, {
-        spaceId,
+        spaceId: space.id,
         targetDate: new Date(`${date}T${startTime}`),
       });
     },
@@ -86,7 +86,7 @@ const GuestReservationEdit = (): JSX.Element => {
     editReservation.mutate({
       reservation: editReservationParams,
       mapId,
-      spaceId,
+      spaceId: space.id,
       reservationId: reservation.id,
     });
   };
@@ -95,9 +95,12 @@ const GuestReservationEdit = (): JSX.Element => {
     <>
       <Header />
       <Layout>
-        <PageHeader title={spaceName} />
         <Styled.ReservationForm onSubmit={handleSubmit}>
           <Styled.Section>
+            <Styled.PageHeader>
+              <Styled.ColorDot color={space.color} />
+              {space.name}
+            </Styled.PageHeader>
             <Styled.InputWrapper>
               <Input
                 label="이름"
@@ -131,6 +134,9 @@ const GuestReservationEdit = (): JSX.Element => {
               <Input
                 type="time"
                 label="시작 시간"
+                step={60 * reservationTimeUnit}
+                min={availableStartTime}
+                max={availableEndTime}
                 value={startTime}
                 onChange={onChangeStartTime}
                 required
@@ -138,8 +144,10 @@ const GuestReservationEdit = (): JSX.Element => {
               <Input
                 type="time"
                 label="종료 시간"
-                value={endTime}
+                step={60 * reservationTimeUnit}
                 min={startTime}
+                max={availableEndTime}
+                value={endTime}
                 onChange={onChangeEndTime}
                 required
               />
@@ -154,7 +162,14 @@ const GuestReservationEdit = (): JSX.Element => {
                 maxLength={RESERVATION.PASSWORD.MAX_LENGTH}
                 pattern={REGEXP.RESERVATION_PASSWORD.source}
                 inputMode="numeric"
-                message="예약하실 때 사용하신 비밀번호 4자리를 입력해주세요."
+                status={
+                  editReservation.error?.response?.data.field === 'password' ? 'error' : 'default'
+                }
+                message={
+                  editReservation.error?.response?.data.field === 'password'
+                    ? '비밀번호 4자리를 다시 확인해주세요.'
+                    : '예약하실 때 사용하신 비밀번호 4자리를 입력해주세요.'
+                }
                 required
               />
             </Styled.InputWrapper>

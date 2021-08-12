@@ -141,9 +141,8 @@ const GuestMap = (): JSX.Element => {
       pathname: `/guest/${sharingMapId}/reservation/edit`,
       state: {
         mapId: map?.mapId,
-        spaceId: Number(selectedSpaceId),
+        space: spaces[selectedSpaceId],
         reservation: selectedReservation,
-        spaceName: spaces[selectedSpaceId].name,
         selectedDate: formatDate(date),
       },
     });
@@ -269,8 +268,7 @@ const GuestMap = (): JSX.Element => {
               pathname: `/guest/${sharingMapId}/reservation`,
               state: {
                 mapId: map?.mapId,
-                spaceId: selectedSpaceId,
-                spaceName: spaces[selectedSpaceId].name,
+                space: spaces[selectedSpaceId],
                 selectedDate: formatDate(date),
               },
             }}
