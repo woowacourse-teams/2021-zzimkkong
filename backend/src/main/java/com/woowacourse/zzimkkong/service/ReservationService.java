@@ -12,7 +12,6 @@ import com.woowacourse.zzimkkong.exception.space.NoSuchSpaceException;
 import com.woowacourse.zzimkkong.infrastructure.TimeConverter;
 import com.woowacourse.zzimkkong.repository.MapRepository;
 import com.woowacourse.zzimkkong.repository.ReservationRepository;
-import com.woowacourse.zzimkkong.repository.SpaceRepository;
 import com.woowacourse.zzimkkong.service.callback.ReservationControllerCallback;
 import com.woowacourse.zzimkkong.service.callback.ReservationCreateCallback;
 import com.woowacourse.zzimkkong.service.callback.ReservationServiceCallback;
@@ -33,23 +32,22 @@ import java.util.stream.Collectors;
 public class ReservationService {
     private static final long ONE_DAY = 1L;
 
-    protected MapRepository maps;
-    protected SpaceRepository spaces;
-    protected ReservationRepository reservations;
-    protected TimeConverter timeConverter;
+    private final MapRepository maps;
+    private final ReservationRepository reservations;
+    private final TimeConverter timeConverter;
 
     public ReservationService(
             final MapRepository maps,
-            final SpaceRepository spaces,
             final ReservationRepository reservations,
             final TimeConverter timeConverter) {
         this.maps = maps;
-        this.spaces = spaces;
         this.reservations = reservations;
         this.timeConverter = timeConverter;
     }
 
-    public ReservationCreateResponse saveReservation(final ReservationCreateDto reservationCreateDto, final ReservationControllerCallback reservationControllerCallback) {
+    public ReservationCreateResponse saveReservation(
+            final ReservationCreateDto reservationCreateDto,
+            final ReservationControllerCallback reservationControllerCallback) {
         Long mapId = reservationCreateDto.getMapId();
         Member manager = reservationCreateDto.getManager();
         Map map = maps.findById(mapId)
@@ -135,7 +133,9 @@ public class ReservationService {
         return ReservationResponse.from(reservation);
     }
 
-    public SlackResponse updateReservation(final ReservationUpdateDto reservationUpdateDto, final ReservationControllerCallback reservationControllerCallback) {
+    public SlackResponse updateReservation(
+            final ReservationUpdateDto reservationUpdateDto,
+            final ReservationControllerCallback reservationControllerCallback) {
         Long mapId = reservationUpdateDto.getMapId();
         Member manager = reservationUpdateDto.getManager();
         Map map = maps.findById(mapId)
