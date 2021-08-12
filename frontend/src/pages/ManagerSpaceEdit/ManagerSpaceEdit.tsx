@@ -946,14 +946,28 @@ const ManagerSpaceEdit = (): JSX.Element => {
                       ))}
 
                       {/* Note: 맵 요소 */}
-                      {mapElements?.map((element) => (
-                        <polyline
-                          key={`${element.id}`}
-                          points={element.points.join(' ')}
-                          stroke={element.stroke}
-                          strokeWidth="2"
-                        />
-                      ))}
+                      {mapElements?.map((element) =>
+                        element.type === 'polyline' ? (
+                          <polyline
+                            key={`${element.id}`}
+                            points={element.points.join(' ')}
+                            stroke={element.stroke}
+                            strokeWidth="2"
+                          />
+                        ) : (
+                          <rect
+                            key={`square-${element.id}`}
+                            x={element?.coordinate?.x}
+                            y={element?.coordinate?.y}
+                            width={element?.width}
+                            height={element?.height}
+                            stroke={element.stroke}
+                            fill="none"
+                            strokeWidth={2}
+                            strokeLinecap="round"
+                          />
+                        )
+                      )}
                     </g>
                   </svg>
                 </Styled.BoardContainer>
