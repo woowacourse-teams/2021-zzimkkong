@@ -11,7 +11,11 @@ import java.time.LocalDateTime;
 public class ReservationCreateDto {
     protected Long mapId;
     protected Long spaceId;
-    protected ReservationCreateUpdateRequest request;
+    protected LocalDateTime startDateTime;
+    protected LocalDateTime endDateTime;
+    protected String password;
+    protected String name;
+    protected String description;
     protected Member manager;
 
     protected ReservationCreateDto(
@@ -21,7 +25,11 @@ public class ReservationCreateDto {
             final Member manager) {
         this.mapId = mapId;
         this.spaceId = spaceId;
-        this.request = request;
+        this.startDateTime = request.getStartDateTime();
+        this.endDateTime = request.getEndDateTime();
+        this.password = request.getPassword();
+        this.name = request.getName();
+        this.description = request.getDescription();
         this.manager = manager;
     }
 
@@ -46,25 +54,5 @@ public class ReservationCreateDto {
                 spaceId,
                 reservationCreateUpdateWithPasswordRequest,
                 manager);
-    }
-
-    public LocalDateTime getStartDateTime() {
-        return request.getStartDateTime();
-    }
-
-    public LocalDateTime getEndDateTime() {
-        return request.getEndDateTime();
-    }
-
-    public String getPassword() {
-        return request.getPassword();
-    }
-
-    public String getName() {
-        return request.getName();
-    }
-
-    public String getDescription() {
-        return request.getDescription();
     }
 }

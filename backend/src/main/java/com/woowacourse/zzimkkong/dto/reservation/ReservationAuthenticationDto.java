@@ -10,7 +10,7 @@ public class ReservationAuthenticationDto {
     private Long mapId;
     private Long spaceId;
     private Long reservationId;
-    private ReservationPasswordAuthenticationRequest request;
+    private String password;
     private Member manager;
 
     private ReservationAuthenticationDto(
@@ -22,7 +22,7 @@ public class ReservationAuthenticationDto {
         this.mapId = mapId;
         this.spaceId = spaceId;
         this.reservationId = reservationId;
-        this.request = request;
+        this.password = request.getPassword();
         this.manager = manager;
     }
 
@@ -50,9 +50,5 @@ public class ReservationAuthenticationDto {
                 reservationId,
                 new ReservationPasswordAuthenticationRequest(),
                 manager);
-    }
-
-    public String getPassword() {
-        return request.getPassword();
     }
 }
