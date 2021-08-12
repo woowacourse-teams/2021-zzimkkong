@@ -75,7 +75,7 @@ export const SpaceAreaText = styled.text`
 `;
 
 export const ReservationContainer = styled.div`
-  padding: 0 2rem 2rem 2rem;
+  padding: 0 2rem 2rem;
 `;
 
 export const ReservationLink = styled(Link)`
