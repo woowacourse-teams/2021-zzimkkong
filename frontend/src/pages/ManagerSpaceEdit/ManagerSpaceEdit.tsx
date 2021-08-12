@@ -587,6 +587,11 @@ const ManagerSpaceEdit = (): JSX.Element => {
         end: formatTimeWithSecond(new Date(`${todayDate}T${availableEndTime}`)),
       };
 
+      const targetSpaces =
+        selectedSpaceId && !isAddingSpace
+          ? spaces.filter(({ id }) => selectedSpaceId !== id)
+          : spaces;
+
       const mapImageSvg = `
     <svg
       xmlns='http://www.w3.org/2000/svg'
@@ -612,8 +617,7 @@ const ManagerSpaceEdit = (): JSX.Element => {
         : ''
     }
 
-      ${spaces
-        .filter(({ id }) => selectedSpaceId !== id)
+      ${targetSpaces
         .map(
           ({ color, area }) => `
             <g>
