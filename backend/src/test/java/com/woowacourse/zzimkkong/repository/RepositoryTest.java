@@ -8,7 +8,7 @@ import org.springframework.test.context.ActiveProfiles;
 @DataJpaTest
 @DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
 @ActiveProfiles("test")
-public class RepositoryTest {
+class RepositoryTest {
 
     @Autowired
     protected ReservationRepository reservations;

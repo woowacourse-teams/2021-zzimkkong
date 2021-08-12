@@ -4,10 +4,11 @@ import { ReactComponent as LogoIcon } from 'assets/svg/logo.svg';
 import PATH from 'constants/path';
 import { LOCAL_STORAGE_KEY } from 'constants/storage';
 import accessTokenState from 'state/accessTokenState';
+import { MapItem } from 'types/common';
 import * as Styled from './Header.styles';
 
 interface Params {
-  publicMapId?: string;
+  sharingMapId?: MapItem['sharingMapId'];
 }
 
 const Header = (): JSX.Element => {
@@ -16,7 +17,7 @@ const Header = (): JSX.Element => {
   const history = useHistory();
 
   const params = useParams<Params>();
-  const publicMapId = params?.publicMapId;
+  const sharingMapId = params?.sharingMapId;
 
   const handleLogout = () => {
     setAccessToken('');
@@ -28,7 +29,7 @@ const Header = (): JSX.Element => {
   return (
     <Styled.Header>
       <Styled.HeaderLayout>
-        <Styled.HeaderLink to={publicMapId ? `/guest/${publicMapId}` : PATH.MANAGER_MAIN}>
+        <Styled.HeaderLink to={sharingMapId ? `/guest/${sharingMapId}` : PATH.MANAGER_MAIN}>
           <Styled.Logo>
             <LogoIcon />
           </Styled.Logo>

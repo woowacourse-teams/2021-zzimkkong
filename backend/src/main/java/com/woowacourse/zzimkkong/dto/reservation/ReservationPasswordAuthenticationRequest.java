@@ -12,7 +12,7 @@ import static com.woowacourse.zzimkkong.dto.ValidatorMessage.*;
 @NoArgsConstructor
 public class ReservationPasswordAuthenticationRequest {
     @NotBlank(message = EMPTY_MESSAGE)
-    @Pattern(regexp = RESERVATION_PASSWORD_FORMAT, message = RESERVATION_PASSWORD_MESSAGE)
+    @Pattern(regexp = RESERVATION_PW_FORMAT, message = RESERVATION_PW_MESSAGE)
     private String password;
 
     public ReservationPasswordAuthenticationRequest(final String password) {

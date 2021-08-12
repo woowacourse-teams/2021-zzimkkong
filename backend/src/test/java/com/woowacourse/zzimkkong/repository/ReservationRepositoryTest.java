@@ -25,7 +25,7 @@ class ReservationRepositoryTest extends RepositoryTest {
 
     @BeforeEach
     void setUp() {
-        Member pobi = new Member(EMAIL, PASSWORD, ORGANIZATION);
+        Member pobi = new Member(EMAIL, PW, ORGANIZATION);
         Map luther = new Map(LUTHER_NAME, MAP_DRAWING_DATA, MAP_IMAGE_URL, pobi);
 
         Setting beSetting = Setting.builder()
@@ -76,7 +76,7 @@ class ReservationRepositoryTest extends RepositoryTest {
                 .endTime(BE_AM_TEN_ELEVEN_END_TIME)
                 .description(BE_AM_TEN_ELEVEN_DESCRIPTION)
                 .userName(BE_AM_TEN_ELEVEN_USERNAME)
-                .password(BE_AM_TEN_ELEVEN_PASSWORD)
+                .password(BE_AM_TEN_ELEVEN_PW)
                 .space(be)
                 .build();
 
@@ -85,7 +85,7 @@ class ReservationRepositoryTest extends RepositoryTest {
                 .endTime(BE_PM_ONE_TWO_END_TIME)
                 .description(BE_PM_ONE_TWO_DESCRIPTION)
                 .userName(BE_PM_ONE_TWO_USERNAME)
-                .password(BE_PM_ONE_TWO_PASSWORD)
+                .password(BE_PM_ONE_TWO_PW)
                 .space(be)
                 .build();
 
@@ -94,7 +94,7 @@ class ReservationRepositoryTest extends RepositoryTest {
                 .endTime(BE_NEXT_DAY_PM_FOUR_TO_SIX_END_TIME)
                 .description(BE_NEXT_DAY_PM_FOUR_TO_SIX_DESCRIPTION)
                 .userName(BE_NEXT_DAY_PM_FOUR_TO_SIX_USERNAME)
-                .password(BE_NEXT_DAY_PM_FOUR_TO_SIX_PASSWORD)
+                .password(BE_NEXT_DAY_PM_FOUR_TO_SIX_PW)
                 .space(be)
                 .build();
 
@@ -103,7 +103,7 @@ class ReservationRepositoryTest extends RepositoryTest {
                 .endTime(FE1_AM_TEN_ELEVEN_END_TIME)
                 .description(FE1_AM_TEN_ELEVEN_DESCRIPTION)
                 .userName(FE1_AM_TEN_ELEVEN_USERNAME)
-                .password(FE1_AM_TEN_ELEVEN_PASSWORD)
+                .password(FE1_AM_TEN_ELEVEN_PW)
                 .space(fe)
                 .build();
 

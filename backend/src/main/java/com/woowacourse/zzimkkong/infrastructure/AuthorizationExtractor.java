@@ -6,6 +6,9 @@ import javax.servlet.http.HttpServletRequest;
 import java.util.Enumeration;
 
 public class AuthorizationExtractor {
+    private AuthorizationExtractor() {
+    }
+
     public static final String AUTHENTICATION_TYPE = "Bearer";
     private static final String AUTHORIZATION_HEADER_KEY = "Authorization";
     private static final int TOKEN_INDEX = 1;

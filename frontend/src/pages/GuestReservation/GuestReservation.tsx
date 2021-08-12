@@ -1,41 +1,46 @@
 import { AxiosError } from 'axios';
 import { FormEventHandler, useEffect } from 'react';
 import { useMutation } from 'react-query';
-import { useHistory, useLocation } from 'react-router-dom';
-import { postReservation } from 'api/reservation';
+import { useHistory, useLocation, useParams } from 'react-router-dom';
+import { postReservation } from 'api/guestReservation';
 import { ReactComponent as CalendarIcon } from 'assets/svg/calendar.svg';
 import Button from 'components/Button/Button';
 import Header from 'components/Header/Header';
 import Input from 'components/Input/Input';
 import Layout from 'components/Layout/Layout';
+import PageHeader from 'components/PageHeader/PageHeader';
 import ReservationListItem from 'components/ReservationListItem/ReservationListItem';
 import MESSAGE from 'constants/message';
-import PATH from 'constants/path';
 import REGEXP from 'constants/regexp';
 import RESERVATION from 'constants/reservation';
+import useGuestReservations from 'hooks/useGuestReservations';
 import useInput from 'hooks/useInput';
-import useReservations from 'hooks/useReservations';
-import { GuestMainState } from 'pages/GuestMain/GuestMain';
-import { ScrollPosition, Space } from 'types/common';
+import { GuestMapState } from 'pages/GuestMap/GuestMap';
+import { MapItem, ScrollPosition, Space } from 'types/common';
 import { ErrorResponse } from 'types/response';
 import { formatDate, formatTime } from 'utils/datetime';
 import * as Styled from './GuestReservation.styles';
 
 interface GuestReservationState {
   mapId: number;
-  spaceId: Space['spaceId'];
-  spaceName: Space['spaceName'];
+  spaceId: Space['id'];
+  spaceName: Space['name'];
   selectedDate: string;
   scrollPosition: ScrollPosition;
 }
 
+interface URLParameter {
+  sharingMapId: MapItem['sharingMapId'];
+}
+
 const GuestReservation = (): JSX.Element => {
   const location = useLocation<GuestReservationState>();
-  const history = useHistory<GuestMainState>();
+  const history = useHistory<GuestMapState>();
+  const { sharingMapId } = useParams<URLParameter>();
 
   const { mapId, spaceId, spaceName, selectedDate, scrollPosition } = location.state;
 
-  if (!mapId || !spaceId || !spaceName) history.replace(PATH.GUEST_MAIN);
+  if (!mapId || !spaceId || !spaceName) history.replace(`/guest/${sharingMapId}`);
 
   const now = new Date();
   const initialStartTime = formatTime(now);
@@ -51,12 +56,12 @@ const GuestReservation = (): JSX.Element => {
   const startDateTime = new Date(`${date}T${startTime}Z`);
   const endDateTime = new Date(`${date}T${endTime}Z`);
 
-  const getReservations = useReservations({ mapId, spaceId, date });
+  const getReservations = useGuestReservations({ mapId, spaceId, date });
   const reservations = getReservations.data?.data?.reservations ?? [];
 
   const createReservation = useMutation(postReservation, {
     onSuccess: () => {
-      history.push(PATH.GUEST_MAIN, {
+      history.push(`/guest/${sharingMapId}`, {
         spaceId,
         targetDate: new Date(`${date}T${startTime}`),
       });
@@ -78,7 +83,10 @@ const GuestReservation = (): JSX.Element => {
 
   useEffect(() => {
     return history.listen((location) => {
-      if (location.pathname === PATH.GUEST_MAIN || location.pathname === PATH.GUEST_MAIN + '/') {
+      if (
+        location.pathname === `/guest/${sharingMapId}` ||
+        location.pathname === `/guest/${sharingMapId}/`
+      ) {
         location.state = {
           spaceId,
           targetDate: new Date(selectedDate),
@@ -86,7 +94,7 @@ const GuestReservation = (): JSX.Element => {
         };
       }
     });
-  }, [history, scrollPosition, selectedDate, spaceId]);
+  }, [history, scrollPosition, selectedDate, spaceId, sharingMapId]);
 
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -96,9 +104,9 @@ const GuestReservation = (): JSX.Element => {
     <>
       <Header />
       <Layout>
+        <PageHeader title={spaceName} />
         <Styled.ReservationForm onSubmit={handleSubmit}>
           <Styled.Section>
-            <Styled.PageHeader>{spaceName}</Styled.PageHeader>
             <Styled.InputWrapper>
               <Input
                 label="이름"
@@ -162,10 +170,7 @@ const GuestReservation = (): JSX.Element => {
             </Styled.InputWrapper>
           </Styled.Section>
           <Styled.Section>
-            <Styled.PageHeader>
-              {date}
-              {date && '의'} 예약 목록
-            </Styled.PageHeader>
+            <PageHeader title={`${date}${date && '의'} 예약 목록`} />
             {getReservations.isLoadingError && (
               <Styled.Message>
                 예약 목록을 불러오는 데 문제가 생겼어요!

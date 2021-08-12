@@ -18,7 +18,7 @@ public class MemberSaveRequest {
     private String email;
 
     @NotNull(message = EMPTY_MESSAGE)
-    @Pattern(regexp = MEMBER_PASSWORD_FORMAT, message = MEMBER_PASSWORD_MESSAGE)
+    @Pattern(regexp = MEMBER_PW_FORMAT, message = MEMBER_PW_MESSAGE)
     private String password;
 
     @NotNull(message = EMPTY_MESSAGE)

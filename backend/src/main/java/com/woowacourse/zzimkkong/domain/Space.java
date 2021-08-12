@@ -11,6 +11,7 @@ import javax.persistence.*;
 import java.time.DayOfWeek;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -48,14 +49,19 @@ public class Space {
     @JoinColumn(name = "map_id", foreignKey = @ForeignKey(name = "fk_space_map"), nullable = false)
     private Map map;
 
-    protected Space(
+    @OneToMany(mappedBy = "space", cascade = CascadeType.REMOVE, fetch = FetchType.LAZY, orphanRemoval = true)
+    @Builder.Default
+    private List<Reservation> reservations = new ArrayList<>();
+
+    public Space(
             final Long id,
             final String name,
             final String color,
             final String description,
             final String area,
             final Setting setting,
-            final Map map) {
+            final Map map,
+            final List<Reservation> reservations) {
         this.id = id;
         this.name = name;
         this.color = color;
@@ -63,6 +69,7 @@ public class Space {
         this.area = area;
         this.setting = setting;
         this.map = map;
+        this.reservations = reservations;
 
         if (map != null) {
             map.addSpace(this);
@@ -124,6 +131,10 @@ public class Space {
                 .filter(dayOfWeek -> dayOfWeek.name().equals(dayOfWeekName.toUpperCase()))
                 .findAny()
                 .orElseThrow(NoSuchDayOfWeekException::new);
+    }
+
+    public void addReservation(final Reservation reservation) {
+        reservations.add(reservation);
     }
 
     public boolean hasSameId(final Long spaceId) {

@@ -3,17 +3,16 @@ import { QueryFunction, QueryKey } from 'react-query';
 import { QuerySpacesSuccess } from 'types/response';
 import api from './api';
 
-export interface QuerySpacesParams {
+export interface QueryGuestSpacesParams {
   mapId: number;
-  date: string;
 }
 
-export const querySpaces: QueryFunction<
+export const queryGuestSpaces: QueryFunction<
   AxiosResponse<QuerySpacesSuccess>,
-  [QueryKey, QuerySpacesParams]
+  [QueryKey, QueryGuestSpacesParams]
 > = ({ queryKey }) => {
   const [, data] = queryKey;
-  const { mapId, date } = data;
+  const { mapId } = data;
 
-  return api.get(`/maps/${mapId}/reservations?date=${date}`);
+  return api.get(`/guests/maps/${mapId}/spaces`);
 };

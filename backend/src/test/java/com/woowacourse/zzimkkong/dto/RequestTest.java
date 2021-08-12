@@ -11,7 +11,7 @@ import java.util.Set;
 
 import static com.woowacourse.zzimkkong.Constants.*;
 
-public class RequestTest {
+class RequestTest {
     private static Validator validator;
     protected final SettingsRequest beSettingsRequest = new SettingsRequest(
             BE_AVAILABLE_START_TIME,
