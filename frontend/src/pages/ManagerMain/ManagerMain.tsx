@@ -91,6 +91,12 @@ const ManagerMain = (): JSX.Element => {
   };
 
   const handleCopyLink = () => {
+    if (selectedMapId === null) {
+      alert('맵을 선택해주세요.');
+
+      return;
+    }
+
     navigator.clipboard
       .writeText(`${window.location.origin}/guest/${getSelectedSharingMapId()}`)
       .then(() => {
