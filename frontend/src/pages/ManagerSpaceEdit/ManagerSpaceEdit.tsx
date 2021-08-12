@@ -953,6 +953,7 @@ const ManagerSpaceEdit = (): JSX.Element => {
                             points={element.points.join(' ')}
                             stroke={element.stroke}
                             strokeWidth="2"
+                            strokeLinecap="round"
                           />
                         ) : (
                           <rect
