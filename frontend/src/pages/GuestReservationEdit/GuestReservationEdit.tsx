@@ -17,7 +17,7 @@ import useInput from 'hooks/useInput';
 import { GuestMapState } from 'pages/GuestMap/GuestMap';
 import { MapItem, Reservation, Space } from 'types/common';
 import { ErrorResponse } from 'types/response';
-import { formatDate, formatTime } from 'utils/datetime';
+import { formatDate, formatTime, formatTimePrettier } from 'utils/datetime';
 import * as Styled from './GuestReservationEdit.styles';
 
 interface GuestReservationEditState {
@@ -37,11 +37,13 @@ const GuestReservationEdit = (): JSX.Element => {
   const { sharingMapId } = useParams<URLParameter>();
 
   const { mapId, space, reservation, selectedDate } = location.state;
-  const { availableStartTime, availableEndTime, reservationTimeUnit } = space.settings;
+  const { availableStartTime, availableEndTime, reservationTimeUnit, reservationMaximumTimeUnit } =
+    space.settings;
 
   if (!mapId || !space || !reservation) history.replace(`/guest/${sharingMapId}`);
 
   const now = new Date();
+  const todayDate = formatDate(new Date());
 
   const [name, onChangeName] = useInput(reservation.name);
   const [description, onChangeDescription] = useInput(reservation.description);
@@ -52,6 +54,9 @@ const GuestReservationEdit = (): JSX.Element => {
 
   const startDateTime = new Date(`${date}T${startTime}Z`);
   const endDateTime = new Date(`${date}T${endTime}Z`);
+
+  const availableStartTimeText = formatTime(new Date(`${todayDate}T${availableStartTime}`));
+  const availableEndTimeText = formatTime(new Date(`${todayDate}T${availableEndTime}`));
 
   const getReservations = useGuestReservations({ mapId, spaceId: space.id, date });
   const reservations = getReservations.data?.data?.reservations ?? [];
@@ -150,6 +155,10 @@ const GuestReservationEdit = (): JSX.Element => {
                 onChange={onChangeEndTime}
                 required
               />
+              <Styled.TimeFormMessage>
+                예약 가능 시간 : {availableStartTimeText} ~ {availableEndTimeText} (최대{' '}
+                {formatTimePrettier(reservationMaximumTimeUnit)})
+              </Styled.TimeFormMessage>
             </Styled.InputWrapper>
             <Styled.InputWrapper>
               <Input
