@@ -378,9 +378,12 @@ const ManagerMapCreate = (): JSX.Element => {
     const width = Math.abs(startPoint.x - endPoint.x);
     const height = Math.abs(startPoint.y - endPoint.y);
 
+    const startCoordinate = `${startPoint.x}, ${startPoint.y}`;
+    const endCoordinate = `${endPoint.x}, ${endPoint.y}`;
+
     setDrawingStatus({});
 
-    if (startPoint === endPoint || isDragging) return;
+    if (startCoordinate === endCoordinate || isDragging) return;
 
     if (width && height) {
       setMapElements((prevState) => [
@@ -395,7 +398,7 @@ const ManagerMapCreate = (): JSX.Element => {
             x: Math.min(startPoint.x, endPoint.x),
             y: Math.min(startPoint.y, endPoint.y),
           },
-          points: [`${startPoint.x},${startPoint.y}`, `${endPoint.x},${endPoint.y}`],
+          points: [startCoordinate, endCoordinate],
         },
       ]);
     } else {
