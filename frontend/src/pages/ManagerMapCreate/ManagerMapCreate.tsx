@@ -51,8 +51,6 @@ interface Params {
   mapId?: string;
 }
 
-//TODO 사각형 미리 보기
-
 const ManagerMapCreate = (): JSX.Element => {
   const editorRef = useRef<HTMLDivElement | null>(null);
 
@@ -63,7 +61,7 @@ const ManagerMapCreate = (): JSX.Element => {
 
   const [mapName, onChangeMapName, setMapName] = useInput('');
 
-  const [mode, setMode] = useState(Mode.Square);
+  const [mode, setMode] = useState(Mode.Select);
   const [dragOffsetX, setDragOffsetX] = useState(0);
   const [dragOffsetY, setDragOffsetY] = useState(0);
   const [isDragging, setDragging] = useState(false);
@@ -266,11 +264,43 @@ const ManagerMapCreate = (): JSX.Element => {
     setDragging(false);
   };
 
-  const handleSelectMapElement = (event: MouseEvent<SVGPolylineElement>, id: MapElement['id']) => {
+  const handleSelectLineElement = (event: MouseEvent<SVGPolylineElement>, id: MapElement['id']) => {
     if (mode !== Mode.Select) return;
 
     const target = event.target as SVGPolylineElement;
     const points = Object.values<Coordinate>(target?.points).map(({ x, y }) => ({ x, y }));
+
+    const newGripPoints = points.map(
+      (point, index): GripPoint => ({
+        id: nextGripPointId + index,
+        mapElementId: id,
+        x: point.x,
+        y: point.y,
+      })
+    );
+
+    setSelectedMapElementId(id);
+    setGripPoints([...newGripPoints]);
+  };
+
+  const handleSelectSquareElement = (event: MouseEvent<SVGRectElement>, id: MapElement['id']) => {
+    if (mode !== Mode.Select) return;
+
+    const target = event.target as SVGRectElement;
+
+    const { x, y, width, height } = target;
+
+    const pointX = x.baseVal.value;
+    const pointY = y.baseVal.value;
+    const widthValue = width.baseVal.value;
+    const heightValue = height.baseVal.value;
+
+    const points = [
+      { x: pointX, y: pointY },
+      { x: pointX + widthValue, y: pointY },
+      { x: pointX, y: pointY + heightValue },
+      { x: pointX + widthValue, y: pointY + heightValue },
+    ];
 
     const newGripPoints = points.map(
       (point, index): GripPoint => ({
@@ -394,10 +424,8 @@ const ManagerMapCreate = (): JSX.Element => {
           stroke: color,
           width,
           height,
-          coordinate: {
-            x: Math.min(startPoint.x, endPoint.x),
-            y: Math.min(startPoint.y, endPoint.y),
-          },
+          x: Math.min(startPoint.x, endPoint.x),
+          y: Math.min(startPoint.y, endPoint.y),
           points: [startCoordinate, endCoordinate],
         },
       ]);
@@ -792,20 +820,23 @@ const ManagerMapCreate = (): JSX.Element => {
                           cursor={mode === Mode.Select ? 'pointer' : 'default'}
                           opacity={erasingMapElementIds.includes(element.id) ? '0.3' : '1'}
                           pointerEvents={isDraggable ? 'none' : 'auto'}
-                          onClickCapture={(event) => handleSelectMapElement(event, element.id)}
+                          onClickCapture={(event) => handleSelectLineElement(event, element.id)}
                           onMouseOverCapture={() => handleSelectErasingElement(element.id)}
                         />
                       ) : (
                         <rect
                           key={`square-${element.id}`}
-                          x={element?.coordinate?.x}
-                          y={element?.coordinate?.y}
+                          x={element?.x}
+                          y={element?.y}
                           width={element?.width}
                           height={element?.height}
                           stroke={element.stroke}
                           fill="none"
                           strokeWidth={EDITOR.STROKE_WIDTH}
                           strokeLinecap="round"
+                          cursor={mode === Mode.Select ? 'pointer' : 'default'}
+                          onClickCapture={(event) => handleSelectSquareElement(event, element.id)}
+                          onMouseOverCapture={() => handleSelectErasingElement(element.id)}
                         />
                       )
                     )}

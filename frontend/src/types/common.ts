@@ -16,7 +16,8 @@ export interface MapElement {
   type: 'polyline' | 'square';
   width?: number;
   height?: number;
-  coordinate?: Coordinate;
+  x?: number;
+  y?: number;
   stroke: Color;
   points: string[];
 }

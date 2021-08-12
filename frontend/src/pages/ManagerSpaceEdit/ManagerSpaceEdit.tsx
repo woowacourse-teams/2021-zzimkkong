@@ -955,8 +955,8 @@ const ManagerSpaceEdit = (): JSX.Element => {
                         ) : (
                           <rect
                             key={`square-${element.id}`}
-                            x={element?.coordinate?.x}
-                            y={element?.coordinate?.y}
+                            x={element?.x}
+                            y={element?.y}
                             width={element?.width}
                             height={element?.height}
                             stroke={element.stroke}
