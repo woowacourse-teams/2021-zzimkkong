@@ -33,6 +33,7 @@ export const BOARD = {
 
 export const KEY = {
   DELETE: 'Delete',
+  BACK_SPACE: 'Backspace',
   SPACE: ' ',
 };
 

@@ -464,7 +464,7 @@ const ManagerMapCreate = (): JSX.Element => {
     (event: KeyboardEvent) => {
       if ((event.target as HTMLElement).tagName === 'INPUT') return;
 
-      if (event.key === KEY.DELETE) {
+      if (event.key === KEY.DELETE || event.key === KEY.BACK_SPACE) {
         deleteMapElement();
       }
       if (event.key === KEY.SPACE) {
