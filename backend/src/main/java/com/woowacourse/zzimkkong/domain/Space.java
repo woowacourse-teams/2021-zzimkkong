@@ -49,7 +49,7 @@ public class Space {
     @JoinColumn(name = "map_id", foreignKey = @ForeignKey(name = "fk_space_map"), nullable = false)
     private Map map;
 
-    @OneToMany(mappedBy = "space", cascade = CascadeType.REMOVE, fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "space", cascade = CascadeType.REMOVE, fetch = FetchType.LAZY, orphanRemoval = true)
     @Builder.Default
     private List<Reservation> reservations = new ArrayList<>();
 
