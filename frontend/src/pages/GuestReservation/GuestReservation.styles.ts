@@ -48,6 +48,7 @@ export const TimeFormMessage = styled.p`
   left: 0.75rem;
   bottom: -1rem;
   font-size: 0.75rem;
+  height: 1em;
   color: ${({ theme }) => theme.gray[500]};
 `;
 

@@ -18,7 +18,7 @@ import useInput from 'hooks/useInput';
 import { GuestMapState } from 'pages/GuestMap/GuestMap';
 import { MapItem, ScrollPosition, Space } from 'types/common';
 import { ErrorResponse } from 'types/response';
-import { formatDate, formatTime } from 'utils/datetime';
+import { formatDate, formatTime, formatTimePrettier } from 'utils/datetime';
 import * as Styled from './GuestReservation.styles';
 
 interface GuestReservationState {
@@ -38,7 +38,8 @@ const GuestReservation = (): JSX.Element => {
   const { sharingMapId } = useParams<URLParameter>();
 
   const { mapId, space, selectedDate, scrollPosition } = location.state;
-  const { availableStartTime, availableEndTime, reservationTimeUnit } = space.settings;
+  const { availableStartTime, availableEndTime, reservationTimeUnit, reservationMaximumTimeUnit } =
+    space.settings;
 
   if (!mapId || !space) history.replace(`/guest/${sharingMapId}`);
 
@@ -46,7 +47,9 @@ const GuestReservation = (): JSX.Element => {
   const todayDate = formatDate(new Date());
 
   const initialStartTime = formatTime(now);
-  const initialEndTime = formatTime(new Date(new Date().getTime() + 1000 * 60 * 60));
+  const initialEndTime = formatTime(
+    new Date(new Date().getTime() + 1000 * 60 * reservationTimeUnit)
+  );
   const availableStartTimeText = formatTime(new Date(`${todayDate}T${availableStartTime}`));
   const availableEndTimeText = formatTime(new Date(`${todayDate}T${availableEndTime}`));
 
@@ -166,8 +169,8 @@ const GuestReservation = (): JSX.Element => {
                 required
               />
               <Styled.TimeFormMessage>
-                예약 가능 시간 : {availableStartTimeText} ~ {availableEndTimeText} (
-                {reservationTimeUnit}분 단위)
+                예약 가능 시간 : {availableStartTimeText} ~ {availableEndTimeText} (최대{' '}
+                {formatTimePrettier(reservationMaximumTimeUnit)})
               </Styled.TimeFormMessage>
             </Styled.InputWrapper>
             <Styled.InputWrapper>

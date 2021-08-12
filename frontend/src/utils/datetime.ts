@@ -35,3 +35,11 @@ export const formatTimeWithSecond = (time: Date): string => {
 
   return `${hour}:${minute}:${second}`;
 };
+
+// Note: hh시간 mm분 형태로 변환함
+export const formatTimePrettier = (minutes: number): string => {
+  const hour = Math.floor(minutes / 60);
+  const minute = minutes % 60;
+
+  return `${hour ? `${hour}시간` : ''}${minute ? ' ' : ''}${minute ? `${minute}분` : ''}`;
+};

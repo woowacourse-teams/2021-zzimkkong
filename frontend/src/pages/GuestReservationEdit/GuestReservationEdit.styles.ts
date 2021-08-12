@@ -38,11 +38,10 @@ export const ButtonWrapper = styled.div`
 export const TimeFormMessage = styled.p`
   position: absolute;
   left: 0.75rem;
-  bottom: -1.5rem;
-  height: 1.5rem;
-  line-height: 1.5rem;
+  bottom: -1rem;
   font-size: 0.75rem;
-  color: ${({ theme }) => theme.red[500]};
+  height: 1em;
+  color: ${({ theme }) => theme.gray[500]};
 `;
 
 export const Message = styled.p``;
