@@ -91,6 +91,12 @@ const ManagerMain = (): JSX.Element => {
   };
 
   const handleCopyLink = () => {
+    if (selectedMapId === null) {
+      alert('맵을 선택해주세요.');
+
+      return;
+    }
+
     navigator.clipboard
       .writeText(`${window.location.origin}/guest/${getSelectedSharingMapId()}`)
       .then(() => {
@@ -132,26 +138,28 @@ const ManagerMain = (): JSX.Element => {
             </IconButton>
           }
           rightButtons={
-            <>
-              <Styled.RightIconButton
-                text="맵 편집"
-                size="small"
-                onClick={handleClickMapEditorIcon}
-              >
-                <MapEditorIcon width="100%" height="100%" />
-              </Styled.RightIconButton>
-              <Styled.RightIconButton
-                text="공간 편집"
-                size="small"
-                onClick={handleClickSpaceEditorIcon}
-              >
-                <SpaceEditorIcon width="100%" height="100%" />
-              </Styled.RightIconButton>
-              <Styled.VerticalBar />
-              <Styled.RightIconButton text="공유 링크" size="small" onClick={handleCopyLink}>
-                <Styled.PrimaryLinkIcon width="100%" height="100%" />
-              </Styled.RightIconButton>
-            </>
+            selectedMapId !== null && (
+              <>
+                <Styled.RightIconButton
+                  text="맵 편집"
+                  size="small"
+                  onClick={handleClickMapEditorIcon}
+                >
+                  <MapEditorIcon width="100%" height="100%" />
+                </Styled.RightIconButton>
+                <Styled.RightIconButton
+                  text="공간 편집"
+                  size="small"
+                  onClick={handleClickSpaceEditorIcon}
+                >
+                  <SpaceEditorIcon width="100%" height="100%" />
+                </Styled.RightIconButton>
+                <Styled.VerticalBar />
+                <Styled.RightIconButton text="공유 링크" size="small" onClick={handleCopyLink}>
+                  <Styled.PrimaryLinkIcon width="100%" height="100%" />
+                </Styled.RightIconButton>
+              </>
+            )
           }
         />
         <Styled.DateInputWrapper>
