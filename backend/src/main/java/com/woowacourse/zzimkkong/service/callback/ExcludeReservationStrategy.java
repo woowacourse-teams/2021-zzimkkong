@@ -5,6 +5,6 @@ import com.woowacourse.zzimkkong.domain.Space;
 
 import java.util.List;
 
-public interface ReservationServiceCallback {
-    void excludeTargetReservation(final Space space, final List<Reservation> reservationsOnDate);
+public interface ExcludeReservationStrategy {
+    void apply(final Space space, final List<Reservation> reservationsOnDate);
 }

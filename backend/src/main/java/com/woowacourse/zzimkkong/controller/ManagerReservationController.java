@@ -6,7 +6,7 @@ import com.woowacourse.zzimkkong.dto.reservation.*;
 import com.woowacourse.zzimkkong.dto.slack.SlackResponse;
 import com.woowacourse.zzimkkong.service.ReservationService;
 import com.woowacourse.zzimkkong.service.SlackService;
-import com.woowacourse.zzimkkong.service.callback.ManagerReservationCallback;
+import com.woowacourse.zzimkkong.service.callback.ManagerReservationStrategy;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -22,14 +22,14 @@ import static com.woowacourse.zzimkkong.dto.ValidatorMessage.DATE_FORMAT;
 public class ManagerReservationController {
     private final SlackService slackService;
     private final ReservationService reservationService;
-    private final ManagerReservationCallback managerCallback;
+    private final ManagerReservationStrategy managerCallback;
 
     public ManagerReservationController(
             final SlackService slackService,
             final ReservationService reservationService) {
         this.slackService = slackService;
         this.reservationService = reservationService;
-        this.managerCallback = new ManagerReservationCallback();
+        this.managerCallback = new ManagerReservationStrategy();
     }
 
     @PostMapping("/{spaceId}/reservations")

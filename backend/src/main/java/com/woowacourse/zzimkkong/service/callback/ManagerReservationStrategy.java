@@ -6,7 +6,7 @@ import com.woowacourse.zzimkkong.domain.Reservation;
 import com.woowacourse.zzimkkong.dto.slack.SlackResponse;
 import com.woowacourse.zzimkkong.exception.authorization.NoAuthorityOnMapException;
 
-public class ManagerReservationCallback implements ReservationControllerCallback {
+public class ManagerReservationStrategy implements ReservationStrategy {
     @Override
     public void validateManagerOfMap(final Map map, final Member manager) {
         if (map.isNotOwnedBy(manager)) {

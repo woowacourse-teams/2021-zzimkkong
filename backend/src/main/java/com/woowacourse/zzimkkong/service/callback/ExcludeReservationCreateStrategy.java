@@ -5,8 +5,8 @@ import com.woowacourse.zzimkkong.domain.Space;
 
 import java.util.List;
 
-public class ReservationCreateCallback implements ReservationServiceCallback {
+public class ExcludeReservationCreateStrategy implements ExcludeReservationStrategy {
     @Override
-    public void excludeTargetReservation(final Space space, final List<Reservation> reservationsOnDate) {
+    public void apply(final Space space, final List<Reservation> reservationsOnDate) {
     }
 }

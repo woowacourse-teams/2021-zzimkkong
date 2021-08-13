@@ -6,7 +6,7 @@ import com.woowacourse.zzimkkong.domain.Reservation;
 import com.woowacourse.zzimkkong.dto.slack.SlackResponse;
 import com.woowacourse.zzimkkong.exception.reservation.ReservationPasswordException;
 
-public class GuestReservationCallback implements ReservationControllerCallback {
+public class GuestReservationStrategy implements ReservationStrategy {
     @Override
     public void validateManagerOfMap(final Map map, final Member manager) {
     }

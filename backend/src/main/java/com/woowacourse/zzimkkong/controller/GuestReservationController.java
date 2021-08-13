@@ -2,7 +2,7 @@ package com.woowacourse.zzimkkong.controller;
 
 import com.woowacourse.zzimkkong.dto.reservation.*;
 import com.woowacourse.zzimkkong.service.ReservationService;
-import com.woowacourse.zzimkkong.service.callback.GuestReservationCallback;
+import com.woowacourse.zzimkkong.service.callback.GuestReservationStrategy;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -17,11 +17,11 @@ import static com.woowacourse.zzimkkong.dto.ValidatorMessage.DATE_FORMAT;
 @RequestMapping("/api/guests/maps/{mapId}/spaces")
 public class GuestReservationController {
     private final ReservationService reservationService;
-    private final GuestReservationCallback guestCallback;
+    private final GuestReservationStrategy guestCallback;
 
     public GuestReservationController(final ReservationService reservationService) {
         this.reservationService = reservationService;
-        this.guestCallback = new GuestReservationCallback();
+        this.guestCallback = new GuestReservationStrategy();
     }
 
     @PostMapping("/{spaceId}/reservations")

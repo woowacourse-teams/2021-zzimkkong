@@ -12,10 +12,10 @@ import com.woowacourse.zzimkkong.exception.space.NoSuchSpaceException;
 import com.woowacourse.zzimkkong.infrastructure.TimeConverter;
 import com.woowacourse.zzimkkong.repository.MapRepository;
 import com.woowacourse.zzimkkong.repository.ReservationRepository;
-import com.woowacourse.zzimkkong.service.callback.ReservationControllerCallback;
-import com.woowacourse.zzimkkong.service.callback.ReservationCreateCallback;
-import com.woowacourse.zzimkkong.service.callback.ReservationServiceCallback;
-import com.woowacourse.zzimkkong.service.callback.ReservationUpdateCallback;
+import com.woowacourse.zzimkkong.service.callback.ReservationStrategy;
+import com.woowacourse.zzimkkong.service.callback.ExcludeReservationCreateStrategy;
+import com.woowacourse.zzimkkong.service.callback.ExcludeReservationStrategy;
+import com.woowacourse.zzimkkong.service.callback.ExcludeReservationUpdateStrategy;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -47,19 +47,20 @@ public class ReservationService {
 
     public ReservationCreateResponse saveReservation(
             final ReservationCreateDto reservationCreateDto,
-            final ReservationControllerCallback reservationControllerCallback) {
+            final ReservationStrategy reservationStrategy) {
         Long mapId = reservationCreateDto.getMapId();
         Member manager = reservationCreateDto.getManager();
         Map map = maps.findById(mapId)
                 .orElseThrow(NoSuchMapException::new);
-        reservationControllerCallback.validateManagerOfMap(map, manager);
+        reservationStrategy.validateManagerOfMap(map, manager);
 
         Long spaceId = reservationCreateDto.getSpaceId();
         Space space = map.findSpaceById(spaceId)
                 .orElseThrow(NoSuchSpaceException::new);
 
         validateTime(reservationCreateDto);
-        validateAvailability(space, reservationCreateDto, new ReservationCreateCallback());
+
+        validateAvailability(space, reservationCreateDto, new ExcludeReservationCreateStrategy());
 
         Reservation reservation = reservations.save(
                 Reservation.builder()
@@ -77,12 +78,12 @@ public class ReservationService {
     @Transactional(readOnly = true)
     public ReservationFindAllResponse findAllReservations(
             final ReservationFindAllDto reservationFindAllDto,
-            final ReservationControllerCallback reservationControllerCallback) {
+            final ReservationStrategy reservationStrategy) {
         Long mapId = reservationFindAllDto.getMapId();
         Member manager = reservationFindAllDto.getManager();
         Map map = maps.findById(mapId)
                 .orElseThrow(NoSuchMapException::new);
-        reservationControllerCallback.validateManagerOfMap(map, manager);
+        reservationStrategy.validateManagerOfMap(map, manager);
 
         List<Space> findSpaces = map.getSpaces();
         LocalDate date = reservationFindAllDto.getDate();
@@ -94,12 +95,12 @@ public class ReservationService {
     @Transactional(readOnly = true)
     public ReservationFindResponse findReservations(
             final ReservationFindDto reservationFindDto,
-            final ReservationControllerCallback reservationControllerCallback) {
+            final ReservationStrategy reservationStrategy) {
         Long mapId = reservationFindDto.getMapId();
         Member manager = reservationFindDto.getManager();
         Map map = maps.findById(mapId)
                 .orElseThrow(NoSuchMapException::new);
-        reservationControllerCallback.validateManagerOfMap(map, manager);
+        reservationStrategy.validateManagerOfMap(map, manager);
 
         Long spaceId = reservationFindDto.getSpaceId();
         LocalDate date = reservationFindDto.getDate();
@@ -113,12 +114,12 @@ public class ReservationService {
     @Transactional(readOnly = true)
     public ReservationResponse findReservation(
             final ReservationAuthenticationDto reservationAuthenticationDto,
-            final ReservationControllerCallback reservationControllerCallback) {
+            final ReservationStrategy reservationStrategy) {
         Long mapId = reservationAuthenticationDto.getMapId();
         Member manager = reservationAuthenticationDto.getManager();
         Map map = maps.findById(mapId)
                 .orElseThrow(NoSuchMapException::new);
-        reservationControllerCallback.validateManagerOfMap(map, manager);
+        reservationStrategy.validateManagerOfMap(map, manager);
 
         Long spaceId = reservationAuthenticationDto.getSpaceId();
         validateSpaceExistence(map, spaceId);
@@ -128,19 +129,19 @@ public class ReservationService {
         Reservation reservation = reservations
                 .findById(reservationId)
                 .orElseThrow(NoSuchReservationException::new);
-        reservationControllerCallback.checkCorrectPassword(reservation, password);
+        reservationStrategy.checkCorrectPassword(reservation, password);
 
         return ReservationResponse.from(reservation);
     }
 
     public SlackResponse updateReservation(
             final ReservationUpdateDto reservationUpdateDto,
-            final ReservationControllerCallback reservationControllerCallback) {
+            final ReservationStrategy reservationStrategy) {
         Long mapId = reservationUpdateDto.getMapId();
         Member manager = reservationUpdateDto.getManager();
         Map map = maps.findById(mapId)
                 .orElseThrow(NoSuchMapException::new);
-        reservationControllerCallback.validateManagerOfMap(map, manager);
+        reservationStrategy.validateManagerOfMap(map, manager);
 
         Long spaceId = reservationUpdateDto.getSpaceId();
         Space space = map.findSpaceById(spaceId)
@@ -153,9 +154,9 @@ public class ReservationService {
         Reservation reservation = reservations
                 .findById(reservationId)
                 .orElseThrow(NoSuchReservationException::new);
-        reservationControllerCallback.checkCorrectPassword(reservation, password);
+        reservationStrategy.checkCorrectPassword(reservation, password);
 
-        validateAvailability(space, reservationUpdateDto, new ReservationUpdateCallback(reservation));
+        validateAvailability(space, reservationUpdateDto, new ExcludeReservationUpdateStrategy(reservation));
 
         Reservation updateReservation = Reservation.builder()
                 .startTime(reservationUpdateDto.getStartDateTime())
@@ -167,17 +168,17 @@ public class ReservationService {
 
         reservation.update(updateReservation, space);
 
-        return reservationControllerCallback.createSlackResponse(reservation);
+        return reservationStrategy.createSlackResponse(reservation);
     }
 
     public SlackResponse deleteReservation(
             final ReservationAuthenticationDto reservationAuthenticationDto,
-            final ReservationControllerCallback reservationControllerCallback) {
+            final ReservationStrategy reservationStrategy) {
         Long mapId = reservationAuthenticationDto.getMapId();
         Member manager = reservationAuthenticationDto.getManager();
         Map map = maps.findById(mapId)
                 .orElseThrow(NoSuchMapException::new);
-        reservationControllerCallback.validateManagerOfMap(map, manager);
+        reservationStrategy.validateManagerOfMap(map, manager);
 
         Long spaceId = reservationAuthenticationDto.getSpaceId();
         validateSpaceExistence(map, spaceId);
@@ -187,10 +188,10 @@ public class ReservationService {
         Reservation reservation = reservations
                 .findById(reservationId)
                 .orElseThrow(NoSuchReservationException::new);
-        reservationControllerCallback.checkCorrectPassword(reservation, password);
+        reservationStrategy.checkCorrectPassword(reservation, password);
 
         reservations.delete(reservation);
-        return reservationControllerCallback.createSlackResponse(reservation);
+        return reservationStrategy.createSlackResponse(reservation);
     }
 
     private void validateTime(final ReservationCreateDto reservationCreateDto) {
@@ -213,7 +214,7 @@ public class ReservationService {
     private void validateAvailability(
             final Space space,
             final ReservationCreateDto reservationCreateDto,
-            final ReservationServiceCallback reservationServiceCallback) {
+            final ExcludeReservationStrategy excludeReservationStrategy) {
         LocalDateTime startDateTime = reservationCreateDto.getStartDateTime();
         LocalDateTime endDateTime = reservationCreateDto.getEndDateTime();
 
@@ -222,7 +223,7 @@ public class ReservationService {
         List<Reservation> reservationsOnDate = getReservations(
                 Collections.singletonList(space),
                 startDateTime.toLocalDate());
-        reservationServiceCallback.excludeTargetReservation(space, reservationsOnDate);
+        excludeReservationStrategy.apply(space, reservationsOnDate);
 
         validateTimeConflicts(startDateTime, endDateTime, reservationsOnDate);
     }
