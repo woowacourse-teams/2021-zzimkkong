@@ -1,13 +1,39 @@
 import { Link } from 'react-router-dom';
 import styled from 'styled-components';
+import { Color } from 'types/common';
+
+interface ColorDotProps {
+  color: Color;
+}
+
+export const Page = styled.div`
+  display: flex;
+  flex-direction: column;
+  height: calc(100vh - 3rem);
+`;
 
 export const PageWithBottomButton = styled.div<{ hasBottomButton: boolean }>`
   margin-bottom: ${({ hasBottomButton }) => (hasBottomButton ? '5rem' : '2rem')};
 `;
 
+export const PageTitle = styled.h2`
+  font-size: 1.5rem;
+  font-weight: 700;
+  margin: 1.5rem auto;
+`;
+
+export const SpaceTitle = styled.h3`
+  position: sticky;
+  top: 0;
+  font-size: 1.25rem;
+  text-align: center;
+  padding: 2rem;
+  background-color: ${({ theme }) => theme.white};
+`;
+
 export const MapContainer = styled.div`
   width: 100%;
-  height: 50vh;
+  flex: 1;
   padding: 1rem;
   margin: 1rem 0 1.5rem;
   overflow: auto;
@@ -48,15 +74,15 @@ export const SpaceAreaText = styled.text`
   user-select: none;
 `;
 
-export const PanelContainer = styled.div`
-  margin: 1.5rem 0;
+export const ReservationContainer = styled.div`
+  padding: 0 2rem 2rem;
 `;
 
 export const ReservationLink = styled(Link)`
-  position: fixed;
+  position: sticky;
   bottom: 0;
   left: 0;
-  width: 100vw;
+  width: 100%;
   text-align: center;
   display: block;
   background: ${({ theme }) => theme.primary[400]};
@@ -69,6 +95,7 @@ export const ReservationLink = styled(Link)`
 `;
 
 export const ReservationList = styled.div`
+  overflow-y: auto;
   & > [role='listitem'] {
     border-bottom: 1px solid ${({ theme }) => theme.black[400]};
 
@@ -116,4 +143,13 @@ export const DeleteModalContainer = styled.div`
 
 export const Message = styled.p`
   padding: 1rem 0;
+`;
+
+export const ColorDot = styled.span<ColorDotProps>`
+  display: inline-block;
+  width: 1rem;
+  height: 1rem;
+  background-color: ${({ color }) => color};
+  border-radius: 50%;
+  margin-right: 0.75rem;
 `;
