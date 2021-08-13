@@ -15,6 +15,7 @@ import Modal from 'components/Modal/Modal';
 import PageHeader from 'components/PageHeader/PageHeader';
 import Panel from 'components/Panel/Panel';
 import ReservationListItem from 'components/ReservationListItem/ReservationListItem';
+import { EDITOR } from 'constants/editor';
 import MESSAGE from 'constants/message';
 import PALETTE from 'constants/palette';
 import useGuestMap from 'hooks/useGuestMap';
@@ -182,15 +183,30 @@ const GuestMap = (): JSX.Element => {
                   width={mapDrawing.width}
                   height={mapDrawing.height}
                 >
-                  {mapDrawing.mapElements.map((element) => (
-                    <polyline
-                      key={`polyline-${element.id}`}
-                      points={element.points.join(' ')}
-                      stroke={element.stroke}
-                      strokeWidth="2"
-                    />
-                  ))}
+                  {/* Note: 맵을 그리는 부분 */}
+                  {mapDrawing.mapElements.map((element) =>
+                    element.type === 'polyline' ? (
+                      <polyline
+                        key={`polyline-${element.id}`}
+                        points={element.points.join(' ')}
+                        stroke={element.stroke}
+                        strokeWidth={EDITOR.STROKE_WIDTH}
+                      />
+                    ) : (
+                      <rect
+                        key={`rect-${element.id}`}
+                        x={element?.x}
+                        y={element?.y}
+                        width={element?.width}
+                        height={element?.height}
+                        stroke={element.stroke}
+                        fill="none"
+                        strokeWidth={EDITOR.STROKE_WIDTH}
+                      />
+                    )
+                  )}
 
+                  {/* Note: 공간을 그리는 부분 */}
                   {spaceList.length > 0 &&
                     spaceList.map(({ id, area, color, name }) => (
                       <Styled.Space key={`area-${id}`} onClick={() => handleClickSpaceArea(id)}>

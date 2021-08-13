@@ -545,16 +545,29 @@ const ManagerMapCreate = (): JSX.Element => {
               </g>`
           )
           .join('')}
-        ${mapElements // TODO 여기에 Rect 속성 추가
-          .map(
-            ({ points, stroke }) => `
+
+        ${mapElements
+          .map((element) =>
+            element.type === 'polyline'
+              ? `
               <polyline
-                points='${points.join(' ')}'
-                stroke='${stroke}'
+                points='${element.points.join(' ')}'
+                stroke='${element.stroke}'
                 strokeWidth='${EDITOR.STROKE_WIDTH}'
                 strokeLinecap='round'
               />
             `
+              : `
+              <rect
+                x='${element.x ?? 0}'
+                y='${element.y ?? 0}'
+                width='${element.width ?? 0}'
+                height='${element.height ?? 0}'
+                stroke='${element.stroke}'
+                fill="none"
+                strokeWidth='${EDITOR.STROKE_WIDTH}'
+              />
+              `
           )
           .join('')}
       </svg>

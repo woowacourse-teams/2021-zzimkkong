@@ -536,7 +536,7 @@ const ManagerSpaceEdit = (): JSX.Element => {
         `
       )
       .join('')}
-    ${mapElements // TODO 여기도 Rect 추가, 가능 하면 둘 다 합쳐서 하나의 util이나 거시기로 만들기
+    ${mapElements
       ?.map(
         ({ points, stroke }) => `
           <polyline
@@ -626,17 +626,31 @@ const ManagerSpaceEdit = (): JSX.Element => {
           `
         )
         .join('')}
-      ${mapElements
-        ?.map(
-          ({ points, stroke }) => `
-            <polyline
-              points='${points.join(' ')}'
-              stroke='${stroke}'
-              strokeWidth='2'
-            />
-          `
-        )
-        .join('')}
+
+        ${mapElements
+          .map((element) =>
+            element.type === 'polyline'
+              ? `
+              <polyline
+                points='${element.points.join(' ')}'
+                stroke='${element.stroke}'
+                strokeWidth='${EDITOR.STROKE_WIDTH}'
+                strokeLinecap='round'
+              />
+            `
+              : `
+              <rect
+                x='${element.x ?? 0}'
+                y='${element.y ?? 0}'
+                width='${element.width ?? 0}'
+                height='${element.height ?? 0}'
+                stroke='${element.stroke}'
+                fill="none"
+                strokeWidth='${EDITOR.STROKE_WIDTH}'
+              />
+              `
+          )
+          .join('')}
     </svg>
   `
         .replace(/(\r\n\t|\n|\r\t|\s{1,})/gm, ' ')
