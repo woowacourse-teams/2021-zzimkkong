@@ -89,8 +89,7 @@ public class GuestReservationController {
                 mapId,
                 spaceId,
                 reservationId,
-                reservationCreateUpdateWithPasswordRequest
-        );
+                reservationCreateUpdateWithPasswordRequest);
         reservationService.updateReservation(reservationUpdateDto, guestCallback);
         return ResponseEntity.ok().build();
     }

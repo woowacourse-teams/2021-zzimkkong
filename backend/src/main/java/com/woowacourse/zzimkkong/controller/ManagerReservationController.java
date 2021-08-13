@@ -72,8 +72,7 @@ public class ManagerReservationController {
                 mapId,
                 spaceId,
                 date,
-                manager
-        );
+                manager);
         ReservationFindResponse reservationFindResponse = reservationService.findReservations(reservationFindDto, managerCallback);
         return ResponseEntity.ok().body(reservationFindResponse);
     }
@@ -105,8 +104,7 @@ public class ManagerReservationController {
                 spaceId,
                 reservationId,
                 reservationCreateUpdateRequest,
-                manager
-        );
+                manager);
         SlackResponse slackResponse = reservationService.updateReservation(reservationUpdateDto, managerCallback);
         slackService.sendUpdateMessage(slackResponse);
         return ResponseEntity.ok().build();

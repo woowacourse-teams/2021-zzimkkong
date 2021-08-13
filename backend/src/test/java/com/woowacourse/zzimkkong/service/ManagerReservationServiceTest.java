@@ -42,14 +42,12 @@ class ManagerReservationServiceTest extends ServiceTest {
             THE_DAY_AFTER_TOMORROW.atTime(14, 0),
             RESERVATION_PW,
             USER_NAME,
-            DESCRIPTION
-    );
+            DESCRIPTION);
     private final ReservationCreateUpdateRequest reservationCreateUpdateRequest = new ReservationCreateUpdateRequest(
             THE_DAY_AFTER_TOMORROW.atTime(13, 0),
             THE_DAY_AFTER_TOMORROW.atTime(14, 0),
             CHANGED_NAME,
-            CHANGED_DESCRIPTION
-    );
+            CHANGED_DESCRIPTION);
 
     private Member pobi;
     private Member sakjung;
@@ -155,8 +153,7 @@ class ManagerReservationServiceTest extends ServiceTest {
                 luther.getId(),
                 be.getId(),
                 reservationCreateUpdateWithPasswordRequest,
-                pobi
-        );
+                pobi);
 
 
         ReservationCreateResponse reservationCreateResponse = reservationService.saveReservation(
@@ -179,8 +176,7 @@ class ManagerReservationServiceTest extends ServiceTest {
                 noneExistingMapId,
                 beId,
                 reservationCreateUpdateWithPasswordRequest,
-                pobi
-        );
+                pobi);
 
         //then
         assertThatThrownBy(() -> reservationService.saveReservation(
@@ -201,8 +197,7 @@ class ManagerReservationServiceTest extends ServiceTest {
                 lutherId,
                 beId,
                 reservationCreateUpdateWithPasswordRequest,
-                sakjung
-        );
+                sakjung);
 
         //then
         assertThatThrownBy(() -> reservationService.saveReservation(
@@ -223,8 +218,7 @@ class ManagerReservationServiceTest extends ServiceTest {
                 lutherId,
                 noneExistingSpaceId,
                 reservationCreateUpdateWithPasswordRequest,
-                pobi
-        );
+                pobi);
 
         //then
         assertThatThrownBy(() -> reservationService.saveReservation(
@@ -245,16 +239,14 @@ class ManagerReservationServiceTest extends ServiceTest {
                 LocalDateTime.now().plusHours(3),
                 RESERVATION_PW,
                 USER_NAME,
-                DESCRIPTION
-        );
+                DESCRIPTION);
 
         //when
         ReservationCreateDto reservationCreateDto = ReservationCreateDto.of(
                 lutherId,
                 beId,
                 reservationCreateUpdateWithPasswordRequest,
-                pobi
-        );
+                pobi);
 
         //then
         assertThatThrownBy(() -> reservationService.saveReservation(
@@ -275,16 +267,14 @@ class ManagerReservationServiceTest extends ServiceTest {
                 THE_DAY_AFTER_TOMORROW.atTime(13, 0),
                 RESERVATION_PW,
                 USER_NAME,
-                DESCRIPTION
-        );
+                DESCRIPTION);
 
         //when
         ReservationCreateDto reservationCreateDto = ReservationCreateDto.of(
                 lutherId,
                 beId,
                 reservationCreateUpdateWithPasswordRequest,
-                pobi
-        );
+                pobi);
 
         //then
         assertThatThrownBy(() -> reservationService.saveReservation(
@@ -305,16 +295,14 @@ class ManagerReservationServiceTest extends ServiceTest {
                 THE_DAY_AFTER_TOMORROW.atTime(10, 0),
                 RESERVATION_PW,
                 USER_NAME,
-                DESCRIPTION
-        );
+                DESCRIPTION);
 
         //when
         ReservationCreateDto reservationCreateDto = ReservationCreateDto.of(
                 lutherId,
                 beId,
                 reservationCreateUpdateWithPasswordRequest,
-                pobi
-        );
+                pobi);
 
         //then
         assertThatThrownBy(() -> reservationService.saveReservation(
@@ -335,16 +323,14 @@ class ManagerReservationServiceTest extends ServiceTest {
                 THE_DAY_AFTER_TOMORROW.atTime(10, 0).plusDays(1),
                 RESERVATION_PW,
                 USER_NAME,
-                DESCRIPTION
-        );
+                DESCRIPTION);
 
         //when
         ReservationCreateDto reservationCreateDto = ReservationCreateDto.of(
                 lutherId,
                 beId,
                 reservationCreateUpdateWithPasswordRequest,
-                pobi
-        );
+                pobi);
 
         //then
         assertThatThrownBy(() -> reservationService.saveReservation(
@@ -366,16 +352,14 @@ class ManagerReservationServiceTest extends ServiceTest {
                 THE_DAY_AFTER_TOMORROW.atTime(endTime, 30),
                 RESERVATION_PW,
                 USER_NAME,
-                DESCRIPTION
-        );
+                DESCRIPTION);
 
         //when
         ReservationCreateDto reservationCreateDto = ReservationCreateDto.of(
                 lutherId,
                 beId,
                 reservationCreateUpdateWithPasswordRequest,
-                pobi
-        );
+                pobi);
 
         //then
         assertThatThrownBy(() -> reservationService.saveReservation(
@@ -407,8 +391,7 @@ class ManagerReservationServiceTest extends ServiceTest {
                 lutherId,
                 beId,
                 reservationCreateUpdateWithPasswordRequest,
-                pobi
-        );
+                pobi);
 
         //then
         assertThatThrownBy(() -> reservationService.saveReservation(
@@ -450,8 +433,7 @@ class ManagerReservationServiceTest extends ServiceTest {
                 lutherId,
                 closedSpaceId,
                 reservationCreateUpdateWithPasswordRequest,
-                pobi
-        );
+                pobi);
 
         // then
         assertThatThrownBy(() -> reservationService.saveReservation(
@@ -492,8 +474,7 @@ class ManagerReservationServiceTest extends ServiceTest {
                 lutherId,
                 invalidDayOfWeekSpaceId,
                 reservationCreateUpdateWithPasswordRequest,
-                pobi
-        );
+                pobi);
 
         // then
         assertThatThrownBy(() -> reservationService.saveReservation(
@@ -531,8 +512,7 @@ class ManagerReservationServiceTest extends ServiceTest {
                 lutherId,
                 beId,
                 reservationCreateUpdateWithPasswordRequest,
-                pobi
-        );
+                pobi);
 
         //then
         ReservationCreateResponse reservationCreateResponse = reservationService.saveReservation(
@@ -558,14 +538,12 @@ class ManagerReservationServiceTest extends ServiceTest {
                 theDayAfterTomorrowTen.plusMinutes(minute).plusMinutes(60),
                 RESERVATION_PW,
                 USER_NAME,
-                DESCRIPTION
-        );
+                DESCRIPTION);
         ReservationCreateUpdateRequest reservationCreateUpdateRequest = new ReservationCreateUpdateRequest(
                 theDayAfterTomorrowTen.plusMinutes(minute),
                 theDayAfterTomorrowTen.plusMinutes(minute).plusMinutes(60),
                 USER_NAME,
-                DESCRIPTION
-        );
+                DESCRIPTION);
 
         Long reservationId = reservation.getId();
 
@@ -573,16 +551,14 @@ class ManagerReservationServiceTest extends ServiceTest {
                 lutherId,
                 beId,
                 reservationCreateUpdateWithPasswordRequest,
-                pobi
-        );
+                pobi);
 
         ReservationUpdateDto reservationUpdateDto = ReservationUpdateDto.of(
                 lutherId,
                 beId,
                 reservationId,
                 reservationCreateUpdateRequest,
-                pobi
-        );
+                pobi);
 
         //then
         assertThatThrownBy(() -> reservationService.saveReservation(
@@ -611,14 +587,12 @@ class ManagerReservationServiceTest extends ServiceTest {
                 THE_DAY_AFTER_TOMORROW.atTime(10, 0).plusMinutes(duration),
                 RESERVATION_PW,
                 USER_NAME,
-                DESCRIPTION
-        );
+                DESCRIPTION);
         ReservationCreateUpdateRequest reservationCreateUpdateRequest = new ReservationCreateUpdateRequest(
                 THE_DAY_AFTER_TOMORROW.atTime(10, 0),
                 THE_DAY_AFTER_TOMORROW.atTime(10, 0).plusMinutes(duration),
                 USER_NAME,
-                DESCRIPTION
-        );
+                DESCRIPTION);
 
         Long reservationId = reservation.getId();
 
@@ -626,16 +600,14 @@ class ManagerReservationServiceTest extends ServiceTest {
                 lutherId,
                 beId,
                 reservationCreateUpdateWithPasswordRequest,
-                pobi
-        );
+                pobi);
 
         ReservationUpdateDto reservationUpdateDto = ReservationUpdateDto.of(
                 lutherId,
                 beId,
                 reservationId,
                 reservationCreateUpdateRequest,
-                pobi
-        );
+                pobi);
 
         //then
         assertThatThrownBy(() -> reservationService.saveReservation(
@@ -677,8 +649,7 @@ class ManagerReservationServiceTest extends ServiceTest {
                 lutherId,
                 beId,
                 THE_DAY_AFTER_TOMORROW,
-                pobi
-        );
+                pobi);
 
         //then
         ReservationFindResponse reservationFindResponse = ReservationFindResponse.from(foundReservations);
@@ -701,8 +672,7 @@ class ManagerReservationServiceTest extends ServiceTest {
                 noneExistingMapId,
                 beId,
                 THE_DAY_AFTER_TOMORROW,
-                pobi
-        );
+                pobi);
 
         //then
         assertThatThrownBy(() -> reservationService.findReservations(reservationFindDto, managerReservationCallback))
@@ -721,8 +691,7 @@ class ManagerReservationServiceTest extends ServiceTest {
                 lutherId,
                 noneExistingSpaceId,
                 THE_DAY_AFTER_TOMORROW,
-                pobi
-        );
+                pobi);
 
         //then
         assertThatThrownBy(() -> reservationService.findReservations(
@@ -746,8 +715,7 @@ class ManagerReservationServiceTest extends ServiceTest {
                 lutherId,
                 noneExistingSpaceId,
                 reservationId,
-                pobi
-        );
+                pobi);
 
         //then
         assertThatThrownBy(() -> reservationService.findReservation(
@@ -777,13 +745,11 @@ class ManagerReservationServiceTest extends ServiceTest {
                 lutherId,
                 beId,
                 THE_DAY_AFTER_TOMORROW,
-                pobi
-        );
+                pobi);
         ReservationFindAllDto reservationFindAllDto = ReservationFindAllDto.of(
                 lutherId,
                 THE_DAY_AFTER_TOMORROW,
-                pobi
-        );
+                pobi);
 
         //then
         assertThat(reservationService.findReservations(
@@ -836,8 +802,7 @@ class ManagerReservationServiceTest extends ServiceTest {
         ReservationFindAllDto reservationFindAllDto = ReservationFindAllDto.of(
                 lutherId,
                 THE_DAY_AFTER_TOMORROW,
-                pobi
-        );
+                pobi);
 
         //then
         ReservationFindAllResponse reservationFindAllResponse = ReservationFindAllResponse.of(findSpaces, foundReservations);
@@ -866,8 +831,7 @@ class ManagerReservationServiceTest extends ServiceTest {
         ReservationFindAllDto reservationFindAllDto = ReservationFindAllDto.of(
                 lutherId,
                 THE_DAY_AFTER_TOMORROW,
-                sakjung
-        );
+                sakjung);
 
         //then
         assertThatThrownBy(() -> reservationService.findAllReservations(
@@ -894,8 +858,7 @@ class ManagerReservationServiceTest extends ServiceTest {
                 lutherId,
                 beId,
                 THE_DAY_AFTER_TOMORROW,
-                sakjung
-        );
+                sakjung);
 
         //then
         assertThatThrownBy(() -> reservationService.findReservations(
@@ -918,8 +881,7 @@ class ManagerReservationServiceTest extends ServiceTest {
                 luther.getId(),
                 be.getId(),
                 reservation.getId(),
-                pobi
-        );
+                pobi);
 
         //when
         ReservationResponse actualResponse = reservationService.findReservation(
@@ -944,8 +906,7 @@ class ManagerReservationServiceTest extends ServiceTest {
                 lutherId,
                 beId,
                 reservationId,
-                sakjung
-        );
+                sakjung);
 
         //then
         assertThatThrownBy(() -> reservationService.findReservation(
@@ -969,8 +930,7 @@ class ManagerReservationServiceTest extends ServiceTest {
                 lutherId,
                 beId,
                 reservationId,
-                pobi
-        );
+                pobi);
 
         //then
         assertThatThrownBy(() -> reservationService.findReservation(
@@ -993,8 +953,7 @@ class ManagerReservationServiceTest extends ServiceTest {
                 THE_DAY_AFTER_TOMORROW.atTime(10, 0),
                 THE_DAY_AFTER_TOMORROW.atTime(11, 0),
                 CHANGED_NAME,
-                CHANGED_DESCRIPTION
-        );
+                CHANGED_DESCRIPTION);
         Long reservationId = reservation.getId();
 
         ReservationUpdateDto reservationUpdateDto = ReservationUpdateDto.of(
@@ -1002,14 +961,12 @@ class ManagerReservationServiceTest extends ServiceTest {
                 beId,
                 reservationId,
                 reservationCreateUpdateRequest,
-                pobi
-        );
+                pobi);
 
         //then
         assertDoesNotThrow(() -> reservationService.updateReservation(
                 reservationUpdateDto,
-                managerReservationCallback
-        ));
+                managerReservationCallback));
         assertThat(reservation.getUserName()).isEqualTo(CHANGED_NAME);
         assertThat(reservation.getDescription()).isEqualTo(CHANGED_DESCRIPTION);
     }
@@ -1026,8 +983,7 @@ class ManagerReservationServiceTest extends ServiceTest {
                 THE_DAY_AFTER_TOMORROW.atTime(20, 0),
                 THE_DAY_AFTER_TOMORROW.atTime(21, 0),
                 CHANGED_NAME,
-                CHANGED_DESCRIPTION
-        );
+                CHANGED_DESCRIPTION);
         Long reservationId = reservation.getId();
 
         ReservationUpdateDto reservationUpdateDto = ReservationUpdateDto.of(
@@ -1035,8 +991,7 @@ class ManagerReservationServiceTest extends ServiceTest {
                 beId,
                 reservationId,
                 reservationCreateUpdateRequest,
-                sakjung
-        );
+                sakjung);
 
         //then
         assertThatThrownBy(() -> reservationService.updateReservation(
@@ -1058,8 +1013,7 @@ class ManagerReservationServiceTest extends ServiceTest {
                 THE_DAY_AFTER_TOMORROW.atTime(12, 0),
                 THE_DAY_AFTER_TOMORROW.atTime(12, 0).minusHours(endTime),
                 CHANGED_NAME,
-                CHANGED_DESCRIPTION
-        );
+                CHANGED_DESCRIPTION);
         Long reservationId = reservation.getId();
 
         ReservationUpdateDto reservationUpdateDto = ReservationUpdateDto.of(
@@ -1067,8 +1021,7 @@ class ManagerReservationServiceTest extends ServiceTest {
                 beId,
                 reservationId,
                 reservationCreateUpdateRequest,
-                pobi
-        );
+                pobi);
 
         //then
         assertThatThrownBy(() -> reservationService.updateReservation(
@@ -1089,8 +1042,7 @@ class ManagerReservationServiceTest extends ServiceTest {
                 THE_DAY_AFTER_TOMORROW.atTime(10, 0),
                 THE_DAY_AFTER_TOMORROW.atTime(10, 0).plusDays(1),
                 CHANGED_NAME,
-                CHANGED_DESCRIPTION
-        );
+                CHANGED_DESCRIPTION);
         Long reservationId = reservation.getId();
 
         ReservationUpdateDto reservationUpdateDto = ReservationUpdateDto.of(
@@ -1098,8 +1050,7 @@ class ManagerReservationServiceTest extends ServiceTest {
                 beId,
                 reservationId,
                 reservationCreateUpdateRequest,
-                pobi
-        );
+                pobi);
 
         //then
         assertThatThrownBy(() -> reservationService.updateReservation(
@@ -1120,16 +1071,14 @@ class ManagerReservationServiceTest extends ServiceTest {
         given(reservations.findAllBySpaceIdInAndStartTimeIsBetweenAndEndTimeIsBetween(anyList(), any(), any(), any(), any()))
                 .willReturn(Arrays.asList(
                         beAmZeroOne,
-                        bePmOneTwo
-                ));
+                        bePmOneTwo));
 
         //when
         ReservationCreateUpdateRequest reservationCreateUpdateRequest = new ReservationCreateUpdateRequest(
                 bePmOneTwo.getStartTime().plusMinutes(startTime),
                 bePmOneTwo.getEndTime().plusMinutes(endTime),
                 reservation.getUserName(),
-                reservation.getDescription()
-        );
+                reservation.getDescription());
         Long reservationId = reservation.getId();
 
         ReservationUpdateDto reservationUpdateDto = ReservationUpdateDto.of(
@@ -1137,8 +1086,7 @@ class ManagerReservationServiceTest extends ServiceTest {
                 beId,
                 reservationId,
                 reservationCreateUpdateRequest,
-                pobi
-        );
+                pobi);
 
         //then
         assertThatThrownBy(() -> reservationService.updateReservation(
@@ -1162,8 +1110,7 @@ class ManagerReservationServiceTest extends ServiceTest {
                 THE_DAY_AFTER_TOMORROW.atTime(startTime, 0),
                 THE_DAY_AFTER_TOMORROW.atTime(endTime, 30),
                 CHANGED_NAME,
-                CHANGED_DESCRIPTION
-        );
+                CHANGED_DESCRIPTION);
         Long reservationId = reservation.getId();
 
         ReservationUpdateDto reservationUpdateDto = ReservationUpdateDto.of(
@@ -1171,8 +1118,7 @@ class ManagerReservationServiceTest extends ServiceTest {
                 beId,
                 reservationId,
                 reservationCreateUpdateRequest,
-                pobi
-        );
+                pobi);
 
         //then
         assertThatThrownBy(() -> reservationService.updateReservation(
@@ -1217,8 +1163,7 @@ class ManagerReservationServiceTest extends ServiceTest {
                 closedSpaceId,
                 reservationId,
                 reservationCreateUpdateRequest,
-                pobi
-        );
+                pobi);
 
         // then
         assertThatThrownBy(() -> reservationService.updateReservation(
@@ -1263,8 +1208,7 @@ class ManagerReservationServiceTest extends ServiceTest {
                 invalidDayOfWeekSpaceId,
                 reservationId,
                 reservationCreateUpdateRequest,
-                pobi
-        );
+                pobi);
 
         // then
         assertThatThrownBy(() -> reservationService.updateReservation(
@@ -1294,8 +1238,7 @@ class ManagerReservationServiceTest extends ServiceTest {
                 lutherId,
                 beId,
                 reservationId,
-                pobi
-        );
+                pobi);
 
         //then
         assertDoesNotThrow(() -> reservationService.deleteReservation(
@@ -1316,8 +1259,7 @@ class ManagerReservationServiceTest extends ServiceTest {
                 lutherId,
                 beId,
                 reservationId,
-                sakjung
-        );
+                sakjung);
 
         //then
         assertThatThrownBy(() -> reservationService.deleteReservation(
@@ -1341,8 +1283,7 @@ class ManagerReservationServiceTest extends ServiceTest {
                 lutherId,
                 beId,
                 reservationId,
-                pobi
-        );
+                pobi);
 
         //then
         assertThatThrownBy(() -> reservationService.deleteReservation(

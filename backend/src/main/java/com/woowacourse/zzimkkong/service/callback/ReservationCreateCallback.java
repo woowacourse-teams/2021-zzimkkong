@@ -8,6 +8,5 @@ import java.util.List;
 public class ReservationCreateCallback implements ReservationServiceCallback {
     @Override
     public void excludeTargetReservation(final Space space, final List<Reservation> reservationsOnDate) {
-
     }
 }
