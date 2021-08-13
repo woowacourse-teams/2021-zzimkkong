@@ -8,6 +8,7 @@ import Button from 'components/Button/Button';
 import Header from 'components/Header/Header';
 import Input from 'components/Input/Input';
 import Layout from 'components/Layout/Layout';
+import PageHeader from 'components/PageHeader/PageHeader';
 import ReservationListItem from 'components/ReservationListItem/ReservationListItem';
 import MESSAGE from 'constants/message';
 import REGEXP from 'constants/regexp';
@@ -17,13 +18,12 @@ import useInput from 'hooks/useInput';
 import { GuestMapState } from 'pages/GuestMap/GuestMap';
 import { MapItem, ScrollPosition, Space } from 'types/common';
 import { ErrorResponse } from 'types/response';
-import { formatDate, formatTime } from 'utils/datetime';
+import { formatDate, formatTime, formatTimePrettier } from 'utils/datetime';
 import * as Styled from './GuestReservation.styles';
 
 interface GuestReservationState {
   mapId: number;
-  spaceId: Space['id'];
-  spaceName: Space['name'];
+  space: Space;
   selectedDate: string;
   scrollPosition: ScrollPosition;
 }
@@ -37,13 +37,21 @@ const GuestReservation = (): JSX.Element => {
   const history = useHistory<GuestMapState>();
   const { sharingMapId } = useParams<URLParameter>();
 
-  const { mapId, spaceId, spaceName, selectedDate, scrollPosition } = location.state;
+  const { mapId, space, selectedDate, scrollPosition } = location.state;
+  const { availableStartTime, availableEndTime, reservationTimeUnit, reservationMaximumTimeUnit } =
+    space.settings;
 
-  if (!mapId || !spaceId || !spaceName) history.replace(`/guest/${sharingMapId}`);
+  if (!mapId || !space) history.replace(`/guest/${sharingMapId}`);
 
   const now = new Date();
+  const todayDate = formatDate(new Date());
+
   const initialStartTime = formatTime(now);
-  const initialEndTime = formatTime(new Date(new Date().getTime() + 1000 * 60 * 60));
+  const initialEndTime = formatTime(
+    new Date(new Date().getTime() + 1000 * 60 * reservationTimeUnit)
+  );
+  const availableStartTimeText = formatTime(new Date(`${todayDate}T${availableStartTime}`));
+  const availableEndTimeText = formatTime(new Date(`${todayDate}T${availableEndTime}`));
 
   const [name, onChangeName] = useInput('');
   const [description, onChangeDescription] = useInput('');
@@ -55,13 +63,13 @@ const GuestReservation = (): JSX.Element => {
   const startDateTime = new Date(`${date}T${startTime}Z`);
   const endDateTime = new Date(`${date}T${endTime}Z`);
 
-  const getReservations = useGuestReservations({ mapId, spaceId, date });
+  const getReservations = useGuestReservations({ mapId, spaceId: space.id, date });
   const reservations = getReservations.data?.data?.reservations ?? [];
 
   const createReservation = useMutation(postReservation, {
     onSuccess: () => {
       history.push(`/guest/${sharingMapId}`, {
-        spaceId,
+        spaceId: space.id,
         targetDate: new Date(`${date}T${startTime}`),
       });
     },
@@ -77,7 +85,7 @@ const GuestReservation = (): JSX.Element => {
 
     const reservation = { name, description, password, startDateTime, endDateTime };
 
-    createReservation.mutate({ reservation, mapId, spaceId });
+    createReservation.mutate({ reservation, mapId, spaceId: space.id });
   };
 
   useEffect(() => {
@@ -87,13 +95,13 @@ const GuestReservation = (): JSX.Element => {
         location.pathname === `/guest/${sharingMapId}/`
       ) {
         location.state = {
-          spaceId,
+          spaceId: space.id,
           targetDate: new Date(selectedDate),
           scrollPosition,
         };
       }
     });
-  }, [history, scrollPosition, selectedDate, spaceId, sharingMapId]);
+  }, [history, scrollPosition, selectedDate, space, sharingMapId]);
 
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -105,7 +113,10 @@ const GuestReservation = (): JSX.Element => {
       <Layout>
         <Styled.ReservationForm onSubmit={handleSubmit}>
           <Styled.Section>
-            <Styled.PageHeader>{spaceName}</Styled.PageHeader>
+            <Styled.PageHeader>
+              <Styled.ColorDot color={space.color} />
+              {space.name}
+            </Styled.PageHeader>
             <Styled.InputWrapper>
               <Input
                 label="이름"
@@ -140,6 +151,9 @@ const GuestReservation = (): JSX.Element => {
               <Input
                 type="time"
                 label="시작 시간"
+                step={60 * reservationTimeUnit}
+                min={availableStartTime}
+                max={availableEndTime}
                 value={startTime}
                 onChange={onChangeStartTime}
                 required
@@ -147,11 +161,17 @@ const GuestReservation = (): JSX.Element => {
               <Input
                 type="time"
                 label="종료 시간"
-                value={endTime}
+                step={60 * reservationTimeUnit}
                 min={startTime}
+                max={availableEndTime}
+                value={endTime}
                 onChange={onChangeEndTime}
                 required
               />
+              <Styled.TimeFormMessage>
+                예약 가능 시간 : {availableStartTimeText} ~ {availableEndTimeText} (최대{' '}
+                {formatTimePrettier(reservationMaximumTimeUnit)})
+              </Styled.TimeFormMessage>
             </Styled.InputWrapper>
             <Styled.InputWrapper>
               <Input
@@ -164,15 +184,15 @@ const GuestReservation = (): JSX.Element => {
                 pattern={REGEXP.RESERVATION_PASSWORD.source}
                 inputMode="numeric"
                 message="숫자 4자리를 입력해주세요."
+                status={
+                  createReservation.error?.response?.data.field === 'password' ? 'error' : 'default'
+                }
                 required
               />
             </Styled.InputWrapper>
           </Styled.Section>
           <Styled.Section>
-            <Styled.PageHeader>
-              {date}
-              {date && '의'} 예약 목록
-            </Styled.PageHeader>
+            <PageHeader title={`${date}${date && '의'} 예약 목록`} />
             {getReservations.isLoadingError && (
               <Styled.Message>
                 예약 목록을 불러오는 데 문제가 생겼어요!

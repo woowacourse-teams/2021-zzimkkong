@@ -18,14 +18,14 @@ import { ReactComponent as EraserIcon } from 'assets/svg/eraser.svg';
 import { ReactComponent as ItemsIcon } from 'assets/svg/items.svg';
 import { ReactComponent as LineIcon } from 'assets/svg/line.svg';
 import { ReactComponent as MoveIcon } from 'assets/svg/move.svg';
-import { ReactComponent as PolylineIcon } from 'assets/svg/polyline.svg';
+import { ReactComponent as RectIcon } from 'assets/svg/rect.svg';
 import { ReactComponent as SelectIcon } from 'assets/svg/select.svg';
 import Button from 'components/Button/Button';
 import ColorPicker from 'components/ColorPicker/ColorPicker';
 import ColorPickerIcon from 'components/ColorPicker/ColorPickerIcon';
 import Header from 'components/Header/Header';
 import Layout from 'components/Layout/Layout';
-import { BOARD } from 'constants/editor';
+import { BOARD, EDITOR, KEY } from 'constants/editor';
 import MESSAGE from 'constants/message';
 import PALETTE from 'constants/palette';
 import PATH, { HREF } from 'constants/path';
@@ -46,14 +46,6 @@ import {
 import { Mode } from 'types/editor';
 import { ErrorResponse } from 'types/response';
 import * as Styled from './ManagerMapCreate.styles';
-
-const GRID_SIZE = 10;
-const SCALE_DELTA = 0.001;
-const MIN_SCALE = 0.5;
-const MAX_SCALE = 3.0;
-const LINE_WIDTH = 3;
-const KEY_DELETE = 'Delete';
-const KEY_SPACE = ' ';
 
 interface Params {
   mapId?: string;
@@ -84,8 +76,8 @@ const ManagerMapCreate = (): JSX.Element => {
   const [stickyPointerView, setStickyPointerView] = useState(false);
 
   const stickyCoordinate: Coordinate = {
-    x: Math.round(coordinate.x / GRID_SIZE) * GRID_SIZE,
-    y: Math.round(coordinate.y / GRID_SIZE) * GRID_SIZE,
+    x: Math.round(coordinate.x / EDITOR.GRID_SIZE) * EDITOR.GRID_SIZE,
+    y: Math.round(coordinate.y / EDITOR.GRID_SIZE) * EDITOR.GRID_SIZE,
   };
 
   const [drawingStatus, setDrawingStatus] = useState<DrawingStatus>({});
@@ -211,9 +203,9 @@ const ManagerMapCreate = (): JSX.Element => {
     setBoard((prevState) => {
       const { scale, x, y, width, height } = prevState;
 
-      const nextScale = scale - deltaY * SCALE_DELTA;
+      const nextScale = scale - deltaY * EDITOR.SCALE_DELTA;
 
-      if (nextScale <= MIN_SCALE || nextScale >= MAX_SCALE) {
+      if (nextScale <= EDITOR.MIN_SCALE || nextScale >= EDITOR.MAX_SCALE) {
         return {
           ...prevState,
           scale: prevState.scale,
@@ -272,11 +264,43 @@ const ManagerMapCreate = (): JSX.Element => {
     setDragging(false);
   };
 
-  const handleSelectMapElement = (event: MouseEvent<SVGPolylineElement>, id: MapElement['id']) => {
+  const handleSelectLineElement = (event: MouseEvent<SVGPolylineElement>, id: MapElement['id']) => {
     if (mode !== Mode.Select) return;
 
     const target = event.target as SVGPolylineElement;
     const points = Object.values<Coordinate>(target?.points).map(({ x, y }) => ({ x, y }));
+
+    const newGripPoints = points.map(
+      (point, index): GripPoint => ({
+        id: nextGripPointId + index,
+        mapElementId: id,
+        x: point.x,
+        y: point.y,
+      })
+    );
+
+    setSelectedMapElementId(id);
+    setGripPoints([...newGripPoints]);
+  };
+
+  const handleSelectRectElement = (event: MouseEvent<SVGRectElement>, id: MapElement['id']) => {
+    if (mode !== Mode.Select) return;
+
+    const target = event.target as SVGRectElement;
+
+    const { x, y, width, height } = target;
+
+    const pointX = x.baseVal.value;
+    const pointY = y.baseVal.value;
+    const widthValue = width.baseVal.value;
+    const heightValue = height.baseVal.value;
+
+    const points = [
+      { x: pointX, y: pointY },
+      { x: pointX + widthValue, y: pointY },
+      { x: pointX, y: pointY + heightValue },
+      { x: pointX + widthValue, y: pointY + heightValue },
+    ];
 
     const newGripPoints = points.map(
       (point, index): GripPoint => ({
@@ -342,6 +366,82 @@ const ManagerMapCreate = (): JSX.Element => {
     ]);
   };
 
+  const rectDrawStart = () => {
+    if (drawingStatus.start) {
+      const startPoint = `${drawingStatus.start.x},${drawingStatus.start.y}`;
+      const endPoint = `${stickyCoordinate.x},${stickyCoordinate.y}`;
+
+      setMapElements((prevState) => [
+        ...prevState,
+        {
+          id: nextMapElementId,
+          type: 'rect',
+          stroke: color,
+          points: [startPoint, endPoint],
+        },
+      ]);
+
+      return;
+    }
+
+    if (isDragging) return;
+
+    setDrawingStatus((prevState) => ({
+      ...prevState,
+      start: stickyCoordinate,
+    }));
+  };
+
+  const rectDrawEnd = () => {
+    if (!drawingStatus || !drawingStatus.start) return;
+
+    const startPoint = {
+      x: drawingStatus.start.x,
+      y: drawingStatus.start.y,
+    };
+
+    const endPoint = {
+      x: stickyCoordinate.x,
+      y: stickyCoordinate.y,
+    };
+
+    const width = Math.abs(startPoint.x - endPoint.x);
+    const height = Math.abs(startPoint.y - endPoint.y);
+
+    const startCoordinate = `${startPoint.x}, ${startPoint.y}`;
+    const endCoordinate = `${endPoint.x}, ${endPoint.y}`;
+
+    setDrawingStatus({});
+
+    if (startCoordinate === endCoordinate || isDragging) return;
+
+    if (width && height) {
+      setMapElements((prevState) => [
+        ...prevState,
+        {
+          id: nextMapElementId,
+          type: 'rect',
+          stroke: color,
+          width,
+          height,
+          x: Math.min(startPoint.x, endPoint.x),
+          y: Math.min(startPoint.y, endPoint.y),
+          points: [startCoordinate, endCoordinate],
+        },
+      ]);
+    } else {
+      setMapElements((prevState) => [
+        ...prevState,
+        {
+          id: nextMapElementId,
+          type: 'polyline',
+          stroke: color,
+          points: [`${startPoint.x},${startPoint.y}`, `${endPoint.x},${endPoint.y}`],
+        },
+      ]);
+    }
+  };
+
   const eraseStart = () => {
     if (erasingMapElementIds.length > 0) {
       eraseEnd();
@@ -370,6 +470,7 @@ const ManagerMapCreate = (): JSX.Element => {
     if (isDraggable) return;
 
     if (mode === Mode.Line) drawStart();
+    if (mode === Mode.Rect) rectDrawStart();
     if (mode === Mode.Eraser) eraseStart();
   };
 
@@ -377,6 +478,7 @@ const ManagerMapCreate = (): JSX.Element => {
     if (isDraggable) return;
 
     if (mode === Mode.Line) drawEnd();
+    if (mode === Mode.Rect) rectDrawEnd();
     if (mode === Mode.Eraser) eraseEnd();
   };
 
@@ -393,10 +495,10 @@ const ManagerMapCreate = (): JSX.Element => {
     (event: KeyboardEvent) => {
       if ((event.target as HTMLElement).tagName === 'INPUT') return;
 
-      if (event.key === KEY_DELETE) {
+      if (event.key === KEY.DELETE || event.key === KEY.BACK_SPACE) {
         deleteMapElement();
       }
-      if (event.key === KEY_SPACE) {
+      if (event.key === KEY.SPACE) {
         setPressSpacebar(true);
       }
     },
@@ -404,7 +506,7 @@ const ManagerMapCreate = (): JSX.Element => {
   );
 
   const handleKeyUp = useCallback((event: KeyboardEvent) => {
-    if (event.key === KEY_SPACE) {
+    if (event.key === KEY.SPACE) {
       setPressSpacebar(false);
     }
   }, []);
@@ -443,16 +545,29 @@ const ManagerMapCreate = (): JSX.Element => {
               </g>`
           )
           .join('')}
+
         ${mapElements
-          .map(
-            ({ points, stroke }) => `
+          .map((element) =>
+            element.type === 'polyline'
+              ? `
               <polyline
-                points='${points.join(' ')}'
-                stroke='${stroke}'
-                strokeWidth='${LINE_WIDTH}'
+                points='${element.points.join(' ')}'
+                stroke='${element.stroke}'
+                strokeWidth='${EDITOR.STROKE_WIDTH}'
                 strokeLinecap='round'
               />
             `
+              : `
+              <rect
+                x='${element.x ?? 0}'
+                y='${element.y ?? 0}'
+                width='${element.width ?? 0}'
+                height='${element.height ?? 0}'
+                stroke='${element.stroke}'
+                fill="none"
+                strokeWidth='${EDITOR.STROKE_WIDTH}'
+              />
+              `
           )
           .join('')}
       </svg>
@@ -571,11 +686,11 @@ const ManagerMapCreate = (): JSX.Element => {
                 <LineIcon />
               </Styled.ToolbarButton>
               <Styled.ToolbarButton
-                text="다각선"
-                selected={mode === Mode.Polyline}
-                onClick={() => selectMode(Mode.Polyline)}
+                text="사각형"
+                selected={mode === Mode.Rect}
+                onClick={() => selectMode(Mode.Rect)}
               >
-                <PolylineIcon />
+                <RectIcon />
               </Styled.ToolbarButton>
               <Styled.ToolbarButton
                 text="지우개"
@@ -626,12 +741,12 @@ const ManagerMapCreate = (): JSX.Element => {
                   <defs>
                     <pattern
                       id="smallGrid"
-                      width={`${GRID_SIZE}px`}
-                      height={`${GRID_SIZE}px`}
+                      width={`${EDITOR.GRID_SIZE}px`}
+                      height={`${EDITOR.GRID_SIZE}px`}
                       patternUnits="userSpaceOnUse"
                     >
                       <path
-                        d={`M ${GRID_SIZE} 0 L 0 0 0 ${GRID_SIZE}`}
+                        d={`M ${EDITOR.GRID_SIZE} 0 L 0 0 0 ${EDITOR.GRID_SIZE}`}
                         fill="none"
                         stroke={PALETTE.GRAY[300]}
                         strokeWidth="0.5"
@@ -639,17 +754,17 @@ const ManagerMapCreate = (): JSX.Element => {
                     </pattern>
                     <pattern
                       id="grid"
-                      width={`${GRID_SIZE * 10}px`}
-                      height={`${GRID_SIZE * 10}px`}
+                      width={`${EDITOR.GRID_SIZE * 10}px`}
+                      height={`${EDITOR.GRID_SIZE * 10}px`}
                       patternUnits="userSpaceOnUse"
                     >
                       <rect
-                        width={`${GRID_SIZE * 10}px`}
-                        height={`${GRID_SIZE * 10}px`}
+                        width={`${EDITOR.GRID_SIZE * 10}px`}
+                        height={`${EDITOR.GRID_SIZE * 10}px`}
                         fill="url(#smallGrid)"
                       />
                       <path
-                        d={`M ${GRID_SIZE * 10} 0 L 0 0 0 ${GRID_SIZE * 10}`}
+                        d={`M ${EDITOR.GRID_SIZE * 10} 0 L 0 0 0 ${EDITOR.GRID_SIZE * 10}`}
                         fill="none"
                         stroke={PALETTE.GRAY[300]}
                         strokeWidth="1"
@@ -672,7 +787,7 @@ const ManagerMapCreate = (): JSX.Element => {
                       fill="url(#grid)"
                     />
 
-                    {mode === Mode.Line && stickyPointerView && (
+                    {[Mode.Line, Mode.Rect].includes(mode) && stickyPointerView && (
                       <circle
                         cx={stickyCoordinate.x}
                         cy={stickyCoordinate.y}
@@ -707,35 +822,77 @@ const ManagerMapCreate = (): JSX.Element => {
                       </g>
                     ))}
 
-                    {mapElements.map((element) => (
-                      <polyline
-                        key={`polyline-${element.id}`}
-                        points={element.points.join(' ')}
-                        stroke={element.stroke}
-                        strokeWidth={LINE_WIDTH}
-                        strokeLinecap="round"
-                        cursor={mode === Mode.Select ? 'pointer' : 'default'}
-                        opacity={erasingMapElementIds.includes(element.id) ? '0.3' : '1'}
-                        pointerEvents={isDraggable ? 'none' : 'auto'}
-                        onClickCapture={(event) => handleSelectMapElement(event, element.id)}
-                        onMouseOverCapture={() => handleSelectErasingElement(element.id)}
-                      />
-                    ))}
+                    {mapElements.map((element) =>
+                      element.type === 'polyline' ? (
+                        <polyline
+                          key={`polyline-${element.id}`}
+                          points={element.points.join(' ')}
+                          stroke={element.stroke}
+                          strokeWidth={EDITOR.STROKE_WIDTH}
+                          strokeLinecap="round"
+                          cursor={mode === Mode.Select ? 'pointer' : 'default'}
+                          opacity={erasingMapElementIds.includes(element.id) ? '0.3' : '1'}
+                          pointerEvents={isDraggable ? 'none' : 'auto'}
+                          onClickCapture={(event) => handleSelectLineElement(event, element.id)}
+                          onMouseOverCapture={() => handleSelectErasingElement(element.id)}
+                        />
+                      ) : (
+                        <rect
+                          key={`rect-${element.id}`}
+                          x={element?.x}
+                          y={element?.y}
+                          width={element?.width}
+                          height={element?.height}
+                          stroke={element.stroke}
+                          fill="none"
+                          strokeWidth={EDITOR.STROKE_WIDTH}
+                          strokeLinecap="round"
+                          cursor={mode === Mode.Select ? 'pointer' : 'default'}
+                          onClickCapture={(event) => handleSelectRectElement(event, element.id)}
+                          onMouseOverCapture={() => handleSelectErasingElement(element.id)}
+                        />
+                      )
+                    )}
 
                     {mode === Mode.Select &&
                       gripPoints.map(({ x, y }, index) => (
                         <Styled.GripPoint key={index} cx={x} cy={y} r={4} />
                       ))}
 
-                    {drawingStatus.start && (
+                    {drawingStatus.start && mode === Mode.Line && (
                       <polyline
                         key="preview-line"
                         points={`${drawingStatus.start.x},${drawingStatus.start.y} ${stickyCoordinate.x},${stickyCoordinate.y}`}
                         stroke={PALETTE.OPACITY_BLACK[200]}
-                        strokeWidth={LINE_WIDTH}
+                        strokeWidth={EDITOR.STROKE_WIDTH}
                         strokeLinecap="round"
                       />
                     )}
+
+                    {drawingStatus.start &&
+                      mode === Mode.Rect &&
+                      (Math.abs(drawingStatus.start.x - stickyCoordinate.x) &&
+                      Math.abs(drawingStatus.start.y - stickyCoordinate.y) ? (
+                        <rect
+                          key="preview-rect"
+                          x={Math.min(drawingStatus.start.x, stickyCoordinate.x)}
+                          y={Math.min(drawingStatus.start.y, stickyCoordinate.y)}
+                          width={Math.abs(drawingStatus.start.x - stickyCoordinate.x)}
+                          height={Math.abs(drawingStatus.start.y - stickyCoordinate.y)}
+                          stroke={PALETTE.OPACITY_BLACK[200]}
+                          strokeWidth={EDITOR.STROKE_WIDTH}
+                          strokeLinecap="round"
+                          fill="none"
+                        />
+                      ) : (
+                        <polyline
+                          key="preview-line"
+                          points={`${drawingStatus.start.x},${drawingStatus.start.y} ${stickyCoordinate.x},${stickyCoordinate.y}`}
+                          stroke={PALETTE.OPACITY_BLACK[200]}
+                          strokeWidth={EDITOR.STROKE_WIDTH}
+                          strokeLinecap="round"
+                        />
+                      ))}
                   </g>
                 </svg>
               </Styled.BoardContainer>
