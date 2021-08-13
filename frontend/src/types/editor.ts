@@ -2,7 +2,7 @@ export enum Mode {
   Select = 'select',
   Move = 'move',
   Line = 'line',
-  Square = 'square',
+  Rect = 'rect',
   Eraser = 'eraser',
   Decoration = 'decoration',
 }

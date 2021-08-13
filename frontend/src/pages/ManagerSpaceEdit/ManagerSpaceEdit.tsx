@@ -536,7 +536,7 @@ const ManagerSpaceEdit = (): JSX.Element => {
         `
       )
       .join('')}
-    ${mapElements
+    ${mapElements // TODO 여기도 Rect 추가, 가능 하면 둘 다 합쳐서 하나의 util이나 거시기로 만들기
       ?.map(
         ({ points, stroke }) => `
           <polyline

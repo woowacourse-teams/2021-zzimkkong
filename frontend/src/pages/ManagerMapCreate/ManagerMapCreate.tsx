@@ -283,7 +283,7 @@ const ManagerMapCreate = (): JSX.Element => {
     setGripPoints([...newGripPoints]);
   };
 
-  const handleSelectSquareElement = (event: MouseEvent<SVGRectElement>, id: MapElement['id']) => {
+  const handleSelectRectElement = (event: MouseEvent<SVGRectElement>, id: MapElement['id']) => {
     if (mode !== Mode.Select) return;
 
     const target = event.target as SVGRectElement;
@@ -366,7 +366,7 @@ const ManagerMapCreate = (): JSX.Element => {
     ]);
   };
 
-  const squareDrawStart = () => {
+  const rectDrawStart = () => {
     if (drawingStatus.start) {
       const startPoint = `${drawingStatus.start.x},${drawingStatus.start.y}`;
       const endPoint = `${stickyCoordinate.x},${stickyCoordinate.y}`;
@@ -375,7 +375,7 @@ const ManagerMapCreate = (): JSX.Element => {
         ...prevState,
         {
           id: nextMapElementId,
-          type: 'square',
+          type: 'rect',
           stroke: color,
           points: [startPoint, endPoint],
         },
@@ -392,7 +392,7 @@ const ManagerMapCreate = (): JSX.Element => {
     }));
   };
 
-  const squareDrawEnd = () => {
+  const rectDrawEnd = () => {
     if (!drawingStatus || !drawingStatus.start) return;
 
     const startPoint = {
@@ -420,7 +420,7 @@ const ManagerMapCreate = (): JSX.Element => {
         ...prevState,
         {
           id: nextMapElementId,
-          type: 'square',
+          type: 'rect',
           stroke: color,
           width,
           height,
@@ -470,7 +470,7 @@ const ManagerMapCreate = (): JSX.Element => {
     if (isDraggable) return;
 
     if (mode === Mode.Line) drawStart();
-    if (mode === Mode.Square) squareDrawStart();
+    if (mode === Mode.Rect) rectDrawStart();
     if (mode === Mode.Eraser) eraseStart();
   };
 
@@ -478,7 +478,7 @@ const ManagerMapCreate = (): JSX.Element => {
     if (isDraggable) return;
 
     if (mode === Mode.Line) drawEnd();
-    if (mode === Mode.Square) squareDrawEnd();
+    if (mode === Mode.Rect) rectDrawEnd();
     if (mode === Mode.Eraser) eraseEnd();
   };
 
@@ -545,7 +545,7 @@ const ManagerMapCreate = (): JSX.Element => {
               </g>`
           )
           .join('')}
-        ${mapElements
+        ${mapElements // TODO 여기에 Rect 속성 추가
           .map(
             ({ points, stroke }) => `
               <polyline
@@ -674,8 +674,8 @@ const ManagerMapCreate = (): JSX.Element => {
               </Styled.ToolbarButton>
               <Styled.ToolbarButton
                 text="사각형"
-                selected={mode === Mode.Square}
-                onClick={() => selectMode(Mode.Square)}
+                selected={mode === Mode.Rect}
+                onClick={() => selectMode(Mode.Rect)}
               >
                 <SquareIcon />
               </Styled.ToolbarButton>
@@ -774,7 +774,7 @@ const ManagerMapCreate = (): JSX.Element => {
                       fill="url(#grid)"
                     />
 
-                    {[Mode.Line, Mode.Square].includes(mode) && stickyPointerView && (
+                    {[Mode.Line, Mode.Rect].includes(mode) && stickyPointerView && (
                       <circle
                         cx={stickyCoordinate.x}
                         cy={stickyCoordinate.y}
@@ -825,7 +825,7 @@ const ManagerMapCreate = (): JSX.Element => {
                         />
                       ) : (
                         <rect
-                          key={`square-${element.id}`}
+                          key={`rect-${element.id}`}
                           x={element?.x}
                           y={element?.y}
                           width={element?.width}
@@ -835,7 +835,7 @@ const ManagerMapCreate = (): JSX.Element => {
                           strokeWidth={EDITOR.STROKE_WIDTH}
                           strokeLinecap="round"
                           cursor={mode === Mode.Select ? 'pointer' : 'default'}
-                          onClickCapture={(event) => handleSelectSquareElement(event, element.id)}
+                          onClickCapture={(event) => handleSelectRectElement(event, element.id)}
                           onMouseOverCapture={() => handleSelectErasingElement(element.id)}
                         />
                       )
@@ -857,11 +857,11 @@ const ManagerMapCreate = (): JSX.Element => {
                     )}
 
                     {drawingStatus.start &&
-                      mode === Mode.Square &&
+                      mode === Mode.Rect &&
                       (Math.abs(drawingStatus.start.x - stickyCoordinate.x) &&
                       Math.abs(drawingStatus.start.y - stickyCoordinate.y) ? (
                         <rect
-                          key="preview-square"
+                          key="preview-rect"
                           x={Math.min(drawingStatus.start.x, stickyCoordinate.x)}
                           y={Math.min(drawingStatus.start.y, stickyCoordinate.y)}
                           width={Math.abs(drawingStatus.start.x - stickyCoordinate.x)}

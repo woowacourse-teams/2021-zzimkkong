@@ -13,7 +13,7 @@ export interface ScrollPosition {
 }
 export interface MapElement {
   id: number;
-  type: 'polyline' | 'square';
+  type: 'polyline' | 'rect';
   width?: number;
   height?: number;
   x?: number;
