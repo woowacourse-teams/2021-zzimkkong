@@ -1,7 +1,18 @@
 import styled from 'styled-components';
+import { Color } from 'types/common';
+
+interface ColorDotProps {
+  color: Color;
+}
 
 export const ReservationForm = styled.form`
   margin: 1.5rem 0 5rem 0;
+`;
+
+export const PageHeader = styled.h2`
+  font-size: 1.625rem;
+  font-weight: 700;
+  margin: 1.5rem 0;
 `;
 
 export const Section = styled.section`
@@ -33,11 +44,19 @@ export const ButtonWrapper = styled.div`
 export const TimeFormMessage = styled.p`
   position: absolute;
   left: 0.75rem;
-  bottom: -1.5rem;
-  height: 1.5rem;
-  line-height: 1.5rem;
+  bottom: -1rem;
   font-size: 0.75rem;
-  color: ${({ theme }) => theme.red[500]};
+  height: 1em;
+  color: ${({ theme }) => theme.gray[500]};
 `;
 
 export const Message = styled.p``;
+
+export const ColorDot = styled.span<ColorDotProps>`
+  display: inline-block;
+  width: 1rem;
+  height: 1rem;
+  background-color: ${({ color }) => color};
+  border-radius: 50%;
+  margin-right: 0.75rem;
+`;

@@ -8,13 +8,13 @@ import { ReactComponent as EditIcon } from 'assets/svg/edit.svg';
 import { ReactComponent as MoreIcon } from 'assets/svg/more.svg';
 import Button from 'components/Button/Button';
 import DateInput from 'components/DateInput/DateInput';
+import Drawer from 'components/Drawer/Drawer';
 import Header from 'components/Header/Header';
 import Input from 'components/Input/Input';
 import Layout from 'components/Layout/Layout';
 import Modal from 'components/Modal/Modal';
-import PageHeader from 'components/PageHeader/PageHeader';
-import Panel from 'components/Panel/Panel';
 import ReservationListItem from 'components/ReservationListItem/ReservationListItem';
+import { EDITOR } from 'constants/editor';
 import MESSAGE from 'constants/message';
 import PALETTE from 'constants/palette';
 import useGuestMap from 'hooks/useGuestMap';
@@ -37,6 +37,7 @@ export interface URLParameter {
 }
 
 const GuestMap = (): JSX.Element => {
+  const [detailOpen, setDetailOpen] = useState(false);
   const [modalOpen, setModalOpen] = useState(false);
   const [passwordInputModalOpen, setPasswordInputModalOpen] = useState(false);
   const [selectedReservation, setSelectedReservation] = useState<Reservation>();
@@ -127,6 +128,7 @@ const GuestMap = (): JSX.Element => {
 
   const handleClickSpaceArea = (spaceId: number) => {
     setSelectedSpaceId(spaceId);
+    setDetailOpen(true);
   };
 
   const handleSelectModal = (reservation: Reservation) => {
@@ -141,9 +143,8 @@ const GuestMap = (): JSX.Element => {
       pathname: `/guest/${sharingMapId}/reservation/edit`,
       state: {
         mapId: map?.mapId,
-        spaceId: Number(selectedSpaceId),
+        space: spaces[selectedSpaceId],
         reservation: selectedReservation,
-        spaceName: spaces[selectedSpaceId].name,
         selectedDate: formatDate(date),
       },
     });
@@ -170,8 +171,8 @@ const GuestMap = (): JSX.Element => {
     <>
       <Header />
       <Layout>
-        <Styled.PageWithBottomButton hasBottomButton={reservationAvailable}>
-          {map?.mapName && <PageHeader title={map?.mapName} />}
+        <Styled.Page>
+          <Styled.PageTitle>{map?.mapName}</Styled.PageTitle>
           <DateInput date={date} setDate={setDate} />
           <Styled.MapContainer>
             {mapDrawing && (
@@ -182,15 +183,30 @@ const GuestMap = (): JSX.Element => {
                   width={mapDrawing.width}
                   height={mapDrawing.height}
                 >
-                  {mapDrawing.mapElements.map((element) => (
-                    <polyline
-                      key={`polyline-${element.id}`}
-                      points={element.points.join(' ')}
-                      stroke={element.stroke}
-                      strokeWidth="2"
-                    />
-                  ))}
+                  {/* Note: 맵을 그리는 부분 */}
+                  {mapDrawing.mapElements.map((element) =>
+                    element.type === 'polyline' ? (
+                      <polyline
+                        key={`polyline-${element.id}`}
+                        points={element.points.join(' ')}
+                        stroke={element.stroke}
+                        strokeWidth={EDITOR.STROKE_WIDTH}
+                      />
+                    ) : (
+                      <rect
+                        key={`rect-${element.id}`}
+                        x={element?.x}
+                        y={element?.y}
+                        width={element?.width}
+                        height={element?.height}
+                        stroke={element.stroke}
+                        fill="none"
+                        strokeWidth={EDITOR.STROKE_WIDTH}
+                      />
+                    )
+                  )}
 
+                  {/* Note: 공간을 그리는 부분 */}
                   {spaceList.length > 0 &&
                     spaceList.map(({ id, area, color, name }) => (
                       <Styled.Space key={`area-${id}`} onClick={() => handleClickSpaceArea(id)}>
@@ -217,60 +233,59 @@ const GuestMap = (): JSX.Element => {
               </Styled.MapContainerInner>
             )}
           </Styled.MapContainer>
-          {spaceList.length > 0 && selectedSpaceId !== null && (
-            <Styled.PanelContainer>
-              <Panel>
-                <Panel.Header dotColor={spaces[selectedSpaceId].color}>
-                  <Panel.Title>{spaces[selectedSpaceId].name}</Panel.Title>
-                </Panel.Header>
-                <Panel.Content>
-                  <>
-                    {getReservations.isLoadingError && (
-                      <Styled.Message>
-                        예약 목록을 불러오는 데 문제가 생겼어요!
-                        <br />
-                        새로 고침으로 다시 시도해주세요.
-                      </Styled.Message>
-                    )}
-                    {getReservations.isLoading && !getReservations.isLoadingError && (
-                      <Styled.Message>불러오는 중입니다...</Styled.Message>
-                    )}
-                    {getReservations.isSuccess && reservations?.length === 0 && (
-                      <Styled.Message>오늘의 첫 예약을 잡아보세요!</Styled.Message>
-                    )}
-                    {getReservations.isSuccess && reservations.length > 0 && (
-                      <Styled.ReservationList role="list">
-                        {reservations.map((reservation: Reservation) => (
-                          <ReservationListItem
-                            key={reservation.id}
-                            reservation={reservation}
-                            control={
-                              <Button
-                                variant="text"
-                                size="small"
-                                onClick={() => handleSelectModal(reservation)}
-                              >
-                                <MoreIcon />
-                              </Button>
-                            }
-                          />
-                        ))}
-                      </Styled.ReservationList>
-                    )}
-                  </>
-                </Panel.Content>
-              </Panel>
-            </Styled.PanelContainer>
-          )}
-        </Styled.PageWithBottomButton>
+        </Styled.Page>
+      </Layout>
+
+      <Drawer open={detailOpen} placement="bottom" onClose={() => setDetailOpen(false)}>
+        {spaceList.length > 0 && selectedSpaceId !== null && (
+          <>
+            <Styled.SpaceTitle>
+              <Styled.ColorDot color={spaces[selectedSpaceId].color} />
+              {spaces[selectedSpaceId].name}
+            </Styled.SpaceTitle>
+            <Styled.ReservationContainer>
+              {getReservations.isLoadingError && (
+                <Styled.Message>
+                  예약 목록을 불러오는 데 문제가 생겼어요!
+                  <br />
+                  새로 고침으로 다시 시도해주세요.
+                </Styled.Message>
+              )}
+              {getReservations.isLoading && !getReservations.isLoadingError && (
+                <Styled.Message>불러오는 중입니다...</Styled.Message>
+              )}
+              {getReservations.isSuccess && reservations?.length === 0 && (
+                <Styled.Message>오늘의 첫 예약을 잡아보세요!</Styled.Message>
+              )}
+              {getReservations.isSuccess && reservations.length > 0 && (
+                <Styled.ReservationList role="list">
+                  {reservations.map((reservation: Reservation) => (
+                    <ReservationListItem
+                      key={reservation.id}
+                      reservation={reservation}
+                      control={
+                        <Button
+                          variant="text"
+                          size="small"
+                          onClick={() => handleSelectModal(reservation)}
+                        >
+                          <MoreIcon />
+                        </Button>
+                      }
+                    />
+                  ))}
+                </Styled.ReservationList>
+              )}
+            </Styled.ReservationContainer>
+          </>
+        )}
         {spaceList.length > 0 && selectedSpaceId !== null && reservationAvailable && (
           <Styled.ReservationLink
             to={{
               pathname: `/guest/${sharingMapId}/reservation`,
               state: {
                 mapId: map?.mapId,
-                spaceId: selectedSpaceId,
-                spaceName: spaces[selectedSpaceId].name,
+                space: spaces[selectedSpaceId],
                 selectedDate: formatDate(date),
               },
             }}
@@ -278,7 +293,8 @@ const GuestMap = (): JSX.Element => {
             예약하기
           </Styled.ReservationLink>
         )}
-      </Layout>
+      </Drawer>
+
       <Modal open={modalOpen} isClosableDimmer={true} onClose={() => setModalOpen(false)}>
         <Styled.SelectBox>
           <Styled.SelectButton onClick={handleSelectEdit}>
@@ -291,6 +307,7 @@ const GuestMap = (): JSX.Element => {
           </Styled.SelectButton>
         </Styled.SelectBox>
       </Modal>
+
       <Modal
         open={passwordInputModalOpen}
         isClosableDimmer={true}
