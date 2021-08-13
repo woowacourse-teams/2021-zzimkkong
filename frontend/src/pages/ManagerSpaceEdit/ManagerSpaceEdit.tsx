@@ -18,7 +18,7 @@ import { ReactComponent as DeleteIcon } from 'assets/svg/delete.svg';
 import { ReactComponent as PaletteIcon } from 'assets/svg/palette.svg';
 import { ReactComponent as PlusSmallIcon } from 'assets/svg/plus-small.svg';
 import { ReactComponent as PolygonIcon } from 'assets/svg/polygon.svg';
-import { ReactComponent as SquareIcon } from 'assets/svg/square.svg';
+import { ReactComponent as RectIcon } from 'assets/svg/rect.svg';
 import Button from 'components/Button/Button';
 import Header from 'components/Header/Header';
 import Input from 'components/Input/Input';
@@ -804,7 +804,7 @@ const ManagerSpaceEdit = (): JSX.Element => {
                     selected={drawingAreaShape === DrawingAreaShape.RECT}
                     onClick={() => setDrawingAreaShape(DrawingAreaShape.RECT)}
                   >
-                    <SquareIcon />
+                    <RectIcon />
                   </Styled.ToolbarButton>
                   <Styled.ToolbarButton
                     text="다각형"

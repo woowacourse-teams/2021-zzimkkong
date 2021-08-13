@@ -18,8 +18,8 @@ import { ReactComponent as EraserIcon } from 'assets/svg/eraser.svg';
 import { ReactComponent as ItemsIcon } from 'assets/svg/items.svg';
 import { ReactComponent as LineIcon } from 'assets/svg/line.svg';
 import { ReactComponent as MoveIcon } from 'assets/svg/move.svg';
+import { ReactComponent as RectIcon } from 'assets/svg/rect.svg';
 import { ReactComponent as SelectIcon } from 'assets/svg/select.svg';
-import { ReactComponent as SquareIcon } from 'assets/svg/square.svg';
 import Button from 'components/Button/Button';
 import ColorPicker from 'components/ColorPicker/ColorPicker';
 import ColorPickerIcon from 'components/ColorPicker/ColorPickerIcon';
@@ -690,7 +690,7 @@ const ManagerMapCreate = (): JSX.Element => {
                 selected={mode === Mode.Rect}
                 onClick={() => selectMode(Mode.Rect)}
               >
-                <SquareIcon />
+                <RectIcon />
               </Styled.ToolbarButton>
               <Styled.ToolbarButton
                 text="지우개"
