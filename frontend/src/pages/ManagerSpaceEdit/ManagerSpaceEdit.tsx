@@ -18,14 +18,14 @@ import { ReactComponent as DeleteIcon } from 'assets/svg/delete.svg';
 import { ReactComponent as PaletteIcon } from 'assets/svg/palette.svg';
 import { ReactComponent as PlusSmallIcon } from 'assets/svg/plus-small.svg';
 import { ReactComponent as PolygonIcon } from 'assets/svg/polygon.svg';
-import { ReactComponent as SquareIcon } from 'assets/svg/square.svg';
+import { ReactComponent as RectIcon } from 'assets/svg/rect.svg';
 import Button from 'components/Button/Button';
 import Header from 'components/Header/Header';
 import Input from 'components/Input/Input';
 import Layout from 'components/Layout/Layout';
 import Select from 'components/Select/Select';
 import Toggle from 'components/Toggle/Toggle';
-import { DrawingAreaShape } from 'constants/editor';
+import { DrawingAreaShape, EDITOR, KEY } from 'constants/editor';
 import MESSAGE from 'constants/message';
 import PALETTE from 'constants/palette';
 import PATH from 'constants/path';
@@ -47,12 +47,6 @@ const colorSelectOptions = [
   PALETTE.BLUE[900],
   PALETTE.PURPLE[500],
 ];
-
-const KEY_SPACE = ' ';
-const GRID_SIZE = 10;
-const SCALE_DELTA = 0.001;
-const MIN_SCALE = 0.5;
-const MAX_SCALE = 3.0;
 
 interface Params {
   mapId: string;
@@ -198,11 +192,14 @@ const ManagerSpaceEdit = (): JSX.Element => {
     scale: 1,
   });
 
-  const [coordinate, setCoordinate] = useState<Coordinate>({ x: -GRID_SIZE, y: -GRID_SIZE });
+  const [coordinate, setCoordinate] = useState<Coordinate>({
+    x: -EDITOR.GRID_SIZE,
+    y: -EDITOR.GRID_SIZE,
+  });
   const stickyCoordinate: Coordinate = useMemo(
     () => ({
-      x: Math.floor(coordinate.x / GRID_SIZE) * GRID_SIZE,
-      y: Math.floor(coordinate.y / GRID_SIZE) * GRID_SIZE,
+      x: Math.floor(coordinate.x / EDITOR.GRID_SIZE) * EDITOR.GRID_SIZE,
+      y: Math.floor(coordinate.y / EDITOR.GRID_SIZE) * EDITOR.GRID_SIZE,
     }),
     [coordinate]
   );
@@ -222,9 +219,9 @@ const ManagerSpaceEdit = (): JSX.Element => {
     setBoard((prevState) => {
       const { scale, x, y, width, height } = prevState;
 
-      const nextScale = scale - deltaY * SCALE_DELTA;
+      const nextScale = scale - deltaY * EDITOR.SCALE_DELTA;
 
-      if (nextScale <= MIN_SCALE || nextScale >= MAX_SCALE) {
+      if (nextScale <= EDITOR.MIN_SCALE || nextScale >= EDITOR.MAX_SCALE) {
         return {
           ...prevState,
           scale: prevState.scale,
@@ -413,8 +410,8 @@ const ManagerSpaceEdit = (): JSX.Element => {
           ? [stickyCoordinate.y, drawingStatus.start.y]
           : [drawingStatus.start.y, stickyCoordinate.y];
 
-      const width = Math.abs(startX - endX) + GRID_SIZE;
-      const height = Math.abs(startY - endY) + GRID_SIZE;
+      const width = Math.abs(startX - endX) + EDITOR.GRID_SIZE;
+      const height = Math.abs(startY - endY) + EDITOR.GRID_SIZE;
 
       setGuideArea({
         shape: drawingAreaShape,
@@ -455,8 +452,8 @@ const ManagerSpaceEdit = (): JSX.Element => {
         ? [stickyCoordinate.y, drawingStatus.start.y]
         : [drawingStatus.start.y, stickyCoordinate.y];
 
-    const width = Math.abs(startX - endX) + GRID_SIZE;
-    const height = Math.abs(startY - endY) + GRID_SIZE;
+    const width = Math.abs(startX - endX) + EDITOR.GRID_SIZE;
+    const height = Math.abs(startY - endY) + EDITOR.GRID_SIZE;
 
     setArea({
       shape: DrawingAreaShape.RECT,
@@ -633,17 +630,31 @@ const ManagerSpaceEdit = (): JSX.Element => {
           `
         )
         .join('')}
-      ${mapElements
-        ?.map(
-          ({ points, stroke }) => `
-            <polyline
-              points='${points.join(' ')}'
-              stroke='${stroke}'
-              strokeWidth='2'
-            />
-          `
-        )
-        .join('')}
+
+        ${mapElements
+          .map((element) =>
+            element.type === 'polyline'
+              ? `
+              <polyline
+                points='${element.points.join(' ')}'
+                stroke='${element.stroke}'
+                strokeWidth='${EDITOR.STROKE_WIDTH}'
+                strokeLinecap='round'
+              />
+            `
+              : `
+              <rect
+                x='${element.x ?? 0}'
+                y='${element.y ?? 0}'
+                width='${element.width ?? 0}'
+                height='${element.height ?? 0}'
+                stroke='${element.stroke}'
+                fill="none"
+                strokeWidth='${EDITOR.STROKE_WIDTH}'
+              />
+              `
+          )
+          .join('')}
     </svg>
   `
         .replace(/(\r\n\t|\n|\r\t|\s{1,})/gm, ' ')
@@ -723,11 +734,11 @@ const ManagerSpaceEdit = (): JSX.Element => {
   const handleKeyDown = useCallback((event: KeyboardEvent) => {
     if ((event.target as HTMLElement).tagName === 'INPUT') return;
 
-    if (event.key === KEY_SPACE) setDraggable(true);
+    if (event.key === KEY.SPACE) setDraggable(true);
   }, []);
 
   const handleKeyUp = useCallback((event: KeyboardEvent) => {
-    if (event.key === KEY_SPACE) setDraggable(false);
+    if (event.key === KEY.SPACE) setDraggable(false);
   }, []);
 
   useEffect(() => {
@@ -797,7 +808,7 @@ const ManagerSpaceEdit = (): JSX.Element => {
                     selected={drawingAreaShape === DrawingAreaShape.RECT}
                     onClick={() => setDrawingAreaShape(DrawingAreaShape.RECT)}
                   >
-                    <SquareIcon />
+                    <RectIcon />
                   </Styled.ToolbarButton>
                   <Styled.ToolbarButton
                     text="다각형"
@@ -833,12 +844,12 @@ const ManagerSpaceEdit = (): JSX.Element => {
                     <defs>
                       <pattern
                         id="smallGrid"
-                        width={`${GRID_SIZE}px`}
-                        height={`${GRID_SIZE}px`}
+                        width={`${EDITOR.GRID_SIZE}px`}
+                        height={`${EDITOR.GRID_SIZE}px`}
                         patternUnits="userSpaceOnUse"
                       >
                         <path
-                          d={`M ${GRID_SIZE} 0 L 0 0 0 ${GRID_SIZE}`}
+                          d={`M ${EDITOR.GRID_SIZE} 0 L 0 0 0 ${EDITOR.GRID_SIZE}`}
                           fill="none"
                           stroke={PALETTE.GRAY[300]}
                           strokeWidth="0.5"
@@ -846,17 +857,17 @@ const ManagerSpaceEdit = (): JSX.Element => {
                       </pattern>
                       <pattern
                         id="grid"
-                        width={`${GRID_SIZE * 10}px`}
-                        height={`${GRID_SIZE * 10}px`}
+                        width={`${EDITOR.GRID_SIZE * 10}px`}
+                        height={`${EDITOR.GRID_SIZE * 10}px`}
                         patternUnits="userSpaceOnUse"
                       >
                         <rect
-                          width={`${GRID_SIZE * 10}px`}
-                          height={`${GRID_SIZE * 10}px`}
+                          width={`${EDITOR.GRID_SIZE * 10}px`}
+                          height={`${EDITOR.GRID_SIZE * 10}px`}
                           fill="url(#smallGrid)"
                         />
                         <path
-                          d={`M ${GRID_SIZE * 10} 0 L 0 0 0 ${GRID_SIZE * 10}`}
+                          d={`M ${EDITOR.GRID_SIZE * 10} 0 L 0 0 0 ${EDITOR.GRID_SIZE * 10}`}
                           fill="none"
                           stroke={PALETTE.GRAY[300]}
                           strokeWidth="1"
@@ -885,8 +896,8 @@ const ManagerSpaceEdit = (): JSX.Element => {
                         <rect
                           x={stickyCoordinate.x}
                           y={stickyCoordinate.y}
-                          width={GRID_SIZE}
-                          height={GRID_SIZE}
+                          width={EDITOR.GRID_SIZE}
+                          height={EDITOR.GRID_SIZE}
                           fill={PALETTE.OPACITY_BLACK[100]}
                         />
                       )}
@@ -950,14 +961,29 @@ const ManagerSpaceEdit = (): JSX.Element => {
                       ))}
 
                       {/* Note: 맵 요소 */}
-                      {mapElements?.map((element) => (
-                        <polyline
-                          key={`${element.id}`}
-                          points={element.points.join(' ')}
-                          stroke={element.stroke}
-                          strokeWidth="2"
-                        />
-                      ))}
+                      {mapElements?.map((element) =>
+                        element.type === 'polyline' ? (
+                          <polyline
+                            key={`${element.id}`}
+                            points={element.points.join(' ')}
+                            stroke={element.stroke}
+                            strokeWidth={EDITOR.STROKE_WIDTH}
+                            strokeLinecap="round"
+                          />
+                        ) : (
+                          <rect
+                            key={`square-${element.id}`}
+                            x={element?.x}
+                            y={element?.y}
+                            width={element?.width}
+                            height={element?.height}
+                            stroke={element.stroke}
+                            fill="none"
+                            strokeWidth={EDITOR.STROKE_WIDTH}
+                            strokeLinecap="round"
+                          />
+                        )
+                      )}
                     </g>
                   </svg>
                 </Styled.BoardContainer>

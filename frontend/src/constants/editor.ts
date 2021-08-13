@@ -30,3 +30,17 @@ export const BOARD = {
   MAX_HEIGHT: 5000,
   MIN_HEIGHT: 100,
 };
+
+export const KEY = {
+  DELETE: 'Delete',
+  BACK_SPACE: 'Backspace',
+  SPACE: ' ',
+};
+
+export const EDITOR = {
+  GRID_SIZE: 10,
+  SCALE_DELTA: 0.001,
+  MIN_SCALE: 0.5,
+  MAX_SCALE: 3.0,
+  STROKE_WIDTH: 3,
+};
