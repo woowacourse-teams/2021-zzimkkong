@@ -32,7 +32,7 @@ public class Map {
     @JoinColumn(name = "member_id", foreignKey = @ForeignKey(name = "fk_map_member"), nullable = false)
     private Member member;
 
-    @OneToMany(mappedBy = "map", cascade = CascadeType.REMOVE, fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "map", cascade = CascadeType.REMOVE, fetch = FetchType.EAGER, orphanRemoval = true)
     private List<Space> spaces = new ArrayList<>();
 
     public Map(final String name, final String mapDrawing, final String mapImageUrl, final Member member) {
