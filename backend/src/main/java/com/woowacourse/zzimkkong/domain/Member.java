@@ -26,7 +26,7 @@ public class Member {
     @Column(nullable = false, length = 20)
     private String organization;
 
-    @OneToMany(mappedBy = "member", cascade = CascadeType.REMOVE)
+    @OneToMany(mappedBy = "member", cascade = CascadeType.REMOVE, orphanRemoval = true)
     private List<Preset> presets = new ArrayList<>();
 
     public Member(
