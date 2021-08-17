@@ -1,6 +1,5 @@
 import { InputHTMLAttributes } from 'react';
-import { Coordinate } from 'types/common';
-import { Color } from 'types/common';
+import { Coordinate, Color } from 'types/common';
 import * as Styled from './PinRadio.styles';
 
 export interface Props extends Omit<InputHTMLAttributes<HTMLInputElement>, 'type'> {
