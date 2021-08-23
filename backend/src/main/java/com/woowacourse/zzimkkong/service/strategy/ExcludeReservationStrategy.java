@@ -1,4 +1,4 @@
-package com.woowacourse.zzimkkong.service.callback;
+package com.woowacourse.zzimkkong.service.strategy;
 
 import com.woowacourse.zzimkkong.domain.Reservation;
 import com.woowacourse.zzimkkong.domain.Space;

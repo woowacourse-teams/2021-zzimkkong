@@ -2,7 +2,7 @@ package com.woowacourse.zzimkkong.controller;
 
 import com.woowacourse.zzimkkong.dto.reservation.*;
 import com.woowacourse.zzimkkong.service.ReservationService;
-import com.woowacourse.zzimkkong.service.callback.GuestReservationStrategy;
+import com.woowacourse.zzimkkong.service.strategy.GuestReservationStrategy;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -17,11 +17,11 @@ import static com.woowacourse.zzimkkong.dto.ValidatorMessage.DATE_FORMAT;
 @RequestMapping("/api/guests/maps/{mapId}/spaces")
 public class GuestReservationController {
     private final ReservationService reservationService;
-    private final GuestReservationStrategy guestCallback;
+    private final GuestReservationStrategy guestReservationStrategy;
 
     public GuestReservationController(final ReservationService reservationService) {
         this.reservationService = reservationService;
-        this.guestCallback = new GuestReservationStrategy();
+        this.guestReservationStrategy = new GuestReservationStrategy();
     }
 
     @PostMapping("/{spaceId}/reservations")
@@ -33,7 +33,7 @@ public class GuestReservationController {
                 mapId,
                 spaceId,
                 reservationCreateUpdateWithPasswordRequest);
-        ReservationCreateResponse reservationCreateResponse = reservationService.saveReservation(reservationCreateDto, guestCallback);
+        ReservationCreateResponse reservationCreateResponse = reservationService.saveReservation(reservationCreateDto, guestReservationStrategy);
         return ResponseEntity
                 .created(URI.create("/api/guests/maps/" + mapId + "/spaces/" + spaceId + "/reservations/" + reservationCreateResponse.getId()))
                 .build();
@@ -46,7 +46,7 @@ public class GuestReservationController {
         ReservationFindAllDto reservationFindAllDto = ReservationFindAllDto.of(
                 mapId,
                 date);
-        ReservationFindAllResponse reservationFindAllResponse = reservationService.findAllReservations(reservationFindAllDto, guestCallback);
+        ReservationFindAllResponse reservationFindAllResponse = reservationService.findAllReservations(reservationFindAllDto, guestReservationStrategy);
         return ResponseEntity.ok().body(reservationFindAllResponse);
     }
 
@@ -60,7 +60,7 @@ public class GuestReservationController {
                 spaceId,
                 date
         );
-        ReservationFindResponse reservationFindResponse = reservationService.findReservations(reservationFindDto, guestCallback);
+        ReservationFindResponse reservationFindResponse = reservationService.findReservations(reservationFindDto, guestReservationStrategy);
         return ResponseEntity.ok().body(reservationFindResponse);
     }
 
@@ -75,7 +75,7 @@ public class GuestReservationController {
                 spaceId,
                 reservationId,
                 reservationPasswordAuthenticationRequest);
-        ReservationResponse reservationResponse = reservationService.findReservation(reservationAuthenticationDto, guestCallback);
+        ReservationResponse reservationResponse = reservationService.findReservation(reservationAuthenticationDto, guestReservationStrategy);
         return ResponseEntity.ok().body(reservationResponse);
     }
 
@@ -90,7 +90,7 @@ public class GuestReservationController {
                 spaceId,
                 reservationId,
                 reservationCreateUpdateWithPasswordRequest);
-        reservationService.updateReservation(reservationUpdateDto, guestCallback);
+        reservationService.updateReservation(reservationUpdateDto, guestReservationStrategy);
         return ResponseEntity.ok().build();
     }
 
@@ -105,7 +105,7 @@ public class GuestReservationController {
                 spaceId,
                 reservationId,
                 reservationPasswordAuthenticationRequest);
-        reservationService.deleteReservation(reservationAuthenticationDto, guestCallback);
+        reservationService.deleteReservation(reservationAuthenticationDto, guestReservationStrategy);
         return ResponseEntity.noContent().build();
     }
 }

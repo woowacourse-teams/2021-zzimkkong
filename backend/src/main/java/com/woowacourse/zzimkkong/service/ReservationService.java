@@ -12,10 +12,10 @@ import com.woowacourse.zzimkkong.exception.space.NoSuchSpaceException;
 import com.woowacourse.zzimkkong.infrastructure.TimeConverter;
 import com.woowacourse.zzimkkong.repository.MapRepository;
 import com.woowacourse.zzimkkong.repository.ReservationRepository;
-import com.woowacourse.zzimkkong.service.callback.ReservationStrategy;
-import com.woowacourse.zzimkkong.service.callback.ExcludeReservationCreateStrategy;
-import com.woowacourse.zzimkkong.service.callback.ExcludeReservationStrategy;
-import com.woowacourse.zzimkkong.service.callback.ExcludeReservationUpdateStrategy;
+import com.woowacourse.zzimkkong.service.strategy.ReservationStrategy;
+import com.woowacourse.zzimkkong.service.strategy.ExcludeReservationCreateStrategy;
+import com.woowacourse.zzimkkong.service.strategy.ExcludeReservationStrategy;
+import com.woowacourse.zzimkkong.service.strategy.ExcludeReservationUpdateStrategy;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
