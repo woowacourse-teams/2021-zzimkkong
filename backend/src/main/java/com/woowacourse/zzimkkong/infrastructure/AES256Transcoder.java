@@ -68,9 +68,7 @@ public class AES256Transcoder implements Transcoder {
                 IllegalBlockSizeException | BadPaddingException |
                 NoSuchPaddingException | NoSuchAlgorithmException |
                 InvalidAlgorithmParameterException exception) {
-            exception.printStackTrace();
             throw new DecodingException(exception);
         }
-
     }
 }
