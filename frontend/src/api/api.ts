@@ -1,4 +1,5 @@
 import axios, { AxiosError } from 'axios';
+import { history } from 'App';
 import PATH from 'constants/path';
 import { LOCAL_STORAGE_KEY } from 'constants/storage';
 import { ErrorResponse } from 'types/response';
@@ -41,7 +42,8 @@ api.interceptors.response.use(
   (error: AxiosError<ErrorResponse>) => {
     if (error?.response?.status === 401) {
       localStorage.removeItem(LOCAL_STORAGE_KEY.ACCESS_TOKEN);
-      window.history.pushState(null, '', PATH.MANAGER_LOGIN);
+
+      history.push(PATH.MANAGER_LOGIN);
     }
 
     return Promise.reject(error);
