@@ -152,7 +152,7 @@ const ManagerMapCreate = (): JSX.Element => {
       history.push(PATH.MANAGER_MAIN);
     },
     onError: (error: AxiosError<ErrorResponse>) => {
-      console.error(error);
+      alert(error?.response?.data.message ?? MESSAGE.MANAGER_MAP.UNEXPECTED_MAP_CREATE_ERROR);
     },
   });
 
