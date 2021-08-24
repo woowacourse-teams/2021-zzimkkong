@@ -850,6 +850,7 @@ const ManagerMapCreate = (): JSX.Element => {
                           fill="none"
                           strokeWidth={EDITOR.STROKE_WIDTH}
                           strokeLinecap="round"
+                          opacity={erasingMapElementIds.includes(element.id) ? '0.3' : '1'}
                           cursor={mode === Mode.Select ? 'pointer' : 'default'}
                           onClickCapture={(event) => handleSelectRectElement(event, element.id)}
                           onMouseOverCapture={() => handleSelectErasingElement(element.id)}

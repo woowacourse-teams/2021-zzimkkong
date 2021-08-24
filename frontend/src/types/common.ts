@@ -22,12 +22,6 @@ export interface MapElement {
   points: string[];
 }
 
-export interface MapDrawing {
-  width: number;
-  height: number;
-  mapElements: MapElement[];
-}
-
 export interface MapItem {
   mapId: number;
   mapName: string;
@@ -132,9 +126,4 @@ export interface SpaceArea {
   y: number;
   width: number;
   height: number;
-}
-
-export interface DrawingStatus {
-  start?: Coordinate;
-  end?: Coordinate;
 }
