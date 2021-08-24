@@ -1,6 +1,7 @@
+import { createBrowserHistory } from 'history';
 import { QueryClient, QueryClientProvider } from 'react-query';
 import { ReactQueryDevtools } from 'react-query/devtools';
-import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
+import { Router, Route, Switch } from 'react-router-dom';
 import { RecoilRoot } from 'recoil';
 import { ThemeProvider } from 'styled-components';
 import PrivateRoute from 'PrivateRoute';
@@ -8,6 +9,8 @@ import PATH from 'constants/path';
 import { PRIVATE_ROUTES, PUBLIC_ROUTES } from 'constants/routes';
 import { GlobalStyle, theme } from './App.styles';
 import NotFound from './pages/NotFound/NotFound';
+
+export const history = createBrowserHistory();
 
 const queryClient = new QueryClient();
 
@@ -17,7 +20,7 @@ const App = (): JSX.Element => {
       <RecoilRoot>
         <ThemeProvider theme={theme}>
           <GlobalStyle />
-          <Router>
+          <Router history={history}>
             <Switch>
               {PUBLIC_ROUTES.map(({ path, component }) => (
                 <Route exact path={path} key={path}>
@@ -30,7 +33,6 @@ const App = (): JSX.Element => {
                   {component}
                 </PrivateRoute>
               ))}
-
               <Route path={PATH.NOT_FOUND} component={NotFound} />
             </Switch>
           </Router>
