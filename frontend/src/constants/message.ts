@@ -25,6 +25,10 @@ const MESSAGE = {
       '정보를 불러오는 중에 문제가 발생했습니다. 잠시 후에 다시 시도해주세요.',
     UNEXPECTED_MAP_DELETE_ERROR:
       '맵을 삭제하는 중에 문제가 발생했습니다. 잠시 후에 다시 시도해주세요.',
+    MAP_DELETED: '맵이 삭제되었습니다.',
+    SELECT_MAP: '맵을 선택해주세요.',
+    COPIED_SHARE_LINK: '맵의 공유링크가 클립보드에 복사되었습니다!',
+    UNEXPECTED_COPY_SHARE_LINK: '공유링크를 복사하는 데 문제가 발생했습니다.',
   },
   MANAGER_SPACE: {
     GET_UNEXPECTED_ERROR:

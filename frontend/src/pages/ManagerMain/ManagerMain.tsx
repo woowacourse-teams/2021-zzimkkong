@@ -67,7 +67,7 @@ const ManagerMain = (): JSX.Element => {
 
   const removeMap = useMutation(deleteMap, {
     onSuccess: () => {
-      alert('맵이 삭제 되었습니다.');
+      alert(MESSAGE.MANAGER_MAIN.MAP_DELETED);
     },
 
     onError: (error: AxiosError<ErrorResponse>) => {
@@ -99,7 +99,7 @@ const ManagerMain = (): JSX.Element => {
 
   const handleCopyLink = () => {
     if (selectedMapId === null) {
-      alert('맵을 선택해주세요.');
+      alert(MESSAGE.MANAGER_MAIN.SELECT_MAP);
 
       return;
     }
@@ -107,10 +107,10 @@ const ManagerMain = (): JSX.Element => {
     navigator.clipboard
       .writeText(`${window.location.origin}/guest/${getSelectedSharingMapId()}`)
       .then(() => {
-        alert('맵의 공유링크가 클립보드에 복사되었습니다!');
+        alert(MESSAGE.MANAGER_MAIN.COPIED_SHARE_LINK);
       })
       .catch(() => {
-        alert('공유링크를 복사하는데 문제가 발생했습니다.');
+        alert(MESSAGE.MANAGER_MAIN.UNEXPECTED_COPY_SHARE_LINK);
       });
   };
 
