@@ -20,7 +20,7 @@ public class Member {
     @Column(nullable = false, length = 50, unique = true)
     private String email;
 
-    @Column(nullable = false, length = 20)
+    @Column(nullable = false, length = 128)
     private String password;
 
     @Column(nullable = false, length = 20)
@@ -45,10 +45,6 @@ public class Member {
             final String organization) {
         this(email, password, organization);
         this.id = id;
-    }
-
-    public boolean checkPassword(final String password) {
-        return this.password.equals(password);
     }
 
     public Optional<Preset> findPresetById(final Long presetId) {
