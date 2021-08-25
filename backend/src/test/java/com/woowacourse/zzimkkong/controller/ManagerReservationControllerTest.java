@@ -59,7 +59,7 @@ class ManagerReservationControllerTest extends AcceptanceTest {
                 SALLY_NAME,
                 SALLY_DESCRIPTION);
 
-        Member pobi = new Member(EMAIL, PW, ORGANIZATION);
+        Member pobi = new Member(EMAIL, passwordEncoder.encode(PW), ORGANIZATION);
         Map luther = new Map(LUTHER_NAME, MAP_DRAWING_DATA, MAP_IMAGE_URL, pobi);
 
         Setting beSetting = Setting.builder()

@@ -10,26 +10,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 class MemberTest {
     @Test
-    @DisplayName("비밀번호가 일치하면 true를 반환한다.")
-    void checkPassword() {
-        //given
-        Member member = new Member(EMAIL, PW, ORGANIZATION);
-
-        //when, then
-        assertThat(member.checkPassword(PW)).isTrue();
-    }
-
-    @Test
-    @DisplayName("비밀번호가 일치하지 않으면 false를 반환한다.")
-    void checkWrongPassword() {
-        //given
-        Member member = new Member(EMAIL, PW, ORGANIZATION);
-
-        //when, then
-        assertThat(member.checkPassword(PW + "%")).isFalse();
-    }
-
-    @Test
     @DisplayName("자신의 preset 중에 id가 같은 것을 반환한다.")
     void findPresetById() {
         //given, when

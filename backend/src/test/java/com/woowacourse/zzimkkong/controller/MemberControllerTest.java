@@ -14,8 +14,10 @@ import io.restassured.response.Response;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.util.List;
 
@@ -33,7 +35,7 @@ class MemberControllerTest extends AcceptanceTest {
 
     @BeforeEach
     void setUp() {
-        pobi = new Member(EMAIL, PW, ORGANIZATION);
+        pobi = new Member(EMAIL, passwordEncoder.encode(PW), ORGANIZATION);
         setting = Setting.builder()
                 .availableStartTime(BE_AVAILABLE_START_TIME)
                 .availableEndTime(BE_AVAILABLE_END_TIME)
