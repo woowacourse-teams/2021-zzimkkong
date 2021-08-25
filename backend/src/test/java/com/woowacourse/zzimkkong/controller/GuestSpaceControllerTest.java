@@ -39,7 +39,7 @@ class GuestSpaceControllerTest extends AcceptanceTest {
         Long beSpaceId = Long.valueOf(saveBeSpaceResponse.header("location").split("/")[6]);
         Long feSpaceId = Long.valueOf(saveFe1SpaceResponse.header("location").split("/")[6]);
 
-        Member pobi = new Member(EMAIL, PW, ORGANIZATION);
+        Member pobi = new Member(EMAIL, passwordEncoder.encode(PW), ORGANIZATION);
         Map luther = new Map(LUTHER_NAME, MAP_DRAWING_DATA, MAP_IMAGE_URL, pobi);
         Setting beSetting = Setting.builder()
                 .availableStartTime(BE_AVAILABLE_START_TIME)

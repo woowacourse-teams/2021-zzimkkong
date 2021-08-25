@@ -7,6 +7,7 @@ import com.woowacourse.zzimkkong.exception.member.NoSuchMemberException;
 import com.woowacourse.zzimkkong.exception.member.PasswordMismatchException;
 import com.woowacourse.zzimkkong.infrastructure.JwtUtils;
 import com.woowacourse.zzimkkong.repository.MemberRepository;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -17,10 +18,14 @@ import java.util.Map;
 public class AuthService {
     private final MemberRepository members;
     private final JwtUtils jwtUtils;
+    private final PasswordEncoder passwordEncoder;
 
-    public AuthService(final MemberRepository memberRepository, final JwtUtils jwtUtils) {
-        this.members = memberRepository;
+    public AuthService(final MemberRepository members,
+                       final JwtUtils jwtUtils,
+                       final PasswordEncoder passwordEncoder) {
+        this.members = members;
         this.jwtUtils = jwtUtils;
+        this.passwordEncoder = passwordEncoder;
     }
 
     @Transactional(readOnly = true)
@@ -44,7 +49,7 @@ public class AuthService {
     }
 
     private void validatePassword(Member findMember, String password) {
-        if (!findMember.checkPassword(password)) {
+        if (!passwordEncoder.matches(password, findMember.getPassword())) {
             throw new PasswordMismatchException();
         }
     }

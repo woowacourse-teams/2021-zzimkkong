@@ -28,6 +28,10 @@ dependencies {
     implementation 'org.springframework.cloud:spring-cloud-starter-aws:2.2.6.RELEASE'
     implementation 'org.projectlombok:lombok:1.18.18'
 
+    // Security
+    implementation 'org.springframework.boot:spring-boot-starter-security'
+    testImplementation 'org.springframework.security:spring-security-test'
+
     //database
     runtimeOnly 'mysql:mysql-connector-java'
     runtimeOnly 'com.h2database:h2'

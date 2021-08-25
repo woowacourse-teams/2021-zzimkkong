@@ -23,7 +23,7 @@ class AuthServiceTest extends ServiceTest {
 
     @BeforeEach
     void setUp() {
-        pobi = new Member(EMAIL, PW, ORGANIZATION);
+        pobi = new Member(EMAIL, passwordEncoder.encode(PW), ORGANIZATION);
     }
 
     @Autowired
@@ -61,14 +61,14 @@ class AuthServiceTest extends ServiceTest {
 
 
     @Test
-    @DisplayName("회원 로그인 요청 시, 이메일과 비밀번호가 일치하지 않으면 오류가 발생한다.")
+    @DisplayName("회원 로그인 요청 시, 비밀번호가 일치하지 않으면 오류가 발생한다.")
     void loginMismatchException() {
         //given
         LoginRequest loginRequest = new LoginRequest(EMAIL, PW);
 
         //when
         given(members.findByEmail(anyString()))
-                .willReturn(Optional.of(new Member(EMAIL, "wrong_password", ORGANIZATION)));
+                .willReturn(Optional.of(new Member(EMAIL, passwordEncoder.encode("wrong_password"), ORGANIZATION)));
 
         //then
         assertThatThrownBy(() -> authService.login(loginRequest))

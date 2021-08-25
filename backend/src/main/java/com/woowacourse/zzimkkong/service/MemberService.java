@@ -5,6 +5,7 @@ import com.woowacourse.zzimkkong.dto.member.MemberSaveRequest;
 import com.woowacourse.zzimkkong.dto.member.MemberSaveResponse;
 import com.woowacourse.zzimkkong.exception.member.DuplicateEmailException;
 import com.woowacourse.zzimkkong.repository.MemberRepository;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -12,17 +13,21 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional
 public class MemberService {
     private final MemberRepository members;
+    private final PasswordEncoder passwordEncoder;
 
-    public MemberService(final MemberRepository memberRepository) {
-        this.members = memberRepository;
+    public MemberService(final MemberRepository members,
+                         final PasswordEncoder passwordEncoder) {
+        this.members = members;
+        this.passwordEncoder = passwordEncoder;
     }
 
     public MemberSaveResponse saveMember(final MemberSaveRequest memberSaveRequest) {
         validateDuplicateEmail(memberSaveRequest.getEmail());
 
+        String password = passwordEncoder.encode(memberSaveRequest.getPassword());
         Member member = new Member(
                 memberSaveRequest.getEmail(),
-                memberSaveRequest.getPassword(),
+                password,
                 memberSaveRequest.getOrganization()
         );
         Member saveMember = members.save(member);
