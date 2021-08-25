@@ -30,6 +30,7 @@ import MESSAGE from 'constants/message';
 import PALETTE from 'constants/palette';
 import PATH from 'constants/path';
 import useInput from 'hooks/useInput';
+import useListenManagerMainState from 'hooks/useListenManagerMainState';
 import useManagerMap from 'hooks/useManagerMap';
 import useManagerSpaces from 'hooks/useManagerSpaces';
 import useToggle from 'hooks/useToggle';
@@ -60,6 +61,8 @@ const ManagerSpaceEdit = (): JSX.Element => {
   const editorRef = useRef<HTMLDivElement | null>(null);
   const spaceNameRef = useRef<HTMLInputElement | null>(null);
   const { mapId } = useParams<Params>();
+
+  useListenManagerMainState({ mapId: Number(mapId) });
 
   const todayDate = formatDate(new Date());
   const initialStartTime = formatTimeWithSecond(new Date(`${todayDate}T07:00:00`));
