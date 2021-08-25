@@ -152,7 +152,7 @@ const ManagerMapCreate = (): JSX.Element => {
       history.push(PATH.MANAGER_MAIN);
     },
     onError: (error: AxiosError<ErrorResponse>) => {
-      console.error(error);
+      alert(error?.response?.data.message ?? MESSAGE.MANAGER_MAP.UNEXPECTED_MAP_CREATE_ERROR);
     },
   });
 
@@ -699,13 +699,16 @@ const ManagerMapCreate = (): JSX.Element => {
               >
                 <EraserIcon />
               </Styled.ToolbarButton>
-              <Styled.ToolbarButton
+
+              {/* NOTE 추후 장식 기능 구현 시, 이 부분의 주석을 해제하고 작성하면 됩니다. */}
+              {/* <Styled.ToolbarButton
                 text="장식"
                 selected={mode === Mode.Decoration}
                 onClick={() => selectMode(Mode.Decoration)}
               >
                 <ItemsIcon />
-              </Styled.ToolbarButton>
+              </Styled.ToolbarButton> */}
+
               <Styled.ToolbarButton
                 text="색상선택"
                 onClick={() => setColorPickerOpen(!colorPickerOpen)}

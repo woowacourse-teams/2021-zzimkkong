@@ -810,13 +810,15 @@ const ManagerSpaceEdit = (): JSX.Element => {
                   >
                     <RectIcon />
                   </Styled.ToolbarButton>
-                  <Styled.ToolbarButton
+
+                  {/* NOTE 추후 다각형 기능 구현 시, 이 부분의 주석을 해제하고 작성하면 됩니다. */}
+                  {/* <Styled.ToolbarButton
                     text="다각형"
                     selected={drawingAreaShape === DrawingAreaShape.POLYGON}
                     onClick={() => setDrawingAreaShape(DrawingAreaShape.POLYGON)}
                   >
                     <PolygonIcon />
-                  </Styled.ToolbarButton>
+                  </Styled.ToolbarButton> */}
                 </Styled.SpaceShapeSelect>
               )}
               <Styled.Editor ref={editorRef}>

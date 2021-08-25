@@ -1,5 +1,5 @@
 import { AxiosError } from 'axios';
-import { FormEventHandler, useMemo, useState } from 'react';
+import { FormEventHandler, useEffect, useMemo, useRef, useState } from 'react';
 import { useMutation } from 'react-query';
 import { useHistory, useLocation, useParams } from 'react-router-dom';
 import { deleteReservation } from 'api/guestReservation';
@@ -48,8 +48,11 @@ const GuestMap = (): JSX.Element => {
   const location = useLocation<GuestMapState>();
   const { sharingMapId } = useParams<URLParameter>();
 
+  const mapRef = useRef<HTMLDivElement | null>(null);
+
   const spaceId = location.state?.spaceId;
   const targetDate = location.state?.targetDate;
+  const scrollPosition = location.state?.scrollPosition;
 
   const now = new Date();
   const todayDate = new Date(now.getFullYear(), now.getMonth(), now.getDate());
@@ -167,6 +170,16 @@ const GuestMap = (): JSX.Element => {
     });
   };
 
+  useEffect(() => {
+    if (scrollPosition) {
+      mapRef?.current?.scrollTo(scrollPosition.x ?? 0, scrollPosition.y ?? 0);
+    }
+
+    if (targetDate) {
+      setDate(new Date(targetDate));
+    }
+  }, [scrollPosition, targetDate]);
+
   return (
     <>
       <Header />
@@ -174,7 +187,7 @@ const GuestMap = (): JSX.Element => {
         <Styled.Page>
           <Styled.PageTitle>{map?.mapName}</Styled.PageTitle>
           <DateInput date={date} setDate={setDate} />
-          <Styled.MapContainer>
+          <Styled.MapContainer ref={mapRef}>
             {mapDrawing && (
               <Styled.MapContainerInner width={mapDrawing.width} height={mapDrawing.height}>
                 <svg
@@ -287,6 +300,7 @@ const GuestMap = (): JSX.Element => {
                 mapId: map?.mapId,
                 space: spaces[selectedSpaceId],
                 selectedDate: formatDate(date),
+                scrollPosition: { x: mapRef?.current?.scrollLeft, y: mapRef?.current?.scrollTop },
               },
             }}
           >
