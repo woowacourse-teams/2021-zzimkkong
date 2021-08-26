@@ -28,7 +28,7 @@ import { isNullish } from 'utils/type';
 import * as Styled from './ManagerMain.styles';
 
 interface LocationState {
-  mapId?: number | null;
+  mapId?: number;
 }
 
 const ManagerMain = (): JSX.Element => {
