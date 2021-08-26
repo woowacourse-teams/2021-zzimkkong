@@ -68,6 +68,7 @@ const ManagerJoin = (): JSX.Element => {
 
     if (password !== passwordConfirm) {
       alert(MESSAGE.JOIN.INVALID_PASSWORD_CONFIRM);
+
       return;
     }
 
