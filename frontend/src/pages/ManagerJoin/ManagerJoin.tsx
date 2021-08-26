@@ -50,8 +50,8 @@ const ManagerJoin = (): JSX.Element => {
       history.push(PATH.MANAGER_LOGIN);
     },
 
-    onError: () => {
-      alert(MESSAGE.JOIN.FAILURE);
+    onError: (error: AxiosError<ErrorResponse>) => {
+      alert(error?.response?.data.message ?? MESSAGE.JOIN.FAILURE);
     },
   });
 
@@ -65,6 +65,11 @@ const ManagerJoin = (): JSX.Element => {
     event.preventDefault();
 
     if (!email || !password || !passwordConfirm || !organization) return;
+
+    if (password !== passwordConfirm) {
+      alert(MESSAGE.JOIN.INVALID_PASSWORD_CONFIRM);
+      return;
+    }
 
     join.mutate({ email, password, organization });
   };
