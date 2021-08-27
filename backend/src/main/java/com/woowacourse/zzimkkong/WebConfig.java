@@ -11,7 +11,7 @@ public class WebConfig implements WebMvcConfigurer {
     public void addCorsMappings(CorsRegistry registry) {
         registry.addMapping("/**")
                 .allowedMethods("*")
-                .exposedHeaders(HttpHeaders.LOCATION);
-//                .allowedOriginPatterns("https://zzimkkong-proxy.o-r.kr/");
+                .exposedHeaders(HttpHeaders.LOCATION)
+                .allowedOriginPatterns("https://zzimkkong.com/");
     }
 }
