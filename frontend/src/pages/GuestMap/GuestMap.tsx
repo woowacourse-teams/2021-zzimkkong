@@ -2,7 +2,7 @@ import { AxiosError } from 'axios';
 import { FormEventHandler, useEffect, useMemo, useRef, useState } from 'react';
 import { useMutation } from 'react-query';
 import { useHistory, useLocation, useParams } from 'react-router-dom';
-import { deleteReservation } from 'api/guestReservation';
+import { deleteGuestReservation } from 'api/guestReservation';
 import { ReactComponent as DeleteIcon } from 'assets/svg/delete.svg';
 import { ReactComponent as EditIcon } from 'assets/svg/edit.svg';
 import Button from 'components/Button/Button';
@@ -117,7 +117,7 @@ const GuestMap = (): JSX.Element => {
   const reservations = getReservations.data?.data?.reservations ?? [];
   const reservationAvailable = new Date(date) > todayDate;
 
-  const removeReservation = useMutation(deleteReservation, {
+  const removeReservation = useMutation(deleteGuestReservation, {
     onSuccess: () => {
       window.alert('예약이 삭제 되었습니다.');
       setModalOpen(false);

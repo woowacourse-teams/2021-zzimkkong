@@ -2,7 +2,7 @@ import { AxiosError } from 'axios';
 import { FormEventHandler } from 'react';
 import { useMutation } from 'react-query';
 import { useHistory, useLocation, useParams } from 'react-router-dom';
-import { putReservation } from 'api/guestReservation';
+import { putGuestReservation } from 'api/guestReservation';
 import { ReactComponent as CalendarIcon } from 'assets/svg/calendar.svg';
 import Button from 'components/Button/Button';
 import Header from 'components/Header/Header';
@@ -62,7 +62,7 @@ const GuestReservationEdit = (): JSX.Element => {
   const getReservations = useGuestReservations({ mapId, spaceId: space.id, date });
   const reservations = getReservations.data?.data?.reservations ?? [];
 
-  const editReservation = useMutation(putReservation, {
+  const editReservation = useMutation(putGuestReservation, {
     onSuccess: () => {
       history.push(`/guest/${sharingMapId}`, {
         spaceId: space.id,
