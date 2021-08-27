@@ -2,6 +2,7 @@ import { ReactNode } from 'react';
 import GuestMap from 'pages/GuestMap/GuestMap';
 import GuestReservation from 'pages/GuestReservation/GuestReservation';
 import GuestReservationEdit from 'pages/GuestReservationEdit/GuestReservationEdit';
+import Main from 'pages/Main/Main';
 import ManagerJoin from 'pages/ManagerJoin/ManagerJoin';
 import ManagerLogin from 'pages/ManagerLogin/ManagerLogin';
 import ManagerMain from 'pages/ManagerMain/ManagerMain';
@@ -19,6 +20,10 @@ interface PrivateRoute extends Route {
 }
 
 export const PUBLIC_ROUTES: Route[] = [
+  {
+    path: PATH.MAIN,
+    component: <Main />,
+  },
   {
     path: PATH.MANAGER_LOGIN,
     component: <ManagerLogin />,

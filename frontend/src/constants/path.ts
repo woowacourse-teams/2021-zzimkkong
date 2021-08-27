@@ -1,7 +1,8 @@
 const PATH = {
-  MANAGER_MAIN: '/',
+  MAIN: '/',
   MANAGER_LOGIN: '/login',
   MANAGER_JOIN: '/join',
+  MANAGER_MAIN: '/map',
   MANAGER_MAP_CREATE: '/map/create',
   MANAGER_MAP_EDIT: '/map/:mapId/edit',
   MANAGER_SPACE_EDIT: '/map/:mapId/space/edit',
@@ -15,6 +16,8 @@ export const HREF = {
   MANAGER_MAP_EDIT: (mapId: number): string => PATH.MANAGER_MAP_EDIT.replace(':mapId', `${mapId}`),
   MANAGER_SPACE_EDIT: (mapId: number): string =>
     PATH.MANAGER_SPACE_EDIT.replace(':mapId', `${mapId}`),
+  GUEST_MAP: (sharingMapId: string): string =>
+    PATH.GUEST_MAP.replace(':sharingMapId', `${sharingMapId}`),
 };
 
 export default PATH;
