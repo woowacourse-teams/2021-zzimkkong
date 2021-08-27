@@ -1,8 +1,9 @@
 {
   "name": "zzimkkong-frontend",
-  "version": "0.1.0",
+  "version": "1.0.0",
   "main": "src/index.tsx",
   "license": "MIT",
+  "homepage": "https://github.com/woowacourse-teams/2021-zzimkkong",
   "contributors": [
     {
       "name": "yujo11",
