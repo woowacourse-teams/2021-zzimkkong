@@ -1,0 +1,27 @@
+== Member(멤버)
+
+=== 멤버 회원가입
+==== Request
+include::{snippets}/member/post/http-request.adoc[]
+==== Response
+include::{snippets}/member/post/http-response.adoc[]
+
+=== 멤버 이메일 중복 확인
+==== Request
+include::{snippets}/member/get/http-request.adoc[]
+==== Response
+include::{snippets}/member/get/http-response.adoc[]
+
+=== 멤버 로그인
+==== Request
+include::{snippets}/member/login/http-request.adoc[]
+==== Response
+include::{snippets}/member/login/http-response.adoc[]
+
+=== 토큰 유효성 검증
+==== Request
+include::{snippets}/member/token/success/http-request.adoc[]
+==== Success Response
+include::{snippets}/member/token/success/http-response.adoc[]
+==== Fail Response
+include::{snippets}/member/token/fail/http-response.adoc[]

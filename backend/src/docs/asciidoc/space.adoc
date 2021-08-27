@@ -1,0 +1,39 @@
+== Space(공간)
+
+=== 공간 생성
+==== Request
+include::{snippets}/space/manager/post/http-request.adoc[]
+==== Response
+include::{snippets}/space/manager/post/http-response.adoc[]
+
+=== 공간 전체 조회
+==== 공간 관리자
+===== Request
+include::{snippets}/space/manager/getAll/http-request.adoc[]
+===== Response
+include::{snippets}/space/manager/getAll/http-response.adoc[]
+
+==== 예약자
+===== Request
+include::{snippets}/space/guest/getAll/http-request.adoc[]
+===== Response
+include::{snippets}/space/guest/getAll/http-response.adoc[]
+
+=== 특정 공간 조회
+==== Request
+include::{snippets}/space/manager/get/http-request.adoc[]
+==== Response
+include::{snippets}/space/manager/get/http-response.adoc[]
+
+=== 공간 수정
+==== Request
+include::{snippets}/space/manager/put/http-request.adoc[]
+==== Response
+include::{snippets}/space/manager/put/http-response.adoc[]
+
+=== 공간 삭제
+==== Request
+include::{snippets}/space/manager/delete/http-request.adoc[]
+==== Response
+include::{snippets}/space/manager/delete/http-response.adoc[]
+

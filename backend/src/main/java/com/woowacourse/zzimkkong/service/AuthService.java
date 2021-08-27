@@ -1,0 +1,56 @@
+package com.woowacourse.zzimkkong.service;
+
+import com.woowacourse.zzimkkong.domain.Member;
+import com.woowacourse.zzimkkong.dto.member.LoginRequest;
+import com.woowacourse.zzimkkong.dto.member.TokenResponse;
+import com.woowacourse.zzimkkong.exception.member.NoSuchMemberException;
+import com.woowacourse.zzimkkong.exception.member.PasswordMismatchException;
+import com.woowacourse.zzimkkong.infrastructure.JwtUtils;
+import com.woowacourse.zzimkkong.repository.MemberRepository;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.util.Map;
+
+@Service
+@Transactional
+public class AuthService {
+    private final MemberRepository members;
+    private final JwtUtils jwtUtils;
+    private final PasswordEncoder passwordEncoder;
+
+    public AuthService(final MemberRepository members,
+                       final JwtUtils jwtUtils,
+                       final PasswordEncoder passwordEncoder) {
+        this.members = members;
+        this.jwtUtils = jwtUtils;
+        this.passwordEncoder = passwordEncoder;
+    }
+
+    @Transactional(readOnly = true)
+    public TokenResponse login(LoginRequest loginRequest) {
+        Member findMember = members.findByEmail(loginRequest.getEmail())
+                .orElseThrow(NoSuchMemberException::new);
+
+        validatePassword(findMember, loginRequest.getPassword());
+
+        String token = issueToken(findMember);
+
+        return TokenResponse.from(token);
+    }
+
+    private String issueToken(Member findMember) {
+        Map<String, Object> payload = JwtUtils.payloadBuilder()
+                .setSubject(findMember.getEmail())
+                .build();
+
+        return jwtUtils.createToken(payload);
+    }
+
+    private void validatePassword(Member findMember, String password) {
+        if (!passwordEncoder.matches(password, findMember.getPassword())) {
+            throw new PasswordMismatchException();
+        }
+    }
+}

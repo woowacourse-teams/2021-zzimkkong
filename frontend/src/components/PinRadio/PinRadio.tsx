@@ -1,0 +1,29 @@
+import { InputHTMLAttributes } from 'react';
+import { Coordinate, Color } from 'types/common';
+import * as Styled from './PinRadio.styles';
+
+export interface Props extends Omit<InputHTMLAttributes<HTMLInputElement>, 'type'> {
+  text: string;
+  textPosition?: 'left' | 'right' | 'top' | 'bottom';
+  coordinate: Coordinate;
+  color?: Color;
+}
+
+const PinRadio = ({
+  text,
+  textPosition = 'bottom',
+  color,
+  coordinate,
+  ...props
+}: Props): JSX.Element => {
+  return (
+    <Styled.Pin coordinate={coordinate}>
+      <Styled.PinContainer>
+        <Styled.PinInput type="radio" color={color} {...props} />
+        <Styled.PinText textPosition={textPosition}>{text}</Styled.PinText>
+      </Styled.PinContainer>
+    </Styled.Pin>
+  );
+};
+
+export default PinRadio;
