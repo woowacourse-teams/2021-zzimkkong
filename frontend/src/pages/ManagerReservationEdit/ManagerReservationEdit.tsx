@@ -1,8 +1,8 @@
 import { AxiosError } from 'axios';
 import { FormEventHandler } from 'react';
 import { useMutation } from 'react-query';
-import { useHistory, useLocation, useParams } from 'react-router-dom';
-import { putGuestReservation } from 'api/guestReservation';
+import { useHistory, useLocation } from 'react-router-dom';
+import { putManagerReservation } from 'api/managerReservation';
 import { ReactComponent as CalendarIcon } from 'assets/svg/calendar.svg';
 import Button from 'components/Button/Button';
 import Header from 'components/Header/Header';
@@ -11,37 +11,42 @@ import Layout from 'components/Layout/Layout';
 import PageHeader from 'components/PageHeader/PageHeader';
 import ReservationListItem from 'components/ReservationListItem/ReservationListItem';
 import MESSAGE from 'constants/message';
-import REGEXP from 'constants/regexp';
+import PATH from 'constants/path';
 import RESERVATION from 'constants/reservation';
 import useGuestReservations from 'hooks/useGuestReservations';
 import useInput from 'hooks/useInput';
+import useListenManagerMainState from 'hooks/useListenManagerMainState';
+import useManagerSpace from 'hooks/useManagerSpace';
 import { GuestMapState } from 'pages/GuestMap/GuestMap';
-import { MapItem, Reservation, Space } from 'types/common';
+import { Reservation } from 'types/common';
 import { ErrorResponse } from 'types/response';
 import { formatDate, formatTime, formatTimePrettier } from 'utils/datetime';
-import * as Styled from './GuestReservationEdit.styles';
+import * as Styled from './ManagerReservationEdit.styles';
 
-interface GuestReservationEditState {
+interface ManagerReservationEditState {
   mapId: number;
-  space: Space;
+  spaceId: number;
   reservation: Reservation;
   selectedDate: string;
 }
 
-interface URLParameter {
-  sharingMapId: MapItem['sharingMapId'];
-}
-
-const GuestReservationEdit = (): JSX.Element => {
-  const location = useLocation<GuestReservationEditState>();
+const ManagerReservationEdit = (): JSX.Element => {
+  const location = useLocation<ManagerReservationEditState>();
   const history = useHistory<GuestMapState>();
-  const { sharingMapId } = useParams<URLParameter>();
 
-  const { mapId, space, reservation, selectedDate } = location.state;
-  const { availableStartTime, availableEndTime, reservationTimeUnit, reservationMaximumTimeUnit } =
-    space.settings;
+  const { mapId, spaceId, reservation, selectedDate } = location.state;
 
-  if (!mapId || !space || !reservation) history.replace(`/guest/${sharingMapId}`);
+  if (!mapId || !spaceId || !reservation) history.replace(PATH.MANAGER_MAIN);
+
+  useListenManagerMainState({ mapId: Number(mapId) });
+
+  const getSpace = useManagerSpace({ mapId, spaceId });
+  const space = getSpace.data?.data.data;
+
+  const availableStartTime = space?.settings?.availableStartTime ?? '';
+  const availableEndTime = space?.settings?.availableEndTime ?? '';
+  const reservationTimeUnit = space?.settings?.reservationTimeUnit ?? 0;
+  const reservationMaximumTimeUnit = space?.settings?.reservationMaximumTimeUnit ?? 0;
 
   const now = new Date();
   const todayDate = formatDate(new Date());
@@ -51,7 +56,6 @@ const GuestReservationEdit = (): JSX.Element => {
   const [date, onChangeDate] = useInput(selectedDate);
   const [startTime, onChangeStartTime] = useInput(formatTime(new Date(reservation.startDateTime)));
   const [endTime, onChangeEndTime] = useInput(formatTime(new Date(reservation.endDateTime)));
-  const [password, onChangePassword] = useInput('');
 
   const startDateTime = new Date(`${date}T${startTime}Z`);
   const endDateTime = new Date(`${date}T${endTime}Z`);
@@ -59,13 +63,13 @@ const GuestReservationEdit = (): JSX.Element => {
   const availableStartTimeText = formatTime(new Date(`${todayDate}T${availableStartTime}`));
   const availableEndTimeText = formatTime(new Date(`${todayDate}T${availableEndTime}`));
 
-  const getReservations = useGuestReservations({ mapId, spaceId: space.id, date });
+  const getReservations = useGuestReservations({ mapId, spaceId, date });
   const reservations = getReservations.data?.data?.reservations ?? [];
 
-  const editReservation = useMutation(putGuestReservation, {
+  const editReservation = useMutation(putManagerReservation, {
     onSuccess: () => {
-      history.push(`/guest/${sharingMapId}`, {
-        spaceId: space.id,
+      history.push(PATH.MANAGER_MAIN, {
+        spaceId,
         targetDate: new Date(`${date}T${startTime}`),
       });
     },
@@ -83,7 +87,6 @@ const GuestReservationEdit = (): JSX.Element => {
     const editReservationParams = {
       name,
       description,
-      password,
       startDateTime,
       endDateTime,
     };
@@ -91,7 +94,7 @@ const GuestReservationEdit = (): JSX.Element => {
     editReservation.mutate({
       reservation: editReservationParams,
       mapId,
-      spaceId: space.id,
+      spaceId,
       reservationId: reservation.id,
     });
   };
@@ -102,10 +105,12 @@ const GuestReservationEdit = (): JSX.Element => {
       <Layout>
         <Styled.ReservationForm onSubmit={handleSubmit}>
           <Styled.Section>
-            <Styled.PageHeader>
-              <Styled.ColorDot color={space.color} />
-              {space.name}
-            </Styled.PageHeader>
+            {space && (
+              <Styled.PageHeader>
+                <Styled.ColorDot color={space.color} />
+                {space.name}
+              </Styled.PageHeader>
+            )}
             <Styled.InputWrapper>
               <Input
                 label="이름"
@@ -139,7 +144,8 @@ const GuestReservationEdit = (): JSX.Element => {
               <Input
                 type="time"
                 label="시작 시간"
-                step={60 * reservationTimeUnit}
+                // TODO 현재 적용 X
+                // step={60 * reservationTimeUnit}
                 min={availableStartTime}
                 max={availableEndTime}
                 value={startTime}
@@ -149,38 +155,20 @@ const GuestReservationEdit = (): JSX.Element => {
               <Input
                 type="time"
                 label="종료 시간"
-                step={60 * reservationTimeUnit}
+                // TODO 현재 적용 X
+                // step={60 * reservationTimeUnit}
                 min={startTime}
                 max={availableEndTime}
                 value={endTime}
                 onChange={onChangeEndTime}
                 required
               />
-              <Styled.TimeFormMessage>
+
+              {/* TODO 현재 NaN으로 표시  */}
+              {/* <Styled.TimeFormMessage>
                 예약 가능 시간 : {availableStartTimeText} ~ {availableEndTimeText} (최대{' '}
                 {formatTimePrettier(reservationMaximumTimeUnit)})
-              </Styled.TimeFormMessage>
-            </Styled.InputWrapper>
-            <Styled.InputWrapper>
-              <Input
-                type="password"
-                label="비밀번호"
-                value={password}
-                onChange={onChangePassword}
-                minLength={RESERVATION.PASSWORD.MIN_LENGTH}
-                maxLength={RESERVATION.PASSWORD.MAX_LENGTH}
-                pattern={REGEXP.RESERVATION_PASSWORD.source}
-                inputMode="numeric"
-                status={
-                  editReservation.error?.response?.data.field === 'password' ? 'error' : 'default'
-                }
-                message={
-                  editReservation.error?.response?.data.field === 'password'
-                    ? '비밀번호 4자리를 다시 확인해주세요.'
-                    : '예약하실 때 사용하신 비밀번호 4자리를 입력해주세요.'
-                }
-                required
-              />
+              </Styled.TimeFormMessage> */}
             </Styled.InputWrapper>
           </Styled.Section>
           <Styled.Section>
@@ -214,4 +202,4 @@ const GuestReservationEdit = (): JSX.Element => {
   );
 };
 
-export default GuestReservationEdit;
+export default ManagerReservationEdit;

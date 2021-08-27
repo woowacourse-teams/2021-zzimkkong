@@ -55,14 +55,14 @@ export const queryGuestReservations: QueryFunction<
   return api.get(`/guests/maps/${mapId}/spaces/${spaceId}/reservations?date=${date}`);
 };
 
-export const postReservation = ({
+export const postGuestReservation = ({
   reservation,
   mapId,
   spaceId,
 }: PostReservationParams): Promise<AxiosResponse<never>> =>
   api.post(`/guests/maps/${mapId}/spaces/${spaceId}/reservations`, reservation);
 
-export const putReservation = ({
+export const putGuestReservation = ({
   reservation,
   mapId,
   spaceId,
@@ -70,7 +70,7 @@ export const putReservation = ({
 }: PutReservationParams): Promise<AxiosResponse<never>> =>
   api.put(`/guests/maps/${mapId}/spaces/${spaceId}/reservations/${reservationId}`, reservation);
 
-export const deleteReservation = ({
+export const deleteGuestReservation = ({
   mapId,
   spaceId,
   reservationId,

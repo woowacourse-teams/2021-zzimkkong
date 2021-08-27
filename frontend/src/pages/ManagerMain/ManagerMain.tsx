@@ -3,11 +3,11 @@ import { useEffect, useMemo, useState } from 'react';
 import { useMutation } from 'react-query';
 import { useHistory, useLocation } from 'react-router-dom';
 import { deleteMap } from 'api/managerMap';
+import { deleteManagerReservation } from 'api/managerReservation';
 import { ReactComponent as DeleteIcon } from 'assets/svg/delete.svg';
 import { ReactComponent as EditIcon } from 'assets/svg/edit.svg';
 import { ReactComponent as MapEditorIcon } from 'assets/svg/map-editor.svg';
 import { ReactComponent as MenuIcon } from 'assets/svg/menu.svg';
-import { ReactComponent as MoreIcon } from 'assets/svg/more.svg';
 import { ReactComponent as SpaceEditorIcon } from 'assets/svg/space-editor.svg';
 import DateInput from 'components/DateInput/DateInput';
 import Drawer from 'components/Drawer/Drawer';
@@ -22,6 +22,7 @@ import MESSAGE from 'constants/message';
 import PATH, { HREF } from 'constants/path';
 import useManagerMaps from 'hooks/useManagerMaps';
 import useManagerReservations from 'hooks/useManagerReservations';
+import { Reservation } from 'types/common';
 import { ErrorResponse, MapItemResponse } from 'types/response';
 import { formatDate } from 'utils/datetime';
 import { isNullish } from 'utils/type';
@@ -62,6 +63,16 @@ const ManagerMain = (): JSX.Element => {
       onError: onRequestError,
     }
   );
+
+  const removeReservation = useMutation(deleteManagerReservation, {
+    onSuccess: () => {
+      alert(MESSAGE.MANAGER_MAIN.RESERVATION_DELETE);
+    },
+
+    onError: (error: AxiosError<ErrorResponse>) => {
+      alert(error.response?.data.message ?? MESSAGE.RESERVATION.UNEXPECTED_DELETE_ERROR);
+    },
+  });
 
   const reservations = getReservations.data?.data?.data ?? [];
 
@@ -126,6 +137,32 @@ const ManagerMain = (): JSX.Element => {
     setSelectedMapId(mapId);
     setSelectedMapName(mapName);
     handleCloseDrawer();
+  };
+
+  const handleEditReservation = (reservation: Reservation, spaceId: number) => {
+    if (!selectedMapId) return;
+
+    history.push({
+      pathname: PATH.MANAGER_RESERVATION_EDIT,
+      state: {
+        mapId: selectedMapId,
+        spaceId,
+        reservation,
+        selectedDate: formatDate(date),
+      },
+    });
+  };
+
+  const handleDeleteReservation = (reservationId: number, spaceId: number) => {
+    if (!selectedMapId) return;
+
+    if (!window.confirm(MESSAGE.MANAGER_MAIN.RESERVATION_DELETE_CONFIRM)) return;
+
+    removeReservation.mutate({
+      mapId: selectedMapId,
+      spaceId,
+      reservationId,
+    });
   };
 
   useEffect(() => {
@@ -223,9 +260,21 @@ const ManagerMain = (): JSX.Element => {
                             key={`reservation-${reservation.id}`}
                             reservation={reservation}
                             control={
-                              <IconButton>
-                                <MoreIcon width="100%" height="100%" />
-                              </IconButton>
+                              <Styled.IconButtonWrapper>
+                                <IconButton
+                                  size="small"
+                                  onClick={() => handleEditReservation(reservation, spaceId)}
+                                >
+                                  <EditIcon width="100%" height="100%" />
+                                </IconButton>
+
+                                <IconButton
+                                  size="small"
+                                  onClick={() => handleDeleteReservation(reservation.id, spaceId)}
+                                >
+                                  <DeleteIcon width="100%" height="100%" />
+                                </IconButton>
+                              </Styled.IconButtonWrapper>
                             }
                           />
                         ))}

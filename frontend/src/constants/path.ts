@@ -3,6 +3,7 @@ const PATH = {
   MANAGER_LOGIN: '/login',
   MANAGER_JOIN: '/join',
   MANAGER_MAIN: '/map',
+  MANAGER_RESERVATION_EDIT: '/reservation/edit',
   MANAGER_MAP_CREATE: '/map/create',
   MANAGER_MAP_EDIT: '/map/:mapId/edit',
   MANAGER_SPACE_EDIT: '/map/:mapId/space/edit',
