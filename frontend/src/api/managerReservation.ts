@@ -13,7 +13,6 @@ interface ReservationParams {
   reservation: {
     startDateTime: Date;
     endDateTime: Date;
-    password: string;
     name: string;
     description: string;
   };

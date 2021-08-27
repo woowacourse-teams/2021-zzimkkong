@@ -139,8 +139,18 @@ const ManagerMain = (): JSX.Element => {
     handleCloseDrawer();
   };
 
-  const handleEditReservation = (reservation: Reservation) => {
-    // TODO 수정 구현
+  const handleEditReservation = (reservation: Reservation, spaceId: number) => {
+    if (!selectedMapId) return;
+
+    history.push({
+      pathname: PATH.MANAGER_RESERVATION_EDIT,
+      state: {
+        mapId: selectedMapId,
+        spaceId,
+        reservation,
+        selectedDate: formatDate(date),
+      },
+    });
   };
 
   const handleDeleteReservation = (reservationId: number, spaceId: number) => {
@@ -253,7 +263,7 @@ const ManagerMain = (): JSX.Element => {
                               <>
                                 <IconButton
                                   size="small"
-                                  onClick={() => handleEditReservation(reservation)}
+                                  onClick={() => handleEditReservation(reservation, spaceId)}
                                 >
                                   <EditIcon width="100%" height="100%" />
                                 </IconButton>
