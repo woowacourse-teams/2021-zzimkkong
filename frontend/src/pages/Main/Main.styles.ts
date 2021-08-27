@@ -154,6 +154,7 @@ export const TeamMemberImage = styled.img`
   background-color: ${({ theme }) => theme.gray[100]};
   border-radius: 50%;
   width: 80%;
+  max-width: 150px;
 `;
 
 export const TeamMemberName = styled.p`
