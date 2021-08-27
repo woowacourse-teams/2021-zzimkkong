@@ -648,12 +648,13 @@ const ManagerMapCreate = (): JSX.Element => {
                     required
                   />
                 </Styled.MapNameContainer>
-                <Styled.TempSaveContainer>
+                {/* NOTE 추후 임시저장 기능 구현 시, 이 부분의 주석을 해제하고 작성하면 됩니다. */}
+                {/* <Styled.TempSaveContainer>
                   <Styled.TempSaveMessage>1분 전에 임시 저장되었습니다.</Styled.TempSaveMessage>
                   <Styled.TempSaveButton type="button" variant="primary-text">
                     임시 저장
                   </Styled.TempSaveButton>
-                </Styled.TempSaveContainer>
+                </Styled.TempSaveContainer> */}
               </Styled.HeaderContent>
               <Styled.HeaderContent>
                 <Styled.ButtonContainer>
