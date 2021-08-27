@@ -91,12 +91,6 @@ export const InstructionsContainer = styled.div`
   padding: 6rem 0 5.75rem;
 `;
 
-export const InstructionsImage = styled.img`
-  width: 100%;
-  margin: 0 auto 1.5rem;
-  border: 1px solid ${({ theme }) => theme.gray[300]};
-`;
-
 export const InstructionsList = styled.ol`
   max-width: ${({ theme: { breakpoints } }) => breakpoints.lg}px;
   display: flex;
@@ -111,16 +105,42 @@ export const InstructionsList = styled.ol`
 export const InstructionsListItem = styled.li`
   width: 33.333%;
   padding: 0 2rem;
-  line-height: 1.375rem;
 
   @media (max-width: ${({ theme: { breakpoints } }) => breakpoints.sm}px) {
     width: 100%;
     padding: 0 1rem;
-    margin-bottom: 2rem;
+    margin-bottom: 3rem;
 
     &:last-child {
       margin-bottom: 0;
     }
+  }
+`;
+
+export const InstructionsImage = styled.img`
+  width: 100%;
+  margin: 0 auto 1.5rem;
+  border: 1px solid ${({ theme }) => theme.gray[300]};
+`;
+
+export const InstructionsText = styled.p<{ instructionOrder: number }>`
+  line-height: 1.375rem;
+  margin-left: 2rem;
+  position: relative;
+
+  &::before {
+    content: '${({ instructionOrder }) => instructionOrder}';
+    width: 1.5rem;
+    height: 1.5rem;
+    position: absolute;
+    left: -2rem;
+    border-radius: 50%;
+    background-color: ${({ theme }) => theme.gray[400]};
+    color: ${({ theme }) => theme.white};
+    font-weight: 700;
+    font-size: 1rem;
+    line-height: 1.375rem;
+    text-align: center;
   }
 `;
 
@@ -155,6 +175,11 @@ export const TeamMemberImage = styled.img`
   border-radius: 50%;
   width: 80%;
   max-width: 150px;
+  transition: transform 0.1s ease;
+
+  &:hover {
+    transform: scale(1.05);
+  }
 `;
 
 export const TeamMemberName = styled.p`
