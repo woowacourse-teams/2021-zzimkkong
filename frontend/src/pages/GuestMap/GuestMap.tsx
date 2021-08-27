@@ -5,7 +5,6 @@ import { useHistory, useLocation, useParams } from 'react-router-dom';
 import { deleteReservation } from 'api/guestReservation';
 import { ReactComponent as DeleteIcon } from 'assets/svg/delete.svg';
 import { ReactComponent as EditIcon } from 'assets/svg/edit.svg';
-import { ReactComponent as MoreIcon } from 'assets/svg/more.svg';
 import Button from 'components/Button/Button';
 import DateInput from 'components/DateInput/DateInput';
 import Drawer from 'components/Drawer/Drawer';
@@ -134,12 +133,7 @@ const GuestMap = (): JSX.Element => {
     setDetailOpen(true);
   };
 
-  const handleSelectModal = (reservation: Reservation) => {
-    setModalOpen(true);
-    setSelectedReservation(reservation);
-  };
-
-  const handleSelectEdit = () => {
+  const handleSelectEdit = (reservation: Reservation) => {
     if (!selectedSpaceId) return;
 
     history.push({
@@ -147,14 +141,15 @@ const GuestMap = (): JSX.Element => {
       state: {
         mapId: map?.mapId,
         space: spaces[selectedSpaceId],
-        reservation: selectedReservation,
+        reservation,
         selectedDate: formatDate(date),
       },
     });
   };
 
-  const handleSelectDelete = (): void => {
+  const handleSelectDelete = (reservation: Reservation): void => {
     setPasswordInputModalOpen(true);
+    setSelectedReservation(reservation);
   };
 
   const handleDeleteReservation: FormEventHandler<HTMLFormElement> = (event) => {
@@ -277,13 +272,22 @@ const GuestMap = (): JSX.Element => {
                       key={reservation.id}
                       reservation={reservation}
                       control={
-                        <Button
-                          variant="text"
-                          size="small"
-                          onClick={() => handleSelectModal(reservation)}
-                        >
-                          <MoreIcon />
-                        </Button>
+                        <>
+                          <Button
+                            variant="text"
+                            size="small"
+                            onClick={() => handleSelectEdit(reservation)}
+                          >
+                            <EditIcon />
+                          </Button>
+                          <Button
+                            variant="text"
+                            size="small"
+                            onClick={() => handleSelectDelete(reservation)}
+                          >
+                            <DeleteIcon />
+                          </Button>
+                        </>
                       }
                     />
                   ))}
@@ -308,19 +312,6 @@ const GuestMap = (): JSX.Element => {
           </Styled.ReservationLink>
         )}
       </Drawer>
-
-      <Modal open={modalOpen} isClosableDimmer={true} onClose={() => setModalOpen(false)}>
-        <Styled.SelectBox>
-          <Styled.SelectButton onClick={handleSelectEdit}>
-            <EditIcon />
-            수정하기
-          </Styled.SelectButton>
-          <Styled.SelectButton onClick={handleSelectDelete}>
-            <DeleteIcon />
-            삭제하기
-          </Styled.SelectButton>
-        </Styled.SelectBox>
-      </Modal>
 
       <Modal
         open={passwordInputModalOpen}
