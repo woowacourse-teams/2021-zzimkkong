@@ -9,6 +9,28 @@ export interface QueryMapReservationsParams {
   date: string;
 }
 
+interface ReservationParams {
+  reservation: {
+    startDateTime: Date;
+    endDateTime: Date;
+    password: string;
+    name: string;
+    description: string;
+  };
+}
+
+interface PutReservationParams extends ReservationParams {
+  mapId: number;
+  spaceId: number;
+  reservationId: number;
+}
+
+interface DeleteReservationParams {
+  mapId: number;
+  spaceId: number;
+  reservationId: number;
+}
+
 export const queryManagerReservations: QueryFunction<
   AxiosResponse<QueryManagerReservationsSuccess>,
   [QueryKey, QueryMapReservationsParams]
@@ -22,3 +44,20 @@ export const queryManagerReservations: QueryFunction<
 
   return api.get(`/managers/maps/${mapId}/spaces/reservations?date=${date}`);
 };
+
+export const putManagerReservation = ({
+  reservation,
+  mapId,
+  spaceId,
+  reservationId,
+}: PutReservationParams): Promise<AxiosResponse<never>> =>
+  api.put(`/managers/maps/${mapId}/spaces/${spaceId}/reservations/${reservationId}`, reservation);
+
+export const deleteManagerReservation = ({
+  mapId,
+  spaceId,
+  reservationId,
+}: DeleteReservationParams): Promise<AxiosResponse<never>> =>
+  api.delete(`/managers/maps/${mapId}/spaces/${spaceId}/reservations/${reservationId}`, {
+    data: {},
+  });
