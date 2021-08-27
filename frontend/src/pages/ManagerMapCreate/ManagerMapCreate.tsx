@@ -30,6 +30,7 @@ import MESSAGE from 'constants/message';
 import PALETTE from 'constants/palette';
 import PATH, { HREF } from 'constants/path';
 import useInput from 'hooks/useInput';
+import useListenManagerMainState from 'hooks/useListenManagerMainState';
 import useManagerMap from 'hooks/useManagerMap';
 import useManagerSpaces from 'hooks/useManagerSpaces';
 import {
@@ -58,6 +59,8 @@ const ManagerMapCreate = (): JSX.Element => {
   const params = useParams<Params>();
   const mapId = params?.mapId;
   const isEdit = !!mapId;
+
+  useListenManagerMainState({ mapId: Number(mapId) });
 
   const [mapName, onChangeMapName, setMapName] = useInput('');
 

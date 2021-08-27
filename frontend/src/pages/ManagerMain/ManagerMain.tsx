@@ -1,7 +1,7 @@
 import { AxiosError } from 'axios';
 import { useEffect, useMemo, useState } from 'react';
 import { useMutation } from 'react-query';
-import { useHistory } from 'react-router-dom';
+import { useHistory, useLocation } from 'react-router-dom';
 import { deleteMap } from 'api/managerMap';
 import { ReactComponent as DeleteIcon } from 'assets/svg/delete.svg';
 import { ReactComponent as EditIcon } from 'assets/svg/edit.svg';
@@ -24,14 +24,21 @@ import useManagerMaps from 'hooks/useManagerMaps';
 import useManagerReservations from 'hooks/useManagerReservations';
 import { ErrorResponse, MapItemResponse } from 'types/response';
 import { formatDate } from 'utils/datetime';
+import { isNullish } from 'utils/type';
 import * as Styled from './ManagerMain.styles';
+
+interface LocationState {
+  mapId?: number;
+}
 
 const ManagerMain = (): JSX.Element => {
   const history = useHistory();
+  const location = useLocation<LocationState>();
 
   const [date, setDate] = useState(new Date());
   const [open, setOpen] = useState(false);
-  const [selectedMapId, setSelectedMapId] = useState<number | null>(null);
+
+  const [selectedMapId, setSelectedMapId] = useState<number | null>(location.state?.mapId ?? null);
   const [selectedMapName, setSelectedMapName] = useState('');
 
   const onRequestError = (error: AxiosError<ErrorResponse>) => {
@@ -51,7 +58,7 @@ const ManagerMain = (): JSX.Element => {
       date: formatDate(date),
     },
     {
-      enabled: selectedMapId ? true : false,
+      enabled: !(selectedMapId === null),
       onError: onRequestError,
     }
   );
@@ -60,7 +67,7 @@ const ManagerMain = (): JSX.Element => {
 
   const removeMap = useMutation(deleteMap, {
     onSuccess: () => {
-      alert('맵이 삭제 되었습니다.');
+      alert(MESSAGE.MANAGER_MAIN.MAP_DELETED);
     },
 
     onError: (error: AxiosError<ErrorResponse>) => {
@@ -92,7 +99,7 @@ const ManagerMain = (): JSX.Element => {
 
   const handleCopyLink = () => {
     if (selectedMapId === null) {
-      alert('맵을 선택해주세요.');
+      alert(MESSAGE.MANAGER_MAIN.SELECT_MAP);
 
       return;
     }
@@ -100,10 +107,10 @@ const ManagerMain = (): JSX.Element => {
     navigator.clipboard
       .writeText(`${window.location.origin}/guest/${getSelectedSharingMapId()}`)
       .then(() => {
-        alert('맵의 공유링크가 클립보드에 복사되었습니다!');
+        alert(MESSAGE.MANAGER_MAIN.COPIED_SHARE_LINK);
       })
       .catch(() => {
-        alert('공유링크를 복사하는데 문제가 발생했습니다.');
+        alert(MESSAGE.MANAGER_MAIN.UNEXPECTED_COPY_SHARE_LINK);
       });
   };
 
@@ -122,9 +129,19 @@ const ManagerMain = (): JSX.Element => {
   };
 
   useEffect(() => {
-    setSelectedMapId(maps.length ? maps[0].mapId : null);
-    setSelectedMapName(maps.length ? maps[0].mapName : '');
-  }, [maps]);
+    const prevMapId = location.state?.mapId ?? null;
+    const prevMapName = maps.find(({ mapId }) => mapId === prevMapId)?.mapName ?? '';
+
+    if (isNullish(prevMapId)) {
+      setSelectedMapId(maps.length ? maps[0].mapId : null);
+      setSelectedMapName(maps.length ? maps[0].mapName : '');
+
+      return;
+    }
+
+    setSelectedMapId(prevMapId);
+    setSelectedMapName(prevMapName);
+  }, [location.state?.mapId, maps]);
 
   return (
     <>
