@@ -9,6 +9,7 @@ import Button from 'components/Button/Button';
 import DateInput from 'components/DateInput/DateInput';
 import Drawer from 'components/Drawer/Drawer';
 import Header from 'components/Header/Header';
+import IconButton from 'components/IconButton/IconButton';
 import Input from 'components/Input/Input';
 import Layout from 'components/Layout/Layout';
 import Modal from 'components/Modal/Modal';
@@ -273,20 +274,12 @@ const GuestMap = (): JSX.Element => {
                       reservation={reservation}
                       control={
                         <>
-                          <Button
-                            variant="text"
-                            size="small"
-                            onClick={() => handleSelectEdit(reservation)}
-                          >
-                            <EditIcon />
-                          </Button>
-                          <Button
-                            variant="text"
-                            size="small"
-                            onClick={() => handleSelectDelete(reservation)}
-                          >
-                            <DeleteIcon />
-                          </Button>
+                          <IconButton onClick={() => handleSelectEdit(reservation)}>
+                            <EditIcon width="80%" height="80%" />
+                          </IconButton>
+                          <IconButton onClick={() => handleSelectDelete(reservation)}>
+                            <DeleteIcon width="80%" height="80%" />
+                          </IconButton>
                         </>
                       }
                     />
