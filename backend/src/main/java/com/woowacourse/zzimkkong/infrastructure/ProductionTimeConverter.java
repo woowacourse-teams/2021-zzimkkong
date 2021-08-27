@@ -7,7 +7,7 @@ import java.time.LocalDateTime;
 import java.time.ZoneId;
 
 @Component
-@Profile("prod")
+@Profile({"prod", "dev"})
 public class ProductionTimeConverter implements TimeConverter {
     @Override
     public LocalDateTime getNow() {
