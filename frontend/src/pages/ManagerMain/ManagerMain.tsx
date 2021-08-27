@@ -260,20 +260,21 @@ const ManagerMain = (): JSX.Element => {
                             key={`reservation-${reservation.id}`}
                             reservation={reservation}
                             control={
-                              <>
+                              <Styled.IconButtonWrapper>
                                 <IconButton
                                   size="small"
                                   onClick={() => handleEditReservation(reservation, spaceId)}
                                 >
                                   <EditIcon width="100%" height="100%" />
                                 </IconButton>
+
                                 <IconButton
                                   size="small"
                                   onClick={() => handleDeleteReservation(reservation.id, spaceId)}
                                 >
                                   <DeleteIcon width="100%" height="100%" />
                                 </IconButton>
-                              </>
+                              </Styled.IconButtonWrapper>
                             }
                           />
                         ))}

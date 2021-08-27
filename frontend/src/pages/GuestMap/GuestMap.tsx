@@ -273,14 +273,14 @@ const GuestMap = (): JSX.Element => {
                       key={reservation.id}
                       reservation={reservation}
                       control={
-                        <>
-                          <IconButton onClick={() => handleSelectEdit(reservation)}>
-                            <EditIcon width="80%" height="80%" />
+                        <Styled.IconButtonWrapper>
+                          <IconButton size="small" onClick={() => handleSelectEdit(reservation)}>
+                            <EditIcon width="100%" height="100%" />
                           </IconButton>
-                          <IconButton onClick={() => handleSelectDelete(reservation)}>
-                            <DeleteIcon width="80%" height="80%" />
+                          <IconButton size="small" onClick={() => handleSelectDelete(reservation)}>
+                            <DeleteIcon width="100%" height="100%" />
                           </IconButton>
-                        </>
+                        </Styled.IconButtonWrapper>
                       }
                     />
                   ))}

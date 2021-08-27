@@ -153,3 +153,8 @@ export const ColorDot = styled.span<ColorDotProps>`
   border-radius: 50%;
   margin-right: 0.75rem;
 `;
+
+export const IconButtonWrapper = styled.div`
+  display: flex;
+  gap: 0.5rem;
+`;
