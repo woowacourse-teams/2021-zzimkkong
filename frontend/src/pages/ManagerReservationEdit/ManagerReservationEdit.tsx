@@ -144,7 +144,8 @@ const ManagerReservationEdit = (): JSX.Element => {
               <Input
                 type="time"
                 label="시작 시간"
-                step={60 * reservationTimeUnit}
+                // TODO 현재 적용 X
+                // step={60 * reservationTimeUnit}
                 min={availableStartTime}
                 max={availableEndTime}
                 value={startTime}
@@ -154,17 +155,20 @@ const ManagerReservationEdit = (): JSX.Element => {
               <Input
                 type="time"
                 label="종료 시간"
-                step={60 * reservationTimeUnit}
+                // TODO 현재 적용 X
+                // step={60 * reservationTimeUnit}
                 min={startTime}
                 max={availableEndTime}
                 value={endTime}
                 onChange={onChangeEndTime}
                 required
               />
-              <Styled.TimeFormMessage>
+
+              {/* TODO 현재 NaN으로 표시  */}
+              {/* <Styled.TimeFormMessage>
                 예약 가능 시간 : {availableStartTimeText} ~ {availableEndTimeText} (최대{' '}
                 {formatTimePrettier(reservationMaximumTimeUnit)})
-              </Styled.TimeFormMessage>
+              </Styled.TimeFormMessage> */}
             </Styled.InputWrapper>
           </Styled.Section>
           <Styled.Section>
