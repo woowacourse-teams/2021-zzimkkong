@@ -66,7 +66,7 @@ const ManagerMain = (): JSX.Element => {
 
   const removeReservation = useMutation(deleteManagerReservation, {
     onSuccess: () => {
-      window.alert('예약이 삭제 되었습니다.');
+      alert(MESSAGE.MANAGER_MAIN.RESERVATION_DELETE);
     },
 
     onError: (error: AxiosError<ErrorResponse>) => {
@@ -156,7 +156,7 @@ const ManagerMain = (): JSX.Element => {
   const handleDeleteReservation = (reservationId: number, spaceId: number) => {
     if (!selectedMapId) return;
 
-    if (!window.confirm('예약을 삭제하시겠습니까?')) return;
+    if (!window.confirm(MESSAGE.MANAGER_MAIN.RESERVATION_DELETE_CONFIRM)) return;
 
     removeReservation.mutate({
       mapId: selectedMapId,

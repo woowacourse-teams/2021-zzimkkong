@@ -25,6 +25,8 @@ const MESSAGE = {
       '정보를 불러오는 중에 문제가 발생했습니다. 잠시 후에 다시 시도해주세요.',
     UNEXPECTED_MAP_DELETE_ERROR:
       '맵을 삭제하는 중에 문제가 발생했습니다. 잠시 후에 다시 시도해주세요.',
+    RESERVATION_DELETE: '예약이 삭제되었습니다.',
+    RESERVATION_DELETE_CONFIRM: '예약을 삭제하시겠습니까?',
     MAP_DELETED: '맵이 삭제되었습니다.',
     SELECT_MAP: '맵을 선택해주세요.',
     COPIED_SHARE_LINK: '맵의 공유링크가 클립보드에 복사되었습니다!',
