@@ -28,7 +28,16 @@ export const HeaderLink = styled(Link)`
   cursor: pointer;
 `;
 
+export const ButtonContainer = styled.div``;
+
 export const TextButton = styled(Button)`
+  font-size: 0.75rem;
+  padding: 0.625rem 0.5rem;
+`;
+
+export const TextLink = styled(Link)`
+  color: ${({ theme }) => theme.black[400]};
+  text-decoration: none;
   font-size: 0.75rem;
   padding: 0.625rem 0.5rem;
 `;

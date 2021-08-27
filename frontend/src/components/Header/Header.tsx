@@ -43,10 +43,19 @@ const Header = (): JSX.Element => {
           </Styled.Logo>
           <Styled.Title>찜꽁</Styled.Title>
         </Styled.HeaderLink>
-        {accessToken && (
-          <Styled.TextButton variant="text" onClick={handleLogout}>
-            로그아웃
-          </Styled.TextButton>
+        {!sharingMapId && (
+          <Styled.ButtonContainer>
+            {accessToken ? (
+              <Styled.TextButton variant="text" onClick={handleLogout}>
+                로그아웃
+              </Styled.TextButton>
+            ) : (
+              <>
+                <Styled.TextLink to={PATH.MANAGER_LOGIN}>로그인</Styled.TextLink>
+                <Styled.TextLink to={PATH.MANAGER_JOIN}>회원가입</Styled.TextLink>
+              </>
+            )}
+          </Styled.ButtonContainer>
         )}
       </Styled.HeaderLayout>
     </Styled.Header>
