@@ -2,6 +2,7 @@ const path = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const FaviconsWebpackPlugin = require('favicons-webpack-plugin');
 const TsconfigPathsPlugin = require('tsconfig-paths-webpack-plugin');
+const webpack = require('webpack');
 
 module.exports = () => {
   const isDevelopment = process.env.NODE_ENV !== 'production';
@@ -68,6 +69,10 @@ module.exports = () => {
         logo: 'src/assets/images/logo.png',
         publicPath: '/',
         manifest: 'public/manifest.json',
+      }),
+      new webpack.DefinePlugin({
+        'process.env.NODE_ENV': JSON.stringify(process.env.NODE_ENV),
+        'process.env.DEPLOY_ENV': JSON.stringify(process.env.DEPLOY_ENV),
       }),
     ],
   };
