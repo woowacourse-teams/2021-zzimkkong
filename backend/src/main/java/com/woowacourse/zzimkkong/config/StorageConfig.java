@@ -1,4 +1,4 @@
-package com.woowacourse.zzimkkong;
+package com.woowacourse.zzimkkong.config;
 
 import com.amazonaws.auth.AWSStaticCredentialsProvider;
 import com.amazonaws.auth.BasicAWSCredentials;
