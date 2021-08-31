@@ -65,6 +65,11 @@ export const ReservationsContainer = styled.div`
 export const SpacesOrderButton = styled(Button)`
   display: block;
   margin-left: auto;
+  color: ${({ theme }) => theme.gray[400]};
+
+  &:hover {
+    color: ${({ theme }) => theme.gray[500]};
+  }
 `;
 
 export const SpaceList = styled.ul``;
