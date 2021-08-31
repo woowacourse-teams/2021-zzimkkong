@@ -15,7 +15,7 @@ import org.springframework.context.annotation.PropertySource;
 @PropertySource("classpath:config/awsS3.properties")
 public class StorageConfig {
     @Bean
-    @Profile("prod")
+    @Profile({"prod", "dev"})
     public AmazonS3 amazonS3() {
         return AmazonS3ClientBuilder
                 .standard()
@@ -24,7 +24,7 @@ public class StorageConfig {
     }
 
     @Bean(name = "amazonS3")
-    @Profile("!prod")
+    @Profile({"local", "test"})
     public AmazonS3 amazonS3Local(
             @Value("${aws.access-key}") String accessKey,
             @Value("${aws.secret-key}") String secretKey) {
