@@ -6,7 +6,7 @@ import { ErrorResponse } from 'types/response';
 import { getLocalStorageItem } from 'utils/localStorage';
 
 const api = axios.create({
-  baseURL: 'https://zzimkkong-proxy.o-r.kr/api',
+  baseURL: 'http://52.78.60.9:8080/api',
   headers: {
     'Content-type': 'application/json',
   },
