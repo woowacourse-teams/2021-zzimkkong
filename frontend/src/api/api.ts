@@ -7,7 +7,7 @@ import { ErrorResponse } from 'types/response';
 import { getLocalStorageItem } from 'utils/localStorage';
 
 const api = axios.create({
-  baseURL: process.env.NODE_ENV !== 'production' ? BASE_URL.DEV : BASE_URL.PROD,
+  baseURL: process.env.DEPLOY_ENV !== 'production' ? BASE_URL.DEV : BASE_URL.PROD,
   headers: {
     'Content-type': 'application/json',
   },

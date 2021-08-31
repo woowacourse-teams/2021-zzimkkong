@@ -22,9 +22,11 @@
     }
   ],
   "scripts": {
-    "prod": "cross-env NODE_ENV=production webpack serve",
-    "start": "cross-env NODE_ENV=development webpack serve",
-    "build": "cross-env NODE_ENV=production webpack",
+    "prod": "cross-env NODE_ENV=production DEPLOY_ENV=production webpack serve",
+    "prod:dev": "cross-env NODE_ENV=production DEPLOY_ENV=development webpack serve",
+    "start": "cross-env NODE_ENV=development DEPLOY_ENV=development webpack serve",
+    "build": "cross-env NODE_ENV=production DEPLOY_ENV=production webpack",
+    "build:dev": "cross-env NODE_ENV=production DEPLOY_ENV=development webpack",
     "storybook": "start-storybook -s ./src/assets -p 6006",
     "build-storybook": "build-storybook -s ./src/assets",
     "test": "jest --watch --passWithNoTests",
