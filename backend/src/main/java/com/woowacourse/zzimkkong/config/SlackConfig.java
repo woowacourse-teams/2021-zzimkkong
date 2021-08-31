@@ -1,4 +1,4 @@
-package com.woowacourse.zzimkkong;
+package com.woowacourse.zzimkkong.config;
 
 import com.woowacourse.zzimkkong.domain.SlackUrl;
 import org.springframework.beans.factory.annotation.Value;
