@@ -4,7 +4,7 @@ export interface MapItemResponse extends Omit<MapItem, 'mapDrawing'> {
   mapDrawing: string;
 }
 
-interface SpaceResponse extends Omit<Space, 'area'> {
+export interface SpaceResponse extends Omit<Space, 'area'> {
   area: string;
 }
 

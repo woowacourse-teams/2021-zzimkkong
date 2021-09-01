@@ -119,7 +119,7 @@ const GuestMap = (): JSX.Element => {
 
   const removeReservation = useMutation(deleteGuestReservation, {
     onSuccess: () => {
-      window.alert('예약이 삭제 되었습니다.');
+      window.alert(MESSAGE.RESERVATION.DELETE_SUCCESS);
       setModalOpen(false);
       setPasswordInputModalOpen(false);
     },
@@ -219,7 +219,11 @@ const GuestMap = (): JSX.Element => {
                   {/* Note: 공간을 그리는 부분 */}
                   {spaceList.length > 0 &&
                     spaceList.map(({ id, area, color, name }) => (
-                      <Styled.Space key={`area-${id}`} onClick={() => handleClickSpaceArea(id)}>
+                      <Styled.Space
+                        key={`area-${id}`}
+                        data-testid={id}
+                        onClick={() => handleClickSpaceArea(id)}
+                      >
                         {area.shape === 'rect' && (
                           <Styled.SpaceArea
                             x={area.x}
@@ -272,13 +276,22 @@ const GuestMap = (): JSX.Element => {
                   {reservations.map((reservation: Reservation) => (
                     <ReservationListItem
                       key={reservation.id}
+                      data-testid={`reservation-${reservation.id}`}
                       reservation={reservation}
                       control={
                         <Styled.IconButtonWrapper>
-                          <IconButton size="small" onClick={() => handleSelectEdit(reservation)}>
+                          <IconButton
+                            size="small"
+                            onClick={() => handleSelectEdit(reservation)}
+                            aria-label="수정"
+                          >
                             <EditIcon width="100%" height="100%" />
                           </IconButton>
-                          <IconButton size="small" onClick={() => handleSelectDelete(reservation)}>
+                          <IconButton
+                            size="small"
+                            onClick={() => handleSelectDelete(reservation)}
+                            aria-label="삭제"
+                          >
                             <DeleteIcon width="100%" height="100%" />
                           </IconButton>
                         </Styled.IconButtonWrapper>
