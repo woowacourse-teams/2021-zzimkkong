@@ -15,6 +15,7 @@ const MESSAGE = {
     UNEXPECTED_ERROR: '로그인에 문제가 발생했습니다. 잠시 후에 다시 시도해주세요.',
   },
   RESERVATION: {
+    DELETE_SUCCESS: '예약이 삭제 되었습니다.',
     UNEXPECTED_ERROR: '예약하는 중에 문제가 발생했습니다. 잠시 후에 다시 시도해주세요.',
     UNEXPECTED_DELETE_ERROR:
       '예약을 삭제하는 중에 문제가 발생했습니다. 잠시 후에 다시 시도해주세요.',

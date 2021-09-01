@@ -1,4 +1,4 @@
-import { rest, RestHandler } from 'msw';
+import { DefaultRequestBody, rest, RestHandler } from 'msw';
 import { BASE_URL } from 'constants/api';
 import { MapItemResponse } from 'types/response';
 import { formatDate } from 'utils/datetime';
@@ -24,6 +24,30 @@ interface GetReservationsResponseBody {
 interface GetReservationsParams {
   mapId: number;
   spaceId: number;
+}
+
+interface GuestReservationRequestBody {
+  reservation: {
+    startDateTime: Date;
+    endDateTime: Date;
+    password: string;
+    name: string;
+    description: string;
+  };
+}
+interface PostReservationParams {
+  mapId: number;
+  spaceId: number;
+}
+
+interface DeleteReservationRequestBody {
+  password: string;
+}
+
+interface DeleteReservationParams {
+  mapId: number;
+  spaceId: number;
+  reservationId: number;
 }
 
 const handlers: RestHandler[] = [
@@ -70,6 +94,43 @@ const handlers: RestHandler[] = [
             }) ?? [],
         })
       );
+    }
+  ),
+
+  rest.post<GuestReservationRequestBody, DefaultRequestBody, PostReservationParams>(
+    `${ENDPOINT}/guests/maps/:mapId/spaces/:spaceId/reservations`,
+    (req, res, ctx) => {
+      const { mapId, spaceId } = req.params;
+
+      if (!spaces[mapId] || !!spaces[mapId].find(({ id }) => id === spaceId)) {
+        return res(ctx.status(400));
+      }
+
+      return res(ctx.status(201));
+    }
+  ),
+
+  rest.delete<DeleteReservationRequestBody, DefaultRequestBody, DeleteReservationParams>(
+    `${ENDPOINT}/guests/maps/:mapId/spaces/:spaceId/reservations/:reservationId`,
+    (req, res, ctx) => {
+      const { mapId, spaceId, reservationId } = req.params;
+      const { password } = req.body;
+
+      if (!spaces[mapId] || !!spaces[mapId].find(({ id }) => id === spaceId)) {
+        return res(ctx.status(400));
+      }
+
+      const target = reservations[mapId][spaceId].find(
+        (reservation) => reservation.id === Number(reservationId)
+      );
+
+      if (!target) return res(ctx.status(400));
+
+      if (password !== target.password) {
+        return res(ctx.status(400));
+      }
+
+      return res(ctx.status(204));
     }
   ),
 ];

@@ -119,7 +119,7 @@ const GuestMap = (): JSX.Element => {
 
   const removeReservation = useMutation(deleteGuestReservation, {
     onSuccess: () => {
-      window.alert('예약이 삭제 되었습니다.');
+      window.alert(MESSAGE.RESERVATION.DELETE_SUCCESS);
       setModalOpen(false);
       setPasswordInputModalOpen(false);
     },
@@ -275,13 +275,22 @@ const GuestMap = (): JSX.Element => {
                   {reservations.map((reservation: Reservation) => (
                     <ReservationListItem
                       key={reservation.id}
+                      data-testid={`reservation-${reservation.id}`}
                       reservation={reservation}
                       control={
                         <Styled.IconButtonWrapper>
-                          <IconButton size="small" onClick={() => handleSelectEdit(reservation)}>
+                          <IconButton
+                            size="small"
+                            onClick={() => handleSelectEdit(reservation)}
+                            aria-label="수정"
+                          >
                             <EditIcon width="100%" height="100%" />
                           </IconButton>
-                          <IconButton size="small" onClick={() => handleSelectDelete(reservation)}>
+                          <IconButton
+                            size="small"
+                            onClick={() => handleSelectDelete(reservation)}
+                            aria-label="삭제"
+                          >
                             <DeleteIcon width="100%" height="100%" />
                           </IconButton>
                         </Styled.IconButtonWrapper>
