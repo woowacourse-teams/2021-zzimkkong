@@ -218,7 +218,11 @@ const GuestMap = (): JSX.Element => {
                   {/* Note: 공간을 그리는 부분 */}
                   {spaceList.length > 0 &&
                     spaceList.map(({ id, area, color, name }) => (
-                      <Styled.Space key={`area-${id}`} onClick={() => handleClickSpaceArea(id)}>
+                      <Styled.Space
+                        key={`area-${id}`}
+                        data-testid={id}
+                        onClick={() => handleClickSpaceArea(id)}
+                      >
                         {area.shape === 'rect' && (
                           <Styled.SpaceArea
                             x={area.x}
