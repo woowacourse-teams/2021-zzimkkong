@@ -1,10 +1,10 @@
-import { PropsWithChildren, useState } from 'react';
+import { HTMLAttributes, PropsWithChildren, useState } from 'react';
 import * as Styled from './Panel.styles';
 import PanelContent from './PanelContent';
 import PanelContext from './PanelContext';
 import PanelHeader from './PanelHeader';
 
-export interface Props {
+export interface Props extends HTMLAttributes<HTMLDivElement> {
   expandable?: boolean;
   initialExpanded?: boolean;
 }

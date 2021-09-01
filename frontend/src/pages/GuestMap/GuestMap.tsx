@@ -200,6 +200,7 @@ const GuestMap = (): JSX.Element => {
                         points={element.points.join(' ')}
                         stroke={element.stroke}
                         strokeWidth={EDITOR.STROKE_WIDTH}
+                        strokeLinecap="round"
                       />
                     ) : (
                       <rect

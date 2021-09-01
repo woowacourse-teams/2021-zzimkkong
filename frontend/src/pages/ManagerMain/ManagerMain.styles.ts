@@ -2,6 +2,7 @@ import { Link } from 'react-router-dom';
 import styled from 'styled-components';
 import { ReactComponent as LinkIcon } from 'assets/svg/link.svg';
 import { ReactComponent as Plus } from 'assets/svg/plus.svg';
+import Button from 'components/Button/Button';
 import IconButton from 'components/IconButton/IconButton';
 
 export const PrimaryLinkIcon = styled(LinkIcon)`
@@ -57,11 +58,21 @@ export const PanelMessage = styled.p`
   color: ${({ theme }) => theme.gray[500]};
 `;
 
-export const SpaceList = styled.ul`
-  margin: 3rem 0;
+export const ReservationsContainer = styled.div`
+  margin: 2rem 0 5rem;
 `;
 
-export const SpaceReservationWrapper = styled.div``;
+export const SpacesOrderButton = styled(Button)`
+  display: block;
+  margin-left: auto;
+  color: ${({ theme }) => theme.gray[400]};
+
+  &:hover {
+    color: ${({ theme }) => theme.gray[500]};
+  }
+`;
+
+export const SpaceList = styled.ul``;
 
 export const SpaceWrapper = styled.div`
   margin: 2.5rem 0;

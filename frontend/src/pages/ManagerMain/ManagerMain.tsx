@@ -22,7 +22,7 @@ import MESSAGE from 'constants/message';
 import PATH, { HREF } from 'constants/path';
 import useManagerMaps from 'hooks/useManagerMaps';
 import useManagerReservations from 'hooks/useManagerReservations';
-import { Reservation } from 'types/common';
+import { Order, Reservation } from 'types/common';
 import { ErrorResponse, MapItemResponse } from 'types/response';
 import { formatDate } from 'utils/datetime';
 import { isNullish } from 'utils/type';
@@ -41,6 +41,7 @@ const ManagerMain = (): JSX.Element => {
 
   const [selectedMapId, setSelectedMapId] = useState<number | null>(location.state?.mapId ?? null);
   const [selectedMapName, setSelectedMapName] = useState('');
+  const [spacesOrder, setSpacesOrder] = useState<Order>('ascending');
 
   const onRequestError = (error: AxiosError<ErrorResponse>) => {
     alert(error.response?.data?.message ?? MESSAGE.MANAGER_MAIN.UNEXPECTED_GET_DATA_ERROR);
@@ -74,7 +75,30 @@ const ManagerMain = (): JSX.Element => {
     },
   });
 
-  const reservations = getReservations.data?.data?.data ?? [];
+  const reservations = useMemo(() => getReservations.data?.data?.data ?? [], [getReservations]);
+  const sortedReservations = useMemo(
+    () =>
+      reservations.sort((a, b) => {
+        if (a.spaceColor !== b.spaceColor) {
+          if (spacesOrder === 'ascending') return a.spaceColor < b.spaceColor ? -1 : 1;
+
+          return a.spaceColor > b.spaceColor ? -1 : 1;
+        }
+
+        const aSpaceNameWithoutWhitespace = a.spaceName.replaceAll(' ', '');
+        const bSpaceNameWithoutWhitespace = b.spaceName.replaceAll(' ', '');
+
+        if (spacesOrder === 'ascending')
+          return aSpaceNameWithoutWhitespace < bSpaceNameWithoutWhitespace ? -1 : 1;
+
+        return aSpaceNameWithoutWhitespace > bSpaceNameWithoutWhitespace ? -1 : 1;
+      }),
+    [reservations, spacesOrder]
+  );
+
+  const handleClickSpacesOrder = () => {
+    setSpacesOrder((prev) => (prev === 'ascending' ? 'descending' : 'ascending'));
+  };
 
   const removeMap = useMutation(deleteMap, {
     onSuccess: () => {
@@ -241,12 +265,14 @@ const ManagerMain = (): JSX.Element => {
               </Styled.NoticeLink>
             </Styled.NoticeWrapper>
           ))}
-
-        <Styled.SpaceList>
-          {reservations &&
-            reservations.map(({ spaceId, spaceName, spaceColor, reservations }, index) => (
-              <Styled.SpaceReservationWrapper key={`space-${spaceId}`}>
-                <Panel expandable initialExpanded={!index}>
+        <Styled.ReservationsContainer>
+          <Styled.SpacesOrderButton variant="text" onClick={handleClickSpacesOrder}>
+            {spacesOrder === 'ascending' ? '오름차순 △' : '내림차순 ▽'}
+          </Styled.SpacesOrderButton>
+          <Styled.SpaceList>
+            {sortedReservations &&
+              sortedReservations.map(({ spaceId, spaceName, spaceColor, reservations }, index) => (
+                <Panel key={`space-${spaceId}`} role="listitem" expandable>
                   <Panel.Header dotColor={spaceColor}>
                     <Panel.Title>{spaceName}</Panel.Title>
                   </Panel.Header>
@@ -282,9 +308,9 @@ const ManagerMain = (): JSX.Element => {
                     )}
                   </Panel.Content>
                 </Panel>
-              </Styled.SpaceReservationWrapper>
-            ))}
-        </Styled.SpaceList>
+              ))}
+          </Styled.SpaceList>
+        </Styled.ReservationsContainer>
       </Layout>
 
       <Drawer open={open} placement="left" maxwidth="450px" onClose={handleCloseDrawer}>
