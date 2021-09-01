@@ -9,7 +9,6 @@ import { ReactComponent as EditIcon } from 'assets/svg/edit.svg';
 import { ReactComponent as MapEditorIcon } from 'assets/svg/map-editor.svg';
 import { ReactComponent as MenuIcon } from 'assets/svg/menu.svg';
 import { ReactComponent as SpaceEditorIcon } from 'assets/svg/space-editor.svg';
-import Button from 'components/Button/Button';
 import DateInput from 'components/DateInput/DateInput';
 import Drawer from 'components/Drawer/Drawer';
 import Header from 'components/Header/Header';
@@ -23,7 +22,7 @@ import MESSAGE from 'constants/message';
 import PATH, { HREF } from 'constants/path';
 import useManagerMaps from 'hooks/useManagerMaps';
 import useManagerReservations from 'hooks/useManagerReservations';
-import { Reservation } from 'types/common';
+import { Order, Reservation } from 'types/common';
 import { ErrorResponse, MapItemResponse } from 'types/response';
 import { formatDate } from 'utils/datetime';
 import { isNullish } from 'utils/type';
@@ -32,8 +31,6 @@ import * as Styled from './ManagerMain.styles';
 interface LocationState {
   mapId?: number;
 }
-
-type SpacesOrder = 'ascending' | 'descending';
 
 const ManagerMain = (): JSX.Element => {
   const history = useHistory();
@@ -44,7 +41,7 @@ const ManagerMain = (): JSX.Element => {
 
   const [selectedMapId, setSelectedMapId] = useState<number | null>(location.state?.mapId ?? null);
   const [selectedMapName, setSelectedMapName] = useState('');
-  const [spacesOrder, setSpacesOrder] = useState<SpacesOrder>('ascending');
+  const [spacesOrder, setSpacesOrder] = useState<Order>('ascending');
 
   const onRequestError = (error: AxiosError<ErrorResponse>) => {
     alert(error.response?.data?.message ?? MESSAGE.MANAGER_MAIN.UNEXPECTED_GET_DATA_ERROR);

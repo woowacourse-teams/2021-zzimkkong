@@ -2,6 +2,8 @@ import { DrawingAreaShape } from 'constants/editor';
 
 export type Color = string;
 
+export type Order = 'ascending' | 'descending';
+
 export interface Coordinate {
   x: number;
   y: number;
