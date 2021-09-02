@@ -83,9 +83,9 @@ public class ReservationService {
 
         List<Space> findSpaces = map.getSpaces();
         LocalDate date = reservationFindAllDto.getDate();
-        List<Reservation> reservations = getReservations(findSpaces, date);
+        List<Reservation> findReservations = getReservations(findSpaces, date);
 
-        return ReservationFindAllResponse.of(findSpaces, reservations);
+        return ReservationFindAllResponse.of(findSpaces, findReservations);
     }
 
     @Transactional(readOnly = true)
