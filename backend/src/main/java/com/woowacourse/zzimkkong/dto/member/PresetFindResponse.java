@@ -11,9 +11,11 @@ import java.time.LocalTime;
 @Getter
 @NoArgsConstructor
 public class PresetFindResponse extends SettingResponse {
+    private Long id;
     private String name;
 
     private PresetFindResponse(
+            final Long id,
             final LocalTime availableStartTime,
             final LocalTime availableEndTime,
             final Integer reservationTimeUnit,
@@ -23,6 +25,7 @@ public class PresetFindResponse extends SettingResponse {
             final String enabledDayOfWeek,
             final String name) {
         super(availableStartTime, availableEndTime, reservationTimeUnit, reservationMinimumTimeUnit, reservationMaximumTimeUnit, reservationEnable, enabledDayOfWeek);
+        this.id = id;
         this.name = name;
     }
 
@@ -30,6 +33,7 @@ public class PresetFindResponse extends SettingResponse {
         Setting setting = preset.getSetting();
 
         return new PresetFindResponse(
+                preset.getId(),
                 setting.getAvailableStartTime(),
                 setting.getAvailableEndTime(),
                 setting.getReservationTimeUnit(),

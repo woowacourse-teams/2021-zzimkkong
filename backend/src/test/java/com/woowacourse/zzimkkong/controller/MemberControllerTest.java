@@ -114,7 +114,7 @@ class MemberControllerTest extends AcceptanceTest {
 
         //then
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
-        assertThat(actual).usingRecursiveComparison().isEqualTo(expected);
+        assertThat(actual).usingRecursiveComparison().ignoringExpectedNullFields().isEqualTo(expected);
     }
 
     @Test
