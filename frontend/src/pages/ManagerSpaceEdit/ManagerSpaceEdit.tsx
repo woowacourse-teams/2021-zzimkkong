@@ -105,7 +105,10 @@ const ManagerSpaceEdit = (): JSX.Element => {
   }));
 
   const getPresets = usePresets();
-  const presets = useMemo(() => getPresets.data?.data?.presets ?? [], []);
+  const presets = useMemo(
+    () => getPresets.data?.data?.presets ?? [],
+    [getPresets.data?.data?.presets]
+  );
   const presetOptions = presets.map(({ name }) => ({
     value: name,
     children: <Styled.PresetOption>{name}</Styled.PresetOption>,
@@ -131,7 +134,7 @@ const ManagerSpaceEdit = (): JSX.Element => {
       setSelectedSpaceId(newSpaceId);
 
       managerSpaces.refetch();
-      alert('공간이 생성되었습니다');
+      alert(MESSAGE.MANAGER_SPACE.SPACE_CREATED);
     },
     onError: (error: AxiosError<ErrorResponse>) => {
       alert(error.response?.data.message ?? MESSAGE.MANAGER_SPACE.ADD_UNEXPECTED_ERROR);
@@ -141,7 +144,7 @@ const ManagerSpaceEdit = (): JSX.Element => {
   const updateSpace = useMutation(putManagerSpace, {
     onSuccess: () => {
       managerSpaces.refetch();
-      alert('공간 설정이 수정되었습니다');
+      alert(MESSAGE.MANAGER_SPACE.SPACE_SETTING_UPDATED);
     },
     onError: (error: AxiosError<ErrorResponse>) => {
       alert(error.response?.data.message ?? MESSAGE.MANAGER_SPACE.EDIT_UNEXPECTED_ERROR);
@@ -154,7 +157,7 @@ const ManagerSpaceEdit = (): JSX.Element => {
       setArea(null);
 
       managerSpaces.refetch();
-      alert('공간이 삭제되었습니다.');
+      alert(MESSAGE.MANAGER_SPACE.SPACE_DELETED);
     },
     onError: (error: AxiosError<ErrorResponse>) => {
       alert(error.response?.data.message ?? MESSAGE.MANAGER_SPACE.DELETE_UNEXPECTED_ERROR);
