@@ -9,7 +9,6 @@ import com.woowacourse.zzimkkong.dto.slack.SlackResponse;
 import com.woowacourse.zzimkkong.exception.map.NoSuchMapException;
 import com.woowacourse.zzimkkong.exception.reservation.*;
 import com.woowacourse.zzimkkong.exception.space.NoSuchSpaceException;
-import com.woowacourse.zzimkkong.infrastructure.TimeConverter;
 import com.woowacourse.zzimkkong.repository.MapRepository;
 import com.woowacourse.zzimkkong.repository.ReservationRepository;
 import com.woowacourse.zzimkkong.service.strategy.ReservationStrategy;
@@ -34,15 +33,12 @@ public class ReservationService {
 
     private final MapRepository maps;
     private final ReservationRepository reservations;
-    private final TimeConverter timeConverter;
 
     public ReservationService(
             final MapRepository maps,
-            final ReservationRepository reservations,
-            final TimeConverter timeConverter) {
+            final ReservationRepository reservations) {
         this.maps = maps;
         this.reservations = reservations;
-        this.timeConverter = timeConverter;
     }
 
     public ReservationCreateResponse saveReservation(
@@ -198,7 +194,7 @@ public class ReservationService {
         LocalDateTime startDateTime = reservationCreateDto.getStartDateTime().withSecond(0).withNano(0);
         LocalDateTime endDateTime = reservationCreateDto.getEndDateTime().withSecond(0).withNano(0);
 
-        if (startDateTime.isBefore(timeConverter.getNow())) {
+        if (startDateTime.isBefore(LocalDateTime.now())) {
             throw new ImpossibleStartTimeException();
         }
 
