@@ -14,7 +14,7 @@ import static com.woowacourse.zzimkkong.dto.ValidatorMessage.*;
 @NoArgsConstructor
 public class PresetCreateRequest {
     @NotNull(message = EMPTY_MESSAGE)
-    @Pattern(regexp = NAMING_FORMAT, message = NAME_MESSAGE)
+    @Pattern(regexp = PRESET_NAME_FORMAT, message = PRESET_NAME_MESSAGE)
     private String name;
 
     @Valid

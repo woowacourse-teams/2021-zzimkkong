@@ -8,8 +8,7 @@ import org.junit.jupiter.params.provider.CsvSource;
 import org.junit.jupiter.params.provider.NullSource;
 
 import static com.woowacourse.zzimkkong.Constants.*;
-import static com.woowacourse.zzimkkong.dto.ValidatorMessage.EMPTY_MESSAGE;
-import static com.woowacourse.zzimkkong.dto.ValidatorMessage.NAME_MESSAGE;
+import static com.woowacourse.zzimkkong.dto.ValidatorMessage.*;
 import static org.assertj.core.api.Assertions.assertThat;
 
 class PresetCreateRequestTest extends RequestTest {
@@ -35,13 +34,13 @@ class PresetCreateRequestTest extends RequestTest {
     }
 
     @ParameterizedTest
-    @CsvSource(value = {"옳지 않은 프리셋!:true", "옳지않은프리셋옳지않은프리셋옳지않은프리셋:true", "옳은프리셋!:false"}, delimiter = ':')
+    @CsvSource(value = {"공백 입력 가능!:false", "옳지않은프리셋옳지않은프리셋옳지않은프리셋:true", "옳은프리셋!:false"}, delimiter = ':')
     @DisplayName("예약 생성의 이름에 옳지 않은 형식의 문자열이 들어오면 처리한다.")
     void invalidName(String name, boolean flag) {
         PresetCreateRequest nameRequest = new PresetCreateRequest(name, settingsRequest);
 
         assertThat(getConstraintViolations(nameRequest).stream()
-                .anyMatch(violation -> violation.getMessage().equals(NAME_MESSAGE)))
+                .anyMatch(violation -> violation.getMessage().equals(PRESET_NAME_MESSAGE)))
                 .isEqualTo(flag);
     }
 }
