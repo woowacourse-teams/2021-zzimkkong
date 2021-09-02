@@ -13,6 +13,7 @@ import {
 import { useMutation } from 'react-query';
 import { Link, Redirect, useParams } from 'react-router-dom';
 import { deleteManagerSpace, postManagerSpace, putManagerSpace } from 'api/managerSpace';
+import { postPreset } from 'api/presets';
 import { ReactComponent as CloseIcon } from 'assets/svg/close.svg';
 import { ReactComponent as DeleteIcon } from 'assets/svg/delete.svg';
 import { ReactComponent as PaletteIcon } from 'assets/svg/palette.svg';
@@ -23,16 +24,19 @@ import Button from 'components/Button/Button';
 import Header from 'components/Header/Header';
 import Input from 'components/Input/Input';
 import Layout from 'components/Layout/Layout';
+import Modal from 'components/Modal/Modal';
 import Select from 'components/Select/Select';
 import Toggle from 'components/Toggle/Toggle';
 import { DrawingAreaShape, EDITOR, KEY } from 'constants/editor';
 import MESSAGE from 'constants/message';
 import PALETTE from 'constants/palette';
 import PATH from 'constants/path';
+import SPACE from 'constants/space';
 import useInput from 'hooks/useInput';
 import useListenManagerMainState from 'hooks/useListenManagerMainState';
 import useManagerMap from 'hooks/useManagerMap';
 import useManagerSpaces from 'hooks/useManagerSpaces';
+import usePresets from 'hooks/usePreset';
 import useToggle from 'hooks/useToggle';
 import { Coordinate, DrawingStatus, ManagerSpace, MapDrawing, SpaceArea } from 'types/common';
 import { ErrorResponse } from 'types/response';
@@ -90,7 +94,6 @@ const ManagerSpaceEdit = (): JSX.Element => {
       })) ?? [],
     [managerSpaces.data?.data.spaces]
   );
-
   const spaceOptions = spaces.map(({ id, name, color }) => ({
     value: `${id}`,
     children: (
@@ -100,6 +103,23 @@ const ManagerSpaceEdit = (): JSX.Element => {
       </Styled.SpaceOption>
     ),
   }));
+
+  const getPresets = usePresets();
+  const presets = useMemo(() => getPresets.data?.data?.presets ?? [], []);
+  const presetOptions = presets.map(({ name }) => ({
+    value: name,
+    children: <Styled.PresetOption>{name}</Styled.PresetOption>,
+  }));
+
+  const createPreset = useMutation(postPreset, {
+    onSuccess: () => {
+      setPresetFormOpen(false);
+      managerSpaces.refetch();
+    },
+    onError: (error: AxiosError<ErrorResponse>) => {
+      console.error(error);
+    },
+  });
 
   const createSpace = useMutation(postManagerSpace, {
     onSuccess: (response) => {
@@ -141,12 +161,16 @@ const ManagerSpaceEdit = (): JSX.Element => {
     },
   });
 
+  const [isPresetFormOpen, setPresetFormOpen] = useState(false);
+  const [presetName, onChangePresetName] = useInput('');
+
   const [isDragging, setDragging] = useState(false);
   const [isDraggable, setDraggable] = useState(false);
   const [dragOffsetX, setDragOffsetX] = useState(0);
   const [dragOffsetY, setDragOffsetY] = useState(0);
 
   const [selectedSpaceId, setSelectedSpaceId] = useState<number | null>(null);
+  const [selectedPresetName, setSelectedPresetName] = useState<string | null>(null);
 
   const [isDrawingArea, setDrawingArea] = useState(false);
   const [isAddingSpace, setAddingSpace] = useState(false);
@@ -343,8 +367,85 @@ const ManagerSpaceEdit = (): JSX.Element => {
     setSpaceColor,
   ]);
 
+  const handleChangeReservationForm = (
+    event: React.ChangeEvent<HTMLInputElement>,
+    callback: ChangeEventHandler<HTMLInputElement>
+  ) => {
+    if (selectedPresetName) selectPreset(null);
+
+    callback(event);
+  };
+
+  const handleSubmitPreset: FormEventHandler<HTMLFormElement> = (event) => {
+    event.preventDefault();
+
+    const availableTime = {
+      start: formatTimeWithSecond(new Date(`${todayDate}T${availableStartTime}`)),
+      end: formatTimeWithSecond(new Date(`${todayDate}T${availableEndTime}`)),
+    };
+
+    const settingsRequest = {
+      availableStartTime: availableTime.start,
+      availableEndTime: availableTime.end,
+      reservationTimeUnit: Number(reservationTimeUnit),
+      reservationMinimumTimeUnit: Number(reservationMinimumTimeUnit),
+      reservationMaximumTimeUnit: Number(reservationMaximumTimeUnit),
+      reservationEnable,
+      enabledDayOfWeek,
+    };
+
+    createPreset.mutate({ name: presetName, settingsRequest });
+  };
+
+  const handleClickAddPreset = () => {
+    setPresetFormOpen(true);
+  };
+
+  const selectPreset = useCallback(
+    (name: string | null) => {
+      setSelectedPresetName(name);
+
+      if (name === null) return;
+
+      const {
+        availableStartTime,
+        availableEndTime,
+        reservationTimeUnit,
+        reservationMinimumTimeUnit,
+        reservationMaximumTimeUnit,
+        enabledDayOfWeek,
+      } = presets.find((preset) => preset.name === name) ?? presets[0];
+
+      const enableWeekdays = enabledDayOfWeek?.toLowerCase()?.split(',') ?? [];
+
+      setAvailableStartTime(availableStartTime);
+      setAvailableEndTime(availableEndTime);
+      setReservationTimeUnit(`${reservationTimeUnit}`);
+      setReservationMinimumTimeUnit(`${reservationMinimumTimeUnit}`);
+      setReservationMaximumTimeUnit(`${reservationMaximumTimeUnit}`);
+      setEnabledWeekdays({
+        monday: enableWeekdays.includes('monday'),
+        tuesday: enableWeekdays.includes('tuesday'),
+        wednesday: enableWeekdays.includes('wednesday'),
+        thursday: enableWeekdays.includes('thursday'),
+        friday: enableWeekdays.includes('friday'),
+        saturday: enableWeekdays.includes('saturday'),
+        sunday: enableWeekdays.includes('sunday'),
+      });
+    },
+    [
+      presets,
+      setAvailableEndTime,
+      setAvailableStartTime,
+      setReservationMaximumTimeUnit,
+      setReservationMinimumTimeUnit,
+      setReservationTimeUnit,
+    ]
+  );
+
   const selectSpace = useCallback(
     (id: number | null) => {
+      selectPreset(null);
       setSelectedSpaceId(id);
 
       if (id === null) return;
@@ -385,6 +486,7 @@ const ManagerSpaceEdit = (): JSX.Element => {
       });
     },
     [
+      selectPreset,
       setAvailableEndTime,
       setAvailableStartTime,
       setReservationEnable,
@@ -1060,33 +1162,41 @@ const ManagerSpaceEdit = (): JSX.Element => {
                   </Styled.FormRow>
                   <Styled.FormHeader>예약 조건</Styled.FormHeader>
                   {/* Note: 프리셋 기능을 구현할 때 이 UI를 활성화하면 됩니다 */}
-                  {/* <Styled.FormRow>
-                  <Styled.PresetSelect>
-                    <Styled.PresetSelectWrapper>
-                      <Select
-                        label="공간 선택"
-                        options={spaceOptions}
-                        value={selectedSpaceId}
-                        setValue={setSelectedSpaceId}
-                      />
-                    </Styled.PresetSelectWrapper>
-                    <Button type="button">프리셋 저장</Button>
-                  </Styled.PresetSelect>
-                </Styled.FormRow> */}
+                  <Styled.FormRow>
+                    <Styled.PresetSelect>
+                      <Styled.PresetSelectWrapper>
+                        <Select
+                          name="preset"
+                          label="프리셋 선택"
+                          options={presetOptions}
+                          value={`${selectedPresetName ?? ''}`}
+                          onChange={(name) => selectPreset(name)}
+                        />
+                      </Styled.PresetSelectWrapper>
+                      <Button type="button" onClick={handleClickAddPreset}>
+                        추가
+                      </Button>
+                      <Button type="button">삭제</Button>
+                    </Styled.PresetSelect>
+                  </Styled.FormRow>
                   <Styled.FormRow>
                     <Styled.InputWrapper>
                       <Input
                         type="time"
                         label="예약이 열릴 시간"
                         value={availableStartTime}
-                        onChange={onChangeAvailableStartTime}
+                        onChange={(event) =>
+                          handleChangeReservationForm(event, onChangeAvailableStartTime)
+                        }
                         required
                       />
                       <Input
                         type="time"
                         label="예약이 닫힐 시간"
                         value={availableEndTime}
-                        onChange={onChangeAvailableEndTime}
+                        onChange={(event) =>
+                          handleChangeReservationForm(event, onChangeAvailableEndTime)
+                        }
                         required
                       />
                     </Styled.InputWrapper>
@@ -1104,7 +1214,9 @@ const ManagerSpaceEdit = (): JSX.Element => {
                             type="radio"
                             checked={reservationTimeUnit === '5'}
                             value="5"
-                            onChange={onChangeReservationTimeUnit}
+                            onChange={(event) =>
+                              handleChangeReservationForm(event, onChangeReservationTimeUnit)
+                            }
                             name="time-unit"
                             required
                           />
@@ -1115,7 +1227,9 @@ const ManagerSpaceEdit = (): JSX.Element => {
                             type="radio"
                             checked={reservationTimeUnit === '10'}
                             value="10"
-                            onChange={onChangeReservationTimeUnit}
+                            onChange={(event) =>
+                              handleChangeReservationForm(event, onChangeReservationTimeUnit)
+                            }
                             name="time-unit"
                           />
                           <Styled.RadioLabelText>10분</Styled.RadioLabelText>
@@ -1125,7 +1239,9 @@ const ManagerSpaceEdit = (): JSX.Element => {
                             type="radio"
                             checked={reservationTimeUnit === '30'}
                             value="30"
-                            onChange={onChangeReservationTimeUnit}
+                            onChange={(event) =>
+                              handleChangeReservationForm(event, onChangeReservationTimeUnit)
+                            }
                             name="time-unit"
                           />
                           <Styled.RadioLabelText>30분</Styled.RadioLabelText>
@@ -1135,7 +1251,9 @@ const ManagerSpaceEdit = (): JSX.Element => {
                             type="radio"
                             checked={reservationTimeUnit === '60'}
                             value="60"
-                            onChange={onChangeReservationTimeUnit}
+                            onChange={(event) =>
+                              handleChangeReservationForm(event, onChangeReservationTimeUnit)
+                            }
                             name="time-unit"
                           />
                           <Styled.RadioLabelText>1시간</Styled.RadioLabelText>
@@ -1156,7 +1274,9 @@ const ManagerSpaceEdit = (): JSX.Element => {
                         step={reservationTimeUnit}
                         label="최소 예약 가능 시간 (분)"
                         value={reservationMinimumTimeUnit}
-                        onChange={onChangeReservationMinimumTimeUnit}
+                        onChange={(event) =>
+                          handleChangeReservationForm(event, onChangeReservationMinimumTimeUnit)
+                        }
                         required
                       />
                       <Input
@@ -1166,7 +1286,9 @@ const ManagerSpaceEdit = (): JSX.Element => {
                         step={reservationTimeUnit}
                         label="최대 예약 가능 시간 (분)"
                         value={reservationMaximumTimeUnit}
-                        onChange={onChangeReservationMaximumTimeUnit}
+                        onChange={(event) =>
+                          handleChangeReservationForm(event, onChangeReservationMaximumTimeUnit)
+                        }
                         required
                       />
                     </Styled.InputWrapper>
@@ -1185,7 +1307,9 @@ const ManagerSpaceEdit = (): JSX.Element => {
                             type="checkbox"
                             checked={monday}
                             name="monday"
-                            onChange={handleChangeEnabledDayOfWeek}
+                            onChange={(event) =>
+                              handleChangeReservationForm(event, handleChangeEnabledDayOfWeek)
+                            }
                           />
                         </Styled.WeekdayLabel>
                         <Styled.WeekdayLabel>
@@ -1194,7 +1318,9 @@ const ManagerSpaceEdit = (): JSX.Element => {
                             type="checkbox"
                             checked={tuesday}
                             name="tuesday"
-                            onChange={handleChangeEnabledDayOfWeek}
+                            onChange={(event) =>
+                              handleChangeReservationForm(event, handleChangeEnabledDayOfWeek)
+                            }
                           />
                         </Styled.WeekdayLabel>
                         <Styled.WeekdayLabel>
@@ -1203,7 +1329,9 @@ const ManagerSpaceEdit = (): JSX.Element => {
                             type="checkbox"
                             checked={wednesday}
                             name="wednesday"
-                            onChange={handleChangeEnabledDayOfWeek}
+                            onChange={(event) =>
+                              handleChangeReservationForm(event, handleChangeEnabledDayOfWeek)
+                            }
                           />
                         </Styled.WeekdayLabel>
                         <Styled.WeekdayLabel>
@@ -1212,7 +1340,9 @@ const ManagerSpaceEdit = (): JSX.Element => {
                             type="checkbox"
                             checked={thursday}
                             name="thursday"
-                            onChange={handleChangeEnabledDayOfWeek}
+                            onChange={(event) =>
+                              handleChangeReservationForm(event, handleChangeEnabledDayOfWeek)
+                            }
                           />
                         </Styled.WeekdayLabel>
                         <Styled.WeekdayLabel>
@@ -1221,7 +1351,9 @@ const ManagerSpaceEdit = (): JSX.Element => {
                             type="checkbox"
                             checked={friday}
                             name="friday"
-                            onChange={handleChangeEnabledDayOfWeek}
+                            onChange={(event) =>
+                              handleChangeReservationForm(event, handleChangeEnabledDayOfWeek)
+                            }
                           />
                         </Styled.WeekdayLabel>
                         <Styled.WeekdayLabel>
@@ -1230,7 +1362,9 @@ const ManagerSpaceEdit = (): JSX.Element => {
                             type="checkbox"
                             checked={saturday}
                             name="saturday"
-                            onChange={handleChangeEnabledDayOfWeek}
+                            onChange={(event) =>
+                              handleChangeReservationForm(event, handleChangeEnabledDayOfWeek)
+                            }
                           />
                         </Styled.WeekdayLabel>
                         <Styled.WeekdayLabel>
@@ -1239,7 +1373,9 @@ const ManagerSpaceEdit = (): JSX.Element => {
                             type="checkbox"
                             checked={sunday}
                             name="sunday"
-                            onChange={handleChangeEnabledDayOfWeek}
+                            onChange={(event) =>
+                              handleChangeReservationForm(event, handleChangeEnabledDayOfWeek)
+                            }
                           />
                         </Styled.WeekdayLabel>
                       </Styled.WeekdaySelect>
@@ -1275,6 +1411,30 @@ const ManagerSpaceEdit = (): JSX.Element => {
           </Styled.EditorContainer>
         </Styled.Page>
       </Layout>
+      <Modal
+        open={isPresetFormOpen}
+        isClosableDimmer
+        showCloseButton
+        onClose={() => setPresetFormOpen(false)}
+      >
+        <Modal.Header>추가할 프리셋의 이름을 입력해주세요</Modal.Header>
+        <Modal.Inner>
+          <form onSubmit={handleSubmitPreset}>
+            <Input
+              type="text"
+              maxLength={SPACE.PRESET_NAME.MAX_LENGTH}
+              value={presetName}
+              onChange={onChangePresetName}
+              message={createPreset.error?.response?.data.message ?? ''}
+              status={!!createPreset.error?.response?.data.message ? 'error' : 'default'}
+              autoFocus
+            />
+            <Styled.PresetNameFormControl>
+              <Button variant="text">저장</Button>
+            </Styled.PresetNameFormControl>
+          </form>
+        </Modal.Inner>
+      </Modal>
     </>
   );
 };

@@ -84,6 +84,10 @@ export interface ReservationSettings {
   enabledDayOfWeek: string | null;
 }
 
+export interface Preset extends ReservationSettings {
+  name: string;
+}
+
 export interface ManagerSpace {
   id: number;
   name: string;

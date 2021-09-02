@@ -23,7 +23,7 @@ const Select = ({
   options,
   maxheight,
   disabled = false,
-  value,
+  value = '',
   onChange = () => null,
 }: Props): JSX.Element => {
   const [open, setOpen] = useState(false);
@@ -51,7 +51,10 @@ const Select = ({
         disabled={options.length === 0 || disabled}
         onClick={handleToggle}
       >
-        <Styled.OptionChildrenWrapper>{selectedOption?.children}</Styled.OptionChildrenWrapper>
+        <Styled.OptionChildrenWrapper>
+          {value === '' && <Styled.ListBoxLabel>{label}</Styled.ListBoxLabel>}
+          {selectedOption?.children}
+        </Styled.OptionChildrenWrapper>
         <Styled.CaretDownIconWrapper open={open}>
           <CaretDownIcon fill={PALETTE.GRAY[400]} />
         </Styled.CaretDownIconWrapper>

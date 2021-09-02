@@ -1,4 +1,4 @@
-import { MapItem, Reservation, Space, SpaceReservation, ManagerSpaceAPI } from './common';
+import { MapItem, Reservation, Space, SpaceReservation, ManagerSpaceAPI, Preset } from './common';
 
 export interface MapItemResponse extends Omit<MapItem, 'mapDrawing'> {
   mapDrawing: string;
@@ -44,4 +44,8 @@ export interface QueryManagerSpaceSuccess {
 
 export interface QueryManagerSpacesSuccess {
   spaces: ManagerSpaceAPI[];
+}
+
+export interface QueryPresetsSuccess {
+  presets: Preset[];
 }
