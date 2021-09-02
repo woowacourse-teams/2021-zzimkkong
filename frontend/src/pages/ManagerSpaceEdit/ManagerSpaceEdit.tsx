@@ -1079,6 +1079,7 @@ const ManagerSpaceEdit = (): JSX.Element => {
                             stroke={element.stroke}
                             strokeWidth={EDITOR.STROKE_WIDTH}
                             strokeLinecap="round"
+                            pointerEvents="none"
                           />
                         ) : (
                           <rect
