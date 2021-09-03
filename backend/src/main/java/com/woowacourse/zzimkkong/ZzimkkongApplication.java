@@ -14,6 +14,7 @@ public class ZzimkkongApplication {
     }
 
     public static void main(String[] args) {
+        // 젠킨스 촉발
         SpringApplication.run(ZzimkkongApplication.class, args);
     }
 }
