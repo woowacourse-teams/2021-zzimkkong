@@ -102,9 +102,9 @@ public class ReservationService {
         LocalDate date = reservationFindDto.getDate();
         Space space = map.findSpaceById(spaceId)
                 .orElseThrow(NoSuchSpaceException::new);
-        List<Reservation> reservations = getReservations(Collections.singletonList(space), date);
+        List<Reservation> findReservations = getReservations(Collections.singletonList(space), date);
 
-        return ReservationFindResponse.from(reservations);
+        return ReservationFindResponse.from(findReservations);
     }
 
     @Transactional(readOnly = true)
