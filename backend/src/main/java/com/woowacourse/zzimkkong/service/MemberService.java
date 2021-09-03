@@ -1,9 +1,13 @@
 package com.woowacourse.zzimkkong.service;
 
 import com.woowacourse.zzimkkong.domain.Member;
+import com.woowacourse.zzimkkong.domain.OAuthProvider;
 import com.woowacourse.zzimkkong.dto.member.MemberSaveRequest;
 import com.woowacourse.zzimkkong.dto.member.MemberSaveResponse;
+import com.woowacourse.zzimkkong.dto.member.OAuthReadyResponse;
 import com.woowacourse.zzimkkong.exception.member.DuplicateEmailException;
+import com.woowacourse.zzimkkong.infrastructure.oauth.OAuthHandler;
+import com.woowacourse.zzimkkong.infrastructure.oauth.OAuthUserInfo;
 import com.woowacourse.zzimkkong.repository.MemberRepository;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -14,11 +18,14 @@ import org.springframework.transaction.annotation.Transactional;
 public class MemberService {
     private final MemberRepository members;
     private final PasswordEncoder passwordEncoder;
+    private final OAuthHandler oAuthHandler;
 
     public MemberService(final MemberRepository members,
-                         final PasswordEncoder passwordEncoder) {
+                         final PasswordEncoder passwordEncoder,
+                         final OAuthHandler oAuthHandler) {
         this.members = members;
         this.passwordEncoder = passwordEncoder;
+        this.oAuthHandler = oAuthHandler;
     }
 
     public MemberSaveResponse saveMember(final MemberSaveRequest memberSaveRequest) {
@@ -39,5 +46,11 @@ public class MemberService {
         if (members.existsByEmail(email)) {
             throw new DuplicateEmailException();
         }
+    }
+
+    public OAuthReadyResponse extractInfo(OAuthProvider oauthProvider, String code) {
+        OAuthUserInfo userInfo = oAuthHandler.getUserInfoFromCode(oauthProvider, code);
+        String email = userInfo.getEmail();
+        return new OAuthReadyResponse(email, oauthProvider);
     }
 }
