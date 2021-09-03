@@ -2,6 +2,7 @@ package com.woowacourse.zzimkkong.controller;
 
 import com.woowacourse.zzimkkong.domain.Manager;
 import com.woowacourse.zzimkkong.domain.Member;
+import com.woowacourse.zzimkkong.domain.OAuthProvider;
 import com.woowacourse.zzimkkong.dto.member.*;
 import com.woowacourse.zzimkkong.service.MemberService;
 import com.woowacourse.zzimkkong.service.PresetService;
@@ -35,6 +36,13 @@ public class MemberController {
         return ResponseEntity
                 .created(URI.create("/api/members/" + memberSaveResponse.getId()))
                 .build();
+    }
+
+    @GetMapping("/members")
+    public ResponseEntity<OAuthReadyResponse> joinByOAuth(@RequestParam OAuthProvider oauthProvider, @RequestParam String code) {
+        OAuthReadyResponse oAuthReadyResponse = memberService.extractInfo(oauthProvider, code);
+        return ResponseEntity
+                .ok(oAuthReadyResponse);
     }
 
     @GetMapping
