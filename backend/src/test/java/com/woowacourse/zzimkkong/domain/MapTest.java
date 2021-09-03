@@ -27,6 +27,6 @@ class MapTest {
         Map luther = new Map(LUTHER_NAME, MAP_DRAWING_DATA, MAP_IMAGE_URL, pobi);
 
         boolean result = luther.isNotOwnedBy(new Member("삭정이", "test1234", "잠실"));
-        assertThat(result).isFalse();
+        assertThat(result).isTrue();
     }
 }
