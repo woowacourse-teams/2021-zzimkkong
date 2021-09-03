@@ -60,7 +60,7 @@ const ManagerMapCreate = (): JSX.Element => {
   const mapId = params?.mapId;
   const isEdit = !!mapId;
 
-  useListenManagerMainState({ mapId: Number(mapId) });
+  useListenManagerMainState({ mapId: Number(mapId) }, { enabled: isEdit });
 
   const [mapName, onChangeMapName, setMapName] = useInput('');
 
