@@ -9,21 +9,21 @@ import java.util.List;
 
 @Component
 public class OAuthHandler {
-    private final List<OAuthAPIRequester> OAuthAPIRequesters;
+    private final List<OAuthAPIRequester> oAuthAPIRequesters;
 
     @Autowired
-    public OAuthHandler(List<OAuthAPIRequester> OAuthAPIRequesters) {
-        this.OAuthAPIRequesters = OAuthAPIRequesters;
+    public OAuthHandler(List<OAuthAPIRequester> oAuthAPIRequesters) {
+        this.oAuthAPIRequesters = oAuthAPIRequesters;
     }
 
-    public OAuthUserInfo getUserInfoFromCode(OAuthProvider oauthProvider, String code) {
-        OAuthAPIRequester requester = getRequester(oauthProvider);
+    public OAuthUserInfo getUserInfoFromCode(OAuthProvider oAuthProvider, String code) {
+        OAuthAPIRequester requester = getRequester(oAuthProvider);
         return requester.getUserInfoByCode(code);
     }
 
-    private OAuthAPIRequester getRequester(OAuthProvider oauthProvider) {
-        return OAuthAPIRequesters.stream()
-                .filter(OAuthAPIRequester -> OAuthAPIRequester.supports(oauthProvider))
+    private OAuthAPIRequester getRequester(OAuthProvider oAuthProvider) {
+        return oAuthAPIRequesters.stream()
+                .filter(OAuthAPIRequester -> OAuthAPIRequester.supports(oAuthProvider))
                 .findFirst()
                 .orElseThrow(UnsupportedOAuthProviderException::new);
     }
