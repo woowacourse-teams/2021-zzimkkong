@@ -1,4 +1,4 @@
-import { AxiosError } from 'axios';
+import { AxiosError, AxiosResponse } from 'axios';
 import {
   ChangeEventHandler,
   FormEventHandler,
@@ -158,9 +158,15 @@ const ManagerSpaceEdit = (): JSX.Element => {
   );
 
   const createPreset = useMutation(postPreset, {
-    onSuccess: () => {
+    onSuccess: (response) => {
+      const { location } = response.headers as CreateResponseHeaders;
+      const newPresetId = Number(location.split('/').pop() ?? '');
+
+      setSelectedPresetId(newPresetId);
       setPresetFormOpen(false);
+
       getPresets.refetch();
+      alert(MESSAGE.MANAGER_SPACE.PRESET_CREATED);
     },
     onError: (error: AxiosError<ErrorResponse>) => {
       alert(error.response?.data.message ?? MESSAGE.MANAGER_SPACE.ADD_PRESET_UNEXPECTED_ERROR);

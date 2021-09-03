@@ -50,6 +50,7 @@ const MESSAGE = {
     SPACE_CREATED: '공간이 생성되었습니다.',
     SPACE_SETTING_UPDATED: '공간 설정이 수정되었습니다.',
     SPACE_DELETED: '공간이 생성되었습니다.',
+    PRESET_CREATED: '프리셋이 추가되었습니다.',
     PRESET_DELETED: '프리셋이 삭제되었습니다.',
   },
   MANAGER_MAP: {
