@@ -85,6 +85,7 @@ export interface ReservationSettings {
 }
 
 export interface Preset extends ReservationSettings {
+  id: number;
   name: string;
 }
 

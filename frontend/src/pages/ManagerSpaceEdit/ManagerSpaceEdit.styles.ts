@@ -183,6 +183,17 @@ export const PresetOption = styled.div`
   align-items: center;
 `;
 
+export const PresetName = styled.span`
+  display: block;
+  flex: 1;
+`;
+
+export const PresetNameFormControl = styled.div`
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 1rem;
+`;
+
 export const InputWrapper = styled.div`
   display: flex;
   gap: 1rem;
@@ -367,10 +378,4 @@ export const SpaceAreaText = styled.text`
   font-size: 1rem;
   pointer-events: none;
   user-select: none;
-`;
-
-export const PresetNameFormControl = styled.div`
-  display: flex;
-  justify-content: flex-end;
-  margin-top: 1rem;
 `;

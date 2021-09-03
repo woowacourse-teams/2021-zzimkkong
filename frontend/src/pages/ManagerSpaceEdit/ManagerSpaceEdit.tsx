@@ -13,7 +13,7 @@ import {
 import { useMutation } from 'react-query';
 import { Link, Redirect, useParams } from 'react-router-dom';
 import { deleteManagerSpace, postManagerSpace, putManagerSpace } from 'api/managerSpace';
-import { postPreset } from 'api/presets';
+import { deletePreset, postPreset } from 'api/presets';
 import { ReactComponent as CloseIcon } from 'assets/svg/close.svg';
 import { ReactComponent as DeleteIcon } from 'assets/svg/delete.svg';
 import { ReactComponent as PaletteIcon } from 'assets/svg/palette.svg';
@@ -22,6 +22,7 @@ import { ReactComponent as PolygonIcon } from 'assets/svg/polygon.svg';
 import { ReactComponent as RectIcon } from 'assets/svg/rect.svg';
 import Button from 'components/Button/Button';
 import Header from 'components/Header/Header';
+import IconButton from 'components/IconButton/IconButton';
 import Input from 'components/Input/Input';
 import Layout from 'components/Layout/Layout';
 import Modal from 'components/Modal/Modal';
@@ -38,7 +39,14 @@ import useManagerMap from 'hooks/useManagerMap';
 import useManagerSpaces from 'hooks/useManagerSpaces';
 import usePresets from 'hooks/usePreset';
 import useToggle from 'hooks/useToggle';
-import { Coordinate, DrawingStatus, ManagerSpace, MapDrawing, SpaceArea } from 'types/common';
+import {
+  Coordinate,
+  DrawingStatus,
+  ManagerSpace,
+  MapDrawing,
+  Preset,
+  SpaceArea,
+} from 'types/common';
 import { ErrorResponse } from 'types/response';
 import { formatDate, formatTimeWithSecond } from 'utils/datetime';
 import * as Styled from './ManagerSpaceEdit.styles';
@@ -78,7 +86,6 @@ const ManagerSpaceEdit = (): JSX.Element => {
     try {
       return JSON.parse(map.data?.data.mapDrawing ?? '{}') as MapDrawing;
     } catch (error) {
-      console.error(error);
       alert(MESSAGE.MANAGER_SPACE.GET_UNEXPECTED_ERROR);
 
       return { width: 800, height: 600, mapElements: [] };
@@ -103,26 +110,6 @@ const ManagerSpaceEdit = (): JSX.Element => {
       </Styled.SpaceOption>
     ),
   }));
-
-  const getPresets = usePresets();
-  const presets = useMemo(
-    () => getPresets.data?.data?.presets ?? [],
-    [getPresets.data?.data?.presets]
-  );
-  const presetOptions = presets.map(({ name }) => ({
-    value: name,
-    children: <Styled.PresetOption>{name}</Styled.PresetOption>,
-  }));
-
-  const createPreset = useMutation(postPreset, {
-    onSuccess: () => {
-      setPresetFormOpen(false);
-      managerSpaces.refetch();
-    },
-    onError: (error: AxiosError<ErrorResponse>) => {
-      console.error(error);
-    },
-  });
 
   const createSpace = useMutation(postManagerSpace, {
     onSuccess: (response) => {
@@ -164,6 +151,31 @@ const ManagerSpaceEdit = (): JSX.Element => {
     },
   });
 
+  const getPresets = usePresets();
+  const presets = useMemo(
+    () => getPresets.data?.data?.presets ?? [],
+    [getPresets.data?.data?.presets]
+  );
+
+  const createPreset = useMutation(postPreset, {
+    onSuccess: () => {
+      setPresetFormOpen(false);
+      getPresets.refetch();
+    },
+    onError: (error: AxiosError<ErrorResponse>) => {
+      alert(error.response?.data.message ?? MESSAGE.MANAGER_SPACE.ADD_PRESET_UNEXPECTED_ERROR);
+    },
+  });
+
+  const removePreset = useMutation(deletePreset, {
+    onSuccess: () => {
+      alert(MESSAGE.MANAGER_SPACE.PRESET_DELETED);
+    },
+    onError: (error: AxiosError<ErrorResponse>) => {
+      alert(error.response?.data.message ?? MESSAGE.MANAGER_SPACE.DELETE_PRESET_UNEXPECTED_ERROR);
+    },
+  });
+
   const [isPresetFormOpen, setPresetFormOpen] = useState(false);
   const [presetName, onChangePresetName] = useInput('');
 
@@ -173,7 +185,7 @@ const ManagerSpaceEdit = (): JSX.Element => {
   const [dragOffsetY, setDragOffsetY] = useState(0);
 
   const [selectedSpaceId, setSelectedSpaceId] = useState<number | null>(null);
-  const [selectedPresetName, setSelectedPresetName] = useState<string | null>(null);
+  const [selectedPresetId, setSelectedPresetId] = useState<number | null>(null);
 
   const [isDrawingArea, setDrawingArea] = useState(false);
   const [isAddingSpace, setAddingSpace] = useState(false);
@@ -374,7 +386,7 @@ const ManagerSpaceEdit = (): JSX.Element => {
     event: React.ChangeEvent<HTMLInputElement>,
     callback: ChangeEventHandler<HTMLInputElement>
   ) => {
-    if (selectedPresetName) selectPreset(null);
+    if (selectedPresetId) selectPreset(null);
 
     callback(event);
   };
@@ -400,15 +412,22 @@ const ManagerSpaceEdit = (): JSX.Element => {
     createPreset.mutate({ name: presetName, settingsRequest });
   };
 
-  const handleClickAddPreset = () => {
+  const handleAddPreset = () => {
     setPresetFormOpen(true);
   };
 
-  const selectPreset = useCallback(
-    (name: string | null) => {
-      setSelectedPresetName(name);
+  const handleDeletePreset = (event: React.MouseEvent<HTMLButtonElement>, id: Preset['id']) => {
+    event.stopPropagation();
+    if (!window.confirm('이 프리셋을 삭제하시겠어요?')) return;
 
-      if (name === null) return;
+    removePreset.mutate({ id });
+  };
+
+  const selectPreset = useCallback(
+    (id: number | null) => {
+      setSelectedPresetId(id);
+
+      if (id === null) return;
 
       const {
         availableStartTime,
@@ -417,7 +436,7 @@ const ManagerSpaceEdit = (): JSX.Element => {
         reservationMinimumTimeUnit,
         reservationMaximumTimeUnit,
         enabledDayOfWeek,
-      } = presets.find((preset) => preset.name === name) ?? presets[0];
+      } = presets.find((preset) => preset.id === id) ?? presets[0];
 
       const enableWeekdays = enabledDayOfWeek?.toLowerCase()?.split(',') ?? [];
 
@@ -849,6 +868,19 @@ const ManagerSpaceEdit = (): JSX.Element => {
     if (event.key === KEY.SPACE) setDraggable(false);
   }, []);
 
+  const presetOptions = presets.map(({ id, name }) => ({
+    value: `${id}`,
+    title: name,
+    children: (
+      <Styled.PresetOption>
+        <Styled.PresetName>{name}</Styled.PresetName>
+        <IconButton type="button" onClickCapture={(event) => handleDeletePreset(event, id)}>
+          <DeleteIcon />
+        </IconButton>
+      </Styled.PresetOption>
+    ),
+  }));
+
   useEffect(() => {
     const editorWidth = editorRef.current ? editorRef.current.offsetWidth : 0;
     const editorHeight = editorRef.current ? editorRef.current.offsetHeight : 0;
@@ -1173,14 +1205,13 @@ const ManagerSpaceEdit = (): JSX.Element => {
                           name="preset"
                           label="프리셋 선택"
                           options={presetOptions}
-                          value={`${selectedPresetName ?? ''}`}
-                          onChange={(name) => selectPreset(name)}
+                          value={`${selectedPresetId ?? ''}`}
+                          onChange={(id) => selectPreset(Number(id))}
                         />
                       </Styled.PresetSelectWrapper>
-                      <Button type="button" onClick={handleClickAddPreset}>
+                      <Button type="button" onClick={handleAddPreset}>
                         추가
                       </Button>
-                      <Button type="button">삭제</Button>
                     </Styled.PresetSelect>
                   </Styled.FormRow>
                   <Styled.FormRow>
