@@ -1,5 +1,6 @@
 import { useHistory, useParams } from 'react-router-dom';
 import { useRecoilState } from 'recoil';
+import { queryClient } from 'App';
 import { ReactComponent as LogoIcon } from 'assets/svg/logo.svg';
 import PATH, { HREF } from 'constants/path';
 import { LOCAL_STORAGE_KEY } from 'constants/storage';
@@ -29,6 +30,7 @@ const Header = (): JSX.Element => {
 
   const handleLogout = () => {
     setAccessToken('');
+    queryClient.clear();
     localStorage.removeItem(LOCAL_STORAGE_KEY.ACCESS_TOKEN);
 
     history.push(PATH.MANAGER_LOGIN);
