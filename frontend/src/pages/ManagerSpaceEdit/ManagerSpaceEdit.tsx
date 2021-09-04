@@ -1,4 +1,4 @@
-import { AxiosError, AxiosResponse } from 'axios';
+import { AxiosError } from 'axios';
 import {
   ChangeEventHandler,
   FormEventHandler,
@@ -424,7 +424,7 @@ const ManagerSpaceEdit = (): JSX.Element => {
 
   const handleDeletePreset = (event: React.MouseEvent<HTMLButtonElement>, id: Preset['id']) => {
     event.stopPropagation();
-    if (!window.confirm('이 프리셋을 삭제하시겠어요?')) return;
+    if (!window.confirm(MESSAGE.MANAGER_SPACE.DELETE_PRESET_CONFIRM)) return;
 
     removePreset.mutate({ id });
   };
@@ -880,7 +880,7 @@ const ManagerSpaceEdit = (): JSX.Element => {
     children: (
       <Styled.PresetOption>
         <Styled.PresetName>{name}</Styled.PresetName>
-        <IconButton type="button" onClickCapture={(event) => handleDeletePreset(event, id)}>
+        <IconButton type="button" onClick={(event) => handleDeletePreset(event, id)}>
           <DeleteIcon />
         </IconButton>
       </Styled.PresetOption>

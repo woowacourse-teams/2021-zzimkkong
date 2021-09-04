@@ -52,6 +52,7 @@ const MESSAGE = {
     SPACE_DELETED: '공간이 생성되었습니다.',
     PRESET_CREATED: '프리셋이 추가되었습니다.',
     PRESET_DELETED: '프리셋이 삭제되었습니다.',
+    DELETE_PRESET_CONFIRM: '이 프리셋을 삭제하시겠어요?',
   },
   MANAGER_MAP: {
     CREATE_SUCCESS_CONFIRM: '맵 생성 완료! 공간을 편집하러 가시겠어요?',
