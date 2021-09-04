@@ -16,6 +16,7 @@ public class ManagerReservationStrategy implements ReservationStrategy {
 
     @Override
     public void checkCorrectPassword(final Reservation reservation, final String password) {
+        // manager는 비밀번호 확인과정이 없으므로 생략
     }
 
     @Override
