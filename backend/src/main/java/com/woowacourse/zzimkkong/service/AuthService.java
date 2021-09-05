@@ -72,5 +72,4 @@ public class AuthService {
         return TokenResponse.from(token);
     }
 
-
 }
