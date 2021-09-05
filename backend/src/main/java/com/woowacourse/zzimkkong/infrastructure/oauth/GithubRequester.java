@@ -6,7 +6,6 @@ import org.springframework.context.annotation.PropertySource;
 import org.springframework.stereotype.Component;
 
 @Component
-@PropertySource("classpath:config/oauth.properties")
 public class GithubRequester implements OAuthAPIRequester {
     private final String clientId;
     private final String secretId;
