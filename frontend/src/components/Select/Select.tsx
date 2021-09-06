@@ -1,16 +1,18 @@
-import { useState, PropsWithChildren } from 'react';
+import { useState, ReactNode, useEffect } from 'react';
 import { ReactComponent as CaretDownIcon } from 'assets/svg/caret-down.svg';
 import PALETTE from 'constants/palette';
 import * as Styled from './Select.styles';
 
 interface Option {
   value: string;
+  title?: string;
+  children: ReactNode;
 }
 
 export interface Props {
   name: string;
   label: string;
-  options: PropsWithChildren<Option>[];
+  options: Option[];
   maxheight?: string | number;
   disabled?: boolean;
   value: string;
@@ -23,7 +25,7 @@ const Select = ({
   options,
   maxheight,
   disabled = false,
-  value,
+  value = '',
   onChange = () => null,
 }: Props): JSX.Element => {
   const [open, setOpen] = useState(false);
@@ -39,6 +41,10 @@ const Select = ({
     onChange(selectedValue);
   };
 
+  useEffect(() => {
+    if (options.length === 0) setOpen(false);
+  }, [options.length]);
+
   return (
     <Styled.Select>
       <Styled.Label id={`${name}-label`}>{label}</Styled.Label>
@@ -51,7 +57,10 @@ const Select = ({
         disabled={options.length === 0 || disabled}
         onClick={handleToggle}
       >
-        <Styled.OptionChildrenWrapper>{selectedOption?.children}</Styled.OptionChildrenWrapper>
+        <Styled.OptionChildrenWrapper>
+          {value === '' && <Styled.ListBoxLabel>{label}</Styled.ListBoxLabel>}
+          {selectedOption?.title ? selectedOption?.title : selectedOption?.children}
+        </Styled.OptionChildrenWrapper>
         <Styled.CaretDownIconWrapper open={open}>
           <CaretDownIcon fill={PALETTE.GRAY[400]} />
         </Styled.CaretDownIconWrapper>
@@ -68,7 +77,6 @@ const Select = ({
             <Styled.Option
               key={option.value}
               role="option"
-              id={option.value}
               value={option.value}
               aria-selected={option.value === value}
               onClick={() => selectOption(option.value)}
