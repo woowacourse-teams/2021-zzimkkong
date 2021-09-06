@@ -60,4 +60,16 @@ class MemberServiceTest extends ServiceTest {
         assertThatThrownBy(() -> memberService.saveMember(memberSaveRequest))
                 .isInstanceOf(DuplicateEmailException.class);
     }
+
+    @Test
+    @DisplayName("OAuth를 통해 얻을 수 없는 정보를 응답하며 회원가입 과정을 진행한다.")
+    void extractInfo() {
+        // todo 테스트 작성
+    }
+
+    @Test
+    @DisplayName("소셜 로그인을 이용해 회원가입할 수 있다.")
+    void saveMemberByOAuth() {
+        // todo 테스트 작성
+    }
 }

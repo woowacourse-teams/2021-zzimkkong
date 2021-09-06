@@ -39,10 +39,18 @@ public class MemberController {
     }
 
     @GetMapping("/{oauthProvider}/login")
-    public ResponseEntity<OAuthReadyResponse> joinByOAuth(@PathVariable OAuthProvider oauthProvider, @RequestParam String code) {
+    public ResponseEntity<OAuthReadyResponse> getReadyToJoinByOAuth(@PathVariable OAuthProvider oauthProvider, @RequestParam String code) {
         OAuthReadyResponse oAuthReadyResponse = memberService.extractInfo(oauthProvider, code);
         return ResponseEntity
                 .ok(oAuthReadyResponse);
+    }
+
+    @PostMapping
+    public ResponseEntity<Void> joinByOAuth(@RequestBody @Valid final OAuthMemberSaveRequest oAuthMemberSaveRequest) {
+        MemberSaveResponse memberSaveResponse = memberService.saveMemberByOAuth(oAuthMemberSaveRequest);
+        return ResponseEntity
+                .created(URI.create("/api/members/" + memberSaveResponse.getId()))
+                .build();
     }
 
     @GetMapping

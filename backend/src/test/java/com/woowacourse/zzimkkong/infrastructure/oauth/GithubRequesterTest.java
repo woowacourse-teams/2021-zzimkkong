@@ -1,6 +1,5 @@
 package com.woowacourse.zzimkkong.infrastructure.oauth;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.woowacourse.zzimkkong.Constants;
 import com.woowacourse.zzimkkong.domain.oauth.OAuthUserInfo;
 import okhttp3.mockwebserver.MockResponse;

@@ -2,6 +2,7 @@ package com.woowacourse.zzimkkong.service;
 
 import com.woowacourse.zzimkkong.domain.Member;
 import com.woowacourse.zzimkkong.domain.OAuthProvider;
+import com.woowacourse.zzimkkong.dto.member.OAuthMemberSaveRequest;
 import com.woowacourse.zzimkkong.dto.member.MemberSaveRequest;
 import com.woowacourse.zzimkkong.dto.member.MemberSaveResponse;
 import com.woowacourse.zzimkkong.dto.member.OAuthReadyResponse;
@@ -52,5 +53,17 @@ public class MemberService {
         OAuthUserInfo userInfo = oAuthHandler.getUserInfoFromCode(oauthProvider, code);
         String email = userInfo.getEmail();
         return new OAuthReadyResponse(email, oauthProvider);
+    }
+
+    public MemberSaveResponse saveMemberByOAuth(OAuthMemberSaveRequest oAuthMemberSaveRequest) {
+        Member member = new Member(
+                oAuthMemberSaveRequest.getEmail(),
+                null,
+                oAuthMemberSaveRequest.getOrganization(),
+                OAuthProvider.valueOf(oAuthMemberSaveRequest.getOAuthProvider())
+        );
+        Member saveMember = members.save(member);
+        return MemberSaveResponse.from(saveMember);
+
     }
 }
