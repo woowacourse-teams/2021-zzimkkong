@@ -2,7 +2,7 @@ import { AxiosError } from 'axios';
 import { FormEventHandler, useEffect } from 'react';
 import { useMutation } from 'react-query';
 import { useHistory, useLocation, useParams } from 'react-router-dom';
-import { postGuestReservation } from 'api/guestReservation';
+import { postGuestReservation, putGuestReservation } from 'api/guestReservation';
 import { ReactComponent as CalendarIcon } from 'assets/svg/calendar.svg';
 import Button from 'components/Button/Button';
 import Header from 'components/Header/Header';
@@ -16,7 +16,7 @@ import RESERVATION from 'constants/reservation';
 import useGuestReservations from 'hooks/useGuestReservations';
 import useInput from 'hooks/useInput';
 import { GuestMapState } from 'pages/GuestMap/GuestMap';
-import { MapItem, ScrollPosition, Space } from 'types/common';
+import { MapItem, Reservation, ScrollPosition, Space } from 'types/common';
 import { ErrorResponse } from 'types/response';
 import { formatDate, formatTime, formatTimePrettier } from 'utils/datetime';
 import * as Styled from './GuestReservation.styles';
@@ -26,6 +26,7 @@ interface GuestReservationState {
   space: Space;
   selectedDate: string;
   scrollPosition: ScrollPosition;
+  reservation?: Reservation;
 }
 
 interface URLParameter {
@@ -37,7 +38,7 @@ const GuestReservation = (): JSX.Element => {
   const history = useHistory<GuestMapState>();
   const { sharingMapId } = useParams<URLParameter>();
 
-  const { mapId, space, selectedDate, scrollPosition } = location.state;
+  const { mapId, space, selectedDate, scrollPosition, reservation } = location.state;
   const { availableStartTime, availableEndTime, reservationTimeUnit, reservationMaximumTimeUnit } =
     space.settings;
 
@@ -78,14 +79,42 @@ const GuestReservation = (): JSX.Element => {
     },
   });
 
-  const handleSubmit: FormEventHandler<HTMLFormElement> = (event) => {
+  const editReservation = useMutation(putGuestReservation, {
+    onSuccess: () => {
+      history.push(`/guest/${sharingMapId}`, {
+        spaceId: space.id,
+        targetDate: new Date(`${date}T${startTime}`),
+      });
+    },
+
+    onError: (error: AxiosError<ErrorResponse>) => {
+      alert(error.response?.data.message ?? MESSAGE.RESERVATION.UNEXPECTED_ERROR);
+    },
+  });
+
+  const handleReservationCreate: FormEventHandler<HTMLFormElement> = (event) => {
     event.preventDefault();
 
     if (createReservation.isLoading) return;
 
-    const reservation = { name, description, password, startDateTime, endDateTime };
+    createReservation.mutate({
+      reservation: { name, description, password, startDateTime, endDateTime },
+      mapId,
+      spaceId: space.id,
+    });
+  };
 
-    createReservation.mutate({ reservation, mapId, spaceId: space.id });
+  const handleReservationEdit: FormEventHandler<HTMLFormElement> = (event) => {
+    event.preventDefault();
+
+    if (editReservation.isLoading || !reservation) return;
+
+    editReservation.mutate({
+      reservation: { name, description, password, startDateTime, endDateTime },
+      mapId,
+      spaceId: space.id,
+      reservationId: reservation.id,
+    });
   };
 
   useEffect(() => {
@@ -111,7 +140,9 @@ const GuestReservation = (): JSX.Element => {
     <>
       <Header />
       <Layout>
-        <Styled.ReservationForm onSubmit={handleSubmit}>
+        <Styled.ReservationForm
+          onSubmit={!!reservation ? handleReservationEdit : handleReservationCreate}
+        >
           <Styled.Section>
             <Styled.PageHeader title="공간 이름" data-testid="spaceName">
               <Styled.ColorDot color={space.color} />
@@ -217,7 +248,7 @@ const GuestReservation = (): JSX.Element => {
 
           <Styled.ButtonWrapper>
             <Button fullWidth variant="primary" size="large">
-              예약하기
+              {!!reservation ? '예약 수정하기' : '예약하기'}
             </Button>
           </Styled.ButtonWrapper>
         </Styled.ReservationForm>
