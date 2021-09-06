@@ -38,8 +38,8 @@ public class MemberController {
                 .build();
     }
 
-    @GetMapping
-    public ResponseEntity<OAuthReadyResponse> joinByOAuth(@RequestParam OAuthProvider oauthProvider, @RequestParam String code) {
+    @GetMapping("/{oauthProvider}/login")
+    public ResponseEntity<OAuthReadyResponse> joinByOAuth(@PathVariable OAuthProvider oauthProvider, @RequestParam String code) {
         OAuthReadyResponse oAuthReadyResponse = memberService.extractInfo(oauthProvider, code);
         return ResponseEntity
                 .ok(oAuthReadyResponse);

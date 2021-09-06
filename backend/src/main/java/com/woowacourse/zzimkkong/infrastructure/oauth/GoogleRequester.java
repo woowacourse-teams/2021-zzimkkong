@@ -1,6 +1,7 @@
 package com.woowacourse.zzimkkong.infrastructure.oauth;
 
 import com.woowacourse.zzimkkong.domain.OAuthProvider;
+import com.woowacourse.zzimkkong.domain.oauth.OAuthUserInfo;
 import org.springframework.stereotype.Component;
 
 @Component

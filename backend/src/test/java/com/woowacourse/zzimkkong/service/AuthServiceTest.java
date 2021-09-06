@@ -8,7 +8,7 @@ import com.woowacourse.zzimkkong.exception.member.NoSuchMemberException;
 import com.woowacourse.zzimkkong.exception.member.PasswordMismatchException;
 import com.woowacourse.zzimkkong.infrastructure.JwtUtils;
 import com.woowacourse.zzimkkong.infrastructure.oauth.OAuthHandler;
-import com.woowacourse.zzimkkong.infrastructure.oauth.OAuthUserInfo;
+import com.woowacourse.zzimkkong.domain.oauth.OAuthUserInfo;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
