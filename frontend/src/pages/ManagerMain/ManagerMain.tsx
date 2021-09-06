@@ -60,7 +60,7 @@ const ManagerMain = (): JSX.Element => {
       date: formatDate(date),
     },
     {
-      enabled: !(selectedMapId === null),
+      enabled: !isNullish(selectedMapId),
       onError: onRequestError,
     }
   );
