@@ -164,6 +164,7 @@ const ManagerSpaceEdit = (): JSX.Element => {
 
       setSelectedPresetId(newPresetId);
       setPresetFormOpen(false);
+      setPresetName('');
 
       getPresets.refetch();
       alert(MESSAGE.MANAGER_SPACE.PRESET_CREATED);
@@ -183,7 +184,7 @@ const ManagerSpaceEdit = (): JSX.Element => {
   });
 
   const [isPresetFormOpen, setPresetFormOpen] = useState(false);
-  const [presetName, onChangePresetName] = useInput('');
+  const [presetName, onChangePresetName, setPresetName] = useInput('');
 
   const [isDragging, setDragging] = useState(false);
   const [isDraggable, setDraggable] = useState(false);
