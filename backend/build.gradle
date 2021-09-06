@@ -24,9 +24,9 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
     implementation 'org.springframework.boot:spring-boot-starter-validation'
     implementation 'org.springframework.boot:spring-boot-starter-web'
+    implementation 'org.springframework.boot:spring-boot-starter-webflux'
 
     implementation 'org.springframework.cloud:spring-cloud-starter-aws:2.2.6.RELEASE'
-    implementation 'org.projectlombok:lombok:1.18.18'
 
     // Security
     implementation 'org.springframework.boot:spring-boot-starter-security'
@@ -35,6 +35,7 @@ dependencies {
     //database
     runtimeOnly 'mysql:mysql-connector-java'
     runtimeOnly 'com.h2database:h2'
+
     //flyway
     implementation 'org.flywaydb:flyway-core:6.4.2'
 
