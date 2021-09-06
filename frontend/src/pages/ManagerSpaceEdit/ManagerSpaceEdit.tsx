@@ -167,7 +167,6 @@ const ManagerSpaceEdit = (): JSX.Element => {
       setPresetName('');
 
       getPresets.refetch();
-      alert(MESSAGE.MANAGER_SPACE.PRESET_CREATED);
     },
     onError: (error: AxiosError<ErrorResponse>) => {
       alert(error.response?.data.message ?? MESSAGE.MANAGER_SPACE.ADD_PRESET_UNEXPECTED_ERROR);
@@ -175,9 +174,6 @@ const ManagerSpaceEdit = (): JSX.Element => {
   });
 
   const removePreset = useMutation(deletePreset, {
-    onSuccess: () => {
-      alert(MESSAGE.MANAGER_SPACE.PRESET_DELETED);
-    },
     onError: (error: AxiosError<ErrorResponse>) => {
       alert(error.response?.data.message ?? MESSAGE.MANAGER_SPACE.DELETE_PRESET_UNEXPECTED_ERROR);
     },
