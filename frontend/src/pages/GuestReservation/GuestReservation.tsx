@@ -14,7 +14,7 @@ import MESSAGE from 'constants/message';
 import REGEXP from 'constants/regexp';
 import RESERVATION from 'constants/reservation';
 import useGuestReservations from 'hooks/useGuestReservations';
-import useInput from 'hooks/useInput';
+import useInputs from 'hooks/useInputs';
 import { GuestMapState } from 'pages/GuestMap/GuestMap';
 import { MapItem, Reservation, ScrollPosition, Space } from 'types/common';
 import { ErrorResponse } from 'types/response';
@@ -31,6 +31,15 @@ interface GuestReservationState {
 
 interface URLParameter {
   sharingMapId: MapItem['sharingMapId'];
+}
+
+interface Form {
+  name: string;
+  description: string;
+  date: string;
+  startTime: string;
+  endTime: string;
+  password: string;
 }
 
 const GuestReservation = (): JSX.Element => {
@@ -53,15 +62,20 @@ const GuestReservation = (): JSX.Element => {
   const initialEndTime = !!reservation
     ? formatTime(new Date(reservation.endDateTime))
     : formatTime(new Date(new Date().getTime() + 1000 * 60 * reservationTimeUnit));
+
   const availableStartTimeText = formatTime(new Date(`${todayDate}T${availableStartTime}`));
   const availableEndTimeText = formatTime(new Date(`${todayDate}T${availableEndTime}`));
 
-  const [name, onChangeName] = useInput(reservation?.name ?? '');
-  const [description, onChangeDescription] = useInput(reservation?.description ?? '');
-  const [date, onChangeDate] = useInput(selectedDate);
-  const [startTime, onChangeStartTime] = useInput(initialStartTime);
-  const [endTime, onChangeEndTime] = useInput(initialEndTime);
-  const [password, onChangePassword] = useInput('');
+  const [{ name, description, date, startTime, endTime, password }, onChangeForm] = useInputs<Form>(
+    {
+      name: reservation?.name ?? '',
+      description: reservation?.description ?? '',
+      date: selectedDate,
+      startTime: initialStartTime,
+      endTime: initialEndTime,
+      password: '',
+    }
+  );
 
   const startDateTime = new Date(`${date}T${startTime}Z`);
   const endDateTime = new Date(`${date}T${endTime}Z`);
@@ -153,8 +167,9 @@ const GuestReservation = (): JSX.Element => {
             <Styled.InputWrapper>
               <Input
                 label="이름"
+                name="name"
                 value={name}
-                onChange={onChangeName}
+                onChange={onChangeForm}
                 maxLength={RESERVATION.NAME.MAX_LENGTH}
                 autoFocus
                 required
@@ -163,8 +178,9 @@ const GuestReservation = (): JSX.Element => {
             <Styled.InputWrapper>
               <Input
                 label="사용 목적"
+                name="description"
                 value={description}
-                onChange={onChangeDescription}
+                onChange={onChangeForm}
                 maxLength={RESERVATION.DESCRIPTION.MAX_LENGTH}
                 required
               />
@@ -172,11 +188,12 @@ const GuestReservation = (): JSX.Element => {
             <Styled.InputWrapper>
               <Input
                 type="date"
+                name="date"
                 label="날짜"
                 icon={<CalendarIcon />}
                 value={date}
                 min={formatDate(now)}
-                onChange={onChangeDate}
+                onChange={onChangeForm}
                 required
               />
             </Styled.InputWrapper>
@@ -184,21 +201,23 @@ const GuestReservation = (): JSX.Element => {
               <Input
                 type="time"
                 label="시작 시간"
+                name="startTime"
                 step={60 * reservationTimeUnit}
                 min={availableStartTime}
                 max={availableEndTime}
                 value={startTime}
-                onChange={onChangeStartTime}
+                onChange={onChangeForm}
                 required
               />
               <Input
                 type="time"
                 label="종료 시간"
+                name="endTime"
                 step={60 * reservationTimeUnit}
                 min={startTime}
                 max={availableEndTime}
                 value={endTime}
-                onChange={onChangeEndTime}
+                onChange={onChangeForm}
                 required
               />
               <Styled.TimeFormMessage>
@@ -210,8 +229,9 @@ const GuestReservation = (): JSX.Element => {
               <Input
                 type="password"
                 label="비밀번호"
+                name="password"
                 value={password}
-                onChange={onChangePassword}
+                onChange={onChangeForm}
                 minLength={RESERVATION.PASSWORD.MIN_LENGTH}
                 maxLength={RESERVATION.PASSWORD.MAX_LENGTH}
                 pattern={REGEXP.RESERVATION_PASSWORD.source}
