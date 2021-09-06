@@ -1,4 +1,4 @@
-import { useState, ReactNode } from 'react';
+import { useState, ReactNode, useEffect } from 'react';
 import { ReactComponent as CaretDownIcon } from 'assets/svg/caret-down.svg';
 import PALETTE from 'constants/palette';
 import * as Styled from './Select.styles';
@@ -40,6 +40,10 @@ const Select = ({
     setOpen(false);
     onChange(selectedValue);
   };
+
+  useEffect(() => {
+    if (options.length === 0) setOpen(false);
+  }, [options.length]);
 
   return (
     <Styled.Select>
