@@ -47,15 +47,17 @@ const GuestReservation = (): JSX.Element => {
   const now = new Date();
   const todayDate = formatDate(new Date());
 
-  const initialStartTime = formatTime(now);
-  const initialEndTime = formatTime(
-    new Date(new Date().getTime() + 1000 * 60 * reservationTimeUnit)
-  );
+  const initialStartTime = !!reservation
+    ? formatTime(new Date(reservation.startDateTime))
+    : formatTime(now);
+  const initialEndTime = !!reservation
+    ? formatTime(new Date(reservation.endDateTime))
+    : formatTime(new Date(new Date().getTime() + 1000 * 60 * reservationTimeUnit));
   const availableStartTimeText = formatTime(new Date(`${todayDate}T${availableStartTime}`));
   const availableEndTimeText = formatTime(new Date(`${todayDate}T${availableEndTime}`));
 
-  const [name, onChangeName] = useInput('');
-  const [description, onChangeDescription] = useInput('');
+  const [name, onChangeName] = useInput(reservation?.name ?? '');
+  const [description, onChangeDescription] = useInput(reservation?.description ?? '');
   const [date, onChangeDate] = useInput(selectedDate);
   const [startTime, onChangeStartTime] = useInput(initialStartTime);
   const [endTime, onChangeEndTime] = useInput(initialEndTime);
