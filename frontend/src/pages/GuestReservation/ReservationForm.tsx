@@ -72,6 +72,8 @@ const ReservationForm = ({
     }
   );
 
+  const isEditMode = !!reservation;
+
   const startDateTime = new Date(`${date}T${startTime}Z`);
   const endDateTime = new Date(`${date}T${endTime}Z`);
 
@@ -126,9 +128,7 @@ const ReservationForm = ({
   };
 
   return (
-    <Styled.ReservationForm
-      onSubmit={!!reservation ? handleReservationEdit : handleReservationCreate}
-    >
+    <Styled.ReservationForm onSubmit={isEditMode ? handleReservationEdit : handleReservationCreate}>
       <Styled.Section>
         <Styled.InputWrapper>
           <Input
@@ -212,7 +212,7 @@ const ReservationForm = ({
       </Styled.Section>
       <Styled.ButtonWrapper>
         <Button fullWidth variant="primary" size="large">
-          {!!reservation ? MESSAGE.RESERVATION.EDIT : MESSAGE.RESERVATION.CREATE}
+          {isEditMode ? MESSAGE.RESERVATION.EDIT : MESSAGE.RESERVATION.CREATE}
         </Button>
       </Styled.ButtonWrapper>
     </Styled.ReservationForm>
