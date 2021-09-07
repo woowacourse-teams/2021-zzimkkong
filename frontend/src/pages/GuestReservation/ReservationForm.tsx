@@ -1,29 +1,24 @@
-import { AxiosError } from 'axios';
-import { FormEventHandler } from 'react';
-import { useMutation } from 'react-query';
-import { useHistory } from 'react-router';
-import { postGuestReservation, putGuestReservation } from 'api/guestReservation';
+import { FormEvent } from 'react';
+import { ReservationParams } from 'api/guestReservation';
 import { ReactComponent as CalendarIcon } from 'assets/svg/calendar.svg';
 import Button from 'components/Button/Button';
 import Input from 'components/Input/Input';
 import MESSAGE from 'constants/message';
-import { HREF } from 'constants/path';
 import REGEXP from 'constants/regexp';
 import RESERVATION from 'constants/reservation';
 import TIME from 'constants/time';
 import useInputs from 'hooks/useInputs';
 import useWindowScrollReset from 'hooks/useWindowScrollReset';
-import { MapItem, Reservation, Space } from 'types/common';
-import { ErrorResponse } from 'types/response';
+import { Reservation, Space } from 'types/common';
 import { formatDate, formatTime, formatTimePrettier } from 'utils/datetime';
+import { HandleSubmitParams } from './GuestReservation';
 import * as Styled from './ReservationForm.styles';
 
 interface Props {
-  mapId: number;
   space: Space;
   selectedDate: string;
-  sharingMapId: MapItem['sharingMapId'];
   reservation?: Reservation;
+  handleSubmit: ({ event, reservation, reservationId }: HandleSubmitParams) => void;
 }
 
 interface Form {
@@ -36,18 +31,17 @@ interface Form {
 }
 
 const ReservationForm = ({
-  mapId,
   space,
   selectedDate,
   reservation,
-  sharingMapId,
+  handleSubmit,
 }: Props): JSX.Element => {
   useWindowScrollReset();
 
-  const history = useHistory();
-
   const { availableStartTime, availableEndTime, reservationTimeUnit, reservationMaximumTimeUnit } =
     space.settings;
+
+  const isEditMode = !!reservation;
 
   const now = new Date();
   const todayDate = formatDate(new Date());
@@ -55,6 +49,7 @@ const ReservationForm = ({
   const initialStartTime = !!reservation
     ? formatTime(new Date(reservation.startDateTime))
     : formatTime(now);
+
   const initialEndTime = !!reservation
     ? formatTime(new Date(reservation.endDateTime))
     : formatTime(new Date(new Date().getTime() + 1000 * 60 * reservationTimeUnit));
@@ -73,63 +68,25 @@ const ReservationForm = ({
     }
   );
 
-  const isEditMode = !!reservation;
-
   const startDateTime = new Date(`${date}T${startTime}Z`);
   const endDateTime = new Date(`${date}T${endTime}Z`);
 
-  const createReservation = useMutation(postGuestReservation, {
-    onSuccess: () => {
-      history.push(`/guest/${sharingMapId}`, {
-        spaceId: space.id,
-        targetDate: new Date(`${date}T${startTime}`),
-      });
-    },
-    onError: (error: AxiosError<ErrorResponse>) => {
-      alert(error.response?.data.message ?? MESSAGE.RESERVATION.UNEXPECTED_ERROR);
-    },
-  });
-
-  const editReservation = useMutation(putGuestReservation, {
-    onSuccess: () => {
-      history.push(HREF.GUEST_MAP(sharingMapId), {
-        spaceId: space.id,
-        targetDate: new Date(`${date}T${startTime}`),
-      });
-    },
-
-    onError: (error: AxiosError<ErrorResponse>) => {
-      alert(error.response?.data.message ?? MESSAGE.RESERVATION.UNEXPECTED_ERROR);
-    },
-  });
-
-  const handleReservationCreate: FormEventHandler<HTMLFormElement> = (event) => {
-    event.preventDefault();
-
-    if (createReservation.isLoading) return;
-
-    createReservation.mutate({
-      reservation: { name, description, password, startDateTime, endDateTime },
-      mapId,
-      spaceId: space.id,
-    });
-  };
-
-  const handleReservationEdit: FormEventHandler<HTMLFormElement> = (event) => {
-    event.preventDefault();
-
-    if (editReservation.isLoading || !reservation) return;
-
-    editReservation.mutate({
-      reservation: { name, description, password, startDateTime, endDateTime },
-      mapId,
-      spaceId: space.id,
-      reservationId: reservation.id,
-    });
-  };
-
   return (
-    <Styled.ReservationForm onSubmit={isEditMode ? handleReservationEdit : handleReservationCreate}>
+    <Styled.ReservationForm
+      onSubmit={(event) =>
+        handleSubmit({
+          event,
+          reservation: {
+            startDateTime,
+            endDateTime,
+            password,
+            name,
+            description,
+          },
+          reservationId: reservation?.id,
+        })
+      }
+    >
       <Styled.Section>
         <Styled.InputWrapper>
           <Input
@@ -204,9 +161,6 @@ const ReservationForm = ({
             pattern={REGEXP.RESERVATION_PASSWORD.source}
             inputMode="numeric"
             message={MESSAGE.RESERVATION.PASSWORD_MESSAGE}
-            status={
-              createReservation.error?.response?.data.field === 'password' ? 'error' : 'default'
-            }
             required
           />
         </Styled.InputWrapper>
