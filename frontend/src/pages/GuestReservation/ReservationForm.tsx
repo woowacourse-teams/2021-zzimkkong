@@ -1,5 +1,5 @@
 import { AxiosError } from 'axios';
-import { FormEventHandler, useEffect } from 'react';
+import { FormEventHandler } from 'react';
 import { useMutation } from 'react-query';
 import { useHistory } from 'react-router';
 import { postGuestReservation, putGuestReservation } from 'api/guestReservation';
@@ -14,6 +14,7 @@ import REGEXP from 'constants/regexp';
 import RESERVATION from 'constants/reservation';
 import useGuestReservations from 'hooks/useGuestReservations';
 import useInputs from 'hooks/useInputs';
+import useWindowScrollReset from 'hooks/useWindowScrollReset';
 import { MapItem, Reservation, Space } from 'types/common';
 import { ErrorResponse } from 'types/response';
 import { formatDate, formatTime, formatTimePrettier } from 'utils/datetime';
@@ -43,6 +44,8 @@ const ReservationForm = ({
   reservation,
   sharingMapId,
 }: Props): JSX.Element => {
+  useWindowScrollReset();
+
   const history = useHistory();
 
   const { availableStartTime, availableEndTime, reservationTimeUnit, reservationMaximumTimeUnit } =
@@ -127,10 +130,6 @@ const ReservationForm = ({
       reservationId: reservation.id,
     });
   };
-
-  useEffect(() => {
-    window.scrollTo(0, 0);
-  }, []);
 
   return (
     <Styled.ReservationForm
