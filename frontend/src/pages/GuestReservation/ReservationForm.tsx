@@ -10,6 +10,7 @@ import MESSAGE from 'constants/message';
 import { HREF } from 'constants/path';
 import REGEXP from 'constants/regexp';
 import RESERVATION from 'constants/reservation';
+import TIME from 'constants/time';
 import useInputs from 'hooks/useInputs';
 import useWindowScrollReset from 'hooks/useWindowScrollReset';
 import { MapItem, Reservation, Space } from 'types/common';
@@ -168,7 +169,7 @@ const ReservationForm = ({
             type="time"
             label="시작 시간"
             name="startTime"
-            step={RESERVATION.TIME.MINUTE_TO_SECONDS * reservationTimeUnit}
+            step={TIME.SECONDS_PER_MINUTE * reservationTimeUnit}
             min={availableStartTime}
             max={availableEndTime}
             value={startTime}
@@ -179,7 +180,7 @@ const ReservationForm = ({
             type="time"
             label="종료 시간"
             name="endTime"
-            step={RESERVATION.TIME.MINUTE_TO_SECONDS * reservationTimeUnit}
+            step={TIME.SECONDS_PER_MINUTE * reservationTimeUnit}
             min={startTime}
             max={availableEndTime}
             value={endTime}

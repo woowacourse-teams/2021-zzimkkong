@@ -9,9 +9,6 @@ const RESERVATION = {
     MIN_LENGTH: 4,
     MAX_LENGTH: 4,
   },
-  TIME: {
-    MINUTE_TO_SECONDS: 60,
-  },
 };
 
 export default RESERVATION;
