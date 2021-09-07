@@ -17,6 +17,7 @@ import * as Styled from './MapCreateEditor.styles';
 import useBindKeyPress from './hooks/useBindKeyPress';
 import useBoardLineTool from './hooks/useBoardLineTool';
 import useBoardMove from './hooks/useBoardMove';
+import useBoardRectTool from './hooks/useBoardRectTool';
 import useBoardStatus from './hooks/useBoardStatus';
 import useBoardZoom from './hooks/useBoardZoom';
 
@@ -56,7 +57,6 @@ const MapCreateEditor = (): JSX.Element => {
 
   const [drawingStatus, setDrawingStatus] = useState<DrawingStatus>({});
   const [mapElements, setMapElements] = useState<MapElement[]>([]);
-  const lineMapElements = mapElements.filter(({ type }) => type === 'polyline');
 
   const [{ width, height }, onChangeBoardSize] = useInputs({
     width: '800',
@@ -83,6 +83,12 @@ const MapCreateEditor = (): JSX.Element => {
     drawingStatus: [drawingStatus, setDrawingStatus],
     mapElements: [mapElements, setMapElements],
   });
+  const { drawRectStart, drawRectEnd } = useBoardRectTool({
+    coordinate: stickyCoordinate,
+    color,
+    drawingStatus: [drawingStatus, setDrawingStatus],
+    mapElements: [mapElements, setMapElements],
+  });
 
   const toggleColorPicker = () => setColorPickerOpen((prevState) => !prevState);
 
@@ -94,12 +100,14 @@ const MapCreateEditor = (): JSX.Element => {
     if (isBoardDraggable || isDragging) return;
 
     if (mode === Mode.Line) drawLineStart();
+    if (mode === Mode.Rect) drawRectStart();
   };
 
   const handleMouseUp = () => {
-    if (isBoardDraggable) return;
+    if (isBoardDraggable || isDragging) return;
 
     if (mode === Mode.Line) drawLineEnd();
+    if (mode === Mode.Rect) drawRectEnd();
   };
 
   return (
@@ -157,17 +165,56 @@ const MapCreateEditor = (): JSX.Element => {
             />
           )}
 
-          {lineMapElements.map((element) => (
-            <polyline
-              key={`polyline-${element.id}`}
-              points={element.points.join(' ')}
-              stroke={element.stroke}
+          {drawingStatus.start && mode === Mode.Rect && (
+            <rect
+              key="preview-rect"
+              x={Math.min(drawingStatus.start.x, stickyCoordinate.x)}
+              y={Math.min(drawingStatus.start.y, stickyCoordinate.y)}
+              width={Math.abs(drawingStatus.start.x - stickyCoordinate.x)}
+              height={Math.abs(drawingStatus.start.y - stickyCoordinate.y)}
+              stroke={PALETTE.OPACITY_BLACK[200]}
               strokeWidth={EDITOR.STROKE_WIDTH}
               strokeLinecap="round"
-              cursor={mode === Mode.Select ? 'pointer' : 'default'}
-              pointerEvents={mode === Mode.Select ? 'auto' : 'none'}
+              fill="none"
+              pointerEvents="none"
             />
-          ))}
+          )}
+
+          {mapElements.map((element) => {
+            if (element.type === 'polyline') {
+              return (
+                <polyline
+                  key={`polyline-${element.id}`}
+                  points={element.points.join(' ')}
+                  stroke={element.stroke}
+                  strokeWidth={EDITOR.STROKE_WIDTH}
+                  strokeLinecap="round"
+                  cursor={mode === Mode.Select ? 'pointer' : 'default'}
+                  pointerEvents={mode === Mode.Select ? 'auto' : 'none'}
+                />
+              );
+            }
+
+            if (element.type === 'rect') {
+              return (
+                <rect
+                  key={`rect-${element.id}`}
+                  x={element?.x}
+                  y={element?.y}
+                  width={element?.width}
+                  height={element?.height}
+                  stroke={element.stroke}
+                  fill="none"
+                  strokeWidth={EDITOR.STROKE_WIDTH}
+                  strokeLinecap="round"
+                  cursor={mode === Mode.Select ? 'pointer' : 'default'}
+                  pointerEvents={mode === Mode.Select ? 'auto' : 'none'}
+                />
+              );
+            }
+
+            return null;
+          })}
         </Board>
       </Styled.Board>
       <Styled.Toolbar>
