@@ -15,11 +15,17 @@ const MESSAGE = {
     UNEXPECTED_ERROR: '로그인에 문제가 발생했습니다. 잠시 후에 다시 시도해주세요.',
   },
   RESERVATION: {
+    CREATE: '예약하기',
+    EDIT: '예약 수정하기',
+    SUGGESTION: '오늘의 첫 예약을 잡아보세요!',
+    PENDING: '불러오는 중입니다...',
+    ERROR: `예약 목록을 불러오는 데 문제가 생겼어요!<br />새로 고침으로 다시 시도해주세요.`,
     DELETE_SUCCESS: '예약이 삭제 되었습니다.',
     UNEXPECTED_ERROR: '예약하는 중에 문제가 발생했습니다. 잠시 후에 다시 시도해주세요.',
     UNEXPECTED_DELETE_ERROR:
       '예약을 삭제하는 중에 문제가 발생했습니다. 잠시 후에 다시 시도해주세요.',
     INVALID_MAP_ID: '맵 ID가 올바르지 않습니다. 다시 확인해주세요.',
+    PASSWORD_MESSAGE: '숫자 4자리를 입력해주세요.',
   },
   MANAGER_MAIN: {
     UNEXPECTED_GET_DATA_ERROR:

@@ -9,6 +9,7 @@ import Input from 'components/Input/Input';
 import PageHeader from 'components/PageHeader/PageHeader';
 import ReservationListItem from 'components/ReservationListItem/ReservationListItem';
 import MESSAGE from 'constants/message';
+import { HREF } from 'constants/path';
 import REGEXP from 'constants/regexp';
 import RESERVATION from 'constants/reservation';
 import useGuestReservations from 'hooks/useGuestReservations';
@@ -91,7 +92,7 @@ const ReservationForm = ({
 
   const editReservation = useMutation(putGuestReservation, {
     onSuccess: () => {
-      history.push(`/guest/${sharingMapId}`, {
+      history.push(HREF.GUEST_MAP(sharingMapId), {
         spaceId: space.id,
         targetDate: new Date(`${date}T${startTime}`),
       });
@@ -178,7 +179,7 @@ const ReservationForm = ({
             type="time"
             label="시작 시간"
             name="startTime"
-            step={60 * reservationTimeUnit}
+            step={RESERVATION.TIME.MINUTE_TO_SECONDS * reservationTimeUnit}
             min={availableStartTime}
             max={availableEndTime}
             value={startTime}
@@ -189,7 +190,7 @@ const ReservationForm = ({
             type="time"
             label="종료 시간"
             name="endTime"
-            step={60 * reservationTimeUnit}
+            step={RESERVATION.TIME.MINUTE_TO_SECONDS * reservationTimeUnit}
             min={startTime}
             max={availableEndTime}
             value={endTime}
@@ -212,7 +213,7 @@ const ReservationForm = ({
             maxLength={RESERVATION.PASSWORD.MAX_LENGTH}
             pattern={REGEXP.RESERVATION_PASSWORD.source}
             inputMode="numeric"
-            message="숫자 4자리를 입력해주세요."
+            message={MESSAGE.RESERVATION.PASSWORD_MESSAGE}
             status={
               createReservation.error?.response?.data.field === 'password' ? 'error' : 'default'
             }
@@ -223,17 +224,13 @@ const ReservationForm = ({
       <Styled.Section>
         <PageHeader title={`${date}${date && '의'} 예약 목록`} />
         {getReservations.isLoadingError && (
-          <Styled.Message>
-            예약 목록을 불러오는 데 문제가 생겼어요!
-            <br />
-            새로 고침으로 다시 시도해주세요.
-          </Styled.Message>
+          <Styled.Message>{MESSAGE.RESERVATION.ERROR}</Styled.Message>
         )}
         {getReservations.isLoading && !getReservations.isLoadingError && (
-          <Styled.Message>불러오는 중입니다...</Styled.Message>
+          <Styled.Message>{MESSAGE.RESERVATION.PENDING}</Styled.Message>
         )}
         {getReservations.isSuccess && reservations.length === 0 && (
-          <Styled.Message>오늘의 첫 예약을 잡아보세요!</Styled.Message>
+          <Styled.Message>{MESSAGE.RESERVATION.SUGGESTION}</Styled.Message>
         )}
         {getReservations.isSuccess && reservations.length > 0 && (
           <Styled.ReservationList role="list">
@@ -246,7 +243,7 @@ const ReservationForm = ({
 
       <Styled.ButtonWrapper>
         <Button fullWidth variant="primary" size="large">
-          {!!reservation ? '예약 수정하기' : '예약하기'}
+          {!!reservation ? MESSAGE.RESERVATION.EDIT : MESSAGE.RESERVATION.CREATE}
         </Button>
       </Styled.ButtonWrapper>
     </Styled.ReservationForm>
