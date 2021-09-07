@@ -5,7 +5,7 @@ import javax.validation.ConstraintValidatorContext;
 import java.util.List;
 
 public class TimeUnitValidator implements ConstraintValidator<TimeUnit, Integer> {
-    private static final List<Integer> TIME_UNITS = List.of(5, 10, 30, 60, 120);
+    private static final List<Integer> TIME_UNITS = List.of(5, 10, 30, 60);
 
     @Override
     public boolean isValid(Integer value, ConstraintValidatorContext context) {
