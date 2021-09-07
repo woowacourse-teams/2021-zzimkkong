@@ -31,29 +31,29 @@ public class SettingTest {
     @CsvSource(value = {"10,9", "10,10"})
     @DisplayName("setting 생성 시 예약이 열릴 시간이 예약 닫힐 시간 이후거나 같으면 예외를 던진다")
     void invalidAvailableStartEndTime(int availableStartTimeHour, int availableEndTimeHour) {
-        assertThatThrownBy(() -> Setting.builder()
+        final Setting.SettingBuilder settingBuilder = Setting.builder()
                 .availableStartTime(LocalTime.of(availableStartTimeHour, 0))
                 .availableEndTime(LocalTime.of(availableEndTimeHour, 0))
                 .reservationTimeUnit(FE_RESERVATION_TIME_UNIT)
                 .reservationMinimumTimeUnit(FE_RESERVATION_MINIMUM_TIME_UNIT)
                 .reservationMaximumTimeUnit(FE_RESERVATION_MAXIMUM_TIME_UNIT)
                 .reservationEnable(FE_RESERVATION_ENABLE)
-                .enabledDayOfWeek(FE_ENABLED_DAY_OF_WEEK)
-                .build()).isInstanceOf(ImpossibleAvailableStartEndTimeException.class);
+                .enabledDayOfWeek(FE_ENABLED_DAY_OF_WEEK);
+        assertThatThrownBy(settingBuilder::build).isInstanceOf(ImpossibleAvailableStartEndTimeException.class);
     }
 
     @Test
     @DisplayName("setting 생성 시 최대 예약 가능 시간이 최소 예약 가능시간 보다 작으면 예외를 던진다")
     void invalidMinimumMaximumTimeUnit() {
-        assertThatThrownBy(() -> Setting.builder()
+        final Setting.SettingBuilder settingBuilder = Setting.builder()
                 .availableStartTime(FE_AVAILABLE_START_TIME)
                 .availableEndTime(FE_AVAILABLE_END_TIME)
                 .reservationTimeUnit(FE_RESERVATION_TIME_UNIT)
                 .reservationMinimumTimeUnit(20)
                 .reservationMaximumTimeUnit(10)
                 .reservationEnable(FE_RESERVATION_ENABLE)
-                .enabledDayOfWeek(FE_ENABLED_DAY_OF_WEEK)
-                .build()).isInstanceOf(InvalidMinimumMaximumTimeUnitException.class);
+                .enabledDayOfWeek(FE_ENABLED_DAY_OF_WEEK);
+        assertThatThrownBy(settingBuilder::build).isInstanceOf(InvalidMinimumMaximumTimeUnitException.class);
     }
 
     @Test
@@ -71,13 +71,28 @@ public class SettingTest {
     }
 
     @ParameterizedTest
-    @CsvSource(value = {"15,0", "0,25", "35, 55"})
+    @CsvSource(value = {"35,55,10", "4,24,10", "17,22,5", "57,2,5", "50,20,30", "20,20,60"})
+    @DisplayName("setting 생성 시 예약이 시작되는 시간과 닫히는 시간이 time unit단위와 맞으면 예외를 던지지 않는다")
+    void timeUnitMismatch_ok(int startMinute, int endMinute, int timeUnit) {
+        assertDoesNotThrow(() -> Setting.builder()
+                .availableStartTime(LocalTime.of(10, startMinute))
+                .availableEndTime(LocalTime.of(20, endMinute))
+                .reservationTimeUnit(timeUnit)
+                .reservationMinimumTimeUnit(FE_RESERVATION_MINIMUM_TIME_UNIT)
+                .reservationMaximumTimeUnit(FE_RESERVATION_MAXIMUM_TIME_UNIT)
+                .reservationEnable(FE_RESERVATION_ENABLE)
+                .enabledDayOfWeek(FE_ENABLED_DAY_OF_WEEK)
+                .build());
+    }
+
+    @ParameterizedTest
+    @CsvSource(value = {"26,27,5", "15,0,10", "0,25,30", "10,20,60"})
     @DisplayName("setting 생성 시 예약이 시작되는 시간과 닫히는 시간이 time unit단위와 맞지 않으면 예외를 던진다")
-    void timeUnitMismatch(int startMinute, int endMinute) {
+    void timeUnitMismatch_fail(int startMinute, int endMinute, int timeUnit) {
         assertThatThrownBy(() -> Setting.builder()
                 .availableStartTime(LocalTime.of(10, startMinute))
                 .availableEndTime(LocalTime.of(20, endMinute))
-                .reservationTimeUnit(FE_RESERVATION_TIME_UNIT)
+                .reservationTimeUnit(timeUnit)
                 .reservationMinimumTimeUnit(FE_RESERVATION_MINIMUM_TIME_UNIT)
                 .reservationMaximumTimeUnit(FE_RESERVATION_MAXIMUM_TIME_UNIT)
                 .reservationEnable(FE_RESERVATION_ENABLE)
@@ -85,19 +100,18 @@ public class SettingTest {
                 .build()).isInstanceOf(TimeUnitMismatchException.class);
     }
 
-@ParameterizedTest
-@CsvSource(value = {"5,10", "9,20", "10,25", "15,30", "25,45", "5,10"})
-@DisplayName("setting 생성 시 최소,최대 예약 가능 시간의 단위가 예약 시간 단위와 일치하지 않으면 예외를 던진다")
-void TimeUnitInconsistency(int minimumMinute, int maximumMinute) {
-    assertThatThrownBy(() -> Setting.builder()
-            .availableStartTime(FE_AVAILABLE_START_TIME)
-            .availableEndTime(FE_AVAILABLE_END_TIME)
-            .reservationTimeUnit(10)
-            .reservationMinimumTimeUnit(minimumMinute)
-            .reservationMaximumTimeUnit(maximumMinute)
-            .reservationEnable(FE_RESERVATION_ENABLE)
-            .enabledDayOfWeek(FE_ENABLED_DAY_OF_WEEK)
-            .build()).isInstanceOf(TimeUnitInconsistencyException.class);
-}
-
+    @ParameterizedTest
+    @CsvSource(value = {"5,10", "9,20", "10,25", "15,30", "25,45", "5,10"})
+    @DisplayName("setting 생성 시 최소,최대 예약 가능 시간의 단위가 예약 시간 단위와 일치하지 않으면 예외를 던진다")
+    void TimeUnitInconsistency(int minimumMinute, int maximumMinute) {
+        assertThatThrownBy(() -> Setting.builder()
+                .availableStartTime(FE_AVAILABLE_START_TIME)
+                .availableEndTime(FE_AVAILABLE_END_TIME)
+                .reservationTimeUnit(10)
+                .reservationMinimumTimeUnit(minimumMinute)
+                .reservationMaximumTimeUnit(maximumMinute)
+                .reservationEnable(FE_RESERVATION_ENABLE)
+                .enabledDayOfWeek(FE_ENABLED_DAY_OF_WEEK)
+                .build()).isInstanceOf(TimeUnitInconsistencyException.class);
+    }
 }

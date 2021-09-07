@@ -56,8 +56,8 @@ public class Setting {
             throw new ImpossibleAvailableStartEndTimeException();
         }
 
-        // TODO: 10분 으로 마무리 지어져야함 (edge case: 10:15 ~ 11:35는 가능함)
-        if (this.availableStartTime.getMinute() % this.reservationTimeUnit != 0 || this.availableEndTime.getMinute() % this.reservationTimeUnit != 0) {
+        int duration = (int) ChronoUnit.MINUTES.between(this.availableStartTime, this.availableEndTime);
+        if (duration % this.reservationTimeUnit != 0) {
             throw new TimeUnitMismatchException();
         }
 
@@ -75,7 +75,6 @@ public class Setting {
             throw new TimeUnitInconsistencyException();
         }
 
-        int duration = (int) ChronoUnit.MINUTES.between(this.availableStartTime, this.availableEndTime);
         if (duration < this.reservationMaximumTimeUnit) {
             throw new NotEnoughAvailableTimeException();
         }
