@@ -1,5 +1,8 @@
 package com.woowacourse.zzimkkong.domain;
 
+import com.woowacourse.zzimkkong.exception.space.ImpossibleAvailableStartEndTimeException;
+import com.woowacourse.zzimkkong.exception.space.InvalidMinimumMaximumTimeUnitException;
+import com.woowacourse.zzimkkong.exception.space.NotEnoughAvailableTimeException;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -7,6 +10,7 @@ import lombok.NoArgsConstructor;
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
 import java.time.LocalTime;
+import java.time.temporal.ChronoUnit;
 
 @Getter
 @Builder
@@ -49,5 +53,18 @@ public class Setting {
         this.reservationMaximumTimeUnit = reservationMaximumTimeUnit;
         this.reservationEnable = reservationEnable;
         this.enabledDayOfWeek = enabledDayOfWeek;
+
+        if (availableStartTime.equals(availableEndTime) || availableStartTime.isAfter(availableEndTime)) {
+            throw new ImpossibleAvailableStartEndTimeException();
+        }
+
+        if (reservationMaximumTimeUnit < reservationMinimumTimeUnit) {
+            throw new InvalidMinimumMaximumTimeUnitException();
+        }
+
+        int duration = (int) ChronoUnit.MINUTES.between(availableStartTime, availableEndTime);
+        if (duration < reservationMaximumTimeUnit) {
+            throw new NotEnoughAvailableTimeException();
+        }
     }
 }
