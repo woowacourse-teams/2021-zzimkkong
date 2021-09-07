@@ -15,6 +15,7 @@ import { Mode } from 'types/editor';
 import Board from './Board';
 import * as Styled from './MapCreateEditor.styles';
 import useBindKeyPress from './hooks/useBindKeyPress';
+import useBoardEraserTool from './hooks/useBoardEraserTool';
 import useBoardLineTool from './hooks/useBoardLineTool';
 import useBoardMove from './hooks/useBoardMove';
 import useBoardRectTool from './hooks/useBoardRectTool';
@@ -89,6 +90,11 @@ const MapCreateEditor = (): JSX.Element => {
     drawingStatus: [drawingStatus, setDrawingStatus],
     mapElements: [mapElements, setMapElements],
   });
+  const { erasingMapElementIds, eraseStart, eraseEnd, onSelectErasingElement } = useBoardEraserTool(
+    {
+      mapElements: [mapElements, setMapElements],
+    }
+  );
 
   const toggleColorPicker = () => setColorPickerOpen((prevState) => !prevState);
 
@@ -101,6 +107,7 @@ const MapCreateEditor = (): JSX.Element => {
 
     if (mode === Mode.Line) drawLineStart();
     if (mode === Mode.Rect) drawRectStart();
+    if (mode === Mode.Eraser) eraseStart();
   };
 
   const handleMouseUp = () => {
@@ -108,6 +115,7 @@ const MapCreateEditor = (): JSX.Element => {
 
     if (mode === Mode.Line) drawLineEnd();
     if (mode === Mode.Rect) drawRectEnd();
+    if (mode === Mode.Eraser) eraseEnd();
   };
 
   return (
@@ -190,7 +198,9 @@ const MapCreateEditor = (): JSX.Element => {
                   strokeWidth={EDITOR.STROKE_WIDTH}
                   strokeLinecap="round"
                   cursor={mode === Mode.Select ? 'pointer' : 'default'}
-                  pointerEvents={mode === Mode.Select ? 'auto' : 'none'}
+                  pointerEvents={[Mode.Select, Mode.Eraser].includes(mode) ? 'auto' : 'none'}
+                  opacity={erasingMapElementIds.includes(element.id) ? '0.3' : '1'}
+                  onMouseOverCapture={() => onSelectErasingElement(element.id)}
                 />
               );
             }
@@ -208,7 +218,9 @@ const MapCreateEditor = (): JSX.Element => {
                   strokeWidth={EDITOR.STROKE_WIDTH}
                   strokeLinecap="round"
                   cursor={mode === Mode.Select ? 'pointer' : 'default'}
-                  pointerEvents={mode === Mode.Select ? 'auto' : 'none'}
+                  pointerEvents={[Mode.Select, Mode.Eraser].includes(mode) ? 'auto' : 'none'}
+                  opacity={erasingMapElementIds.includes(element.id) ? '0.3' : '1'}
+                  onMouseOverCapture={() => onSelectErasingElement(element.id)}
                 />
               );
             }
