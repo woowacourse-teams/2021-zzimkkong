@@ -93,15 +93,15 @@ public class Space {
     }
 
     public boolean isIncorrectTimeUnit(final int minute) {
-        return minute != 0 && isNotDivideBy(minute);
+        return minute != 0 && checkTimeByTimeUnit(minute);
     }
 
     public boolean isIncorrectMinimumMaximumTimeUnit(final int durationMinutes) {
         return durationMinutes < getReservationMinimumTimeUnit() || durationMinutes > getReservationMaximumTimeUnit();
     }
 
-    public boolean isNotDivideBy(final int minute) {
-        return minute % getReservationTimeUnit() != 0;
+    public boolean checkTimeByTimeUnit(final int minute) {
+        return setting.checkTimeByTimeUnit(minute);
     }
 
     public boolean isUnableToReserve() {

@@ -52,31 +52,49 @@ public class Setting {
         this.reservationEnable = reservationEnable;
         this.enabledDayOfWeek = enabledDayOfWeek;
 
-        if (this.availableStartTime.equals(this.availableEndTime) || this.availableStartTime.isAfter(this.availableEndTime)) {
+        validateSetting();
+    }
+
+    private void validateSetting() {
+        if (availableStartTime.equals(availableEndTime) || availableStartTime.isAfter(availableEndTime)) {
             throw new ImpossibleAvailableStartEndTimeException();
         }
 
-        int duration = (int) ChronoUnit.MINUTES.between(this.availableStartTime, this.availableEndTime);
-        if (duration % this.reservationTimeUnit != 0) {
+        int duration = (int) ChronoUnit.MINUTES.between(availableStartTime, availableEndTime);
+        if (checkTimeByTimeUnit(duration)) {
             throw new TimeUnitMismatchException();
         }
 
-        if (this.reservationMaximumTimeUnit < this.reservationMinimumTimeUnit) {
+        if (reservationMaximumTimeUnit < reservationMinimumTimeUnit) {
             throw new InvalidMinimumMaximumTimeUnitException();
         }
 
-        final int minimumTimeUnitQuotient = this.reservationMinimumTimeUnit / this.reservationTimeUnit;
-        final int minimumTimeUnitRemainder = this.reservationMinimumTimeUnit % this.reservationTimeUnit;
-
-        final int maximumTimeUnitQuotient = this.reservationMaximumTimeUnit / this.reservationTimeUnit;
-        final int maximumTimeUnitRemainder = this.reservationMaximumTimeUnit % this.reservationTimeUnit;
-
-        if (!((minimumTimeUnitRemainder == 0 && 1 <= minimumTimeUnitQuotient) && (maximumTimeUnitRemainder == 0 && 1 <= maximumTimeUnitQuotient))) {
+        if (isTimeUnitInconsistent()) {
             throw new TimeUnitInconsistencyException();
         }
 
-        if (duration < this.reservationMaximumTimeUnit) {
+        if (duration < reservationMaximumTimeUnit) {
             throw new NotEnoughAvailableTimeException();
         }
+    }
+
+    public boolean checkTimeByTimeUnit(final int minute) {
+        return minute % this.reservationTimeUnit != 0;
+    }
+
+    private boolean isTimeUnitInconsistent() {
+        return !(isMinimumTimeUnitConsistentWithTimeUnit() && isMaximumTimeUnitConsistentWithTimeUnit());
+    }
+
+    private boolean isMinimumTimeUnitConsistentWithTimeUnit() {
+        int minimumTimeUnitQuotient = reservationMinimumTimeUnit / reservationTimeUnit;
+        int minimumTimeUnitRemainder = reservationMinimumTimeUnit % reservationTimeUnit;
+        return minimumTimeUnitRemainder == 0 && 1 <= minimumTimeUnitQuotient;
+    }
+
+    private boolean isMaximumTimeUnitConsistentWithTimeUnit() {
+        int maximumTimeUnitQuotient = reservationMaximumTimeUnit / reservationTimeUnit;
+        int maximumTimeUnitRemainder = reservationMaximumTimeUnit % reservationTimeUnit;
+        return maximumTimeUnitRemainder == 0 && 1 <= maximumTimeUnitQuotient;
     }
 }
