@@ -2,6 +2,7 @@ package com.woowacourse.zzimkkong.domain;
 
 import com.woowacourse.zzimkkong.exception.space.ImpossibleAvailableStartEndTimeException;
 import com.woowacourse.zzimkkong.exception.space.InvalidMinimumMaximumTimeUnitException;
+import com.woowacourse.zzimkkong.exception.space.TimeUnitMismatchException;
 import com.woowacourse.zzimkkong.exception.space.NotEnoughAvailableTimeException;
 import lombok.Builder;
 import lombok.Getter;
@@ -56,6 +57,10 @@ public class Setting {
 
         if (availableStartTime.equals(availableEndTime) || availableStartTime.isAfter(availableEndTime)) {
             throw new ImpossibleAvailableStartEndTimeException();
+        }
+
+        if (availableStartTime.getMinute() % reservationTimeUnit != 0 || availableEndTime.getMinute() % reservationTimeUnit != 0) {
+            throw new TimeUnitMismatchException();
         }
 
         if (reservationMaximumTimeUnit < reservationMinimumTimeUnit) {

@@ -3,6 +3,7 @@ package com.woowacourse.zzimkkong.domain;
 import com.woowacourse.zzimkkong.exception.space.ImpossibleAvailableStartEndTimeException;
 import com.woowacourse.zzimkkong.exception.space.InvalidMinimumMaximumTimeUnitException;
 import com.woowacourse.zzimkkong.exception.space.NotEnoughAvailableTimeException;
+import com.woowacourse.zzimkkong.exception.space.TimeUnitMismatchException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -64,5 +65,20 @@ public class SettingTest {
                 .reservationEnable(FE_RESERVATION_ENABLE)
                 .enabledDayOfWeek(FE_ENABLED_DAY_OF_WEEK)
                 .build()).isInstanceOf(NotEnoughAvailableTimeException.class);
+    }
+
+    @ParameterizedTest
+    @CsvSource(value = {"15,0", "0,25", "35, 55"})
+    @DisplayName("setting 생성 시 예약이 시작되는 시간과 닫히는 시간이 time unit단위와 맞지 않으면 예외를 던진다")
+    void timeUnitMismatch(int startMinute, int endMinute) {
+        assertThatThrownBy(() -> Setting.builder()
+                .availableStartTime(LocalTime.of(10, startMinute))
+                .availableEndTime(LocalTime.of(20, endMinute))
+                .reservationTimeUnit(FE_RESERVATION_TIME_UNIT)
+                .reservationMinimumTimeUnit(FE_RESERVATION_MINIMUM_TIME_UNIT)
+                .reservationMaximumTimeUnit(FE_RESERVATION_MAXIMUM_TIME_UNIT)
+                .reservationEnable(FE_RESERVATION_ENABLE)
+                .enabledDayOfWeek(FE_ENABLED_DAY_OF_WEEK)
+                .build()).isInstanceOf(TimeUnitMismatchException.class);
     }
 }
