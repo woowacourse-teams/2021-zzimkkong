@@ -1,32 +1,39 @@
-import React, { useEffect, useRef } from 'react';
-import { KEY } from 'constants/editor';
+import React, { PropsWithChildren, useEffect, useRef } from 'react';
 import PALETTE from 'constants/palette';
 import { EditorBoard } from 'types/common';
 import * as Styled from './Board.styles';
 import GridPattern from './GridPattern';
-import useBindKeyPress from './hooks/useBindKeyPress';
-import useBoardMove from './hooks/useBoardMove';
-import useBoardZoom from './hooks/useBoardZoom';
 
 interface Props {
   statusState: [EditorBoard, React.Dispatch<React.SetStateAction<EditorBoard>>];
-  forceDraggable?: boolean;
+  isDraggable?: boolean;
+  isDragging?: boolean;
   onMouseMove?: (event: React.MouseEvent<SVGElement>) => void;
+  onMouseDown?: (event: React.MouseEvent<SVGElement>) => void;
+  onMouseUp?: (event: React.MouseEvent<SVGElement>) => void;
+  onDragStart?: (event: React.MouseEvent<SVGElement>) => void;
+  onDrag?: (event: React.MouseEvent<SVGElement>) => void;
+  onDragEnd?: (event: React.MouseEvent<SVGElement>) => void;
+  onMouseOut?: (event: React.MouseEvent<SVGElement>) => void;
+  onWheel?: (event: React.WheelEvent<SVGSVGElement>) => void;
 }
 
-const Board = ({ statusState, forceDraggable = false, onMouseMove }: Props): JSX.Element => {
+const Board = ({
+  statusState,
+  isDraggable = false,
+  isDragging = false,
+  onMouseMove,
+  onMouseDown,
+  onMouseUp,
+  onDragStart,
+  onDrag,
+  onDragEnd,
+  onMouseOut,
+  onWheel,
+  children,
+}: PropsWithChildren<Props>): JSX.Element => {
   const rootSvgRef = useRef<SVGSVGElement | null>(null);
   const [status, setStatus] = statusState;
-
-  const { pressedKey } = useBindKeyPress();
-  const isPressSpacebar = pressedKey === KEY.SPACE;
-  const isDraggable = isPressSpacebar || forceDraggable;
-
-  const { onWheel } = useBoardZoom(statusState);
-  const { isDragging, onDragStart, onDrag, onDragEnd, onMouseOut } = useBoardMove(
-    statusState,
-    isDraggable
-  );
 
   const handleMouseMove = (event: React.MouseEvent<SVGElement>) => {
     onMouseMove?.(event);
@@ -59,7 +66,13 @@ const Board = ({ statusState, forceDraggable = false, onMouseMove }: Props): JSX
       ref={rootSvgRef}
     >
       <rect width="100%" height="100%" fill={PALETTE.GRAY[200]} />
-      <svg xmlns="http://www.w3.org/2000/svg" version="1.1" onMouseMove={handleMouseMove}>
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        version="1.1"
+        onMouseMove={handleMouseMove}
+        onMouseDown={onMouseDown}
+        onMouseUp={onMouseUp}
+      >
         <GridPattern.Defs />
         <g
           id="board"
@@ -67,6 +80,7 @@ const Board = ({ statusState, forceDraggable = false, onMouseMove }: Props): JSX
         >
           <rect width={`${status.width}px`} height={`${status.height}px`} fill="white" />
           <GridPattern width={status.width} height={status.height} />
+          {children}
         </g>
       </svg>
     </Styled.RootSvg>

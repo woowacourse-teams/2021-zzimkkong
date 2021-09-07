@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { ReactComponent as EraserIcon } from 'assets/svg/eraser.svg';
 import { ReactComponent as LineIcon } from 'assets/svg/line.svg';
 import { ReactComponent as MoveIcon } from 'assets/svg/move.svg';
@@ -6,14 +6,19 @@ import { ReactComponent as RectIcon } from 'assets/svg/rect.svg';
 import { ReactComponent as SelectIcon } from 'assets/svg/select.svg';
 import ColorPicker from 'components/ColorPicker/ColorPicker';
 import ColorPickerIcon from 'components/ColorPicker/ColorPickerIcon';
+import { EDITOR, KEY } from 'constants/editor';
 import PALETTE from 'constants/palette';
-import useInput from 'hooks/useInput';
 import useInputs from 'hooks/useInputs';
 import useBoardCoordinate from 'pages/ManagerMapCreate/hooks/useBoardCoordinate';
-import { Color, DrawingStatus, EditorBoard, MapElement } from 'types/common';
+import { Color, DrawingStatus, MapElement } from 'types/common';
 import { Mode } from 'types/editor';
 import Board from './Board';
 import * as Styled from './MapCreateEditor.styles';
+import useBindKeyPress from './hooks/useBindKeyPress';
+import useBoardLineTool from './hooks/useBoardLineTool';
+import useBoardMove from './hooks/useBoardMove';
+import useBoardStatus from './hooks/useBoardStatus';
+import useBoardZoom from './hooks/useBoardZoom';
 
 const toolbarItems = [
   {
@@ -45,26 +50,39 @@ const toolbarItems = [
 
 const MapCreateEditor = (): JSX.Element => {
   const [mode, setMode] = useState(Mode.Select);
+
   const [color, setColor] = useState<Color>(PALETTE.BLACK[400]);
   const [isColorPickerOpen, setColorPickerOpen] = useState(false);
 
   const [drawingStatus, setDrawingStatus] = useState<DrawingStatus>({});
   const [mapElements, setMapElements] = useState<MapElement[]>([]);
+  const lineMapElements = mapElements.filter(({ type }) => type === 'polyline');
 
   const [{ width, height }, onChangeBoardSize] = useInputs({
     width: '800',
     height: '600',
   });
 
-  const [boardStatus, setBoardStatus] = useState<EditorBoard>({
-    scale: 1,
-    x: 0,
-    y: 0,
+  const { pressedKey } = useBindKeyPress();
+  const isPressSpacebar = pressedKey === KEY.SPACE;
+  const isBoardDraggable = isPressSpacebar || mode === Mode.Move;
+
+  const [boardStatus, setBoardStatus] = useBoardStatus({
     width: Number(width),
     height: Number(height),
   });
-
   const { stickyCoordinate, onMouseMove } = useBoardCoordinate(boardStatus);
+  const { onWheel } = useBoardZoom([boardStatus, setBoardStatus]);
+  const { isDragging, onDragStart, onDrag, onDragEnd, onMouseOut } = useBoardMove(
+    [boardStatus, setBoardStatus],
+    isBoardDraggable
+  );
+  const { drawLineStart, drawLineEnd } = useBoardLineTool({
+    coordinate: stickyCoordinate,
+    color,
+    drawingStatus: [drawingStatus, setDrawingStatus],
+    mapElements: [mapElements, setMapElements],
+  });
 
   const toggleColorPicker = () => setColorPickerOpen((prevState) => !prevState);
 
@@ -72,13 +90,17 @@ const MapCreateEditor = (): JSX.Element => {
     setMode(mode);
   };
 
-  useEffect(() => {
-    setBoardStatus((prevStatus) => ({
-      ...prevStatus,
-      width: Number(width),
-      height: Number(height),
-    }));
-  }, [width, height]);
+  const handleMouseDown = () => {
+    if (isBoardDraggable || isDragging) return;
+
+    if (mode === Mode.Line) drawLineStart();
+  };
+
+  const handleMouseUp = () => {
+    if (isBoardDraggable) return;
+
+    if (mode === Mode.Line) drawLineEnd();
+  };
 
   return (
     <Styled.Editor>
@@ -103,9 +125,50 @@ const MapCreateEditor = (): JSX.Element => {
       <Styled.Board>
         <Board
           statusState={[boardStatus, setBoardStatus]}
-          forceDraggable={mode === Mode.Move}
+          isDraggable={isBoardDraggable}
+          isDragging={isDragging}
           onMouseMove={onMouseMove}
-        ></Board>
+          onMouseDown={handleMouseDown}
+          onMouseUp={handleMouseUp}
+          onWheel={onWheel}
+          onDragStart={onDragStart}
+          onDrag={onDrag}
+          onDragEnd={onDragEnd}
+          onMouseOut={onMouseOut}
+        >
+          {[Mode.Line, Mode.Rect].includes(mode) && (
+            <circle
+              cx={stickyCoordinate.x}
+              cy={stickyCoordinate.y}
+              r={3}
+              fill={PALETTE.OPACITY_BLACK[300]}
+              pointerEvents="none"
+            />
+          )}
+
+          {drawingStatus.start && mode === Mode.Line && (
+            <polyline
+              key="preview-line"
+              points={`${drawingStatus.start.x},${drawingStatus.start.y} ${stickyCoordinate.x},${stickyCoordinate.y}`}
+              stroke={PALETTE.OPACITY_BLACK[200]}
+              strokeWidth={EDITOR.STROKE_WIDTH}
+              strokeLinecap="round"
+              pointerEvents="none"
+            />
+          )}
+
+          {lineMapElements.map((element) => (
+            <polyline
+              key={`polyline-${element.id}`}
+              points={element.points.join(' ')}
+              stroke={element.stroke}
+              strokeWidth={EDITOR.STROKE_WIDTH}
+              strokeLinecap="round"
+              cursor={mode === Mode.Select ? 'pointer' : 'default'}
+              pointerEvents={mode === Mode.Select ? 'auto' : 'none'}
+            />
+          ))}
+        </Board>
       </Styled.Board>
       <Styled.Toolbar>
         <Styled.InputWrapper>
