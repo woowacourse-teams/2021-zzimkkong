@@ -2,13 +2,13 @@ package com.woowacourse.zzimkkong.service;
 
 import com.woowacourse.zzimkkong.domain.Member;
 import com.woowacourse.zzimkkong.domain.OAuthProvider;
+import com.woowacourse.zzimkkong.domain.oauth.OAuthUserInfo;
 import com.woowacourse.zzimkkong.dto.member.LoginRequest;
 import com.woowacourse.zzimkkong.dto.member.TokenResponse;
 import com.woowacourse.zzimkkong.exception.member.NoSuchMemberException;
 import com.woowacourse.zzimkkong.exception.member.PasswordMismatchException;
 import com.woowacourse.zzimkkong.infrastructure.JwtUtils;
 import com.woowacourse.zzimkkong.infrastructure.oauth.OAuthHandler;
-import com.woowacourse.zzimkkong.domain.oauth.OAuthUserInfo;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -88,9 +88,10 @@ class AuthServiceTest extends ServiceTest {
                 .isInstanceOf(PasswordMismatchException.class);
     }
 
+    //todo: ParameterizedTest 작성
     @Test
     @DisplayName("Oauth 인증 코드를 통해 토큰을 발급한다.")
-    void loginByOauth() {
+    void loginByOauthGithub() {
         // given
         String mockCode = "code from OauthProvider";
 

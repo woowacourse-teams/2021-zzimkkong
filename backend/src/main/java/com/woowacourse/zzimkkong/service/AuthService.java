@@ -2,12 +2,12 @@ package com.woowacourse.zzimkkong.service;
 
 import com.woowacourse.zzimkkong.domain.Member;
 import com.woowacourse.zzimkkong.domain.OAuthProvider;
+import com.woowacourse.zzimkkong.domain.oauth.OAuthUserInfo;
 import com.woowacourse.zzimkkong.dto.member.LoginRequest;
 import com.woowacourse.zzimkkong.dto.member.TokenResponse;
 import com.woowacourse.zzimkkong.exception.member.NoSuchMemberException;
 import com.woowacourse.zzimkkong.exception.member.PasswordMismatchException;
 import com.woowacourse.zzimkkong.infrastructure.JwtUtils;
-import com.woowacourse.zzimkkong.domain.oauth.OAuthUserInfo;
 import com.woowacourse.zzimkkong.infrastructure.oauth.OAuthHandler;
 import com.woowacourse.zzimkkong.repository.MemberRepository;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -46,6 +46,18 @@ public class AuthService {
         return TokenResponse.from(token);
     }
 
+    @Transactional(readOnly = true)
+    public TokenResponse loginByOauth(OAuthProvider oauthProvider, String code) {
+        OAuthUserInfo userInfoFromCode = oauthHandler.getUserInfoFromCode(oauthProvider, code);
+        String email = userInfoFromCode.getEmail();
+
+        Member member = members.findByEmail(email)
+                .orElseThrow(NoSuchMemberException::new);
+        String token = issueToken(member);
+
+        return TokenResponse.from(token);
+    }
+
     private String issueToken(Member findMember) {
         Map<String, Object> payload = JwtUtils.payloadBuilder()
                 .setSubject(findMember.getEmail())
@@ -59,17 +71,4 @@ public class AuthService {
             throw new PasswordMismatchException();
         }
     }
-
-    public TokenResponse loginByOauth(OAuthProvider oauthProvider, String code) {
-        OAuthUserInfo userInfoFromCode = oauthHandler.getUserInfoFromCode(oauthProvider, code);
-
-        String email = userInfoFromCode.getEmail();
-        Member member = members.findByEmail(email)
-                .orElseThrow(NoSuchMemberException::new);
-
-        String token = issueToken(member);
-
-        return TokenResponse.from(token);
-    }
-
 }

@@ -49,16 +49,20 @@ public class MemberService {
         }
     }
 
-    public OAuthReadyResponse extractInfo(OAuthProvider oauthProvider, String code) {
+    public OAuthReadyResponse getUserInfoFromOAuth(OAuthProvider oauthProvider, String code) {
         OAuthUserInfo userInfo = oAuthHandler.getUserInfoFromCode(oauthProvider, code);
         String email = userInfo.getEmail();
-        return new OAuthReadyResponse(email, oauthProvider);
+
+        validateDuplicateEmail(email);
+
+        return OAuthReadyResponse.of(email, oauthProvider);
     }
 
     public MemberSaveResponse saveMemberByOAuth(OAuthMemberSaveRequest oAuthMemberSaveRequest) {
+        validateDuplicateEmail(oAuthMemberSaveRequest.getEmail());
+
         Member member = new Member(
                 oAuthMemberSaveRequest.getEmail(),
-                null,
                 oAuthMemberSaveRequest.getOrganization(),
                 OAuthProvider.valueOf(oAuthMemberSaveRequest.getOAuthProvider())
         );

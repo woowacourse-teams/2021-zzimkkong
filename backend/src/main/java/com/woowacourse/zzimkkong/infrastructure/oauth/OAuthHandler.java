@@ -24,7 +24,7 @@ public class OAuthHandler {
 
     private OAuthAPIRequester getRequester(OAuthProvider oAuthProvider) {
         return oAuthAPIRequesters.stream()
-                .filter(OAuthAPIRequester -> OAuthAPIRequester.supports(oAuthProvider))
+                .filter(requester -> requester.supports(oAuthProvider))
                 .findFirst()
                 .orElseThrow(UnsupportedOAuthProviderException::new);
     }

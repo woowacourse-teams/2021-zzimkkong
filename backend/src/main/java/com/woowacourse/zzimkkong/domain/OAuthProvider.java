@@ -1,5 +1,5 @@
 package com.woowacourse.zzimkkong.domain;
 
 public enum OAuthProvider {
-    GITHUB();
+    GITHUB, GOOGLE;
 }

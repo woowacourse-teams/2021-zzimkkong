@@ -38,15 +38,15 @@ public class MemberController {
                 .build();
     }
 
-    @GetMapping("/{oauthProvider}/login")
+    // todo 이름 변경
+    @GetMapping("/{oauthProvider}")
     public ResponseEntity<OAuthReadyResponse> getReadyToJoinByOAuth(@PathVariable OAuthProvider oauthProvider, @RequestParam String code) {
-        OAuthReadyResponse oAuthReadyResponse = memberService.extractInfo(oauthProvider, code);
+        OAuthReadyResponse oAuthReadyResponse = memberService.getUserInfoFromOAuth(oauthProvider, code);
         return ResponseEntity
                 .ok(oAuthReadyResponse);
     }
 
-    // todo 통일
-    @PostMapping
+    @PostMapping("/oauth")
     public ResponseEntity<Void> joinByOAuth(@RequestBody @Valid final OAuthMemberSaveRequest oAuthMemberSaveRequest) {
         MemberSaveResponse memberSaveResponse = memberService.saveMemberByOAuth(oAuthMemberSaveRequest);
         return ResponseEntity

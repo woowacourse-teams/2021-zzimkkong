@@ -20,7 +20,7 @@ public class Member {
     @Column(nullable = false, length = 50, unique = true)
     private String email;
 
-    @Column(nullable = false, length = 128)
+    @Column(length = 128)
     private String password;
 
     @Column(nullable = false, length = 20)
@@ -29,7 +29,7 @@ public class Member {
     @OneToMany(mappedBy = "member", cascade = CascadeType.REMOVE, orphanRemoval = true)
     private List<Preset> presets = new ArrayList<>();
 
-    @Column(nullable = true, length = 10)
+    @Column(length = 10)
     @Enumerated(EnumType.STRING)
     private OAuthProvider oAuthProvider;
 
@@ -51,14 +51,10 @@ public class Member {
         this.id = id;
     }
 
-    public Member(final String email,
-                  final String password,
-                  final String organization,
-                  final OAuthProvider oAuthProvider) {
+    public Member(final String email, final String organization, final OAuthProvider oauthProvider) {
         this.email = email;
-        this.password = password;
         this.organization = organization;
-        this.oAuthProvider = oAuthProvider;
+        this.oAuthProvider = oauthProvider;
     }
 
     public Optional<Preset> findPresetById(final Long presetId) {
