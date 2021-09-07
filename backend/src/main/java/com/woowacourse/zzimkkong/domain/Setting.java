@@ -1,9 +1,6 @@
 package com.woowacourse.zzimkkong.domain;
 
-import com.woowacourse.zzimkkong.exception.space.ImpossibleAvailableStartEndTimeException;
-import com.woowacourse.zzimkkong.exception.space.InvalidMinimumMaximumTimeUnitException;
-import com.woowacourse.zzimkkong.exception.space.TimeUnitMismatchException;
-import com.woowacourse.zzimkkong.exception.space.NotEnoughAvailableTimeException;
+import com.woowacourse.zzimkkong.exception.space.*;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -55,20 +52,31 @@ public class Setting {
         this.reservationEnable = reservationEnable;
         this.enabledDayOfWeek = enabledDayOfWeek;
 
-        if (availableStartTime.equals(availableEndTime) || availableStartTime.isAfter(availableEndTime)) {
+        if (this.availableStartTime.equals(this.availableEndTime) || this.availableStartTime.isAfter(this.availableEndTime)) {
             throw new ImpossibleAvailableStartEndTimeException();
         }
 
-        if (availableStartTime.getMinute() % reservationTimeUnit != 0 || availableEndTime.getMinute() % reservationTimeUnit != 0) {
+        // TODO: 10분 으로 마무리 지어져야함 (edge case: 10:15 ~ 11:35는 가능함)
+        if (this.availableStartTime.getMinute() % this.reservationTimeUnit != 0 || this.availableEndTime.getMinute() % this.reservationTimeUnit != 0) {
             throw new TimeUnitMismatchException();
         }
 
-        if (reservationMaximumTimeUnit < reservationMinimumTimeUnit) {
+        if (this.reservationMaximumTimeUnit < this.reservationMinimumTimeUnit) {
             throw new InvalidMinimumMaximumTimeUnitException();
         }
 
-        int duration = (int) ChronoUnit.MINUTES.between(availableStartTime, availableEndTime);
-        if (duration < reservationMaximumTimeUnit) {
+        final int minimumTimeUnitQuotient = this.reservationMinimumTimeUnit / this.reservationTimeUnit;
+        final int minimumTimeUnitRemainder = this.reservationMinimumTimeUnit % this.reservationTimeUnit;
+
+        final int maximumTimeUnitQuotient = this.reservationMaximumTimeUnit / this.reservationTimeUnit;
+        final int maximumTimeUnitRemainder = this.reservationMaximumTimeUnit % this.reservationTimeUnit;
+
+        if (!((minimumTimeUnitRemainder == 0 && 1 <= minimumTimeUnitQuotient) && (maximumTimeUnitRemainder == 0 && 1 <= maximumTimeUnitQuotient))) {
+            throw new TimeUnitInconsistencyException();
+        }
+
+        int duration = (int) ChronoUnit.MINUTES.between(this.availableStartTime, this.availableEndTime);
+        if (duration < this.reservationMaximumTimeUnit) {
             throw new NotEnoughAvailableTimeException();
         }
     }
