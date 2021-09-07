@@ -10,6 +10,7 @@ import ReservationListItem from 'components/ReservationListItem/ReservationListI
 import MESSAGE from 'constants/message';
 import { HREF } from 'constants/path';
 import useGuestReservations from 'hooks/useGuestReservations';
+import useInput from 'hooks/useInput';
 import { GuestMapState } from 'pages/GuestMap/GuestMap';
 import { MapItem, Reservation, ScrollPosition, Space } from 'types/common';
 import { ErrorResponse } from 'types/response';
@@ -45,13 +46,16 @@ const GuestReservation = (): JSX.Element => {
 
   if (!mapId || !space) history.replace(`/guest/${sharingMapId}`);
 
-  const getReservations = useGuestReservations({ mapId, spaceId: space.id, date: selectedDate });
+  const [date, onChangeDate] = useInput(selectedDate);
+
+  const getReservations = useGuestReservations({ mapId, spaceId: space.id, date });
   const reservations = getReservations.data?.data?.reservations ?? [];
 
   const createReservation = useMutation(postGuestReservation, {
     onSuccess: () => {
       history.push(`/guest/${sharingMapId}`, {
         spaceId: space.id,
+        targetDate: new Date(date),
       });
     },
     onError: (error: AxiosError<ErrorResponse>) => {
@@ -63,6 +67,7 @@ const GuestReservation = (): JSX.Element => {
     onSuccess: () => {
       history.push(HREF.GUEST_MAP(sharingMapId), {
         spaceId: space.id,
+        targetDate: new Date(date),
       });
     },
 
@@ -108,12 +113,12 @@ const GuestReservation = (): JSX.Element => {
       ) {
         location.state = {
           spaceId: space.id,
-          targetDate: new Date(selectedDate),
+          targetDate: new Date(date),
           scrollPosition,
         };
       }
     });
-  }, [history, scrollPosition, selectedDate, space, sharingMapId]);
+  }, [history, scrollPosition, date, space, sharingMapId]);
 
   return (
     <>
@@ -125,12 +130,13 @@ const GuestReservation = (): JSX.Element => {
         </Styled.PageHeader>
         <ReservationForm
           space={space}
-          selectedDate={selectedDate}
           reservation={reservation}
+          date={date}
+          onChangeDate={onChangeDate}
           handleSubmit={handleSubmit}
         />
         <Styled.Section>
-          <PageHeader title={`${selectedDate}${selectedDate && '의'} 예약 목록`} />
+          <PageHeader title={`${date}${date && '의'} 예약 목록`} />
           {getReservations.isLoadingError && (
             <Styled.Message>{MESSAGE.RESERVATION.ERROR}</Styled.Message>
           )}

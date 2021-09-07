@@ -1,5 +1,4 @@
-import { FormEvent } from 'react';
-import { ReservationParams } from 'api/guestReservation';
+import { ChangeEventHandler } from 'react';
 import { ReactComponent as CalendarIcon } from 'assets/svg/calendar.svg';
 import Button from 'components/Button/Button';
 import Input from 'components/Input/Input';
@@ -16,15 +15,15 @@ import * as Styled from './ReservationForm.styles';
 
 interface Props {
   space: Space;
-  selectedDate: string;
   reservation?: Reservation;
+  date: string;
+  onChangeDate: ChangeEventHandler<HTMLInputElement>;
   handleSubmit: ({ event, reservation, reservationId }: HandleSubmitParams) => void;
 }
 
 interface Form {
   name: string;
   description: string;
-  date: string;
   startTime: string;
   endTime: string;
   password: string;
@@ -32,9 +31,10 @@ interface Form {
 
 const ReservationForm = ({
   space,
-  selectedDate,
+  date,
   reservation,
   handleSubmit,
+  onChangeDate,
 }: Props): JSX.Element => {
   useWindowScrollReset();
 
@@ -59,16 +59,13 @@ const ReservationForm = ({
   const availableStartTimeText = formatTime(new Date(`${todayDate}T${availableStartTime}`));
   const availableEndTimeText = formatTime(new Date(`${todayDate}T${availableEndTime}`));
 
-  const [{ name, description, date, startTime, endTime, password }, onChangeForm] = useInputs<Form>(
-    {
-      name: reservation?.name ?? '',
-      description: reservation?.description ?? '',
-      date: selectedDate,
-      startTime: initialStartTime,
-      endTime: initialEndTime,
-      password: '',
-    }
-  );
+  const [{ name, description, startTime, endTime, password }, onChangeForm] = useInputs<Form>({
+    name: reservation?.name ?? '',
+    description: reservation?.description ?? '',
+    startTime: initialStartTime,
+    endTime: initialEndTime,
+    password: '',
+  });
 
   const startDateTime = new Date(`${date}T${startTime}Z`);
   const endDateTime = new Date(`${date}T${endTime}Z`);
@@ -119,7 +116,7 @@ const ReservationForm = ({
             icon={<CalendarIcon />}
             value={date}
             min={formatDate(now)}
-            onChange={onChangeForm}
+            onChange={onChangeDate}
             required
           />
         </Styled.InputWrapper>
