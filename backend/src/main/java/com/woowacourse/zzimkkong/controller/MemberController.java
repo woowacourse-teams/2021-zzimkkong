@@ -38,11 +38,12 @@ public class MemberController {
                 .build();
     }
 
-    @GetMapping("/oauth")
-    public ResponseEntity<OAuthReadyResponse> joinByOAuth(@RequestParam OAuthProvider oauthProvider, @RequestParam String code) {
-        OAuthReadyResponse oAuthReadyResponse = memberService.extractInfo(oauthProvider, code);
+    @PostMapping("/oauth")
+    public ResponseEntity<MemberSaveResponse> joinByOAuth(@RequestParam OAuthProvider oauthProvider, @RequestParam String code) {
+        MemberSaveResponse memberSaveResponse = memberService.saveMemberByOAuth(oauthProvider, code);
         return ResponseEntity
-                .ok(oAuthReadyResponse);
+                .created(URI.create("/api/members/" + memberSaveResponse.getId()))
+                .build();
     }
 
     @GetMapping

@@ -46,6 +46,18 @@ public class AuthService {
         return TokenResponse.from(token);
     }
 
+    @Transactional(readOnly = true)
+    public TokenResponse loginByOauth(OAuthProvider oauthProvider, String code) {
+        OAuthUserInfo userInfoFromCode = oauthHandler.getUserInfoFromCode(oauthProvider, code);
+        String email = userInfoFromCode.getEmail();
+
+        Member member = members.findByEmail(email)
+                .orElseThrow(NoSuchMemberException::new);
+        String token = issueToken(member);
+
+        return TokenResponse.from(token);
+    }
+
     private String issueToken(Member findMember) {
         Map<String, Object> payload = JwtUtils.payloadBuilder()
                 .setSubject(findMember.getEmail())
@@ -59,17 +71,4 @@ public class AuthService {
             throw new PasswordMismatchException();
         }
     }
-
-    public TokenResponse loginByOauth(OAuthProvider oauthProvider, String code) {
-        OAuthUserInfo userInfoFromCode = oauthHandler.getUserInfoFromCode(oauthProvider, code);
-
-        String email = userInfoFromCode.getEmail();
-        Member member = members.findByEmail(email)
-                .orElseThrow(NoSuchMemberException::new);
-
-        String token = issueToken(member);
-
-        return TokenResponse.from(token);
-    }
-
 }

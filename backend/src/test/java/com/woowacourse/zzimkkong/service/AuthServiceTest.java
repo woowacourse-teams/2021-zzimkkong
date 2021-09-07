@@ -90,7 +90,7 @@ class AuthServiceTest extends ServiceTest {
 
     @Test
     @DisplayName("Oauth 인증 코드를 통해 토큰을 발급한다.")
-    void loginByOauth() {
+    void loginByOauthGithub() {
         // given
         String mockCode = "code from OauthProvider";
 

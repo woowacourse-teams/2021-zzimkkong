@@ -4,7 +4,6 @@ import com.woowacourse.zzimkkong.domain.Member;
 import com.woowacourse.zzimkkong.domain.OAuthProvider;
 import com.woowacourse.zzimkkong.dto.member.MemberSaveRequest;
 import com.woowacourse.zzimkkong.dto.member.MemberSaveResponse;
-import com.woowacourse.zzimkkong.dto.member.OAuthReadyResponse;
 import com.woowacourse.zzimkkong.exception.member.DuplicateEmailException;
 import com.woowacourse.zzimkkong.infrastructure.oauth.OAuthHandler;
 import com.woowacourse.zzimkkong.infrastructure.oauth.OAuthUserInfo;
@@ -48,9 +47,15 @@ public class MemberService {
         }
     }
 
-    public OAuthReadyResponse extractInfo(OAuthProvider oauthProvider, String code) {
+    public MemberSaveResponse saveMemberByOAuth(final OAuthProvider oauthProvider, final String code) {
         OAuthUserInfo userInfo = oAuthHandler.getUserInfoFromCode(oauthProvider, code);
         String email = userInfo.getEmail();
-        return new OAuthReadyResponse(email, oauthProvider);
+        if(members.existsByEmail(email)) {
+            throw new DuplicateEmailException();
+        }
+
+        Member member = new Member(email, "organization", oauthProvider);
+
+        return MemberSaveResponse.from(member);
     }
 }

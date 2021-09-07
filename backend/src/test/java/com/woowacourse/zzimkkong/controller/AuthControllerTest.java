@@ -1,5 +1,6 @@
 package com.woowacourse.zzimkkong.controller;
 
+import com.woowacourse.zzimkkong.domain.OAuthProvider;
 import com.woowacourse.zzimkkong.dto.member.LoginRequest;
 import com.woowacourse.zzimkkong.dto.member.TokenResponse;
 import com.woowacourse.zzimkkong.infrastructure.AuthorizationExtractor;
@@ -25,6 +26,22 @@ class AuthControllerTest extends AcceptanceTest {
 
         // when
         ExtractableResponse<Response> response = login(loginRequest);
+        TokenResponse responseBody = response.body().as(TokenResponse.class);
+
+        // then
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
+        assertThat(responseBody.getAccessToken()).isInstanceOf(String.class);
+    }
+
+    @Test
+    @DisplayName("Google OAuth 로그인 요청이 오면 토큰을 발급한다.")
+    void loginByOauth() {
+        // given
+        OAuthProvider oAuthProvider = OAuthProvider.GOOGLE;
+        String code = "4%2F0AX4XfWjEXMLEdAqN4Bxqufcm8MIP1btBZY_nTeS_1M3b46MqSrq-h2A3Z2ydSOlZI1SpeA";
+
+        // when
+        ExtractableResponse<Response> response = loginByOAuth(oAuthProvider, code);
         TokenResponse responseBody = response.body().as(TokenResponse.class);
 
         // then
@@ -74,6 +91,16 @@ class AuthControllerTest extends AcceptanceTest {
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body(loginRequest)
                 .when().post("/api/login/token")
+                .then().log().all().extract();
+    }
+
+    static ExtractableResponse<Response> loginByOAuth(final OAuthProvider oAuthProvider, final String code) {
+        return RestAssured
+                .given(getRequestSpecification()).log().all()
+                .accept("application/json")
+                .filter(document("member/login/oauth", getRequestPreprocessor(), getResponsePreprocessor()))
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .when().get("/api/" + oAuthProvider +"/login/token?code=" + code)
                 .then().log().all().extract();
     }
 

@@ -1,6 +1,7 @@
 package com.woowacourse.zzimkkong.controller;
 
 import com.woowacourse.zzimkkong.domain.Member;
+import com.woowacourse.zzimkkong.domain.OAuthProvider;
 import com.woowacourse.zzimkkong.domain.Preset;
 import com.woowacourse.zzimkkong.domain.Setting;
 import com.woowacourse.zzimkkong.dto.member.MemberSaveRequest;
@@ -66,6 +67,20 @@ class MemberControllerTest extends AcceptanceTest {
 
         // when
         ExtractableResponse<Response> response = saveMember(newMemberSaveRequest);
+
+        //then
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
+    }
+
+    @Test
+    @DisplayName("Google OAuth 회원가입 입력이 들어오면 회원 정보를 저장한다.")
+    void joinByOauth() {
+        //given
+        OAuthProvider oAuthProvider = OAuthProvider.GOOGLE;
+        String code = "4%2F0AX4XfWjEXMLEdAqN4Bxqufcm8MIP1btBZY_nTeS_1M3b46MqSrq-h2A3Z2ydSOlZI1SpeA";
+
+        // when
+        ExtractableResponse<Response> response = saveMemberByOAuth(oAuthProvider, code);
 
         //then
         assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
@@ -139,6 +154,16 @@ class MemberControllerTest extends AcceptanceTest {
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body(memberSaveRequest)
                 .when().post("/api/members")
+                .then().log().all().extract();
+    }
+
+    static ExtractableResponse<Response> saveMemberByOAuth(final OAuthProvider oAuthProvider, final String code) {
+        return RestAssured
+                .given(getRequestSpecification()).log().all()
+                .accept("application/json")
+                .filter(document("member/get/oauth", getRequestPreprocessor(), getResponsePreprocessor()))
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .when().post("/api/members/oauth?oauthProvider=" + oAuthProvider + "&code=" + code)
                 .then().log().all().extract();
     }
 
