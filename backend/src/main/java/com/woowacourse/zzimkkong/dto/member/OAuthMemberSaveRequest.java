@@ -18,23 +18,17 @@ public class OAuthMemberSaveRequest {
     private String email;
 
     @NotNull(message = EMPTY_MESSAGE)
-    @Pattern(regexp = MEMBER_PW_FORMAT, message = MEMBER_PW_MESSAGE)
-    private String password;
-
-    @NotNull(message = EMPTY_MESSAGE)
     @Pattern(regexp = ORGANIZATION_FORMAT, message = ORGANIZATION_MESSAGE)
     private String organization;
 
     @NotNull(message = EMPTY_MESSAGE)
-    private String OAuthProvider;
+    private String oAuthProvider;
 
     public OAuthMemberSaveRequest(final String email,
-                                  final String password,
                                   final String organization,
-                                  final String OAuthProvider) {
+                                  final String oAuthProvider) {
         this.email = email;
-        this.password = password;
         this.organization = organization;
-        this.OAuthProvider = OAuthProvider;
+        this.oAuthProvider = oAuthProvider;
     }
 }
