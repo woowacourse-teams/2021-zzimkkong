@@ -45,6 +45,7 @@ public class MemberController {
                 .ok(oAuthReadyResponse);
     }
 
+    // todo 통일
     @PostMapping
     public ResponseEntity<Void> joinByOAuth(@RequestBody @Valid final OAuthMemberSaveRequest oAuthMemberSaveRequest) {
         MemberSaveResponse memberSaveResponse = memberService.saveMemberByOAuth(oAuthMemberSaveRequest);

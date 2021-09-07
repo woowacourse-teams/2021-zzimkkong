@@ -64,6 +64,5 @@ public class MemberService {
         );
         Member saveMember = members.save(member);
         return MemberSaveResponse.from(saveMember);
-
     }
 }
