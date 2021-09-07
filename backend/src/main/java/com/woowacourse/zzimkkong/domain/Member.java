@@ -29,6 +29,10 @@ public class Member {
     @OneToMany(mappedBy = "member", cascade = CascadeType.REMOVE, orphanRemoval = true)
     private List<Preset> presets = new ArrayList<>();
 
+    @Column(nullable = true, length = 10)
+    @Enumerated(EnumType.STRING)
+    private OAuthProvider oAuthProvider;
+
     public Member(
             final String email,
             final String password,
@@ -45,6 +49,16 @@ public class Member {
             final String organization) {
         this(email, password, organization);
         this.id = id;
+    }
+
+    public Member(final String email,
+                  final String password,
+                  final String organization,
+                  final OAuthProvider oAuthProvider) {
+        this.email = email;
+        this.password = password;
+        this.organization = organization;
+        this.oAuthProvider = oAuthProvider;
     }
 
     public Optional<Preset> findPresetById(final Long presetId) {

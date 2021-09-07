@@ -72,6 +72,18 @@ class MemberControllerTest extends AcceptanceTest {
     }
 
     @Test
+    @DisplayName("OAuth를 통해 얻을 수 없는 정보를 요구하며 회원가입을 진행한다.")
+    void getReadyToJoinByOAuth() {
+        // todo 테스트 작성
+    }
+
+    @Test
+    @DisplayName("OAuth를 통해 회원가입 할 수 있다.")
+    void joinByOAuth() {
+        // Todo 테스트 작성
+    }
+
+    @Test
     @DisplayName("이메일 중복 확인 시, 중복되지 않은 이메일을 입력하면 통과한다.")
     void getMembers() {
         //given
