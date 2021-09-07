@@ -52,7 +52,9 @@ const ReservationForm = ({
 
   const initialEndTime = !!reservation
     ? formatTime(new Date(reservation.endDateTime))
-    : formatTime(new Date(new Date().getTime() + 1000 * 60 * reservationTimeUnit));
+    : formatTime(
+        new Date(new Date().getTime() + TIME.MILLISECONDS_PER_MINUTE * reservationTimeUnit)
+      );
 
   const availableStartTimeText = formatTime(new Date(`${todayDate}T${availableStartTime}`));
   const availableEndTimeText = formatTime(new Date(`${todayDate}T${availableEndTime}`));
