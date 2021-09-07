@@ -106,16 +106,16 @@ const MapCreateEditor = (): JSX.Element => {
     if (isBoardDraggable || isDragging) return;
 
     if (mode === Mode.Line) drawLineStart();
-    if (mode === Mode.Rect) drawRectStart();
-    if (mode === Mode.Eraser) eraseStart();
+    else if (mode === Mode.Rect) drawRectStart();
+    else if (mode === Mode.Eraser) eraseStart();
   };
 
   const handleMouseUp = () => {
     if (isBoardDraggable || isDragging) return;
 
     if (mode === Mode.Line) drawLineEnd();
-    if (mode === Mode.Rect) drawRectEnd();
-    if (mode === Mode.Eraser) eraseEnd();
+    else if (mode === Mode.Rect) drawRectEnd();
+    else if (mode === Mode.Eraser) eraseEnd();
   };
 
   return (
