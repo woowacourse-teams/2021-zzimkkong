@@ -6,13 +6,10 @@ import { postGuestReservation, putGuestReservation } from 'api/guestReservation'
 import { ReactComponent as CalendarIcon } from 'assets/svg/calendar.svg';
 import Button from 'components/Button/Button';
 import Input from 'components/Input/Input';
-import PageHeader from 'components/PageHeader/PageHeader';
-import ReservationListItem from 'components/ReservationListItem/ReservationListItem';
 import MESSAGE from 'constants/message';
 import { HREF } from 'constants/path';
 import REGEXP from 'constants/regexp';
 import RESERVATION from 'constants/reservation';
-import useGuestReservations from 'hooks/useGuestReservations';
 import useInputs from 'hooks/useInputs';
 import useWindowScrollReset from 'hooks/useWindowScrollReset';
 import { MapItem, Reservation, Space } from 'types/common';
@@ -78,9 +75,6 @@ const ReservationForm = ({
   const startDateTime = new Date(`${date}T${startTime}Z`);
   const endDateTime = new Date(`${date}T${endTime}Z`);
 
-  const getReservations = useGuestReservations({ mapId, spaceId: space.id, date });
-  const reservations = getReservations.data?.data?.reservations ?? [];
-
   const createReservation = useMutation(postGuestReservation, {
     onSuccess: () => {
       history.push(`/guest/${sharingMapId}`, {
@@ -136,10 +130,6 @@ const ReservationForm = ({
       onSubmit={!!reservation ? handleReservationEdit : handleReservationCreate}
     >
       <Styled.Section>
-        <Styled.PageHeader title="공간 이름" data-testid="spaceName">
-          <Styled.ColorDot color={space.color} />
-          {space.name}
-        </Styled.PageHeader>
         <Styled.InputWrapper>
           <Input
             label="이름"
@@ -220,26 +210,6 @@ const ReservationForm = ({
           />
         </Styled.InputWrapper>
       </Styled.Section>
-      <Styled.Section>
-        <PageHeader title={`${date}${date && '의'} 예약 목록`} />
-        {getReservations.isLoadingError && (
-          <Styled.Message>{MESSAGE.RESERVATION.ERROR}</Styled.Message>
-        )}
-        {getReservations.isLoading && !getReservations.isLoadingError && (
-          <Styled.Message>{MESSAGE.RESERVATION.PENDING}</Styled.Message>
-        )}
-        {getReservations.isSuccess && reservations.length === 0 && (
-          <Styled.Message>{MESSAGE.RESERVATION.SUGGESTION}</Styled.Message>
-        )}
-        {getReservations.isSuccess && reservations.length > 0 && (
-          <Styled.ReservationList role="list">
-            {reservations?.map((reservation) => (
-              <ReservationListItem key={reservation.id} reservation={reservation} />
-            ))}
-          </Styled.ReservationList>
-        )}
-      </Styled.Section>
-
       <Styled.ButtonWrapper>
         <Button fullWidth variant="primary" size="large">
           {!!reservation ? MESSAGE.RESERVATION.EDIT : MESSAGE.RESERVATION.CREATE}
