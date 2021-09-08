@@ -1,24 +1,38 @@
 package com.woowacourse.zzimkkong.infrastructure.oauth.dto;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Getter
 @NoArgsConstructor
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class GoogleTokenResponse {
     @JsonProperty("access_token")
     private String accessToken;
 
-    @JsonProperty("error")
-    String error;
+    @JsonProperty("expires_in")
+    private Integer expiresIn;
 
-    @JsonProperty("error_description")
-    String errorDescription;
+    @JsonProperty("refresh_token")
+    private String refreshToken;
 
-    public GoogleTokenResponse(String accessToken, String error, String errorDescription) {
+    @JsonProperty("scope")
+    private String scope;
+
+    @JsonProperty("token_type")
+    private String tokenType;
+
+    @JsonProperty("id_token")
+    private String idToken;
+
+    public GoogleTokenResponse(String accessToken, Integer expiresIn, String refreshToken, String scope, String tokenType, String idToken) {
         this.accessToken = accessToken;
-        this.error = error;
-        this.errorDescription = errorDescription;
+        this.expiresIn = expiresIn;
+        this.refreshToken = refreshToken;
+        this.scope = scope;
+        this.tokenType = tokenType;
+        this.idToken = idToken;
     }
 }

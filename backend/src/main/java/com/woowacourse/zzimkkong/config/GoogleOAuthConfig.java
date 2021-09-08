@@ -11,7 +11,7 @@ import org.springframework.context.annotation.PropertySource;
 public class GoogleOAuthConfig {
     private static final String BASE_URL_GOOGLE_OAUTH_LOGIN = "https://www.googleapis.com/oauth2/v4/token";
     private static final String BASE_URL_GOOGLE_USER_INFO = "https://www.googleapis.com/oauth2/v2/userinfo";
-    private static final String REDIRECT_URL = "https://localhost:8080";
+    private static final String REDIRECT_URL = "http://localhost:8080";
 
     @Bean
     public GoogleRequester googleRequester(

@@ -12,7 +12,6 @@ import java.nio.charset.StandardCharsets;
 import java.util.Collections;
 
 public class GoogleRequester implements OAuthAPIRequester {
-
     private final String clientId;
     private final String secretId;
     private final String redirectUri;
@@ -39,8 +38,12 @@ public class GoogleRequester implements OAuthAPIRequester {
 
     @Override
     public OAuthUserInfo getUserInfoByCode(final String code) {
-        String token = getToken(code);
-        return getUserInfo(token);
+        try {
+            String token = getToken(code);
+            return getUserInfo(token);
+        } catch (RuntimeException e) {
+            throw new UnableToGetTokenResponseFromGoogleException();
+        }
     }
 
     private String getToken(final String code) {
