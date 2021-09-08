@@ -64,7 +64,7 @@ public class MemberService {
         Member member = new Member(
                 oAuthMemberSaveRequest.getEmail(),
                 oAuthMemberSaveRequest.getOrganization(),
-                OAuthProvider.valueOf(oAuthMemberSaveRequest.getOAuthProvider())
+                OAuthProvider.valueOfWithIgnoreCase(oAuthMemberSaveRequest.getOAuthProvider())
         );
         Member saveMember = members.save(member);
         return MemberSaveResponse.from(saveMember);
