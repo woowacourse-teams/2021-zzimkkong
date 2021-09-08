@@ -4,30 +4,35 @@ import com.woowacourse.zzimkkong.domain.Member;
 import com.woowacourse.zzimkkong.domain.OAuthProvider;
 import com.woowacourse.zzimkkong.domain.Preset;
 import com.woowacourse.zzimkkong.domain.Setting;
-import com.woowacourse.zzimkkong.dto.member.MemberSaveRequest;
-import com.woowacourse.zzimkkong.dto.member.PresetFindAllResponse;
-import com.woowacourse.zzimkkong.dto.member.PresetCreateRequest;
+import com.woowacourse.zzimkkong.domain.oauth.GoogleUserInfo;
+import com.woowacourse.zzimkkong.dto.member.*;
 import com.woowacourse.zzimkkong.dto.space.SettingsRequest;
 import com.woowacourse.zzimkkong.infrastructure.AuthorizationExtractor;
+import com.woowacourse.zzimkkong.infrastructure.oauth.GoogleRequester;
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.util.List;
 
 import static com.woowacourse.zzimkkong.Constants.*;
 import static com.woowacourse.zzimkkong.DocumentUtils.*;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.BDDMockito.given;
 import static org.springframework.restdocs.restassured3.RestAssuredRestDocumentation.document;
 
 class MemberControllerTest extends AcceptanceTest {
+    @MockBean
+    private GoogleRequester googleRequester;
+
     private Member pobi;
     private Setting setting;
 
@@ -73,18 +78,46 @@ class MemberControllerTest extends AcceptanceTest {
     }
 
     @Test
-    @DisplayName("Google OAuth 회원가입 입력이 들어오면 회원 정보를 저장한다.")
-    void joinByOauth() {
-        //given
+    @DisplayName("Google OAuth 회원가입 입력이 들어오면 accessToken을 발급한다.")
+    void getReadyToJoinByOauth() {
+        // given
+        given(googleRequester.supports(any(OAuthProvider.class)))
+                .willReturn(true);
+        given(googleRequester.getUserInfoByCode(anyString()))
+                .willReturn(new GoogleUserInfo(
+                        "id",
+                        NEW_EMAIL,
+                        "verified_email",
+                        "name",
+                        "given_name",
+                        "family_name",
+                        "picture",
+                        "locale"));
+
         OAuthProvider oAuthProvider = OAuthProvider.GOOGLE;
-        String code = "4%2F0AX4XfWjEXMLEdAqN4Bxqufcm8MIP1btBZY_nTeS_1M3b46MqSrq-h2A3Z2ydSOlZI1SpeA";
+        String code = "example-code";
 
         // when
-        ExtractableResponse<Response> response = saveMemberByOAuth(oAuthProvider, code);
+        ExtractableResponse<Response> response = getReadyToJoin(oAuthProvider, code);
+        OAuthReadyResponse expected = OAuthReadyResponse.of(NEW_EMAIL, OAuthProvider.GOOGLE);
 
         //then
-        //todo 샐리
-//        assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
+        assertThat(response.body().as(OAuthReadyResponse.class)).usingRecursiveComparison()
+                .isEqualTo(expected);
+    }
+
+    @Test
+    @DisplayName("Google OAuth을 이용해 회원가입한다.")
+    void joinByOauth() {
+        // given
+        OAuthMemberSaveRequest oAuthMemberSaveRequest = new OAuthMemberSaveRequest(NEW_EMAIL, ORGANIZATION, "GOOGLE");
+
+        // when
+        ExtractableResponse<Response> response = saveMemberByOAuth(oAuthMemberSaveRequest);
+
+        //then
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
     }
 
     //todo 김김
@@ -171,13 +204,24 @@ class MemberControllerTest extends AcceptanceTest {
                 .then().log().all().extract();
     }
 
-    static ExtractableResponse<Response> saveMemberByOAuth(final OAuthProvider oAuthProvider, final String code) {
+    static ExtractableResponse<Response> getReadyToJoin(final OAuthProvider oAuthProvider, final String code) {
         return RestAssured
                 .given(getRequestSpecification()).log().all()
                 .accept("application/json")
                 .filter(document("member/get/oauth", getRequestPreprocessor(), getResponsePreprocessor()))
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .when().post("/api/members/oauth?oauthProvider=" + oAuthProvider + "&code=" + code)
+                .when().get("/api/members/" + oAuthProvider + "?code=" + code)
+                .then().log().all().extract();
+    }
+
+    static ExtractableResponse<Response> saveMemberByOAuth(final OAuthMemberSaveRequest oAuthMemberSaveRequest) {
+        return RestAssured
+                .given(getRequestSpecification()).log().all()
+                .accept("application/json")
+                .filter(document("member/post/oauth", getRequestPreprocessor(), getResponsePreprocessor()))
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .body(oAuthMemberSaveRequest)
+                .when().post("/api/members/oauth")
                 .then().log().all().extract();
     }
 
