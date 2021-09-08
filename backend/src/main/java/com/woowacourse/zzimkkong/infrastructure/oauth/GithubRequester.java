@@ -26,7 +26,7 @@ public class GithubRequester implements OAuthAPIRequester {
     public GithubRequester(
             @Value("${github.client-id}") final String clientId,
             @Value("${github.secret-id}") final String secretId,
-            @Value("${github.url.github.url.oauth-login}") final String githubOAuthUrl,
+            @Value("${github.url.oauth-login}") final String githubOAuthUrl,
             @Value("${github.url.open-api}") final String githubOpenApiUrl) {
         this.clientId = clientId;
         this.secretId = secretId;
