@@ -6,7 +6,7 @@ import lombok.NoArgsConstructor;
 
 @Getter
 @NoArgsConstructor
-public class GoogleUserInfo implements OAuthUserInfo {
+public class GoogleUserInfo implements OauthUserInfo {
     @JsonProperty("id")
     private String id;
 
@@ -40,11 +40,6 @@ public class GoogleUserInfo implements OAuthUserInfo {
         this.familyName = familyName;
         this.picture = picture;
         this.locale = locale;
-    }
-
-    @Override
-    public String getEmail() {
-        return email;
     }
 }
 

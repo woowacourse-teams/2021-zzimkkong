@@ -1,4 +1,4 @@
-package com.woowacourse.zzimkkong.dto.member;
+package com.woowacourse.zzimkkong.dto.member.oauth;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -12,7 +12,7 @@ import static com.woowacourse.zzimkkong.dto.ValidatorMessage.*;
 
 @Getter
 @NoArgsConstructor
-public class OAuthMemberSaveRequest {
+public class OauthMemberSaveRequest {
     @NotBlank(message = EMPTY_MESSAGE)
     @Email(message = EMAIL_MESSAGE)
     private String email;
@@ -22,9 +22,9 @@ public class OAuthMemberSaveRequest {
     private String organization;
 
     @NotNull(message = EMPTY_MESSAGE)
-    private String oauthProvider; // todo 카멜 케이스 상의, Body로 받을 건지???
+    private String oauthProvider;
 
-    public OAuthMemberSaveRequest(final String email,
+    public OauthMemberSaveRequest(final String email,
                                   final String organization,
                                   final String oauthProvider) {
         this.email = email;

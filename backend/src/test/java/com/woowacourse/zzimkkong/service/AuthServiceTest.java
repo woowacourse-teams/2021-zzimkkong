@@ -1,20 +1,19 @@
 package com.woowacourse.zzimkkong.service;
 
 import com.woowacourse.zzimkkong.domain.Member;
-import com.woowacourse.zzimkkong.domain.OAuthProvider;
-import com.woowacourse.zzimkkong.domain.oauth.OAuthUserInfo;
+import com.woowacourse.zzimkkong.domain.OauthProvider;
+import com.woowacourse.zzimkkong.domain.oauth.OauthUserInfo;
 import com.woowacourse.zzimkkong.dto.member.LoginRequest;
 import com.woowacourse.zzimkkong.dto.member.TokenResponse;
 import com.woowacourse.zzimkkong.exception.member.NoSuchMemberException;
 import com.woowacourse.zzimkkong.exception.member.PasswordMismatchException;
 import com.woowacourse.zzimkkong.infrastructure.JwtUtils;
-import com.woowacourse.zzimkkong.infrastructure.oauth.OAuthHandler;
+import com.woowacourse.zzimkkong.infrastructure.oauth.OauthHandler;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.EnumSource;
-import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.mock.mockito.MockBean;
 
@@ -37,7 +36,7 @@ class AuthServiceTest extends ServiceTest {
     }
 
     @MockBean
-    private OAuthHandler oauthHandler;
+    private OauthHandler oauthHandler;
 
     @Autowired
     private AuthService authService;
@@ -92,22 +91,22 @@ class AuthServiceTest extends ServiceTest {
     }
 
     @ParameterizedTest
-    @EnumSource(OAuthProvider.class)
+    @EnumSource(OauthProvider.class)
     @DisplayName("Oauth 인증 코드를 통해 토큰을 발급한다.")
-    void loginByOauth(OAuthProvider oAuthProvider) {
+    void loginByOauth(OauthProvider oauthProvider) {
         // given
         String mockCode = "Mock Code from OauthProvider";
 
-        OAuthUserInfo mockOAuthUserInfo = mock(OAuthUserInfo.class);
-        given(oauthHandler.getUserInfoFromCode(any(OAuthProvider.class), anyString()))
-                .willReturn(mockOAuthUserInfo);
-        given(mockOAuthUserInfo.getEmail())
+        OauthUserInfo mockOauthUserInfo = mock(OauthUserInfo.class);
+        given(oauthHandler.getUserInfoFromCode(any(OauthProvider.class), anyString()))
+                .willReturn(mockOauthUserInfo);
+        given(mockOauthUserInfo.getEmail())
                 .willReturn(EMAIL);
         given(members.findByEmail(EMAIL))
-                .willReturn(Optional.of(new Member(EMAIL, ORGANIZATION, oAuthProvider)));
+                .willReturn(Optional.of(new Member(EMAIL, ORGANIZATION, oauthProvider)));
 
         // when
-        TokenResponse tokenResponse = authService.loginByOauth(oAuthProvider, mockCode);
+        TokenResponse tokenResponse = authService.loginByOauth(oauthProvider, mockCode);
 
         // then
         String accessToken = tokenResponse.getAccessToken();

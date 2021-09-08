@@ -1,14 +1,14 @@
 package com.woowacourse.zzimkkong.service;
 
 import com.woowacourse.zzimkkong.domain.Member;
-import com.woowacourse.zzimkkong.domain.OAuthProvider;
-import com.woowacourse.zzimkkong.domain.oauth.OAuthUserInfo;
+import com.woowacourse.zzimkkong.domain.OauthProvider;
+import com.woowacourse.zzimkkong.domain.oauth.OauthUserInfo;
 import com.woowacourse.zzimkkong.dto.member.MemberSaveRequest;
 import com.woowacourse.zzimkkong.dto.member.MemberSaveResponse;
-import com.woowacourse.zzimkkong.dto.member.OAuthMemberSaveRequest;
-import com.woowacourse.zzimkkong.dto.member.OAuthReadyResponse;
+import com.woowacourse.zzimkkong.dto.member.oauth.OauthMemberSaveRequest;
+import com.woowacourse.zzimkkong.dto.member.oauth.OauthReadyResponse;
 import com.woowacourse.zzimkkong.exception.member.DuplicateEmailException;
-import com.woowacourse.zzimkkong.infrastructure.oauth.OAuthHandler;
+import com.woowacourse.zzimkkong.infrastructure.oauth.OauthHandler;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -30,7 +30,7 @@ class MemberServiceTest extends ServiceTest {
     private MemberService memberService;
 
     @MockBean
-    private OAuthHandler oauthHandler;
+    private OauthHandler oauthHandler;
 
     @Test
     @DisplayName("회원이 올바르게 저장을 요청하면 저장한다.")
@@ -75,21 +75,21 @@ class MemberServiceTest extends ServiceTest {
     }
 
     @ParameterizedTest
-    @EnumSource(OAuthProvider.class)
-    @DisplayName("OAuth를 통해 얻을 수 없는 정보를 응답하며 회원가입 과정을 진행한다.")
-    void getUserInfoFromOAuth(OAuthProvider oAuthProvider) {
+    @EnumSource(OauthProvider.class)
+    @DisplayName("Oauth를 통해 얻을 수 없는 정보를 응답하며 회원가입 과정을 진행한다.")
+    void getUserInfoFromOauth(OauthProvider oauthProvider) {
         //given
-        OAuthUserInfo mockOAuthUserInfo = mock(OAuthUserInfo.class);
-        given(oauthHandler.getUserInfoFromCode(any(OAuthProvider.class), anyString()))
-                .willReturn(mockOAuthUserInfo);
-        given(mockOAuthUserInfo.getEmail())
+        OauthUserInfo mockOauthUserInfo = mock(OauthUserInfo.class);
+        given(oauthHandler.getUserInfoFromCode(any(OauthProvider.class), anyString()))
+                .willReturn(mockOauthUserInfo);
+        given(mockOauthUserInfo.getEmail())
                 .willReturn(EMAIL);
         given(members.existsByEmail(EMAIL))
                 .willReturn(false);
 
         //when
-        OAuthReadyResponse actual = memberService.getUserInfoFromOAuth(oAuthProvider, "code-example");
-        OAuthReadyResponse expected = OAuthReadyResponse.of(EMAIL, oAuthProvider);
+        OauthReadyResponse actual = memberService.getUserInfoFromOauth(oauthProvider, "code-example");
+        OauthReadyResponse expected = OauthReadyResponse.of(EMAIL, oauthProvider);
 
         //then
         assertThat(actual).usingRecursiveComparison()
@@ -97,33 +97,33 @@ class MemberServiceTest extends ServiceTest {
     }
 
     @ParameterizedTest
-    @EnumSource(OAuthProvider.class)
-    @DisplayName("이미 존재하는 이메일로 oauth로 정보를 가져오면 에러가 발생한다.")
-    void getUserInfoFromOAuthException(OAuthProvider oAuthProvider) {
+    @EnumSource(OauthProvider.class)
+    @DisplayName("이미 존재하는 이메일로 oauth 정보를 가져오면 에러가 발생한다.")
+    void getUserInfoFromOauthException(OauthProvider oauthProvider) {
         //given
-        OAuthUserInfo mockOAuthUserInfo = mock(OAuthUserInfo.class);
-        given(oauthHandler.getUserInfoFromCode(any(OAuthProvider.class), anyString()))
-                .willReturn(mockOAuthUserInfo);
-        given(mockOAuthUserInfo.getEmail())
+        OauthUserInfo mockOauthUserInfo = mock(OauthUserInfo.class);
+        given(oauthHandler.getUserInfoFromCode(any(OauthProvider.class), anyString()))
+                .willReturn(mockOauthUserInfo);
+        given(mockOauthUserInfo.getEmail())
                 .willReturn(EMAIL);
         given(members.existsByEmail(EMAIL))
                 .willReturn(true);
 
         //when, then
-        assertThatThrownBy(() -> memberService.getUserInfoFromOAuth(oAuthProvider, "code-example"))
+        assertThatThrownBy(() -> memberService.getUserInfoFromOauth(oauthProvider, "code-example"))
                 .isInstanceOf(DuplicateEmailException.class);
     }
 
     @ParameterizedTest
     @ValueSource(strings = {"GOOGLE", "GITHUB"})
-    @DisplayName("소셜 로그인을 이용해 회원가입할 수 있다.")
-    void saveMemberByOAuth(String oauth) {
+    @DisplayName("소셜 로그인을 이용해 회원가입한다.")
+    void saveMemberByOauth(String oauth) {
         //given
-        OAuthMemberSaveRequest oAuthMemberSaveRequest = new OAuthMemberSaveRequest(EMAIL, ORGANIZATION, oauth);
+        OauthMemberSaveRequest oauthMemberSaveRequest = new OauthMemberSaveRequest(EMAIL, ORGANIZATION, oauth);
         Member member = new Member(
-                oAuthMemberSaveRequest.getEmail(),
-                oAuthMemberSaveRequest.getOrganization(),
-                oAuthMemberSaveRequest.getOauthProvider()
+                oauthMemberSaveRequest.getEmail(),
+                oauthMemberSaveRequest.getOrganization(),
+                oauthMemberSaveRequest.getOauthProvider()
         );
         given(members.existsByEmail(anyString()))
                 .willReturn(false);
@@ -133,13 +133,13 @@ class MemberServiceTest extends ServiceTest {
                 1L,
                 member.getEmail(),
                 member.getOrganization(),
-                member.getOAuthProvider());
+                member.getOauthProvider());
         given(members.save(any(Member.class)))
                 .willReturn(savedMember);
 
         //then
         MemberSaveResponse memberSaveResponse = MemberSaveResponse.from(savedMember);
-        assertThat(memberService.saveMemberByOAuth(oAuthMemberSaveRequest)).usingRecursiveComparison()
+        assertThat(memberService.saveMemberByOauth(oauthMemberSaveRequest)).usingRecursiveComparison()
                 .isEqualTo(memberSaveResponse);
     }
 
@@ -147,16 +147,16 @@ class MemberServiceTest extends ServiceTest {
     @ParameterizedTest
     @ValueSource(strings = {"GOOGLE", "GITHUB"})
     @DisplayName("이미 존재하는 이메일로 소셜 로그인을 이용해 회원가입하면 에러가 발생한다.")
-    void saveMemberByOAuthException(String oauth) {
+    void saveMemberByOauthException(String oauth) {
         //given
-        OAuthMemberSaveRequest oAuthMemberSaveRequest = new OAuthMemberSaveRequest(EMAIL, ORGANIZATION, oauth);
+        OauthMemberSaveRequest oauthMemberSaveRequest = new OauthMemberSaveRequest(EMAIL, ORGANIZATION, oauth);
 
         //when
         given(members.existsByEmail(anyString()))
                 .willReturn(true);
 
         //then
-        assertThatThrownBy(() -> memberService.saveMemberByOAuth(oAuthMemberSaveRequest))
+        assertThatThrownBy(() -> memberService.saveMemberByOauth(oauthMemberSaveRequest))
                 .isInstanceOf(DuplicateEmailException.class);
     }
 }

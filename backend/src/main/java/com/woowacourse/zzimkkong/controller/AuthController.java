@@ -1,6 +1,6 @@
 package com.woowacourse.zzimkkong.controller;
 
-import com.woowacourse.zzimkkong.domain.OAuthProvider;
+import com.woowacourse.zzimkkong.domain.OauthProvider;
 import com.woowacourse.zzimkkong.dto.member.LoginRequest;
 import com.woowacourse.zzimkkong.dto.member.TokenResponse;
 import com.woowacourse.zzimkkong.service.AuthService;
@@ -30,7 +30,7 @@ public class AuthController {
     }
 
     @GetMapping("/{oauthProvider}/login/token")
-    public ResponseEntity<TokenResponse> loginByOauth(@PathVariable OAuthProvider oauthProvider, @RequestParam String code) {
+    public ResponseEntity<TokenResponse> loginByOauth(@PathVariable OauthProvider oauthProvider, @RequestParam String code) {
         return ResponseEntity.ok()
                 .body(authService.loginByOauth(oauthProvider, code));
     }

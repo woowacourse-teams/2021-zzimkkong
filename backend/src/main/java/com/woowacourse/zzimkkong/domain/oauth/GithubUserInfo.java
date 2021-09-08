@@ -5,14 +5,14 @@ import com.woowacourse.zzimkkong.exception.infrastructure.oauth.NoPublicEmailHas
 import java.util.Collections;
 import java.util.Map;
 
-public class GithubUserInfo implements OAuthUserInfo {
+public class GithubUserInfo implements OauthUserInfo {
     private final Map<String, Object> info;
 
     private GithubUserInfo(final Map<String, Object> info) {
         this.info = Collections.unmodifiableMap(info);
     }
 
-    public static OAuthUserInfo from(Map<String, Object> responseBody) {
+    public static OauthUserInfo from(Map<String, Object> responseBody) {
         return new GithubUserInfo(responseBody);
     }
 
@@ -23,7 +23,6 @@ public class GithubUserInfo implements OAuthUserInfo {
     }
 
     private void validatePublicEmailHasBeenSet() {
-        // todo Service 코드에 작성하기
         if (info.get("email") == null) {
             throw new NoPublicEmailHasBeenSetOnGithubException();
         }

@@ -1,5 +1,5 @@
 package com.woowacourse.zzimkkong.domain.oauth;
 
-public interface OAuthUserInfo {
+public interface OauthUserInfo {
     String getEmail();
 }

@@ -1,17 +1,20 @@
 package com.woowacourse.zzimkkong.infrastructure.oauth;
 
-import com.woowacourse.zzimkkong.domain.OAuthProvider;
-import com.woowacourse.zzimkkong.domain.oauth.OAuthUserInfo;
+import com.woowacourse.zzimkkong.domain.OauthProvider;
+import com.woowacourse.zzimkkong.domain.oauth.OauthUserInfo;
 import okhttp3.mockwebserver.MockResponse;
 import okhttp3.mockwebserver.MockWebServer;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
+import org.springframework.test.context.ActiveProfiles;
 
 import java.io.IOException;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+@ActiveProfiles("test")
 class GoogleRequesterTest {
     public static final String SALLY_EMAIL = "dusdn1702@gmail.com";
 
@@ -35,8 +38,10 @@ class GoogleRequesterTest {
             "}";
 
     @Test
+    @DisplayName("서버에 요청을 보내 코드로부터 유저의 정보를 가져온다.")
     void getUserInfoByCode() {
         try (MockWebServer mockGoogleServer = new MockWebServer()) {
+            // given
             mockGoogleServer.start();
 
             setUpResponse(mockGoogleServer);
@@ -44,32 +49,35 @@ class GoogleRequesterTest {
             GoogleRequester googleRequester = new GoogleRequester(
                     "clientId",
                     "secretId",
-                    "http://localhost:8080",
+                    "redirectUri",
                     String.format("http://%s:%s", mockGoogleServer.getHostName(), mockGoogleServer.getPort()),
                     String.format("http://%s:%s", mockGoogleServer.getHostName(), mockGoogleServer.getPort())
             );
 
-            OAuthUserInfo code = googleRequester.getUserInfoByCode("code");
+            // when
+            OauthUserInfo code = googleRequester.getUserInfoByCode("code");
             String email = code.getEmail();
 
+            //then
             assertThat(email).isEqualTo(SALLY_EMAIL);
-
             mockGoogleServer.shutdown();
         } catch (IOException ignored) {
         }
     }
 
     @Test
+    @DisplayName("들어온 oauth 제공자가 자신이면 true를 반환한다.")
     void supports() {
         GoogleRequester googleRequester = new GoogleRequester(
                 "clientId",
                 "secretId",
-                "http://localhost:8080",
+                "redirectUri",
                 "baseLoginUri",
                 "baseUserUri"
         );
 
-        assertThat(googleRequester.supports(OAuthProvider.GOOGLE)).isTrue();
+        assertThat(googleRequester.supports(OauthProvider.GOOGLE)).isTrue();
+        assertThat(googleRequester.supports(OauthProvider.GITHUB)).isFalse();
     }
 
     private void setUpResponse(MockWebServer mockGithubServer) {

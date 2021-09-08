@@ -31,7 +31,7 @@ public class Member {
 
     @Column(length = 10)
     @Enumerated(EnumType.STRING)
-    private OAuthProvider oAuthProvider;
+    private OauthProvider oauthProvider;
 
     public Member(
             final String email,
@@ -51,13 +51,13 @@ public class Member {
         this.id = id;
     }
 
-    public Member(final String email, final String organization, final OAuthProvider oauthProvider) {
+    public Member(final String email, final String organization, final OauthProvider oauthProvider) {
         this.email = email;
         this.organization = organization;
-        this.oAuthProvider = oauthProvider;
+        this.oauthProvider = oauthProvider;
     }
 
-    public Member(final Long id, final String email, final String organization, final OAuthProvider oauthProvider) {
+    public Member(final Long id, final String email, final String organization, final OauthProvider oauthProvider) {
         this(email, organization, oauthProvider);
         this.id = id;
     }

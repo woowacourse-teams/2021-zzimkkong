@@ -1,9 +1,10 @@
 package com.woowacourse.zzimkkong.infrastructure.oauth;
 
 import com.woowacourse.zzimkkong.Constants;
-import com.woowacourse.zzimkkong.domain.oauth.OAuthUserInfo;
+import com.woowacourse.zzimkkong.domain.oauth.OauthUserInfo;
 import okhttp3.mockwebserver.MockResponse;
 import okhttp3.mockwebserver.MockWebServer;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
@@ -58,31 +59,30 @@ class GithubRequesterTest {
             "}";
 
     @Test
-    void getUserInfoByCode() throws IOException {
-        // given
+    @DisplayName("서버에 요청을 보내 코드로부터 유저의 정보를 가져온다.")
+    void getUserInfoByCode() {
+        try (MockWebServer mockGithubServer = new MockWebServer()) {
+            // given
+            mockGithubServer.start();
 
-        // set up mock server
-        MockWebServer mockGithubServer = new MockWebServer();
-        mockGithubServer.start();
+            setUpResponse(mockGithubServer);
 
-        setUpResponse(mockGithubServer);
+            GithubRequester githubRequester = new GithubRequester(
+                    "clientId",
+                    "secretId",
+                    String.format("http://%s:%s", mockGithubServer.getHostName(), mockGithubServer.getPort()),
+                    String.format("http://%s:%s", mockGithubServer.getHostName(), mockGithubServer.getPort())
+            );
 
-        GithubRequester githubRequester = new GithubRequester(
-                "clientId",
-                "secretId",
-                String.format("http://%s:%s", mockGithubServer.getHostName(), mockGithubServer.getPort()),
-                String.format("http://%s:%s", mockGithubServer.getHostName(), mockGithubServer.getPort())
-        );
+            // when
+            OauthUserInfo code = githubRequester.getUserInfoByCode("code");
+            String email = code.getEmail();
 
-        // when
-        OAuthUserInfo code = githubRequester.getUserInfoByCode("code");
-        String email = code.getEmail();
-
-        // then
-        assertThat(email).isEqualTo(Constants.EMAIL);
-
-        // terminate mock server
-        mockGithubServer.shutdown();
+            // then
+            assertThat(email).isEqualTo(Constants.EMAIL);
+            mockGithubServer.shutdown();
+        } catch (IOException ignored) {
+        }
     }
 
     private void setUpResponse(MockWebServer mockGithubServer) {

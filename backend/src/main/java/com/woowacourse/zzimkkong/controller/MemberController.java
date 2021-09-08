@@ -2,8 +2,10 @@ package com.woowacourse.zzimkkong.controller;
 
 import com.woowacourse.zzimkkong.domain.Manager;
 import com.woowacourse.zzimkkong.domain.Member;
-import com.woowacourse.zzimkkong.domain.OAuthProvider;
+import com.woowacourse.zzimkkong.domain.OauthProvider;
 import com.woowacourse.zzimkkong.dto.member.*;
+import com.woowacourse.zzimkkong.dto.member.oauth.OauthMemberSaveRequest;
+import com.woowacourse.zzimkkong.dto.member.oauth.OauthReadyResponse;
 import com.woowacourse.zzimkkong.service.MemberService;
 import com.woowacourse.zzimkkong.service.PresetService;
 import org.springframework.http.ResponseEntity;
@@ -39,15 +41,15 @@ public class MemberController {
     }
 
     @GetMapping("/{oauthProvider}")
-    public ResponseEntity<OAuthReadyResponse> getReadyToJoinByOAuth(@PathVariable OAuthProvider oauthProvider, @RequestParam String code) {
-        OAuthReadyResponse oAuthReadyResponse = memberService.getUserInfoFromOAuth(oauthProvider, code);
+    public ResponseEntity<OauthReadyResponse> getReadyToJoinByOauth(@PathVariable OauthProvider oauthProvider, @RequestParam String code) {
+        OauthReadyResponse oauthReadyResponse = memberService.getUserInfoFromOauth(oauthProvider, code);
         return ResponseEntity
-                .ok(oAuthReadyResponse);
+                .ok(oauthReadyResponse);
     }
 
     @PostMapping("/oauth")
-    public ResponseEntity<Void> joinByOAuth(@RequestBody @Valid final OAuthMemberSaveRequest oAuthMemberSaveRequest) {
-        MemberSaveResponse memberSaveResponse = memberService.saveMemberByOAuth(oAuthMemberSaveRequest);
+    public ResponseEntity<Void> joinByOauth(@RequestBody @Valid final OauthMemberSaveRequest oauthMemberSaveRequest) {
+        MemberSaveResponse memberSaveResponse = memberService.saveMemberByOauth(oauthMemberSaveRequest);
         return ResponseEntity
                 .created(URI.create("/api/members/" + memberSaveResponse.getId()))
                 .build();

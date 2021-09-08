@@ -1,4 +1,4 @@
-package com.woowacourse.zzimkkong.infrastructure.oauth.dto;
+package com.woowacourse.zzimkkong.dto.member.oauth;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
