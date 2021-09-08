@@ -15,7 +15,7 @@ import { GuestMapState } from 'pages/GuestMap/GuestMap';
 import { MapItem, Reservation, ScrollPosition, Space } from 'types/common';
 import { ErrorResponse } from 'types/response';
 import * as Styled from './GuestReservation.styles';
-import ReservationForm from './ReservationForm';
+import ReservationForm from './units/ReservationForm';
 
 interface URLParameter {
   sharingMapId: MapItem['sharingMapId'];

@@ -10,7 +10,7 @@ import useInputs from 'hooks/useInputs';
 import useScrollToTop from 'hooks/useScrollToTop';
 import { Reservation, Space } from 'types/common';
 import { formatDate, formatTime, formatTimePrettier } from 'utils/datetime';
-import { EditReservationParams } from './GuestReservation';
+import { EditReservationParams } from '../GuestReservation';
 import * as Styled from './ReservationForm.styles';
 
 interface Props {
