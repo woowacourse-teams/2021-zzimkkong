@@ -409,7 +409,7 @@ class ManagerReservationServiceTest extends ServiceTest {
                 .availableEndTime(LocalTime.of(18, 0))
                 .reservationTimeUnit(10)
                 .reservationMinimumTimeUnit(10)
-                .reservationMaximumTimeUnit(1440)
+                .reservationMaximumTimeUnit(120)
                 .reservationEnable(false)
                 .enabledDayOfWeek(null)
                 .build();
@@ -451,7 +451,7 @@ class ManagerReservationServiceTest extends ServiceTest {
                 .availableEndTime(LocalTime.of(18, 0))
                 .reservationTimeUnit(10)
                 .reservationMinimumTimeUnit(10)
-                .reservationMaximumTimeUnit(1440)
+                .reservationMaximumTimeUnit(120)
                 .reservationEnable(true)
                 .enabledDayOfWeek(THE_DAY_AFTER_TOMORROW.plusDays(1L).getDayOfWeek().name())
                 .build();
@@ -1136,7 +1136,7 @@ class ManagerReservationServiceTest extends ServiceTest {
                 .availableEndTime(LocalTime.of(18, 0))
                 .reservationTimeUnit(10)
                 .reservationMinimumTimeUnit(10)
-                .reservationMaximumTimeUnit(1440)
+                .reservationMaximumTimeUnit(120)
                 .reservationEnable(false)
                 .enabledDayOfWeek(null)
                 .build();
@@ -1181,7 +1181,7 @@ class ManagerReservationServiceTest extends ServiceTest {
                 .availableEndTime(LocalTime.of(18, 0))
                 .reservationTimeUnit(10)
                 .reservationMinimumTimeUnit(10)
-                .reservationMaximumTimeUnit(1440)
+                .reservationMaximumTimeUnit(120)
                 .reservationEnable(true)
                 .enabledDayOfWeek(THE_DAY_AFTER_TOMORROW.plusDays(1L).getDayOfWeek().name())
                 .build();

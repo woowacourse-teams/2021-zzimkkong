@@ -22,6 +22,11 @@ class SpaceTest {
         Setting setting = Setting.builder()
                 .availableStartTime(LocalTime.of(10, 0))
                 .availableEndTime(LocalTime.of(18, 0))
+                .reservationTimeUnit(FE_RESERVATION_TIME_UNIT)
+                .reservationMinimumTimeUnit(FE_RESERVATION_MINIMUM_TIME_UNIT)
+                .reservationMaximumTimeUnit(FE_RESERVATION_MAXIMUM_TIME_UNIT)
+                .reservationEnable(FE_RESERVATION_ENABLE)
+                .enabledDayOfWeek(FE_ENABLED_DAY_OF_WEEK)
                 .build();
         Space space = Space.builder()
                 .name("와우")
@@ -35,7 +40,11 @@ class SpaceTest {
         Setting updateSetting = Setting.builder()
                 .availableStartTime(LocalTime.of(10, 0))
                 .availableEndTime(LocalTime.of(18, 0))
-                .reservationEnable(true)
+                .reservationTimeUnit(FE_RESERVATION_TIME_UNIT)
+                .reservationMinimumTimeUnit(FE_RESERVATION_MINIMUM_TIME_UNIT)
+                .reservationMaximumTimeUnit(FE_RESERVATION_MAXIMUM_TIME_UNIT)
+                .reservationEnable(false)
+                .enabledDayOfWeek(FE_ENABLED_DAY_OF_WEEK)
                 .build();
         Space updateSpace = Space.builder()
                 .name("우와")
@@ -67,11 +76,16 @@ class SpaceTest {
         Setting availableTimeSetting = Setting.builder()
                 .availableStartTime(LocalTime.of(10, 0))
                 .availableEndTime(LocalTime.of(18, 0))
+                .reservationTimeUnit(FE_RESERVATION_TIME_UNIT)
+                .reservationMinimumTimeUnit(FE_RESERVATION_MINIMUM_TIME_UNIT)
+                .reservationMaximumTimeUnit(FE_RESERVATION_MAXIMUM_TIME_UNIT)
+                .reservationEnable(FE_RESERVATION_ENABLE)
+                .enabledDayOfWeek(FE_ENABLED_DAY_OF_WEEK)
                 .build();
         Space availableTimeSpace = Space.builder().setting(availableTimeSetting).build();
 
         LocalDateTime startDateTime = THE_DAY_AFTER_TOMORROW.atTime(10, 0);
-        LocalDateTime endDateTime = THE_DAY_AFTER_TOMORROW.atTime(18, 0);
+        LocalDateTime endDateTime = THE_DAY_AFTER_TOMORROW.atTime(12, 0);
         boolean actual = availableTimeSpace.isNotBetweenAvailableTime(startDateTime, endDateTime);
 
         assertThat(actual).isFalse();
@@ -83,6 +97,11 @@ class SpaceTest {
         Setting availableTimeSetting = Setting.builder()
                 .availableStartTime(LocalTime.of(10, 0))
                 .availableEndTime(LocalTime.of(18, 0))
+                .reservationTimeUnit(FE_RESERVATION_TIME_UNIT)
+                .reservationMinimumTimeUnit(FE_RESERVATION_MINIMUM_TIME_UNIT)
+                .reservationMaximumTimeUnit(FE_RESERVATION_MAXIMUM_TIME_UNIT)
+                .reservationEnable(FE_RESERVATION_ENABLE)
+                .enabledDayOfWeek(FE_ENABLED_DAY_OF_WEEK)
                 .build();
         Space availableTimeSpace = Space.builder().setting(availableTimeSetting).build();
 
@@ -98,7 +117,13 @@ class SpaceTest {
     @DisplayName("예약 시작 시간의 단위가 타당하면 false를 반환한다.")
     void isCorrectTimeUnit(int minute) {
         Setting availableTimeSetting = Setting.builder()
+                .availableStartTime(FE_AVAILABLE_START_TIME)
+                .availableEndTime(FE_AVAILABLE_END_TIME)
                 .reservationTimeUnit(10)
+                .reservationMinimumTimeUnit(FE_RESERVATION_MINIMUM_TIME_UNIT)
+                .reservationMaximumTimeUnit(FE_RESERVATION_MAXIMUM_TIME_UNIT)
+                .reservationEnable(FE_RESERVATION_ENABLE)
+                .enabledDayOfWeek(FE_ENABLED_DAY_OF_WEEK)
                 .build();
         Space availableTimeSpace = Space.builder().setting(availableTimeSetting).build();
 
@@ -112,7 +137,13 @@ class SpaceTest {
     @DisplayName("예약 시작 시간의 단위가 타당하지 않다면 true를 반환한다.")
     void isCorrectTimeUnitFail(int minute) {
         Setting availableTimeSetting = Setting.builder()
+                .availableStartTime(FE_AVAILABLE_START_TIME)
+                .availableEndTime(FE_AVAILABLE_END_TIME)
                 .reservationTimeUnit(10)
+                .reservationMinimumTimeUnit(FE_RESERVATION_MINIMUM_TIME_UNIT)
+                .reservationMaximumTimeUnit(FE_RESERVATION_MAXIMUM_TIME_UNIT)
+                .reservationEnable(FE_RESERVATION_ENABLE)
+                .enabledDayOfWeek(FE_ENABLED_DAY_OF_WEEK)
                 .build();
         Space availableTimeSpace = Space.builder().setting(availableTimeSetting).build();
 
@@ -126,8 +157,13 @@ class SpaceTest {
     @DisplayName("예약 시간의 단위가 최소최대 예약시간단위 내에 있다면 false를 반환한다.")
     void isCorrectMinimumMaximumTimeUnit(int durationMinutes) {
         Setting availableTimeSetting = Setting.builder()
+                .availableStartTime(FE_AVAILABLE_START_TIME)
+                .availableEndTime(FE_AVAILABLE_END_TIME)
+                .reservationTimeUnit(FE_RESERVATION_TIME_UNIT)
                 .reservationMinimumTimeUnit(10)
                 .reservationMaximumTimeUnit(120)
+                .reservationEnable(FE_RESERVATION_ENABLE)
+                .enabledDayOfWeek(FE_ENABLED_DAY_OF_WEEK)
                 .build();
         Space availableTimeSpace = Space.builder().setting(availableTimeSetting).build();
 
@@ -141,8 +177,13 @@ class SpaceTest {
     @DisplayName("예약 시간의 단위가 최소시간단위보다 작거나 최대시간단위보다 크다면 true를 반환한다.")
     void isCorrectMinimumMaximumTimeUnitFail(int durationMinutes) {
         Setting availableTimeSetting = Setting.builder()
+                .availableStartTime(FE_AVAILABLE_START_TIME)
+                .availableEndTime(FE_AVAILABLE_END_TIME)
+                .reservationTimeUnit(FE_RESERVATION_TIME_UNIT)
                 .reservationMinimumTimeUnit(10)
                 .reservationMaximumTimeUnit(120)
+                .reservationEnable(FE_RESERVATION_ENABLE)
+                .enabledDayOfWeek(FE_ENABLED_DAY_OF_WEEK)
                 .build();
         Space availableTimeSpace = Space.builder().setting(availableTimeSetting).build();
 
@@ -155,7 +196,13 @@ class SpaceTest {
     @DisplayName("예약 시간의 단위가 공간의 timeUnit으로 나누어떨어지면 false를 반환한다.")
     void isNotDivideBy() {
         Setting availableTimeSetting = Setting.builder()
+                .availableStartTime(FE_AVAILABLE_START_TIME)
+                .availableEndTime(FE_AVAILABLE_END_TIME)
                 .reservationTimeUnit(10)
+                .reservationMinimumTimeUnit(FE_RESERVATION_MINIMUM_TIME_UNIT)
+                .reservationMaximumTimeUnit(FE_RESERVATION_MAXIMUM_TIME_UNIT)
+                .reservationEnable(FE_RESERVATION_ENABLE)
+                .enabledDayOfWeek(FE_ENABLED_DAY_OF_WEEK)
                 .build();
         Space availableTimeSpace = Space.builder().setting(availableTimeSetting).build();
 
@@ -169,7 +216,13 @@ class SpaceTest {
     @DisplayName("예약 시간의 단위가 공간의 timeUnit으로 나누어떨어지지 않으면 true를 반환한다.")
     void isNotDivideByFail() {
         Setting availableTimeSetting = Setting.builder()
+                .availableStartTime(FE_AVAILABLE_START_TIME)
+                .availableEndTime(FE_AVAILABLE_END_TIME)
                 .reservationTimeUnit(10)
+                .reservationMinimumTimeUnit(FE_RESERVATION_MINIMUM_TIME_UNIT)
+                .reservationMaximumTimeUnit(FE_RESERVATION_MAXIMUM_TIME_UNIT)
+                .reservationEnable(FE_RESERVATION_ENABLE)
+                .enabledDayOfWeek(FE_ENABLED_DAY_OF_WEEK)
                 .build();
         Space availableTimeSpace = Space.builder().setting(availableTimeSetting).build();
 
@@ -182,7 +235,15 @@ class SpaceTest {
     @Test
     @DisplayName("예약이 가능한 공간이면 false를 반환한다")
     void isUnableToReserve() {
-        Setting reservationEnableSetting = Setting.builder().reservationEnable(true).build();
+        Setting reservationEnableSetting = Setting.builder()
+                .availableStartTime(FE_AVAILABLE_START_TIME)
+                .availableEndTime(FE_AVAILABLE_END_TIME)
+                .reservationTimeUnit(FE_RESERVATION_TIME_UNIT)
+                .reservationMinimumTimeUnit(FE_RESERVATION_MINIMUM_TIME_UNIT)
+                .reservationMaximumTimeUnit(FE_RESERVATION_MAXIMUM_TIME_UNIT)
+                .reservationEnable(true)
+                .enabledDayOfWeek(FE_ENABLED_DAY_OF_WEEK)
+                .build();
         Space reservationEnableSpace = Space.builder().setting(reservationEnableSetting).build();
 
         assertThat(reservationEnableSpace.isUnableToReserve()).isFalse();
@@ -191,7 +252,15 @@ class SpaceTest {
     @Test
     @DisplayName("예약이 불가능한 공간이면 true를 반환한다")
     void isUnableToReserveFail() {
-        Setting reservationUnableSetting = Setting.builder().reservationEnable(false).build();
+        Setting reservationUnableSetting = Setting.builder()
+                .availableStartTime(FE_AVAILABLE_START_TIME)
+                .availableEndTime(FE_AVAILABLE_END_TIME)
+                .reservationTimeUnit(FE_RESERVATION_TIME_UNIT)
+                .reservationMinimumTimeUnit(FE_RESERVATION_MINIMUM_TIME_UNIT)
+                .reservationMaximumTimeUnit(FE_RESERVATION_MAXIMUM_TIME_UNIT)
+                .reservationEnable(false)
+                .enabledDayOfWeek(FE_ENABLED_DAY_OF_WEEK)
+                .build();
         Space reservationUnableSpace = Space.builder().setting(reservationUnableSetting).build();
 
         assertThat(reservationUnableSpace.isUnableToReserve()).isTrue();
@@ -201,7 +270,15 @@ class SpaceTest {
     @EnumSource(value = DayOfWeek.class, names = {"MONDAY", "WEDNESDAY"})
     @DisplayName("해당 요일에 예약이 가능하면 false를 반환한다")
     void isClosedOn(DayOfWeek dayOfWeek) {
-        Setting setting = Setting.builder().enabledDayOfWeek("monday, wednesday").build();
+        Setting setting = Setting.builder()
+                .availableStartTime(FE_AVAILABLE_START_TIME)
+                .availableEndTime(FE_AVAILABLE_END_TIME)
+                .reservationTimeUnit(FE_RESERVATION_TIME_UNIT)
+                .reservationMinimumTimeUnit(FE_RESERVATION_MINIMUM_TIME_UNIT)
+                .reservationMaximumTimeUnit(FE_RESERVATION_MAXIMUM_TIME_UNIT)
+                .reservationEnable(FE_RESERVATION_ENABLE)
+                .enabledDayOfWeek("monday, wednesday")
+                .build();
         Space space = Space.builder().setting(setting).build();
 
         assertThat(space.isClosedOn(dayOfWeek)).isFalse();
@@ -211,7 +288,15 @@ class SpaceTest {
     @EnumSource(value = DayOfWeek.class, names = {"TUESDAY", "THURSDAY", "FRIDAY", "SATURDAY", "SUNDAY"})
     @DisplayName("해당 요일에 예약이 불가능하면 true를 반환한다")
     void isClosedOnFail(DayOfWeek dayOfWeek) {
-        Setting setting = Setting.builder().enabledDayOfWeek("monday, wednesday").build();
+        Setting setting = Setting.builder()
+                .availableStartTime(FE_AVAILABLE_START_TIME)
+                .availableEndTime(FE_AVAILABLE_END_TIME)
+                .reservationTimeUnit(FE_RESERVATION_TIME_UNIT)
+                .reservationMinimumTimeUnit(FE_RESERVATION_MINIMUM_TIME_UNIT)
+                .reservationMaximumTimeUnit(FE_RESERVATION_MAXIMUM_TIME_UNIT)
+                .reservationEnable(FE_RESERVATION_ENABLE)
+                .enabledDayOfWeek("monday, wednesday")
+                .build();
         Space space = Space.builder().setting(setting).build();
 
         assertThat(space.isClosedOn(dayOfWeek)).isTrue();
@@ -221,7 +306,15 @@ class SpaceTest {
     @EnumSource(value = DayOfWeek.class)
     @DisplayName("예약 가능한 요일이 null이면 모든 요일에 대해서 true를 반환한다")
     void isClosedOn_nullEnabledDayOfWeek(DayOfWeek dayOfWeek) {
-        Setting setting = Setting.builder().enabledDayOfWeek(null).build();
+        Setting setting = Setting.builder()
+                .availableStartTime(FE_AVAILABLE_START_TIME)
+                .availableEndTime(FE_AVAILABLE_END_TIME)
+                .reservationTimeUnit(FE_RESERVATION_TIME_UNIT)
+                .reservationMinimumTimeUnit(FE_RESERVATION_MINIMUM_TIME_UNIT)
+                .reservationMaximumTimeUnit(FE_RESERVATION_MAXIMUM_TIME_UNIT)
+                .reservationEnable(FE_RESERVATION_ENABLE)
+                .enabledDayOfWeek(null)
+                .build();
         Space space = Space.builder().setting(setting).build();
 
         assertThat(space.isClosedOn(dayOfWeek)).isTrue();
