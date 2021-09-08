@@ -19,7 +19,7 @@ class OAuthHandlerTest {
     @Test
     @DisplayName("OAuth 제공사에 따라 적당한 OAuthRequester를 찾아 code로부터 유저 정보를 가져온다.")
     void getUserInfoFromCodeWithGithub() {
-        // todo OAuthRequest를 mocking한다.
+        // todo OAuthRequester를 mocking한다.
         OAuthUserInfo code = oauthHandler.getUserInfoFromCode(OAuthProvider.GITHUB, "code");
 
         String email = code.getEmail();
