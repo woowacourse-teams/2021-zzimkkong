@@ -1,9 +1,9 @@
 import { useEffect } from 'react';
 
-const useWindowScrollReset = (): void => {
+const useScrollToTop = (): void => {
   useEffect(() => {
     window.scrollTo(0, 0);
   }, []);
 };
 
-export default useWindowScrollReset;
+export default useScrollToTop;

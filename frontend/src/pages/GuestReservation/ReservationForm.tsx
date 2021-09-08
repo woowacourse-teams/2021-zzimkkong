@@ -7,7 +7,7 @@ import REGEXP from 'constants/regexp';
 import RESERVATION from 'constants/reservation';
 import TIME from 'constants/time';
 import useInputs from 'hooks/useInputs';
-import useWindowScrollReset from 'hooks/useWindowScrollReset';
+import useScrollToTop from 'hooks/useScrollToTop';
 import { Reservation, Space } from 'types/common';
 import { formatDate, formatTime, formatTimePrettier } from 'utils/datetime';
 import { HandleSubmitParams } from './GuestReservation';
@@ -18,7 +18,7 @@ interface Props {
   reservation?: Reservation;
   date: string;
   onChangeDate: ChangeEventHandler<HTMLInputElement>;
-  handleSubmit: ({ event, reservation, reservationId }: HandleSubmitParams) => void;
+  onSubmit: ({ event, reservation, reservationId }: HandleSubmitParams) => void;
 }
 
 interface Form {
@@ -33,10 +33,10 @@ const ReservationForm = ({
   space,
   date,
   reservation,
-  handleSubmit,
+  onSubmit,
   onChangeDate,
 }: Props): JSX.Element => {
-  useWindowScrollReset();
+  useScrollToTop();
 
   const { availableStartTime, availableEndTime, reservationTimeUnit, reservationMaximumTimeUnit } =
     space.settings;
@@ -73,7 +73,7 @@ const ReservationForm = ({
   return (
     <Styled.ReservationForm
       onSubmit={(event) =>
-        handleSubmit({
+        onSubmit({
           event,
           reservation: {
             startDateTime,

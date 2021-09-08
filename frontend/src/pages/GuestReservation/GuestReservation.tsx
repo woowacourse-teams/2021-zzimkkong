@@ -20,6 +20,7 @@ import ReservationForm from './ReservationForm';
 interface URLParameter {
   sharingMapId: MapItem['sharingMapId'];
 }
+
 interface GuestReservationState {
   mapId: number;
   space: Space;
@@ -51,7 +52,7 @@ const GuestReservation = (): JSX.Element => {
   const getReservations = useGuestReservations({ mapId, spaceId: space.id, date });
   const reservations = getReservations.data?.data?.reservations ?? [];
 
-  const createReservation = useMutation(postGuestReservation, {
+  const addReservation = useMutation(postGuestReservation, {
     onSuccess: () => {
       history.push(HREF.GUEST_MAP(sharingMapId), {
         spaceId: space.id,
@@ -63,7 +64,7 @@ const GuestReservation = (): JSX.Element => {
     },
   });
 
-  const editReservation = useMutation(putGuestReservation, {
+  const updateReservation = useMutation(putGuestReservation, {
     onSuccess: () => {
       history.push(HREF.GUEST_MAP(sharingMapId), {
         spaceId: space.id,
@@ -76,20 +77,20 @@ const GuestReservation = (): JSX.Element => {
     },
   });
 
-  const handleReservationCreate = ({ reservation }: ReservationParams) => {
-    if (createReservation.isLoading) return;
+  const createReservation = ({ reservation }: ReservationParams) => {
+    if (addReservation.isLoading) return;
 
-    createReservation.mutate({
+    addReservation.mutate({
       reservation,
       mapId,
       spaceId: space.id,
     });
   };
 
-  const handleReservationEdit = ({ reservation, reservationId }: EditReservationParams) => {
-    if (editReservation.isLoading || !reservation) return;
+  const editReservation = ({ reservation, reservationId }: EditReservationParams) => {
+    if (updateReservation.isLoading || !reservation) return;
 
-    editReservation.mutate({
+    updateReservation.mutate({
       reservation,
       mapId,
       spaceId: space.id,
@@ -101,8 +102,8 @@ const GuestReservation = (): JSX.Element => {
     event.preventDefault();
 
     reservationId
-      ? handleReservationEdit({ reservation, reservationId })
-      : handleReservationCreate({ reservation });
+      ? editReservation({ reservation, reservationId })
+      : createReservation({ reservation });
   };
 
   useEffect(() => {
@@ -133,7 +134,7 @@ const GuestReservation = (): JSX.Element => {
           reservation={reservation}
           date={date}
           onChangeDate={onChangeDate}
-          handleSubmit={handleSubmit}
+          onSubmit={handleSubmit}
         />
         <Styled.Section>
           <PageHeader title={`${date}${date && '의'} 예약 목록`} />
