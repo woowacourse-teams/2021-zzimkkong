@@ -2,8 +2,8 @@ import { Link } from 'react-router-dom';
 import Header from 'components/Header/Header';
 import Layout from 'components/Layout/Layout';
 import PATH from 'constants/path';
-import JoinForm from './JoinForm';
 import * as Styled from './ManagerJoin.styles';
+import JoinForm from './units/JoinForm';
 
 const ManagerJoin = (): JSX.Element => {
   return (

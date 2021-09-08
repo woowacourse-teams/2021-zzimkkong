@@ -2,7 +2,6 @@ import { AxiosError, AxiosResponse } from 'axios';
 import { FormEventHandler, useState } from 'react';
 import { useMutation } from 'react-query';
 import { useHistory } from 'react-router';
-import { Link } from 'react-router-dom';
 import { useSetRecoilState } from 'recoil';
 import { postLogin } from 'api/login';
 import Button from 'components/Button/Button';
