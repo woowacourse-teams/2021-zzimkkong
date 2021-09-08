@@ -44,7 +44,7 @@ const GuestReservation = (): JSX.Element => {
 
   const [date, onChangeDate] = useInput(selectedDate);
 
-  const iseEditMode = !!reservation;
+  const isEditMode = !!reservation;
 
   const getReservations = useGuestReservations({ mapId, spaceId: space.id, date });
   const reservations = getReservations.data?.data?.reservations ?? [];
@@ -85,7 +85,7 @@ const GuestReservation = (): JSX.Element => {
   };
 
   const editReservation = ({ reservation, reservationId }: EditReservationParams) => {
-    if (updateReservation.isLoading || !iseEditMode || !reservationId) return;
+    if (updateReservation.isLoading || !isEditMode || !reservationId) return;
 
     updateReservation.mutate({
       reservation,
@@ -130,7 +130,7 @@ const GuestReservation = (): JSX.Element => {
           {space.name}
         </Styled.PageHeader>
         <ReservationForm
-          isEditMode={iseEditMode}
+          isEditMode={isEditMode}
           space={space}
           reservation={reservation}
           date={date}
