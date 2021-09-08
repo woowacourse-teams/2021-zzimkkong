@@ -32,8 +32,8 @@ class ManagerSpaceControllerTest extends AcceptanceTest {
 
     @BeforeEach
     void setUp() {
-        String lutherId = saveMap("/api/members/maps", mapCreateUpdateRequest).header("location").split("/")[4];
-        spaceApi = "/api/members/maps/" + lutherId + "/spaces";
+        String lutherId = saveMap("/api/managers/maps", mapCreateUpdateRequest).header("location").split("/")[4];
+        spaceApi = "/api/managers/maps/" + lutherId + "/spaces";
         ExtractableResponse<Response> saveBeSpaceResponse = saveSpace(spaceApi, beSpaceCreateUpdateRequest);
         ExtractableResponse<Response> saveFe1SpaceResponse = saveSpace(spaceApi, feSpaceCreateUpdateRequest);
 

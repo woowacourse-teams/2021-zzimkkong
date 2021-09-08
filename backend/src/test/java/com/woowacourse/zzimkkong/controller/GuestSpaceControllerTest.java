@@ -31,8 +31,8 @@ class GuestSpaceControllerTest extends AcceptanceTest {
 
     @BeforeEach
     void setUp() {
-        String lutherId = saveMap("/api/members/maps", mapCreateUpdateRequest).header("location").split("/")[4];
-        spaceApi = "/api/members/maps/" + lutherId + "/spaces";
+        String lutherId = saveMap("/api/managers/maps", mapCreateUpdateRequest).header("location").split("/")[4];
+        spaceApi = "/api/managers/maps/" + lutherId + "/spaces";
         ExtractableResponse<Response> saveBeSpaceResponse = saveSpace(spaceApi, beSpaceCreateUpdateRequest);
         ExtractableResponse<Response> saveFe1SpaceResponse = saveSpace(spaceApi, feSpaceCreateUpdateRequest);
 
@@ -86,7 +86,7 @@ class GuestSpaceControllerTest extends AcceptanceTest {
     @DisplayName("전체 공간에 대한 정보를 조회한다.")
     void findAll() {
         // given, when
-        String guestSpaceApi = spaceApi.replaceAll("members", "guests");
+        String guestSpaceApi = spaceApi.replaceAll("managers", "guests");
         ExtractableResponse<Response> response = findAllSpace(guestSpaceApi);
         SpaceFindAllResponse actual = response.body().as(SpaceFindAllResponse.class);
         SpaceFindAllResponse expected = SpaceFindAllResponse.from(List.of(be, fe));

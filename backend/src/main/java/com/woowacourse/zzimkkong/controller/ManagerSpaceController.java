@@ -11,7 +11,7 @@ import javax.validation.Valid;
 import java.net.URI;
 
 @RestController
-@RequestMapping("/api/members/maps/{mapId}/spaces")
+@RequestMapping("/api/managers/maps/{mapId}/spaces")
 public class ManagerSpaceController {
     private final SpaceService spaceService;
 
@@ -26,13 +26,13 @@ public class ManagerSpaceController {
             @Manager final Member member) {
         SpaceCreateResponse spaceCreateResponse = spaceService.saveSpace(mapId, spaceCreateRequest, member);
         return ResponseEntity
-                .created(URI.create("/api/members/maps/" + mapId + "/spaces/" + spaceCreateResponse.getId()))
+                .created(URI.create("/api/managers/maps/" + mapId + "/spaces/" + spaceCreateResponse.getId()))
                 .build();
     }
 
     @GetMapping
-    public ResponseEntity<SpaceFindAllResponse> findAll(@PathVariable final Long mapId, @Manager final Member member) {
-        SpaceFindAllResponse spaceFindAllResponse = spaceService.findAllSpace(mapId, member);
+    public ResponseEntity<SpaceFindAllResponse> findAll(@PathVariable final Long mapId, @Manager final Member manager) {
+        SpaceFindAllResponse spaceFindAllResponse = spaceService.findAllSpace(mapId, manager);
         return ResponseEntity.ok().body(spaceFindAllResponse);
     }
 
@@ -40,8 +40,8 @@ public class ManagerSpaceController {
     public ResponseEntity<SpaceFindDetailResponse> find(
             @PathVariable final Long mapId,
             @PathVariable final Long spaceId,
-            @Manager final Member member) {
-        SpaceFindDetailResponse spaceFindDetailResponse = spaceService.findSpace(mapId, spaceId, member);
+            @Manager final Member manager) {
+        SpaceFindDetailResponse spaceFindDetailResponse = spaceService.findSpace(mapId, spaceId, manager);
         return ResponseEntity.ok().body(spaceFindDetailResponse);
     }
 
@@ -50,8 +50,8 @@ public class ManagerSpaceController {
             @PathVariable final Long mapId,
             @PathVariable final Long spaceId,
             @RequestBody final SpaceCreateUpdateRequest spaceCreateUpdateRequest,
-            @Manager final Member member) {
-        spaceService.updateSpace(mapId, spaceId, spaceCreateUpdateRequest, member);
+            @Manager final Member manager) {
+        spaceService.updateSpace(mapId, spaceId, spaceCreateUpdateRequest, manager);
         return ResponseEntity.ok().build();
     }
 
@@ -60,8 +60,8 @@ public class ManagerSpaceController {
             @PathVariable final Long mapId,
             @PathVariable final Long spaceId,
             @RequestBody SpaceDeleteRequest spaceDeleteRequest,
-            @Manager final Member member) {
-        spaceService.deleteSpace(mapId, spaceId, spaceDeleteRequest, member);
+            @Manager final Member manager) {
+        spaceService.deleteSpace(mapId, spaceId, spaceDeleteRequest, manager);
         return ResponseEntity.noContent().build();
     }
 }

@@ -21,7 +21,7 @@ import static com.woowacourse.zzimkkong.dto.ValidatorMessage.EMAIL_MESSAGE;
 import static com.woowacourse.zzimkkong.dto.ValidatorMessage.EMPTY_MESSAGE;
 
 @RestController
-@RequestMapping("/api/members")
+@RequestMapping("/api")
 @Validated
 public class MemberController {
     private final MemberService memberService;
@@ -32,55 +32,56 @@ public class MemberController {
         this.presetService = presetService;
     }
 
-    @PostMapping
+    @PostMapping("/members/join")
     public ResponseEntity<Void> join(@RequestBody @Valid final MemberSaveRequest memberSaveRequest) {
         MemberSaveResponse memberSaveResponse = memberService.saveMember(memberSaveRequest);
         return ResponseEntity
-                .created(URI.create("/api/members/" + memberSaveResponse.getId()))
+                .created(URI.create("/api/managers/" + memberSaveResponse.getId()))
                 .build();
     }
 
-    @GetMapping("/{oauthProvider}")
+    @GetMapping("/guests/{oauthProvider}")
     public ResponseEntity<OauthReadyResponse> getReadyToJoinByOauth(@PathVariable OauthProvider oauthProvider, @RequestParam String code) {
         OauthReadyResponse oauthReadyResponse = memberService.getUserInfoFromOauth(oauthProvider, code);
         return ResponseEntity
                 .ok(oauthReadyResponse);
     }
 
-    @PostMapping("/oauth")
+    @PostMapping("/guests/oauth")
     public ResponseEntity<Void> joinByOauth(@RequestBody @Valid final OauthMemberSaveRequest oauthMemberSaveRequest) {
         MemberSaveResponse memberSaveResponse = memberService.saveMemberByOauth(oauthMemberSaveRequest);
         return ResponseEntity
-                .created(URI.create("/api/members/" + memberSaveResponse.getId()))
+                .created(URI.create("/api/guests/" + memberSaveResponse.getId()))
                 .build();
     }
 
-    @GetMapping
+    @GetMapping("/members")
     public ResponseEntity<Void> validateEmail(
             @RequestParam
             @NotBlank(message = EMPTY_MESSAGE)
-            @Email(message = EMAIL_MESSAGE) final String email) {
+            @Email(message = EMAIL_MESSAGE)
+            final String email) {
         memberService.validateDuplicateEmail(email);
         return ResponseEntity.ok().build();
     }
 
-    @PostMapping("/presets")
+    @PostMapping("/managers/presets")
     public ResponseEntity<Void> createPreset(
             @RequestBody @Valid final PresetCreateRequest presetCreateRequest,
             @Manager final Member manager) {
         PresetCreateResponse presetCreateResponse = presetService.savePreset(presetCreateRequest, manager);
         return ResponseEntity
-                .created(URI.create("/api/members/presets/" + presetCreateResponse.getId()))
+                .created(URI.create("/api/managers/presets/" + presetCreateResponse.getId()))
                 .build();
     }
 
-    @GetMapping("/presets")
+    @GetMapping("/managers/presets")
     public ResponseEntity<PresetFindAllResponse> findAllPresets(@Manager final Member manager) {
         PresetFindAllResponse presetFindAllResponse = presetService.findAllPresets(manager);
         return ResponseEntity.ok().body(presetFindAllResponse);
     }
 
-    @DeleteMapping("/presets/{presetId}")
+    @DeleteMapping("/managers/presets/{presetId}")
     public ResponseEntity<Void> deletePreset(
             @PathVariable final Long presetId,
             @Manager final Member manager) {

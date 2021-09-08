@@ -36,8 +36,8 @@ class GuestReservationControllerTest extends AcceptanceTest {
 
     @BeforeEach
     void setUp() {
-        String lutherId = saveMap("/api/members/maps", mapCreateUpdateRequest).header("location").split("/")[4];
-        String spaceApi = "/api/members/maps/" + lutherId + "/spaces";
+        String lutherId = saveMap("/api/managers/maps", mapCreateUpdateRequest).header("location").split("/")[4];
+        String spaceApi = "/api/managers/maps/" + lutherId + "/spaces";
         ExtractableResponse<Response> saveBeSpaceResponse = saveSpace(spaceApi, beSpaceCreateUpdateRequest);
         ExtractableResponse<Response> saveFe1SpaceResponse = saveSpace(spaceApi, feSpaceCreateUpdateRequest);
 
@@ -45,9 +45,9 @@ class GuestReservationControllerTest extends AcceptanceTest {
         Long feSpaceId = Long.valueOf(saveFe1SpaceResponse.header("location").split("/")[6]);
 
         beReservationApi = saveBeSpaceResponse.header("location")
-                .replaceAll("members", "guests") + "/reservations";
+                .replaceAll("managers", "guests") + "/reservations";
         fe1ReservationApi = saveFe1SpaceResponse.header("location")
-                .replaceAll("members", "guests") + "/reservations";
+                .replaceAll("managers", "guests") + "/reservations";
 
         reservationCreateUpdateWithPasswordRequest = new ReservationCreateUpdateWithPasswordRequest(
                 THE_DAY_AFTER_TOMORROW.atTime(15, 0),

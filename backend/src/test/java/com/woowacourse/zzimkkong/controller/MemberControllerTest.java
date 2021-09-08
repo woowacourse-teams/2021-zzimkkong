@@ -210,7 +210,7 @@ class MemberControllerTest extends AcceptanceTest {
                 .filter(document("member/post", getRequestPreprocessor(), getResponsePreprocessor()))
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body(memberSaveRequest)
-                .when().post("/api/members")
+                .when().post("/api/members/join")
                 .then().log().all().extract();
     }
 
@@ -220,7 +220,7 @@ class MemberControllerTest extends AcceptanceTest {
                 .accept("application/json")
                 .filter(document("member/get/oauth/" + oauthProvider.name(), getRequestPreprocessor(), getResponsePreprocessor()))
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .when().get("/api/members/" + oauthProvider + "?code=" + code)
+                .when().get("/api/guests/" + oauthProvider + "?code=" + code)
                 .then().log().all().extract();
     }
 
@@ -231,7 +231,7 @@ class MemberControllerTest extends AcceptanceTest {
                 .filter(document("member/post/oauth/" + oauthMemberSaveRequest.getOauthProvider(), getRequestPreprocessor(), getResponsePreprocessor()))
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body(oauthMemberSaveRequest)
-                .when().post("/api/members/oauth")
+                .when().post("/api/guests/oauth")
                 .then().log().all().extract();
     }
 
@@ -254,7 +254,7 @@ class MemberControllerTest extends AcceptanceTest {
                 .filter(document("preset/post", getRequestPreprocessor(), getResponsePreprocessor()))
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body(presetCreateRequest)
-                .when().post("/api/members/presets")
+                .when().post("/api/managers/presets")
                 .then().log().all().extract();
     }
 
@@ -265,7 +265,7 @@ class MemberControllerTest extends AcceptanceTest {
                 .header("Authorization", AuthorizationExtractor.AUTHENTICATION_TYPE + " " + accessToken)
                 .filter(document("preset/getAll", getRequestPreprocessor(), getResponsePreprocessor()))
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .when().get("/api/members/presets")
+                .when().get("/api/managers/presets")
                 .then().log().all().extract();
     }
 

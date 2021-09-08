@@ -18,7 +18,7 @@ public class AuthController {
         this.authService = authService;
     }
 
-    @PostMapping("/login/token")
+    @PostMapping("/members/login/token")
     public ResponseEntity<TokenResponse> login(@RequestBody @Valid final LoginRequest loginRequest) {
         return ResponseEntity.ok()
                 .body(authService.login(loginRequest));
@@ -29,7 +29,7 @@ public class AuthController {
         return ResponseEntity.ok().build();
     }
 
-    @GetMapping("/{oauthProvider}/login/token")
+    @GetMapping("/guests/{oauthProvider}/login/token")
     public ResponseEntity<TokenResponse> loginByOauth(@PathVariable OauthProvider oauthProvider, @RequestParam String code) {
         return ResponseEntity.ok()
                 .body(authService.loginByOauth(oauthProvider, code));

@@ -18,7 +18,7 @@ import java.time.LocalDate;
 import static com.woowacourse.zzimkkong.dto.ValidatorMessage.DATE_FORMAT;
 
 @RestController
-@RequestMapping("/api/members/maps/{mapId}/spaces")
+@RequestMapping("/api/managers/maps/{mapId}/spaces")
 public class ManagerReservationController {
     private final SlackService slackService;
     private final ReservationService reservationService;
@@ -45,7 +45,7 @@ public class ManagerReservationController {
                 manager);
         ReservationCreateResponse reservationCreateResponse = reservationService.saveReservation(reservationCreateDto, managerReservationStrategy);
         return ResponseEntity
-                .created(URI.create("/api/members/maps/" + mapId + "/spaces/" + spaceId + "/reservations/" + reservationCreateResponse.getId()))
+                .created(URI.create("/api/managers/maps/" + mapId + "/spaces/" + spaceId + "/reservations/" + reservationCreateResponse.getId()))
                 .build();
     }
 
