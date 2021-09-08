@@ -35,4 +35,16 @@ public class GoogleTokenResponse {
         this.tokenType = tokenType;
         this.idToken = idToken;
     }
+
+    @Override
+    public String toString() {
+        return "{\n" +
+                "    \"access_token\": \"" + accessToken + "\",\n" +
+                "    \"expires_in\": " + expiresIn + ",\n" +
+                "    \"refresh_token\": \"" + refreshToken + "\",\n" +
+                "    \"scope\": \"" + scope + "\",\n" +
+                "    \"token_type\": \"" + tokenType + "\",\n" +
+                "    \"id_token\": \""+ idToken + "\"\n" +
+                "}";
+    }
 }

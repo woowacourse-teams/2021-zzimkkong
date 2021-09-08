@@ -5,6 +5,7 @@ import com.woowacourse.zzimkkong.domain.OauthProvider;
 import com.woowacourse.zzimkkong.domain.oauth.OauthUserInfo;
 import com.woowacourse.zzimkkong.dto.member.LoginRequest;
 import com.woowacourse.zzimkkong.dto.member.TokenResponse;
+import com.woowacourse.zzimkkong.exception.authorization.OauthProviderMismatchException;
 import com.woowacourse.zzimkkong.exception.member.NoSuchMemberException;
 import com.woowacourse.zzimkkong.exception.member.PasswordMismatchException;
 import com.woowacourse.zzimkkong.infrastructure.JwtUtils;
@@ -17,6 +18,7 @@ import org.junit.jupiter.params.provider.EnumSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.mock.mockito.MockBean;
 
+import java.util.Arrays;
 import java.util.Optional;
 
 import static com.woowacourse.zzimkkong.Constants.*;
@@ -112,5 +114,50 @@ class AuthServiceTest extends ServiceTest {
         String accessToken = tokenResponse.getAccessToken();
         assertThat(accessToken).isNotNull();
         jwtUtils.validateToken(accessToken);
+    }
+
+    @ParameterizedTest
+    @EnumSource(OauthProvider.class)
+    @DisplayName("존재하지 않는 이메일로 oauth 로그인 시 오류가 발생한다.")
+    void loginByOauthInvalidEmailException(OauthProvider oauthProvider) {
+        // given
+        String mockCode = "Mock Code from OauthProvider";
+
+        OauthUserInfo mockOauthUserInfo = mock(OauthUserInfo.class);
+        given(oauthHandler.getUserInfoFromCode(any(OauthProvider.class), anyString()))
+                .willReturn(mockOauthUserInfo);
+        given(mockOauthUserInfo.getEmail())
+                .willReturn(EMAIL);
+        given(members.findByEmail(EMAIL))
+                .willReturn(Optional.empty());
+
+        // when, then
+        assertThatThrownBy(() -> authService.loginByOauth(oauthProvider, mockCode))
+                .isInstanceOf(NoSuchMemberException.class);
+    }
+
+    @ParameterizedTest
+    @EnumSource(OauthProvider.class)
+    @DisplayName("회원가입한 provider와 다른 provider로 같은 이메일 oauth 로그인 시 오류가 발생한다.")
+    void loginByOauthInvalidProviderException(OauthProvider oauthProvider) {
+        // given
+        String mockCode = "Mock Code from OauthProvider";
+        OauthProvider anotherProvider = Arrays.stream(OauthProvider.values())
+                .filter(provider -> !provider.equals(oauthProvider))
+                .findAny()
+                .get();
+
+        System.out.println("12312312"+ anotherProvider.name());
+        OauthUserInfo mockOauthUserInfo = mock(OauthUserInfo.class);
+        given(oauthHandler.getUserInfoFromCode(any(OauthProvider.class), anyString()))
+                .willReturn(mockOauthUserInfo);
+        given(mockOauthUserInfo.getEmail())
+                .willReturn(EMAIL);
+        given(members.findByEmail(EMAIL))
+                .willReturn(Optional.of(new Member(EMAIL, ORGANIZATION, anotherProvider)));
+
+        // when, then
+        assertThatThrownBy(() -> authService.loginByOauth(oauthProvider, mockCode))
+                .isInstanceOf(OauthProviderMismatchException.class);
     }
 }

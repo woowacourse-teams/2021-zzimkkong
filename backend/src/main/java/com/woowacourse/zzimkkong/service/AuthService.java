@@ -51,15 +51,12 @@ public class AuthService {
     public TokenResponse loginByOauth(final OauthProvider oauthProvider, final String code) {
         OauthUserInfo userInfoFromCode = oauthHandler.getUserInfoFromCode(oauthProvider, code);
         String email = userInfoFromCode.getEmail();
-
         Member member = members.findByEmail(email)
                 .orElseThrow(NoSuchMemberException::new);
 
-        if (!oauthProvider.equals(member.getOauthProvider())) {
-            throw new OauthProviderMismatchException();
-        }
-        String token = issueToken(member);
+        validateOauthProvider(oauthProvider, member);
 
+        String token = issueToken(member);
         return TokenResponse.from(token);
     }
 
@@ -74,6 +71,12 @@ public class AuthService {
     private void validatePassword(final Member findMember, final String password) {
         if (!passwordEncoder.matches(password, findMember.getPassword())) {
             throw new PasswordMismatchException();
+        }
+    }
+
+    private void validateOauthProvider(final OauthProvider oauthProvider, final Member member) {
+        if (!oauthProvider.equals(member.getOauthProvider())) {
+            throw new OauthProviderMismatchException();
         }
     }
 }
