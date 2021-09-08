@@ -6,6 +6,7 @@ import com.woowacourse.zzimkkong.dto.member.MemberSaveRequest;
 import com.woowacourse.zzimkkong.dto.space.SettingsRequest;
 import com.woowacourse.zzimkkong.dto.space.SpaceCreateUpdateRequest;
 import com.woowacourse.zzimkkong.infrastructure.StorageUploader;
+import com.woowacourse.zzimkkong.infrastructure.oauth.GithubRequester;
 import io.restassured.RestAssured;
 import io.restassured.builder.RequestSpecBuilder;
 import io.restassured.specification.RequestSpecification;
@@ -87,6 +88,9 @@ class AcceptanceTest {
 
     @Autowired
     protected PasswordEncoder passwordEncoder;
+
+    @MockBean
+    protected GithubRequester githubRequester;
 
     @BeforeEach
     void setUp(RestDocumentationContextProvider restDocumentation) {

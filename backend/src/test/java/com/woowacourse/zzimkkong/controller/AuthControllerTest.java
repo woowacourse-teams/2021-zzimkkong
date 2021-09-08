@@ -1,7 +1,9 @@
 package com.woowacourse.zzimkkong.controller;
 
 import com.woowacourse.zzimkkong.domain.OAuthProvider;
+import com.woowacourse.zzimkkong.domain.oauth.GithubUserInfo;
 import com.woowacourse.zzimkkong.dto.member.LoginRequest;
+import com.woowacourse.zzimkkong.dto.member.OAuthMemberSaveRequest;
 import com.woowacourse.zzimkkong.dto.member.TokenResponse;
 import com.woowacourse.zzimkkong.infrastructure.AuthorizationExtractor;
 import io.restassured.RestAssured;
@@ -12,9 +14,15 @@ import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 
+import java.util.Map;
+
+import static com.woowacourse.zzimkkong.Constants.EMAIL;
+import static com.woowacourse.zzimkkong.Constants.ORGANIZATION;
 import static com.woowacourse.zzimkkong.DocumentUtils.*;
 import static com.woowacourse.zzimkkong.controller.MemberControllerTest.saveMember;
+import static com.woowacourse.zzimkkong.controller.MemberControllerTest.saveMemberByOAuth;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.BDDMockito.given;
 import static org.springframework.restdocs.restassured3.RestAssuredRestDocumentation.document;
 
 class AuthControllerTest extends AcceptanceTest {
@@ -31,6 +39,30 @@ class AuthControllerTest extends AcceptanceTest {
         // then
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
         assertThat(responseBody.getAccessToken()).isInstanceOf(String.class);
+    }
+
+    // todo Parameterized 김샐
+    @Test
+    @DisplayName("OAuth를 통해 로그인할 수 있다.")
+    void loginByOAuthParameterized() {
+        // given
+        OAuthProvider oAuthProvider = OAuthProvider.GITHUB;
+        saveMemberByOAuth(new OAuthMemberSaveRequest(EMAIL, ORGANIZATION, oAuthProvider.name()));
+        String code = "4%2F0AX4XfWjEXMLEdAqN4Bxqufcm8MIP1btBZY_nTeS_1M3b46MqSrq-h2A3Z2ydSOlZI1SpeA";
+
+        given(githubRequester.supports(OAuthProvider.GITHUB))
+                .willReturn(true);
+        given(githubRequester.getUserInfoByCode(code))
+                .willReturn(GithubUserInfo.from(Map.of("email", EMAIL)));
+
+        // when
+        ExtractableResponse<Response> response = loginByOAuth(oAuthProvider, code);
+        TokenResponse responseBody = response.body().as(TokenResponse.class);
+
+        // then
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
+        assertThat(responseBody.getAccessToken()).isInstanceOf(String.class);
+
     }
 
     @Test
@@ -100,7 +132,7 @@ class AuthControllerTest extends AcceptanceTest {
                 .accept("application/json")
                 .filter(document("member/login/oauth", getRequestPreprocessor(), getResponsePreprocessor()))
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .when().get("/api/" + oAuthProvider +"/login/token?code=" + code)
+                .when().get("/api/" + oAuthProvider + "/login/token?code=" + code)
                 .then().log().all().extract();
     }
 

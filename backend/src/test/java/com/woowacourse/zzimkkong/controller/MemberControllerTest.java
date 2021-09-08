@@ -35,9 +35,6 @@ class MemberControllerTest extends AcceptanceTest {
     private SettingsRequest settingsRequest;
     private PresetCreateRequest presetCreateRequest;
 
-    @MockBean
-    private GithubRequester githubRequester;
-
     @BeforeEach
     void setUp() {
         pobi = new Member(EMAIL, passwordEncoder.encode(PW), ORGANIZATION);
@@ -112,6 +109,7 @@ class MemberControllerTest extends AcceptanceTest {
         assertThat(oAuthReadyResponse.getEmail()).isEqualTo(EMAIL);
     }
 
+    // todo Parameterized 김샐
     @Test
     @DisplayName("OAuth를 통해 회원가입 할 수 있다.")
     void joinByOAuth() {
