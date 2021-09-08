@@ -5,48 +5,47 @@ import com.woowacourse.zzimkkong.domain.oauth.GoogleUserInfo;
 import com.woowacourse.zzimkkong.domain.oauth.OAuthUserInfo;
 import com.woowacourse.zzimkkong.exception.infrastructure.oauth.UnableToGetTokenResponseFromGoogleException;
 import com.woowacourse.zzimkkong.infrastructure.oauth.dto.GoogleTokenResponse;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.PropertySource;
 import org.springframework.http.MediaType;
-import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.WebClient;
 
 import java.nio.charset.StandardCharsets;
 import java.util.Collections;
 
-@Component
-@PropertySource("classpath:config/oauth.properties")
 public class GoogleRequester implements OAuthAPIRequester {
+
     private final String clientId;
     private final String secretId;
     private final String redirectUri;
+    private final String baseLoginUri;
+    private final String baseUserUri;
 
-    private GoogleRequester(
-            @Value("${google.client-id}")
-                    String clientId,
-            @Value("${google.secret-id}")
-                    String secretId,
-            @Value("${google.redirect-uri}")
-                    String redirectUri) {
+    public GoogleRequester(
+            final String clientId,
+            final String secretId,
+            final String redirectUri,
+            final String baseLoginUri,
+            final String baseUserUri) {
         this.clientId = clientId;
         this.secretId = secretId;
         this.redirectUri = redirectUri;
+        this.baseLoginUri = baseLoginUri;
+        this.baseUserUri = baseUserUri;
     }
 
     @Override
-    public boolean supports(OAuthProvider oAuthProvider) {
+    public boolean supports(final OAuthProvider oAuthProvider) {
         return OAuthProvider.GOOGLE.equals(oAuthProvider);
     }
 
     @Override
-    public OAuthUserInfo getUserInfoByCode(String code) {
+    public OAuthUserInfo getUserInfoByCode(final String code) {
         String token = getToken(code);
         return getUserInfo(token);
     }
 
-    private String getToken(String code) {
+    private String getToken(final String code) {
         GoogleTokenResponse googleTokenResponse = WebClient.builder()
-                .baseUrl("https://www.googleapis.com/oauth2/v4/token")
+                .baseUrl(baseLoginUri)
                 .build()
                 .post()
                 .uri(uriBuilder -> uriBuilder
@@ -67,10 +66,10 @@ public class GoogleRequester implements OAuthAPIRequester {
         return googleTokenResponse.getAccessToken();
     }
 
-    private GoogleUserInfo getUserInfo(String token) {
+    private GoogleUserInfo getUserInfo(final String token) {
         return WebClient.create()
                 .get()
-                .uri("https://www.googleapis.com/oauth2/v2/userinfo")
+                .uri(baseUserUri)
                 .headers(httpHeaders -> httpHeaders.setBearerAuth(token))
                 .retrieve()
                 .bodyToMono(GoogleUserInfo.class)
