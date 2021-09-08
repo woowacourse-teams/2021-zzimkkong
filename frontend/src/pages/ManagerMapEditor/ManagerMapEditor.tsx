@@ -129,7 +129,7 @@ const ManagerMapEditor = (): JSX.Element => {
     createMap.mutate({ mapName: name, mapDrawing, mapImageSvg });
   };
 
-  useListenManagerMainState({ mapId: Number(mapId) });
+  useListenManagerMainState({ mapId: Number(mapId) }, { enabled: isEdit });
 
   return (
     <>
