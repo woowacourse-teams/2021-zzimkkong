@@ -86,7 +86,7 @@ class SettingTest {
     }
 
     @ParameterizedTest
-    @CsvSource(value = {"22,27,5", "15,0,10", "10,40,30", "5,5,60"})
+    @CsvSource(value = {"22,27,5", "0,15,10", "15,0,10", "10,40,30", "5,5,60"})
     @DisplayName("setting 생성 시 예약이 시작되는 시간과 닫히는 시간이 time unit단위와 맞지 않으면 예외를 던진다")
     void timeUnitMismatch_fail(int startMinute, int endMinute, int timeUnit) {
         final Setting.SettingBuilder settingBuilder = Setting.builder()
