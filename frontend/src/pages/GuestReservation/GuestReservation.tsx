@@ -44,7 +44,7 @@ const GuestReservation = (): JSX.Element => {
 
   const { mapId, space, selectedDate, scrollPosition, reservation } = location.state;
 
-  if (!mapId || !space) history.replace(`/guest/${sharingMapId}`);
+  if (!mapId || !space) history.replace(HREF.GUEST_MAP(sharingMapId));
 
   const [date, onChangeDate] = useInput(selectedDate);
 
@@ -53,7 +53,7 @@ const GuestReservation = (): JSX.Element => {
 
   const createReservation = useMutation(postGuestReservation, {
     onSuccess: () => {
-      history.push(`/guest/${sharingMapId}`, {
+      history.push(HREF.GUEST_MAP(sharingMapId), {
         spaceId: space.id,
         targetDate: new Date(date),
       });
@@ -108,8 +108,8 @@ const GuestReservation = (): JSX.Element => {
   useEffect(() => {
     return history.listen((location) => {
       if (
-        location.pathname === `/guest/${sharingMapId}` ||
-        location.pathname === `/guest/${sharingMapId}/`
+        location.pathname === HREF.GUEST_MAP(sharingMapId) ||
+        location.pathname === HREF.GUEST_MAP(sharingMapId) + '/'
       ) {
         location.state = {
           spaceId: space.id,
