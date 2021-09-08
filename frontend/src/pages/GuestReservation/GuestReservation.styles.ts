@@ -9,7 +9,9 @@ export const Section = styled.section`
   margin: 1.5rem 0 4.5rem;
 `;
 
-export const Message = styled.p``;
+export const Message = styled.p`
+  white-space: pre-wrap;
+`;
 
 export const ReservationList = styled.div`
   border-top: 1px solid ${({ theme }) => theme.gray[400]};

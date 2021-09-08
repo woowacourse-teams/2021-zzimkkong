@@ -19,7 +19,7 @@ const MESSAGE = {
     EDIT: '예약 수정하기',
     SUGGESTION: '오늘의 첫 예약을 잡아보세요!',
     PENDING: '불러오는 중입니다...',
-    ERROR: `예약 목록을 불러오는 데 문제가 생겼어요!<br />새로 고침으로 다시 시도해주세요.`,
+    ERROR: `예약 목록을 불러오는 데 문제가 생겼어요!\n새로 고침으로 다시 시도해주세요.`,
     DELETE_SUCCESS: '예약이 삭제 되었습니다.',
     UNEXPECTED_ERROR: '예약하는 중에 문제가 발생했습니다. 잠시 후에 다시 시도해주세요.',
     UNEXPECTED_DELETE_ERROR:
