@@ -57,6 +57,11 @@ public class Member {
         this.oAuthProvider = oauthProvider;
     }
 
+    public Member(final Long id, final String email, final String organization, final OAuthProvider oauthProvider) {
+        this(email, organization, oauthProvider);
+        this.id = id;
+    }
+
     public Optional<Preset> findPresetById(final Long presetId) {
         return this.presets.stream()
                 .filter(preset -> preset.hasSameId(presetId))

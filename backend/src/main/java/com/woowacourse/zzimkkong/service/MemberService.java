@@ -43,12 +43,6 @@ public class MemberService {
     }
 
     @Transactional(readOnly = true)
-    public void validateDuplicateEmail(final String email) {
-        if (members.existsByEmail(email)) {
-            throw new DuplicateEmailException();
-        }
-    }
-
     public OAuthReadyResponse getUserInfoFromOAuth(OAuthProvider oauthProvider, String code) {
         OAuthUserInfo userInfo = oAuthHandler.getUserInfoFromCode(oauthProvider, code);
         String email = userInfo.getEmail();
@@ -68,5 +62,12 @@ public class MemberService {
         );
         Member saveMember = members.save(member);
         return MemberSaveResponse.from(saveMember);
+    }
+
+    @Transactional(readOnly = true)
+    public void validateDuplicateEmail(final String email) {
+        if (members.existsByEmail(email)) {
+            throw new DuplicateEmailException();
+        }
     }
 }
