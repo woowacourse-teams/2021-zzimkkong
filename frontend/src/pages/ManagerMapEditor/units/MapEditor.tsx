@@ -8,19 +8,19 @@ import ColorPicker from 'components/ColorPicker/ColorPicker';
 import ColorPickerIcon from 'components/ColorPicker/ColorPickerIcon';
 import { EDITOR, KEY } from 'constants/editor';
 import PALETTE from 'constants/palette';
-import useBoardCoordinate from 'pages/ManagerMapCreate/hooks/useBoardCoordinate';
+import useBoardCoordinate from 'pages/ManagerMapEditor/hooks/useBoardCoordinate';
 import { Color, DrawingStatus, ManagerSpace, MapElement } from 'types/common';
 import { Mode } from 'types/editor';
+import useBindKeyPress from '../hooks/useBindKeyPress';
+import useBoardEraserTool from '../hooks/useBoardEraserTool';
+import useBoardLineTool from '../hooks/useBoardLineTool';
+import useBoardMove from '../hooks/useBoardMove';
+import useBoardRectTool from '../hooks/useBoardRectTool';
+import useBoardSelect from '../hooks/useBoardSelect';
+import useBoardStatus from '../hooks/useBoardStatus';
+import useBoardZoom from '../hooks/useBoardZoom';
 import Board from './Board';
-import * as Styled from './MapCreateEditor.styles';
-import useBindKeyPress from './hooks/useBindKeyPress';
-import useBoardEraserTool from './hooks/useBoardEraserTool';
-import useBoardLineTool from './hooks/useBoardLineTool';
-import useBoardMove from './hooks/useBoardMove';
-import useBoardRectTool from './hooks/useBoardRectTool';
-import useBoardSelect from './hooks/useBoardSelect';
-import useBoardStatus from './hooks/useBoardStatus';
-import useBoardZoom from './hooks/useBoardZoom';
+import * as Styled from './MapEditor.styles';
 
 const toolbarItems = [
   {

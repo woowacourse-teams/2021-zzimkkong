@@ -15,8 +15,8 @@ import useManagerSpaces from 'hooks/useManagerSpaces';
 import { ManagerSpace, MapDrawing, MapElement, SpaceArea } from 'types/common';
 import { ErrorResponse } from 'types/response';
 import { getMapImageSvg } from 'utils/map';
-import * as Styled from './MapCreate.styles';
-import MapCreateEditor from './MapCreateEditor';
+import * as Styled from './ManagerMapEditor.styles';
+import MapEditor from './units/MapEditor';
 
 interface Params {
   mapId?: string;
@@ -28,7 +28,7 @@ interface Board {
   height: string;
 }
 
-const MapCreate = (): JSX.Element => {
+const ManagerMapEditor = (): JSX.Element => {
   const history = useHistory();
   const params = useParams<Params>();
   const mapId = params?.mapId;
@@ -152,7 +152,7 @@ const MapCreate = (): JSX.Element => {
                 <Button variant="primary">{isEdit ? '수정' : '완료'}</Button>
               </Styled.FormControl>
             </Styled.FormHeader>
-            <MapCreateEditor
+            <MapEditor
               spaces={spaces}
               mapElementsState={[mapElements, setMapElements]}
               boardState={[{ width, height }, onChangeBoard]}
@@ -164,4 +164,4 @@ const MapCreate = (): JSX.Element => {
   );
 };
 
-export default MapCreate;
+export default ManagerMapEditor;
