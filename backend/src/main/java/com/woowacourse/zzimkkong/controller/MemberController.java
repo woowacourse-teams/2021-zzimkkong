@@ -32,7 +32,7 @@ public class MemberController {
         this.presetService = presetService;
     }
 
-    @PostMapping("/members/join")
+    @PostMapping("/members")
     public ResponseEntity<Void> join(@RequestBody @Valid final MemberSaveRequest memberSaveRequest) {
         MemberSaveResponse memberSaveResponse = memberService.saveMember(memberSaveRequest);
         return ResponseEntity

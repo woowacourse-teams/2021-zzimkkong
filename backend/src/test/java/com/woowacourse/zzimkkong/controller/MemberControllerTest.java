@@ -210,7 +210,7 @@ class MemberControllerTest extends AcceptanceTest {
                 .filter(document("member/post", getRequestPreprocessor(), getResponsePreprocessor()))
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body(memberSaveRequest)
-                .when().post("/api/members/join")
+                .when().post("/api/members")
                 .then().log().all().extract();
     }
 
