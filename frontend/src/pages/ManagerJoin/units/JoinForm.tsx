@@ -1,16 +1,15 @@
 import { AxiosError } from 'axios';
-import { FormEventHandler, useEffect, useState } from 'react';
-import { useMutation, useQuery } from 'react-query';
-import { useHistory } from 'react-router';
-import { postJoin, queryValidateEmail } from 'api/join';
+import React, { FormEventHandler, useEffect, useState } from 'react';
+import { useQuery } from 'react-query';
+import { queryValidateEmail } from 'api/join';
 import Button from 'components/Button/Button';
 import Input from 'components/Input/Input';
 import MANAGER from 'constants/manager';
 import MESSAGE from 'constants/message';
-import PATH from 'constants/path';
 import REGEXP from 'constants/regexp';
 import useInputs from 'hooks/useInputs';
 import { ErrorResponse } from 'types/response';
+import { JoinParams } from '../ManagerJoin';
 import * as Styled from './JoinForm.styles';
 
 interface Form {
@@ -20,7 +19,11 @@ interface Form {
   organization: string;
 }
 
-const JoinForm = (): JSX.Element => {
+interface Props {
+  onSubmit: ({ email, password, organization }: JoinParams) => void;
+}
+
+const JoinForm = ({ onSubmit }: Props): JSX.Element => {
   const [{ email, password, passwordConfirm, organization }, onChangeForm] = useInputs<Form>({
     email: '',
     password: '',
@@ -32,8 +35,6 @@ const JoinForm = (): JSX.Element => {
   const [passwordMessage, setPasswordMessage] = useState('');
   const [passwordConfirmMessage, setPasswordConfirmMessage] = useState('');
   const [organizationMessage, setOrganizationMessage] = useState('');
-
-  const history = useHistory();
 
   const isValidPassword = REGEXP.PASSWORD.test(password);
   const isValidOrganization = REGEXP.ORGANIZATION.test(organization);
@@ -51,27 +52,14 @@ const JoinForm = (): JSX.Element => {
     },
   });
 
-  const join = useMutation(postJoin, {
-    onSuccess: () => {
-      alert(MESSAGE.JOIN.SUCCESS);
-      history.push(PATH.MANAGER_LOGIN);
-    },
-
-    onError: (error: AxiosError<ErrorResponse>) => {
-      alert(error?.response?.data.message ?? MESSAGE.JOIN.FAILURE);
-    },
-  });
-
   const handleValidateEmail = () => {
     if (!email) return;
 
     isValidEmail.refetch();
   };
 
-  const handleSubmitJoinForm: FormEventHandler<HTMLFormElement> = (event) => {
+  const handleSubmit: FormEventHandler<HTMLFormElement> = (event) => {
     event.preventDefault();
-
-    if (!email || !password || !passwordConfirm || !organization) return;
 
     if (password !== passwordConfirm) {
       alert(MESSAGE.JOIN.INVALID_PASSWORD_CONFIRM);
@@ -79,7 +67,7 @@ const JoinForm = (): JSX.Element => {
       return;
     }
 
-    join.mutate({ email, password, organization });
+    onSubmit({ email, password, organization });
   };
 
   useEffect(() => {
@@ -110,7 +98,7 @@ const JoinForm = (): JSX.Element => {
   }, [organization, isValidOrganization]);
 
   return (
-    <Styled.Form onSubmit={handleSubmitJoinForm}>
+    <Styled.Form onSubmit={handleSubmit}>
       <Input
         type="email"
         label="이메일"
