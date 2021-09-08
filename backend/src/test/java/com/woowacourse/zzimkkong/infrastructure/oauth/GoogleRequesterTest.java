@@ -13,6 +13,8 @@ import java.io.IOException;
 import static org.assertj.core.api.Assertions.assertThat;
 
 class GoogleRequesterTest {
+    public static final String SALLY_EMAIL = "dusdn1702@gmail.com";
+
     private static final String ACCESS_TOKEN_RESPONSE_EXAMPLE = "{\n" +
             "    \"access_token\": \"ACCESS_TOKEN_AT_HERE\",\n" +
             "    \"expires_in\": 3599,\n" +
@@ -21,8 +23,6 @@ class GoogleRequesterTest {
             "    \"token_type\": \"Bearer\",\n" +
             "    \"id_token\": \"ID_TOKEN_AT_HERE\"\n" +
             "}";
-
-    private static final String SALLY_EMAIL = "dusdn1702@gmail.com";
     private static final String USER_INFO_RESPONSE_EXAMPLE = "{\n" +
             "    \"id\": \"107677594285931275665\",\n" +
             "    \"email\": \"" + SALLY_EMAIL + "\",\n" +
