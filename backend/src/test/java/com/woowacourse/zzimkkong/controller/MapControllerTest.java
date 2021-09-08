@@ -38,7 +38,7 @@ class MapControllerTest extends AcceptanceTest {
 
     @BeforeEach
     void setUp() {
-        saveMapApi = "/api/managers/maps";
+        saveMapApi = "/api/members/maps";
         createdMapApi = saveMap(saveMapApi, mapCreateUpdateRequest).header("location");
 
         // For Test Comparison

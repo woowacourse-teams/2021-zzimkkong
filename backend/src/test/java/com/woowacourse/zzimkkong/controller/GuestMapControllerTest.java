@@ -26,7 +26,7 @@ class GuestMapControllerTest extends AcceptanceTest {
     @BeforeEach
     void setUp() {
         createMemberResponse = saveMember(new MemberSaveRequest(EMAIL, PW, ORGANIZATION));
-        createMapResponse = saveMap("/api/managers/maps",
+        createMapResponse = saveMap("/api/members/maps",
                 new MapCreateUpdateRequest(
                         LUTHER_NAME,
                         MAP_DRAWING_DATA,
@@ -41,7 +41,7 @@ class GuestMapControllerTest extends AcceptanceTest {
         // given
         String mapId = createMapResponse.header("Location").split("/")[4];
 
-        ExtractableResponse<Response> mapFindResponseFromId = findMap("/api/managers/maps/" + mapId);
+        ExtractableResponse<Response> mapFindResponseFromId = findMap("/api/members/maps/" + mapId);
         MapFindResponse expected = mapFindResponseFromId.body().as(MapFindResponse.class);
         String sharingId = expected.getSharingMapId();
 

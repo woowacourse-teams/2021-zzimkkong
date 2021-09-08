@@ -14,7 +14,7 @@ import javax.validation.Valid;
 import java.net.URI;
 
 @RestController
-@RequestMapping("/api/managers/maps")
+@RequestMapping("/api/members/maps")
 public class MapController {
     private final MapService mapService;
 
@@ -23,21 +23,21 @@ public class MapController {
     }
 
     @GetMapping("/{mapId}")
-    public ResponseEntity<MapFindResponse> find(@PathVariable final Long mapId, @Manager final Member manager) {
-        MapFindResponse mapFindResponse = mapService.findMap(mapId, manager);
+    public ResponseEntity<MapFindResponse> find(@PathVariable final Long mapId, @Manager final Member member) {
+        MapFindResponse mapFindResponse = mapService.findMap(mapId, member);
         return ResponseEntity.ok().body(mapFindResponse);
     }
 
     @GetMapping
-    public ResponseEntity<MapFindAllResponse> findAll(@Manager final Member manager) {
-        MapFindAllResponse mapFindAllResponse = mapService.findAllMaps(manager);
+    public ResponseEntity<MapFindAllResponse> findAll(@Manager final Member member) {
+        MapFindAllResponse mapFindAllResponse = mapService.findAllMaps(member);
         return ResponseEntity.ok().body(mapFindAllResponse);
     }
 
     @PostMapping
-    public ResponseEntity<Void> create(@Valid @RequestBody final MapCreateUpdateRequest mapCreateUpdateRequest, @Manager final Member manager) {
-        MapCreateResponse mapCreateResponse = mapService.saveMap(mapCreateUpdateRequest, manager);
-        return ResponseEntity.created(URI.create("/api/managers/maps/" + mapCreateResponse.getId()))
+    public ResponseEntity<Void> create(@Valid @RequestBody final MapCreateUpdateRequest mapCreateUpdateRequest, @Manager final Member member) {
+        MapCreateResponse mapCreateResponse = mapService.saveMap(mapCreateUpdateRequest, member);
+        return ResponseEntity.created(URI.create("/api/members/maps/" + mapCreateResponse.getId()))
                 .build();
     }
 
@@ -45,14 +45,14 @@ public class MapController {
     public ResponseEntity<Void> update(
             @PathVariable final Long mapId,
             @Valid @RequestBody final MapCreateUpdateRequest mapCreateUpdateRequest,
-            @Manager final Member manager) {
-        mapService.updateMap(mapId, mapCreateUpdateRequest, manager);
+            @Manager final Member member) {
+        mapService.updateMap(mapId, mapCreateUpdateRequest, member);
         return ResponseEntity.ok().build();
     }
 
     @DeleteMapping("/{mapId}")
-    public ResponseEntity<Void> delete(@PathVariable final Long mapId, @Manager final Member manager) {
-        mapService.deleteMap(mapId, manager);
+    public ResponseEntity<Void> delete(@PathVariable final Long mapId, @Manager final Member member) {
+        mapService.deleteMap(mapId, member);
         return ResponseEntity.noContent().build();
     }
 }
