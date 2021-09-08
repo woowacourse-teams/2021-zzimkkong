@@ -4,27 +4,28 @@ import com.woowacourse.zzimkkong.domain.Member;
 import com.woowacourse.zzimkkong.domain.OAuthProvider;
 import com.woowacourse.zzimkkong.domain.Preset;
 import com.woowacourse.zzimkkong.domain.Setting;
-import com.woowacourse.zzimkkong.dto.member.MemberSaveRequest;
-import com.woowacourse.zzimkkong.dto.member.PresetFindAllResponse;
-import com.woowacourse.zzimkkong.dto.member.PresetCreateRequest;
+import com.woowacourse.zzimkkong.domain.oauth.GithubUserInfo;
+import com.woowacourse.zzimkkong.dto.member.*;
 import com.woowacourse.zzimkkong.dto.space.SettingsRequest;
 import com.woowacourse.zzimkkong.infrastructure.AuthorizationExtractor;
+import com.woowacourse.zzimkkong.infrastructure.oauth.GithubRequester;
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.util.List;
+import java.util.Map;
 
 import static com.woowacourse.zzimkkong.Constants.*;
 import static com.woowacourse.zzimkkong.DocumentUtils.*;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.BDDMockito.given;
 import static org.springframework.restdocs.restassured3.RestAssuredRestDocumentation.document;
 
 class MemberControllerTest extends AcceptanceTest {
@@ -33,6 +34,9 @@ class MemberControllerTest extends AcceptanceTest {
 
     private SettingsRequest settingsRequest;
     private PresetCreateRequest presetCreateRequest;
+
+    @MockBean
+    private GithubRequester githubRequester;
 
     @BeforeEach
     void setUp() {
@@ -80,24 +84,46 @@ class MemberControllerTest extends AcceptanceTest {
         String code = "4%2F0AX4XfWjEXMLEdAqN4Bxqufcm8MIP1btBZY_nTeS_1M3b46MqSrq-h2A3Z2ydSOlZI1SpeA";
 
         // when
-        ExtractableResponse<Response> response = saveMemberByOAuth(oAuthProvider, code);
+//        ExtractableResponse<Response> response = saveMemberByOAuth(oAuthProvider, code);
 
         //then
         //todo 샐리
 //        assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
     }
 
-    //todo 김김
+    // todo Parameterized 김샐
     @Test
     @DisplayName("OAuth를 통해 얻을 수 없는 정보를 요구하며 회원가입을 진행한다.")
     void getReadyToJoinByOAuth() {
-        // todo 테스트 작성
+        // given
+        OAuthProvider oAuthProvider = OAuthProvider.GITHUB;
+        String code = "4%2F0AX4XfWjEXMLEdAqN4Bxqufcm8MIP1btBZY_nTeS_1M3b46MqSrq-h2A3Z2ydSOlZI1SpeA";
+        given(githubRequester.supports(OAuthProvider.GITHUB))
+                .willReturn(true);
+        given(githubRequester.getUserInfoByCode(code))
+                .willReturn(GithubUserInfo.from(Map.of("email", EMAIL)));
+
+        // when
+        ExtractableResponse<Response> response = getReadyToJoinByOAuth(oAuthProvider, code);
+        OAuthReadyResponse oAuthReadyResponse = response.as(OAuthReadyResponse.class);
+
+        // then
+        assertThat(oAuthReadyResponse.getOAuthProvider()).isEqualTo(oAuthProvider);
+        assertThat(oAuthReadyResponse.getEmail()).isEqualTo(EMAIL);
     }
 
     @Test
     @DisplayName("OAuth를 통해 회원가입 할 수 있다.")
     void joinByOAuth() {
-        // Todo 테스트 작성
+        // given
+        OAuthProvider oAuthProvider = OAuthProvider.GITHUB;
+        OAuthMemberSaveRequest oAuthMemberSaveRequest = new OAuthMemberSaveRequest(EMAIL, ORGANIZATION, oAuthProvider.name());
+
+        // when
+        ExtractableResponse<Response> response = saveMemberByOAuth(oAuthMemberSaveRequest);
+
+        // then
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
     }
 
     @Test
@@ -171,13 +197,24 @@ class MemberControllerTest extends AcceptanceTest {
                 .then().log().all().extract();
     }
 
-    static ExtractableResponse<Response> saveMemberByOAuth(final OAuthProvider oAuthProvider, final String code) {
+    static ExtractableResponse<Response> getReadyToJoinByOAuth(final OAuthProvider oAuthProvider, final String code) {
+        return RestAssured
+                .given(getRequestSpecification()).log().all()
+                .accept("application/json")
+                .filter(document("member/get/oauth-ready", getRequestPreprocessor(), getResponsePreprocessor()))
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .when().get("/api/members/" + oAuthProvider + "?code=" + code)
+                .then().log().all().extract();
+    }
+
+    static ExtractableResponse<Response> saveMemberByOAuth(OAuthMemberSaveRequest oAuthMemberSaveRequest) {
         return RestAssured
                 .given(getRequestSpecification()).log().all()
                 .accept("application/json")
                 .filter(document("member/get/oauth", getRequestPreprocessor(), getResponsePreprocessor()))
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .when().post("/api/members/oauth?oauthProvider=" + oAuthProvider + "&code=" + code)
+                .body(oAuthMemberSaveRequest)
+                .when().post("/api/members/oauth")
                 .then().log().all().extract();
     }
 
