@@ -60,8 +60,7 @@ public class Setting {
             throw new ImpossibleAvailableStartEndTimeException();
         }
 
-        int duration = (int) ChronoUnit.MINUTES.between(availableStartTime, availableEndTime);
-        if (checkTimeByTimeUnit(duration)) {
+        if (isAvailableTimeAndTimeUnitMismatch()) {
             throw new TimeUnitMismatchException();
         }
 
@@ -73,9 +72,14 @@ public class Setting {
             throw new TimeUnitInconsistencyException();
         }
 
+        int duration = (int) ChronoUnit.MINUTES.between(availableStartTime, availableEndTime);
         if (duration < reservationMaximumTimeUnit) {
             throw new NotEnoughAvailableTimeException();
         }
+    }
+
+    private boolean isAvailableTimeAndTimeUnitMismatch() {
+        return availableStartTime.getMinute() % reservationTimeUnit != 0 || availableEndTime.getMinute() % reservationTimeUnit != 0;
     }
 
     public boolean checkTimeByTimeUnit(final int minute) {

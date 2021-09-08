@@ -71,7 +71,7 @@ class SettingTest {
     }
 
     @ParameterizedTest
-    @CsvSource(value = {"35,55,10", "4,24,10", "17,22,5", "57,2,5", "50,20,30", "20,20,60"})
+    @CsvSource(value = {"30,50,10", "0,0,10", "10,15,5", "0,5,5", "0,30,30", "0,0,60"})
     @DisplayName("setting 생성 시 예약이 시작되는 시간과 닫히는 시간이 time unit단위와 맞으면 예외를 던지지 않는다")
     void timeUnitMismatch_ok(int startMinute, int endMinute, int timeUnit) {
         assertDoesNotThrow(() -> Setting.builder()
@@ -86,7 +86,7 @@ class SettingTest {
     }
 
     @ParameterizedTest
-    @CsvSource(value = {"26,27,5", "15,0,10", "0,25,30", "10,20,60"})
+    @CsvSource(value = {"22,27,5", "15,0,10", "10,40,30", "5,5,60"})
     @DisplayName("setting 생성 시 예약이 시작되는 시간과 닫히는 시간이 time unit단위와 맞지 않으면 예외를 던진다")
     void timeUnitMismatch_fail(int startMinute, int endMinute, int timeUnit) {
         final Setting.SettingBuilder settingBuilder = Setting.builder()
