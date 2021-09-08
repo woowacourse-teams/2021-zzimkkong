@@ -1,4 +1,4 @@
-import React, { PropsWithChildren, useEffect, useRef } from 'react';
+import React, { PropsWithChildren, useLayoutEffect, useRef } from 'react';
 import PALETTE from 'constants/palette';
 import { EditorBoard } from 'types/common';
 import * as Styled from './Board.styles';
@@ -41,16 +41,16 @@ const Board = ({
     onMouseMove?.(event);
   };
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     const boardWidth = rootSvgRef.current?.clientWidth ?? 0;
     const boardHeight = rootSvgRef.current?.clientHeight ?? 0;
 
     setStatus((prevStatus) => ({
       ...prevStatus,
-      x: (boardWidth - prevStatus.width) / 2,
-      y: (boardHeight - prevStatus.height) / 2,
+      x: (boardWidth - status.width) / 2,
+      y: (boardHeight - status.height) / 2,
     }));
-  }, [setStatus]);
+  }, [setStatus, status.height, status.width]);
 
   return (
     <Styled.RootSvg
