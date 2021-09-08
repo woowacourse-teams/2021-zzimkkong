@@ -10,15 +10,19 @@ import useInputs from 'hooks/useInputs';
 import useScrollToTop from 'hooks/useScrollToTop';
 import { Reservation, Space } from 'types/common';
 import { formatDate, formatTime, formatTimePrettier } from 'utils/datetime';
-import { HandleSubmitParams } from './GuestReservation';
+import { EditReservationParams } from './GuestReservation';
 import * as Styled from './ReservationForm.styles';
 
 interface Props {
+  isEditMode: boolean;
   space: Space;
   reservation?: Reservation;
   date: string;
   onChangeDate: ChangeEventHandler<HTMLInputElement>;
-  onSubmit: ({ event, reservation, reservationId }: HandleSubmitParams) => void;
+  onSubmit: (
+    event: React.FormEvent<HTMLFormElement>,
+    { reservation, reservationId }: EditReservationParams
+  ) => void;
 }
 
 interface Form {
@@ -30,6 +34,7 @@ interface Form {
 }
 
 const ReservationForm = ({
+  isEditMode,
   space,
   date,
   reservation,
@@ -40,8 +45,6 @@ const ReservationForm = ({
 
   const { availableStartTime, availableEndTime, reservationTimeUnit, reservationMaximumTimeUnit } =
     space.settings;
-
-  const isEditMode = !!reservation;
 
   const now = new Date();
   const todayDate = formatDate(new Date());
@@ -84,8 +87,7 @@ const ReservationForm = ({
   return (
     <Styled.ReservationForm
       onSubmit={(event) =>
-        onSubmit({
-          event,
+        onSubmit(event, {
           reservation: {
             startDateTime,
             endDateTime,

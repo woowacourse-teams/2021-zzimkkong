@@ -29,12 +29,7 @@ interface GuestReservationState {
   reservation?: Reservation;
 }
 
-interface EditReservationParams extends ReservationParams {
-  reservationId: number;
-}
-
-export interface HandleSubmitParams extends ReservationParams {
-  event: React.FormEvent<HTMLFormElement>;
+export interface EditReservationParams extends ReservationParams {
   reservationId?: number;
 }
 
@@ -48,6 +43,8 @@ const GuestReservation = (): JSX.Element => {
   if (!mapId || !space) history.replace(HREF.GUEST_MAP(sharingMapId));
 
   const [date, onChangeDate] = useInput(selectedDate);
+
+  const iseEditMode = !!reservation;
 
   const getReservations = useGuestReservations({ mapId, spaceId: space.id, date });
   const reservations = getReservations.data?.data?.reservations ?? [];
@@ -88,7 +85,7 @@ const GuestReservation = (): JSX.Element => {
   };
 
   const editReservation = ({ reservation, reservationId }: EditReservationParams) => {
-    if (updateReservation.isLoading || !reservation) return;
+    if (updateReservation.isLoading || !iseEditMode || !reservationId) return;
 
     updateReservation.mutate({
       reservation,
@@ -98,7 +95,10 @@ const GuestReservation = (): JSX.Element => {
     });
   };
 
-  const handleSubmit = ({ event, reservation, reservationId }: HandleSubmitParams) => {
+  const handleSubmit = (
+    event: React.FormEvent<HTMLFormElement>,
+    { reservation, reservationId }: EditReservationParams
+  ) => {
     event.preventDefault();
 
     reservationId
@@ -130,6 +130,7 @@ const GuestReservation = (): JSX.Element => {
           {space.name}
         </Styled.PageHeader>
         <ReservationForm
+          isEditMode={iseEditMode}
           space={space}
           reservation={reservation}
           date={date}
