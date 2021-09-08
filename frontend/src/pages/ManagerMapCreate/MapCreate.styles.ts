@@ -15,9 +15,20 @@ export const Container = styled.div`
 
 export const Form = styled.form`
   display: flex;
+  flex-direction: column;
+  flex: 1;
+`;
+
+export const FormHeader = styled.div`
+  display: flex;
   justify-content: space-between;
   align-items: flex-end;
   margin-bottom: 0.75rem;
+`;
+
+export const FormControl = styled.div`
+  display: flex;
+  gap: 0.5rem;
 `;
 
 export const MapNameInput = styled.input`
@@ -34,9 +45,4 @@ export const MapNameInput = styled.input`
   &:focus {
     outline-color: ${({ theme }) => theme.primary[400]};
   }
-`;
-
-export const FormControl = styled.div`
-  display: flex;
-  gap: 0.5rem;
 `;

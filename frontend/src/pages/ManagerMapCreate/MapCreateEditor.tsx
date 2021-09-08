@@ -8,9 +8,8 @@ import ColorPicker from 'components/ColorPicker/ColorPicker';
 import ColorPickerIcon from 'components/ColorPicker/ColorPickerIcon';
 import { EDITOR, KEY } from 'constants/editor';
 import PALETTE from 'constants/palette';
-import useInputs from 'hooks/useInputs';
 import useBoardCoordinate from 'pages/ManagerMapCreate/hooks/useBoardCoordinate';
-import { Color, DrawingStatus, MapElement } from 'types/common';
+import { Color, DrawingStatus, ManagerSpace, MapElement } from 'types/common';
 import { Mode } from 'types/editor';
 import Board from './Board';
 import * as Styled from './MapCreateEditor.styles';
@@ -51,19 +50,26 @@ const toolbarItems = [
   },
 ];
 
-const MapCreateEditor = (): JSX.Element => {
+interface Props {
+  spaces: ManagerSpace[];
+  mapElementsState: [MapElement[], React.Dispatch<React.SetStateAction<MapElement[]>>];
+  boardState: [
+    { width: string; height: string },
+    (event: React.ChangeEvent<HTMLInputElement>) => void
+  ];
+}
+
+const MapCreateEditor = ({
+  spaces,
+  mapElementsState: [mapElements, setMapElements],
+  boardState: [{ width, height }, onChangeBoard],
+}: Props): JSX.Element => {
   const [mode, setMode] = useState(Mode.Select);
 
   const [color, setColor] = useState<Color>(PALETTE.BLACK[400]);
   const [isColorPickerOpen, setColorPickerOpen] = useState(false);
 
   const [drawingStatus, setDrawingStatus] = useState<DrawingStatus>({});
-  const [mapElements, setMapElements] = useState<MapElement[]>([]);
-
-  const [{ width, height }, onChangeBoardSize] = useInputs({
-    width: '800',
-    height: '600',
-  });
 
   const { pressedKey } = useBindKeyPress();
   const isPressSpacebar = pressedKey === KEY.SPACE;
@@ -160,21 +166,24 @@ const MapCreateEditor = (): JSX.Element => {
     );
 
     deselectMapElement();
-  }, [deselectMapElement, selectedMapElementId]);
+  }, [deselectMapElement, selectedMapElementId, setMapElements]);
 
   useEffect(() => {
+    if (mode !== Mode.Select) return;
+
     const isPressedDeleteKey = pressedKey === KEY.DELETE || pressedKey === KEY.BACK_SPACE;
 
     if (isPressedDeleteKey && selectedMapElementId) {
       deleteMapElement();
     }
-  }, [deleteMapElement, pressedKey, selectedMapElementId]);
+  }, [deleteMapElement, mode, pressedKey, selectedMapElementId]);
 
   return (
     <Styled.Editor>
       <Styled.Toolbar>
         {toolbarItems.map((item) => (
           <Styled.ToolbarButton
+            type="button"
             key={item.text}
             text={item.text}
             selected={mode === item.mode}
@@ -183,7 +192,7 @@ const MapCreateEditor = (): JSX.Element => {
             {item.icon}
           </Styled.ToolbarButton>
         ))}
-        <Styled.ToolbarButton text="색상선택" onClick={toggleColorPicker}>
+        <Styled.ToolbarButton type="button" text="색상선택" onClick={toggleColorPicker}>
           <ColorPickerIcon color={color} />
         </Styled.ToolbarButton>
       </Styled.Toolbar>
@@ -214,6 +223,30 @@ const MapCreateEditor = (): JSX.Element => {
               pointerEvents="none"
             />
           )}
+
+          {spaces.map(({ id, color, area, name }) => (
+            <g key={id} pointerEvents="none">
+              <rect
+                x={area.x}
+                y={area.y}
+                width={area.width}
+                height={area.height}
+                fill={color}
+                opacity="0.1"
+              />
+              <text
+                x={area.x + area.width / 2}
+                y={area.y + area.height / 2}
+                dominantBaseline="middle"
+                textAnchor="middle"
+                fill={PALETTE.BLACK[700]}
+                fontSize="1rem"
+                opacity="0.3"
+              >
+                {name}
+              </text>
+            </g>
+          ))}
 
           {drawingStatus.start && mode === Mode.Line && (
             <polyline
@@ -297,14 +330,14 @@ const MapCreateEditor = (): JSX.Element => {
             <Styled.LabelIcon>W</Styled.LabelIcon>
             <Styled.LabelText>넓이</Styled.LabelText>
           </Styled.Label>
-          <Styled.SizeInput name="width" value={width} onChange={onChangeBoardSize} />
+          <Styled.SizeInput name="width" value={width} onChange={onChangeBoard} />
         </Styled.InputWrapper>
         <Styled.InputWrapper>
           <Styled.Label>
             <Styled.LabelIcon>H</Styled.LabelIcon>
             <Styled.LabelText>높이</Styled.LabelText>
           </Styled.Label>
-          <Styled.SizeInput name="height" value={height} onChange={onChangeBoardSize} />
+          <Styled.SizeInput name="height" value={height} onChange={onChangeBoard} />
         </Styled.InputWrapper>
       </Styled.Toolbar>
     </Styled.Editor>
