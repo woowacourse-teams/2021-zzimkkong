@@ -2,13 +2,13 @@ package com.woowacourse.zzimkkong.service;
 
 import com.woowacourse.zzimkkong.domain.Member;
 import com.woowacourse.zzimkkong.domain.OAuthProvider;
-import com.woowacourse.zzimkkong.dto.member.OAuthMemberSaveRequest;
+import com.woowacourse.zzimkkong.domain.oauth.OAuthUserInfo;
 import com.woowacourse.zzimkkong.dto.member.MemberSaveRequest;
 import com.woowacourse.zzimkkong.dto.member.MemberSaveResponse;
+import com.woowacourse.zzimkkong.dto.member.OAuthMemberSaveRequest;
 import com.woowacourse.zzimkkong.dto.member.OAuthReadyResponse;
 import com.woowacourse.zzimkkong.exception.member.DuplicateEmailException;
 import com.woowacourse.zzimkkong.infrastructure.oauth.OAuthHandler;
-import com.woowacourse.zzimkkong.domain.oauth.OAuthUserInfo;
 import com.woowacourse.zzimkkong.repository.MemberRepository;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -58,7 +58,7 @@ public class MemberService {
         Member member = new Member(
                 oAuthMemberSaveRequest.getEmail(),
                 oAuthMemberSaveRequest.getOrganization(),
-                OAuthProvider.valueOf(oAuthMemberSaveRequest.getOAuthProvider())
+                OAuthProvider.valueOfWithIgnoreCase(oAuthMemberSaveRequest.getOauthProvider())
         );
         Member saveMember = members.save(member);
         return MemberSaveResponse.from(saveMember);

@@ -22,13 +22,13 @@ public class OAuthMemberSaveRequest {
     private String organization;
 
     @NotNull(message = EMPTY_MESSAGE)
-    private String oAuthProvider;
+    private String oauthProvider;
 
     public OAuthMemberSaveRequest(final String email,
                                   final String organization,
-                                  final String oAuthProvider) {
+                                  final String oauthProvider) {
         this.email = email;
         this.organization = organization;
-        this.oAuthProvider = oAuthProvider;
+        this.oauthProvider = oauthProvider;
     }
 }

@@ -132,7 +132,7 @@ class MemberServiceTest extends ServiceTest {
         Member member = new Member(
                 oAuthMemberSaveRequest.getEmail(),
                 oAuthMemberSaveRequest.getOrganization(),
-                oAuthMemberSaveRequest.getOAuthProvider()
+                oAuthMemberSaveRequest.getOauthProvider()
         );
         given(members.existsByEmail(anyString()))
                 .willReturn(false);
