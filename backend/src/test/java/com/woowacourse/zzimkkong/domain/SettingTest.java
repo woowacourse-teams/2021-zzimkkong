@@ -12,7 +12,7 @@ import static com.woowacourse.zzimkkong.Constants.*;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 
-public class SettingTest {
+class SettingTest {
     @Test
     @DisplayName("setting의 입력값이 모두 올바르면 setting을 생성한다")
     void name() {
