@@ -96,8 +96,8 @@ class AcceptanceTest {
                 .build();
         setRequestSpecification(spec);
 
-//        saveMember(memberSaveRequest);
-//        accessToken = getToken();
+        saveMember(memberSaveRequest);
+        accessToken = getToken();
 
         given(storageUploader.upload(anyString(), any(File.class)))
                 .willReturn(MAP_IMAGE_URL);

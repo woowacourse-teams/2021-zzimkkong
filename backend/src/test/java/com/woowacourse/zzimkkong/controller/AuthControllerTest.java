@@ -1,23 +1,33 @@
 package com.woowacourse.zzimkkong.controller;
 
 import com.woowacourse.zzimkkong.domain.OAuthProvider;
+import com.woowacourse.zzimkkong.domain.oauth.GoogleUserInfo;
 import com.woowacourse.zzimkkong.dto.member.LoginRequest;
 import com.woowacourse.zzimkkong.dto.member.TokenResponse;
 import com.woowacourse.zzimkkong.infrastructure.AuthorizationExtractor;
+import com.woowacourse.zzimkkong.infrastructure.oauth.GoogleRequester;
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 
+import static com.woowacourse.zzimkkong.Constants.EMAIL;
 import static com.woowacourse.zzimkkong.DocumentUtils.*;
 import static com.woowacourse.zzimkkong.controller.MemberControllerTest.saveMember;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.BDDMockito.given;
 import static org.springframework.restdocs.restassured3.RestAssuredRestDocumentation.document;
 
 class AuthControllerTest extends AcceptanceTest {
+    @MockBean
+    private GoogleRequester googleRequester;
+
     @Test
     @DisplayName("유효한 정보의 로그인 요청이 오면 토큰을 발급한다.")
     void login() {
@@ -37,8 +47,20 @@ class AuthControllerTest extends AcceptanceTest {
     @DisplayName("Google OAuth 로그인 요청이 오면 토큰을 발급한다.")
     void loginByOauth() {
         // given
+        given(googleRequester.supports(any(OAuthProvider.class)))
+                .willReturn(true);
+        given(googleRequester.getUserInfoByCode(anyString()))
+                .willReturn(new GoogleUserInfo(
+                        "id",
+                        EMAIL,
+                        "verified_email",
+                        "name",
+                        "given_name",
+                        "family_name",
+                        "picture",
+                        "locale"));
         OAuthProvider oAuthProvider = OAuthProvider.GOOGLE;
-        String code = "4%2F0AX4XfWjEXMLEdAqN4Bxqufcm8MIP1btBZY_nTeS_1M3b46MqSrq-h2A3Z2ydSOlZI1SpeA";
+        String code = "example-code";
 
         // when
         ExtractableResponse<Response> response = loginByOAuth(oAuthProvider, code);
@@ -100,7 +122,7 @@ class AuthControllerTest extends AcceptanceTest {
                 .accept("application/json")
                 .filter(document("member/login/oauth", getRequestPreprocessor(), getResponsePreprocessor()))
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .when().get("/api/" + oAuthProvider +"/login/token?code=" + code)
+                .when().get("/api/" + oAuthProvider + "/login/token?code=" + code)
                 .then().log().all().extract();
     }
 
