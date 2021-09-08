@@ -46,15 +46,26 @@ const ReservationForm = ({
   const now = new Date();
   const todayDate = formatDate(new Date());
 
-  const initialStartTime = !!reservation
-    ? formatTime(new Date(reservation.startDateTime))
-    : formatTime(now);
+  const getInitialStartTime = () => {
+    if (isEditMode && reservation) {
+      return formatTime(new Date(reservation.startDateTime));
+    }
 
-  const initialEndTime = !!reservation
-    ? formatTime(new Date(reservation.endDateTime))
-    : formatTime(
-        new Date(new Date().getTime() + TIME.MILLISECONDS_PER_MINUTE * reservationTimeUnit)
-      );
+    return formatTime(now);
+  };
+
+  const getInitialEndTime = () => {
+    if (isEditMode && reservation) {
+      return formatTime(new Date(reservation.endDateTime));
+    }
+
+    return formatTime(
+      new Date(new Date().getTime() + TIME.MILLISECONDS_PER_MINUTE * reservationTimeUnit)
+    );
+  };
+
+  const initialStartTime = getInitialStartTime();
+  const initialEndTime = getInitialEndTime();
 
   const availableStartTimeText = formatTime(new Date(`${todayDate}T${availableStartTime}`));
   const availableEndTimeText = formatTime(new Date(`${todayDate}T${availableEndTime}`));
