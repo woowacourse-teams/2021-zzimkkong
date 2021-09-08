@@ -44,12 +44,12 @@ class AuthControllerTest extends AcceptanceTest {
     }
 
     @Test
-    @DisplayName("Google OAuth 로그인 요청이 오면 토큰을 발급한다.")
-    void loginByOAuthParameterized() {
+    @DisplayName("Github OAuth 로그인 요청이 오면 토큰을 발급한다.")
+    void loginByGithubOAuth() {
         // given
         OAuthProvider oAuthProvider = OAuthProvider.GITHUB;
         saveMemberByOAuth(new OAuthMemberSaveRequest(NEW_EMAIL, ORGANIZATION, oAuthProvider.name()));
-        String code = "4%2F0AX4XfWjEXMLEdAqN4Bxqufcm8MIP1btBZY_nTeS_1M3b46MqSrq-h2A3Z2ydSOlZI1SpeA";
+        String code = "example-code";
 
         given(githubRequester.supports(OAuthProvider.GITHUB))
                 .willReturn(true);
@@ -68,7 +68,7 @@ class AuthControllerTest extends AcceptanceTest {
 
     @Test
     @DisplayName("Google OAuth 로그인 요청이 오면 토큰을 발급한다.")
-    void loginByOauth() {
+    void loginByGoogleOauth() {
         // given
         saveMemberByOAuth(new OAuthMemberSaveRequest(NEW_EMAIL, ORGANIZATION, OAuthProvider.GOOGLE.name()));
         given(googleRequester.supports(any(OAuthProvider.class)))
