@@ -110,8 +110,9 @@ const ManagerMapEditor = (): JSX.Element => {
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
-    const mapDrawing = JSON.stringify({ width, height, mapElements });
+    if (createMap.isLoading || updateMap.isLoading) return;
 
+    const mapDrawing = JSON.stringify({ width, height, mapElements });
     const mapImageSvg = getMapImageSvg({
       mapElements,
       spaces,
