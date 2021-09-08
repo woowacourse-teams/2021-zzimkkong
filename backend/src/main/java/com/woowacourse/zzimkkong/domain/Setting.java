@@ -93,8 +93,7 @@ public class Setting {
     }
 
     private boolean isMaximumTimeUnitConsistentWithTimeUnit() {
-        int maximumTimeUnitQuotient = reservationMaximumTimeUnit / reservationTimeUnit;
         int maximumTimeUnitRemainder = reservationMaximumTimeUnit % reservationTimeUnit;
-        return maximumTimeUnitRemainder == 0 && 1 <= maximumTimeUnitQuotient;
+        return maximumTimeUnitRemainder == 0;
     }
 }

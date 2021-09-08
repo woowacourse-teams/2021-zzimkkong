@@ -3,6 +3,7 @@ package com.woowacourse.zzimkkong.domain;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
 import org.junit.jupiter.params.provider.EnumSource;
 import org.junit.jupiter.params.provider.ValueSource;
 
@@ -70,9 +71,10 @@ class SpaceTest {
         assertThat(space.hasSameId(space.getId() + 1)).isFalse();
     }
 
-    @Test
+    @ParameterizedTest
+    @CsvSource(value = {"10,12", "17,18"})
     @DisplayName("예약하려는 시간이 공간의 예약 가능한 시간 내에 있다면 false를 반환한다")
-    void isNotBetweenAvailableTime() {
+    void isNotBetweenAvailableTime(int startHour, int endHour) {
         Setting availableTimeSetting = Setting.builder()
                 .availableStartTime(LocalTime.of(10, 0))
                 .availableEndTime(LocalTime.of(18, 0))
@@ -84,8 +86,8 @@ class SpaceTest {
                 .build();
         Space availableTimeSpace = Space.builder().setting(availableTimeSetting).build();
 
-        LocalDateTime startDateTime = THE_DAY_AFTER_TOMORROW.atTime(10, 0);
-        LocalDateTime endDateTime = THE_DAY_AFTER_TOMORROW.atTime(12, 0);
+        LocalDateTime startDateTime = THE_DAY_AFTER_TOMORROW.atTime(startHour, 0);
+        LocalDateTime endDateTime = THE_DAY_AFTER_TOMORROW.atTime(endHour, 0);
         boolean actual = availableTimeSpace.isNotBetweenAvailableTime(startDateTime, endDateTime);
 
         assertThat(actual).isFalse();

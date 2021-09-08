@@ -101,9 +101,9 @@ public class SettingTest {
     }
 
     @ParameterizedTest
-    @CsvSource(value = {"5,10", "9,20", "10,25", "15,30", "25,45", "5,10"})
+    @CsvSource(value = {"0,5", "5,10", "9,20", "10,25", "15,30", "25,45"})
     @DisplayName("setting 생성 시 최소,최대 예약 가능 시간의 단위가 예약 시간 단위와 일치하지 않으면 예외를 던진다")
-    void TimeUnitInconsistency(int minimumMinute, int maximumMinute) {
+    void timeUnitInconsistency_fail(int minimumMinute, int maximumMinute) {
         final Setting.SettingBuilder settingBuilder = Setting.builder()
                 .availableStartTime(FE_AVAILABLE_START_TIME)
                 .availableEndTime(FE_AVAILABLE_END_TIME)
