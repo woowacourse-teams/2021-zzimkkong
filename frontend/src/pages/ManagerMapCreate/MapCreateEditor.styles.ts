@@ -88,3 +88,10 @@ export const SizeInput = styled(Input)`
     color: ${({ theme }) => theme.black[400]};
   }
 `;
+
+export const GripPoint = styled.circle`
+  fill: ${({ theme }) => theme.white};
+  stroke: ${({ theme }) => theme.black[100]};
+  stroke-width: 2px;
+  cursor: pointer;
+`;

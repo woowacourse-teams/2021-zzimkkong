@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { ReactComponent as EraserIcon } from 'assets/svg/eraser.svg';
 import { ReactComponent as LineIcon } from 'assets/svg/line.svg';
 import { ReactComponent as MoveIcon } from 'assets/svg/move.svg';
@@ -19,6 +19,7 @@ import useBoardEraserTool from './hooks/useBoardEraserTool';
 import useBoardLineTool from './hooks/useBoardLineTool';
 import useBoardMove from './hooks/useBoardMove';
 import useBoardRectTool from './hooks/useBoardRectTool';
+import useBoardSelect from './hooks/useBoardSelect';
 import useBoardStatus from './hooks/useBoardStatus';
 import useBoardZoom from './hooks/useBoardZoom';
 
@@ -67,6 +68,8 @@ const MapCreateEditor = (): JSX.Element => {
   const { pressedKey } = useBindKeyPress();
   const isPressSpacebar = pressedKey === KEY.SPACE;
   const isBoardDraggable = isPressSpacebar || mode === Mode.Move;
+  const isMapElementClickable = mode === Mode.Select && !isBoardDraggable;
+  const isMapElementEventAvailable = [Mode.Select, Mode.Eraser].includes(mode) && !isBoardDraggable;
 
   const [boardStatus, setBoardStatus] = useBoardStatus({
     width: Number(width),
@@ -74,6 +77,13 @@ const MapCreateEditor = (): JSX.Element => {
   });
   const { stickyCoordinate, onMouseMove } = useBoardCoordinate(boardStatus);
   const { onWheel } = useBoardZoom([boardStatus, setBoardStatus]);
+  const {
+    gripPoints,
+    selectedMapElementId,
+    selectLineElement,
+    selectRectElement,
+    deselectMapElement,
+  } = useBoardSelect();
   const { isDragging, onDragStart, onDrag, onDragEnd, onMouseOut } = useBoardMove(
     [boardStatus, setBoardStatus],
     isBoardDraggable
@@ -99,6 +109,7 @@ const MapCreateEditor = (): JSX.Element => {
   const toggleColorPicker = () => setColorPickerOpen((prevState) => !prevState);
 
   const selectMode = (mode: Mode) => {
+    setDrawingStatus({});
     setMode(mode);
   };
 
@@ -117,6 +128,47 @@ const MapCreateEditor = (): JSX.Element => {
     else if (mode === Mode.Rect) drawRectEnd();
     else if (mode === Mode.Eraser) eraseEnd();
   };
+
+  const handleClickBoard = () => {
+    if (mode !== Mode.Select) return;
+
+    deselectMapElement();
+  };
+
+  const handleClickMapElement = (event: React.MouseEvent<SVGPolylineElement | SVGRectElement>) => {
+    if (mode !== Mode.Select) return;
+
+    const target = event.target as SVGElement;
+    const [mapElementType, mapElementId] = target.id.split('-');
+
+    if (mapElementType === 'polyline') {
+      selectLineElement(event.target as SVGPolylineElement, Number(mapElementId));
+
+      return;
+    }
+
+    if (mapElementType === 'rect') {
+      selectRectElement(event.target as SVGRectElement, Number(mapElementId));
+    }
+  };
+
+  const deleteMapElement = useCallback(() => {
+    if (!selectedMapElementId) return;
+
+    setMapElements((prevMapElements) =>
+      prevMapElements.filter(({ id }) => id !== selectedMapElementId)
+    );
+
+    deselectMapElement();
+  }, [deselectMapElement, selectedMapElementId]);
+
+  useEffect(() => {
+    const isPressedDeleteKey = pressedKey === KEY.DELETE || pressedKey === KEY.BACK_SPACE;
+
+    if (isPressedDeleteKey && selectedMapElementId) {
+      deleteMapElement();
+    }
+  }, [deleteMapElement, pressedKey, selectedMapElementId]);
 
   return (
     <Styled.Editor>
@@ -143,6 +195,7 @@ const MapCreateEditor = (): JSX.Element => {
           statusState={[boardStatus, setBoardStatus]}
           isDraggable={isBoardDraggable}
           isDragging={isDragging}
+          onClick={handleClickBoard}
           onMouseMove={onMouseMove}
           onMouseDown={handleMouseDown}
           onMouseUp={handleMouseUp}
@@ -193,13 +246,15 @@ const MapCreateEditor = (): JSX.Element => {
               return (
                 <polyline
                   key={`polyline-${element.id}`}
+                  id={`polyline-${element.id}`}
                   points={element.points.join(' ')}
                   stroke={element.stroke}
                   strokeWidth={EDITOR.STROKE_WIDTH}
                   strokeLinecap="round"
-                  cursor={mode === Mode.Select ? 'pointer' : 'default'}
-                  pointerEvents={[Mode.Select, Mode.Eraser].includes(mode) ? 'auto' : 'none'}
+                  cursor={isMapElementClickable ? 'pointer' : 'default'}
+                  pointerEvents={isMapElementEventAvailable ? 'auto' : 'none'}
                   opacity={erasingMapElementIds.includes(element.id) ? '0.3' : '1'}
+                  onClickCapture={handleClickMapElement}
                   onMouseOverCapture={() => onSelectErasingElement(element.id)}
                 />
               );
@@ -209,6 +264,7 @@ const MapCreateEditor = (): JSX.Element => {
               return (
                 <rect
                   key={`rect-${element.id}`}
+                  id={`rect-${element.id}`}
                   x={element?.x}
                   y={element?.y}
                   width={element?.width}
@@ -217,9 +273,10 @@ const MapCreateEditor = (): JSX.Element => {
                   fill="none"
                   strokeWidth={EDITOR.STROKE_WIDTH}
                   strokeLinecap="round"
-                  cursor={mode === Mode.Select ? 'pointer' : 'default'}
-                  pointerEvents={[Mode.Select, Mode.Eraser].includes(mode) ? 'auto' : 'none'}
+                  cursor={isMapElementClickable ? 'pointer' : 'default'}
+                  pointerEvents={isMapElementEventAvailable ? 'auto' : 'none'}
                   opacity={erasingMapElementIds.includes(element.id) ? '0.3' : '1'}
+                  onClickCapture={handleClickMapElement}
                   onMouseOverCapture={() => onSelectErasingElement(element.id)}
                 />
               );
@@ -227,6 +284,11 @@ const MapCreateEditor = (): JSX.Element => {
 
             return null;
           })}
+
+          {mode === Mode.Select &&
+            gripPoints.map(({ x, y }, index) => (
+              <Styled.GripPoint key={index} cx={x} cy={y} r={4} />
+            ))}
         </Board>
       </Styled.Board>
       <Styled.Toolbar>

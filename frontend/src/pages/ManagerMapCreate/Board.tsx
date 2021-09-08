@@ -8,6 +8,7 @@ interface Props {
   statusState: [EditorBoard, React.Dispatch<React.SetStateAction<EditorBoard>>];
   isDraggable?: boolean;
   isDragging?: boolean;
+  onClick?: (event: React.MouseEvent<SVGElement>) => void;
   onMouseMove?: (event: React.MouseEvent<SVGElement>) => void;
   onMouseDown?: (event: React.MouseEvent<SVGElement>) => void;
   onMouseUp?: (event: React.MouseEvent<SVGElement>) => void;
@@ -22,6 +23,7 @@ const Board = ({
   statusState,
   isDraggable = false,
   isDragging = false,
+  onClick,
   onMouseMove,
   onMouseDown,
   onMouseUp,
@@ -77,6 +79,7 @@ const Board = ({
         <g
           id="board"
           transform={`matrix(${status.scale}, 0, 0, ${status.scale}, ${status.x}, ${status.y})`}
+          onClickCapture={onClick}
         >
           <rect width={`${status.width}px`} height={`${status.height}px`} fill="white" />
           <GridPattern width={status.width} height={status.height} />
