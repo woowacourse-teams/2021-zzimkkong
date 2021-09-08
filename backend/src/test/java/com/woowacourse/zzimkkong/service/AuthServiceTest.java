@@ -12,6 +12,9 @@ import com.woowacourse.zzimkkong.infrastructure.oauth.OAuthHandler;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.EnumSource;
+import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.mock.mockito.MockBean;
 
@@ -88,10 +91,10 @@ class AuthServiceTest extends ServiceTest {
                 .isInstanceOf(PasswordMismatchException.class);
     }
 
-    //todo: ParameterizedTest 작성
-    @Test
+    @ParameterizedTest
+    @EnumSource(OAuthProvider.class)
     @DisplayName("Oauth 인증 코드를 통해 토큰을 발급한다.")
-    void loginByOauthGithub() {
+    void loginByOauthGithub(OAuthProvider oAuthProvider) {
         // given
         String mockCode = "code from OauthProvider";
 
@@ -104,7 +107,7 @@ class AuthServiceTest extends ServiceTest {
                 .willReturn(Optional.of(pobi));
 
         // when
-        TokenResponse tokenResponse = authService.loginByOauth(OAuthProvider.GITHUB, mockCode);
+        TokenResponse tokenResponse = authService.loginByOauth(oAuthProvider, mockCode);
 
         // then
         String accessToken = tokenResponse.getAccessToken();

@@ -2,16 +2,18 @@ package com.woowacourse.zzimkkong.service;
 
 import com.woowacourse.zzimkkong.domain.Member;
 import com.woowacourse.zzimkkong.domain.OAuthProvider;
-import com.woowacourse.zzimkkong.domain.oauth.GoogleUserInfo;
+import com.woowacourse.zzimkkong.domain.oauth.OAuthUserInfo;
 import com.woowacourse.zzimkkong.dto.member.MemberSaveRequest;
 import com.woowacourse.zzimkkong.dto.member.MemberSaveResponse;
 import com.woowacourse.zzimkkong.dto.member.OAuthMemberSaveRequest;
 import com.woowacourse.zzimkkong.dto.member.OAuthReadyResponse;
 import com.woowacourse.zzimkkong.exception.member.DuplicateEmailException;
 import com.woowacourse.zzimkkong.infrastructure.oauth.GoogleRequester;
+import com.woowacourse.zzimkkong.infrastructure.oauth.OAuthHandler;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.EnumSource;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -22,10 +24,16 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.mock;
 
 class MemberServiceTest extends ServiceTest {
     @Autowired
     private MemberService memberService;
+
+
+    @MockBean
+    private OAuthHandler oauthHandler;
+
 
     @MockBean
     private GoogleRequester googleRequester;
@@ -72,54 +80,43 @@ class MemberServiceTest extends ServiceTest {
                 .isInstanceOf(DuplicateEmailException.class);
     }
 
-    @Test
-    @DisplayName("Google OAuth를 통해 얻을 수 없는 정보를 응답하며 회원가입 과정을 진행한다.")
-    void getUserInfoFromOAuth() {
+    @ParameterizedTest
+    @EnumSource(OAuthProvider.class)
+    @DisplayName("OAuth를 통해 얻을 수 없는 정보를 응답하며 회원가입 과정을 진행한다.")
+    void getUserInfoFromOAuth(OAuthProvider oAuthProvider) {
         //given
-        given(googleRequester.supports(any(OAuthProvider.class)))
-                .willReturn(true);
-        given(googleRequester.getUserInfoByCode(anyString()))
-                .willReturn(new GoogleUserInfo(
-                        "id",
-                        EMAIL,
-                        "verified_email",
-                        "name",
-                        "given_name",
-                        "family_name",
-                        "picture",
-                        "locale"));
+        OAuthUserInfo mockOAuthUserInfo = mock(OAuthUserInfo.class);
+        given(oauthHandler.getUserInfoFromCode(any(OAuthProvider.class), anyString()))
+                .willReturn(mockOAuthUserInfo);
+        given(mockOAuthUserInfo.getEmail())
+                .willReturn(EMAIL);
+        given(members.existsByEmail(EMAIL))
+                .willReturn(false);
 
         //when
-        OAuthReadyResponse actual = memberService.getUserInfoFromOAuth(OAuthProvider.GOOGLE, "code-example");
-        OAuthReadyResponse expected = OAuthReadyResponse.of(EMAIL, OAuthProvider.GOOGLE);
+        OAuthReadyResponse actual = memberService.getUserInfoFromOAuth(oAuthProvider, "code-example");
+        OAuthReadyResponse expected = OAuthReadyResponse.of(EMAIL, oAuthProvider);
 
         //then
         assertThat(actual).usingRecursiveComparison()
                 .isEqualTo(expected);
     }
 
-    @Test
+    @ParameterizedTest
+    @EnumSource(OAuthProvider.class)
     @DisplayName("이미 존재하는 이메일로 oauth로 정보를 가져오면 에러가 발생한다.")
-    void getUserInfoFromOAuthException() {
+    void getUserInfoFromOAuthException(OAuthProvider oAuthProvider) {
         //given
-        given(googleRequester.supports(any(OAuthProvider.class)))
-                .willReturn(true);
-        given(googleRequester.getUserInfoByCode(anyString()))
-                .willReturn(new GoogleUserInfo(
-                        "id",
-                        EMAIL,
-                        "verified_email",
-                        "name",
-                        "given_name",
-                        "family_name",
-                        "picture",
-                        "locale"));
-
+        OAuthUserInfo mockOAuthUserInfo = mock(OAuthUserInfo.class);
+        given(oauthHandler.getUserInfoFromCode(any(OAuthProvider.class), anyString()))
+                .willReturn(mockOAuthUserInfo);
+        given(mockOAuthUserInfo.getEmail())
+                .willReturn(EMAIL);
         given(members.existsByEmail(EMAIL))
                 .willReturn(true);
 
         //when, then
-        assertThatThrownBy(() -> memberService.getUserInfoFromOAuth(OAuthProvider.GOOGLE, "code-example"))
+        assertThatThrownBy(() -> memberService.getUserInfoFromOAuth(oAuthProvider, "code-example"))
                 .isInstanceOf(DuplicateEmailException.class);
     }
 
