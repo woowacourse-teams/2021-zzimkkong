@@ -12,7 +12,7 @@ const useBoardEraserTool = ({
   isErasing: boolean;
   eraseStart: () => void;
   eraseEnd: () => void;
-  onSelectErasingElement: (id: MapElement['id']) => void;
+  selectErasingElement: (id: MapElement['id']) => void;
 } => {
   const [erasingMapElementIds, setErasingMapElementIds] = useState<MapElement['id'][]>([]);
   const [isErasing, setErasing] = useState(false);
@@ -35,7 +35,7 @@ const useBoardEraserTool = ({
     setErasingMapElementIds([]);
   };
 
-  const onSelectErasingElement = (id: MapElement['id']) => {
+  const selectErasingElement = (id: MapElement['id']) => {
     if (!isErasing) return;
 
     setErasingMapElementIds((prevIds) => [...prevIds, id]);
@@ -46,7 +46,7 @@ const useBoardEraserTool = ({
     isErasing,
     eraseStart,
     eraseEnd,
-    onSelectErasingElement,
+    selectErasingElement,
   };
 };
 

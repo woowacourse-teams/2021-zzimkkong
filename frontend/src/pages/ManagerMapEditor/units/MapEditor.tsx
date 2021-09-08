@@ -106,11 +106,9 @@ const MapCreateEditor = ({
     drawingStatus: [drawingStatus, setDrawingStatus],
     mapElements: [mapElements, setMapElements],
   });
-  const { erasingMapElementIds, eraseStart, eraseEnd, onSelectErasingElement } = useBoardEraserTool(
-    {
-      mapElements: [mapElements, setMapElements],
-    }
-  );
+  const { erasingMapElementIds, eraseStart, eraseEnd, selectErasingElement } = useBoardEraserTool({
+    mapElements: [mapElements, setMapElements],
+  });
 
   const toggleColorPicker = () => setColorPickerOpen((prevState) => !prevState);
 
@@ -288,7 +286,7 @@ const MapCreateEditor = ({
                   pointerEvents={isMapElementEventAvailable ? 'auto' : 'none'}
                   opacity={erasingMapElementIds.includes(element.id) ? '0.3' : '1'}
                   onClickCapture={handleClickMapElement}
-                  onMouseOverCapture={() => onSelectErasingElement(element.id)}
+                  onMouseOverCapture={() => selectErasingElement(element.id)}
                 />
               );
             }
@@ -310,7 +308,7 @@ const MapCreateEditor = ({
                   pointerEvents={isMapElementEventAvailable ? 'auto' : 'none'}
                   opacity={erasingMapElementIds.includes(element.id) ? '0.3' : '1'}
                   onClickCapture={handleClickMapElement}
-                  onMouseOverCapture={() => onSelectErasingElement(element.id)}
+                  onMouseOverCapture={() => selectErasingElement(element.id)}
                 />
               );
             }
