@@ -1,5 +1,5 @@
 import { AxiosError } from 'axios';
-import { FormEvent, useEffect } from 'react';
+import React, { useEffect } from 'react';
 import { useMutation } from 'react-query';
 import { useHistory, useLocation, useParams } from 'react-router-dom';
 import { postGuestReservation, putGuestReservation, ReservationParams } from 'api/guestReservation';
@@ -33,7 +33,7 @@ interface EditReservationParams extends ReservationParams {
 }
 
 export interface HandleSubmitParams extends ReservationParams {
-  event: FormEvent<HTMLFormElement>;
+  event: React.FormEvent<HTMLFormElement>;
   reservationId?: number;
 }
 
