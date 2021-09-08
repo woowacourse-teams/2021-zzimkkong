@@ -14,6 +14,7 @@ public class ZzimkkongApplication {
     }
 
     public static void main(String[] args) {
+        // jenkins invoker
         SpringApplication.run(ZzimkkongApplication.class, args);
     }
 }
