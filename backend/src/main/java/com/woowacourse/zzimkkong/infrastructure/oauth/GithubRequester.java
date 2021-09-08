@@ -4,12 +4,18 @@ import com.woowacourse.zzimkkong.domain.OAuthProvider;
 import com.woowacourse.zzimkkong.domain.oauth.GithubUserInfo;
 import com.woowacourse.zzimkkong.domain.oauth.OAuthUserInfo;
 import com.woowacourse.zzimkkong.exception.infrastructure.oauth.UnableToGetTokenResponseFromGithubException;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.PropertySource;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
+import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.WebClient;
 
 import java.util.Map;
 
+@Component
+@PropertySource("classpath:config/oauth.properties")
 public class GithubRequester implements OAuthAPIRequester {
 
     private final String clientId;
@@ -17,14 +23,15 @@ public class GithubRequester implements OAuthAPIRequester {
     private final WebClient githubOAuthLoginClient;
     private final WebClient githubOpenApiClient;
 
-    public GithubRequester(final String clientId,
-                           final String secretId,
-                           final WebClient githubOAuthLoginClient,
-                           final WebClient githubOpenApiClient) {
+    public GithubRequester(
+            @Value("${github.client-id}") final String clientId,
+            @Value("${github.secret-id}") final String secretId,
+            @Value("${github.url.oauth-login}") final String githubOAuthUrl,
+            @Value("${github.url.open-api}") final String githubOpenApiUrl) {
         this.clientId = clientId;
         this.secretId = secretId;
-        this.githubOAuthLoginClient = githubOAuthLoginClient;
-        this.githubOpenApiClient = githubOpenApiClient;
+        this.githubOAuthLoginClient = githubOAuthLoginClient(githubOAuthUrl);
+        this.githubOpenApiClient = githubOpenApiClient(githubOpenApiUrl);
     }
 
     @Override
@@ -70,5 +77,17 @@ public class GithubRequester implements OAuthAPIRequester {
         return GithubUserInfo.from(responseBody);
     }
 
+    private WebClient githubOAuthLoginClient(String githubOAuthUrl) {
+        return WebClient.builder()
+                .baseUrl(githubOAuthUrl)
+                .defaultHeader(HttpHeaders.ACCEPT, MediaType.APPLICATION_JSON_VALUE)
+                .build();
+    }
 
+    private WebClient githubOpenApiClient(String githubOpenApiUrl) {
+        return WebClient.builder()
+                .baseUrl(githubOpenApiUrl)
+                .defaultHeader(HttpHeaders.ACCEPT, MediaType.APPLICATION_JSON_VALUE)
+                .build();
+    }
 }

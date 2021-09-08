@@ -1,23 +1,26 @@
 package com.woowacourse.zzimkkong.controller;
 
 import com.woowacourse.zzimkkong.domain.OAuthProvider;
+import com.woowacourse.zzimkkong.domain.oauth.GithubUserInfo;
 import com.woowacourse.zzimkkong.domain.oauth.GoogleUserInfo;
 import com.woowacourse.zzimkkong.dto.member.LoginRequest;
+import com.woowacourse.zzimkkong.dto.member.OAuthMemberSaveRequest;
 import com.woowacourse.zzimkkong.dto.member.TokenResponse;
 import com.woowacourse.zzimkkong.infrastructure.AuthorizationExtractor;
-import com.woowacourse.zzimkkong.infrastructure.oauth.GoogleRequester;
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 
-import static com.woowacourse.zzimkkong.Constants.EMAIL;
+import java.util.Map;
+
+import static com.woowacourse.zzimkkong.Constants.*;
 import static com.woowacourse.zzimkkong.DocumentUtils.*;
 import static com.woowacourse.zzimkkong.controller.MemberControllerTest.saveMember;
+import static com.woowacourse.zzimkkong.controller.MemberControllerTest.saveMemberByOAuth;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
@@ -25,9 +28,6 @@ import static org.mockito.BDDMockito.given;
 import static org.springframework.restdocs.restassured3.RestAssuredRestDocumentation.document;
 
 class AuthControllerTest extends AcceptanceTest {
-    @MockBean
-    private GoogleRequester googleRequester;
-
     @Test
     @DisplayName("유효한 정보의 로그인 요청이 오면 토큰을 발급한다.")
     void login() {
@@ -45,14 +45,38 @@ class AuthControllerTest extends AcceptanceTest {
 
     @Test
     @DisplayName("Google OAuth 로그인 요청이 오면 토큰을 발급한다.")
+    void loginByOAuthParameterized() {
+        // given
+        OAuthProvider oAuthProvider = OAuthProvider.GITHUB;
+        saveMemberByOAuth(new OAuthMemberSaveRequest(NEW_EMAIL, ORGANIZATION, oAuthProvider.name()));
+        String code = "4%2F0AX4XfWjEXMLEdAqN4Bxqufcm8MIP1btBZY_nTeS_1M3b46MqSrq-h2A3Z2ydSOlZI1SpeA";
+
+        given(githubRequester.supports(OAuthProvider.GITHUB))
+                .willReturn(true);
+        given(githubRequester.getUserInfoByCode(code))
+                .willReturn(GithubUserInfo.from(Map.of("email", NEW_EMAIL)));
+
+        // when
+        ExtractableResponse<Response> response = loginByOAuth(oAuthProvider, code);
+        TokenResponse responseBody = response.body().as(TokenResponse.class);
+
+        // then
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
+        assertThat(responseBody.getAccessToken()).isInstanceOf(String.class);
+
+    }
+
+    @Test
+    @DisplayName("Google OAuth 로그인 요청이 오면 토큰을 발급한다.")
     void loginByOauth() {
         // given
+        saveMemberByOAuth(new OAuthMemberSaveRequest(NEW_EMAIL, ORGANIZATION, OAuthProvider.GOOGLE.name()));
         given(googleRequester.supports(any(OAuthProvider.class)))
                 .willReturn(true);
         given(googleRequester.getUserInfoByCode(anyString()))
                 .willReturn(new GoogleUserInfo(
                         "id",
-                        EMAIL,
+                        NEW_EMAIL,
                         "verified_email",
                         "name",
                         "given_name",

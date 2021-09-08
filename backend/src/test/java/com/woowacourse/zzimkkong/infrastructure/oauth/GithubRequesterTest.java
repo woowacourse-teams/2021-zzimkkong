@@ -8,7 +8,6 @@ import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.ActiveProfiles;
-import org.springframework.web.reactive.function.client.WebClient;
 
 import java.io.IOException;
 
@@ -71,8 +70,8 @@ class GithubRequesterTest {
         GithubRequester githubRequester = new GithubRequester(
                 "clientId",
                 "secretId",
-                githubOAuthLoginClient(mockGithubServer),
-                githubOpenApiClient(mockGithubServer)
+                String.format("http://%s:%s", mockGithubServer.getHostName(), mockGithubServer.getPort()),
+                String.format("http://%s:%s", mockGithubServer.getHostName(), mockGithubServer.getPort())
         );
 
         // when
@@ -84,20 +83,6 @@ class GithubRequesterTest {
 
         // terminate mock server
         mockGithubServer.shutdown();
-    }
-
-    private WebClient githubOAuthLoginClient(MockWebServer mockGithubServer) {
-        return WebClient.builder()
-                .baseUrl(String.format("http://%s:%s", mockGithubServer.getHostName(), mockGithubServer.getPort()))
-                .defaultHeader(HttpHeaders.ACCEPT, MediaType.APPLICATION_JSON_VALUE)
-                .build();
-    }
-
-    private WebClient githubOpenApiClient(MockWebServer mockGithubServer) {
-        return WebClient.builder()
-                .baseUrl(String.format("http://%s:%s", mockGithubServer.getHostName(), mockGithubServer.getPort()))
-                .defaultHeader(HttpHeaders.ACCEPT, MediaType.APPLICATION_JSON_VALUE)
-                .build();
     }
 
     private void setUpResponse(MockWebServer mockGithubServer) {

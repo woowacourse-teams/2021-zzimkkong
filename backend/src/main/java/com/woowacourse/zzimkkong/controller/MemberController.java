@@ -38,7 +38,6 @@ public class MemberController {
                 .build();
     }
 
-    // todo 이름 변경
     @GetMapping("/{oauthProvider}")
     public ResponseEntity<OAuthReadyResponse> getReadyToJoinByOAuth(@PathVariable OAuthProvider oauthProvider, @RequestParam String code) {
         OAuthReadyResponse oAuthReadyResponse = memberService.getUserInfoFromOAuth(oauthProvider, code);

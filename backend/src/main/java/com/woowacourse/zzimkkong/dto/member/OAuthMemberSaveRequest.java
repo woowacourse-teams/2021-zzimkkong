@@ -22,7 +22,7 @@ public class OAuthMemberSaveRequest {
     private String organization;
 
     @NotNull(message = EMPTY_MESSAGE)
-    private String oauthProvider;
+    private String oauthProvider; // todo 카멜 케이스 상의, Body로 받을 건지???
 
     public OAuthMemberSaveRequest(final String email,
                                   final String organization,

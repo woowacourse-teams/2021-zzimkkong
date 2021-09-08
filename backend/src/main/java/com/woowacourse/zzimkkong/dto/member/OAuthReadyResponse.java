@@ -18,4 +18,8 @@ public class OAuthReadyResponse {
     public static OAuthReadyResponse of(final String email, final OAuthProvider oauthProvider) {
         return new OAuthReadyResponse(email, oauthProvider);
     }
+
+    public OAuthProvider getOAuthProvider() {
+        return oauthProvider;
+    }
 }

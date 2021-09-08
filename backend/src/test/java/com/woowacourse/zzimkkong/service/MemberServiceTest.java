@@ -8,7 +8,6 @@ import com.woowacourse.zzimkkong.dto.member.MemberSaveResponse;
 import com.woowacourse.zzimkkong.dto.member.OAuthMemberSaveRequest;
 import com.woowacourse.zzimkkong.dto.member.OAuthReadyResponse;
 import com.woowacourse.zzimkkong.exception.member.DuplicateEmailException;
-import com.woowacourse.zzimkkong.infrastructure.oauth.GoogleRequester;
 import com.woowacourse.zzimkkong.infrastructure.oauth.OAuthHandler;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -30,13 +29,8 @@ class MemberServiceTest extends ServiceTest {
     @Autowired
     private MemberService memberService;
 
-
     @MockBean
     private OAuthHandler oauthHandler;
-
-
-    @MockBean
-    private GoogleRequester googleRequester;
 
     @Test
     @DisplayName("회원이 올바르게 저장을 요청하면 저장한다.")

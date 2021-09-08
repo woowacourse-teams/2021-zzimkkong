@@ -4,11 +4,13 @@ import com.woowacourse.zzimkkong.domain.Member;
 import com.woowacourse.zzimkkong.domain.OAuthProvider;
 import com.woowacourse.zzimkkong.domain.Preset;
 import com.woowacourse.zzimkkong.domain.Setting;
+import com.woowacourse.zzimkkong.domain.oauth.GithubUserInfo;
 import com.woowacourse.zzimkkong.domain.oauth.GoogleUserInfo;
 import com.woowacourse.zzimkkong.dto.member.*;
 import com.woowacourse.zzimkkong.dto.space.SettingsRequest;
 import com.woowacourse.zzimkkong.infrastructure.AuthorizationExtractor;
 import com.woowacourse.zzimkkong.infrastructure.oauth.GoogleRequester;
+import com.woowacourse.zzimkkong.infrastructure.oauth.GithubRequester;
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
@@ -20,6 +22,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 
 import java.util.List;
+import java.util.Map;
 
 import static com.woowacourse.zzimkkong.Constants.*;
 import static com.woowacourse.zzimkkong.DocumentUtils.*;
@@ -30,8 +33,6 @@ import static org.mockito.BDDMockito.given;
 import static org.springframework.restdocs.restassured3.RestAssuredRestDocumentation.document;
 
 class MemberControllerTest extends AcceptanceTest {
-    @MockBean
-    private GoogleRequester googleRequester;
 
     private Member pobi;
     private Setting setting;
@@ -120,17 +121,25 @@ class MemberControllerTest extends AcceptanceTest {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
     }
 
-    //todo 김김
+    // todo Parameterized 김샐
     @Test
     @DisplayName("OAuth를 통해 얻을 수 없는 정보를 요구하며 회원가입을 진행한다.")
     void getReadyToJoinByOAuth() {
-        // todo 테스트 작성
-    }
+        // given
+        OAuthProvider oAuthProvider = OAuthProvider.GITHUB;
+        String code = "4%2F0AX4XfWjEXMLEdAqN4Bxqufcm8MIP1btBZY_nTeS_1M3b46MqSrq-h2A3Z2ydSOlZI1SpeA";
+        given(githubRequester.supports(OAuthProvider.GITHUB))
+                .willReturn(true);
+        given(githubRequester.getUserInfoByCode(code))
+                .willReturn(GithubUserInfo.from(Map.of("email", NEW_EMAIL)));
 
-    @Test
-    @DisplayName("OAuth를 통해 회원가입 할 수 있다.")
-    void joinByOAuth() {
-        // Todo 테스트 작성
+        // when
+        ExtractableResponse<Response> response = getReadyToJoin(oAuthProvider, code);
+        OAuthReadyResponse oAuthReadyResponse = response.as(OAuthReadyResponse.class);
+
+        // then
+        assertThat(oAuthReadyResponse.getOAuthProvider()).isEqualTo(oAuthProvider);
+        assertThat(oAuthReadyResponse.getEmail()).isEqualTo(NEW_EMAIL);
     }
 
     @Test

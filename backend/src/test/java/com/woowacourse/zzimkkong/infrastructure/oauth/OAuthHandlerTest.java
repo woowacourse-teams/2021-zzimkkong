@@ -1,14 +1,20 @@
 package com.woowacourse.zzimkkong.infrastructure.oauth;
 
 import com.woowacourse.zzimkkong.domain.OAuthProvider;
+import com.woowacourse.zzimkkong.domain.oauth.GithubUserInfo;
 import com.woowacourse.zzimkkong.domain.oauth.GoogleUserInfo;
 import com.woowacourse.zzimkkong.domain.oauth.OAuthUserInfo;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.EnumSource;
+import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.ActiveProfiles;
+
+import java.util.Map;
 
 import static com.woowacourse.zzimkkong.infrastructure.oauth.GoogleRequesterTest.SALLY_EMAIL;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -25,14 +31,24 @@ class OAuthHandlerTest {
     @MockBean
     private GoogleRequester googleRequester;
 
-    @Test
-    @DisplayName("OAuth 제공사에 따라 적당한 OAuthRequester를 찾아 code로부터 유저 정보를 가져온다.")
-    void getUserInfoFromCodeWithGithub() {
-        // todo OAuthRequest를 mocking한다.
-        OAuthUserInfo code = oauthHandler.getUserInfoFromCode(OAuthProvider.GITHUB, "code");
+    @MockBean
+    private GithubRequester githubRequester;
 
-        String email = code.getEmail();
-        // todo assert 구문
+    @ParameterizedTest
+    @DisplayName("OAuth 제공사에 따라 적당한 OAuthRequester를 찾아 code로부터 유저 정보를 가져온다.")
+    @EnumSource(OAuthProvider.class)
+    void getUserInfoFromCodeWithGithub(OAuthProvider oAuthProvider) {
+        given(githubRequester.supports(OAuthProvider.GITHUB))
+                .willReturn(true);
+        mockingGithubGetUserInfo(SALLY_EMAIL);
+        given(googleRequester.supports(OAuthProvider.GOOGLE))
+                .willReturn(true);
+        mockingGoogleGetUserInfo(SALLY_EMAIL);
+
+        OAuthUserInfo oAuthUserInfo = oauthHandler.getUserInfoFromCode(oAuthProvider, "code");
+        String email = oAuthUserInfo.getEmail();
+
+        assertThat(email).isEqualTo(SALLY_EMAIL);
     }
 
     @Test
@@ -41,21 +57,30 @@ class OAuthHandlerTest {
         //given
         given(googleRequester.supports(any(OAuthProvider.class)))
                 .willReturn(true);
-        given(googleRequester.getUserInfoByCode(anyString()))
-                .willReturn(new GoogleUserInfo(
-                        "id",
-                        SALLY_EMAIL,
-                        "verified_email",
-                        "name",
-                        "given_name",
-                        "family_name",
-                        "picture",
-                        "locale"));
+        mockingGoogleGetUserInfo(SALLY_EMAIL);
 
         //when
         OAuthUserInfo userInfoFromCode = oauthHandler.getUserInfoFromCode(OAuthProvider.GOOGLE, "authorization_code_at_here");
 
         //then
         assertThat(userInfoFromCode.getEmail()).isEqualTo(SALLY_EMAIL);
+    }
+
+    private void mockingGithubGetUserInfo(String email) {
+        given(githubRequester.getUserInfoByCode(anyString()))
+                .willReturn(GithubUserInfo.from(Map.of("email", email)));
+    }
+
+    private void mockingGoogleGetUserInfo(String email) {
+        given(googleRequester.getUserInfoByCode(anyString()))
+                .willReturn(new GoogleUserInfo(
+                        "id",
+                        email,
+                        "verified_email",
+                        "name",
+                        "given_name",
+                        "family_name",
+                        "picture",
+                        "locale"));
     }
 }

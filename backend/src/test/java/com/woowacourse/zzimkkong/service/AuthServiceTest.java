@@ -94,9 +94,9 @@ class AuthServiceTest extends ServiceTest {
     @ParameterizedTest
     @EnumSource(OAuthProvider.class)
     @DisplayName("Oauth 인증 코드를 통해 토큰을 발급한다.")
-    void loginByOauthGithub(OAuthProvider oAuthProvider) {
+    void loginByOauth(OAuthProvider oAuthProvider) {
         // given
-        String mockCode = "code from OauthProvider";
+        String mockCode = "Mock Code from OauthProvider";
 
         OAuthUserInfo mockOAuthUserInfo = mock(OAuthUserInfo.class);
         given(oauthHandler.getUserInfoFromCode(any(OAuthProvider.class), anyString()))
@@ -104,7 +104,7 @@ class AuthServiceTest extends ServiceTest {
         given(mockOAuthUserInfo.getEmail())
                 .willReturn(EMAIL);
         given(members.findByEmail(EMAIL))
-                .willReturn(Optional.of(pobi));
+                .willReturn(Optional.of(new Member(EMAIL, ORGANIZATION, oAuthProvider)));
 
         // when
         TokenResponse tokenResponse = authService.loginByOauth(oAuthProvider, mockCode);
