@@ -1,5 +1,6 @@
 package com.woowacourse.zzimkkong.infrastructure.oauth.dto;
 
+import com.woowacourse.zzimkkong.domain.oauth.OAuthUserInfo;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
