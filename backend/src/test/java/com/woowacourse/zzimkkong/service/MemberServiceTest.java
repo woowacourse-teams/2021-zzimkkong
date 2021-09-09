@@ -85,7 +85,7 @@ class MemberServiceTest extends ServiceTest {
     void deleteMember() {
         // given
         Member member = new Member(1L, EMAIL, PW, ORGANIZATION);
-        given(members.existsReservationsByMemberId(anyLong()))
+        given(members.existsReservationsByMember(any(Member.class)))
                 .willReturn(false);
 
         // when, then
@@ -97,7 +97,7 @@ class MemberServiceTest extends ServiceTest {
     void deleteMemberFailWhenAnyReservationsExists() {
         // given
         Member member = new Member(1L, EMAIL, PW, ORGANIZATION);
-        given(members.existsReservationsByMemberId(anyLong()))
+        given(members.existsReservationsByMember(any(Member.class)))
                 .willReturn(true);
 
         // when, then

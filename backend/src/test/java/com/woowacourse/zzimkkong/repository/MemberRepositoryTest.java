@@ -115,7 +115,7 @@ class MemberRepositoryTest extends RepositoryTest {
         }
 
         // when
-        Boolean hasAnyReservations = members.existsReservationsByMemberId(savedMember.getId());
+        Boolean hasAnyReservations = members.existsReservationsByMember(savedMember);
 
         // then
         assertThat(hasAnyReservations).isEqualTo(isReservationExists);

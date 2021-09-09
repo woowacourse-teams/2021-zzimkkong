@@ -48,7 +48,7 @@ public class MemberService {
     }
 
     public void deleteMember(Member manager) {
-        boolean hasAnyReservations = members.existsReservationsByMemberId(manager.getId());
+        boolean hasAnyReservations = members.existsReservationsByMember(manager);
         if (hasAnyReservations) {
             throw new ReservationExistsOnMemberException();
         }
