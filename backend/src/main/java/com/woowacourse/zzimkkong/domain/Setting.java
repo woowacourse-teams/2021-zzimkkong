@@ -68,7 +68,7 @@ public class Setting {
             throw new InvalidMinimumMaximumTimeUnitException();
         }
 
-        if (isTimeUnitInconsistent()) {
+        if (isNotConsistentTimeUnit()) {
             throw new TimeUnitInconsistencyException();
         }
 
@@ -86,7 +86,7 @@ public class Setting {
         return minute % this.reservationTimeUnit != 0;
     }
 
-    private boolean isTimeUnitInconsistent() {
+    private boolean isNotConsistentTimeUnit() {
         return !(isMinimumTimeUnitConsistentWithTimeUnit() && isMaximumTimeUnitConsistentWithTimeUnit());
     }
 
