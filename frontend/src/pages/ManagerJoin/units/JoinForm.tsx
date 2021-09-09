@@ -73,28 +73,31 @@ const JoinForm = ({ onSubmit }: Props): JSX.Element => {
   useEffect(() => {
     if (!password) return;
 
-    !isValidPassword
-      ? setPasswordMessage(MESSAGE.JOIN.INVALID_PASSWORD)
-      : setPasswordMessage(MESSAGE.JOIN.VALID_PASSWORD);
+    setPasswordMessage(
+      isValidPassword ? MESSAGE.JOIN.VALID_PASSWORD : MESSAGE.JOIN.INVALID_PASSWORD
+    );
   }, [password, isValidPassword]);
 
   useEffect(() => {
     if (!password || !passwordConfirm) return;
 
-    password !== passwordConfirm
-      ? setPasswordConfirmMessage(MESSAGE.JOIN.INVALID_PASSWORD_CONFIRM)
-      : setPasswordConfirmMessage(MESSAGE.JOIN.VALID_PASSWORD_CONFIRM);
+    setPasswordConfirmMessage(
+      password === passwordConfirm
+        ? MESSAGE.JOIN.VALID_PASSWORD_CONFIRM
+        : MESSAGE.JOIN.INVALID_PASSWORD_CONFIRM
+    );
   }, [password, passwordConfirm]);
 
   useEffect(() => {
     if (!organization) {
       setOrganizationMessage('');
+
       return;
     }
 
-    !isValidOrganization
-      ? setOrganizationMessage(MESSAGE.JOIN.INVALID_ORGANIZATION)
-      : setOrganizationMessage(MESSAGE.JOIN.VALID_ORGANIZATION);
+    setOrganizationMessage(
+      isValidOrganization ? MESSAGE.JOIN.VALID_ORGANIZATION : MESSAGE.JOIN.INVALID_ORGANIZATION
+    );
   }, [organization, isValidOrganization]);
 
   return (
