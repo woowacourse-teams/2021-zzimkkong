@@ -82,7 +82,7 @@ public class Setting {
         return availableStartTime.getMinute() % reservationTimeUnit != 0 || availableEndTime.getMinute() % reservationTimeUnit != 0;
     }
 
-    public boolean checkTimeByTimeUnit(final int minute) {
+    public boolean isDivisibleByTimeUnit(final int minute) {
         return minute % this.reservationTimeUnit != 0;
     }
 
