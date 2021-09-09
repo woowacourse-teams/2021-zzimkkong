@@ -1,3 +1,4 @@
+import { FormEventHandler } from 'react';
 import Button from 'components/Button/Button';
 import Input from 'components/Input/Input';
 import MANAGER from 'constants/manager';
@@ -13,7 +14,7 @@ interface Form {
 
 interface Props {
   errorMessage: ErrorMessage;
-  onSubmit: (event: React.FormEvent<HTMLFormElement>, { email, password }: LoginParams) => void;
+  onSubmit: ({ email, password }: LoginParams) => void;
 }
 
 const LoginForm = ({ errorMessage, onSubmit }: Props): JSX.Element => {
@@ -22,8 +23,14 @@ const LoginForm = ({ errorMessage, onSubmit }: Props): JSX.Element => {
     password: '',
   });
 
+  const handleSubmit: FormEventHandler<HTMLFormElement> = (event) => {
+    event.preventDefault();
+
+    onSubmit({ email, password });
+  };
+
   return (
-    <Styled.Form onSubmit={(event) => onSubmit(event, { email, password })}>
+    <Styled.Form onSubmit={handleSubmit}>
       <Input
         type="email"
         label="이메일"

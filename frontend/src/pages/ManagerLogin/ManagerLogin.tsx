@@ -57,12 +57,7 @@ const ManagerLogin = (): JSX.Element => {
     },
   });
 
-  const handleSubmit = (
-    event: React.FormEvent<HTMLFormElement>,
-    { email, password }: LoginParams
-  ) => {
-    event.preventDefault();
-
+  const handleSubmit = ({ email, password }: LoginParams) => {
     if (!(email && password)) return;
 
     login.mutate({ email, password });
