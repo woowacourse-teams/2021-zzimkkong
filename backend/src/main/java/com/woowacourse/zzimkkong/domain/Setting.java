@@ -60,7 +60,7 @@ public class Setting {
             throw new ImpossibleAvailableStartEndTimeException();
         }
 
-        if (isAvailableTimeAndTimeUnitMismatch()) {
+        if (isNoneMatchingAvailableTimeAndTimeUnit()) {
             throw new TimeUnitMismatchException();
         }
 
@@ -78,7 +78,7 @@ public class Setting {
         }
     }
 
-    private boolean isAvailableTimeAndTimeUnitMismatch() {
+    private boolean isNoneMatchingAvailableTimeAndTimeUnit() {
         return availableStartTime.getMinute() % reservationTimeUnit != 0 || availableEndTime.getMinute() % reservationTimeUnit != 0;
     }
 
