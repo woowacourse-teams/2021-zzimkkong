@@ -39,7 +39,7 @@ const JoinForm = ({ onSubmit }: Props): JSX.Element => {
   const isValidPassword = REGEXP.PASSWORD.test(password);
   const isValidOrganization = REGEXP.ORGANIZATION.test(organization);
 
-  const isValidEmail = useQuery(['isValidEmail', email], queryValidateEmail, {
+  const checkValidateEmail = useQuery(['checkValidateEmail', email], queryValidateEmail, {
     enabled: false,
     retry: false,
 
@@ -55,7 +55,7 @@ const JoinForm = ({ onSubmit }: Props): JSX.Element => {
   const handleValidateEmail = () => {
     if (!email) return;
 
-    isValidEmail.refetch();
+    checkValidateEmail.refetch();
   };
 
   const handleSubmit: FormEventHandler<HTMLFormElement> = (event) => {
@@ -110,7 +110,7 @@ const JoinForm = ({ onSubmit }: Props): JSX.Element => {
         onChange={onChangeForm}
         onBlur={handleValidateEmail}
         message={emailMessage}
-        status={isValidEmail.isSuccess ? 'success' : 'error'}
+        status={checkValidateEmail.isSuccess ? 'success' : 'error'}
         required
         autoFocus
       />
