@@ -85,4 +85,9 @@ public class MemberController {
         return ResponseEntity.ok().build();
     }
 
+    @DeleteMapping("/me")
+    public ResponseEntity<Void> deleteMember(@Manager final Member manager) {
+        memberService.deleteMember(manager);
+        return ResponseEntity.noContent().build();
+    }
 }

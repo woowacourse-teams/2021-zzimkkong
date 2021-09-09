@@ -5,6 +5,7 @@ import com.woowacourse.zzimkkong.dto.member.MemberSaveRequest;
 import com.woowacourse.zzimkkong.dto.member.MemberSaveResponse;
 import com.woowacourse.zzimkkong.dto.member.MemberUpdateRequest;
 import com.woowacourse.zzimkkong.exception.member.DuplicateEmailException;
+import com.woowacourse.zzimkkong.exception.member.ReservationExistsOnMemberException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,8 +15,7 @@ import java.util.Optional;
 import static com.woowacourse.zzimkkong.Constants.*;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.BDDMockito.given;
 
 class MemberServiceTest extends ServiceTest {
@@ -78,5 +78,30 @@ class MemberServiceTest extends ServiceTest {
         memberService.updateMember(member, memberUpdateRequest);
 
         assertThat(members.findByEmail(EMAIL).orElseThrow().getOrganization()).isEqualTo("woowabros");
+    }
+
+    @Test
+    @DisplayName("회원을 삭제할 수 있다.")
+    void deleteMember() {
+        // given
+        Member member = new Member(EMAIL, PW, ORGANIZATION);
+        given(members.existsReservationsByMemberId(anyLong()))
+                .willReturn(true);
+
+        // when, then
+        memberService.deleteMember(member);
+    }
+
+    @Test
+    @DisplayName("회원이 소유한 공간에 예약이 있다면 탈퇴할 수 없다.")
+    void deleteMemberFailWhenAnyReservationsExists() {
+        // given
+        Member member = new Member(EMAIL, PW, ORGANIZATION);
+        given(members.existsReservationsByMemberId(anyLong()))
+                .willReturn(true);
+
+        // when, then
+        assertThatThrownBy(() -> memberService.deleteMember(member))
+                .isInstanceOf(ReservationExistsOnMemberException.class);
     }
 }
