@@ -44,6 +44,10 @@ export const ListBoxButton = styled.button`
   }
 `;
 
+export const ListBoxLabel = styled.span`
+  color: ${({ theme }) => theme.gray[400]};
+`;
+
 export const OptionChildrenWrapper = styled.div`
   flex: 1;
 `;

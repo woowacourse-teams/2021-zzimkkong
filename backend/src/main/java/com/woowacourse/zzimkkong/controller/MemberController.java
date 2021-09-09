@@ -27,7 +27,6 @@ public class MemberController {
     public MemberController(final MemberService memberService, final PresetService presetService) {
         this.memberService = memberService;
         this.presetService = presetService;
-
     }
 
     @PostMapping

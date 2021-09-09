@@ -1,4 +1,4 @@
-package com.woowacourse.zzimkkong;
+package com.woowacourse.zzimkkong.config;
 
 import com.woowacourse.zzimkkong.infrastructure.AuthenticationPrincipalArgumentResolver;
 import com.woowacourse.zzimkkong.infrastructure.LoginInterceptor;

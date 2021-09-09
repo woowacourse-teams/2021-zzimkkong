@@ -8,14 +8,14 @@ export interface Props {
   control?: ReactNode;
 }
 
-const ReservationListItem = ({ reservation, control }: Props): JSX.Element => {
+const ReservationListItem = ({ reservation, control, ...props }: Props): JSX.Element => {
   const { name, description, startDateTime, endDateTime } = reservation;
 
   const start = formatTime(new Date(startDateTime));
   const end = formatTime(new Date(endDateTime));
 
   return (
-    <Styled.Item role="listitem">
+    <Styled.Item role="listitem" {...props}>
       <Styled.Info>
         <Styled.Name>{name}</Styled.Name>
         <Styled.Description>{description}</Styled.Description>

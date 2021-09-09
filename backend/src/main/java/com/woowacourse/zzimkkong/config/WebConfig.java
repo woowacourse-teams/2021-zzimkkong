@@ -1,4 +1,4 @@
-package com.woowacourse.zzimkkong;
+package com.woowacourse.zzimkkong.config;
 
 import org.apache.http.HttpHeaders;
 import org.springframework.beans.factory.annotation.Value;

@@ -15,6 +15,7 @@ const MESSAGE = {
     UNEXPECTED_ERROR: '로그인에 문제가 발생했습니다. 잠시 후에 다시 시도해주세요.',
   },
   RESERVATION: {
+    DELETE_SUCCESS: '예약이 삭제 되었습니다.',
     UNEXPECTED_ERROR: '예약하는 중에 문제가 발생했습니다. 잠시 후에 다시 시도해주세요.',
     UNEXPECTED_DELETE_ERROR:
       '예약을 삭제하는 중에 문제가 발생했습니다. 잠시 후에 다시 시도해주세요.',
@@ -42,6 +43,16 @@ const MESSAGE = {
       '공간을 삭제하는 중에 문제가 발생했습니다. 잠시 후에 다시 시도해주세요.',
     CANCEL_ADD_SPACE_CONFIRM: '입력한 공간 설정은 저장되지 않습니다. 공간 추가를 취소하시겠습니까?',
     DELETE_SPACE_CONFIRM: '공간을 삭제하시겠습니까?',
+    ADD_PRESET_UNEXPECTED_ERROR:
+      '프리셋을 추가하는 중에 문제가 발생했습니다. 잠시 후에 다시 시도해주세요.',
+    DELETE_PRESET_UNEXPECTED_ERROR:
+      '프리셋을 삭제하는 중에 문제가 발생했습니다. 잠시 후에 다시 시도해주세요.',
+    SPACE_CREATED: '공간이 생성되었습니다.',
+    SPACE_SETTING_UPDATED: '공간 설정이 수정되었습니다.',
+    SPACE_DELETED: '공간이 생성되었습니다.',
+    PRESET_CREATED: '프리셋이 추가되었습니다.',
+    PRESET_DELETED: '프리셋이 삭제되었습니다.',
+    DELETE_PRESET_CONFIRM: '이 프리셋을 삭제하시겠어요?',
   },
   MANAGER_MAP: {
     CREATE_SUCCESS_CONFIRM: '맵 생성 완료! 공간을 편집하러 가시겠어요?',

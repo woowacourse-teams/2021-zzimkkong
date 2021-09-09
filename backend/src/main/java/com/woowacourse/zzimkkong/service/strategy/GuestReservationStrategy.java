@@ -9,6 +9,7 @@ import com.woowacourse.zzimkkong.exception.reservation.ReservationPasswordExcept
 public class GuestReservationStrategy implements ReservationStrategy {
     @Override
     public void validateManagerOfMap(final Map map, final Member manager) {
+        // guest는 맵의 관리자 확인과정 생략
     }
 
     @Override

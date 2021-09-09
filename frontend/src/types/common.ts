@@ -2,6 +2,8 @@ import { DrawingAreaShape } from 'constants/editor';
 
 export type Color = string;
 
+export type Order = 'ascending' | 'descending';
+
 export interface Coordinate {
   x: number;
   y: number;
@@ -80,6 +82,11 @@ export interface ReservationSettings {
   reservationMaximumTimeUnit: number;
   reservationEnable: boolean;
   enabledDayOfWeek: string | null;
+}
+
+export interface Preset extends ReservationSettings {
+  id: number;
+  name: string;
 }
 
 export interface ManagerSpace {

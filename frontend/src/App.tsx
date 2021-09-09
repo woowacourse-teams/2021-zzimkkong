@@ -12,7 +12,7 @@ import NotFound from './pages/NotFound/NotFound';
 
 export const history = createBrowserHistory();
 
-const queryClient = new QueryClient();
+export const queryClient = new QueryClient();
 
 const App = (): JSX.Element => {
   return (

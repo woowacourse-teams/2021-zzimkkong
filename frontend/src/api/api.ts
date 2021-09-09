@@ -1,12 +1,13 @@
 import axios, { AxiosError } from 'axios';
 import { history } from 'App';
+import { BASE_URL } from 'constants/api';
 import PATH from 'constants/path';
 import { LOCAL_STORAGE_KEY } from 'constants/storage';
 import { ErrorResponse } from 'types/response';
 import { getLocalStorageItem } from 'utils/localStorage';
 
 const api = axios.create({
-  baseURL: 'https://zzimkkong-proxy.o-r.kr/api',
+  baseURL: process.env.DEPLOY_ENV !== 'production' ? BASE_URL.DEV : BASE_URL.PROD,
   headers: {
     'Content-type': 'application/json',
   },

@@ -16,14 +16,14 @@ const Modal = ({
   onClose,
   children,
 }: PropsWithChildren<Props>): JSX.Element => {
-  const handleDimmedClick: MouseEventHandler<HTMLDivElement> = ({ target, currentTarget }) => {
+  const handleMouseDownOverlay: MouseEventHandler<HTMLDivElement> = ({ target, currentTarget }) => {
     if (isClosableDimmer && target === currentTarget) {
       onClose();
     }
   };
 
   return (
-    <Styled.Overlay open={open} onClick={handleDimmedClick}>
+    <Styled.Overlay open={open} onMouseDown={handleMouseDownOverlay}>
       <Styled.Modal>
         {open && showCloseButton && (
           <Styled.CloseButton onClick={onClose}>

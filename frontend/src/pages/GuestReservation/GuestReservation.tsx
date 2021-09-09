@@ -113,7 +113,7 @@ const GuestReservation = (): JSX.Element => {
       <Layout>
         <Styled.ReservationForm onSubmit={handleSubmit}>
           <Styled.Section>
-            <Styled.PageHeader>
+            <Styled.PageHeader title="공간 이름" data-testid="spaceName">
               <Styled.ColorDot color={space.color} />
               {space.name}
             </Styled.PageHeader>
