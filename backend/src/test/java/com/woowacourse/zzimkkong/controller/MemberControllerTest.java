@@ -3,6 +3,7 @@ package com.woowacourse.zzimkkong.controller;
 import com.woowacourse.zzimkkong.domain.Member;
 import com.woowacourse.zzimkkong.domain.Preset;
 import com.woowacourse.zzimkkong.domain.Setting;
+import com.woowacourse.zzimkkong.dto.member.MemberFindResponse;
 import com.woowacourse.zzimkkong.dto.member.MemberSaveRequest;
 import com.woowacourse.zzimkkong.dto.member.PresetFindAllResponse;
 import com.woowacourse.zzimkkong.dto.member.PresetCreateRequest;
@@ -131,6 +132,22 @@ class MemberControllerTest extends AcceptanceTest {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
     }
 
+    @Test
+    @DisplayName("유저는 자신의 정보를 조회할 수 있다.")
+    void findMe() {
+        // given, when
+        ExtractableResponse<Response> response = findMyInfo();
+
+        MemberFindResponse actual = response.as(MemberFindResponse.class);
+        MemberFindResponse expected = MemberFindResponse.from(pobi);
+
+        // then
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
+        assertThat(actual).usingRecursiveComparison()
+                .ignoringFields("id")
+                .isEqualTo(expected);
+    }
+
     static ExtractableResponse<Response> saveMember(final MemberSaveRequest memberSaveRequest) {
         return RestAssured
                 .given(getRequestSpecification()).log().all()
@@ -184,6 +201,17 @@ class MemberControllerTest extends AcceptanceTest {
                 .filter(document("preset/delete", getRequestPreprocessor(), getResponsePreprocessor()))
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .when().delete(api)
+                .then().log().all().extract();
+    }
+
+    private ExtractableResponse<Response> findMyInfo() {
+        return RestAssured
+                .given(getRequestSpecification()).log().all()
+                .accept("application/json")
+                .header("Authorization", AuthorizationExtractor.AUTHENTICATION_TYPE + " " + accessToken)
+                .filter(document("member/myinfo/get", getRequestPreprocessor(), getResponsePreprocessor()))
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .when().get("/api/members/me")
                 .then().log().all().extract();
     }
 }

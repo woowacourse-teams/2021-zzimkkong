@@ -70,4 +70,11 @@ public class MemberController {
 
         return ResponseEntity.noContent().build();
     }
+
+    @GetMapping("/me")
+    public ResponseEntity<MemberFindResponse> findMember(@Manager final Member manager) {
+        MemberFindResponse memberFindResponse = MemberFindResponse.from(manager);
+        return ResponseEntity.ok().body(memberFindResponse);
+    }
+
 }
