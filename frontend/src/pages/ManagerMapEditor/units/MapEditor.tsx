@@ -156,6 +156,15 @@ const MapCreateEditor = ({
     }
   };
 
+  const handleMouseOverMapElement = (
+    event: React.MouseEvent<SVGPolylineElement | SVGRectElement>
+  ) => {
+    const target = event.target as SVGElement;
+    const [, mapElementId] = target.id.split('-');
+
+    selectErasingElement(Number(mapElementId));
+  };
+
   const deleteMapElement = useCallback(() => {
     if (!selectedMapElementId) return;
 
@@ -286,7 +295,7 @@ const MapCreateEditor = ({
                   pointerEvents={isMapElementEventAvailable ? 'auto' : 'none'}
                   opacity={erasingMapElementIds.includes(element.id) ? '0.3' : '1'}
                   onClickCapture={handleClickMapElement}
-                  onMouseOverCapture={() => selectErasingElement(element.id)}
+                  onMouseOverCapture={handleMouseOverMapElement}
                 />
               );
             }
@@ -308,7 +317,7 @@ const MapCreateEditor = ({
                   pointerEvents={isMapElementEventAvailable ? 'auto' : 'none'}
                   opacity={erasingMapElementIds.includes(element.id) ? '0.3' : '1'}
                   onClickCapture={handleClickMapElement}
-                  onMouseOverCapture={() => selectErasingElement(element.id)}
+                  onMouseOverCapture={handleMouseOverMapElement}
                 />
               );
             }
