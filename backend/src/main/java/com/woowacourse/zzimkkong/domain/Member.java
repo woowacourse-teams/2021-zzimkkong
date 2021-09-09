@@ -29,6 +29,9 @@ public class Member {
     @OneToMany(mappedBy = "member", cascade = CascadeType.REMOVE, orphanRemoval = true)
     private List<Preset> presets = new ArrayList<>();
 
+    @OneToMany(mappedBy = "member", cascade = CascadeType.REMOVE, orphanRemoval = true)
+    private List<Map> maps = new ArrayList<>();
+
     public Member(
             final String email,
             final String password,
