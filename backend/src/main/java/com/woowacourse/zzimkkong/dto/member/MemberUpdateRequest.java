@@ -15,7 +15,7 @@ public class MemberUpdateRequest {
     @Pattern(regexp = ORGANIZATION_FORMAT, message = ORGANIZATION_MESSAGE)
     private String organization;
 
-    public MemberUpdateRequest(String organization) {
+    public MemberUpdateRequest(final String organization) {
         this.organization = organization;
     }
 }
