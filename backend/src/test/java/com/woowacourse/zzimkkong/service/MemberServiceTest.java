@@ -84,9 +84,9 @@ class MemberServiceTest extends ServiceTest {
     @DisplayName("회원을 삭제할 수 있다.")
     void deleteMember() {
         // given
-        Member member = new Member(EMAIL, PW, ORGANIZATION);
+        Member member = new Member(1L, EMAIL, PW, ORGANIZATION);
         given(members.existsReservationsByMemberId(anyLong()))
-                .willReturn(true);
+                .willReturn(false);
 
         // when, then
         memberService.deleteMember(member);
@@ -96,7 +96,7 @@ class MemberServiceTest extends ServiceTest {
     @DisplayName("회원이 소유한 공간에 예약이 있다면 탈퇴할 수 없다.")
     void deleteMemberFailWhenAnyReservationsExists() {
         // given
-        Member member = new Member(EMAIL, PW, ORGANIZATION);
+        Member member = new Member(1L, EMAIL, PW, ORGANIZATION);
         given(members.existsReservationsByMemberId(anyLong()))
                 .willReturn(true);
 
