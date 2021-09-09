@@ -60,4 +60,8 @@ public class Member {
     public List<Preset> getPresets() {
         return Collections.unmodifiableList(presets);
     }
+
+    public void update(final String organization) {
+        this.organization = organization;
+    }
 }

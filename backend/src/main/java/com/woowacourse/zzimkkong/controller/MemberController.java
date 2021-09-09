@@ -77,4 +77,12 @@ public class MemberController {
         return ResponseEntity.ok().body(memberFindResponse);
     }
 
+    @PutMapping("/me")
+    public ResponseEntity<MemberFindResponse> updateMember(
+            @Manager final Member manager,
+            @RequestBody @Valid final MemberUpdateRequest memberUpdateRequest) {
+        memberService.updateMember(manager, memberUpdateRequest);
+        return ResponseEntity.ok().build();
+    }
+
 }

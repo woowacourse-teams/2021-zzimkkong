@@ -3,10 +3,13 @@ package com.woowacourse.zzimkkong.service;
 import com.woowacourse.zzimkkong.domain.Member;
 import com.woowacourse.zzimkkong.dto.member.MemberSaveRequest;
 import com.woowacourse.zzimkkong.dto.member.MemberSaveResponse;
+import com.woowacourse.zzimkkong.dto.member.MemberUpdateRequest;
 import com.woowacourse.zzimkkong.exception.member.DuplicateEmailException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+
+import java.util.Optional;
 
 import static com.woowacourse.zzimkkong.Constants.*;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -59,5 +62,21 @@ class MemberServiceTest extends ServiceTest {
         //then
         assertThatThrownBy(() -> memberService.saveMember(memberSaveRequest))
                 .isInstanceOf(DuplicateEmailException.class);
+    }
+
+    @Test
+    @DisplayName("회원은 자기의 정보를 수정할 수 있다.")
+    void updateMember() {
+        // given
+        Member member = new Member(EMAIL, PW, ORGANIZATION);
+        MemberUpdateRequest memberUpdateRequest = new MemberUpdateRequest("woowabros");
+
+        given(members.findByEmail(any(String.class)))
+                .willReturn(Optional.of(member));
+
+        // when
+        memberService.updateMember(member, memberUpdateRequest);
+
+        assertThat(members.findByEmail(EMAIL).orElseThrow().getOrganization()).isEqualTo("woowabros");
     }
 }

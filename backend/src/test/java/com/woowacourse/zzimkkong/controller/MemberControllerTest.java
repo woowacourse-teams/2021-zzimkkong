@@ -3,10 +3,7 @@ package com.woowacourse.zzimkkong.controller;
 import com.woowacourse.zzimkkong.domain.Member;
 import com.woowacourse.zzimkkong.domain.Preset;
 import com.woowacourse.zzimkkong.domain.Setting;
-import com.woowacourse.zzimkkong.dto.member.MemberFindResponse;
-import com.woowacourse.zzimkkong.dto.member.MemberSaveRequest;
-import com.woowacourse.zzimkkong.dto.member.PresetFindAllResponse;
-import com.woowacourse.zzimkkong.dto.member.PresetCreateRequest;
+import com.woowacourse.zzimkkong.dto.member.*;
 import com.woowacourse.zzimkkong.dto.space.SettingsRequest;
 import com.woowacourse.zzimkkong.infrastructure.AuthorizationExtractor;
 import io.restassured.RestAssured;
@@ -148,6 +145,21 @@ class MemberControllerTest extends AcceptanceTest {
                 .isEqualTo(expected);
     }
 
+    @Test
+    @DisplayName("유저는 자신의 정보를 수정할 수 있다.")
+    void updateMe() {
+        // given
+        MemberUpdateRequest memberUpdateRequest = new MemberUpdateRequest("woowabros");
+
+        // when
+        ExtractableResponse<Response> response = updateMyInfo(memberUpdateRequest);
+
+        // then
+        MemberFindResponse afterUpdate = findMyInfo().as(MemberFindResponse.class);
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
+        assertThat(afterUpdate.getOrganization()).isEqualTo("woowabros");
+    }
+
     static ExtractableResponse<Response> saveMember(final MemberSaveRequest memberSaveRequest) {
         return RestAssured
                 .given(getRequestSpecification()).log().all()
@@ -212,6 +224,18 @@ class MemberControllerTest extends AcceptanceTest {
                 .filter(document("member/myinfo/get", getRequestPreprocessor(), getResponsePreprocessor()))
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .when().get("/api/members/me")
+                .then().log().all().extract();
+    }
+
+    private ExtractableResponse<Response> updateMyInfo(MemberUpdateRequest memberUpdateRequest) {
+        return RestAssured
+                .given(getRequestSpecification()).log().all()
+                .accept("application/json")
+                .header("Authorization", AuthorizationExtractor.AUTHENTICATION_TYPE + " " + accessToken)
+                .filter(document("member/myinfo/put", getRequestPreprocessor(), getResponsePreprocessor()))
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .body(memberUpdateRequest)
+                .when().put("/api/members/me")
                 .then().log().all().extract();
     }
 }
