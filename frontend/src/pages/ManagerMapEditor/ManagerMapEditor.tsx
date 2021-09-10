@@ -105,7 +105,7 @@ const ManagerMapEditor = (): JSX.Element => {
     },
   });
 
-  const handleClickCancel = () => {
+  const handleCancel = () => {
     if (!window.confirm(MESSAGE.MANAGER_MAP.CANCEL_CONFIRM)) return;
 
     history.push(PATH.MANAGER_MAIN);
@@ -151,7 +151,7 @@ const ManagerMapEditor = (): JSX.Element => {
                 required
               />
               <Styled.FormControl>
-                <Button type="button" variant="text" onClick={handleClickCancel}>
+                <Button type="button" variant="text" onClick={handleCancel}>
                   취소
                 </Button>
                 <Button variant="primary">{isEdit ? '수정' : '완료'}</Button>
