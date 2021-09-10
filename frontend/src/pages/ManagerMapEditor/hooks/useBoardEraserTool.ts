@@ -12,7 +12,7 @@ const useBoardEraserTool = ({
   isErasing: boolean;
   eraseStart: () => void;
   eraseEnd: () => void;
-  selectErasingElement: (id: MapElement['id']) => void;
+  onMouseOverMapElement: (event: React.MouseEvent<SVGPolylineElement | SVGRectElement>) => void;
 } => {
   const [erasingMapElementIds, setErasingMapElementIds] = useState<MapElement['id'][]>([]);
   const [isErasing, setErasing] = useState(false);
@@ -41,12 +41,19 @@ const useBoardEraserTool = ({
     setErasingMapElementIds((prevIds) => [...prevIds, id]);
   };
 
+  const onMouseOverMapElement = (event: React.MouseEvent<SVGPolylineElement | SVGRectElement>) => {
+    const target = event.target as SVGElement;
+    const [, mapElementId] = target.id.split('-');
+
+    selectErasingElement(Number(mapElementId));
+  };
+
   return {
     erasingMapElementIds,
     isErasing,
     eraseStart,
     eraseEnd,
-    selectErasingElement,
+    onMouseOverMapElement,
   };
 };
 

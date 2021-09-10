@@ -101,7 +101,7 @@ const MapCreateEditor = ({
     drawingStatus: [drawingStatus, setDrawingStatus],
     mapElements: [mapElements, setMapElements],
   });
-  const { erasingMapElementIds, eraseStart, eraseEnd, selectErasingElement } = useBoardEraserTool({
+  const { erasingMapElementIds, eraseStart, eraseEnd, onMouseOverMapElement } = useBoardEraserTool({
     mapElements: [mapElements, setMapElements],
   });
 
@@ -126,15 +126,6 @@ const MapCreateEditor = ({
     if (mode === Mode.Line) drawLineEnd();
     else if (mode === Mode.Rect) drawRectEnd();
     else if (mode === Mode.Eraser) eraseEnd();
-  };
-
-  const handleMouseOverMapElement = (
-    event: React.MouseEvent<SVGPolylineElement | SVGRectElement>
-  ) => {
-    const target = event.target as SVGElement;
-    const [, mapElementId] = target.id.split('-');
-
-    selectErasingElement(Number(mapElementId));
   };
 
   const deleteMapElement = useCallback(() => {
@@ -271,7 +262,7 @@ const MapCreateEditor = ({
                       : EDITOR.OPACITY
                   }
                   onClickCapture={onClickMapElement}
-                  onMouseOverCapture={handleMouseOverMapElement}
+                  onMouseOverCapture={onMouseOverMapElement}
                 />
               );
             }
@@ -297,7 +288,7 @@ const MapCreateEditor = ({
                       : EDITOR.OPACITY
                   }
                   onClickCapture={onClickMapElement}
-                  onMouseOverCapture={handleMouseOverMapElement}
+                  onMouseOverCapture={onMouseOverMapElement}
                 />
               );
             }
