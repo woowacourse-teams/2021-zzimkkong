@@ -1,21 +1,24 @@
-import { Dispatch, SetStateAction, useState } from 'react';
+import { Dispatch, ReactNode, SetStateAction, useState } from 'react';
 import PALETTE from 'constants/palette';
 import { EditorBoard } from 'types/common';
 import { SpaceEditorMode as Mode } from '../constants';
 import useBoardMove from '../hooks/useBoardMove';
+import useBoardZoom from '../hooks/useBoardZoom';
 import * as Styled from './Editor.styles';
 import GridPattern from './GridPattern';
 
 interface Props {
   mode: Mode;
   boardState: [EditorBoard, Dispatch<SetStateAction<EditorBoard>>];
+  children: ReactNode;
 }
 
-const Editor = ({ mode, boardState }: Props): JSX.Element => {
-  const [board, setBoard] = boardState;
+const Editor = ({ mode, boardState, children }: Props): JSX.Element => {
+  const [board] = boardState;
 
   const [movable, setMovable] = useState(false);
 
+  const { onWheel } = useBoardZoom(boardState);
   const { moving, onMouseOut, onDragStart, onDrag, onDragEnd } = useBoardMove(
     boardState,
     mode === Mode.Move
@@ -41,6 +44,7 @@ const Editor = ({ mode, boardState }: Props): JSX.Element => {
         height="100%"
         isDragging={moving}
         isDraggable={movable}
+        onWheel={onWheel}
         onMouseOver={handleMouseOver}
         onMouseOut={handleMouseOut}
         onMouseDown={onDragStart}
@@ -63,6 +67,8 @@ const Editor = ({ mode, boardState }: Props): JSX.Element => {
             />
 
             <GridPattern width={board.width} height={board.height} />
+
+            {children}
           </Styled.BoardGroup>
         </Styled.Board>
       </Styled.BoardContainer>
