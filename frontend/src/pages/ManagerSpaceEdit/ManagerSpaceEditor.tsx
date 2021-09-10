@@ -48,9 +48,7 @@ const ManagerSpaceEditor = (): JSX.Element => {
             <Styled.EditorContainer>
               {isDrawing && <ShapeSelectToolbar mode={mode} setMode={setMode} />}
 
-              <Editor mode={mode} boardState={[boardStatus, setBoardStatus]}>
-                맵 요소
-              </Editor>
+              <Editor mode={mode} boardState={[boardStatus, setBoardStatus]} />
             </Styled.EditorContainer>
 
             <Styled.FormContainer disabled={mode !== Mode.Form}></Styled.FormContainer>
