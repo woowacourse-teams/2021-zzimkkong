@@ -60,6 +60,8 @@ const MESSAGE = {
     CANCEL_CONFIRM: '편집 중인 맵은 저장되지 않으며, 메인 페이지로 돌아갑니다.',
     UNEXPECTED_MAP_CREATE_ERROR:
       '맵을 생성하는 중에 문제가 발생했습니다. 잠시 후에 다시 시도해주세요.',
+    UNEXPECTED_MAP_UPDATE_ERROR:
+      '맵을 수정하는 중에 문제가 발생했습니다. 잠시 후에 다시 시도해주세요.',
   },
 };
 
