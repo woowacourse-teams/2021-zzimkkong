@@ -1,7 +1,8 @@
-import { Dispatch, MouseEventHandler, SetStateAction, useState } from 'react';
+import { Dispatch, SetStateAction, useState } from 'react';
 import PALETTE from 'constants/palette';
-import { Coordinate, EditorBoard } from 'types/common';
+import { EditorBoard } from 'types/common';
 import { SpaceEditorMode as Mode } from '../constants';
+import useBoardMove from '../hooks/useBoardMove';
 import * as Styled from './Editor.styles';
 import GridPattern from './GridPattern';
 
@@ -11,48 +12,24 @@ interface Props {
 }
 
 const Editor = ({ mode, boardState }: Props): JSX.Element => {
-  const [movable, setMovable] = useState(false);
-  const [moving, setMoving] = useState(false);
-  const [dragOffset, setDragOffset] = useState<Coordinate | null>(null);
-
   const [board, setBoard] = boardState;
+
+  const [movable, setMovable] = useState(false);
+
+  const { moving, onMouseOut, onDragStart, onDrag, onDragEnd } = useBoardMove(
+    boardState,
+    mode === Mode.Move
+  );
 
   const handleMouseOver = () => {
     if (mode !== Mode.Move) return;
 
-    setMovable(true);
+    setMovable(false);
   };
 
   const handleMouseOut = () => {
+    onMouseOut();
     setMovable(false);
-    setMoving(false);
-  };
-
-  const handleDragStart: MouseEventHandler<SVGElement> = (event) => {
-    if (mode !== Mode.Move) return;
-
-    const dragOffsetX = event.nativeEvent.offsetX - board.x;
-    const dragOffsetY = event.nativeEvent.offsetY - board.y;
-
-    setMoving(true);
-    setDragOffset({ x: dragOffsetX, y: dragOffsetY });
-  };
-
-  const handleDragging: MouseEventHandler<SVGElement> = (event) => {
-    if (mode !== Mode.Move || !moving || dragOffset === null) return;
-
-    const { offsetX, offsetY } = event.nativeEvent;
-
-    setBoard((prevState) => ({
-      ...prevState,
-      x: offsetX - dragOffset.x,
-      y: offsetY - dragOffset.y,
-    }));
-  };
-
-  const handleDragEnd = () => {
-    setMoving(false);
-    setDragOffset(null);
   };
 
   return (
@@ -66,9 +43,9 @@ const Editor = ({ mode, boardState }: Props): JSX.Element => {
         isDraggable={movable}
         onMouseOver={handleMouseOver}
         onMouseOut={handleMouseOut}
-        onMouseDown={handleDragStart}
-        onMouseUp={handleDragEnd}
-        onMouseMove={handleDragging}
+        onMouseDown={onDragStart}
+        onMouseMove={onDrag}
+        onMouseUp={onDragEnd}
       >
         <Styled.BoardContainerBackground width="100%" height="100%" fill={PALETTE.GRAY[200]} />
 
