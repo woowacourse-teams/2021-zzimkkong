@@ -1,13 +1,14 @@
-import { Dispatch, ReactNode, SetStateAction, useState } from 'react';
+import { Dispatch, ReactNode, SetStateAction, SVGAttributes, useState } from 'react';
 import PALETTE from 'constants/palette';
 import { EditorBoard } from 'types/common';
 import useBoardMove from '../hooks/useBoardMove';
 import useBoardZoom from '../hooks/useBoardZoom';
 import * as Styled from './Board.styles';
+import CursorRect from './CursorRect';
 import GridPattern from './GridPattern';
 import MapElement from './MapElement';
 
-interface Props {
+interface Props extends SVGAttributes<SVGElement> {
   moveMode: boolean;
   boardState: [EditorBoard, Dispatch<SetStateAction<EditorBoard>>];
   children: ReactNode;
@@ -73,6 +74,7 @@ const Board = ({ moveMode, boardState, children, ...props }: Props): JSX.Element
   );
 };
 
+Board.CursorRect = CursorRect;
 Board.MapElement = MapElement;
 
 export default Board;
