@@ -1,7 +1,6 @@
 import { Dispatch, ReactNode, SetStateAction, useState } from 'react';
 import PALETTE from 'constants/palette';
 import { EditorBoard } from 'types/common';
-import { SpaceEditorMode as Mode } from '../constants';
 import useBoardMove from '../hooks/useBoardMove';
 import useBoardZoom from '../hooks/useBoardZoom';
 import * as Styled from './Board.styles';
