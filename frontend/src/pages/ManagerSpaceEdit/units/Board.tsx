@@ -6,6 +6,7 @@ import useBoardMove from '../hooks/useBoardMove';
 import useBoardZoom from '../hooks/useBoardZoom';
 import * as Styled from './Board.styles';
 import GridPattern from './GridPattern';
+import MapElement from './MapElement';
 
 interface Props {
   moveMode: boolean;
@@ -72,5 +73,7 @@ const Board = ({ moveMode, boardState, children, ...props }: Props): JSX.Element
     </Styled.Editor>
   );
 };
+
+Board.MapElement = MapElement;
 
 export default Board;

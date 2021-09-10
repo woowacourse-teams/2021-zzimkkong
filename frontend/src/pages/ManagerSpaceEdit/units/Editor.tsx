@@ -1,17 +1,18 @@
 import { Dispatch, SetStateAction } from 'react';
-import { EditorBoard } from 'types/common';
+import { EditorBoard, MapElement } from 'types/common';
 import { SpaceEditorMode as Mode } from '../constants';
 import Board from './Board';
 
 interface Props {
   mode: Mode;
   boardState: [EditorBoard, Dispatch<SetStateAction<EditorBoard>>];
+  mapElements: MapElement[];
 }
 
-const Editor = ({ mode, boardState }: Props): JSX.Element => {
+const Editor = ({ mode, boardState, mapElements }: Props): JSX.Element => {
   return (
     <Board moveMode={mode === Mode.Move} boardState={boardState}>
-      맵 & 공간 요소
+      <Board.MapElement mapElements={mapElements} />
     </Board>
   );
 };

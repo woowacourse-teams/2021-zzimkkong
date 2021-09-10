@@ -27,7 +27,7 @@ const ManagerSpaceEditor = (): JSX.Element => {
     } catch (error) {
       alert(MESSAGE.MANAGER_SPACE.GET_UNEXPECTED_ERROR);
 
-      return { width: 800, height: 600, mapElements: [] };
+      return { width: BOARD.DEFAULT_WIDTH, height: BOARD.DEFAULT_HEIGHT, mapElements: [] };
     }
   }, [map.data?.data.mapDrawing]);
 
@@ -48,7 +48,11 @@ const ManagerSpaceEditor = (): JSX.Element => {
             <Styled.EditorContainer>
               {isDrawing && <ShapeSelectToolbar mode={mode} setMode={setMode} />}
 
-              <Editor mode={mode} boardState={[boardStatus, setBoardStatus]} />
+              <Editor
+                mode={mode}
+                boardState={[boardStatus, setBoardStatus]}
+                mapElements={mapElements}
+              />
             </Styled.EditorContainer>
 
             <Styled.FormContainer disabled={mode !== Mode.Form}></Styled.FormContainer>
