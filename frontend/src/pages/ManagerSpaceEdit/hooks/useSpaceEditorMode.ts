@@ -1,18 +1,21 @@
 import { useState } from 'react';
-import { SpaceEditorMode } from '../constants';
+import { KEY } from 'constants/editor';
+import { SpaceEditorMode as Mode } from '../constants';
 
-const useSpaceEditorMode = (
-  initialMode?: SpaceEditorMode
-): [SpaceEditorMode, (nextMode: SpaceEditorMode) => void] => {
-  const [mode, setMode] = useState<SpaceEditorMode>(initialMode ?? SpaceEditorMode.Default);
+const useSpaceEditorMode = (pressedKey: string): [Mode, (nextMode: Mode) => void] => {
+  const [mode, setMode] = useState<Mode>(Mode.Default);
 
-  const setModeState = (nextMode: SpaceEditorMode) => {
-    if (nextMode === SpaceEditorMode.Default && mode === SpaceEditorMode.Form) {
-      setMode(SpaceEditorMode.Form);
+  const setModeState = (nextMode: Mode) => {
+    if (nextMode === Mode.Default && mode === Mode.Form) {
+      setMode(Mode.Form);
     }
 
     setMode(nextMode);
   };
+
+  if (pressedKey === KEY.SPACE) {
+    return [Mode.Move, setModeState];
+  }
 
   return [mode, setModeState];
 };

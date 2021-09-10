@@ -1,11 +1,18 @@
+import { useMemo } from 'react';
 import { useParams } from 'react-router-dom';
 import Header from 'components/Header/Header';
 import Layout from 'components/Layout/Layout';
+import { BOARD } from 'constants/editor';
+import MESSAGE from 'constants/message';
 import useListenManagerMainState from 'hooks/useListenManagerMainState';
 import useManagerMap from 'hooks/useManagerMap';
+import { MapDrawing } from 'types/common';
 import * as Styled from './ManagerSpaceEditor.styles';
 import { SpaceEditorMode as Mode } from './constants';
+import useBindKeyPress from './hooks/useBindKeyPress';
+import useBoardStatus from './hooks/useBoardStatus';
 import useSpaceEditorMode from './hooks/useSpaceEditorMode';
+import Editor from './units/Editor';
 import EditorHeader from './units/EditorHeader';
 import ShapeSelectToolbar from './units/ShapeSelectToolbar';
 
@@ -14,8 +21,19 @@ const ManagerSpaceEditor = (): JSX.Element => {
   useListenManagerMainState({ mapId: Number(mapId) });
   const map = useManagerMap({ mapId: Number(mapId) });
   const mapName = map.data?.data.mapName ?? '';
+  const { width, height, mapElements } = useMemo(() => {
+    try {
+      return JSON.parse(map.data?.data.mapDrawing ?? '{}') as MapDrawing;
+    } catch (error) {
+      alert(MESSAGE.MANAGER_SPACE.GET_UNEXPECTED_ERROR);
 
-  const [mode, setMode] = useSpaceEditorMode();
+      return { width: 800, height: 600, mapElements: [] };
+    }
+  }, [map.data?.data.mapDrawing]);
+
+  const { pressedKey } = useBindKeyPress();
+  const [mode, setMode] = useSpaceEditorMode(pressedKey);
+  const [boardStatus, setBoardStatus] = useBoardStatus({ width, height });
 
   const isDrawing = mode === Mode.Rect;
 
@@ -29,6 +47,8 @@ const ManagerSpaceEditor = (): JSX.Element => {
           <Styled.EditorMain>
             <Styled.EditorContainer>
               {isDrawing && <ShapeSelectToolbar mode={mode} setMode={setMode} />}
+
+              <Editor mode={mode} boardState={[boardStatus, setBoardStatus]} />
             </Styled.EditorContainer>
 
             <Styled.FormContainer disabled={mode !== Mode.Form}></Styled.FormContainer>
