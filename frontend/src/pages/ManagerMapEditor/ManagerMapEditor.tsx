@@ -42,14 +42,18 @@ const ManagerMapEditor = (): JSX.Element => {
   });
 
   const managerSpaces = useManagerSpaces({ mapId: Number(mapId) }, { enabled: isEdit });
-  const spaces: ManagerSpace[] = useMemo(
-    () =>
-      managerSpaces.data?.data.spaces.map((space) => ({
-        ...space,
-        area: JSON.parse(space.area) as SpaceArea,
-      })) ?? [],
-    [managerSpaces.data?.data.spaces]
-  );
+  const spaces: ManagerSpace[] = useMemo(() => {
+    try {
+      return (
+        managerSpaces.data?.data.spaces.map((space) => ({
+          ...space,
+          area: JSON.parse(space.area) as SpaceArea,
+        })) ?? []
+      );
+    } catch (error) {
+      return [];
+    }
+  }, [managerSpaces.data?.data.spaces]);
 
   useManagerMap(
     { mapId: Number(mapId) },
