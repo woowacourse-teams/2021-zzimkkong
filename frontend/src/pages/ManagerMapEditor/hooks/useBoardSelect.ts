@@ -4,9 +4,9 @@ import { Coordinate, GripPoint, MapElement } from 'types/common';
 const useBoardSelect = (): {
   gripPoints: GripPoint[];
   selectedMapElementId: number | null;
-  selectLineElement: (target: SVGPolylineElement, id: MapElement['id']) => void;
-  selectRectElement: (target: SVGRectElement, id: MapElement['id']) => void;
   deselectMapElement: () => void;
+  onClickBoard: () => void;
+  onClickMapElement: (event: React.MouseEvent<SVGPolylineElement | SVGRectElement>) => void;
 } => {
   const [gripPoints, setGripPoints] = useState<GripPoint[]>([]);
   const [selectedMapElementId, setSelectedMapElementId] = useState<MapElement['id'] | null>(null);
@@ -61,12 +61,31 @@ const useBoardSelect = (): {
     setGripPoints([]);
   };
 
+  const onClickBoard = () => {
+    deselectMapElement();
+  };
+
+  const onClickMapElement = (event: React.MouseEvent<SVGPolylineElement | SVGRectElement>) => {
+    const target = event.target as SVGElement;
+    const [mapElementType, mapElementId] = target.id.split('-');
+
+    if (mapElementType === 'polyline') {
+      selectLineElement(event.target as SVGPolylineElement, Number(mapElementId));
+
+      return;
+    }
+
+    if (mapElementType === 'rect') {
+      selectRectElement(event.target as SVGRectElement, Number(mapElementId));
+    }
+  };
+
   return {
     gripPoints,
     selectedMapElementId,
-    selectLineElement,
-    selectRectElement,
     deselectMapElement,
+    onClickBoard,
+    onClickMapElement,
   };
 };
 

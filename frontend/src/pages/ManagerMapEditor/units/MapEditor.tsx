@@ -83,13 +83,8 @@ const MapCreateEditor = ({
   });
   const { stickyCoordinate, onMouseMove } = useBoardCoordinate(boardStatus);
   const { onWheel } = useBoardZoom([boardStatus, setBoardStatus]);
-  const {
-    gripPoints,
-    selectedMapElementId,
-    selectLineElement,
-    selectRectElement,
-    deselectMapElement,
-  } = useBoardSelect();
+  const { gripPoints, selectedMapElementId, deselectMapElement, onClickBoard, onClickMapElement } =
+    useBoardSelect();
   const { isDragging, onDragStart, onDrag, onDragEnd, onMouseOut } = useBoardMove(
     [boardStatus, setBoardStatus],
     isBoardDraggable
@@ -131,29 +126,6 @@ const MapCreateEditor = ({
     if (mode === Mode.Line) drawLineEnd();
     else if (mode === Mode.Rect) drawRectEnd();
     else if (mode === Mode.Eraser) eraseEnd();
-  };
-
-  const handleClickBoard = () => {
-    if (mode !== Mode.Select) return;
-
-    deselectMapElement();
-  };
-
-  const handleClickMapElement = (event: React.MouseEvent<SVGPolylineElement | SVGRectElement>) => {
-    if (mode !== Mode.Select) return;
-
-    const target = event.target as SVGElement;
-    const [mapElementType, mapElementId] = target.id.split('-');
-
-    if (mapElementType === 'polyline') {
-      selectLineElement(event.target as SVGPolylineElement, Number(mapElementId));
-
-      return;
-    }
-
-    if (mapElementType === 'rect') {
-      selectRectElement(event.target as SVGRectElement, Number(mapElementId));
-    }
   };
 
   const handleMouseOverMapElement = (
@@ -211,7 +183,7 @@ const MapCreateEditor = ({
           statusState={[boardStatus, setBoardStatus]}
           isDraggable={isBoardDraggable}
           isDragging={isDragging}
-          onClick={handleClickBoard}
+          onClick={onClickBoard}
           onMouseMove={onMouseMove}
           onMouseDown={handleMouseDown}
           onMouseUp={handleMouseUp}
@@ -298,7 +270,7 @@ const MapCreateEditor = ({
                       ? EDITOR.OPACITY_DELETING
                       : EDITOR.OPACITY
                   }
-                  onClickCapture={handleClickMapElement}
+                  onClickCapture={onClickMapElement}
                   onMouseOverCapture={handleMouseOverMapElement}
                 />
               );
@@ -324,7 +296,7 @@ const MapCreateEditor = ({
                       ? EDITOR.OPACITY_DELETING
                       : EDITOR.OPACITY
                   }
-                  onClickCapture={handleClickMapElement}
+                  onClickCapture={onClickMapElement}
                   onMouseOverCapture={handleMouseOverMapElement}
                 />
               );
