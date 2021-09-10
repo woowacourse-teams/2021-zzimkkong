@@ -10,7 +10,7 @@ import { EDITOR, KEY } from 'constants/editor';
 import PALETTE from 'constants/palette';
 import useBoardCoordinate from 'pages/ManagerMapEditor/hooks/useBoardCoordinate';
 import { Color, DrawingStatus, ManagerSpace, MapElement } from 'types/common';
-import { Mode } from 'types/editor';
+import { MapElementType, Mode } from 'types/editor';
 import useBindKeyPress from '../hooks/useBindKeyPress';
 import useBoardEraserTool from '../hooks/useBoardEraserTool';
 import useBoardLineTool from '../hooks/useBoardLineTool';
@@ -220,7 +220,7 @@ const MapCreateEditor = ({
 
           {drawingStatus.start && mode === Mode.Line && (
             <polyline
-              key="preview-line"
+              key={`preview-${MapElementType.Polyline}`}
               points={`${drawingStatus.start.x},${drawingStatus.start.y} ${stickyCoordinate.x},${stickyCoordinate.y}`}
               stroke={EDITOR.STROKE_PREVIEW}
               strokeWidth={EDITOR.STROKE_WIDTH}
@@ -231,7 +231,7 @@ const MapCreateEditor = ({
 
           {drawingStatus.start && mode === Mode.Rect && (
             <rect
-              key="preview-rect"
+              key={`preview-${MapElementType.Rect}`}
               x={Math.min(drawingStatus.start.x, stickyCoordinate.x)}
               y={Math.min(drawingStatus.start.y, stickyCoordinate.y)}
               width={Math.abs(drawingStatus.start.x - stickyCoordinate.x)}
@@ -245,11 +245,11 @@ const MapCreateEditor = ({
           )}
 
           {mapElements.map((element) => {
-            if (element.type === 'polyline') {
+            if (element.type === MapElementType.Polyline) {
               return (
                 <polyline
-                  key={`polyline-${element.id}`}
-                  id={`polyline-${element.id}`}
+                  key={`${MapElementType.Polyline}-${element.id}`}
+                  id={`${MapElementType.Polyline}-${element.id}`}
                   points={element.points.join(' ')}
                   stroke={element.stroke}
                   strokeWidth={EDITOR.STROKE_WIDTH}
@@ -267,11 +267,11 @@ const MapCreateEditor = ({
               );
             }
 
-            if (element.type === 'rect') {
+            if (element.type === MapElementType.Rect) {
               return (
                 <rect
-                  key={`rect-${element.id}`}
-                  id={`rect-${element.id}`}
+                  key={`${MapElementType.Rect}-${element.id}`}
+                  id={`${MapElementType.Rect}-${element.id}`}
                   x={element?.x}
                   y={element?.y}
                   width={element?.width}

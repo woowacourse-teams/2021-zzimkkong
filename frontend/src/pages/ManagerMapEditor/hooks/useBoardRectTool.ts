@@ -1,5 +1,6 @@
 import { Dispatch, SetStateAction } from 'react';
 import { Color, Coordinate, DrawingStatus, MapElement } from 'types/common';
+import { MapElementType } from 'types/editor';
 
 interface Props {
   coordinate: Coordinate;
@@ -28,7 +29,7 @@ const useBoardRectTool = ({
         ...prevState,
         {
           id: nextMapElementId,
-          type: 'rect',
+          type: MapElementType.Rect,
           stroke: color,
           points: [startPoint, endPoint],
         },
@@ -71,7 +72,7 @@ const useBoardRectTool = ({
         ...prevState,
         {
           id: nextMapElementId,
-          type: 'polyline',
+          type: MapElementType.Polyline,
           stroke: color,
           points: [`${startPoint.x},${startPoint.y}`, `${endPoint.x},${endPoint.y}`],
         },
@@ -84,7 +85,7 @@ const useBoardRectTool = ({
       ...prevState,
       {
         id: nextMapElementId,
-        type: 'rect',
+        type: MapElementType.Rect,
         stroke: color,
         width,
         height,
