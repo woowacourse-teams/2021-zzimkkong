@@ -14,7 +14,7 @@ import useManagerMap from 'hooks/useManagerMap';
 import useManagerSpaces from 'hooks/useManagerSpaces';
 import { ManagerSpace, MapDrawing, MapElement, SpaceArea } from 'types/common';
 import { ErrorResponse } from 'types/response';
-import { getMapImageSvg } from 'utils/map';
+import { createMapImageSvg } from 'utils/map';
 import * as Styled from './ManagerMapEditor.styles';
 import MapEditor from './units/MapEditor';
 
@@ -117,7 +117,7 @@ const ManagerMapEditor = (): JSX.Element => {
     if (createMap.isLoading || updateMap.isLoading) return;
 
     const mapDrawing = JSON.stringify({ width, height, mapElements });
-    const mapImageSvg = getMapImageSvg({
+    const mapImageSvg = createMapImageSvg({
       mapElements,
       spaces,
       width,

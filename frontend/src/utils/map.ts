@@ -1,19 +1,19 @@
 import { EDITOR } from 'constants/editor';
 import { ManagerSpace, MapElement } from 'types/common';
 
-interface GetMapImageSvgParams {
+interface CreateMapImageSvgParams {
   mapElements: MapElement[];
   spaces: ManagerSpace[];
   width: number | string;
   height: number | string;
 }
 
-export const getMapImageSvg = ({
+export const createMapImageSvg = ({
   mapElements,
   spaces,
   width,
   height,
-}: GetMapImageSvgParams): string => {
+}: CreateMapImageSvgParams): string => {
   const mapImageSvg = `
     <svg
       xmlns='http://www.w3.org/2000/svg'
