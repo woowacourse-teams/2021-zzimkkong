@@ -225,8 +225,8 @@ const MapCreateEditor = ({
             <circle
               cx={stickyCoordinate.x}
               cy={stickyCoordinate.y}
-              r={3}
-              fill={PALETTE.OPACITY_BLACK[300]}
+              r={EDITOR.CIRCLE_CURSOR_RADIUS}
+              fill={EDITOR.CIRCLE_CURSOR_FILL}
               pointerEvents="none"
             />
           )}
@@ -239,16 +239,16 @@ const MapCreateEditor = ({
                 width={area.width}
                 height={area.height}
                 fill={color}
-                opacity="0.1"
+                opacity={EDITOR.SPACE_OPACITY}
               />
               <text
                 x={area.x + area.width / 2}
                 y={area.y + area.height / 2}
                 dominantBaseline="middle"
                 textAnchor="middle"
-                fill={PALETTE.BLACK[700]}
-                fontSize="1rem"
-                opacity="0.3"
+                fill={EDITOR.TEXT_FILL}
+                fontSize={EDITOR.TEXT_FONT_SIZE}
+                opacity={EDITOR.TEXT_OPACITY}
               >
                 {name}
               </text>
@@ -259,7 +259,7 @@ const MapCreateEditor = ({
             <polyline
               key="preview-line"
               points={`${drawingStatus.start.x},${drawingStatus.start.y} ${stickyCoordinate.x},${stickyCoordinate.y}`}
-              stroke={PALETTE.OPACITY_BLACK[200]}
+              stroke={EDITOR.STROKE_PREVIEW}
               strokeWidth={EDITOR.STROKE_WIDTH}
               strokeLinecap="round"
               pointerEvents="none"
@@ -273,7 +273,7 @@ const MapCreateEditor = ({
               y={Math.min(drawingStatus.start.y, stickyCoordinate.y)}
               width={Math.abs(drawingStatus.start.x - stickyCoordinate.x)}
               height={Math.abs(drawingStatus.start.y - stickyCoordinate.y)}
-              stroke={PALETTE.OPACITY_BLACK[200]}
+              stroke={EDITOR.STROKE_PREVIEW}
               strokeWidth={EDITOR.STROKE_WIDTH}
               strokeLinecap="round"
               fill="none"
@@ -293,7 +293,11 @@ const MapCreateEditor = ({
                   strokeLinecap="round"
                   cursor={isMapElementClickable ? 'pointer' : 'default'}
                   pointerEvents={isMapElementEventAvailable ? 'auto' : 'none'}
-                  opacity={erasingMapElementIds.includes(element.id) ? '0.3' : '1'}
+                  opacity={
+                    erasingMapElementIds.includes(element.id)
+                      ? EDITOR.OPACITY_DELETING
+                      : EDITOR.OPACITY
+                  }
                   onClickCapture={handleClickMapElement}
                   onMouseOverCapture={handleMouseOverMapElement}
                 />
@@ -315,7 +319,11 @@ const MapCreateEditor = ({
                   strokeLinecap="round"
                   cursor={isMapElementClickable ? 'pointer' : 'default'}
                   pointerEvents={isMapElementEventAvailable ? 'auto' : 'none'}
-                  opacity={erasingMapElementIds.includes(element.id) ? '0.3' : '1'}
+                  opacity={
+                    erasingMapElementIds.includes(element.id)
+                      ? EDITOR.OPACITY_DELETING
+                      : EDITOR.OPACITY
+                  }
                   onClickCapture={handleClickMapElement}
                   onMouseOverCapture={handleMouseOverMapElement}
                 />
