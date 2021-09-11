@@ -4,9 +4,10 @@ import { EditorBoard } from 'types/common';
 import useBoardMove from '../hooks/useBoardMove';
 import useBoardZoom from '../hooks/useBoardZoom';
 import * as Styled from './Board.styles';
-import CursorRect from './CursorRect';
+import BoardCursorRect from './BoardCursorRect';
+import BoardMapElement from './BoardMapElement';
+import BoardSpace from './BoardSpace';
 import GridPattern from './GridPattern';
-import MapElement from './MapElement';
 
 interface Props extends SVGAttributes<SVGElement> {
   movable: boolean;
@@ -73,7 +74,8 @@ const Board = ({ movable, boardState, children, ...props }: Props): JSX.Element 
   );
 };
 
-Board.CursorRect = CursorRect;
-Board.MapElement = MapElement;
+Board.CursorRect = BoardCursorRect;
+Board.MapElement = BoardMapElement;
+Board.Space = BoardSpace;
 
 export default Board;

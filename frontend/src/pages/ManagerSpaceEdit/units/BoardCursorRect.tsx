@@ -1,4 +1,3 @@
-import React from 'react';
 import PALETTE from 'constants/palette';
 import { Color, Coordinate } from 'types/common';
 
@@ -8,7 +7,7 @@ interface Props {
   color?: Color;
 }
 
-const CursorRect = ({
+const BoardCursorRect = ({
   coordinate,
   size,
   color = PALETTE.OPACITY_BLACK[100],
@@ -16,4 +15,4 @@ const CursorRect = ({
   return <rect x={coordinate.x} y={coordinate.y} width={size} height={size} fill={color} />;
 };
 
-export default CursorRect;
+export default BoardCursorRect;

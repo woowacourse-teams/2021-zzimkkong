@@ -1,6 +1,6 @@
-import { Dispatch, SetStateAction, useEffect, useRef, useState } from 'react';
+import { Dispatch, SetStateAction, useEffect, useState } from 'react';
 import { EDITOR, KEY } from 'constants/editor';
-import { EditorBoard, MapElement } from 'types/common';
+import { EditorBoard, ManagerSpace, MapElement } from 'types/common';
 import { SpaceEditorMode as Mode } from '../constants';
 import useBindKeyPress from '../hooks/useBindKeyPress';
 import useBoardCoordinate from '../hooks/useBoardCoordinate';
@@ -10,10 +10,11 @@ interface Props {
   mode: Mode;
   boardState: [EditorBoard, Dispatch<SetStateAction<EditorBoard>>];
   mapElements: MapElement[];
+  spaces: ManagerSpace[];
 }
 
-const Editor = ({ mode, boardState, mapElements }: Props): JSX.Element => {
-  const [board, setBoard] = boardState;
+const Editor = ({ mode, boardState, mapElements, spaces }: Props): JSX.Element => {
+  const [board] = boardState;
 
   const { pressedKey } = useBindKeyPress();
   const [movable, setMovable] = useState(pressedKey === KEY.SPACE);
@@ -29,7 +30,10 @@ const Editor = ({ mode, boardState, mapElements }: Props): JSX.Element => {
   return (
     <Board movable={movable} boardState={boardState} onMouseMove={onMouseMove}>
       {isDrawing && <Board.CursorRect coordinate={stickyCoordinate} size={EDITOR.GRID_SIZE} />}
-      <Board.MapElement mapElements={mapElements} />
+
+      {mapElements?.map((element, index) => (
+        <Board.MapElement key={`map-${index}`} mapElement={element} />
+      ))}
     </Board>
   );
 };
