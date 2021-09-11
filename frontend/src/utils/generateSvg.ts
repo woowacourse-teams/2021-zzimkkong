@@ -2,14 +2,14 @@ import { EDITOR } from 'constants/editor';
 import { WithOptional } from 'types/util';
 import { MapElement, ManagerSpace } from './../types/common';
 
-interface MapSVGData {
+interface MapSvgData {
   width: number;
   height: number;
   mapElements: WithOptional<MapElement, 'id'>[];
   spaces: WithOptional<ManagerSpace, 'id' | 'name' | 'description' | 'settings'>[];
 }
 
-const generateMapSVG = (mapElements: MapSVGData['mapElements']): string =>
+const generateMapSvg = (mapElements: MapSvgData['mapElements']): string =>
   mapElements
     .map((element) =>
       element.type === 'polyline'
@@ -35,7 +35,7 @@ const generateMapSVG = (mapElements: MapSVGData['mapElements']): string =>
     )
     .join('');
 
-const generateSpaceSVG = (spaces: MapSVGData['spaces']) =>
+const generateSpaceSvg = (spaces: MapSvgData['spaces']) =>
   spaces
     .map(
       ({ color, area }) => `
@@ -53,12 +53,12 @@ const generateSpaceSVG = (spaces: MapSVGData['spaces']) =>
     )
     .join('');
 
-export const generateSVG = ({
+export const generateSvg = ({
   width,
   height,
   mapElements,
   spaces,
-}: WithOptional<MapSVGData, 'spaces'>): string =>
+}: WithOptional<MapSvgData, 'spaces'>): string =>
   `
     <svg
       xmlns='http://www.w3.org/2000/svg'
@@ -67,8 +67,8 @@ export const generateSVG = ({
       height='${height}px'
       viewBox='0 0 ${width} ${height}'
     >
-      ${spaces ? generateSpaceSVG(spaces) : ''}
-      ${generateMapSVG(mapElements)}
+      ${spaces ? generateSpaceSvg(spaces) : ''}
+      ${generateMapSvg(mapElements)}
     </svg>
   `
     .replace(/(\r\n\t|\n|\r\t|\s{1,})/gm, ' ')

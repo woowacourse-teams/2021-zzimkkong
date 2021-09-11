@@ -1,13 +1,13 @@
 import { FormEventHandler, useEffect, useMemo, useRef } from 'react';
-import { PutManagerSpaceParams } from 'api/managerSpace';
+import { DeleteManagerSpaceParams, PutManagerSpaceParams } from 'api/managerSpace';
 import { ReactComponent as DeleteIcon } from 'assets/svg/delete.svg';
 import { ReactComponent as PaletteIcon } from 'assets/svg/palette.svg';
 import Button from 'components/Button/Button';
 import Input from 'components/Input/Input';
 import Toggle from 'components/Toggle/Toggle';
+import MESSAGE from 'constants/message';
 import { Area, Color, ManagerSpace, MapElement } from 'types/common';
-import { formatDate, formatTimeWithSecond } from 'utils/datetime';
-import { generateSVG } from 'utils/generateSvg';
+import { generateSvg } from 'utils/generateSvg';
 import { colorSelectOptions, SpaceFormValue, timeUnits } from '../data';
 import useFormContext from '../hooks/useFormContext';
 import { SpaceFormContext } from '../providers/SpaceFormProvider';
@@ -22,6 +22,7 @@ interface Props {
   selectedSpaceId: number | null;
   disabled: boolean;
   onUpdateSpace: (data: Omit<PutManagerSpaceParams, 'mapId'>) => void;
+  onDeleteSpace: (data: Omit<DeleteManagerSpaceParams, 'mapId'>) => void;
 }
 
 const Form = ({
@@ -30,6 +31,7 @@ const Form = ({
   selectedSpaceId,
   disabled,
   onUpdateSpace,
+  onDeleteSpace,
 }: Props): JSX.Element => {
   const nameInputRef = useRef<HTMLInputElement | null>(null);
 
@@ -51,10 +53,10 @@ const Form = ({
   const handleSubmit: FormEventHandler<HTMLFormElement> = (event) => {
     event.preventDefault();
 
-    const filteredSpaces = spaces.map((space) =>
+    const generatedSpaces = spaces.map((space) =>
       space.id === selectedSpaceId ? { area: values.area as Area, color: values.color } : space
     );
-    const mapImageSvg = generateSVG({ ...mapData, spaces: filteredSpaces });
+    const mapImageSvg = generateSvg({ ...mapData, spaces: generatedSpaces });
     const valuesForRequest = getRequestValues();
 
     if (selectedSpaceId !== null) {
@@ -70,7 +72,16 @@ const Form = ({
   };
 
   const handleDelete = () => {
-    //
+    if (selectedSpaceId === null) return;
+    if (!window.confirm(MESSAGE.MANAGER_SPACE.DELETE_SPACE_CONFIRM)) return;
+
+    const filteredSpaces = spaces.filter(({ id }) => id !== selectedSpaceId);
+    const mapImageSvg = generateSvg({ ...mapData, spaces: filteredSpaces });
+
+    onDeleteSpace({
+      spaceId: selectedSpaceId,
+      mapImageSvg,
+    });
   };
 
   useEffect(() => {

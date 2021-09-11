@@ -2,7 +2,12 @@ import { AxiosError } from 'axios';
 import { FormEventHandler, useMemo, useState } from 'react';
 import { useMutation } from 'react-query';
 import { useParams } from 'react-router-dom';
-import { putManagerSpace, PutManagerSpaceParams } from 'api/managerSpace';
+import {
+  deleteManagerSpace,
+  DeleteManagerSpaceParams,
+  putManagerSpace,
+  PutManagerSpaceParams,
+} from 'api/managerSpace';
 import { ReactComponent as PlusSmallIcon } from 'assets/svg/plus-small.svg';
 import Button from 'components/Button/Button';
 import Header from 'components/Header/Header';
@@ -65,8 +70,24 @@ const ManagerSpaceEditor = (): JSX.Element => {
     },
   });
 
+  const deleteSpace = useMutation(deleteManagerSpace, {
+    onSuccess: () => {
+      setSelectedSpaceId(null);
+      setMode(Mode.Default);
+
+      managerSpaces.refetch();
+      alert(MESSAGE.MANAGER_SPACE.SPACE_DELETED);
+    },
+    onError: (error: AxiosError<ErrorResponse>) => {
+      alert(error.response?.data.message ?? MESSAGE.MANAGER_SPACE.DELETE_UNEXPECTED_ERROR);
+    },
+  });
+
   const handleUpdateSpace = (data: Omit<PutManagerSpaceParams, 'mapId'>) =>
     updateSpace.mutate({ mapId: Number(mapId), ...data });
+
+  const handleDeleteSpace = (data: Omit<DeleteManagerSpaceParams, 'mapId'>) =>
+    deleteSpace.mutate({ mapId: Number(mapId), ...data });
 
   const handleAddSpace = () => {
     setMode(Mode.Rect);
@@ -114,6 +135,7 @@ const ManagerSpaceEditor = (): JSX.Element => {
                     selectedSpaceId={selectedSpaceId}
                     disabled={isDrawing}
                     onUpdateSpace={handleUpdateSpace}
+                    onDeleteSpace={handleDeleteSpace}
                   />
                 ) : (
                   <Styled.NoSpaceMessage>공간을 선택해주세요</Styled.NoSpaceMessage>
