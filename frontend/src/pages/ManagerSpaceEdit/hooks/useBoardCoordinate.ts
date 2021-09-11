@@ -11,8 +11,8 @@ const useBoardCoordinate = (
 } => {
   const [coordinate, setCoordinate] = useState<Coordinate>({ x: 0, y: 0 });
   const stickyCoordinate: Coordinate = {
-    x: Math.round(coordinate.x / EDITOR.GRID_SIZE) * EDITOR.GRID_SIZE,
-    y: Math.round(coordinate.y / EDITOR.GRID_SIZE) * EDITOR.GRID_SIZE,
+    x: Math.floor(coordinate.x / EDITOR.GRID_SIZE) * EDITOR.GRID_SIZE,
+    y: Math.floor(coordinate.y / EDITOR.GRID_SIZE) * EDITOR.GRID_SIZE,
   };
 
   const getSVGCoordinate = (event: React.MouseEvent<SVGElement>) => {
