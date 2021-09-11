@@ -3,11 +3,12 @@ import * as Styled from './FormTimeUnitSelect.styles';
 
 interface Props {
   timeUnits: string[];
+  name: string;
   selectedValue: string;
   onChange: ChangeEventHandler<HTMLInputElement>;
 }
 
-const FormTimeUnitSelect = ({ timeUnits, onChange, selectedValue }: Props): JSX.Element => {
+const FormTimeUnitSelect = ({ timeUnits, name, onChange, selectedValue }: Props): JSX.Element => {
   return (
     <Styled.Container>
       {timeUnits.map((timeUnit) => (
@@ -16,7 +17,7 @@ const FormTimeUnitSelect = ({ timeUnits, onChange, selectedValue }: Props): JSX.
             type="radio"
             checked={selectedValue === timeUnit}
             value={timeUnit}
-            name="reservationTimeUnit"
+            name={name}
             onChange={onChange}
             required
           />

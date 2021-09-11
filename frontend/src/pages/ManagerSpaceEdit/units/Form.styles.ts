@@ -75,8 +75,8 @@ export const InputWrapper = styled.div`
 
 export const InputMessage = styled.p`
   font-size: 0.75rem;
-  margin: 0.25rem 0.75rem;
-  color: ${({ theme }) => theme.gray[500]};
+  margin: 0.25rem 0.5rem;
+  color: ${({ theme }) => theme.gray[400]};
 `;
 
 export const Label = styled.div`

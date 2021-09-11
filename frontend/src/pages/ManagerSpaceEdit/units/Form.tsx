@@ -131,9 +131,7 @@ const Form = ({ spaces, selectedSpaceId, disabled }: Props): JSX.Element => {
                 required
               />
             </Styled.InputWrapper>
-            <Styled.InputMessage>
-              예약이 열리는 시간과 닫히는 시간을 설정할 수 있습니다.
-            </Styled.InputMessage>
+            <Styled.InputMessage>예약이 열릴 시간과 닫힐 시간을 설정해주세요.</Styled.InputMessage>
           </Styled.Row>
 
           <Styled.Row>
@@ -142,10 +140,41 @@ const Form = ({ spaces, selectedSpaceId, disabled }: Props): JSX.Element => {
               <FormTimeUnitSelect
                 timeUnits={timeUnits}
                 selectedValue={values.reservationTimeUnit}
+                name="reservationTimeUnit"
                 onChange={onChange}
               />
             </Styled.Fieldset>
-            <Styled.InputMessage>예약할 때의 시간 단위를 설정할 수 있습니다.</Styled.InputMessage>
+            <Styled.InputMessage>예약 시간의 단위를 설정해주세요.</Styled.InputMessage>
+          </Styled.Row>
+
+          <Styled.Row>
+            <Styled.InputWrapper>
+              <Input
+                type="number"
+                min="0"
+                max="1440"
+                step={values.reservationTimeUnit}
+                label="최소 예약 시간(분)"
+                value={values.reservationMinimumTimeUnit}
+                name="reservationMinimumTimeUnit"
+                onChange={onChange}
+                required
+              />
+              <Input
+                type="number"
+                min={values.reservationMinimumTimeUnit}
+                max="1440"
+                step={values.reservationTimeUnit}
+                label="최대 예약 시간(분)"
+                value={values.reservationMaximumTimeUnit}
+                name="reservationMaximumTimeUnit"
+                onChange={onChange}
+                required
+              />
+            </Styled.InputWrapper>
+            <Styled.InputMessage>
+              예약 가능한 최소 시간과 최대 시간을 설정해주세요.
+            </Styled.InputMessage>
           </Styled.Row>
         </Styled.ContentsContainer>
       </Styled.Section>

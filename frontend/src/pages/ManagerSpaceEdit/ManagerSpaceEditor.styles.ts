@@ -36,7 +36,7 @@ export const FormContainer = styled.div<FormContainerProps>`
   flex-direction: column;
   flex: 1;
   height: 100%;
-  min-width: 20rem;
+  min-width: 22rem;
   border: 1px solid ${({ theme }) => theme.gray[300]};
   border-radius: 0.25rem;
 
