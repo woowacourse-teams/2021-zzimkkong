@@ -13,7 +13,7 @@ const MapElement = ({ mapElements }: Props): JSX.Element | null => {
       {mapElements?.map((element) =>
         element.type === 'polyline' ? (
           <polyline
-            key={`${element.id}`}
+            key={`map-line-${element.id}`}
             points={element.points.join(' ')}
             stroke={element.stroke}
             strokeWidth={EDITOR.STROKE_WIDTH}
@@ -22,7 +22,7 @@ const MapElement = ({ mapElements }: Props): JSX.Element | null => {
           />
         ) : (
           <rect
-            key={`square-${element.id}`}
+            key={`map-rect-${element.id}`}
             x={element?.x}
             y={element?.y}
             width={element?.width}
