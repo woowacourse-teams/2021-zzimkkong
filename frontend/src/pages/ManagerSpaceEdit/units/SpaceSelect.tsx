@@ -29,7 +29,7 @@ const SpaceSelect = ({ spaces, selectedSpaceIdState, disabled, children }: Props
 
   return (
     <Styled.SpaceSelect>
-      <Styled.FormHeader>공간 선택</Styled.FormHeader>
+      <Styled.Title>공간 선택</Styled.Title>
       <Styled.SpaceSelectWrapper>
         <Select
           name="space"

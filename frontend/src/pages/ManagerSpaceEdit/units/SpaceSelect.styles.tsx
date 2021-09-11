@@ -1,5 +1,4 @@
 import styled from 'styled-components';
-import { Z_INDEX } from 'constants/style';
 
 export const SpaceSelect = styled.div`
   border-bottom: 1px solid ${({ theme }) => theme.gray[300]};
@@ -7,9 +6,9 @@ export const SpaceSelect = styled.div`
   position: relative;
 `;
 
-export const FormHeader = styled.h3`
-  font-size: 1.5rem;
-  margin-bottom: 1.625rem;
+export const Title = styled.h3`
+  font-size: 1.25rem;
+  margin-bottom: 1.5rem;
 `;
 
 export const SpaceSelectWrapper = styled.div`

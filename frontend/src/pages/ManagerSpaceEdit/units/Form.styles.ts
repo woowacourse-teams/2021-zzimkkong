@@ -8,38 +8,38 @@ export const Form = styled.form<FormContainerProps>`
   padding: 2rem 1.5rem;
   overflow-y: ${({ disabled }) => (disabled ? 'hidden' : 'auto')};
   flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
 `;
 
-export const FormHeader = styled.h3`
-  font-size: 1.5rem;
-  margin-bottom: 1.625rem;
+export const Section = styled.section``;
+
+export const Title = styled.h3`
+  font-size: 1.25rem;
 `;
 
-export const SpaceSettingHeader = styled.div`
+export const TitleContainer = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 1.75rem;
-
-  ${FormHeader} {
-    margin: 0;
-  }
+  margin-bottom: 1rem;
 `;
 
-export const FormRow = styled.div`
-  margin: 2rem 0;
-  position: relative;
+export const ContentsContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 1.375rem;
+`;
 
-  &:last-of-type {
-    margin-bottom: 0;
-  }
+export const Row = styled.div`
+  position: relative;
 `;
 
 export const ColorSelect = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin: 1.5rem 0;
 `;
 
 export const ColorInputLabel = styled.label`
@@ -62,4 +62,38 @@ export const ColorDotButton = styled.button`
   border: none;
   padding: 0;
   cursor: pointer;
+`;
+
+export const InputWrapper = styled.div`
+  display: flex;
+  gap: 1rem;
+
+  label {
+    flex: 1;
+  }
+`;
+
+export const InputMessage = styled.p`
+  font-size: 0.75rem;
+  margin: 0.25rem 0.75rem;
+  color: ${({ theme }) => theme.gray[500]};
+`;
+
+export const Label = styled.div`
+  font-size: 0.75rem;
+  color: ${({ theme }) => theme.gray[500]};
+`;
+
+export const Fieldset = styled.div`
+  border: 1px solid ${({ theme }) => theme.gray[500]};
+  border-radius: 0.125rem;
+  padding: 1rem 0.75rem;
+
+  ${Label} {
+    position: absolute;
+    top: -0.375rem;
+    left: 0.75rem;
+    padding: 0 0.25rem;
+    background-color: ${({ theme }) => theme.white};
+  }
 `;

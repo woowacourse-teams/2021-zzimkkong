@@ -52,3 +52,5 @@ export const colorSelectOptions = [
   PALETTE.BLUE[900],
   PALETTE.PURPLE[500],
 ];
+
+export const timeUnits = ['5', '10', '30', '60'];
