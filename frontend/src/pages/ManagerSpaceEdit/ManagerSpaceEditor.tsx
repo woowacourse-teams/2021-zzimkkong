@@ -71,33 +71,33 @@ const ManagerSpaceEditor = (): JSX.Element => {
           <EditorHeader mapName={mapName} />
 
           <Styled.EditorMain>
-            <Styled.EditorContainer>
-              {isDrawing && <ShapeSelectToolbar mode={mode} setMode={setMode} />}
+            <SpaceFormProvider>
+              <Styled.EditorContainer>
+                {isDrawing && <ShapeSelectToolbar mode={mode} setMode={setMode} />}
 
-              <Editor
-                mode={mode}
-                boardState={[boardStatus, setBoardStatus]}
-                selectedSpaceIdState={[selectedSpaceId, setSelectedSpaceId]}
-                mapElements={mapElements}
-                spaces={spaces}
-              />
-            </Styled.EditorContainer>
+                <Editor
+                  mode={mode}
+                  boardState={[boardStatus, setBoardStatus]}
+                  selectedSpaceIdState={[selectedSpaceId, setSelectedSpaceId]}
+                  mapElements={mapElements}
+                  spaces={spaces}
+                />
+              </Styled.EditorContainer>
 
-            <Styled.FormContainer disabled={isDrawing}>
-              <SpaceSelect
-                spaces={spaces}
-                selectedSpaceIdState={[selectedSpaceId, setSelectedSpaceId]}
-                disabled={isDrawing}
-              >
-                <Styled.AddButtonWrapper>
-                  <Button variant="primary" shape="round" onClick={handleAddSpace}>
-                    <PlusSmallIcon /> 공간 추가
-                  </Button>
-                </Styled.AddButtonWrapper>
-              </SpaceSelect>
+              <Styled.FormContainer disabled={isDrawing}>
+                <SpaceSelect
+                  spaces={spaces}
+                  selectedSpaceIdState={[selectedSpaceId, setSelectedSpaceId]}
+                  disabled={isDrawing}
+                >
+                  <Styled.AddButtonWrapper>
+                    <Button variant="primary" shape="round" onClick={handleAddSpace}>
+                      <PlusSmallIcon /> 공간 추가
+                    </Button>
+                  </Styled.AddButtonWrapper>
+                </SpaceSelect>
 
-              {selectedSpaceId !== null || isDrawing ? (
-                <SpaceFormProvider>
+                {selectedSpaceId !== null || isDrawing ? (
                   <Form
                     spaces={spaces}
                     selectedSpaceId={selectedSpaceId}
@@ -105,11 +105,11 @@ const ManagerSpaceEditor = (): JSX.Element => {
                     onSubmit={handleSubmit}
                     onDelete={handleDelete}
                   />
-                </SpaceFormProvider>
-              ) : (
-                <Styled.NoSpaceMessage>공간을 선택해주세요</Styled.NoSpaceMessage>
-              )}
-            </Styled.FormContainer>
+                ) : (
+                  <Styled.NoSpaceMessage>공간을 선택해주세요</Styled.NoSpaceMessage>
+                )}
+              </Styled.FormContainer>
+            </SpaceFormProvider>
           </Styled.EditorMain>
         </Styled.Page>
       </Layout>

@@ -4,6 +4,8 @@ import { EditorBoard, ManagerSpace, MapElement } from 'types/common';
 import { SpaceEditorMode as Mode } from '../constants';
 import useBindKeyPress from '../hooks/useBindKeyPress';
 import useBoardCoordinate from '../hooks/useBoardCoordinate';
+import useFormContext from '../hooks/useFormContext';
+import { SpaceFormContext } from '../providers/SpaceFormProvider';
 import Board from './Board';
 
 interface Props {
@@ -27,6 +29,7 @@ const Editor = ({
   const { pressedKey } = useBindKeyPress();
   const [movable, setMovable] = useState(pressedKey === KEY.SPACE);
 
+  const { values } = useFormContext(SpaceFormContext);
   const { coordinate, stickyCoordinate, onMouseMove } = useBoardCoordinate(board);
 
   const isDrawing = mode === Mode.Rect && !movable;
@@ -48,7 +51,11 @@ const Editor = ({
       {spaces?.map((space, index) => (
         <Board.Space
           key={`space-${index}`}
-          space={space}
+          space={
+            space.id === selectedSpaceId
+              ? { ...space, name: values.name, color: values.color }
+              : space
+          }
           drawing={isDrawing}
           selected={space.id === selectedSpaceId}
           onClick={() => handleClickSpace(space.id)}
