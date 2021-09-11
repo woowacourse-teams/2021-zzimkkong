@@ -32,9 +32,7 @@ export const ContentsContainer = styled.div`
   gap: 1.375rem;
 `;
 
-export const Row = styled.div`
-  position: relative;
-`;
+export const Row = styled.div``;
 
 export const ColorSelect = styled.div`
   display: flex;
@@ -85,9 +83,11 @@ export const Label = styled.div`
 `;
 
 export const Fieldset = styled.div`
+  position: relative;
   border: 1px solid ${({ theme }) => theme.gray[500]};
   border-radius: 0.125rem;
   padding: 1rem 0.75rem;
+  margin-top: 0.375rem;
 
   ${Label} {
     position: absolute;
