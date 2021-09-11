@@ -53,3 +53,11 @@ export const FormContainer = styled.div<FormContainerProps>`
     z-index: ${Z_INDEX.MODAL_OVERLAY};
   }
 `;
+
+export const AddButtonWrapper = styled.div`
+  display: inline-block;
+  position: absolute;
+  right: 1.5rem;
+  bottom: -1.25rem;
+  z-index: ${Z_INDEX.SPACE_ADD_BUTTON};
+`;

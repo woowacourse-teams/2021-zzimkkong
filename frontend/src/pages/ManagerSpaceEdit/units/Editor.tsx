@@ -9,19 +9,26 @@ import Board from './Board';
 interface Props {
   mode: Mode;
   boardState: [EditorBoard, Dispatch<SetStateAction<EditorBoard>>];
+  selectedSpaceIdState: [number | null, Dispatch<SetStateAction<number | null>>];
   mapElements: MapElement[];
   spaces: ManagerSpace[];
 }
 
-const Editor = ({ mode, boardState, mapElements, spaces }: Props): JSX.Element => {
+const Editor = ({
+  mode,
+  boardState,
+  selectedSpaceIdState,
+  mapElements,
+  spaces,
+}: Props): JSX.Element => {
   const [board] = boardState;
+  const [selectedSpaceId, setSelectedSpaceId] = selectedSpaceIdState;
 
   const { pressedKey } = useBindKeyPress();
   const [movable, setMovable] = useState(pressedKey === KEY.SPACE);
 
   const { coordinate, stickyCoordinate, onMouseMove } = useBoardCoordinate(board);
 
-  const [selectedSpaceId, setSelectedSpaceId] = useState<number | null>(null);
   const isDrawing = mode === Mode.Rect && !movable;
 
   const handleClickSpace = (id: number) => {

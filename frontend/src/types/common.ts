@@ -3,7 +3,10 @@ import { MapElementType } from './editor';
 
 export type Color = string;
 
-export type Order = 'ascending' | 'descending';
+export enum Order {
+  Ascending = 'ascending',
+  Descending = 'descending',
+}
 
 export interface Coordinate {
   x: number;

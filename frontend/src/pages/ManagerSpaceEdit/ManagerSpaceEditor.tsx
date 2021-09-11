@@ -1,5 +1,7 @@
-import { useMemo } from 'react';
+import { useMemo, useState } from 'react';
 import { useParams } from 'react-router-dom';
+import { ReactComponent as PlusSmallIcon } from 'assets/svg/plus-small.svg';
+import Button from 'components/Button/Button';
 import Header from 'components/Header/Header';
 import Layout from 'components/Layout/Layout';
 import { BOARD } from 'constants/editor';
@@ -15,6 +17,7 @@ import useSpaceEditorMode from './hooks/useSpaceEditorMode';
 import Editor from './units/Editor';
 import EditorHeader from './units/EditorHeader';
 import ShapeSelectToolbar from './units/ShapeSelectToolbar';
+import SpaceSelect from './units/SpaceSelect';
 
 const ManagerSpaceEditor = (): JSX.Element => {
   const { mapId } = useParams<{ mapId: string }>();
@@ -43,8 +46,13 @@ const ManagerSpaceEditor = (): JSX.Element => {
 
   const [mode, setMode] = useSpaceEditorMode();
   const [boardStatus, setBoardStatus] = useBoardStatus({ width, height });
+  const [selectedSpaceId, setSelectedSpaceId] = useState<number | null>(null);
 
   const isDrawing = mode === Mode.Rect;
+
+  const handleAddSpace = () => {
+    setMode(Mode.Rect);
+  };
 
   return (
     <>
@@ -60,12 +68,25 @@ const ManagerSpaceEditor = (): JSX.Element => {
               <Editor
                 mode={mode}
                 boardState={[boardStatus, setBoardStatus]}
+                selectedSpaceIdState={[selectedSpaceId, setSelectedSpaceId]}
                 mapElements={mapElements}
                 spaces={spaces}
               />
             </Styled.EditorContainer>
 
-            <Styled.FormContainer disabled={mode !== Mode.Form}></Styled.FormContainer>
+            <Styled.FormContainer disabled={isDrawing}>
+              <SpaceSelect
+                spaces={spaces}
+                selectedSpaceIdState={[selectedSpaceId, setSelectedSpaceId]}
+                disabled={isDrawing}
+              >
+                <Styled.AddButtonWrapper>
+                  <Button variant="primary" shape="round" onClick={handleAddSpace}>
+                    <PlusSmallIcon /> 공간 추가
+                  </Button>
+                </Styled.AddButtonWrapper>
+              </SpaceSelect>
+            </Styled.FormContainer>
           </Styled.EditorMain>
         </Styled.Page>
       </Layout>
