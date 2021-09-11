@@ -56,7 +56,7 @@ const FormWeekdaySelect = ({ onChange, enabledWeekdays }: Props): JSX.Element =>
   return (
     <Styled.Container>
       {displayOrder.map(({ displayName, inputName }) => (
-        <Styled.Label>
+        <Styled.Label key={`weekday-select-${inputName}`}>
           <Styled.DisplayName>{displayName}</Styled.DisplayName>
           <input
             type="checkbox"
