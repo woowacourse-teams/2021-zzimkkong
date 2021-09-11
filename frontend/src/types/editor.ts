@@ -11,3 +11,8 @@ export enum MapElementType {
   Polyline = 'polyline',
   Rect = 'rect',
 }
+
+export enum DrawingAreaShape {
+  Rect = 'rect',
+  Polygon = 'polygon',
+}

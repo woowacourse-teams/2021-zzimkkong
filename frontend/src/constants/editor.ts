@@ -1,18 +1,5 @@
 import PALETTE from './palette';
 
-export enum Mode {
-  SELECT = 'select',
-  MOVE = 'move',
-  LINE = 'line',
-  POLYLINE = 'polyline',
-  DECORATION = 'decoration',
-}
-
-export enum DrawingAreaShape {
-  RECT = 'rect',
-  POLYGON = 'polygon',
-}
-
 export const MAP_COLOR_PALETTE = [
   PALETTE.BLACK[400],
   PALETTE.GRAY[400],

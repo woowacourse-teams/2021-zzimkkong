@@ -14,7 +14,7 @@ export interface SpaceProviderValue {
   onChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
   onCancel: () => void;
   setValues: (nextValue: SpaceFormValue) => void;
-  setArea: Dispatch<SetStateAction<Area | null>>;
+  setArea: (nextArea: Area) => void;
   getRequestValues: () => {
     space: {
       name: string;
@@ -54,6 +54,12 @@ const SpaceFormProvider = ({ children }: Props): JSX.Element => {
     delete (nextValues as WithOptional<SpaceFormValue, 'area'>).area;
 
     setSpaceFormValues(nextValues);
+  };
+
+  const updateArea = (nextArea: Area) => {
+    setArea(nextArea);
+    setSpaceFormValues(initialSpaceFormValue);
+    setEnabledWeekdays(initialEnabledWeekdays);
   };
 
   const getRequestValues = () => {
@@ -107,7 +113,7 @@ const SpaceFormProvider = ({ children }: Props): JSX.Element => {
 
   return (
     <SpaceFormContext.Provider
-      value={{ values, onChange, onCancel, setValues, setArea, getRequestValues }}
+      value={{ values, onChange, onCancel, setValues, setArea: updateArea, getRequestValues }}
     >
       {children}
     </SpaceFormContext.Provider>

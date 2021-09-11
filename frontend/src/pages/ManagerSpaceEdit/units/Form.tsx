@@ -1,4 +1,4 @@
-import { FormEventHandler, useEffect, useMemo, useRef } from 'react';
+import { Dispatch, FormEventHandler, SetStateAction, useEffect, useMemo, useRef } from 'react';
 import { DeleteManagerSpaceParams, PutManagerSpaceParams } from 'api/managerSpace';
 import { ReactComponent as DeleteIcon } from 'assets/svg/delete.svg';
 import { ReactComponent as PaletteIcon } from 'assets/svg/palette.svg';
@@ -8,6 +8,7 @@ import Toggle from 'components/Toggle/Toggle';
 import MESSAGE from 'constants/message';
 import { Area, Color, ManagerSpace, MapElement } from 'types/common';
 import { generateSvg } from 'utils/generateSvg';
+import { SpaceEditorMode as Mode } from '../constants';
 import { colorSelectOptions, SpaceFormValue, timeUnits } from '../data';
 import useFormContext from '../hooks/useFormContext';
 import { SpaceFormContext } from '../providers/SpaceFormProvider';
@@ -17,6 +18,7 @@ import FormTimeUnitSelect from './FormTimeUnitSelect';
 import FormWeekdaySelect from './FormWeekdaySelect';
 
 interface Props {
+  modeState: [Mode, Dispatch<SetStateAction<Mode>>];
   mapData: { width: number; height: number; mapElements: MapElement[] };
   spaces: ManagerSpace[];
   selectedSpaceId: number | null;
@@ -26,6 +28,7 @@ interface Props {
 }
 
 const Form = ({
+  modeState,
   mapData,
   spaces,
   selectedSpaceId,
@@ -34,6 +37,8 @@ const Form = ({
   onDeleteSpace,
 }: Props): JSX.Element => {
   const nameInputRef = useRef<HTMLInputElement | null>(null);
+
+  const [mode, setMode] = modeState;
 
   const { values, onChange, onCancel, setValues, getRequestValues } =
     useFormContext(SpaceFormContext);
@@ -84,6 +89,12 @@ const Form = ({
     });
   };
 
+  const handleCancel = () => {
+    onCancel();
+
+    setMode(Mode.Default);
+  };
+
   useEffect(() => {
     if (selectedSpaceId === null) return;
 
@@ -104,6 +115,12 @@ const Form = ({
     });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectedSpaceId, spacesObj]);
+
+  useEffect(() => {
+    if (mode !== Mode.Form) return;
+
+    nameInputRef.current?.focus();
+  }, [mode, selectedSpaceId]);
 
   return (
     <Styled.Form onSubmit={handleSubmit} disabled={disabled}>
@@ -245,7 +262,7 @@ const Form = ({
               </Styled.FormSubmitContainer>
             ) : (
               <Styled.FormSubmitContainer>
-                <Button type="button" variant="text" onClick={onCancel}>
+                <Button type="button" variant="text" onClick={handleCancel}>
                   취소
                 </Button>
                 <Button variant="primary">공간 추가</Button>

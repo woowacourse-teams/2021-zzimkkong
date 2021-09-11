@@ -1,4 +1,4 @@
-import { DrawingAreaShape } from 'constants/editor';
+import { DrawingAreaShape } from 'types/editor';
 import { MapElementType } from './editor';
 
 export type Color = string;

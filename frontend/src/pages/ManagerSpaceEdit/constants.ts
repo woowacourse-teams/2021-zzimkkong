@@ -3,5 +3,6 @@ export enum SpaceEditorMode {
   Move = 'move',
   Zoom = 'zoom',
   Rect = 'rect',
+  Polygon = 'polygon',
   Form = 'form',
 }

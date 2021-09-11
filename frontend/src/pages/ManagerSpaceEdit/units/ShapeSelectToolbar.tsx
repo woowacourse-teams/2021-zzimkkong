@@ -1,6 +1,8 @@
 import { ReactComponent as CloseIcon } from 'assets/svg/close.svg';
 import { ReactComponent as RectIcon } from 'assets/svg/rect.svg';
 import { SpaceEditorMode as Mode } from '../constants';
+import useFormContext from '../hooks/useFormContext';
+import { SpaceFormContext } from '../providers/SpaceFormProvider';
 import * as Styled from './ShapeSelectToolbar.styles';
 
 interface Props {
@@ -9,9 +11,16 @@ interface Props {
 }
 
 const ShapeSelectToolbar = ({ mode, setMode }: Props): JSX.Element => {
+  const { onCancel } = useFormContext(SpaceFormContext);
+
+  const handleCancel = () => {
+    onCancel();
+    setMode(Mode.Default);
+  };
+
   return (
     <Styled.Container>
-      <Styled.ToolbarButton text="취소" onClick={() => setMode(Mode.Default)}>
+      <Styled.ToolbarButton text="취소" onClick={handleCancel}>
         <CloseIcon />
       </Styled.ToolbarButton>
       <Styled.ToolbarButton

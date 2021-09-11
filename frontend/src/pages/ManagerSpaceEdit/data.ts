@@ -1,6 +1,7 @@
 import PALETTE from 'constants/palette';
 import { Area } from 'types/common';
 import { formatDate, formatTimeWithSecond } from 'utils/datetime';
+import { SpaceEditorMode } from './constants';
 
 export interface SpaceFormValue {
   name: string;
@@ -56,3 +57,5 @@ export const colorSelectOptions = [
 ];
 
 export const timeUnits = ['5', '10', '30', '60'];
+
+export const drawingModes = [SpaceEditorMode.Rect, SpaceEditorMode.Polygon];

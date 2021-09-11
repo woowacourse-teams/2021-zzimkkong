@@ -1,15 +1,16 @@
 import { ManagerSpace } from 'types/common';
+import { WithOptional } from 'types/util';
 import * as Styled from './BoardSpace.styles';
 
 interface Props {
-  space: ManagerSpace;
+  space: WithOptional<ManagerSpace, 'id' | 'description' | 'settings'>;
   drawing: boolean;
   selected: boolean;
-  onClick: (id: number) => void;
+  onClick?: () => void;
 }
 
 const BoardSpace = ({ space, drawing, selected, onClick }: Props): JSX.Element => {
-  const { id, color, area, name } = space;
+  const { color, area, name } = space;
 
   return (
     <g>
@@ -19,7 +20,7 @@ const BoardSpace = ({ space, drawing, selected, onClick }: Props): JSX.Element =
         width={area.width}
         height={area.height}
         fill={color}
-        onClick={() => onClick(id)}
+        onClick={onClick}
         disabled={drawing || selected}
         selected={selected}
       />

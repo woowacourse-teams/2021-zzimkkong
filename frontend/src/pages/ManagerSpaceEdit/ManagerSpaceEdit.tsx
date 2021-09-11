@@ -28,7 +28,7 @@ import Layout from 'components/Layout/Layout';
 import Modal from 'components/Modal/Modal';
 import Select from 'components/Select/Select';
 import Toggle from 'components/Toggle/Toggle';
-import { DrawingAreaShape, EDITOR, KEY } from 'constants/editor';
+import { EDITOR, KEY } from 'constants/editor';
 import MESSAGE from 'constants/message';
 import PALETTE from 'constants/palette';
 import PATH from 'constants/path';
@@ -47,6 +47,7 @@ import {
   Preset,
   SpaceArea,
 } from 'types/common';
+import { DrawingAreaShape } from 'types/editor';
 import { ErrorResponse } from 'types/response';
 import { formatDate, formatTimeWithSecond } from 'utils/datetime';
 import * as Styled from './ManagerSpaceEdit.styles';
@@ -192,7 +193,7 @@ const ManagerSpaceEdit = (): JSX.Element => {
 
   const [isDrawingArea, setDrawingArea] = useState(false);
   const [isAddingSpace, setAddingSpace] = useState(false);
-  const [drawingAreaShape, setDrawingAreaShape] = useState<DrawingAreaShape>(DrawingAreaShape.RECT);
+  const [drawingAreaShape, setDrawingAreaShape] = useState<DrawingAreaShape>(DrawingAreaShape.Rect);
   const [area, setArea] = useState<SpaceArea | null>(null);
 
   const [spaceName, onChangeSpaceName, setSpaceName] = useInput('');
@@ -251,7 +252,7 @@ const ManagerSpaceEdit = (): JSX.Element => {
 
   const [drawingStatus, setDrawingStatus] = useState<DrawingStatus>({});
   const [guideArea, setGuideArea] = useState<SpaceArea>({
-    shape: DrawingAreaShape.RECT,
+    shape: DrawingAreaShape.Rect,
     x: 0,
     y: 0,
     width: 0,
@@ -351,7 +352,7 @@ const ManagerSpaceEdit = (): JSX.Element => {
 
   const initializeDrawingStatus = useCallback(() => {
     setDrawingStatus({});
-    setGuideArea({ shape: DrawingAreaShape.RECT, x: 0, y: 0, width: 0, height: 0 });
+    setGuideArea({ shape: DrawingAreaShape.Rect, x: 0, y: 0, width: 0, height: 0 });
   }, []);
 
   const initializeSpaceAddForm = useCallback(() => {
@@ -586,7 +587,7 @@ const ManagerSpaceEdit = (): JSX.Element => {
     const height = Math.abs(startY - endY) + EDITOR.GRID_SIZE;
 
     setArea({
-      shape: DrawingAreaShape.RECT,
+      shape: DrawingAreaShape.Rect,
       x: startX,
       y: startY,
       width,
@@ -948,8 +949,8 @@ const ManagerSpaceEdit = (): JSX.Element => {
                   </Styled.ToolbarButton>
                   <Styled.ToolbarButton
                     text="사각형"
-                    selected={drawingAreaShape === DrawingAreaShape.RECT}
-                    onClick={() => setDrawingAreaShape(DrawingAreaShape.RECT)}
+                    selected={drawingAreaShape === DrawingAreaShape.Rect}
+                    onClick={() => setDrawingAreaShape(DrawingAreaShape.Rect)}
                   >
                     <RectIcon />
                   </Styled.ToolbarButton>
@@ -1058,7 +1059,7 @@ const ManagerSpaceEdit = (): JSX.Element => {
                       {/* Note: 현재 추가 혹은 삭제 중인 공간의 영역 */}
                       {area && (
                         <g>
-                          {area.shape === DrawingAreaShape.RECT && (
+                          {area.shape === DrawingAreaShape.Rect && (
                             <rect
                               x={area.x}
                               y={area.y}

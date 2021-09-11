@@ -1,5 +1,5 @@
 import { AxiosError } from 'axios';
-import { FormEventHandler, useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { useMutation } from 'react-query';
 import { useParams } from 'react-router-dom';
 import {
@@ -21,6 +21,7 @@ import { ManagerSpace, MapDrawing, SpaceArea } from 'types/common';
 import { ErrorResponse } from 'types/response';
 import * as Styled from './ManagerSpaceEditor.styles';
 import { SpaceEditorMode as Mode } from './constants';
+import { drawingModes } from './data';
 import useBoardStatus from './hooks/useBoardStatus';
 import SpaceFormProvider from './providers/SpaceFormProvider';
 import Editor from './units/Editor';
@@ -58,7 +59,7 @@ const ManagerSpaceEditor = (): JSX.Element => {
   const [board, setBoard] = useBoardStatus({ width, height });
   const [selectedSpaceId, setSelectedSpaceId] = useState<number | null>(null);
 
-  const isDrawing = mode === Mode.Rect;
+  const isDrawingMode = drawingModes.includes(mode);
 
   const updateSpace = useMutation(putManagerSpace, {
     onSuccess: () => {
@@ -94,6 +95,12 @@ const ManagerSpaceEditor = (): JSX.Element => {
     setSelectedSpaceId(null);
   };
 
+  useEffect(() => {
+    if (selectedSpaceId === null) return;
+
+    setMode(Mode.Form);
+  }, [selectedSpaceId]);
+
   return (
     <>
       <Header />
@@ -104,10 +111,10 @@ const ManagerSpaceEditor = (): JSX.Element => {
           <Styled.EditorMain>
             <SpaceFormProvider>
               <Styled.EditorContainer>
-                {isDrawing && <ShapeSelectToolbar mode={mode} setMode={setMode} />}
+                {isDrawingMode && <ShapeSelectToolbar mode={mode} setMode={setMode} />}
 
                 <Editor
-                  mode={mode}
+                  modeState={[mode, setMode]}
                   boardState={[board, setBoard]}
                   selectedSpaceIdState={[selectedSpaceId, setSelectedSpaceId]}
                   mapElements={mapElements}
@@ -115,11 +122,11 @@ const ManagerSpaceEditor = (): JSX.Element => {
                 />
               </Styled.EditorContainer>
 
-              <Styled.FormContainer disabled={isDrawing}>
+              <Styled.FormContainer disabled={isDrawingMode}>
                 <SpaceSelect
                   spaces={spaces}
                   selectedSpaceIdState={[selectedSpaceId, setSelectedSpaceId]}
-                  disabled={isDrawing}
+                  disabled={isDrawingMode}
                 >
                   <Styled.AddButtonWrapper>
                     <Button variant="primary" shape="round" onClick={handleAddSpace}>
@@ -128,12 +135,13 @@ const ManagerSpaceEditor = (): JSX.Element => {
                   </Styled.AddButtonWrapper>
                 </SpaceSelect>
 
-                {selectedSpaceId !== null || isDrawing ? (
+                {mode === Mode.Form ? (
                   <Form
+                    modeState={[mode, setMode]}
                     mapData={{ width: board.width, height: board.height, mapElements }}
                     spaces={spaces}
                     selectedSpaceId={selectedSpaceId}
-                    disabled={isDrawing}
+                    disabled={isDrawingMode}
                     onUpdateSpace={handleUpdateSpace}
                     onDeleteSpace={handleDeleteSpace}
                   />
