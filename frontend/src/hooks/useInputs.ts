@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 
-const useInputs = <T = Record<string, string>>(
+const useInputs = <T = Record<string, string | boolean>>(
   initialValues: T
 ): [
   T,
@@ -9,10 +9,18 @@ const useInputs = <T = Record<string, string>>(
 ] => {
   const [values, setValues] = useState<T>(initialValues);
 
+  const getValue = (event: React.ChangeEvent<HTMLInputElement>) => {
+    if (event.target.type === 'checkbox') {
+      return event.target.checked;
+    }
+
+    return event.target.value;
+  };
+
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setValues((prevValues) => ({
       ...prevValues,
-      [event.target.name]: event.target.value,
+      [event.target.name]: getValue(event),
     }));
   };
 
