@@ -6,7 +6,8 @@ import { BOARD } from 'constants/editor';
 import MESSAGE from 'constants/message';
 import useListenManagerMainState from 'hooks/useListenManagerMainState';
 import useManagerMap from 'hooks/useManagerMap';
-import { MapDrawing } from 'types/common';
+import useManagerSpaces from 'hooks/useManagerSpaces';
+import { ManagerSpace, MapDrawing, SpaceArea } from 'types/common';
 import * as Styled from './ManagerSpaceEditor.styles';
 import { SpaceEditorMode as Mode } from './constants';
 import useBoardStatus from './hooks/useBoardStatus';
@@ -30,6 +31,16 @@ const ManagerSpaceEditor = (): JSX.Element => {
     }
   }, [map.data?.data.mapDrawing]);
 
+  const managerSpaces = useManagerSpaces({ mapId: Number(mapId) });
+  const spaces: ManagerSpace[] = useMemo(
+    () =>
+      managerSpaces.data?.data.spaces.map((space) => ({
+        ...space,
+        area: JSON.parse(space.area) as SpaceArea,
+      })) ?? [],
+    [managerSpaces.data?.data.spaces]
+  );
+
   const [mode, setMode] = useSpaceEditorMode();
   const [boardStatus, setBoardStatus] = useBoardStatus({ width, height });
 
@@ -50,6 +61,7 @@ const ManagerSpaceEditor = (): JSX.Element => {
                 mode={mode}
                 boardState={[boardStatus, setBoardStatus]}
                 mapElements={mapElements}
+                spaces={spaces}
               />
             </Styled.EditorContainer>
 

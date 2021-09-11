@@ -21,7 +21,14 @@ const Editor = ({ mode, boardState, mapElements, spaces }: Props): JSX.Element =
 
   const { coordinate, stickyCoordinate, onMouseMove } = useBoardCoordinate(board);
 
+  const [selectedSpaceId, setSelectedSpaceId] = useState<number | null>(null);
   const isDrawing = mode === Mode.Rect && !movable;
+
+  const handleClickSpace = (id: number) => {
+    if (isDrawing) return;
+
+    setSelectedSpaceId(id);
+  };
 
   useEffect(() => {
     setMovable(pressedKey === KEY.SPACE);
@@ -30,6 +37,16 @@ const Editor = ({ mode, boardState, mapElements, spaces }: Props): JSX.Element =
   return (
     <Board movable={movable} boardState={boardState} onMouseMove={onMouseMove}>
       {isDrawing && <Board.CursorRect coordinate={stickyCoordinate} size={EDITOR.GRID_SIZE} />}
+
+      {spaces?.map((space, index) => (
+        <Board.Space
+          key={`space-${index}`}
+          space={space}
+          drawing={isDrawing}
+          selected={space.id === selectedSpaceId}
+          onClick={() => handleClickSpace(space.id)}
+        />
+      ))}
 
       {mapElements?.map((element, index) => (
         <Board.MapElement key={`map-${index}`} mapElement={element} />
