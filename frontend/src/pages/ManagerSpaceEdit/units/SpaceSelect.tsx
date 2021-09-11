@@ -2,6 +2,8 @@ import { Dispatch, ReactNode, SetStateAction, useMemo } from 'react';
 import Select from 'components/Select/Select';
 import { ManagerSpace } from 'types/common';
 import { sortSpaces } from 'utils/sort';
+import useFormContext from '../hooks/useFormContext';
+import { SpaceFormContext } from '../providers/SpaceFormProvider';
 import ColorDot from './ColorDot';
 import * as Styled from './SpaceSelect.styles';
 
@@ -15,6 +17,8 @@ interface Props {
 const SpaceSelect = ({ spaces, selectedSpaceIdState, disabled, children }: Props): JSX.Element => {
   const [selectedSpaceId, setSelectedSpaceId] = selectedSpaceIdState;
 
+  const { updateWithSpace } = useFormContext(SpaceFormContext);
+
   const sortedSpaces = useMemo(() => sortSpaces(spaces), [spaces]);
 
   const spaceOptions = sortedSpaces.map(({ id, name, color }) => ({
@@ -27,6 +31,13 @@ const SpaceSelect = ({ spaces, selectedSpaceIdState, disabled, children }: Props
     ),
   }));
 
+  const handleChangeSpace = (spaceId: number) => {
+    const selectedSpace = spaces.find((space) => space.id === spaceId);
+
+    updateWithSpace(selectedSpace as ManagerSpace);
+    setSelectedSpaceId(spaceId);
+  };
+
   return (
     <Styled.SpaceSelect>
       <Styled.Title>공간 선택</Styled.Title>
@@ -37,7 +48,7 @@ const SpaceSelect = ({ spaces, selectedSpaceIdState, disabled, children }: Props
           options={spaceOptions}
           disabled={disabled}
           value={`${selectedSpaceId ?? ''}`}
-          onChange={(id) => setSelectedSpaceId(Number(id))}
+          onChange={(id) => handleChangeSpace(Number(id))}
         />
       </Styled.SpaceSelectWrapper>
       {children}

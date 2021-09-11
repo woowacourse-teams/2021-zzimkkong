@@ -1,8 +1,8 @@
 import { ReactComponent as CloseIcon } from 'assets/svg/close.svg';
 import { ReactComponent as RectIcon } from 'assets/svg/rect.svg';
-import { SpaceEditorMode as Mode } from '../constants';
 import useFormContext from '../hooks/useFormContext';
 import { SpaceFormContext } from '../providers/SpaceFormProvider';
+import { SpaceEditorMode as Mode } from '../types';
 import * as Styled from './ShapeSelectToolbar.styles';
 
 interface Props {
@@ -11,10 +11,10 @@ interface Props {
 }
 
 const ShapeSelectToolbar = ({ mode, setMode }: Props): JSX.Element => {
-  const { onCancel } = useFormContext(SpaceFormContext);
+  const { resetForm } = useFormContext(SpaceFormContext);
 
   const handleCancel = () => {
-    onCancel();
+    resetForm();
     setMode(Mode.Default);
   };
 

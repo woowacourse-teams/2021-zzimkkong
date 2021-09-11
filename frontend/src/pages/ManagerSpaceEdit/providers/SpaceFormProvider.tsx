@@ -1,6 +1,6 @@
-import React, { createContext, Dispatch, ReactNode, SetStateAction, useState } from 'react';
+import React, { createContext, ReactNode, useState } from 'react';
 import useInputs from 'hooks/useInputs';
-import { Area } from 'types/common';
+import { Area, ManagerSpace } from 'types/common';
 import { WithOptional } from 'types/util';
 import { formatDate, formatTimeWithSecond } from 'utils/datetime';
 import { initialEnabledWeekdays, initialSpaceFormValue, SpaceFormValue } from '../data';
@@ -12,9 +12,10 @@ interface Props {
 export interface SpaceProviderValue {
   values: SpaceFormValue;
   onChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
-  onCancel: () => void;
+  resetForm: () => void;
+  updateArea: (nextArea: Area) => void;
+  updateWithSpace: (space: ManagerSpace) => void;
   setValues: (nextValue: SpaceFormValue) => void;
-  setArea: (nextArea: Area) => void;
   getRequestValues: () => {
     space: {
       name: string;
@@ -45,6 +46,24 @@ const SpaceFormProvider = ({ children }: Props): JSX.Element => {
   const [area, setArea] = useState<Area | null>(null);
 
   const values = { ...spaceFormValue, enabledWeekdays, area };
+
+  const updateWithSpace = (space: ManagerSpace) => {
+    const { name, color, area, settings } = space;
+
+    const enableWeekdays = settings.enabledDayOfWeek?.toLowerCase()?.split(',') ?? [];
+    const nextEnableWeekdays: { [key: string]: boolean } = {};
+    Object.keys(values.enabledWeekdays).forEach(
+      (weekday) => (nextEnableWeekdays[weekday] = enableWeekdays.includes(weekday))
+    );
+
+    setValues({
+      name,
+      color,
+      ...settings,
+      enabledWeekdays: nextEnableWeekdays as SpaceFormValue['enabledWeekdays'],
+      area,
+    });
+  };
 
   const setValues = (nextValues: SpaceFormValue) => {
     setEnabledWeekdays({ ...nextValues.enabledWeekdays });
@@ -107,13 +126,21 @@ const SpaceFormProvider = ({ children }: Props): JSX.Element => {
     onChangeSpaceFormValues(event);
   };
 
-  const onCancel = () => {
+  const resetForm = () => {
     setValues({ ...initialSpaceFormValue, enabledWeekdays: initialEnabledWeekdays, area: null });
   };
 
   return (
     <SpaceFormContext.Provider
-      value={{ values, onChange, onCancel, setValues, setArea: updateArea, getRequestValues }}
+      value={{
+        values,
+        onChange,
+        resetForm,
+        updateArea,
+        setValues,
+        updateWithSpace,
+        getRequestValues,
+      }}
     >
       {children}
     </SpaceFormContext.Provider>

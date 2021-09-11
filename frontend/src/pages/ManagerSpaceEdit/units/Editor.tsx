@@ -2,13 +2,13 @@ import { Dispatch, MouseEventHandler, SetStateAction, useEffect, useState } from
 import { EDITOR, KEY } from 'constants/editor';
 import PALETTE from 'constants/palette';
 import { Area, EditorBoard, ManagerSpace, MapElement } from 'types/common';
-import { SpaceEditorMode as Mode } from '../constants';
 import { drawingModes } from '../data';
 import useBindKeyPress from '../hooks/useBindKeyPress';
 import useBoardCoordinate from '../hooks/useBoardCoordinate';
 import useDrawingRect from '../hooks/useDrawingRect';
 import useFormContext from '../hooks/useFormContext';
 import { SpaceFormContext } from '../providers/SpaceFormProvider';
+import { SpaceEditorMode as Mode } from '../types';
 import Board from './Board';
 
 interface Props {
@@ -33,7 +33,7 @@ const Editor = ({
   const { pressedKey } = useBindKeyPress();
   const [movable, setMovable] = useState(pressedKey === KEY.SPACE);
 
-  const { values, setArea } = useFormContext(SpaceFormContext);
+  const { values, updateWithSpace, updateArea } = useFormContext(SpaceFormContext);
   const { stickyCoordinate, onMouseMove: updateCoordinate } = useBoardCoordinate(board);
 
   const { rect, startDrawingRect, updateRect, endDrawingRect } = useDrawingRect(stickyCoordinate);
@@ -41,10 +41,13 @@ const Editor = ({
 
   const isDrawingMode = drawingModes.includes(mode) && !movable;
 
-  const handleClickSpace = (id: number) => {
+  const handleClickSpace = (spaceId: number) => {
     if (isDrawingMode) return;
 
-    setSelectedSpaceId(id);
+    const selectedSpace = spaces.find((space) => space.id === spaceId);
+
+    updateWithSpace(selectedSpace as ManagerSpace);
+    setSelectedSpaceId(spaceId);
   };
 
   const handleDrawingStart = () => {
@@ -62,7 +65,7 @@ const Editor = ({
 
     if (mode === Mode.Rect) {
       updateRect();
-      setArea(rect as Area);
+      updateArea(rect as Area);
     }
   };
 
@@ -86,7 +89,7 @@ const Editor = ({
       onMouseDown={handleDrawingStart}
       onMouseUp={handleDrawingEnd}
     >
-      {values.area && (
+      {selectedSpaceId === null && values.area && (
         <Board.Space
           space={{
             name: values.name,

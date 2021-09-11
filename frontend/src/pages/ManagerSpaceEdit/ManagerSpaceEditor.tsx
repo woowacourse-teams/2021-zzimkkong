@@ -5,6 +5,8 @@ import { useParams } from 'react-router-dom';
 import {
   deleteManagerSpace,
   DeleteManagerSpaceParams,
+  postManagerSpace,
+  PostManagerSpaceParams,
   putManagerSpace,
   PutManagerSpaceParams,
 } from 'api/managerSpace';
@@ -20,15 +22,19 @@ import useManagerSpaces from 'hooks/useManagerSpaces';
 import { ManagerSpace, MapDrawing, SpaceArea } from 'types/common';
 import { ErrorResponse } from 'types/response';
 import * as Styled from './ManagerSpaceEditor.styles';
-import { SpaceEditorMode as Mode } from './constants';
 import { drawingModes } from './data';
 import useBoardStatus from './hooks/useBoardStatus';
 import SpaceFormProvider from './providers/SpaceFormProvider';
+import { SpaceEditorMode as Mode } from './types';
 import Editor from './units/Editor';
 import EditorHeader from './units/EditorHeader';
 import Form from './units/Form';
 import ShapeSelectToolbar from './units/ShapeSelectToolbar';
 import SpaceSelect from './units/SpaceSelect';
+
+interface CreateResponseHeaders {
+  location: string;
+}
 
 const ManagerSpaceEditor = (): JSX.Element => {
   const { mapId } = useParams<{ mapId: string }>();
@@ -61,6 +67,20 @@ const ManagerSpaceEditor = (): JSX.Element => {
 
   const isDrawingMode = drawingModes.includes(mode);
 
+  const createSpace = useMutation(postManagerSpace, {
+    onSuccess: async (response) => {
+      const { location } = response.headers as CreateResponseHeaders;
+      const newSpaceId = Number(location.split('/').pop() ?? '');
+
+      await managerSpaces.refetch();
+      setSelectedSpaceId(newSpaceId);
+      alert(MESSAGE.MANAGER_SPACE.SPACE_CREATED);
+    },
+    onError: (error: AxiosError<ErrorResponse>) => {
+      alert(error.response?.data.message ?? MESSAGE.MANAGER_SPACE.ADD_UNEXPECTED_ERROR);
+    },
+  });
+
   const updateSpace = useMutation(putManagerSpace, {
     onSuccess: () => {
       managerSpaces.refetch();
@@ -83,6 +103,9 @@ const ManagerSpaceEditor = (): JSX.Element => {
       alert(error.response?.data.message ?? MESSAGE.MANAGER_SPACE.DELETE_UNEXPECTED_ERROR);
     },
   });
+
+  const handleCreateSpace = (data: Omit<PostManagerSpaceParams, 'mapId'>) =>
+    createSpace.mutate({ mapId: Number(mapId), ...data });
 
   const handleUpdateSpace = (data: Omit<PutManagerSpaceParams, 'mapId'>) =>
     updateSpace.mutate({ mapId: Number(mapId), ...data });
@@ -142,6 +165,7 @@ const ManagerSpaceEditor = (): JSX.Element => {
                     spaces={spaces}
                     selectedSpaceId={selectedSpaceId}
                     disabled={isDrawingMode}
+                    onCreateSpace={handleCreateSpace}
                     onUpdateSpace={handleUpdateSpace}
                     onDeleteSpace={handleDeleteSpace}
                   />

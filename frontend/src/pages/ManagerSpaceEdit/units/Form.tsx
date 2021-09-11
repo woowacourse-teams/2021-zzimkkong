@@ -1,5 +1,9 @@
-import { Dispatch, FormEventHandler, SetStateAction, useEffect, useMemo, useRef } from 'react';
-import { DeleteManagerSpaceParams, PutManagerSpaceParams } from 'api/managerSpace';
+import { Dispatch, FormEventHandler, SetStateAction, useEffect, useRef } from 'react';
+import {
+  DeleteManagerSpaceParams,
+  PostManagerSpaceParams,
+  PutManagerSpaceParams,
+} from 'api/managerSpace';
 import { ReactComponent as DeleteIcon } from 'assets/svg/delete.svg';
 import { ReactComponent as PaletteIcon } from 'assets/svg/palette.svg';
 import Button from 'components/Button/Button';
@@ -7,11 +11,11 @@ import Input from 'components/Input/Input';
 import Toggle from 'components/Toggle/Toggle';
 import MESSAGE from 'constants/message';
 import { Area, Color, ManagerSpace, MapElement } from 'types/common';
-import { generateSvg } from 'utils/generateSvg';
-import { SpaceEditorMode as Mode } from '../constants';
-import { colorSelectOptions, SpaceFormValue, timeUnits } from '../data';
+import { generateSvg, MapSvgData } from 'utils/generateSvg';
+import { colorSelectOptions, timeUnits } from '../data';
 import useFormContext from '../hooks/useFormContext';
 import { SpaceFormContext } from '../providers/SpaceFormProvider';
+import { SpaceEditorMode as Mode } from '../types';
 import ColorDot from './ColorDot';
 import * as Styled from './Form.styles';
 import FormTimeUnitSelect from './FormTimeUnitSelect';
@@ -23,6 +27,7 @@ interface Props {
   spaces: ManagerSpace[];
   selectedSpaceId: number | null;
   disabled: boolean;
+  onCreateSpace: (data: Omit<PostManagerSpaceParams, 'mapId'>) => void;
   onUpdateSpace: (data: Omit<PutManagerSpaceParams, 'mapId'>) => void;
   onDeleteSpace: (data: Omit<DeleteManagerSpaceParams, 'mapId'>) => void;
 }
@@ -33,6 +38,7 @@ const Form = ({
   spaces,
   selectedSpaceId,
   disabled,
+  onCreateSpace,
   onUpdateSpace,
   onDeleteSpace,
 }: Props): JSX.Element => {
@@ -40,40 +46,49 @@ const Form = ({
 
   const [mode, setMode] = modeState;
 
-  const { values, onChange, onCancel, setValues, getRequestValues } =
+  const { values, onChange, resetForm, setValues, getRequestValues } =
     useFormContext(SpaceFormContext);
-
-  const spacesObj = useMemo(() => {
-    const result: { [key: string]: ManagerSpace } = {};
-
-    spaces.forEach((space) => (result[space.id] = space));
-
-    return result;
-  }, [spaces]);
 
   const setColor = (color: Color) => {
     setValues({ ...values, color });
   };
 
+  const getSpacesForSvg = (): MapSvgData['spaces'] => {
+    if (selectedSpaceId === null && values.area) {
+      return [...spaces, { area: values.area, color: values.color }];
+    }
+
+    return spaces.map((space) =>
+      space.id === selectedSpaceId ? { area: values.area as Area, color: values.color } : space
+    );
+  };
+
   const handleSubmit: FormEventHandler<HTMLFormElement> = (event) => {
     event.preventDefault();
 
-    const generatedSpaces = spaces.map((space) =>
-      space.id === selectedSpaceId ? { area: values.area as Area, color: values.color } : space
-    );
-    const mapImageSvg = generateSvg({ ...mapData, spaces: generatedSpaces });
+    const mapImageSvg = generateSvg({ ...mapData, spaces: getSpacesForSvg() });
     const valuesForRequest = getRequestValues();
 
-    if (selectedSpaceId !== null) {
-      onUpdateSpace({
-        spaceId: selectedSpaceId,
+    if (selectedSpaceId === null) {
+      onCreateSpace({
         space: {
           mapImageSvg,
           ...valuesForRequest.space,
           settingsRequest: { ...valuesForRequest.space.settingsRequest },
         },
       });
+
+      return;
     }
+
+    onUpdateSpace({
+      spaceId: selectedSpaceId,
+      space: {
+        mapImageSvg,
+        ...valuesForRequest.space,
+        settingsRequest: { ...valuesForRequest.space.settingsRequest },
+      },
+    });
   };
 
   const handleDelete = () => {
@@ -87,34 +102,15 @@ const Form = ({
       spaceId: selectedSpaceId,
       mapImageSvg,
     });
+
+    resetForm();
   };
 
   const handleCancel = () => {
-    onCancel();
+    resetForm();
 
     setMode(Mode.Default);
   };
-
-  useEffect(() => {
-    if (selectedSpaceId === null) return;
-
-    const { name, color, settings } = spacesObj[selectedSpaceId];
-
-    const enableWeekdays = settings.enabledDayOfWeek?.toLowerCase()?.split(',') ?? [];
-    const nextEnableWeekdays: { [key: string]: boolean } = {};
-    Object.keys(values.enabledWeekdays).forEach(
-      (weekday) => (nextEnableWeekdays[weekday] = enableWeekdays.includes(weekday))
-    );
-
-    setValues({
-      name,
-      color,
-      ...settings,
-      enabledWeekdays: nextEnableWeekdays as SpaceFormValue['enabledWeekdays'],
-      area: spacesObj[selectedSpaceId].area,
-    });
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [selectedSpaceId, spacesObj]);
 
   useEffect(() => {
     if (mode !== Mode.Form) return;

@@ -2,7 +2,7 @@ import { EDITOR } from 'constants/editor';
 import { WithOptional } from 'types/util';
 import { MapElement, ManagerSpace } from './../types/common';
 
-interface MapSvgData {
+export interface MapSvgData {
   width: number;
   height: number;
   mapElements: WithOptional<MapElement, 'id'>[];
