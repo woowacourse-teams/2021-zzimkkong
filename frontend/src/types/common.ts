@@ -47,7 +47,7 @@ interface SpaceSetting {
 }
 
 export interface Area {
-  shape: string;
+  shape: DrawingAreaShape;
   width: number;
   height: number;
   x: number;

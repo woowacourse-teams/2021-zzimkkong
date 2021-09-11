@@ -1,10 +1,13 @@
 import { FormEventHandler, useEffect, useMemo, useRef } from 'react';
+import { PutManagerSpaceParams } from 'api/managerSpace';
 import { ReactComponent as DeleteIcon } from 'assets/svg/delete.svg';
 import { ReactComponent as PaletteIcon } from 'assets/svg/palette.svg';
 import Button from 'components/Button/Button';
 import Input from 'components/Input/Input';
 import Toggle from 'components/Toggle/Toggle';
-import { Color, ManagerSpace } from 'types/common';
+import { Area, Color, ManagerSpace, MapElement } from 'types/common';
+import { formatDate, formatTimeWithSecond } from 'utils/datetime';
+import { generateSVG } from 'utils/generateSvg';
 import { colorSelectOptions, SpaceFormValue, timeUnits } from '../data';
 import useFormContext from '../hooks/useFormContext';
 import { SpaceFormContext } from '../providers/SpaceFormProvider';
@@ -14,17 +17,24 @@ import FormTimeUnitSelect from './FormTimeUnitSelect';
 import FormWeekdaySelect from './FormWeekdaySelect';
 
 interface Props {
+  mapData: { width: number; height: number; mapElements: MapElement[] };
   spaces: ManagerSpace[];
   selectedSpaceId: number | null;
   disabled: boolean;
-  onSubmit: FormEventHandler<HTMLFormElement>;
-  onDelete: () => void;
+  onUpdateSpace: (data: Omit<PutManagerSpaceParams, 'mapId'>) => void;
 }
 
-const Form = ({ spaces, selectedSpaceId, disabled, onSubmit, onDelete }: Props): JSX.Element => {
+const Form = ({
+  mapData,
+  spaces,
+  selectedSpaceId,
+  disabled,
+  onUpdateSpace,
+}: Props): JSX.Element => {
   const nameInputRef = useRef<HTMLInputElement | null>(null);
 
-  const { values, onChange, onCancel, setValues } = useFormContext(SpaceFormContext);
+  const { values, onChange, onCancel, setValues, getRequestValues } =
+    useFormContext(SpaceFormContext);
 
   const spacesObj = useMemo(() => {
     const result: { [key: string]: ManagerSpace } = {};
@@ -36,6 +46,31 @@ const Form = ({ spaces, selectedSpaceId, disabled, onSubmit, onDelete }: Props):
 
   const setColor = (color: Color) => {
     setValues({ ...values, color });
+  };
+
+  const handleSubmit: FormEventHandler<HTMLFormElement> = (event) => {
+    event.preventDefault();
+
+    const filteredSpaces = spaces.map((space) =>
+      space.id === selectedSpaceId ? { area: values.area as Area, color: values.color } : space
+    );
+    const mapImageSvg = generateSVG({ ...mapData, spaces: filteredSpaces });
+    const valuesForRequest = getRequestValues();
+
+    if (selectedSpaceId !== null) {
+      onUpdateSpace({
+        spaceId: selectedSpaceId,
+        space: {
+          mapImageSvg,
+          ...valuesForRequest.space,
+          settingsRequest: { ...valuesForRequest.space.settingsRequest },
+        },
+      });
+    }
+  };
+
+  const handleDelete = () => {
+    //
   };
 
   useEffect(() => {
@@ -53,16 +88,14 @@ const Form = ({ spaces, selectedSpaceId, disabled, onSubmit, onDelete }: Props):
       name,
       color,
       ...settings,
-      reservationTimeUnit: `${settings.reservationTimeUnit}`,
-      reservationMinimumTimeUnit: `${settings.reservationMinimumTimeUnit}`,
-      reservationMaximumTimeUnit: `${settings.reservationMaximumTimeUnit}`,
       enabledWeekdays: nextEnableWeekdays as SpaceFormValue['enabledWeekdays'],
+      area: spacesObj[selectedSpaceId].area,
     });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectedSpaceId, spacesObj]);
 
   return (
-    <Styled.Form onSubmit={onSubmit} disabled={disabled}>
+    <Styled.Form onSubmit={handleSubmit} disabled={disabled}>
       <Styled.Section>
         <Styled.TitleContainer>
           <Styled.Title>공간 설정</Styled.Title>
@@ -145,7 +178,7 @@ const Form = ({ spaces, selectedSpaceId, disabled, onSubmit, onDelete }: Props):
               <Styled.Label>예약 시간 단위</Styled.Label>
               <FormTimeUnitSelect
                 timeUnits={timeUnits}
-                selectedValue={values.reservationTimeUnit}
+                selectedValue={`${values.reservationTimeUnit}`}
                 name="reservationTimeUnit"
                 onChange={onChange}
               />
@@ -193,7 +226,7 @@ const Form = ({ spaces, selectedSpaceId, disabled, onSubmit, onDelete }: Props):
           <Styled.Row>
             {selectedSpaceId ? (
               <Styled.FormSubmitContainer>
-                <Styled.DeleteButton type="button" variant="text" onClick={onDelete}>
+                <Styled.DeleteButton type="button" variant="text" onClick={handleDelete}>
                   <DeleteIcon />
                   공간 삭제
                 </Styled.DeleteButton>

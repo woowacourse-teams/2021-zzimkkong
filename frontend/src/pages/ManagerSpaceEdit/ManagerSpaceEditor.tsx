@@ -1,5 +1,8 @@
+import { AxiosError } from 'axios';
 import { FormEventHandler, useMemo, useState } from 'react';
+import { useMutation } from 'react-query';
 import { useParams } from 'react-router-dom';
+import { putManagerSpace, PutManagerSpaceParams } from 'api/managerSpace';
 import { ReactComponent as PlusSmallIcon } from 'assets/svg/plus-small.svg';
 import Button from 'components/Button/Button';
 import Header from 'components/Header/Header';
@@ -10,6 +13,7 @@ import useListenManagerMainState from 'hooks/useListenManagerMainState';
 import useManagerMap from 'hooks/useManagerMap';
 import useManagerSpaces from 'hooks/useManagerSpaces';
 import { ManagerSpace, MapDrawing, SpaceArea } from 'types/common';
+import { ErrorResponse } from 'types/response';
 import * as Styled from './ManagerSpaceEditor.styles';
 import { SpaceEditorMode as Mode } from './constants';
 import useBoardStatus from './hooks/useBoardStatus';
@@ -46,21 +50,27 @@ const ManagerSpaceEditor = (): JSX.Element => {
   );
 
   const [mode, setMode] = useState<Mode>(Mode.Default);
-  const [boardStatus, setBoardStatus] = useBoardStatus({ width, height });
+  const [board, setBoard] = useBoardStatus({ width, height });
   const [selectedSpaceId, setSelectedSpaceId] = useState<number | null>(null);
 
   const isDrawing = mode === Mode.Rect;
 
+  const updateSpace = useMutation(putManagerSpace, {
+    onSuccess: () => {
+      managerSpaces.refetch();
+      alert(MESSAGE.MANAGER_SPACE.SPACE_SETTING_UPDATED);
+    },
+    onError: (error: AxiosError<ErrorResponse>) => {
+      alert(error.response?.data.message ?? MESSAGE.MANAGER_SPACE.EDIT_UNEXPECTED_ERROR);
+    },
+  });
+
+  const handleUpdateSpace = (data: Omit<PutManagerSpaceParams, 'mapId'>) =>
+    updateSpace.mutate({ mapId: Number(mapId), ...data });
+
   const handleAddSpace = () => {
     setMode(Mode.Rect);
-  };
-
-  const handleSubmit: FormEventHandler<HTMLFormElement> = () => {
-    //
-  };
-
-  const handleDelete = () => {
-    //
+    setSelectedSpaceId(null);
   };
 
   return (
@@ -77,7 +87,7 @@ const ManagerSpaceEditor = (): JSX.Element => {
 
                 <Editor
                   mode={mode}
-                  boardState={[boardStatus, setBoardStatus]}
+                  boardState={[board, setBoard]}
                   selectedSpaceIdState={[selectedSpaceId, setSelectedSpaceId]}
                   mapElements={mapElements}
                   spaces={spaces}
@@ -99,11 +109,11 @@ const ManagerSpaceEditor = (): JSX.Element => {
 
                 {selectedSpaceId !== null || isDrawing ? (
                   <Form
+                    mapData={{ width: board.width, height: board.height, mapElements }}
                     spaces={spaces}
                     selectedSpaceId={selectedSpaceId}
                     disabled={isDrawing}
-                    onSubmit={handleSubmit}
-                    onDelete={handleDelete}
+                    onUpdateSpace={handleUpdateSpace}
                   />
                 ) : (
                   <Styled.NoSpaceMessage>공간을 선택해주세요</Styled.NoSpaceMessage>

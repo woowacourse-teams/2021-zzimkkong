@@ -1,4 +1,5 @@
 import PALETTE from 'constants/palette';
+import { Area } from 'types/common';
 import { formatDate, formatTimeWithSecond } from 'utils/datetime';
 
 export interface SpaceFormValue {
@@ -6,9 +7,9 @@ export interface SpaceFormValue {
   color: string;
   availableStartTime: string;
   availableEndTime: string;
-  reservationTimeUnit: string;
-  reservationMinimumTimeUnit: string;
-  reservationMaximumTimeUnit: string;
+  reservationTimeUnit: string | number;
+  reservationMinimumTimeUnit: string | number;
+  reservationMaximumTimeUnit: string | number;
   reservationEnable: boolean;
   enabledWeekdays: {
     monday: boolean;
@@ -19,11 +20,12 @@ export interface SpaceFormValue {
     saturday: boolean;
     sunday: boolean;
   };
+  area: Area | null;
 }
 
 const today = formatDate(new Date());
 
-export const initialSpaceFormValue: Omit<SpaceFormValue, 'enabledWeekdays'> = {
+export const initialSpaceFormValue: Omit<SpaceFormValue, 'enabledWeekdays' | 'area'> = {
   reservationEnable: true,
   name: '',
   color: PALETTE.RED[500],
