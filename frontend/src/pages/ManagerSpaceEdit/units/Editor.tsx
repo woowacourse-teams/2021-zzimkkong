@@ -1,4 +1,4 @@
-import { Dispatch, SetStateAction, useEffect, useState } from 'react';
+import { Dispatch, SetStateAction, useEffect, useRef, useState } from 'react';
 import { EDITOR, KEY } from 'constants/editor';
 import { EditorBoard, MapElement } from 'types/common';
 import { SpaceEditorMode as Mode } from '../constants';

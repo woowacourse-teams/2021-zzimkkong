@@ -1,4 +1,4 @@
-import { Dispatch, ReactNode, SetStateAction, SVGAttributes } from 'react';
+import { Dispatch, ReactNode, SetStateAction, SVGAttributes, useEffect, useRef } from 'react';
 import PALETTE from 'constants/palette';
 import { EditorBoard } from 'types/common';
 import useBoardMove from '../hooks/useBoardMove';
@@ -15,13 +15,26 @@ interface Props extends SVGAttributes<SVGElement> {
 }
 
 const Board = ({ movable, boardState, children, ...props }: Props): JSX.Element => {
-  const [board] = boardState;
+  const editorRef = useRef<HTMLDivElement | null>(null);
+
+  const [board, setBoard] = boardState;
 
   const { onWheel } = useBoardZoom(boardState);
   const { moving, onMouseOut, onDragStart, onDrag, onDragEnd } = useBoardMove(boardState, movable);
 
+  useEffect(() => {
+    const editorWidth = editorRef.current ? editorRef.current.offsetWidth : 0;
+    const editorHeight = editorRef.current ? editorRef.current.offsetHeight : 0;
+
+    setBoard((prevState) => ({
+      ...prevState,
+      x: (editorWidth - board.width) / 2,
+      y: (editorHeight - board.height) / 2,
+    }));
+  }, [board.width, board.height, setBoard]);
+
   return (
-    <Styled.Editor>
+    <Styled.Editor ref={editorRef}>
       <Styled.BoardContainer
         xmlns="http://www.w3.org/2000/svg"
         version="1.1"
