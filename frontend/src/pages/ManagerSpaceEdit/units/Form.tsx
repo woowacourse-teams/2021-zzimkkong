@@ -1,8 +1,9 @@
 import { useEffect, useMemo, useRef } from 'react';
+import { ReactComponent as PaletteIcon } from 'assets/svg/palette.svg';
 import Input from 'components/Input/Input';
 import Toggle from 'components/Toggle/Toggle';
-import { ManagerSpace } from 'types/common';
-import { SpaceFormValue } from '../data';
+import { Color, ManagerSpace } from 'types/common';
+import { colorSelectOptions, SpaceFormValue } from '../data';
 import useFormContext from '../hooks/useFormContext';
 import { SpaceFormContext } from '../providers/SpaceFormProvider';
 import ColorDot from './ColorDot';
@@ -26,6 +27,10 @@ const Form = ({ spaces, selectedSpaceId, disabled }: Props): JSX.Element => {
 
     return result;
   }, [spaces]);
+
+  const setColor = (color: Color) => {
+    setValues({ ...values, color });
+  };
 
   useEffect(() => {
     if (selectedSpaceId === null) return;
@@ -74,6 +79,26 @@ const Form = ({ spaces, selectedSpaceId, disabled }: Props): JSX.Element => {
           ref={nameInputRef}
           required
         />
+      </Styled.FormRow>
+
+      <Styled.FormRow>
+        <Styled.ColorSelect>
+          <Styled.ColorInputLabel>
+            <PaletteIcon />
+            <Styled.ColorInput
+              type="color"
+              value={values.color}
+              name="color"
+              onChange={onChange}
+              required
+            />
+          </Styled.ColorInputLabel>
+          {colorSelectOptions.map((color) => (
+            <Styled.ColorDotButton key={color} type="button" onClick={() => setColor(color)}>
+              <ColorDot size="large" color={color} />
+            </Styled.ColorDotButton>
+          ))}
+        </Styled.ColorSelect>
       </Styled.FormRow>
     </Styled.Form>
   );

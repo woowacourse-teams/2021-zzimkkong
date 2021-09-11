@@ -34,3 +34,32 @@ export const FormRow = styled.div`
     margin-bottom: 0;
   }
 `;
+
+export const ColorSelect = styled.div`
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin: 1.5rem 0;
+`;
+
+export const ColorInputLabel = styled.label`
+  display: inline-block;
+  padding: 0.5rem;
+  border: 1px solid ${({ theme }) => theme.gray[500]};
+  border-radius: 0.125rem;
+  cursor: pointer;
+`;
+
+export const ColorInput = styled.input`
+  width: 0;
+  height: 0;
+  opacity: 0;
+  padding: 0;
+`;
+
+export const ColorDotButton = styled.button`
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+`;
