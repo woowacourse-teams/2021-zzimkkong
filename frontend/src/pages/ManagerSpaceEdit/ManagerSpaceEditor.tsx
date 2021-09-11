@@ -9,7 +9,6 @@ import useManagerMap from 'hooks/useManagerMap';
 import { MapDrawing } from 'types/common';
 import * as Styled from './ManagerSpaceEditor.styles';
 import { SpaceEditorMode as Mode } from './constants';
-import useBindKeyPress from './hooks/useBindKeyPress';
 import useBoardStatus from './hooks/useBoardStatus';
 import useSpaceEditorMode from './hooks/useSpaceEditorMode';
 import Editor from './units/Editor';
@@ -31,8 +30,7 @@ const ManagerSpaceEditor = (): JSX.Element => {
     }
   }, [map.data?.data.mapDrawing]);
 
-  const { pressedKey } = useBindKeyPress();
-  const [mode, setMode] = useSpaceEditorMode(pressedKey);
+  const [mode, setMode] = useSpaceEditorMode();
   const [boardStatus, setBoardStatus] = useBoardStatus({ width, height });
 
   const isDrawing = mode === Mode.Rect;

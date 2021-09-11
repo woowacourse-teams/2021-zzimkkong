@@ -1,4 +1,4 @@
-import { Dispatch, ReactNode, SetStateAction, SVGAttributes, useState } from 'react';
+import { Dispatch, ReactNode, SetStateAction, SVGAttributes } from 'react';
 import PALETTE from 'constants/palette';
 import { EditorBoard } from 'types/common';
 import useBoardMove from '../hooks/useBoardMove';
@@ -9,29 +9,16 @@ import GridPattern from './GridPattern';
 import MapElement from './MapElement';
 
 interface Props extends SVGAttributes<SVGElement> {
-  moveMode: boolean;
+  movable: boolean;
   boardState: [EditorBoard, Dispatch<SetStateAction<EditorBoard>>];
   children: ReactNode;
 }
 
-const Board = ({ moveMode, boardState, children, ...props }: Props): JSX.Element => {
+const Board = ({ movable, boardState, children, ...props }: Props): JSX.Element => {
   const [board] = boardState;
 
-  const [movable, setMovable] = useState(false);
-
   const { onWheel } = useBoardZoom(boardState);
-  const { moving, onMouseOut, onDragStart, onDrag, onDragEnd } = useBoardMove(boardState, moveMode);
-
-  const handleMouseOver = () => {
-    if (moveMode) return;
-
-    setMovable(false);
-  };
-
-  const handleMouseOut = () => {
-    onMouseOut();
-    setMovable(false);
-  };
+  const { moving, onMouseOut, onDragStart, onDrag, onDragEnd } = useBoardMove(boardState, movable);
 
   return (
     <Styled.Editor>
@@ -43,8 +30,7 @@ const Board = ({ moveMode, boardState, children, ...props }: Props): JSX.Element
         isDragging={moving}
         isDraggable={movable}
         onWheel={onWheel}
-        onMouseOver={handleMouseOver}
-        onMouseOut={handleMouseOut}
+        onMouseOut={onMouseOut}
         onMouseDown={onDragStart}
         onMouseMove={onDrag}
         onMouseUp={onDragEnd}

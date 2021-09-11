@@ -1,8 +1,7 @@
 import { useState } from 'react';
-import { KEY } from 'constants/editor';
 import { SpaceEditorMode as Mode } from '../constants';
 
-const useSpaceEditorMode = (pressedKey: string): [Mode, (nextMode: Mode) => void] => {
+const useSpaceEditorMode = (): [Mode, (nextMode: Mode) => void] => {
   const [mode, setMode] = useState<Mode>(Mode.Default);
 
   const setModeState = (nextMode: Mode) => {
@@ -12,10 +11,6 @@ const useSpaceEditorMode = (pressedKey: string): [Mode, (nextMode: Mode) => void
 
     setMode(nextMode);
   };
-
-  if (pressedKey === KEY.SPACE) {
-    return [Mode.Move, setModeState];
-  }
 
   return [mode, setModeState];
 };
