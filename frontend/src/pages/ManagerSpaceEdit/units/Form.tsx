@@ -1,5 +1,7 @@
-import { useEffect, useMemo, useRef } from 'react';
+import { FormEventHandler, useEffect, useMemo, useRef } from 'react';
+import { ReactComponent as DeleteIcon } from 'assets/svg/delete.svg';
 import { ReactComponent as PaletteIcon } from 'assets/svg/palette.svg';
+import Button from 'components/Button/Button';
 import Input from 'components/Input/Input';
 import Toggle from 'components/Toggle/Toggle';
 import { Color, ManagerSpace } from 'types/common';
@@ -15,12 +17,14 @@ interface Props {
   spaces: ManagerSpace[];
   selectedSpaceId: number | null;
   disabled: boolean;
+  onSubmit: FormEventHandler<HTMLFormElement>;
+  onDelete: () => void;
 }
 
-const Form = ({ spaces, selectedSpaceId, disabled }: Props): JSX.Element => {
+const Form = ({ spaces, selectedSpaceId, disabled, onSubmit, onDelete }: Props): JSX.Element => {
   const nameInputRef = useRef<HTMLInputElement | null>(null);
 
-  const { values, onChange, setValues } = useFormContext(SpaceFormContext);
+  const { values, onChange, onCancel, setValues } = useFormContext(SpaceFormContext);
 
   const spacesObj = useMemo(() => {
     const result: { [key: string]: ManagerSpace } = {};
@@ -54,10 +58,11 @@ const Form = ({ spaces, selectedSpaceId, disabled }: Props): JSX.Element => {
       reservationMaximumTimeUnit: `${settings.reservationMaximumTimeUnit}`,
       enabledWeekdays: nextEnableWeekdays as SpaceFormValue['enabledWeekdays'],
     });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectedSpaceId, spacesObj]);
 
   return (
-    <Styled.Form disabled={disabled}>
+    <Styled.Form onSubmit={onSubmit} disabled={disabled}>
       <Styled.Section>
         <Styled.TitleContainer>
           <Styled.Title>공간 설정</Styled.Title>
@@ -183,6 +188,25 @@ const Form = ({ spaces, selectedSpaceId, disabled }: Props): JSX.Element => {
               <Styled.Label>예약 가능한 요일</Styled.Label>
               <FormWeekdaySelect onChange={onChange} enabledWeekdays={values.enabledWeekdays} />
             </Styled.Fieldset>
+          </Styled.Row>
+
+          <Styled.Row>
+            {selectedSpaceId ? (
+              <Styled.FormSubmitContainer>
+                <Styled.DeleteButton type="button" variant="text" onClick={onDelete}>
+                  <DeleteIcon />
+                  공간 삭제
+                </Styled.DeleteButton>
+                <Button variant="primary">저장</Button>
+              </Styled.FormSubmitContainer>
+            ) : (
+              <Styled.FormSubmitContainer>
+                <Button type="button" variant="text" onClick={onCancel}>
+                  취소
+                </Button>
+                <Button variant="primary">공간 추가</Button>
+              </Styled.FormSubmitContainer>
+            )}
           </Styled.Row>
         </Styled.ContentsContainer>
       </Styled.Section>

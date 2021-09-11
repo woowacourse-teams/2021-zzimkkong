@@ -13,6 +13,7 @@ interface SpaceFormValueOptionalEnabledWeekdays extends Omit<SpaceFormValue, 'en
 export interface SpaceProviderValue {
   values: SpaceFormValue;
   onChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
+  onCancel: () => void;
   setValues: (nextValue: SpaceFormValue) => void;
 }
 
@@ -37,6 +38,10 @@ const SpaceFormProvider = ({ children }: Props): JSX.Element => {
     onChangeSpaceFormValues(event);
   };
 
+  const onCancel = () => {
+    setValues({ ...initialSpaceFormValue, enabledWeekdays: initialEnabledWeekdays });
+  };
+
   const setValues = (nextValues: SpaceFormValue) => {
     setEnabledWeekdays({ ...nextValues.enabledWeekdays });
 
@@ -46,7 +51,7 @@ const SpaceFormProvider = ({ children }: Props): JSX.Element => {
   };
 
   return (
-    <SpaceFormContext.Provider value={{ values, onChange, setValues }}>
+    <SpaceFormContext.Provider value={{ values, onChange, onCancel, setValues }}>
       {children}
     </SpaceFormContext.Provider>
   );

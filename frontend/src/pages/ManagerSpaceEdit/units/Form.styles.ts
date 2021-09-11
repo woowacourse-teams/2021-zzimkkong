@@ -1,4 +1,5 @@
 import styled from 'styled-components';
+import Button from 'components/Button/Button';
 
 interface FormContainerProps {
   disabled: boolean;
@@ -95,5 +96,24 @@ export const Fieldset = styled.div`
     left: 0.75rem;
     padding: 0 0.25rem;
     background-color: ${({ theme }) => theme.white};
+  }
+`;
+
+export const FormSubmitContainer = styled.div`
+  display: flex;
+  justify-content: flex-end;
+`;
+
+export const DeleteButton = styled(Button)`
+  color: ${({ theme }) => theme.red[900]};
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+
+  svg {
+    width: 1rem;
+    height: 1rem;
+    vertical-align: middle;
+    fill: ${({ theme }) => theme.red[900]};
   }
 `;

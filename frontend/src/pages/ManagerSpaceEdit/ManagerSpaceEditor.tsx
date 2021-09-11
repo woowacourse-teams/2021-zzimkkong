@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react';
+import { FormEventHandler, useMemo, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { ReactComponent as PlusSmallIcon } from 'assets/svg/plus-small.svg';
 import Button from 'components/Button/Button';
@@ -13,7 +13,6 @@ import { ManagerSpace, MapDrawing, SpaceArea } from 'types/common';
 import * as Styled from './ManagerSpaceEditor.styles';
 import { SpaceEditorMode as Mode } from './constants';
 import useBoardStatus from './hooks/useBoardStatus';
-import useSpaceEditorMode from './hooks/useSpaceEditorMode';
 import SpaceFormProvider from './providers/SpaceFormProvider';
 import Editor from './units/Editor';
 import EditorHeader from './units/EditorHeader';
@@ -46,7 +45,7 @@ const ManagerSpaceEditor = (): JSX.Element => {
     [managerSpaces.data?.data.spaces]
   );
 
-  const [mode, setMode] = useSpaceEditorMode();
+  const [mode, setMode] = useState<Mode>(Mode.Default);
   const [boardStatus, setBoardStatus] = useBoardStatus({ width, height });
   const [selectedSpaceId, setSelectedSpaceId] = useState<number | null>(null);
 
@@ -54,6 +53,14 @@ const ManagerSpaceEditor = (): JSX.Element => {
 
   const handleAddSpace = () => {
     setMode(Mode.Rect);
+  };
+
+  const handleSubmit: FormEventHandler<HTMLFormElement> = () => {
+    //
+  };
+
+  const handleDelete = () => {
+    //
   };
 
   return (
@@ -91,7 +98,13 @@ const ManagerSpaceEditor = (): JSX.Element => {
 
               {selectedSpaceId !== null || isDrawing ? (
                 <SpaceFormProvider>
-                  <Form spaces={spaces} selectedSpaceId={selectedSpaceId} disabled={isDrawing} />
+                  <Form
+                    spaces={spaces}
+                    selectedSpaceId={selectedSpaceId}
+                    disabled={isDrawing}
+                    onSubmit={handleSubmit}
+                    onDelete={handleDelete}
+                  />
                 </SpaceFormProvider>
               ) : (
                 <Styled.NoSpaceMessage>공간을 선택해주세요</Styled.NoSpaceMessage>
