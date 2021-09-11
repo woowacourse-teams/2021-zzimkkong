@@ -3,14 +3,14 @@ import * as Styled from './Toggle.styles';
 
 export interface Props extends InputHTMLAttributes<HTMLInputElement> {
   variant?: 'default' | 'primary';
-  text: string;
+  uncheckedText: string;
   checkedText: string;
   textPosition?: 'left' | 'right';
 }
 
 const Toggle = ({
   variant = 'default',
-  text,
+  uncheckedText,
   checkedText,
   checked,
   textPosition = 'right',
@@ -19,14 +19,14 @@ const Toggle = ({
   return (
     <Styled.Label>
       {textPosition === 'left' && (
-        <Styled.LabelText>{checked ? checkedText : text}</Styled.LabelText>
+        <Styled.LabelText>{checked ? checkedText : uncheckedText}</Styled.LabelText>
       )}
       <Styled.Toggle>
         <Styled.Input type="checkbox" variant={variant} checked={checked} {...props} />
         <Styled.Slider />
       </Styled.Toggle>
       {textPosition === 'right' && (
-        <Styled.LabelText>{checked ? checkedText : text}</Styled.LabelText>
+        <Styled.LabelText>{checked ? checkedText : uncheckedText}</Styled.LabelText>
       )}
     </Styled.Label>
   );

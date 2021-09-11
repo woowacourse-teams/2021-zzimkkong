@@ -14,8 +14,10 @@ import * as Styled from './ManagerSpaceEditor.styles';
 import { SpaceEditorMode as Mode } from './constants';
 import useBoardStatus from './hooks/useBoardStatus';
 import useSpaceEditorMode from './hooks/useSpaceEditorMode';
+import SpaceFormProvider from './providers/SpaceFormProvider';
 import Editor from './units/Editor';
 import EditorHeader from './units/EditorHeader';
+import Form from './units/Form';
 import ShapeSelectToolbar from './units/ShapeSelectToolbar';
 import SpaceSelect from './units/SpaceSelect';
 
@@ -86,6 +88,14 @@ const ManagerSpaceEditor = (): JSX.Element => {
                   </Button>
                 </Styled.AddButtonWrapper>
               </SpaceSelect>
+
+              {selectedSpaceId !== null || isDrawing ? (
+                <SpaceFormProvider>
+                  <Form spaces={spaces} selectedSpaceId={selectedSpaceId} disabled={isDrawing} />
+                </SpaceFormProvider>
+              ) : (
+                <Styled.NoSpaceMessage>공간을 선택해주세요</Styled.NoSpaceMessage>
+              )}
             </Styled.FormContainer>
           </Styled.EditorMain>
         </Styled.Page>

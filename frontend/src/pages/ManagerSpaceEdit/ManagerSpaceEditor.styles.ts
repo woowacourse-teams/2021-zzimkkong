@@ -61,3 +61,9 @@ export const AddButtonWrapper = styled.div`
   bottom: -1.25rem;
   z-index: ${Z_INDEX.SPACE_ADD_BUTTON};
 `;
+
+export const NoSpaceMessage = styled.p`
+  text-align: center;
+  font-size: 1.125rem;
+  margin: 3rem auto;
+`;

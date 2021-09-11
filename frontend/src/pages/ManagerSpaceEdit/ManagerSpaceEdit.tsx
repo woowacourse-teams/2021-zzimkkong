@@ -1160,7 +1160,7 @@ const ManagerSpaceEdit = (): JSX.Element => {
                     <Styled.FormHeader>공간 설정</Styled.FormHeader>
                     <Toggle
                       variant="primary"
-                      text="예약 비활성화"
+                      uncheckedText="예약 비활성화"
                       checkedText="예약 활성화"
                       textPosition="left"
                       checked={reservationEnable}
