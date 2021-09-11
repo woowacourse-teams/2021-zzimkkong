@@ -9,6 +9,7 @@ import { SpaceFormContext } from '../providers/SpaceFormProvider';
 import ColorDot from './ColorDot';
 import * as Styled from './Form.styles';
 import FormTimeUnitSelect from './FormTimeUnitSelect';
+import FormWeekdaySelect from './FormWeekdaySelect';
 
 interface Props {
   spaces: ManagerSpace[];
@@ -175,6 +176,13 @@ const Form = ({ spaces, selectedSpaceId, disabled }: Props): JSX.Element => {
             <Styled.InputMessage>
               예약 가능한 최소 시간과 최대 시간을 설정해주세요.
             </Styled.InputMessage>
+          </Styled.Row>
+
+          <Styled.Row>
+            <Styled.Fieldset>
+              <Styled.Label>예약 가능한 요일</Styled.Label>
+              <FormWeekdaySelect onChange={onChange} enabledWeekdays={values.enabledWeekdays} />
+            </Styled.Fieldset>
           </Styled.Row>
         </Styled.ContentsContainer>
       </Styled.Section>
