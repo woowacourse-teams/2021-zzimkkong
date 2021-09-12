@@ -8,14 +8,14 @@ interface Props {
   statusState: [EditorBoard, React.Dispatch<React.SetStateAction<EditorBoard>>];
   isDraggable?: boolean;
   isDragging?: boolean;
-  onClick?: (event: React.MouseEvent<SVGElement>) => void;
-  onMouseMove?: (event: React.MouseEvent<SVGElement>) => void;
-  onMouseDown?: (event: React.MouseEvent<SVGElement>) => void;
-  onMouseUp?: (event: React.MouseEvent<SVGElement>) => void;
-  onDragStart?: (event: React.MouseEvent<SVGElement>) => void;
-  onDrag?: (event: React.MouseEvent<SVGElement>) => void;
-  onDragEnd?: (event: React.MouseEvent<SVGElement>) => void;
-  onMouseOut?: (event: React.MouseEvent<SVGElement>) => void;
+  onClick?: (event: React.MouseEvent<SVGSVGElement>) => void;
+  onMouseMove?: (event: React.MouseEvent<SVGSVGElement>) => void;
+  onMouseDown?: (event: React.MouseEvent<SVGSVGElement>) => void;
+  onMouseUp?: (event: React.MouseEvent<SVGSVGElement>) => void;
+  onDragStart?: (event: React.MouseEvent<SVGSVGElement>) => void;
+  onDrag?: (event: React.MouseEvent<SVGSVGElement>) => void;
+  onDragEnd?: (event: React.MouseEvent<SVGSVGElement>) => void;
+  onMouseOut?: (event: React.MouseEvent<SVGSVGElement>) => void;
   onWheel?: (event: React.WheelEvent<SVGSVGElement>) => void;
 }
 
@@ -37,7 +37,7 @@ const Board = ({
   const rootSvgRef = useRef<SVGSVGElement | null>(null);
   const [status, setStatus] = statusState;
 
-  const handleMouseMove = (event: React.MouseEvent<SVGElement>) => {
+  const handleMouseMove = (event: React.MouseEvent<SVGSVGElement>) => {
     onMouseMove?.(event);
   };
 

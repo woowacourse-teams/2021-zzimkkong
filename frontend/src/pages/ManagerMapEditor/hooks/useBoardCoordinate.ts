@@ -7,7 +7,7 @@ const useBoardCoordinate = (
 ): {
   coordinate: Coordinate;
   stickyCoordinate: Coordinate;
-  onMouseMove: (event: React.MouseEvent<SVGElement>) => void;
+  onMouseMove: (event: React.MouseEvent<SVGSVGElement>) => void;
 } => {
   const [coordinate, setCoordinate] = useState<Coordinate>({ x: 0, y: 0 });
   const stickyCoordinate: Coordinate = {
@@ -15,8 +15,8 @@ const useBoardCoordinate = (
     y: Math.round(coordinate.y / EDITOR.GRID_SIZE) * EDITOR.GRID_SIZE,
   };
 
-  const getSVGCoordinate = (event: React.MouseEvent<SVGElement>) => {
-    const svg = (event.nativeEvent.target as SVGElement)?.ownerSVGElement;
+  const getSVGCoordinate = (event: React.MouseEvent<SVGSVGElement>) => {
+    const svg = (event.nativeEvent.target as SVGSVGElement)?.ownerSVGElement;
     if (!svg) return { x: -1, y: -1 };
 
     let point = svg.createSVGPoint();
@@ -31,7 +31,7 @@ const useBoardCoordinate = (
     return { x, y };
   };
 
-  const onMouseMove = (event: React.MouseEvent<SVGElement>) => {
+  const onMouseMove = (event: React.MouseEvent<SVGSVGElement>) => {
     const { x, y } = getSVGCoordinate(event);
     setCoordinate({ x, y });
   };

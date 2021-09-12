@@ -6,8 +6,8 @@ const useBoardMove = (
   isDraggable: boolean
 ): {
   isDragging: boolean;
-  onDragStart: (event: React.MouseEvent<SVGElement>) => void;
-  onDrag: (event: React.MouseEvent<SVGElement>) => void;
+  onDragStart: (event: React.MouseEvent<SVGSVGElement>) => void;
+  onDrag: (event: React.MouseEvent<SVGSVGElement>) => void;
   onDragEnd: () => void;
   onMouseOut: () => void;
 } => {
@@ -16,7 +16,7 @@ const useBoardMove = (
   const [isDragging, setDragging] = useState(false);
   const [dragOffset, setDragOffset] = useState({ x: 0, y: 0 });
 
-  const handleDragStart = (event: React.MouseEvent<SVGElement>) => {
+  const handleDragStart = (event: React.MouseEvent<SVGSVGElement>) => {
     if (!isDraggable) return;
 
     setDragOffset({
@@ -27,7 +27,7 @@ const useBoardMove = (
     setDragging(true);
   };
 
-  const handleDrag = (event: React.MouseEvent<SVGElement>) => {
+  const handleDrag = (event: React.MouseEvent<SVGSVGElement>) => {
     if (!isDraggable || !isDragging) return;
 
     const { offsetX, offsetY } = event.nativeEvent;
