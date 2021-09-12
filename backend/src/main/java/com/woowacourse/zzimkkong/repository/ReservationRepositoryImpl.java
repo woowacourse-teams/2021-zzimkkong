@@ -21,6 +21,5 @@ public class ReservationRepositoryImpl implements ReservationRepositoryCustom {
                 .setParameter("member", member)
                 .setParameter("currentTime", LocalDateTime.now())
                 .getSingleResult();
-
     }
 }
