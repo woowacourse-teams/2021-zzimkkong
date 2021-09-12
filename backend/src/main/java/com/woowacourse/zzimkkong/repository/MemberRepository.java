@@ -11,7 +11,4 @@ public interface MemberRepository extends JpaRepository<Member, Long> {
     boolean existsByEmail(String email);
 
     Optional<Member> findByEmail(String email);
-
-    @Query("SELECT COUNT(r) > 0 FROM Reservation r JOIN r.space s JOIN s.map m WHERE m.member = :member")
-    boolean existsReservationsByMember(@Param("member") Member member);
 }

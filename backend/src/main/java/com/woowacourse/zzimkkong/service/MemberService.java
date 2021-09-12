@@ -7,6 +7,7 @@ import com.woowacourse.zzimkkong.dto.member.MemberUpdateRequest;
 import com.woowacourse.zzimkkong.exception.member.DuplicateEmailException;
 import com.woowacourse.zzimkkong.exception.member.ReservationExistsOnMemberException;
 import com.woowacourse.zzimkkong.repository.MemberRepository;
+import com.woowacourse.zzimkkong.repository.ReservationRepository;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -15,11 +16,14 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional
 public class MemberService {
     private final MemberRepository members;
+    private final ReservationRepository reservations;
     private final PasswordEncoder passwordEncoder;
 
     public MemberService(final MemberRepository members,
+                         final ReservationRepository reservations,
                          final PasswordEncoder passwordEncoder) {
         this.members = members;
+        this.reservations = reservations;
         this.passwordEncoder = passwordEncoder;
     }
 
@@ -48,7 +52,7 @@ public class MemberService {
     }
 
     public void deleteMember(final Member manager) {
-        boolean hasAnyReservations = members.existsReservationsByMember(manager);
+        boolean hasAnyReservations = reservations.existsReservationsByMember(manager);
         if (hasAnyReservations) {
             throw new ReservationExistsOnMemberException();
         }
