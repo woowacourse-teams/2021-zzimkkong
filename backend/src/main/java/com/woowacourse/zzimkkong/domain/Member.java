@@ -56,6 +56,10 @@ public class Member {
                 .findAny();
     }
 
+    public void addMap(final Map map) {
+        this.maps.add(map);
+    }
+
     public void addPreset(final Preset preset) {
         this.presets.add(preset);
     }
