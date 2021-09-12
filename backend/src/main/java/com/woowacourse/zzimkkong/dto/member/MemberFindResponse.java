@@ -11,7 +11,7 @@ public class MemberFindResponse {
     private String email;
     private String organization;
 
-    public MemberFindResponse(final Long id, final String email, final String organization) {
+    private MemberFindResponse(final Long id, final String email, final String organization) {
         this.id = id;
         this.email = email;
         this.organization = organization;
