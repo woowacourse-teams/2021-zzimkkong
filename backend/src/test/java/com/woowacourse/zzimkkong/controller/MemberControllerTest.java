@@ -7,7 +7,6 @@ import com.woowacourse.zzimkkong.dto.ErrorResponse;
 import com.woowacourse.zzimkkong.dto.InputFieldErrorResponse;
 import com.woowacourse.zzimkkong.dto.member.*;
 import com.woowacourse.zzimkkong.dto.space.SettingsRequest;
-import com.woowacourse.zzimkkong.exception.member.NoSuchMemberException;
 import com.woowacourse.zzimkkong.infrastructure.AuthorizationExtractor;
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
@@ -174,7 +173,6 @@ class MemberControllerTest extends AcceptanceTest {
         assertThat(errorExpectedResponse.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
         assertThat(errorResponse.getMessage()).isNotEmpty();
     }
-
 
     static ExtractableResponse<Response> saveMember(final MemberSaveRequest memberSaveRequest) {
         return RestAssured
