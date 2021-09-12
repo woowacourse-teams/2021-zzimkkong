@@ -65,7 +65,7 @@ class MemberServiceTest extends ServiceTest {
     }
 
     @Test
-    @DisplayName("회원은 자기의 정보를 수정할 수 있다.")
+    @DisplayName("회원은 자신의 정보를 수정할 수 있다.")
     void updateMember() {
         // given
         Member member = new Member(EMAIL, PW, ORGANIZATION);
