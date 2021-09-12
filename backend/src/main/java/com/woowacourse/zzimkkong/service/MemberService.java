@@ -52,7 +52,7 @@ public class MemberService {
     }
 
     public void deleteMember(final Member manager) {
-        boolean hasAnyReservations = reservations.existsReservationsByMember(manager);
+        boolean hasAnyReservations = reservations.existsReservationsByMemberFromToday(manager);
         if (hasAnyReservations) {
             throw new ReservationExistsOnMemberException();
         }
