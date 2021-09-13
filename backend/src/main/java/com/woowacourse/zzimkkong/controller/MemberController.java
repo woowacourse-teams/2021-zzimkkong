@@ -36,22 +36,22 @@ public class MemberController {
     public ResponseEntity<Void> join(@RequestBody @Valid final MemberSaveRequest memberSaveRequest) {
         MemberSaveResponse memberSaveResponse = memberService.saveMember(memberSaveRequest);
         return ResponseEntity
-                .created(URI.create("/api/managers/" + memberSaveResponse.getId()))
+                .created(URI.create("/api/members/" + memberSaveResponse.getId()))
                 .build();
     }
 
-    @GetMapping("/guests/{oauthProvider}")
+    @GetMapping("/members/{oauthProvider}")
     public ResponseEntity<OauthReadyResponse> getReadyToJoinByOauth(@PathVariable OauthProvider oauthProvider, @RequestParam String code) {
         OauthReadyResponse oauthReadyResponse = memberService.getUserInfoFromOauth(oauthProvider, code);
         return ResponseEntity
                 .ok(oauthReadyResponse);
     }
 
-    @PostMapping("/guests/oauth")
+    @PostMapping("/members/oauth")
     public ResponseEntity<Void> joinByOauth(@RequestBody @Valid final OauthMemberSaveRequest oauthMemberSaveRequest) {
         MemberSaveResponse memberSaveResponse = memberService.saveMemberByOauth(oauthMemberSaveRequest);
         return ResponseEntity
-                .created(URI.create("/api/guests/" + memberSaveResponse.getId()))
+                .created(URI.create("/api/members/" + memberSaveResponse.getId()))
                 .build();
     }
 

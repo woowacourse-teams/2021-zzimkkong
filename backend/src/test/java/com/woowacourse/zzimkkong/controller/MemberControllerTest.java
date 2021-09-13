@@ -220,7 +220,7 @@ class MemberControllerTest extends AcceptanceTest {
                 .accept("application/json")
                 .filter(document("member/get/oauth/" + oauthProvider.name(), getRequestPreprocessor(), getResponsePreprocessor()))
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .when().get("/api/guests/" + oauthProvider + "?code=" + code)
+                .when().get("/api/members/" + oauthProvider + "?code=" + code)
                 .then().log().all().extract();
     }
 
@@ -231,7 +231,7 @@ class MemberControllerTest extends AcceptanceTest {
                 .filter(document("member/post/oauth/" + oauthMemberSaveRequest.getOauthProvider(), getRequestPreprocessor(), getResponsePreprocessor()))
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body(oauthMemberSaveRequest)
-                .when().post("/api/guests/oauth")
+                .when().post("/api/members/oauth")
                 .then().log().all().extract();
     }
 

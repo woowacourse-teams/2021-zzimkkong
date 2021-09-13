@@ -148,7 +148,7 @@ class AuthControllerTest extends AcceptanceTest {
                 .accept("application/json")
                 .filter(document("member/login/oauth/" + oauthProvider.name(), getRequestPreprocessor(), getResponsePreprocessor()))
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .when().get("/api/guests/" + oauthProvider + "/login/token?code=" + code)
+                .when().get("/api/members/" + oauthProvider + "/login/token?code=" + code)
                 .then().log().all().extract();
     }
 

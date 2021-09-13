@@ -29,7 +29,7 @@ public class AuthController {
         return ResponseEntity.ok().build();
     }
 
-    @GetMapping("/guests/{oauthProvider}/login/token")
+    @GetMapping("/members/{oauthProvider}/login/token")
     public ResponseEntity<TokenResponse> loginByOauth(@PathVariable OauthProvider oauthProvider, @RequestParam String code) {
         return ResponseEntity.ok()
                 .body(authService.loginByOauth(oauthProvider, code));
