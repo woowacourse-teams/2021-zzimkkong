@@ -1,4 +1,4 @@
-import React, { createContext, ReactNode, useState } from 'react';
+import React, { createContext, Dispatch, ReactNode, SetStateAction, useState } from 'react';
 import useInputs from 'hooks/useInputs';
 import { Area, ManagerSpace } from 'types/common';
 import { WithOptional } from 'types/util';
@@ -33,6 +33,8 @@ export interface SpaceProviderValue {
       };
     };
   };
+  selectedPresetId: number | null;
+  setSelectedPresetId: Dispatch<SetStateAction<number | null>>;
 }
 
 export const SpaceFormContext = createContext<SpaceProviderValue | null>(null);
@@ -44,13 +46,14 @@ const SpaceFormProvider = ({ children }: Props): JSX.Element => {
   const [enabledWeekdays, onChangeEnabledWeekdays, setEnabledWeekdays] =
     useInputs(initialEnabledWeekdays);
   const [area, setArea] = useState<Area | null>(null);
+  const [selectedPresetId, setSelectedPresetId] = useState<number | null>(null);
 
   const values = { ...spaceFormValue, enabledWeekdays, area };
 
   const updateWithSpace = (space: ManagerSpace) => {
     const { name, color, area, settings } = space;
 
-    const enableWeekdays = settings.enabledDayOfWeek?.toLowerCase()?.split(',') ?? [];
+    const enableWeekdays = settings.enabledDayOfWeek?.split(',') ?? [];
     const nextEnableWeekdays: { [key: string]: boolean } = {};
     Object.keys(values.enabledWeekdays).forEach(
       (weekday) => (nextEnableWeekdays[weekday] = enableWeekdays.includes(weekday))
@@ -117,6 +120,8 @@ const SpaceFormProvider = ({ children }: Props): JSX.Element => {
   };
 
   const onChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    if (selectedPresetId !== null) setSelectedPresetId(null);
+
     if (weekdays.includes(event.target.name)) {
       onChangeEnabledWeekdays(event);
 
@@ -140,6 +145,8 @@ const SpaceFormProvider = ({ children }: Props): JSX.Element => {
         setValues,
         updateWithSpace,
         getRequestValues,
+        selectedPresetId,
+        setSelectedPresetId,
       }}
     >
       {children}

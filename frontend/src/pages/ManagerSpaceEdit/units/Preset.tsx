@@ -9,6 +9,9 @@ import Select from 'components/Select/Select';
 import MESSAGE from 'constants/message';
 import usePresets from 'hooks/usePreset';
 import { ErrorResponse } from 'types/response';
+import { SpaceFormValue } from '../data';
+import useFormContext from '../hooks/useFormContext';
+import { SpaceFormContext } from '../providers/SpaceFormProvider';
 import * as Styled from './Preset.styles';
 
 interface CreateResponseHeaders {
@@ -16,7 +19,8 @@ interface CreateResponseHeaders {
 }
 
 const Preset = (): JSX.Element => {
-  const [selectedPresetId, setSelectedPresetId] = useState<number | null>(null);
+  const { values, setValues, selectedPresetId, setSelectedPresetId } =
+    useFormContext(SpaceFormContext);
 
   const getPresets = usePresets();
   const presets = useMemo(
@@ -46,8 +50,38 @@ const Preset = (): JSX.Element => {
     },
   });
 
-  const handleSelectPreset = (id: number) => {
-    //
+  const handleSelectPreset = (id: number | null) => {
+    setSelectedPresetId(id);
+
+    if (id === null) return;
+
+    const selectedPreset = presets.find((preset) => preset.id === id) ?? null;
+
+    if (selectedPreset === null) throw new Error(MESSAGE.MANAGER_SPACE.FIND_PRESET_ERROR);
+
+    const {
+      availableStartTime,
+      availableEndTime,
+      reservationTimeUnit,
+      reservationMinimumTimeUnit,
+      reservationMaximumTimeUnit,
+    } = selectedPreset;
+
+    const enabledDayOfWeek = selectedPreset.enabledDayOfWeek?.split(',') ?? [];
+    const enabledWeekdays: { [key: string]: boolean } = {};
+    Object.keys(values.enabledWeekdays).forEach(
+      (weekday) => (enabledWeekdays[weekday] = enabledDayOfWeek?.includes(weekday))
+    );
+
+    setValues({
+      ...values,
+      availableStartTime,
+      availableEndTime,
+      reservationTimeUnit,
+      reservationMinimumTimeUnit,
+      reservationMaximumTimeUnit,
+      enabledWeekdays: enabledWeekdays as SpaceFormValue['enabledWeekdays'],
+    });
   };
 
   const handleAddPreset = () => {
@@ -64,8 +98,8 @@ const Preset = (): JSX.Element => {
     children: (
       <Styled.PresetOption>
         <Styled.PresetName>{name}</Styled.PresetName>
-        <IconButton type="button" onClick={handleDeletePreset}>
-          <DeleteIcon />
+        <IconButton type="button" size="small" onClick={handleDeletePreset}>
+          <DeleteIcon width="100%" height="100%" />
         </IconButton>
       </Styled.PresetOption>
     ),
@@ -90,3 +124,30 @@ const Preset = (): JSX.Element => {
 };
 
 export default Preset;
+
+const data = {
+  presets: [
+    {
+      availableStartTime: '07:00:00',
+      availableEndTime: '23:00:00',
+      reservationTimeUnit: 10,
+      reservationMinimumTimeUnit: 10,
+      reservationMaximumTimeUnit: 1440,
+      reservationEnable: true,
+      enabledDayOfWeek: 'monday,tuesday,wednesday,thursday,friday,saturday,sunday',
+      id: 1,
+      name: '와아',
+    },
+    {
+      availableStartTime: '07:00:00',
+      availableEndTime: '23:00:00',
+      reservationTimeUnit: 5,
+      reservationMinimumTimeUnit: 10,
+      reservationMaximumTimeUnit: 1440,
+      reservationEnable: true,
+      enabledDayOfWeek: 'monday,tuesday,wednesday,thursday,friday',
+      id: 2,
+      name: '주말ㄴㄴ',
+    },
+  ],
+};
