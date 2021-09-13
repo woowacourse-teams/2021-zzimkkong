@@ -41,6 +41,7 @@ public class Reservation {
 
     protected Reservation(
             final Long id,
+            final LocalDate date,
             final LocalDateTime startTime,
             final LocalDateTime endTime,
             final String password,
@@ -48,9 +49,9 @@ public class Reservation {
             final String description,
             final Space space) {
         this.id = id;
+        this.date = date;
         this.startTime = startTime.withSecond(0).withNano(0);
         this.endTime = endTime.withSecond(0).withNano(0);
-        this.date = this.startTime.toLocalDate();
         this.password = password;
         this.userName = userName;
         this.description = description;
@@ -85,9 +86,9 @@ public class Reservation {
     }
 
     public void update(final Reservation updateReservation, final Space space) {
+        this.date = updateReservation.date;
         this.startTime = updateReservation.startTime;
         this.endTime = updateReservation.endTime;
-        this.date = this.startTime.toLocalDate();
         this.userName = updateReservation.userName;
         this.description = updateReservation.description;
         this.space = space;
