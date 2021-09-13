@@ -75,7 +75,7 @@ const Form = ({
         space: {
           mapImageSvg,
           ...valuesForRequest.space,
-          settingsRequest: { ...valuesForRequest.space.settingsRequest },
+          settingsRequest: { ...valuesForRequest.space.settings },
         },
       });
 
@@ -87,7 +87,7 @@ const Form = ({
       space: {
         mapImageSvg,
         ...valuesForRequest.space,
-        settingsRequest: { ...valuesForRequest.space.settingsRequest },
+        settingsRequest: { ...valuesForRequest.space.settings },
       },
     });
   };

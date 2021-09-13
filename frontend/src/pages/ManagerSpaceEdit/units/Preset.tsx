@@ -1,5 +1,5 @@
 import { AxiosError } from 'axios';
-import { useMemo } from 'react';
+import { FormEventHandler, useMemo, useState } from 'react';
 import { useMutation } from 'react-query';
 import { deletePreset, postPreset } from 'api/presets';
 import { ReactComponent as DeleteIcon } from 'assets/svg/delete.svg';
@@ -7,6 +7,7 @@ import Button from 'components/Button/Button';
 import IconButton from 'components/IconButton/IconButton';
 import Select from 'components/Select/Select';
 import MESSAGE from 'constants/message';
+import useInput from 'hooks/useInput';
 import usePresets from 'hooks/usePreset';
 import { Preset as PresetType } from 'types/common';
 import { ErrorResponse } from 'types/response';
@@ -14,14 +15,17 @@ import { SpaceFormValue } from '../data';
 import useFormContext from '../hooks/useFormContext';
 import { SpaceFormContext } from '../providers/SpaceFormProvider';
 import * as Styled from './Preset.styles';
+import PresetNameModal from './PresetNameModal';
 
 interface CreateResponseHeaders {
   location: string;
 }
 
 const Preset = (): JSX.Element => {
-  const { values, setValues, selectedPresetId, setSelectedPresetId } =
+  const { values, setValues, selectedPresetId, setSelectedPresetId, getRequestValues } =
     useFormContext(SpaceFormContext);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [presetName, onChangePresetName] = useInput('');
 
   const getPresets = usePresets();
   const presets = useMemo(
@@ -35,9 +39,7 @@ const Preset = (): JSX.Element => {
       const newPresetId = Number(location.split('/').pop() ?? '');
 
       setSelectedPresetId(newPresetId);
-      // setPresetFormOpen(false);
-      // setPresetName('');
-
+      setIsModalOpen(false);
       getPresets.refetch();
     },
     onError: (error: AxiosError<ErrorResponse>) => {
@@ -86,7 +88,16 @@ const Preset = (): JSX.Element => {
   };
 
   const handleAddPreset = () => {
-    //
+    setIsModalOpen(true);
+  };
+
+  const handleSubmitPreset: FormEventHandler<HTMLFormElement> = (event) => {
+    event.preventDefault();
+    event.stopPropagation();
+
+    const requestValues = getRequestValues();
+
+    createPreset.mutate({ name: presetName, settingsRequest: requestValues.space.settings });
   };
 
   const handleDeletePreset = (event: React.MouseEvent<HTMLButtonElement>, id: PresetType['id']) => {
@@ -115,20 +126,31 @@ const Preset = (): JSX.Element => {
   }));
 
   return (
-    <Styled.PresetSelect>
-      <Styled.PresetSelectWrapper>
-        <Select
-          name="preset"
-          label="프리셋 선택"
-          options={presetOptions}
-          value={`${selectedPresetId ?? ''}`}
-          onChange={(id) => handleSelectPreset(Number(id))}
-        />
-      </Styled.PresetSelectWrapper>
-      <Button type="button" onClick={handleAddPreset}>
-        추가
-      </Button>
-    </Styled.PresetSelect>
+    <>
+      <Styled.PresetSelect>
+        <Styled.PresetSelectWrapper>
+          <Select
+            name="preset"
+            label="프리셋 선택"
+            options={presetOptions}
+            value={`${selectedPresetId ?? ''}`}
+            onChange={(id) => handleSelectPreset(Number(id))}
+          />
+        </Styled.PresetSelectWrapper>
+        <Button type="button" onClick={handleAddPreset}>
+          추가
+        </Button>
+      </Styled.PresetSelect>
+
+      <PresetNameModal
+        open={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        presetName={presetName}
+        onChange={onChangePresetName}
+        onSubmit={handleSubmitPreset}
+        errorMessage={createPreset.error?.response?.data.message}
+      />
+    </>
   );
 };
 

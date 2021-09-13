@@ -1,6 +1,6 @@
 import React, { createContext, Dispatch, ReactNode, SetStateAction, useState } from 'react';
 import useInputs from 'hooks/useInputs';
-import { Area, ManagerSpace } from 'types/common';
+import { Area, ManagerSpace, ManagerSpaceAPI } from 'types/common';
 import { WithOptional } from 'types/util';
 import { formatDate, formatTimeWithSecond } from 'utils/datetime';
 import { initialEnabledWeekdays, initialSpaceFormValue, SpaceFormValue } from '../data';
@@ -17,21 +17,7 @@ export interface SpaceProviderValue {
   updateWithSpace: (space: ManagerSpace) => void;
   setValues: (nextValue: SpaceFormValue) => void;
   getRequestValues: () => {
-    space: {
-      name: string;
-      color: string;
-      description: string;
-      area: string;
-      settingsRequest: {
-        availableStartTime: string;
-        availableEndTime: string;
-        reservationTimeUnit: number;
-        reservationMinimumTimeUnit: number;
-        reservationMaximumTimeUnit: number;
-        reservationEnable: boolean;
-        enabledDayOfWeek: string;
-      };
-    };
+    space: WithOptional<ManagerSpaceAPI, 'id'>;
   };
   selectedPresetId: number | null;
   setSelectedPresetId: Dispatch<SetStateAction<number | null>>;
@@ -106,7 +92,7 @@ const SpaceFormProvider = ({ children }: Props): JSX.Element => {
         color: values.color,
         description: values.name,
         area: JSON.stringify(values.area),
-        settingsRequest: {
+        settings: {
           availableStartTime,
           availableEndTime,
           reservationTimeUnit: Number(values.reservationTimeUnit),
