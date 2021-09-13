@@ -1,5 +1,5 @@
 import { AxiosError } from 'axios';
-import { useMemo, useState } from 'react';
+import { useMemo } from 'react';
 import { useMutation } from 'react-query';
 import { deletePreset, postPreset } from 'api/presets';
 import { ReactComponent as DeleteIcon } from 'assets/svg/delete.svg';
@@ -8,6 +8,7 @@ import IconButton from 'components/IconButton/IconButton';
 import Select from 'components/Select/Select';
 import MESSAGE from 'constants/message';
 import usePresets from 'hooks/usePreset';
+import { Preset as PresetType } from 'types/common';
 import { ErrorResponse } from 'types/response';
 import { SpaceFormValue } from '../data';
 import useFormContext from '../hooks/useFormContext';
@@ -88,8 +89,12 @@ const Preset = (): JSX.Element => {
     //
   };
 
-  const handleDeletePreset = () => {
-    //
+  const handleDeletePreset = (event: React.MouseEvent<HTMLButtonElement>, id: PresetType['id']) => {
+    event.stopPropagation();
+
+    if (!window.confirm(MESSAGE.MANAGER_SPACE.DELETE_PRESET_CONFIRM)) return;
+
+    removePreset.mutate({ id });
   };
 
   const presetOptions = presets.map(({ id, name }) => ({
@@ -98,7 +103,11 @@ const Preset = (): JSX.Element => {
     children: (
       <Styled.PresetOption>
         <Styled.PresetName>{name}</Styled.PresetName>
-        <IconButton type="button" size="small" onClick={handleDeletePreset}>
+        <IconButton
+          type="button"
+          size="small"
+          onClick={(event) => handleDeletePreset(event, Number(id))}
+        >
           <DeleteIcon width="100%" height="100%" />
         </IconButton>
       </Styled.PresetOption>
@@ -124,30 +133,3 @@ const Preset = (): JSX.Element => {
 };
 
 export default Preset;
-
-const data = {
-  presets: [
-    {
-      availableStartTime: '07:00:00',
-      availableEndTime: '23:00:00',
-      reservationTimeUnit: 10,
-      reservationMinimumTimeUnit: 10,
-      reservationMaximumTimeUnit: 1440,
-      reservationEnable: true,
-      enabledDayOfWeek: 'monday,tuesday,wednesday,thursday,friday,saturday,sunday',
-      id: 1,
-      name: '와아',
-    },
-    {
-      availableStartTime: '07:00:00',
-      availableEndTime: '23:00:00',
-      reservationTimeUnit: 5,
-      reservationMinimumTimeUnit: 10,
-      reservationMaximumTimeUnit: 1440,
-      reservationEnable: true,
-      enabledDayOfWeek: 'monday,tuesday,wednesday,thursday,friday',
-      id: 2,
-      name: '주말ㄴㄴ',
-    },
-  ],
-};
