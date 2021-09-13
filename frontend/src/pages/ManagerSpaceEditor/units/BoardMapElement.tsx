@@ -1,12 +1,13 @@
 import { EDITOR } from 'constants/editor';
-import { MapElement as MapElementType } from 'types/common';
+import { MapElement as MapElementData } from 'types/common';
+import { MapElementType } from 'types/editor';
 
 interface Props {
-  mapElement: MapElementType;
+  mapElement: MapElementData;
 }
 
 const BoardMapElement = ({ mapElement }: Props): JSX.Element => {
-  return mapElement.type === 'polyline' ? (
+  return mapElement.type === MapElementType.Polyline ? (
     <polyline
       points={mapElement.points.join(' ')}
       stroke={mapElement.stroke}
