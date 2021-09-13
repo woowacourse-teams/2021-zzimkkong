@@ -17,6 +17,7 @@ import com.woowacourse.zzimkkong.repository.ReservationRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -100,7 +101,7 @@ public class MapService {
         List<Space> findSpaces = map.getSpaces();
 
         boolean isExistReservationInAnySpace = findSpaces.stream()
-                .anyMatch(space -> reservations.existsBySpaceIdAndEndTimeAfter(space.getId(), LocalDateTime.now()));
+                .anyMatch(space -> reservations.existsBySpaceIdAndDateGreaterThanEqual(space.getId(), LocalDate.now()));
 
         if (isExistReservationInAnySpace) {
             throw new ReservationExistOnSpaceException();

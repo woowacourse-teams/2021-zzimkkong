@@ -260,19 +260,11 @@ public class ReservationService {
     }
 
     private List<Reservation> getReservations(final Collection<Space> findSpaces, final LocalDate date) {
-        LocalDateTime minimumDateTime = date.atStartOfDay();
-        LocalDateTime maximumDateTime = minimumDateTime.plusDays(ONE_DAY);
         List<Long> spaceIds = findSpaces.stream()
                 .map(Space::getId)
                 .collect(Collectors.toList());
 
-        return reservations.findAllBySpaceIdInAndStartTimeIsBetweenAndEndTimeIsBetween(
-                spaceIds,
-                minimumDateTime,
-                maximumDateTime,
-                minimumDateTime,
-                maximumDateTime
-        );
+        return reservations.findAllBySpaceIdInAndDate(spaceIds, date);
     }
 
     private void validateSpaceExistence(final Map map, final Long spaceId) {
