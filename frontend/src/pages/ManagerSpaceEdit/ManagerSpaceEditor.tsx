@@ -158,7 +158,7 @@ const ManagerSpaceEditor = (): JSX.Element => {
                   </Styled.AddButtonWrapper>
                 </SpaceSelect>
 
-                {mode === Mode.Form ? (
+                {mode === Mode.Form || isDrawingMode ? (
                   <Form
                     modeState={[mode, setMode]}
                     mapData={{ width: board.width, height: board.height, mapElements }}
