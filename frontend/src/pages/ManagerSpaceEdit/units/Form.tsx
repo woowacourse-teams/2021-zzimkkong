@@ -20,6 +20,7 @@ import ColorDot from './ColorDot';
 import * as Styled from './Form.styles';
 import FormTimeUnitSelect from './FormTimeUnitSelect';
 import FormWeekdaySelect from './FormWeekdaySelect';
+import Preset from './Preset';
 
 interface Props {
   modeState: [Mode, Dispatch<SetStateAction<Mode>>];
@@ -175,6 +176,10 @@ const Form = ({
         </Styled.TitleContainer>
 
         <Styled.ContentsContainer>
+          <Styled.Row>
+            <Preset />
+          </Styled.Row>
+
           <Styled.Row>
             <Styled.InputWrapper>
               <Input
