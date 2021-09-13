@@ -52,6 +52,12 @@ const Editor = ({
 
   const isDrawingMode = useMemo(() => drawingModes.includes(mode) && !movable, [mode, movable]);
 
+  const unSelectedSpaces = useMemo(() => {
+    if (selectedSpaceId === null) return spaces;
+
+    return spaces.filter(({ id }) => id !== selectedSpaceId);
+  }, [spaces, selectedSpaceId]);
+
   const handleClickSpace = useCallback(
     (spaceId: number) => {
       if (isDrawingMode) return;
@@ -106,7 +112,7 @@ const Editor = ({
       onMouseDown={handleDrawingStart}
       onMouseUp={handleDrawingEnd}
     >
-      {selectedSpaceId === null && values.area && (
+      {values.area && (
         <BoardSpace
           space={{
             name: values.name,
@@ -120,7 +126,7 @@ const Editor = ({
 
       {isDrawingMode && <BoardCursorRect coordinate={stickyCoordinate} size={EDITOR.GRID_SIZE} />}
 
-      {spaces?.map((space, index) => (
+      {unSelectedSpaces?.map((space, index) => (
         <BoardSpace
           key={`space-${index}`}
           space={

@@ -10,8 +10,6 @@ import {
   putManagerSpace,
   PutManagerSpaceParams,
 } from 'api/managerSpace';
-import { ReactComponent as PlusSmallIcon } from 'assets/svg/plus-small.svg';
-import Button from 'components/Button/Button';
 import Header from 'components/Header/Header';
 import Layout from 'components/Layout/Layout';
 import { BOARD } from 'constants/editor';
@@ -30,6 +28,7 @@ import Editor from './units/Editor';
 import EditorHeader from './units/EditorHeader';
 import Form from './units/Form';
 import ShapeSelectToolbar from './units/ShapeSelectToolbar';
+import SpaceAddButton from './units/SpaceAddButton';
 import SpaceSelect from './units/SpaceSelect';
 
 interface CreateResponseHeaders {
@@ -152,9 +151,7 @@ const ManagerSpaceEditor = (): JSX.Element => {
                   disabled={isDrawingMode}
                 >
                   <Styled.AddButtonWrapper>
-                    <Button variant="primary" shape="round" onClick={handleAddSpace}>
-                      <PlusSmallIcon /> 공간 추가
-                    </Button>
+                    <SpaceAddButton onClick={handleAddSpace} />
                   </Styled.AddButtonWrapper>
                 </SpaceSelect>
 
