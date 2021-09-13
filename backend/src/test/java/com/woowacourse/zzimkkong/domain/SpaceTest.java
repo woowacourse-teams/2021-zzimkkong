@@ -129,7 +129,7 @@ class SpaceTest {
                 .build();
         Space availableTimeSpace = Space.builder().setting(availableTimeSetting).build();
 
-        boolean actual = availableTimeSpace.isIncorrectTimeUnit(minute);
+        boolean actual = availableTimeSpace.isNotDivisibleByTimeUnit(minute);
 
         assertThat(actual).isFalse();
     }
@@ -149,7 +149,7 @@ class SpaceTest {
                 .build();
         Space availableTimeSpace = Space.builder().setting(availableTimeSetting).build();
 
-        boolean actual = availableTimeSpace.isIncorrectTimeUnit(minute);
+        boolean actual = availableTimeSpace.isNotDivisibleByTimeUnit(minute);
 
         assertThat(actual).isTrue();
     }
@@ -209,7 +209,7 @@ class SpaceTest {
         Space availableTimeSpace = Space.builder().setting(availableTimeSetting).build();
 
         int minute = 100;
-        boolean actual = availableTimeSpace.isDivisibleByTimeUnit(minute);
+        boolean actual = availableTimeSpace.isNotDivisibleByTimeUnit(minute);
 
         assertThat(actual).isFalse();
     }
@@ -229,7 +229,7 @@ class SpaceTest {
         Space availableTimeSpace = Space.builder().setting(availableTimeSetting).build();
 
         int minute = 12;
-        boolean actual = availableTimeSpace.isDivisibleByTimeUnit(minute);
+        boolean actual = availableTimeSpace.isNotDivisibleByTimeUnit(minute);
 
         assertThat(actual).isTrue();
     }

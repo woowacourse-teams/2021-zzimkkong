@@ -79,10 +79,10 @@ public class Setting {
     }
 
     private boolean isNoneMatchingAvailableTimeAndTimeUnit() {
-        return availableStartTime.getMinute() % reservationTimeUnit != 0 || availableEndTime.getMinute() % reservationTimeUnit != 0;
+        return isNotDivisibleByTimeUnit(availableStartTime.getMinute()) || isNotDivisibleByTimeUnit(availableEndTime.getMinute());
     }
 
-    public boolean isDivisibleByTimeUnit(final int minute) {
+    public boolean isNotDivisibleByTimeUnit(final int minute) {
         return minute % this.reservationTimeUnit != 0;
     }
 

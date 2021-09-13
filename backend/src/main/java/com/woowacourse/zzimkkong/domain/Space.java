@@ -92,16 +92,12 @@ public class Space {
         return !(isEqualOrAfterStartTime && isEqualOrBeforeEndTime);
     }
 
-    public boolean isIncorrectTimeUnit(final int minute) {
-        return minute != 0 && isDivisibleByTimeUnit(minute);
+    public boolean isNotDivisibleByTimeUnit(final int minute) {
+        return setting.isNotDivisibleByTimeUnit(minute);
     }
 
     public boolean isIncorrectMinimumMaximumTimeUnit(final int durationMinutes) {
         return durationMinutes < getReservationMinimumTimeUnit() || durationMinutes > getReservationMaximumTimeUnit();
-    }
-
-    public boolean isDivisibleByTimeUnit(final int minute) {
-        return setting.isDivisibleByTimeUnit(minute);
     }
 
     public boolean isUnableToReserve() {
