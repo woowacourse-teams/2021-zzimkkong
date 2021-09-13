@@ -147,7 +147,6 @@ class AuthServiceTest extends ServiceTest {
                 .findAny()
                 .get();
 
-        System.out.println("12312312"+ anotherProvider.name());
         OauthUserInfo mockOauthUserInfo = mock(OauthUserInfo.class);
         given(oauthHandler.getUserInfoFromCode(any(OauthProvider.class), anyString()))
                 .willReturn(mockOauthUserInfo);

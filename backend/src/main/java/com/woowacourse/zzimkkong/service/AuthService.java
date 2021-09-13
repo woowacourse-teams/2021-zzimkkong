@@ -75,8 +75,9 @@ public class AuthService {
     }
 
     private void validateOauthProvider(final OauthProvider oauthProvider, final Member member) {
-        if (!oauthProvider.equals(member.getOauthProvider())) {
-            throw new OauthProviderMismatchException();
+        OauthProvider memberOauthProvider = member.getOauthProvider();
+        if (!oauthProvider.equals(memberOauthProvider)) {
+            throw new OauthProviderMismatchException(memberOauthProvider.name());
         }
     }
 }
