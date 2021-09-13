@@ -11,7 +11,7 @@ export interface Props {
   onClose: () => void;
 }
 
-const modalRoot = document.getElementById('modal');
+let modalRoot = document.getElementById('modal');
 
 const Modal = ({
   open,
@@ -20,7 +20,11 @@ const Modal = ({
   onClose,
   children,
 }: PropsWithChildren<Props>): JSX.Element => {
-  if (modalRoot === null) throw new Error(MESSAGE.COMPONENTS.CANNOT_FIND_MODAL_ROOT);
+  if (modalRoot === null) {
+    modalRoot = document.createElement('div');
+    modalRoot.setAttribute('id', 'modal');
+    document.body.appendChild(modalRoot);
+  }
 
   const handleMouseDownOverlay: MouseEventHandler<HTMLDivElement> = ({ target, currentTarget }) => {
     if (isClosableDimmer && target === currentTarget) {

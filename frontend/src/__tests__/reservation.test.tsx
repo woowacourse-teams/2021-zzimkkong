@@ -1,5 +1,4 @@
 import userEvent from '@testing-library/user-event';
-
 import { MemoryRouter, Route, Switch } from 'react-router-dom';
 import MESSAGE from 'constants/message';
 import { HREF } from 'constants/path';
