@@ -7,6 +7,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -72,6 +73,7 @@ class ReservationRepositoryTest extends RepositoryTest {
         spaces.save(fe);
 
         beAmZeroOne = Reservation.builder()
+                .date(BE_AM_TEN_ELEVEN_START_TIME.toLocalDate())
                 .startTime(BE_AM_TEN_ELEVEN_START_TIME)
                 .endTime(BE_AM_TEN_ELEVEN_END_TIME)
                 .description(BE_AM_TEN_ELEVEN_DESCRIPTION)
@@ -81,6 +83,7 @@ class ReservationRepositoryTest extends RepositoryTest {
                 .build();
 
         bePmOneTwo = Reservation.builder()
+                .date(BE_PM_ONE_TWO_START_TIME.toLocalDate())
                 .startTime(BE_PM_ONE_TWO_START_TIME)
                 .endTime(BE_PM_ONE_TWO_END_TIME)
                 .description(BE_PM_ONE_TWO_DESCRIPTION)
@@ -90,6 +93,7 @@ class ReservationRepositoryTest extends RepositoryTest {
                 .build();
 
         beNextDayAmSixTwelve = Reservation.builder()
+                .date(BE_NEXT_DAY_PM_FOUR_TO_SIX_START_TIME.toLocalDate())
                 .startTime(BE_NEXT_DAY_PM_FOUR_TO_SIX_START_TIME)
                 .endTime(BE_NEXT_DAY_PM_FOUR_TO_SIX_END_TIME)
                 .description(BE_NEXT_DAY_PM_FOUR_TO_SIX_DESCRIPTION)
@@ -99,6 +103,7 @@ class ReservationRepositoryTest extends RepositoryTest {
                 .build();
 
         fe1ZeroOne = Reservation.builder()
+                .date(FE1_AM_TEN_ELEVEN_START_TIME.toLocalDate())
                 .startTime(FE1_AM_TEN_ELEVEN_START_TIME)
                 .endTime(FE1_AM_TEN_ELEVEN_END_TIME)
                 .description(FE1_AM_TEN_ELEVEN_DESCRIPTION)
@@ -118,6 +123,7 @@ class ReservationRepositoryTest extends RepositoryTest {
     void save() {
         //given
         Reservation be_two_three = Reservation.builder()
+                .date(THE_DAY_AFTER_TOMORROW)
                 .startTime(THE_DAY_AFTER_TOMORROW.atTime(2, 0))
                 .endTime(THE_DAY_AFTER_TOMORROW.atTime(3, 0))
                 .description("찜꽁 4차 회의")
@@ -136,12 +142,11 @@ class ReservationRepositoryTest extends RepositoryTest {
 
     @Test
     @DisplayName("map id, space id, 특정 시간이 주어질 때, 해당 spaceId와 해당 시간에 속하는 예약들만 찾아온다")
-    void findAllBySpaceIdAndStartTimeIsBetweenAndEndTimeIsBetween() {
+    void findAllBySpaceIdInAndDate() {
         // given, when
         List<Reservation> foundReservations = getReservations(
                 List.of(be.getId(), fe.getId()),
-                THE_DAY_AFTER_TOMORROW.atTime(0, 0),
-                THE_DAY_AFTER_TOMORROW.atTime(14, 0));
+                THE_DAY_AFTER_TOMORROW);
 
         // then
         assertThat(foundReservations).usingRecursiveComparison()
@@ -149,13 +154,12 @@ class ReservationRepositoryTest extends RepositoryTest {
     }
 
     @Test
-    @DisplayName("특정 시간에 부합하는 예약이 없으면 빈 리스트를 반환한다")
-    void findAllBySpaceIdAndStartTimeIsBetweenAndEndTimeIsBetween_noMatchingTime() {
+    @DisplayName("특정 날짜에 부합하는 예약이 없으면 빈 리스트를 반환한다")
+    void findAllBySpaceIdInAndDate_noMatchingTime() {
         // given, when
         List<Reservation> foundReservations = getReservations(
                 List.of(be.getId()),
-                THE_DAY_AFTER_TOMORROW.atTime(15, 0),
-                THE_DAY_AFTER_TOMORROW.atTime(18, 0));
+                THE_DAY_AFTER_TOMORROW.plusDays(2));
 
         // then
         assertThat(foundReservations).isEmpty();
@@ -163,12 +167,11 @@ class ReservationRepositoryTest extends RepositoryTest {
 
     @Test
     @DisplayName("특정 공간에 부합하는 예약이 없으면 빈 리스트를 반환한다")
-    void findAllBySpaceIdAndStartTimeIsBetweenAndEndTimeIsBetween_noMatchingReservation() {
+    void findAllBySpaceIdInAndDate_noMatchingReservation() {
         // given, when
         List<Reservation> foundReservations = getReservations(
                 List.of(fe.getId()),
-                THE_DAY_AFTER_TOMORROW.atTime(13, 0),
-                THE_DAY_AFTER_TOMORROW.atTime(14, 0));
+                THE_DAY_AFTER_TOMORROW.plusDays(1));
 
         // then
         assertThat(foundReservations).isEmpty();
@@ -176,12 +179,11 @@ class ReservationRepositoryTest extends RepositoryTest {
 
     @Test
     @DisplayName("map id와 특정 날짜가 주어질 때, 해당 날짜에 속하는 해당 map의 모든 space들의 예약들을 찾아온다")
-    void findAllBySpaceIdAndStartTimeIsBetweenAndEndTimeIsBetween_allSpaces() {
+    void findAllBySpaceIdInAndDate_allSpaces() {
         // given, when
         List<Reservation> foundReservations = getReservations(
                 List.of(be.getId(), fe.getId()),
-                THE_DAY_AFTER_TOMORROW.atTime(0, 0),
-                THE_DAY_AFTER_TOMORROW.atTime(0, 0).plusDays(1));
+                THE_DAY_AFTER_TOMORROW);
 
         // then
         assertThat(foundReservations).containsExactlyInAnyOrderElementsOf(List.of(beAmZeroOne, bePmOneTwo, fe1ZeroOne));
@@ -207,7 +209,7 @@ class ReservationRepositoryTest extends RepositoryTest {
     @ParameterizedTest
     @CsvSource(value = {"0:false", "30:true"}, delimiter = ':')
     @DisplayName("특정 시간 이후의 예약이 존재하는지 확인한다.")
-    void existsAllStartTimeAfter(int minusMinute, boolean expected) {
+    void existsBySpaceIdAndDateGreaterThanEqual(int minusMinute, boolean expected) {
         //given, when
         Boolean actual = reservations.existsBySpaceIdAndEndTimeAfter(be.getId(), BE_NEXT_DAY_PM_FOUR_TO_SIX_END_TIME.minusMinutes(minusMinute));
 
@@ -215,13 +217,7 @@ class ReservationRepositoryTest extends RepositoryTest {
         assertThat(actual).isEqualTo(expected);
     }
 
-    private List<Reservation> getReservations(List<Long> spaceIds, LocalDateTime minimumDateTime, LocalDateTime maximumDateTime) {
-        return reservations.findAllBySpaceIdInAndStartTimeIsBetweenAndEndTimeIsBetween(
-                spaceIds,
-                minimumDateTime,
-                maximumDateTime,
-                minimumDateTime,
-                maximumDateTime
-        );
+    private List<Reservation> getReservations(List<Long> spaceIds, LocalDate date) {
+        return reservations.findAllBySpaceIdInAndDate(spaceIds, date);
     }
 }

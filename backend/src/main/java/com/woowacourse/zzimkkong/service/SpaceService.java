@@ -15,7 +15,6 @@ import com.woowacourse.zzimkkong.repository.SpaceRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -157,7 +156,7 @@ public class SpaceService {
     }
 
     private void validateReservationExistence(final Long spaceId) {
-        if (reservations.existsBySpaceIdAndDateGreaterThanEqual(spaceId, LocalDate.now())) {
+        if (reservations.existsBySpaceIdAndEndTimeAfter(spaceId, LocalDateTime.now())) {
             throw new ReservationExistOnSpaceException();
         }
     }
