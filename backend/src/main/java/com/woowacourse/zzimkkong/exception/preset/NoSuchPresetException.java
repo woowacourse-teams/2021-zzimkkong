@@ -7,6 +7,6 @@ public class NoSuchPresetException extends ZzimkkongException {
     private static final String MESSAGE = "존재하지 않는 프리셋입니다.";
 
     public NoSuchPresetException() {
-        super(MESSAGE, HttpStatus.BAD_REQUEST);
+        super(MESSAGE, HttpStatus.NOT_FOUND);
     }
 }
