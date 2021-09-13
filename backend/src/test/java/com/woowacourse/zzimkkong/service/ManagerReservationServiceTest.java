@@ -522,9 +522,9 @@ class ManagerReservationServiceTest extends ServiceTest {
     }
 
     @ParameterizedTest
-    @ValueSource(ints = {1, 2, 3, 4, 5, 9, 15, 29})
+    @CsvSource({"1,61","10,55","5,65","20,89"})
     @DisplayName("예약 생성/수정 요청 시, space setting의 reservationTimeUnit이 일치하지 않으면 예외가 발생한다.")
-    void saveReservationTimeUnitException(int minute) {
+    void saveReservationTimeUnitException(int additionalStartMinute, int additionalEndMinute) {
         //given
         given(maps.findById(anyLong()))
                 .willReturn(Optional.of(luther));
@@ -534,14 +534,14 @@ class ManagerReservationServiceTest extends ServiceTest {
 
         //when
         ReservationCreateUpdateWithPasswordRequest reservationCreateUpdateWithPasswordRequest = new ReservationCreateUpdateWithPasswordRequest(
-                theDayAfterTomorrowTen.plusMinutes(minute),
-                theDayAfterTomorrowTen.plusMinutes(minute).plusMinutes(60),
+                theDayAfterTomorrowTen.plusMinutes(additionalStartMinute),
+                theDayAfterTomorrowTen.plusMinutes(additionalEndMinute),
                 RESERVATION_PW,
                 USER_NAME,
                 DESCRIPTION);
         ReservationCreateUpdateRequest reservationCreateUpdateRequest = new ReservationCreateUpdateRequest(
-                theDayAfterTomorrowTen.plusMinutes(minute),
-                theDayAfterTomorrowTen.plusMinutes(minute).plusMinutes(60),
+                theDayAfterTomorrowTen.plusMinutes(additionalStartMinute),
+                theDayAfterTomorrowTen.plusMinutes(additionalEndMinute),
                 USER_NAME,
                 DESCRIPTION);
 
