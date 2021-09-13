@@ -1,4 +1,5 @@
 import { DrawingAreaShape } from 'constants/editor';
+import { MapElementType } from './editor';
 
 export type Color = string;
 
@@ -15,7 +16,7 @@ export interface ScrollPosition {
 }
 export interface MapElement {
   id: number;
-  type: 'polyline' | 'rect';
+  type: MapElementType;
   width?: number;
   height?: number;
   x?: number;
