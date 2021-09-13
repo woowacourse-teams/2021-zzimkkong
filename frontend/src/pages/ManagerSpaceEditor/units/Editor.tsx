@@ -10,13 +10,13 @@ import {
 import { EDITOR, KEY } from 'constants/editor';
 import PALETTE from 'constants/palette';
 import { Area, EditorBoard, ManagerSpace, MapElement } from 'types/common';
+import { SpaceEditorMode as Mode } from 'types/editor';
 import { drawingModes } from '../data';
 import useBindKeyPress from '../hooks/useBindKeyPress';
 import useBoardCoordinate from '../hooks/useBoardCoordinate';
 import useDrawingRect from '../hooks/useDrawingRect';
 import useFormContext from '../hooks/useFormContext';
 import { SpaceFormContext } from '../providers/SpaceFormProvider';
-import { SpaceEditorMode as Mode } from '../types';
 import Board from './Board';
 import BoardCursorRect from './BoardCursorRect';
 import BoardMapElement from './BoardMapElement';

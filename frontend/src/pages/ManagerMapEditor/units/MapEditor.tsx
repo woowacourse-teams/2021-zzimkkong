@@ -10,7 +10,7 @@ import { EDITOR, KEY } from 'constants/editor';
 import PALETTE from 'constants/palette';
 import useBoardCoordinate from 'pages/ManagerMapEditor/hooks/useBoardCoordinate';
 import { Color, DrawingStatus, ManagerSpace, MapElement } from 'types/common';
-import { MapElementType, Mode } from 'types/editor';
+import { MapElementType, MapEditorMode } from 'types/editor';
 import useBindKeyPress from '../hooks/useBindKeyPress';
 import useBoardEraserTool from '../hooks/useBoardEraserTool';
 import useBoardLineTool from '../hooks/useBoardLineTool';
@@ -25,27 +25,27 @@ import * as Styled from './MapEditor.styles';
 const toolbarItems = [
   {
     text: '선택',
-    mode: Mode.Select,
+    mode: MapEditorMode.Select,
     icon: <SelectIcon />,
   },
   {
     text: '이동',
-    mode: Mode.Move,
+    mode: MapEditorMode.Move,
     icon: <MoveIcon />,
   },
   {
     text: '선',
-    mode: Mode.Line,
+    mode: MapEditorMode.Line,
     icon: <LineIcon />,
   },
   {
     text: '사각형',
-    mode: Mode.Rect,
+    mode: MapEditorMode.Rect,
     icon: <RectIcon />,
   },
   {
     text: '지우개',
-    mode: Mode.Eraser,
+    mode: MapEditorMode.Eraser,
     icon: <EraserIcon />,
   },
 ];
@@ -64,7 +64,7 @@ const MapCreateEditor = ({
   mapElementsState: [mapElements, setMapElements],
   boardState: [{ width, height }, onChangeBoard],
 }: Props): JSX.Element => {
-  const [mode, setMode] = useState(Mode.Select);
+  const [mode, setMode] = useState(MapEditorMode.Select);
 
   const [color, setColor] = useState<Color>(PALETTE.BLACK[400]);
   const [isColorPickerOpen, setColorPickerOpen] = useState(false);
@@ -73,9 +73,10 @@ const MapCreateEditor = ({
 
   const { pressedKey } = useBindKeyPress();
   const isPressSpacebar = pressedKey === KEY.SPACE;
-  const isBoardDraggable = isPressSpacebar || mode === Mode.Move;
-  const isMapElementClickable = mode === Mode.Select && !isBoardDraggable;
-  const isMapElementEventAvailable = [Mode.Select, Mode.Eraser].includes(mode) && !isBoardDraggable;
+  const isBoardDraggable = isPressSpacebar || mode === MapEditorMode.Move;
+  const isMapElementClickable = mode === MapEditorMode.Select && !isBoardDraggable;
+  const isMapElementEventAvailable =
+    [MapEditorMode.Select, MapEditorMode.Eraser].includes(mode) && !isBoardDraggable;
 
   const [boardStatus, setBoardStatus] = useBoardStatus({
     width: Number(width),
@@ -107,7 +108,7 @@ const MapCreateEditor = ({
 
   const toggleColorPicker = () => setColorPickerOpen((prevState) => !prevState);
 
-  const selectMode = (mode: Mode) => {
+  const selectMode = (mode: MapEditorMode) => {
     setDrawingStatus({});
     setMode(mode);
   };
@@ -115,17 +116,17 @@ const MapCreateEditor = ({
   const handleMouseDown = () => {
     if (isBoardDraggable || isDragging) return;
 
-    if (mode === Mode.Line) drawLineStart();
-    else if (mode === Mode.Rect) drawRectStart();
-    else if (mode === Mode.Eraser) eraseStart();
+    if (mode === MapEditorMode.Line) drawLineStart();
+    else if (mode === MapEditorMode.Rect) drawRectStart();
+    else if (mode === MapEditorMode.Eraser) eraseStart();
   };
 
   const handleMouseUp = () => {
     if (isBoardDraggable || isDragging) return;
 
-    if (mode === Mode.Line) drawLineEnd();
-    else if (mode === Mode.Rect) drawRectEnd();
-    else if (mode === Mode.Eraser) eraseEnd();
+    if (mode === MapEditorMode.Line) drawLineEnd();
+    else if (mode === MapEditorMode.Rect) drawRectEnd();
+    else if (mode === MapEditorMode.Eraser) eraseEnd();
   };
 
   const deleteMapElement = useCallback(() => {
@@ -139,7 +140,7 @@ const MapCreateEditor = ({
   }, [deselectMapElement, selectedMapElementId, setMapElements]);
 
   useEffect(() => {
-    if (mode !== Mode.Select) return;
+    if (mode !== MapEditorMode.Select) return;
 
     const isPressedDeleteKey = pressedKey === KEY.DELETE || pressedKey === KEY.BACK_SPACE;
 
@@ -184,7 +185,7 @@ const MapCreateEditor = ({
           onDragEnd={onDragEnd}
           onMouseOut={onMouseOut}
         >
-          {[Mode.Line, Mode.Rect].includes(mode) && (
+          {[MapEditorMode.Line, MapEditorMode.Rect].includes(mode) && (
             <circle
               cx={stickyCoordinate.x}
               cy={stickyCoordinate.y}
@@ -218,7 +219,7 @@ const MapCreateEditor = ({
             </g>
           ))}
 
-          {drawingStatus.start && mode === Mode.Line && (
+          {drawingStatus.start && mode === MapEditorMode.Line && (
             <polyline
               key={`preview-${MapElementType.Polyline}`}
               points={`${drawingStatus.start.x},${drawingStatus.start.y} ${stickyCoordinate.x},${stickyCoordinate.y}`}
@@ -229,7 +230,7 @@ const MapCreateEditor = ({
             />
           )}
 
-          {drawingStatus.start && mode === Mode.Rect && (
+          {drawingStatus.start && mode === MapEditorMode.Rect && (
             <rect
               key={`preview-${MapElementType.Rect}`}
               x={Math.min(drawingStatus.start.x, stickyCoordinate.x)}
@@ -296,7 +297,7 @@ const MapCreateEditor = ({
             return null;
           })}
 
-          {mode === Mode.Select &&
+          {mode === MapEditorMode.Select &&
             gripPoints.map(({ x, y }, index) => (
               <Styled.GripPoint key={index} cx={x} cy={y} r={4} />
             ))}

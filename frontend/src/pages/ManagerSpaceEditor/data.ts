@@ -1,7 +1,7 @@
 import PALETTE from 'constants/palette';
 import { Area } from 'types/common';
+import { SpaceEditorMode } from 'types/editor';
 import { formatDate, formatTimeWithSecond } from 'utils/datetime';
-import { SpaceEditorMode } from './types';
 
 export interface SpaceFormValue {
   name: string;

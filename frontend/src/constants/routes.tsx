@@ -7,8 +7,7 @@ import ManagerLogin from 'pages/ManagerLogin/ManagerLogin';
 import ManagerMain from 'pages/ManagerMain/ManagerMain';
 import ManagerMapEditor from 'pages/ManagerMapEditor/ManagerMapEditor';
 import ManagerReservationEdit from 'pages/ManagerReservationEdit/ManagerReservationEdit';
-// import ManagerSpaceEdit from 'pages/ManagerSpaceEdit/ManagerSpaceEdit';
-import ManagerSpaceEditor from 'pages/ManagerSpaceEdit/ManagerSpaceEditor';
+import ManagerSpaceEditor from 'pages/ManagerSpaceEditor/ManagerSpaceEditor';
 import PATH from './path';
 
 interface Route {

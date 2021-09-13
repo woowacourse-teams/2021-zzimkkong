@@ -1,8 +1,8 @@
 import { ReactComponent as CloseIcon } from 'assets/svg/close.svg';
 import { ReactComponent as RectIcon } from 'assets/svg/rect.svg';
+import { SpaceEditorMode as Mode } from 'types/editor';
 import useFormContext from '../hooks/useFormContext';
 import { SpaceFormContext } from '../providers/SpaceFormProvider';
-import { SpaceEditorMode as Mode } from '../types';
 import * as Styled from './ShapeSelectToolbar.styles';
 
 interface Props {

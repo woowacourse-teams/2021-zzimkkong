@@ -1,6 +1,6 @@
 import { Dispatch, SetStateAction, useEffect, useState } from 'react';
 import { EditorBoard } from 'types/common';
-import { BOARD } from './../../../constants/editor';
+import { BOARD } from '../../../constants/editor';
 
 interface Props {
   width: number;
