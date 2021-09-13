@@ -5,6 +5,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Getter
@@ -15,6 +16,9 @@ public class Reservation {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    @Column(nullable = false)
+    private LocalDate date;
 
     @Column(nullable = false)
     private LocalDateTime startTime;
@@ -46,6 +50,7 @@ public class Reservation {
         this.id = id;
         this.startTime = startTime.withSecond(0).withNano(0);
         this.endTime = endTime.withSecond(0).withNano(0);
+        this.date = this.startTime.toLocalDate();
         this.password = password;
         this.userName = userName;
         this.description = description;
@@ -82,6 +87,7 @@ public class Reservation {
     public void update(final Reservation updateReservation, final Space space) {
         this.startTime = updateReservation.startTime;
         this.endTime = updateReservation.endTime;
+        this.date = this.startTime.toLocalDate();
         this.userName = updateReservation.userName;
         this.description = updateReservation.description;
         this.space = space;
