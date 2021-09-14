@@ -1,9 +1,5 @@
 import styled from 'styled-components';
-import { Color } from 'types/common';
-
-interface ColorDotProps {
-  color: Color;
-}
+import ColorDotComponent from 'components/ColorDot/ColorDot';
 
 export const ReservationForm = styled.form`
   margin: 1.5rem 0 5rem 0;
@@ -52,11 +48,6 @@ export const TimeFormMessage = styled.p`
 
 export const Message = styled.p``;
 
-export const ColorDot = styled.span<ColorDotProps>`
-  display: inline-block;
-  width: 1rem;
-  height: 1rem;
-  background-color: ${({ color }) => color};
-  border-radius: 50%;
+export const ColorDot = styled(ColorDotComponent)`
   margin-right: 0.75rem;
 `;

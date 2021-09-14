@@ -7,16 +7,16 @@ import {
 import { ReactComponent as DeleteIcon } from 'assets/svg/delete.svg';
 import { ReactComponent as PaletteIcon } from 'assets/svg/palette.svg';
 import Button from 'components/Button/Button';
+import ColorDot from 'components/ColorDot/ColorDot';
 import Input from 'components/Input/Input';
 import Toggle from 'components/Toggle/Toggle';
 import MESSAGE from 'constants/message';
+import useFormContext from 'hooks/useFormContext';
 import { Area, Color, ManagerSpace, MapElement } from 'types/common';
 import { SpaceEditorMode as Mode } from 'types/editor';
 import { generateSvg, MapSvgData } from 'utils/generateSvg';
 import { colorSelectOptions, timeUnits } from '../data';
-import useFormContext from '../hooks/useFormContext';
 import { SpaceFormContext } from '../providers/SpaceFormProvider';
-import ColorDot from './ColorDot';
 import * as Styled from './Form.styles';
 import FormTimeUnitSelect from './FormTimeUnitSelect';
 import FormWeekdaySelect from './FormWeekdaySelect';

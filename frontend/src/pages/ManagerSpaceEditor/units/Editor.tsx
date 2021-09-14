@@ -7,17 +7,19 @@ import {
   useMemo,
   useState,
 } from 'react';
+import Board from 'components/Board/Board';
 import { EDITOR, KEY } from 'constants/editor';
 import PALETTE from 'constants/palette';
+import useBindKeyPress from 'hooks/board/useBindKeyPress';
+import useBoardCoordinate from 'hooks/board/useBoardCoordinate';
+import useBoardMove from 'hooks/board/useBoardMove';
+import useBoardZoom from 'hooks/board/useBoardZoom';
+import useFormContext from 'hooks/useFormContext';
 import { Area, EditorBoard, ManagerSpace, MapElement } from 'types/common';
 import { SpaceEditorMode as Mode } from 'types/editor';
 import { drawingModes } from '../data';
-import useBindKeyPress from '../hooks/useBindKeyPress';
-import useBoardCoordinate from '../hooks/useBoardCoordinate';
 import useDrawingRect from '../hooks/useDrawingRect';
-import useFormContext from '../hooks/useFormContext';
 import { SpaceFormContext } from '../providers/SpaceFormProvider';
-import Board from './Board';
 import BoardCursorRect from './BoardCursorRect';
 import BoardMapElement from './BoardMapElement';
 import BoardSpace from './BoardSpace';
@@ -45,9 +47,16 @@ const Editor = ({
   const [movable, setMovable] = useState(pressedKey === KEY.SPACE);
 
   const { values, updateWithSpace, updateArea } = useFormContext(SpaceFormContext);
-  const { stickyCoordinate, onMouseMove: updateCoordinate } = useBoardCoordinate(board);
+  const { stickyRectCoordinate, onMouseMove: updateCoordinate } = useBoardCoordinate(board);
 
-  const { rect, startDrawingRect, updateRect, endDrawingRect } = useDrawingRect(stickyCoordinate);
+  const { onWheel } = useBoardZoom(boardState);
+  const { isMoving, onDragStart, onDrag, onDragEnd, onMouseOut } = useBoardMove(
+    boardState,
+    movable
+  );
+
+  const { rect, startDrawingRect, updateRect, endDrawingRect } =
+    useDrawingRect(stickyRectCoordinate);
   const [isDrawing, setIsDrawing] = useState(false);
 
   const isDrawingMode = useMemo(() => drawingModes.includes(mode) && !movable, [mode, movable]);
@@ -78,7 +87,7 @@ const Editor = ({
     if (mode === Mode.Rect) startDrawingRect();
   }, [isDrawingMode, setIsDrawing, mode, startDrawingRect]);
 
-  const handleMouseMove: MouseEventHandler<SVGElement> = useCallback(
+  const handleMouseMove: MouseEventHandler<SVGSVGElement> = useCallback(
     (event) => {
       updateCoordinate(event);
 
@@ -106,11 +115,17 @@ const Editor = ({
 
   return (
     <Board
-      movable={movable}
       boardState={boardState}
+      movable={movable}
+      isMoving={isMoving}
+      onDragStart={onDragStart}
+      onDrag={onDrag}
+      onDragEnd={onDragEnd}
+      onMouseOut={onMouseOut}
       onMouseMove={handleMouseMove}
       onMouseDown={handleDrawingStart}
       onMouseUp={handleDrawingEnd}
+      onWheel={onWheel}
     >
       {values.area && (
         <BoardSpace
@@ -124,7 +139,9 @@ const Editor = ({
         />
       )}
 
-      {isDrawingMode && <BoardCursorRect coordinate={stickyCoordinate} size={EDITOR.GRID_SIZE} />}
+      {isDrawingMode && (
+        <BoardCursorRect coordinate={stickyRectCoordinate} size={EDITOR.GRID_SIZE} />
+      )}
 
       {unSelectedSpaces?.map((space, index) => (
         <BoardSpace

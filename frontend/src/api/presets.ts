@@ -14,13 +14,13 @@ export interface DeletePresetParams {
 }
 
 export const queryPresets: QueryFunction<AxiosResponse<QueryPresetsSuccess>, [QueryKey]> = () =>
-  api.get('/members/presets');
+  api.get('/managers/presets');
 
 export const postPreset = ({
   name,
   settingsRequest,
 }: PostPresetParams): Promise<AxiosResponse<never>> =>
-  api.post('/members/presets', { name, settingsRequest });
+  api.post('/managers/presets', { name, settingsRequest });
 
 export const deletePreset = ({ id }: DeletePresetParams): Promise<AxiosResponse<never>> =>
-  api.delete(`/members/presets/${id}`);
+  api.delete(`/managers/presets/${id}`);
