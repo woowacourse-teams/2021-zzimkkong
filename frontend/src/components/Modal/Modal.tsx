@@ -20,6 +20,7 @@ const Modal = ({
   children,
 }: PropsWithChildren<Props>): JSX.Element => {
   if (modalRoot === null) {
+    // Note: 테스트(Jest)에서 modalRoot를 인식하지 못하는 문제해결
     modalRoot = document.createElement('div');
     modalRoot.setAttribute('id', 'modal');
     document.body.appendChild(modalRoot);
