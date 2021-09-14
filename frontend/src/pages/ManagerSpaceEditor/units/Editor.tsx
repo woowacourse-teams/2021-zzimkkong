@@ -9,11 +9,11 @@ import {
 } from 'react';
 import { EDITOR, KEY } from 'constants/editor';
 import PALETTE from 'constants/palette';
+import useBindKeyPress from 'hooks/board/useBindKeyPress';
+import useBoardCoordinate from 'hooks/board/useBoardCoordinate';
 import { Area, EditorBoard, ManagerSpace, MapElement } from 'types/common';
 import { SpaceEditorMode as Mode } from 'types/editor';
 import { drawingModes } from '../data';
-import useBindKeyPress from '../hooks/useBindKeyPress';
-import useBoardCoordinate from '../hooks/useBoardCoordinate';
 import useDrawingRect from '../hooks/useDrawingRect';
 import useFormContext from '../hooks/useFormContext';
 import { SpaceFormContext } from '../providers/SpaceFormProvider';
@@ -45,9 +45,10 @@ const Editor = ({
   const [movable, setMovable] = useState(pressedKey === KEY.SPACE);
 
   const { values, updateWithSpace, updateArea } = useFormContext(SpaceFormContext);
-  const { stickyCoordinate, onMouseMove: updateCoordinate } = useBoardCoordinate(board);
+  const { stickyRectCoordinate, onMouseMove: updateCoordinate } = useBoardCoordinate(board);
 
-  const { rect, startDrawingRect, updateRect, endDrawingRect } = useDrawingRect(stickyCoordinate);
+  const { rect, startDrawingRect, updateRect, endDrawingRect } =
+    useDrawingRect(stickyRectCoordinate);
   const [isDrawing, setIsDrawing] = useState(false);
 
   const isDrawingMode = useMemo(() => drawingModes.includes(mode) && !movable, [mode, movable]);
@@ -78,7 +79,7 @@ const Editor = ({
     if (mode === Mode.Rect) startDrawingRect();
   }, [isDrawingMode, setIsDrawing, mode, startDrawingRect]);
 
-  const handleMouseMove: MouseEventHandler<SVGElement> = useCallback(
+  const handleMouseMove: MouseEventHandler<SVGSVGElement> = useCallback(
     (event) => {
       updateCoordinate(event);
 
@@ -124,7 +125,9 @@ const Editor = ({
         />
       )}
 
-      {isDrawingMode && <BoardCursorRect coordinate={stickyCoordinate} size={EDITOR.GRID_SIZE} />}
+      {isDrawingMode && (
+        <BoardCursorRect coordinate={stickyRectCoordinate} size={EDITOR.GRID_SIZE} />
+      )}
 
       {unSelectedSpaces?.map((space, index) => (
         <BoardSpace

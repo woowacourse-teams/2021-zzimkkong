@@ -8,10 +8,10 @@ import ColorPicker from 'components/ColorPicker/ColorPicker';
 import ColorPickerIcon from 'components/ColorPicker/ColorPickerIcon';
 import { EDITOR, KEY } from 'constants/editor';
 import PALETTE from 'constants/palette';
-import useBoardCoordinate from 'pages/ManagerMapEditor/hooks/useBoardCoordinate';
+import useBoardCoordinate from 'hooks/board/useBoardCoordinate';
 import { Color, DrawingStatus, ManagerSpace, MapElement } from 'types/common';
 import { MapElementType, MapEditorMode } from 'types/editor';
-import useBindKeyPress from '../hooks/useBindKeyPress';
+import useBindKeyPress from '../../../hooks/board/useBindKeyPress';
 import useBoardEraserTool from '../hooks/useBoardEraserTool';
 import useBoardLineTool from '../hooks/useBoardLineTool';
 import useBoardMove from '../hooks/useBoardMove';
@@ -82,7 +82,7 @@ const MapCreateEditor = ({
     width: Number(width),
     height: Number(height),
   });
-  const { stickyCoordinate, onMouseMove } = useBoardCoordinate(boardStatus);
+  const { stickyDotCoordinate, onMouseMove } = useBoardCoordinate(boardStatus);
   const { onWheel } = useBoardZoom([boardStatus, setBoardStatus]);
   const { gripPoints, selectedMapElementId, deselectMapElement, onClickBoard, onClickMapElement } =
     useBoardSelect();
@@ -91,13 +91,13 @@ const MapCreateEditor = ({
     isBoardDraggable
   );
   const { drawLineStart, drawLineEnd } = useBoardLineTool({
-    coordinate: stickyCoordinate,
+    coordinate: stickyDotCoordinate,
     color,
     drawingStatus: [drawingStatus, setDrawingStatus],
     mapElements: [mapElements, setMapElements],
   });
   const { drawRectStart, drawRectEnd } = useBoardRectTool({
-    coordinate: stickyCoordinate,
+    coordinate: stickyDotCoordinate,
     color,
     drawingStatus: [drawingStatus, setDrawingStatus],
     mapElements: [mapElements, setMapElements],
@@ -187,8 +187,8 @@ const MapCreateEditor = ({
         >
           {[MapEditorMode.Line, MapEditorMode.Rect].includes(mode) && (
             <circle
-              cx={stickyCoordinate.x}
-              cy={stickyCoordinate.y}
+              cx={stickyDotCoordinate.x}
+              cy={stickyDotCoordinate.y}
               r={EDITOR.CIRCLE_CURSOR_RADIUS}
               fill={EDITOR.CIRCLE_CURSOR_FILL}
               pointerEvents="none"
@@ -222,7 +222,7 @@ const MapCreateEditor = ({
           {drawingStatus.start && mode === MapEditorMode.Line && (
             <polyline
               key={`preview-${MapElementType.Polyline}`}
-              points={`${drawingStatus.start.x},${drawingStatus.start.y} ${stickyCoordinate.x},${stickyCoordinate.y}`}
+              points={`${drawingStatus.start.x},${drawingStatus.start.y} ${stickyDotCoordinate.x},${stickyDotCoordinate.y}`}
               stroke={EDITOR.STROKE_PREVIEW}
               strokeWidth={EDITOR.STROKE_WIDTH}
               strokeLinecap="round"
@@ -233,10 +233,10 @@ const MapCreateEditor = ({
           {drawingStatus.start && mode === MapEditorMode.Rect && (
             <rect
               key={`preview-${MapElementType.Rect}`}
-              x={Math.min(drawingStatus.start.x, stickyCoordinate.x)}
-              y={Math.min(drawingStatus.start.y, stickyCoordinate.y)}
-              width={Math.abs(drawingStatus.start.x - stickyCoordinate.x)}
-              height={Math.abs(drawingStatus.start.y - stickyCoordinate.y)}
+              x={Math.min(drawingStatus.start.x, stickyDotCoordinate.x)}
+              y={Math.min(drawingStatus.start.y, stickyDotCoordinate.y)}
+              width={Math.abs(drawingStatus.start.x - stickyDotCoordinate.x)}
+              height={Math.abs(drawingStatus.start.y - stickyDotCoordinate.y)}
               stroke={EDITOR.STROKE_PREVIEW}
               strokeWidth={EDITOR.STROKE_WIDTH}
               strokeLinecap="round"
