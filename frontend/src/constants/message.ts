@@ -70,9 +70,6 @@ const MESSAGE = {
     UNEXPECTED_MAP_UPDATE_ERROR:
       '맵을 수정하는 중에 문제가 발생했습니다. 잠시 후에 다시 시도해주세요.',
   },
-  COMPONENTS: {
-    CANNOT_FIND_MODAL_ROOT: 'Modal 컴포넌트의 root Element를 찾을 수 없습니다.',
-  },
 };
 
 export default MESSAGE;
