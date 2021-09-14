@@ -11,9 +11,9 @@ interface JoinParams {
 export const queryValidateEmail: QueryFunction = ({ queryKey }) => {
   const [, email] = queryKey;
 
-  return api.get(`/members/?email=${email as string}`);
+  return api.get(`/managers/?email=${email as string}`);
 };
 
 export const postJoin = ({ email, password, organization }: JoinParams): Promise<AxiosResponse> => {
-  return api.post('/members', { email, password, organization });
+  return api.post('/managers', { email, password, organization });
 };
