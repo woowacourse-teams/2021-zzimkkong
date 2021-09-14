@@ -5,10 +5,10 @@ import * as Styled from './Board.styles';
 import GridPattern from './GridPattern';
 
 interface Props {
-  statusState: [EditorBoard, React.Dispatch<React.SetStateAction<EditorBoard>>];
-  isDraggable?: boolean;
-  isDragging?: boolean;
-  onClick?: (event: React.MouseEvent<SVGSVGElement>) => void;
+  boardState: [EditorBoard, React.Dispatch<React.SetStateAction<EditorBoard>>];
+  movable?: boolean;
+  isMoving?: boolean;
+  onClick?: (event: React.MouseEvent<SVGGElement>) => void;
   onMouseMove?: (event: React.MouseEvent<SVGSVGElement>) => void;
   onMouseDown?: (event: React.MouseEvent<SVGSVGElement>) => void;
   onMouseUp?: (event: React.MouseEvent<SVGSVGElement>) => void;
@@ -20,9 +20,9 @@ interface Props {
 }
 
 const Board = ({
-  statusState,
-  isDraggable = false,
-  isDragging = false,
+  boardState,
+  movable = false,
+  isMoving = false,
   onClick,
   onMouseMove,
   onMouseDown,
@@ -35,7 +35,7 @@ const Board = ({
   children,
 }: PropsWithChildren<Props>): JSX.Element => {
   const rootSvgRef = useRef<SVGSVGElement | null>(null);
-  const [status, setStatus] = statusState;
+  const [board, setBoard] = boardState;
 
   const handleMouseMove = (event: React.MouseEvent<SVGSVGElement>) => {
     onMouseMove?.(event);
@@ -45,12 +45,12 @@ const Board = ({
     const boardWidth = rootSvgRef.current?.clientWidth ?? 0;
     const boardHeight = rootSvgRef.current?.clientHeight ?? 0;
 
-    setStatus((prevStatus) => ({
+    setBoard((prevStatus) => ({
       ...prevStatus,
-      x: (boardWidth - status.width) / 2,
-      y: (boardHeight - status.height) / 2,
+      x: (boardWidth - board.width) / 2,
+      y: (boardHeight - board.height) / 2,
     }));
-  }, [setStatus, status.height, status.width]);
+  }, [setBoard, board.height, board.width]);
 
   return (
     <Styled.RootSvg
@@ -63,12 +63,13 @@ const Board = ({
       onMouseMove={onDrag}
       onMouseUp={onDragEnd}
       onMouseOut={onMouseOut}
-      isDraggable={isDraggable}
-      isDragging={isDragging}
+      movable={movable}
+      isMoving={isMoving}
       ref={rootSvgRef}
     >
-      <rect width="100%" height="100%" fill={PALETTE.GRAY[200]} />
-      <svg
+      <Styled.BoardContainerBackground width="100%" height="100%" fill={PALETTE.GRAY[200]} />
+
+      <Styled.Board
         xmlns="http://www.w3.org/2000/svg"
         version="1.1"
         onMouseMove={handleMouseMove}
@@ -76,16 +77,23 @@ const Board = ({
         onMouseUp={onMouseUp}
       >
         <GridPattern.Defs />
-        <g
+
+        <Styled.BoardGroup
           id="board"
-          transform={`matrix(${status.scale}, 0, 0, ${status.scale}, ${status.x}, ${status.y})`}
+          transform={`matrix(${board.scale}, 0, 0, ${board.scale}, ${board.x}, ${board.y})`}
           onClickCapture={onClick}
         >
-          <rect width={`${status.width}px`} height={`${status.height}px`} fill="white" />
-          <GridPattern width={status.width} height={status.height} />
+          <Styled.BoardBackground
+            width={`${board.width}px`}
+            height={`${board.height}px`}
+            fill={PALETTE.WHITE}
+          />
+
+          <GridPattern width={board.width} height={board.height} />
+
           {children}
-        </g>
-      </svg>
+        </Styled.BoardGroup>
+      </Styled.Board>
     </Styled.RootSvg>
   );
 };

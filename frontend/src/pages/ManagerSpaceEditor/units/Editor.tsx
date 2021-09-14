@@ -7,17 +7,19 @@ import {
   useMemo,
   useState,
 } from 'react';
+import Board from 'components/Board/Board';
 import { EDITOR, KEY } from 'constants/editor';
 import PALETTE from 'constants/palette';
 import useBindKeyPress from 'hooks/board/useBindKeyPress';
 import useBoardCoordinate from 'hooks/board/useBoardCoordinate';
+import useBoardMove from 'hooks/board/useBoardMove';
+import useBoardZoom from 'hooks/board/useBoardZoom';
 import useFormContext from 'hooks/useFormContext';
 import { Area, EditorBoard, ManagerSpace, MapElement } from 'types/common';
 import { SpaceEditorMode as Mode } from 'types/editor';
 import { drawingModes } from '../data';
 import useDrawingRect from '../hooks/useDrawingRect';
 import { SpaceFormContext } from '../providers/SpaceFormProvider';
-import Board from './Board';
 import BoardCursorRect from './BoardCursorRect';
 import BoardMapElement from './BoardMapElement';
 import BoardSpace from './BoardSpace';
@@ -46,6 +48,12 @@ const Editor = ({
 
   const { values, updateWithSpace, updateArea } = useFormContext(SpaceFormContext);
   const { stickyRectCoordinate, onMouseMove: updateCoordinate } = useBoardCoordinate(board);
+
+  const { onWheel } = useBoardZoom(boardState);
+  const { isMoving, onDragStart, onDrag, onDragEnd, onMouseOut } = useBoardMove(
+    boardState,
+    movable
+  );
 
   const { rect, startDrawingRect, updateRect, endDrawingRect } =
     useDrawingRect(stickyRectCoordinate);
@@ -107,11 +115,17 @@ const Editor = ({
 
   return (
     <Board
-      movable={movable}
       boardState={boardState}
+      movable={movable}
+      isMoving={isMoving}
+      onDragStart={onDragStart}
+      onDrag={onDrag}
+      onDragEnd={onDragEnd}
+      onMouseOut={onMouseOut}
       onMouseMove={handleMouseMove}
       onMouseDown={handleDrawingStart}
       onMouseUp={handleDrawingEnd}
+      onWheel={onWheel}
     >
       {values.area && (
         <BoardSpace

@@ -4,6 +4,7 @@ import { ReactComponent as LineIcon } from 'assets/svg/line.svg';
 import { ReactComponent as MoveIcon } from 'assets/svg/move.svg';
 import { ReactComponent as RectIcon } from 'assets/svg/rect.svg';
 import { ReactComponent as SelectIcon } from 'assets/svg/select.svg';
+import Board from 'components/Board/Board';
 import ColorPicker from 'components/ColorPicker/ColorPicker';
 import ColorPickerIcon from 'components/ColorPicker/ColorPickerIcon';
 import { EDITOR, KEY } from 'constants/editor';
@@ -19,7 +20,6 @@ import useBoardEraserTool from '../hooks/useBoardEraserTool';
 import useBoardLineTool from '../hooks/useBoardLineTool';
 import useBoardRectTool from '../hooks/useBoardRectTool';
 import useBoardSelect from '../hooks/useBoardSelect';
-import Board from './Board';
 import * as Styled from './MapEditor.styles';
 
 const toolbarItems = [
@@ -172,9 +172,9 @@ const MapCreateEditor = ({
       </Styled.ColorPicker>
       <Styled.Board>
         <Board
-          statusState={[boardStatus, setBoardStatus]}
-          isDraggable={isBoardDraggable}
-          isDragging={isMoving}
+          boardState={[boardStatus, setBoardStatus]}
+          movable={isBoardDraggable}
+          isMoving={isMoving}
           onClick={onClickBoard}
           onMouseMove={onMouseMove}
           onMouseDown={handleMouseDown}
