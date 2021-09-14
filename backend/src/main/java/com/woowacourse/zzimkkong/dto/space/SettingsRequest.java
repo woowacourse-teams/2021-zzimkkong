@@ -26,7 +26,7 @@ public class SettingsRequest {
 
     private Integer reservationMinimumTimeUnit = 10;
 
-    private Integer reservationMaximumTimeUnit = 1440;
+    private Integer reservationMaximumTimeUnit = 120;
 
     private Boolean reservationEnable = true;
 

@@ -1,5 +1,6 @@
 package com.woowacourse.zzimkkong.domain;
 
+import com.woowacourse.zzimkkong.exception.space.*;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -7,6 +8,7 @@ import lombok.NoArgsConstructor;
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
 import java.time.LocalTime;
+import java.time.temporal.ChronoUnit;
 
 @Getter
 @Builder
@@ -49,5 +51,53 @@ public class Setting {
         this.reservationMaximumTimeUnit = reservationMaximumTimeUnit;
         this.reservationEnable = reservationEnable;
         this.enabledDayOfWeek = enabledDayOfWeek;
+
+        validateSetting();
+    }
+
+    private void validateSetting() {
+        if (availableStartTime.equals(availableEndTime) || availableStartTime.isAfter(availableEndTime)) {
+            throw new ImpossibleAvailableStartEndTimeException();
+        }
+
+        if (isNoneMatchingAvailableTimeAndTimeUnit()) {
+            throw new TimeUnitMismatchException();
+        }
+
+        if (reservationMaximumTimeUnit < reservationMinimumTimeUnit) {
+            throw new InvalidMinimumMaximumTimeUnitException();
+        }
+
+        if (isNotConsistentTimeUnit()) {
+            throw new TimeUnitInconsistencyException();
+        }
+
+        int duration = (int) ChronoUnit.MINUTES.between(availableStartTime, availableEndTime);
+        if (duration < reservationMaximumTimeUnit) {
+            throw new NotEnoughAvailableTimeException();
+        }
+    }
+
+    private boolean isNoneMatchingAvailableTimeAndTimeUnit() {
+        return isNotDivisibleByTimeUnit(availableStartTime.getMinute()) || isNotDivisibleByTimeUnit(availableEndTime.getMinute());
+    }
+
+    public boolean isNotDivisibleByTimeUnit(final int minute) {
+        return minute % this.reservationTimeUnit != 0;
+    }
+
+    private boolean isNotConsistentTimeUnit() {
+        return !(isMinimumTimeUnitConsistentWithTimeUnit() && isMaximumTimeUnitConsistentWithTimeUnit());
+    }
+
+    private boolean isMinimumTimeUnitConsistentWithTimeUnit() {
+        int minimumTimeUnitQuotient = reservationMinimumTimeUnit / reservationTimeUnit;
+        int minimumTimeUnitRemainder = reservationMinimumTimeUnit % reservationTimeUnit;
+        return minimumTimeUnitRemainder == 0 && 1 <= minimumTimeUnitQuotient;
+    }
+
+    private boolean isMaximumTimeUnitConsistentWithTimeUnit() {
+        int maximumTimeUnitRemainder = reservationMaximumTimeUnit % reservationTimeUnit;
+        return maximumTimeUnitRemainder == 0;
     }
 }

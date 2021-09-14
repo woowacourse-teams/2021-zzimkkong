@@ -6,3 +6,8 @@ export enum Mode {
   Eraser = 'eraser',
   Decoration = 'decoration',
 }
+
+export enum MapElementType {
+  Polyline = 'polyline',
+  Rect = 'rect',
+}

@@ -13,16 +13,7 @@ export const PageTitle = styled.h2`
   margin: 2.125rem auto;
 `;
 
-export const Form = styled.form`
-  margin: 3.75rem 0;
-
-  label {
-    margin-bottom: 3rem;
-  }
-`;
-
 export const JoinLinkMessage = styled.p`
-  margin: 1rem 0;
   text-align: center;
   font-size: 0.75rem;
   color: ${({ theme }) => theme.gray[500]};
