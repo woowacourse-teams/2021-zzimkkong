@@ -7,15 +7,19 @@ interface Props {
 }
 
 const BoardMapElement = ({ mapElement }: Props): JSX.Element => {
-  return mapElement.type === MapElementType.Polyline ? (
-    <polyline
-      points={mapElement.points.join(' ')}
-      stroke={mapElement.stroke}
-      strokeWidth={EDITOR.STROKE_WIDTH}
-      strokeLinecap="round"
-      pointerEvents="none"
-    />
-  ) : (
+  if (mapElement.type === MapElementType.Polyline) {
+    return (
+      <polyline
+        points={mapElement.points.join(' ')}
+        stroke={mapElement.stroke}
+        strokeWidth={EDITOR.STROKE_WIDTH}
+        strokeLinecap="round"
+        pointerEvents="none"
+      />
+    );
+  }
+
+  return (
     <rect
       x={mapElement?.x}
       y={mapElement?.y}
