@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 
 @RestController
-@RequestMapping("/api")
+@RequestMapping("/api/members")
 public class AuthController {
     private final AuthService authService;
 
@@ -18,18 +18,18 @@ public class AuthController {
         this.authService = authService;
     }
 
-    @PostMapping("/members/login/token")
+    @PostMapping("/login/token")
     public ResponseEntity<TokenResponse> login(@RequestBody @Valid final LoginRequest loginRequest) {
         return ResponseEntity.ok()
                 .body(authService.login(loginRequest));
     }
 
-    @PostMapping("/members/token")
+    @PostMapping("/token")
     public ResponseEntity<TokenResponse> token() {
         return ResponseEntity.ok().build();
     }
 
-    @GetMapping("/members/{oauthProvider}/login/token")
+    @GetMapping("/{oauthProvider}/login/token")
     public ResponseEntity<TokenResponse> loginByOauth(@PathVariable OauthProvider oauthProvider, @RequestParam String code) {
         return ResponseEntity.ok()
                 .body(authService.loginByOauth(oauthProvider, code));
