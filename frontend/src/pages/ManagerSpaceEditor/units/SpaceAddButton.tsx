@@ -1,6 +1,6 @@
 import { ReactComponent as PlusSmallIcon } from 'assets/svg/plus-small.svg';
 import Button from 'components/Button/Button';
-import useFormContext from '../hooks/useFormContext';
+import useFormContext from 'hooks/useFormContext';
 import { SpaceFormContext } from '../providers/SpaceFormProvider';
 
 interface Props {

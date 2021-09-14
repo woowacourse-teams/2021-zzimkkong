@@ -1,8 +1,8 @@
 import { Dispatch, ReactNode, SetStateAction, useMemo } from 'react';
 import Select from 'components/Select/Select';
+import useFormContext from 'hooks/useFormContext';
 import { ManagerSpace } from 'types/common';
 import { sortSpaces } from 'utils/sort';
-import useFormContext from '../hooks/useFormContext';
 import { SpaceFormContext } from '../providers/SpaceFormProvider';
 import ColorDot from './ColorDot';
 import * as Styled from './SpaceSelect.styles';
