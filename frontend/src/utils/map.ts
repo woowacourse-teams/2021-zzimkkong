@@ -56,7 +56,7 @@ export const createMapImageSvg = ({
               width='${element.width ?? 0}'
               height='${element.height ?? 0}'
               stroke='${element.stroke}'
-              fill="none"
+              fill='none'
               strokeWidth='${EDITOR.STROKE_WIDTH}'
             />
             `

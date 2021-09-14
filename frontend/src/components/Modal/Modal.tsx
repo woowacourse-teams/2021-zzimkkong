@@ -1,4 +1,5 @@
 import { MouseEventHandler, PropsWithChildren } from 'react';
+import { createPortal } from 'react-dom';
 import { ReactComponent as CloseIcon } from 'assets/svg/close.svg';
 import * as Styled from './Modal.styles';
 
@@ -9,6 +10,8 @@ export interface Props {
   onClose: () => void;
 }
 
+let modalRoot = document.getElementById('modal');
+
 const Modal = ({
   open,
   isClosableDimmer,
@@ -16,13 +19,20 @@ const Modal = ({
   onClose,
   children,
 }: PropsWithChildren<Props>): JSX.Element => {
+  if (modalRoot === null) {
+    // Note: 테스트(Jest)에서 modalRoot를 인식하지 못하는 문제해결
+    modalRoot = document.createElement('div');
+    modalRoot.setAttribute('id', 'modal');
+    document.body.appendChild(modalRoot);
+  }
+
   const handleMouseDownOverlay: MouseEventHandler<HTMLDivElement> = ({ target, currentTarget }) => {
     if (isClosableDimmer && target === currentTarget) {
       onClose();
     }
   };
 
-  return (
+  return createPortal(
     <Styled.Overlay open={open} onMouseDown={handleMouseDownOverlay}>
       <Styled.Modal>
         {open && showCloseButton && (
@@ -32,7 +42,8 @@ const Modal = ({
         )}
         {open && children}
       </Styled.Modal>
-    </Styled.Overlay>
+    </Styled.Overlay>,
+    modalRoot
   );
 };
 

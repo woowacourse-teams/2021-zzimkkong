@@ -1,18 +1,5 @@
 import PALETTE from './palette';
 
-export enum Mode {
-  SELECT = 'select',
-  MOVE = 'move',
-  LINE = 'line',
-  POLYLINE = 'polyline',
-  DECORATION = 'decoration',
-}
-
-export enum DrawingAreaShape {
-  RECT = 'rect',
-  POLYGON = 'polygon',
-}
-
 export const MAP_COLOR_PALETTE = [
   PALETTE.BLACK[400],
   PALETTE.GRAY[400],
@@ -25,6 +12,8 @@ export const MAP_COLOR_PALETTE = [
 ];
 
 export const BOARD = {
+  DEFAULT_WIDTH: 800,
+  DEFAULT_HEIGHT: 600,
   MAX_WIDTH: 5000,
   MIN_WIDTH: 100,
   MAX_HEIGHT: 5000,

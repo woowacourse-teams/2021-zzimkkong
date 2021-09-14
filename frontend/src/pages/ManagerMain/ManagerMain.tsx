@@ -25,6 +25,7 @@ import useManagerReservations from 'hooks/useManagerReservations';
 import { Order, Reservation } from 'types/common';
 import { ErrorResponse, MapItemResponse } from 'types/response';
 import { formatDate } from 'utils/datetime';
+import { sortReservations } from 'utils/sort';
 import { isNullish } from 'utils/type';
 import * as Styled from './ManagerMain.styles';
 
@@ -41,7 +42,7 @@ const ManagerMain = (): JSX.Element => {
 
   const [selectedMapId, setSelectedMapId] = useState<number | null>(location.state?.mapId ?? null);
   const [selectedMapName, setSelectedMapName] = useState('');
-  const [spacesOrder, setSpacesOrder] = useState<Order>('ascending');
+  const [spacesOrder, setSpacesOrder] = useState<Order>(Order.Ascending);
 
   const onRequestError = (error: AxiosError<ErrorResponse>) => {
     alert(error.response?.data?.message ?? MESSAGE.MANAGER_MAIN.UNEXPECTED_GET_DATA_ERROR);
@@ -77,27 +78,12 @@ const ManagerMain = (): JSX.Element => {
 
   const reservations = useMemo(() => getReservations.data?.data?.data ?? [], [getReservations]);
   const sortedReservations = useMemo(
-    () =>
-      reservations.sort((a, b) => {
-        if (a.spaceColor !== b.spaceColor) {
-          if (spacesOrder === 'ascending') return a.spaceColor < b.spaceColor ? -1 : 1;
-
-          return a.spaceColor > b.spaceColor ? -1 : 1;
-        }
-
-        const aSpaceNameWithoutWhitespace = a.spaceName.replaceAll(' ', '');
-        const bSpaceNameWithoutWhitespace = b.spaceName.replaceAll(' ', '');
-
-        if (spacesOrder === 'ascending')
-          return aSpaceNameWithoutWhitespace < bSpaceNameWithoutWhitespace ? -1 : 1;
-
-        return aSpaceNameWithoutWhitespace > bSpaceNameWithoutWhitespace ? -1 : 1;
-      }),
+    () => sortReservations(reservations, spacesOrder),
     [reservations, spacesOrder]
   );
 
   const handleClickSpacesOrder = () => {
-    setSpacesOrder((prev) => (prev === 'ascending' ? 'descending' : 'ascending'));
+    setSpacesOrder((prev) => (prev === Order.Ascending ? Order.Descending : Order.Ascending));
   };
 
   const removeMap = useMutation(deleteMap, {
