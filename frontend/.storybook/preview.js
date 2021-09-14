@@ -1,6 +1,7 @@
 import { INITIAL_VIEWPORTS } from '@storybook/addon-viewport';
 import { ThemeProvider } from 'styled-components';
 import { theme, GlobalStyle } from '../src/App.styles';
+import { MemoryRouter } from 'react-router';
 
 export const parameters = {
   actions: { argTypesRegex: '^on[A-Z].*' },
@@ -22,5 +23,10 @@ export const decorators = [
       <GlobalStyle />
       <Story />
     </ThemeProvider>
+  ),
+  (Story) => (
+    <MemoryRouter initialEntries={['/']}>
+      <Story />
+    </MemoryRouter>
   ),
 ];

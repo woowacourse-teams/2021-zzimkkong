@@ -7,6 +7,7 @@ import { useSetRecoilState } from 'recoil';
 import { postLogin } from 'api/login';
 import Header from 'components/Header/Header';
 import Layout from 'components/Layout/Layout';
+import SocialLoginButton from 'components/SocialLoginButton/SocialLoginButton';
 import MESSAGE from 'constants/message';
 import PATH from 'constants/path';
 import { LOCAL_STORAGE_KEY } from 'constants/storage';
@@ -28,6 +29,7 @@ export interface LoginParams {
 
 const ManagerLogin = (): JSX.Element => {
   const history = useHistory();
+
   const setAccessToken = useSetRecoilState(accessTokenState);
 
   const [errorMessage, setErrorMessage] = useState<ErrorMessage>({
@@ -70,6 +72,11 @@ const ManagerLogin = (): JSX.Element => {
         <Styled.Container>
           <Styled.PageTitle>로그인</Styled.PageTitle>
           <LoginForm errorMessage={errorMessage} onSubmit={handleSubmit} />
+          <Styled.HorizontalLine />
+          <Styled.SocialLogin>
+            <SocialLoginButton provider="github" />
+            <SocialLoginButton provider="google" />
+          </Styled.SocialLogin>
           <Styled.JoinLinkMessage>
             아직 회원이 아니신가요?
             <Link to={PATH.MANAGER_JOIN}>회원가입하기</Link>

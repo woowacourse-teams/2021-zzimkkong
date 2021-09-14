@@ -28,3 +28,14 @@ export const JoinLinkMessage = styled.p`
     }
   }
 `;
+
+export const HorizontalLine = styled.hr`
+  margin: 1.5rem 0;
+`;
+
+export const SocialLogin = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  margin: 1.5rem 0;
+`;
