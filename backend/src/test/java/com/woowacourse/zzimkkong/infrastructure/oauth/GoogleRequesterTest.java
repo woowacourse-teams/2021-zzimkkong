@@ -2,7 +2,6 @@ package com.woowacourse.zzimkkong.infrastructure.oauth;
 
 import com.woowacourse.zzimkkong.domain.OauthProvider;
 import com.woowacourse.zzimkkong.domain.oauth.OauthUserInfo;
-import com.woowacourse.zzimkkong.dto.member.oauth.GoogleTokenResponse;
 import okhttp3.mockwebserver.MockResponse;
 import okhttp3.mockwebserver.MockWebServer;
 import org.junit.jupiter.api.DisplayName;
@@ -12,19 +11,20 @@ import org.springframework.http.MediaType;
 import org.springframework.test.context.ActiveProfiles;
 
 import java.io.IOException;
+import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 @ActiveProfiles("test")
 class GoogleRequesterTest {
     public static final String SALLY_EMAIL = "dusdn1702@gmail.com";
-    private static final GoogleTokenResponse GOOGLE_TOKEN_RESPONSE = new GoogleTokenResponse(
-            "ACCESS_TOKEN_AT_HERE",
-            3599,
-            "REFRESH_TOKEN_AT_HERE",
-            "https://www.googleapis.com/auth/drive.metadata.readonly https://www.googleapis.com/auth/userinfo.profile https://www.googleapis.com/auth/indexing openid https://www.googleapis.com/auth/userinfo.email",
-            "Bearer",
-            "ID_TOKEN_AT_HERE");
+    private static final Map<String, Object> GOOGLE_TOKEN_RESPONSE = Map.of(
+            "accessToken", "ACCESS_TOKEN_AT_HERE",
+            "expiresIn", 3599,
+            "refreshToken", "REFRESH_TOKEN_AT_HERE",
+            "scope", "https://www.googleapis.com/auth/drive.metadata.readonly https://www.googleapis.com/auth/userinfo.profile https://www.googleapis.com/auth/indexing openid https://www.googleapis.com/auth/userinfo.email",
+            "tokenType", "Bearer",
+            "idToken", "ID_TOKEN_AT_HERE");
 
     private static final String USER_INFO_RESPONSE_EXAMPLE = "{\n" +
             "    \"id\": \"107677594285931275665\",\n" +
@@ -80,7 +80,7 @@ class GoogleRequesterTest {
         assertThat(googleRequester.supports(OauthProvider.GITHUB)).isFalse();
     }
 
-    private void setUpResponse(MockWebServer mockGithubServer) { ;
+    private void setUpResponse(MockWebServer mockGithubServer) {
         mockGithubServer.enqueue(new MockResponse()
                 .setBody(GOOGLE_TOKEN_RESPONSE.toString())
                 .addHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE));

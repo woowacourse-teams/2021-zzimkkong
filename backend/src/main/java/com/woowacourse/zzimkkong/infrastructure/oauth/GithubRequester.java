@@ -66,8 +66,7 @@ public class GithubRequester implements OauthAPIRequester {
                 .uri("/user")
                 .header(HttpHeaders.AUTHORIZATION, "token " + token)
                 .retrieve()
-                .bodyToMono(new ParameterizedTypeReference<Map<String, Object>>() {
-                })
+                .bodyToMono(new ParameterizedTypeReference<Map<String, Object>>() {})
                 .blockOptional()
                 .orElseThrow(UnableToGetTokenResponseFromGithubException::new);
 

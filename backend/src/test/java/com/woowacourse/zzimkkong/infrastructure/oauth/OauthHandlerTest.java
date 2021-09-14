@@ -59,14 +59,8 @@ class OauthHandlerTest {
 
     private void mockingGoogleGetUserInfo(String email) {
         given(googleRequester.getUserInfoByCode(anyString()))
-                .willReturn(new GoogleUserInfo(
-                        "id",
-                        email,
-                        "verified_email",
-                        "name",
-                        "given_name",
-                        "family_name",
-                        "picture",
-                        "locale"));
+                .willReturn(GoogleUserInfo.from(
+                        Map.of("id", "12",
+                                "email", email)));
     }
 }

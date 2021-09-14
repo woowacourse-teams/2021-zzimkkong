@@ -78,15 +78,9 @@ class AuthControllerTest extends AcceptanceTest {
         given(googleRequester.supports(any(OauthProvider.class)))
                 .willReturn(true);
         given(googleRequester.getUserInfoByCode(anyString()))
-                .willReturn(new GoogleUserInfo(
-                        "id",
-                        NEW_EMAIL,
-                        "verified_email",
-                        "name",
-                        "given_name",
-                        "family_name",
-                        "picture",
-                        "locale"));
+                .willReturn(GoogleUserInfo.from(
+                        Map.of("id", "123",
+                                "email", NEW_EMAIL)));
 
         // when
         ExtractableResponse<Response> response = loginByOauth(oauthProvider, code);

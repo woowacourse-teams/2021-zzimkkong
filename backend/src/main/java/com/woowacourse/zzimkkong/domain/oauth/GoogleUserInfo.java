@@ -1,45 +1,27 @@
 package com.woowacourse.zzimkkong.domain.oauth;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+
+import java.util.Collections;
+import java.util.Map;
 
 @Getter
 @NoArgsConstructor
 public class GoogleUserInfo implements OauthUserInfo {
-    @JsonProperty("id")
-    private String id;
+    private Map<String, Object> info;
 
-    @JsonProperty("email")
-    private String email;
+    private GoogleUserInfo(final Map<String, Object> info) {
+        this.info = Collections.unmodifiableMap(info);
+    }
 
-    @JsonProperty("verified_email")
-    private String verifiedEmail;
+    public static GoogleUserInfo from(final Map<String, Object> responseBody) {
+        return new GoogleUserInfo(responseBody);
+    }
 
-    @JsonProperty("name")
-    private String name;
-
-    @JsonProperty("given_name")
-    private String givenName;
-
-    @JsonProperty("family_name")
-    private String familyName;
-
-    @JsonProperty("picture")
-    private String picture;
-
-    @JsonProperty("locale")
-    private String locale;
-
-    public GoogleUserInfo(String id, String email, String verifiedEmail, String name, String givenName, String familyName, String picture, String locale) {
-        this.id = id;
-        this.email = email;
-        this.verifiedEmail = verifiedEmail;
-        this.name = name;
-        this.givenName = givenName;
-        this.familyName = familyName;
-        this.picture = picture;
-        this.locale = locale;
+    @Override
+    public String getEmail() {
+        return (String) info.get("email");
     }
 }
 
