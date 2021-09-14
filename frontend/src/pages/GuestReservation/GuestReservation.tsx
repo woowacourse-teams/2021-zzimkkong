@@ -126,7 +126,7 @@ const GuestReservation = (): JSX.Element => {
       <Header />
       <Layout>
         <Styled.PageHeader title="공간 이름" data-testid="spaceName">
-          <Styled.ColorDot color={space.color} />
+          <Styled.ColorDot color={space.color} size="medium" />
           {space.name}
         </Styled.PageHeader>
         <ReservationForm

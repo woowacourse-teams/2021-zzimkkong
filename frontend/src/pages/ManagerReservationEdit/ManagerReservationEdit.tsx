@@ -107,7 +107,7 @@ const ManagerReservationEdit = (): JSX.Element => {
           <Styled.Section>
             {space && (
               <Styled.PageHeader>
-                <Styled.ColorDot color={space.color} />
+                <Styled.ColorDot color={space.color} size="medium" />
                 {space.name}
               </Styled.PageHeader>
             )}
