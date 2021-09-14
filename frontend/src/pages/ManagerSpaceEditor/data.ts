@@ -36,6 +36,7 @@ export const initialSpaceFormValue: Omit<SpaceFormValue, 'enabledWeekdays' | 'ar
   reservationMinimumTimeUnit: '10',
   reservationMaximumTimeUnit: '1440',
 };
+
 export const initialEnabledWeekdays: SpaceFormValue['enabledWeekdays'] = {
   monday: true,
   tuesday: true,
