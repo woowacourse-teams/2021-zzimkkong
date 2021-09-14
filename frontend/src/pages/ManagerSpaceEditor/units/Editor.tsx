@@ -129,11 +129,7 @@ const Editor = ({
       {unSelectedSpaces?.map((space, index) => (
         <BoardSpace
           key={`space-${index}`}
-          space={
-            space.id === selectedSpaceId
-              ? { ...space, name: values.name, color: values.color }
-              : space
-          }
+          space={space}
           drawing={isDrawingMode}
           selected={space.id === selectedSpaceId}
           onClick={() => handleClickSpace(space.id)}
