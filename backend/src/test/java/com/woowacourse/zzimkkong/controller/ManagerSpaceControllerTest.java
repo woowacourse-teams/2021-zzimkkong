@@ -92,7 +92,7 @@ class ManagerSpaceControllerTest extends AcceptanceTest {
                 LocalTime.of(20, 0),
                 30,
                 60,
-                100,
+                120,
                 true,
                 "monday, tuesday, wednesday, thursday, friday, saturday, sunday"
         );
@@ -141,7 +141,7 @@ class ManagerSpaceControllerTest extends AcceptanceTest {
                 .availableEndTime(LocalTime.of(18, 0))
                 .reservationTimeUnit(10)
                 .reservationMinimumTimeUnit(10)
-                .reservationMaximumTimeUnit(1440)
+                .reservationMaximumTimeUnit(120)
                 .reservationEnable(true)
                 .enabledDayOfWeek("monday, tuesday, wednesday, thursday, friday, saturday, sunday")
                 .build();
@@ -207,9 +207,9 @@ class ManagerSpaceControllerTest extends AcceptanceTest {
         SettingsRequest settingsRequest = new SettingsRequest(
                 LocalTime.of(10, 0),
                 LocalTime.of(22, 0),
-                40,
-                80,
-                130,
+                30,
+                60,
+                120,
                 false,
                 "monday, tuesday, wednesday, thursday, friday, saturday, sunday"
         );

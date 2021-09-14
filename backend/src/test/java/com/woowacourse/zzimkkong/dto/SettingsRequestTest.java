@@ -35,7 +35,7 @@ class SettingsRequestTest extends RequestTest {
 
     @ParameterizedTest
     @NullSource
-    @ValueSource(ints = {5, 10, 30, 60, 120})
+    @ValueSource(ints = {5, 10, 30, 60})
     @DisplayName("공간의 예약 설정에 단위 시간이 올바르게 들어온다.")
     void validTimeUnit(Integer timeUnit) {
         SettingsRequest settingsRequest = new SettingsRequest(

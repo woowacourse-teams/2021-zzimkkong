@@ -23,8 +23,8 @@ public class ManagerSpaceController {
     public ResponseEntity<Void> save(
             @PathVariable final Long mapId,
             @RequestBody @Valid final SpaceCreateUpdateRequest spaceCreateRequest,
-            @Manager final Member manager) {
-        SpaceCreateResponse spaceCreateResponse = spaceService.saveSpace(mapId, spaceCreateRequest, manager);
+            @Manager final Member member) {
+        SpaceCreateResponse spaceCreateResponse = spaceService.saveSpace(mapId, spaceCreateRequest, member);
         return ResponseEntity
                 .created(URI.create("/api/managers/maps/" + mapId + "/spaces/" + spaceCreateResponse.getId()))
                 .build();
