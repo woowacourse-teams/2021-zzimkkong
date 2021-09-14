@@ -89,4 +89,24 @@ public class MemberController {
 
         return ResponseEntity.noContent().build();
     }
+
+    @GetMapping("/me")
+    public ResponseEntity<MemberFindResponse> findMember(@Manager final Member manager) {
+        MemberFindResponse memberFindResponse = MemberFindResponse.from(manager);
+        return ResponseEntity.ok().body(memberFindResponse);
+    }
+
+    @PutMapping("/me")
+    public ResponseEntity<MemberFindResponse> updateMember(
+            @Manager final Member manager,
+            @RequestBody @Valid final MemberUpdateRequest memberUpdateRequest) {
+        memberService.updateMember(manager, memberUpdateRequest);
+        return ResponseEntity.ok().build();
+    }
+
+    @DeleteMapping("/me")
+    public ResponseEntity<Void> deleteMember(@Manager final Member manager) {
+        memberService.deleteMember(manager);
+        return ResponseEntity.noContent().build();
+    }
 }

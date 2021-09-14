@@ -5,9 +5,11 @@ import com.woowacourse.zzimkkong.domain.OauthProvider;
 import com.woowacourse.zzimkkong.domain.oauth.OauthUserInfo;
 import com.woowacourse.zzimkkong.dto.member.MemberSaveRequest;
 import com.woowacourse.zzimkkong.dto.member.MemberSaveResponse;
+import com.woowacourse.zzimkkong.dto.member.MemberUpdateRequest;
 import com.woowacourse.zzimkkong.dto.member.oauth.OauthMemberSaveRequest;
 import com.woowacourse.zzimkkong.dto.member.oauth.OauthReadyResponse;
 import com.woowacourse.zzimkkong.exception.member.DuplicateEmailException;
+import com.woowacourse.zzimkkong.exception.member.ReservationExistsOnMemberException;
 import com.woowacourse.zzimkkong.infrastructure.oauth.OauthHandler;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -17,11 +19,12 @@ import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.mock.mockito.MockBean;
 
+import java.util.Optional;
+
 import static com.woowacourse.zzimkkong.Constants.*;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;
 
@@ -158,5 +161,46 @@ class MemberServiceTest extends ServiceTest {
         //then
         assertThatThrownBy(() -> memberService.saveMemberByOauth(oauthMemberSaveRequest))
                 .isInstanceOf(DuplicateEmailException.class);
+    }
+
+    @Test
+    @DisplayName("회원은 자신의 정보를 수정할 수 있다.")
+    void updateMember() {
+        // given
+        Member member = new Member(EMAIL, PW, ORGANIZATION);
+        MemberUpdateRequest memberUpdateRequest = new MemberUpdateRequest("woowabros");
+
+        given(members.findByEmail(any(String.class)))
+                .willReturn(Optional.of(member));
+
+        // when
+        memberService.updateMember(member, memberUpdateRequest);
+
+        assertThat(members.findByEmail(EMAIL).orElseThrow().getOrganization()).isEqualTo("woowabros");
+    }
+
+    @Test
+    @DisplayName("회원을 삭제할 수 있다.")
+    void deleteMember() {
+        // given
+        Member member = new Member(1L, EMAIL, PW, ORGANIZATION);
+        given(reservations.existsReservationsByMemberFromToday(any(Member.class)))
+                .willReturn(false);
+
+        // when, then
+        memberService.deleteMember(member);
+    }
+
+    @Test
+    @DisplayName("회원이 소유한 공간에 예약이 있다면 탈퇴할 수 없다.")
+    void deleteMemberFailWhenAnyReservationsExists() {
+        // given
+        Member member = new Member(1L, EMAIL, PW, ORGANIZATION);
+        given(reservations.existsReservationsByMemberFromToday(any(Member.class)))
+                .willReturn(true);
+
+        // when, then
+        assertThatThrownBy(() -> memberService.deleteMember(member))
+                .isInstanceOf(ReservationExistsOnMemberException.class);
     }
 }

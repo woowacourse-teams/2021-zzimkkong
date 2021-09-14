@@ -5,11 +5,14 @@ import com.woowacourse.zzimkkong.domain.OauthProvider;
 import com.woowacourse.zzimkkong.domain.oauth.OauthUserInfo;
 import com.woowacourse.zzimkkong.dto.member.MemberSaveRequest;
 import com.woowacourse.zzimkkong.dto.member.MemberSaveResponse;
+import com.woowacourse.zzimkkong.dto.member.MemberUpdateRequest;
 import com.woowacourse.zzimkkong.dto.member.oauth.OauthMemberSaveRequest;
 import com.woowacourse.zzimkkong.dto.member.oauth.OauthReadyResponse;
 import com.woowacourse.zzimkkong.exception.member.DuplicateEmailException;
+import com.woowacourse.zzimkkong.exception.member.ReservationExistsOnMemberException;
 import com.woowacourse.zzimkkong.infrastructure.oauth.OauthHandler;
 import com.woowacourse.zzimkkong.repository.MemberRepository;
+import com.woowacourse.zzimkkong.repository.ReservationRepository;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -18,13 +21,16 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional
 public class MemberService {
     private final MemberRepository members;
+    private final ReservationRepository reservations;
     private final PasswordEncoder passwordEncoder;
     private final OauthHandler oauthHandler;
 
     public MemberService(final MemberRepository members,
+                         final ReservationRepository reservations,
                          final PasswordEncoder passwordEncoder,
                          final OauthHandler oauthHandler) {
         this.members = members;
+        this.reservations = reservations;
         this.passwordEncoder = passwordEncoder;
         this.oauthHandler = oauthHandler;
     }
@@ -69,5 +75,18 @@ public class MemberService {
         if (members.existsByEmail(email)) {
             throw new DuplicateEmailException();
         }
+    }
+
+    public void updateMember(final Member member, final MemberUpdateRequest memberUpdateRequest) {
+        member.update(memberUpdateRequest.getOrganization());
+    }
+
+    public void deleteMember(final Member manager) {
+        boolean hasAnyReservations = reservations.existsReservationsByMemberFromToday(manager);
+        if (hasAnyReservations) {
+            throw new ReservationExistsOnMemberException();
+        }
+
+        members.delete(manager);
     }
 }

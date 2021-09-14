@@ -7,7 +7,7 @@ import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.List;
 
-public interface ReservationRepository extends JpaRepository<Reservation, Long> {
+public interface ReservationRepository extends JpaRepository<Reservation, Long>, ReservationRepositoryCustom {
     List<Reservation> findAllBySpaceIdInAndStartTimeIsBetweenAndEndTimeIsBetween(
             final Collection<Long> spaceIds,
             final LocalDateTime firstStartTime,

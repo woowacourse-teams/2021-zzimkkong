@@ -9,6 +9,9 @@ import com.woowacourse.zzimkkong.domain.oauth.GoogleUserInfo;
 import com.woowacourse.zzimkkong.dto.member.*;
 import com.woowacourse.zzimkkong.dto.member.oauth.OauthMemberSaveRequest;
 import com.woowacourse.zzimkkong.dto.member.oauth.OauthReadyResponse;
+import com.woowacourse.zzimkkong.dto.ErrorResponse;
+import com.woowacourse.zzimkkong.dto.InputFieldErrorResponse;
+import com.woowacourse.zzimkkong.dto.member.*;
 import com.woowacourse.zzimkkong.dto.space.SettingsRequest;
 import com.woowacourse.zzimkkong.infrastructure.AuthorizationExtractor;
 import io.restassured.RestAssured;
@@ -197,6 +200,51 @@ class MemberControllerTest extends AcceptanceTest {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
     }
 
+    @Test
+    @DisplayName("유저는 자신의 정보를 조회할 수 있다.")
+    void findMe() {
+        // given, when
+        ExtractableResponse<Response> response = findMyInfo();
+
+        MemberFindResponse actual = response.as(MemberFindResponse.class);
+        MemberFindResponse expected = MemberFindResponse.from(pobi);
+
+        // then
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
+        assertThat(actual).usingRecursiveComparison()
+                .ignoringFields("id")
+                .isEqualTo(expected);
+    }
+
+    @Test
+    @DisplayName("유저는 자신의 정보를 수정할 수 있다.")
+    void updateMe() {
+        // given
+        MemberUpdateRequest memberUpdateRequest = new MemberUpdateRequest("woowabros");
+
+        // when
+        ExtractableResponse<Response> response = updateMyInfo(memberUpdateRequest);
+
+        // then
+        MemberFindResponse afterUpdate = findMyInfo().as(MemberFindResponse.class);
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
+        assertThat(afterUpdate.getOrganization()).isEqualTo("woowabros");
+    }
+
+    @Test
+    @DisplayName("유저는 회원 탈퇴할 수 있다.")
+    void deleteMe() {
+        // given, when
+        ExtractableResponse<Response> response = deleteMyInfo();
+        ExtractableResponse<Response> errorExpectedResponse = findMyInfo();
+        ErrorResponse errorResponse = errorExpectedResponse.as(InputFieldErrorResponse.class);
+
+        // then
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
+        assertThat(errorExpectedResponse.statusCode()).isEqualTo(HttpStatus.NOT_FOUND.value());
+        assertThat(errorResponse.getMessage()).isNotEmpty();
+    }
+
     static ExtractableResponse<Response> saveMember(final MemberSaveRequest memberSaveRequest) {
         return RestAssured
                 .given(getRequestSpecification()).log().all()
@@ -271,6 +319,40 @@ class MemberControllerTest extends AcceptanceTest {
                 .filter(document("preset/delete", getRequestPreprocessor(), getResponsePreprocessor()))
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .when().delete(api)
+                .then().log().all().extract();
+    }
+
+    private ExtractableResponse<Response> findMyInfo() {
+        return RestAssured
+                .given(getRequestSpecification()).log().all()
+                .accept("application/json")
+                .header("Authorization", AuthorizationExtractor.AUTHENTICATION_TYPE + " " + accessToken)
+                .filter(document("member/myinfo/get", getRequestPreprocessor(), getResponsePreprocessor()))
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .when().get("/api/managers/me")
+                .then().log().all().extract();
+    }
+
+    private ExtractableResponse<Response> updateMyInfo(MemberUpdateRequest memberUpdateRequest) {
+        return RestAssured
+                .given(getRequestSpecification()).log().all()
+                .accept("application/json")
+                .header("Authorization", AuthorizationExtractor.AUTHENTICATION_TYPE + " " + accessToken)
+                .filter(document("member/myinfo/put", getRequestPreprocessor(), getResponsePreprocessor()))
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .body(memberUpdateRequest)
+                .when().put("/api/managers/me")
+                .then().log().all().extract();
+    }
+
+    private ExtractableResponse<Response> deleteMyInfo() {
+        return RestAssured
+                .given(getRequestSpecification()).log().all()
+                .accept("application/json")
+                .header("Authorization", AuthorizationExtractor.AUTHENTICATION_TYPE + " " + accessToken)
+                .filter(document("member/myinfo/delete", getRequestPreprocessor(), getResponsePreprocessor()))
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .when().delete("/api/managers/me")
                 .then().log().all().extract();
     }
 }

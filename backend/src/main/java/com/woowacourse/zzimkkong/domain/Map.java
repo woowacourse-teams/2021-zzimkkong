@@ -40,6 +40,10 @@ public class Map {
         this.mapDrawing = mapDrawing;
         this.mapImageUrl = mapImageUrl;
         this.member = member;
+
+        if (member != null) {
+            member.addMap(this);
+        }
     }
 
     public Map(final Long id, final String name, final String mapDrawing, final String mapImageUrl, final Member member) {

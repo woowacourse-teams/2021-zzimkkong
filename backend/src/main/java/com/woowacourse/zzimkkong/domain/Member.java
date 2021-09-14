@@ -26,12 +26,15 @@ public class Member {
     @Column(nullable = false, length = 20)
     private String organization;
 
-    @OneToMany(mappedBy = "member", cascade = CascadeType.REMOVE, orphanRemoval = true)
-    private List<Preset> presets = new ArrayList<>();
-
     @Column(length = 10)
     @Enumerated(EnumType.STRING)
     private OauthProvider oauthProvider;
+
+    @OneToMany(mappedBy = "member", cascade = CascadeType.REMOVE, orphanRemoval = true)
+    private List<Preset> presets = new ArrayList<>();
+
+    @OneToMany(mappedBy = "member", cascade = CascadeType.REMOVE, orphanRemoval = true)
+    private List<Map> maps = new ArrayList<>();
 
     public Member(
             final String email,
@@ -68,11 +71,19 @@ public class Member {
                 .findAny();
     }
 
+    public void addMap(final Map map) {
+        this.maps.add(map);
+    }
+
     public void addPreset(final Preset preset) {
         this.presets.add(preset);
     }
 
     public List<Preset> getPresets() {
         return Collections.unmodifiableList(presets);
+    }
+
+    public void update(final String organization) {
+        this.organization = organization;
     }
 }

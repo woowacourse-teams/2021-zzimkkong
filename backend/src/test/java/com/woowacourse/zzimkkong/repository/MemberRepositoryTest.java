@@ -1,10 +1,12 @@
 package com.woowacourse.zzimkkong.repository;
 
-import com.woowacourse.zzimkkong.domain.Member;
+import com.woowacourse.zzimkkong.domain.*;
 import com.woowacourse.zzimkkong.exception.member.NoSuchMemberException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
 import org.springframework.dao.DataAccessException;
 
 import static com.woowacourse.zzimkkong.Constants.*;
