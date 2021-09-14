@@ -51,14 +51,20 @@ const ManagerSpaceEditor = (): JSX.Element => {
   }, [map.data?.data.mapDrawing]);
 
   const managerSpaces = useManagerSpaces({ mapId: Number(mapId) });
-  const spaces: ManagerSpace[] = useMemo(
-    () =>
-      managerSpaces.data?.data.spaces.map((space) => ({
-        ...space,
-        area: JSON.parse(space.area) as SpaceArea,
-      })) ?? [],
-    [managerSpaces.data?.data.spaces]
-  );
+  const spaces: ManagerSpace[] = useMemo(() => {
+    try {
+      return (
+        managerSpaces.data?.data.spaces.map((space) => ({
+          ...space,
+          area: JSON.parse(space.area) as SpaceArea,
+        })) ?? []
+      );
+    } catch (error) {
+      alert(MESSAGE.MANAGER_SPACE.GET_UNEXPECTED_ERROR);
+
+      return [];
+    }
+  }, [managerSpaces.data?.data.spaces]);
 
   const [mode, setMode] = useState<Mode>(Mode.Default);
   const [board, setBoard] = useBoardStatus({ width, height });
