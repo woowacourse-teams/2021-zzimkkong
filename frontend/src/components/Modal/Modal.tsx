@@ -1,7 +1,6 @@
 import { MouseEventHandler, PropsWithChildren } from 'react';
-import ReactDOM from 'react-dom';
+import { createPortal } from 'react-dom';
 import { ReactComponent as CloseIcon } from 'assets/svg/close.svg';
-import MESSAGE from 'constants/message';
 import * as Styled from './Modal.styles';
 
 export interface Props {
@@ -32,7 +31,7 @@ const Modal = ({
     }
   };
 
-  return ReactDOM.createPortal(
+  return createPortal(
     <Styled.Overlay open={open} onMouseDown={handleMouseDownOverlay}>
       <Styled.Modal>
         {open && showCloseButton && (
