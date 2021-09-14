@@ -1,8 +1,8 @@
 import { Dispatch, ReactNode, SetStateAction, SVGAttributes, useEffect, useRef } from 'react';
 import PALETTE from 'constants/palette';
 import useBoardMove from 'hooks/board/useBoardMove';
+import useBoardZoom from 'hooks/board/useBoardZoom';
 import { EditorBoard } from 'types/common';
-import useBoardZoom from '../hooks/useBoardZoom';
 import * as Styled from './Board.styles';
 import GridPattern from './GridPattern';
 
