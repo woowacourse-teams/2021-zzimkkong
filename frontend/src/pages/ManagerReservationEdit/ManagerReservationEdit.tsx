@@ -13,14 +13,14 @@ import ReservationListItem from 'components/ReservationListItem/ReservationListI
 import MESSAGE from 'constants/message';
 import PATH from 'constants/path';
 import RESERVATION from 'constants/reservation';
-import useGuestReservations from 'hooks/useGuestReservations';
+import useGuestReservations from 'hooks/query/useGuestReservations';
+import useManagerSpace from 'hooks/query/useManagerSpace';
 import useInput from 'hooks/useInput';
 import useListenManagerMainState from 'hooks/useListenManagerMainState';
-import useManagerSpace from 'hooks/useManagerSpace';
 import { GuestMapState } from 'pages/GuestMap/GuestMap';
 import { Reservation } from 'types/common';
 import { ErrorResponse } from 'types/response';
-import { formatDate, formatTime, formatTimePrettier } from 'utils/datetime';
+import { formatDate, formatTime } from 'utils/datetime';
 import * as Styled from './ManagerReservationEdit.styles';
 
 interface ManagerReservationEditState {
