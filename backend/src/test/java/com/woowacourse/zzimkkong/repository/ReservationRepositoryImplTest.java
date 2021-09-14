@@ -11,7 +11,7 @@ import java.time.LocalDateTime;
 
 import static com.woowacourse.zzimkkong.Constants.*;
 
-public class ReservationRepositoryImplTest extends RepositoryTest {
+class ReservationRepositoryImplTest extends RepositoryTest {
     @ParameterizedTest
     @CsvSource({"true", "false"})
     @DisplayName("멤버를 이용해 오늘 이후의 예약이 존재하는지 확인할 수 있다.")

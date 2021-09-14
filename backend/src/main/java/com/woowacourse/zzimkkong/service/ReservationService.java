@@ -29,8 +29,6 @@ import java.util.stream.Collectors;
 @Service
 @Transactional
 public class ReservationService {
-    private static final long ONE_DAY = 1L;
-
     private final MapRepository maps;
     private final ReservationRepository reservations;
 

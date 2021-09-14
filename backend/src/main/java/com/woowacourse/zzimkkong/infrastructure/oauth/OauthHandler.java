@@ -3,7 +3,6 @@ package com.woowacourse.zzimkkong.infrastructure.oauth;
 import com.woowacourse.zzimkkong.domain.OauthProvider;
 import com.woowacourse.zzimkkong.domain.oauth.OauthUserInfo;
 import com.woowacourse.zzimkkong.exception.infrastructure.UnsupportedOauthProviderException;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
