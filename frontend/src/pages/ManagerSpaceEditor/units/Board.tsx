@@ -1,7 +1,7 @@
 import { Dispatch, ReactNode, SetStateAction, SVGAttributes, useEffect, useRef } from 'react';
 import PALETTE from 'constants/palette';
+import useBoardMove from 'hooks/board/useBoardMove';
 import { EditorBoard } from 'types/common';
-import useBoardMove from '../hooks/useBoardMove';
 import useBoardZoom from '../hooks/useBoardZoom';
 import * as Styled from './Board.styles';
 import GridPattern from './GridPattern';
@@ -18,7 +18,10 @@ const Board = ({ movable, boardState, children, ...props }: Props): JSX.Element 
   const [board, setBoard] = boardState;
 
   const { onWheel } = useBoardZoom(boardState);
-  const { moving, onMouseOut, onDragStart, onDrag, onDragEnd } = useBoardMove(boardState, movable);
+  const { isMoving, onMouseOut, onDragStart, onDrag, onDragEnd } = useBoardMove(
+    boardState,
+    movable
+  );
 
   useEffect(() => {
     const editorWidth = editorRef.current ? editorRef.current.offsetWidth : 0;
@@ -38,7 +41,7 @@ const Board = ({ movable, boardState, children, ...props }: Props): JSX.Element 
         version="1.1"
         width="100%"
         height="100%"
-        isDragging={moving}
+        isDragging={isMoving}
         isDraggable={movable}
         onWheel={onWheel}
         onMouseOut={onMouseOut}

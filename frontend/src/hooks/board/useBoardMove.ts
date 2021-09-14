@@ -1,37 +1,37 @@
-import { Dispatch, MouseEventHandler, SetStateAction, useState } from 'react';
+import { useState } from 'react';
 import { Coordinate, EditorBoard } from 'types/common';
 
 const useBoardMove = (
-  boardState: [EditorBoard, Dispatch<SetStateAction<EditorBoard>>],
-  moveMode: boolean
+  boardState: [EditorBoard, React.Dispatch<React.SetStateAction<EditorBoard>>],
+  movable: boolean
 ): {
-  moving: boolean;
+  isMoving: boolean;
   onMouseOut: () => void;
-  onDragStart: (event: React.MouseEvent<SVGElement>) => void;
-  onDrag: (event: React.MouseEvent<SVGElement>) => void;
+  onDragStart: (event: React.MouseEvent<SVGSVGElement>) => void;
+  onDrag: (event: React.MouseEvent<SVGSVGElement>) => void;
   onDragEnd: () => void;
 } => {
   const [board, setBoard] = boardState;
 
-  const [moving, setMoving] = useState(false);
+  const [isMoving, setIsMoving] = useState(false);
   const [dragOffset, setDragOffset] = useState<Coordinate | null>(null);
 
   const onMouseOut = () => {
-    setMoving(false);
+    setIsMoving(false);
   };
 
-  const onDragStart: MouseEventHandler<SVGElement> = (event) => {
-    if (!moveMode) return;
+  const onDragStart = (event: React.MouseEvent<SVGSVGElement>) => {
+    if (!movable) return;
 
     const dragOffsetX = event.nativeEvent.offsetX - board.x;
     const dragOffsetY = event.nativeEvent.offsetY - board.y;
 
-    setMoving(true);
+    setIsMoving(true);
     setDragOffset({ x: dragOffsetX, y: dragOffsetY });
   };
 
-  const onDrag: MouseEventHandler<SVGElement> = (event) => {
-    if (!moveMode || !moving || dragOffset === null) return;
+  const onDrag = (event: React.MouseEvent<SVGSVGElement>) => {
+    if (!movable || !isMoving || dragOffset === null) return;
 
     const { offsetX, offsetY } = event.nativeEvent;
 
@@ -43,12 +43,14 @@ const useBoardMove = (
   };
 
   const onDragEnd = () => {
-    setMoving(false);
+    if (!movable) return;
+
+    setIsMoving(false);
     setDragOffset(null);
   };
 
   return {
-    moving,
+    isMoving,
     onMouseOut,
     onDragStart,
     onDrag,

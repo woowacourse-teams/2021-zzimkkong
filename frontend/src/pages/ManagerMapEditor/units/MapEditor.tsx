@@ -9,12 +9,12 @@ import ColorPickerIcon from 'components/ColorPicker/ColorPickerIcon';
 import { EDITOR, KEY } from 'constants/editor';
 import PALETTE from 'constants/palette';
 import useBoardCoordinate from 'hooks/board/useBoardCoordinate';
+import useBoardMove from 'hooks/board/useBoardMove';
 import { Color, DrawingStatus, ManagerSpace, MapElement } from 'types/common';
 import { MapElementType, MapEditorMode } from 'types/editor';
 import useBindKeyPress from '../../../hooks/board/useBindKeyPress';
 import useBoardEraserTool from '../hooks/useBoardEraserTool';
 import useBoardLineTool from '../hooks/useBoardLineTool';
-import useBoardMove from '../hooks/useBoardMove';
 import useBoardRectTool from '../hooks/useBoardRectTool';
 import useBoardSelect from '../hooks/useBoardSelect';
 import useBoardStatus from '../hooks/useBoardStatus';
@@ -86,7 +86,7 @@ const MapCreateEditor = ({
   const { onWheel } = useBoardZoom([boardStatus, setBoardStatus]);
   const { gripPoints, selectedMapElementId, deselectMapElement, onClickBoard, onClickMapElement } =
     useBoardSelect();
-  const { isDragging, onDragStart, onDrag, onDragEnd, onMouseOut } = useBoardMove(
+  const { isMoving, onDragStart, onDrag, onDragEnd, onMouseOut } = useBoardMove(
     [boardStatus, setBoardStatus],
     isBoardDraggable
   );
@@ -114,7 +114,7 @@ const MapCreateEditor = ({
   };
 
   const handleMouseDown = () => {
-    if (isBoardDraggable || isDragging) return;
+    if (isBoardDraggable || isMoving) return;
 
     if (mode === MapEditorMode.Line) drawLineStart();
     else if (mode === MapEditorMode.Rect) drawRectStart();
@@ -122,7 +122,7 @@ const MapCreateEditor = ({
   };
 
   const handleMouseUp = () => {
-    if (isBoardDraggable || isDragging) return;
+    if (isBoardDraggable || isMoving) return;
 
     if (mode === MapEditorMode.Line) drawLineEnd();
     else if (mode === MapEditorMode.Rect) drawRectEnd();
@@ -174,7 +174,7 @@ const MapCreateEditor = ({
         <Board
           statusState={[boardStatus, setBoardStatus]}
           isDraggable={isBoardDraggable}
-          isDragging={isDragging}
+          isDragging={isMoving}
           onClick={onClickBoard}
           onMouseMove={onMouseMove}
           onMouseDown={handleMouseDown}
