@@ -1,6 +1,6 @@
 package com.woowacourse.zzimkkong.domain.oauth;
 
-import com.woowacourse.zzimkkong.exception.infrastructure.oauth.NoPublicEmailHasBeenSetOnGithubException;
+import com.woowacourse.zzimkkong.exception.infrastructure.oauth.NoPublicEmailOnGithubException;
 
 import java.util.Collections;
 import java.util.Map;
@@ -24,7 +24,7 @@ public class GithubUserInfo implements OauthUserInfo {
 
     private void validatePublicEmailHasBeenSet() {
         if (info.get("email") == null) {
-            throw new NoPublicEmailHasBeenSetOnGithubException();
+            throw new NoPublicEmailOnGithubException();
         }
     }
 }

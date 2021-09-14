@@ -13,4 +13,8 @@ public enum OauthProvider {
                 .findFirst()
                 .orElseThrow(UnsupportedOauthProviderException::new);
     }
+
+    public boolean isSameAs(OauthProvider oauthProvider) {
+        return this.equals(oauthProvider);
+    }
 }

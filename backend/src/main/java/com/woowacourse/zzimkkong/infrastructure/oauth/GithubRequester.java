@@ -34,7 +34,7 @@ public class GithubRequester implements OauthAPIRequester {
 
     @Override
     public boolean supports(final OauthProvider oauthProvider) {
-        return OauthProvider.GITHUB.equals(oauthProvider);
+        return oauthProvider.isSameAs(OauthProvider.GITHUB);
     }
 
     @Override
@@ -53,7 +53,8 @@ public class GithubRequester implements OauthAPIRequester {
                         .queryParam("client_secret", secretId)
                         .build())
                 .retrieve()
-                .bodyToMono(new ParameterizedTypeReference<Map<String, Object>>() {})
+                .bodyToMono(new ParameterizedTypeReference<Map<String, Object>>() {
+                })
                 .blockOptional()
                 .orElseThrow(UnableToGetTokenResponseFromGithubException::new);
 
@@ -66,7 +67,8 @@ public class GithubRequester implements OauthAPIRequester {
                 .uri("/user")
                 .header(HttpHeaders.AUTHORIZATION, "token " + token)
                 .retrieve()
-                .bodyToMono(new ParameterizedTypeReference<Map<String, Object>>() {})
+                .bodyToMono(new ParameterizedTypeReference<Map<String, Object>>() {
+                })
                 .blockOptional()
                 .orElseThrow(UnableToGetTokenResponseFromGithubException::new);
 

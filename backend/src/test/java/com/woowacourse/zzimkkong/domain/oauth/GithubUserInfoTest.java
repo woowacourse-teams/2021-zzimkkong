@@ -1,6 +1,6 @@
 package com.woowacourse.zzimkkong.domain.oauth;
 
-import com.woowacourse.zzimkkong.exception.infrastructure.oauth.NoPublicEmailHasBeenSetOnGithubException;
+import com.woowacourse.zzimkkong.exception.infrastructure.oauth.NoPublicEmailOnGithubException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -35,6 +35,6 @@ class GithubUserInfoTest {
 
         //then
         assertThatThrownBy(githubUserInfo::getEmail)
-                .isInstanceOf(NoPublicEmailHasBeenSetOnGithubException.class);
+                .isInstanceOf(NoPublicEmailOnGithubException.class);
     }
 }

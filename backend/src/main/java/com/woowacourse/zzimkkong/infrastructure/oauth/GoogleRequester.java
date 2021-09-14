@@ -40,7 +40,7 @@ public class GoogleRequester implements OauthAPIRequester {
 
     @Override
     public boolean supports(final OauthProvider oauthProvider) {
-        return OauthProvider.GOOGLE.equals(oauthProvider);
+        return oauthProvider.isSameAs(OauthProvider.GOOGLE);
     }
 
     @Override
@@ -64,7 +64,8 @@ public class GoogleRequester implements OauthAPIRequester {
                     header.setAcceptCharset(Collections.singletonList(StandardCharsets.UTF_8));
                 })
                 .retrieve()
-                .bodyToMono(new ParameterizedTypeReference<Map<String, Object>>() {})
+                .bodyToMono(new ParameterizedTypeReference<Map<String, Object>>() {
+                })
                 .blockOptional()
                 .orElseThrow(UnableToGetTokenResponseFromGoogleException::new);
 
@@ -76,7 +77,8 @@ public class GoogleRequester implements OauthAPIRequester {
                 .get()
                 .headers(httpHeaders -> httpHeaders.setBearerAuth(token))
                 .retrieve()
-                .bodyToMono(new ParameterizedTypeReference<Map<String, Object>>() {})
+                .bodyToMono(new ParameterizedTypeReference<Map<String, Object>>() {
+                })
                 .blockOptional()
                 .orElseThrow(UnableToGetTokenResponseFromGoogleException::new);
 
