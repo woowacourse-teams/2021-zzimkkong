@@ -12,7 +12,6 @@ import java.util.List;
 public class OauthHandler {
     private final List<OauthAPIRequester> oauthAPIRequesters;
 
-    @Autowired
     public OauthHandler(final List<OauthAPIRequester> oauthAPIRequesters) {
         this.oauthAPIRequesters = oauthAPIRequesters;
     }
