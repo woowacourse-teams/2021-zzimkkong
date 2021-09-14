@@ -132,7 +132,7 @@ class AuthControllerTest extends AcceptanceTest {
                 .filter(document("member/login", getRequestPreprocessor(), getResponsePreprocessor()))
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body(loginRequest)
-                .when().post("/api/members/login/token")
+                .when().post("/api/managers/login/token")
                 .then().log().all().extract();
     }
 
@@ -142,7 +142,7 @@ class AuthControllerTest extends AcceptanceTest {
                 .accept("application/json")
                 .filter(document("member/login/oauth/" + oauthProvider.name(), getRequestPreprocessor(), getResponsePreprocessor()))
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .when().get("/api/members/" + oauthProvider + "/login/token?code=" + code)
+                .when().get("/api/managers/" + oauthProvider + "/login/token?code=" + code)
                 .then().log().all().extract();
     }
 
@@ -153,7 +153,7 @@ class AuthControllerTest extends AcceptanceTest {
                 .header("Authorization", token)
                 .filter(document("member/token/" + docName, getRequestPreprocessor(), getResponsePreprocessor()))
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .when().post("/api/members/token")
+                .when().post("/api/managers/token")
                 .then().log().all().extract();
     }
 }

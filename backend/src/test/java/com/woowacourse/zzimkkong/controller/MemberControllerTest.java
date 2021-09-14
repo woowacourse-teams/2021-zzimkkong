@@ -204,7 +204,7 @@ class MemberControllerTest extends AcceptanceTest {
                 .filter(document("member/post", getRequestPreprocessor(), getResponsePreprocessor()))
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body(memberSaveRequest)
-                .when().post("/api/members")
+                .when().post("/api/managers")
                 .then().log().all().extract();
     }
 
@@ -214,7 +214,7 @@ class MemberControllerTest extends AcceptanceTest {
                 .accept("application/json")
                 .filter(document("member/get/oauth/" + oauthProvider.name(), getRequestPreprocessor(), getResponsePreprocessor()))
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .when().get("/api/members/" + oauthProvider + "?code=" + code)
+                .when().get("/api/managers/" + oauthProvider + "?code=" + code)
                 .then().log().all().extract();
     }
 
@@ -225,7 +225,7 @@ class MemberControllerTest extends AcceptanceTest {
                 .filter(document("member/post/oauth/" + oauthMemberSaveRequest.getOauthProvider(), getRequestPreprocessor(), getResponsePreprocessor()))
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body(oauthMemberSaveRequest)
-                .when().post("/api/members/oauth")
+                .when().post("/api/managers/oauth")
                 .then().log().all().extract();
     }
 
@@ -236,7 +236,7 @@ class MemberControllerTest extends AcceptanceTest {
                 .filter(document("member/get", getRequestPreprocessor(), getResponsePreprocessor()))
                 .queryParam("email", email)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .when().get("/api/members")
+                .when().get("/api/managers")
                 .then().log().all().extract();
     }
 

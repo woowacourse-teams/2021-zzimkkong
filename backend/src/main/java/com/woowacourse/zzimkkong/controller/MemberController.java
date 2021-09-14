@@ -21,7 +21,7 @@ import static com.woowacourse.zzimkkong.dto.ValidatorMessage.EMAIL_MESSAGE;
 import static com.woowacourse.zzimkkong.dto.ValidatorMessage.EMPTY_MESSAGE;
 
 @RestController
-@RequestMapping("/api")
+@RequestMapping("/api/managers")
 @Validated
 public class MemberController {
     private final MemberService memberService;
@@ -32,30 +32,30 @@ public class MemberController {
         this.presetService = presetService;
     }
 
-    @PostMapping("/members")
+    @PostMapping
     public ResponseEntity<Void> join(@RequestBody @Valid final MemberSaveRequest memberSaveRequest) {
         MemberSaveResponse memberSaveResponse = memberService.saveMember(memberSaveRequest);
         return ResponseEntity
-                .created(URI.create("/api/members/" + memberSaveResponse.getId()))
+                .created(URI.create("/api/managers/" + memberSaveResponse.getId()))
                 .build();
     }
 
-    @GetMapping("/members/{oauthProvider}")
+    @GetMapping("/{oauthProvider}")
     public ResponseEntity<OauthReadyResponse> getReadyToJoinByOauth(@PathVariable OauthProvider oauthProvider, @RequestParam String code) {
         OauthReadyResponse oauthReadyResponse = memberService.getUserInfoFromOauth(oauthProvider, code);
         return ResponseEntity
                 .ok(oauthReadyResponse);
     }
 
-    @PostMapping("/members/oauth")
+    @PostMapping("/oauth")
     public ResponseEntity<Void> joinByOauth(@RequestBody @Valid final OauthMemberSaveRequest oauthMemberSaveRequest) {
         MemberSaveResponse memberSaveResponse = memberService.saveMemberByOauth(oauthMemberSaveRequest);
         return ResponseEntity
-                .created(URI.create("/api/members/" + memberSaveResponse.getId()))
+                .created(URI.create("/api/managers/" + memberSaveResponse.getId()))
                 .build();
     }
 
-    @GetMapping("/members")
+    @GetMapping
     public ResponseEntity<Void> validateEmail(
             @RequestParam
             @NotBlank(message = EMPTY_MESSAGE)
@@ -65,7 +65,7 @@ public class MemberController {
         return ResponseEntity.ok().build();
     }
 
-    @PostMapping("/managers/presets")
+    @PostMapping("/presets")
     public ResponseEntity<Void> createPreset(
             @RequestBody @Valid final PresetCreateRequest presetCreateRequest,
             @Manager final Member manager) {
@@ -75,13 +75,13 @@ public class MemberController {
                 .build();
     }
 
-    @GetMapping("/managers/presets")
+    @GetMapping("/presets")
     public ResponseEntity<PresetFindAllResponse> findAllPresets(@Manager final Member manager) {
         PresetFindAllResponse presetFindAllResponse = presetService.findAllPresets(manager);
         return ResponseEntity.ok().body(presetFindAllResponse);
     }
 
-    @DeleteMapping("/managers/presets/{presetId}")
+    @DeleteMapping("/presets/{presetId}")
     public ResponseEntity<Void> deletePreset(
             @PathVariable final Long presetId,
             @Manager final Member manager) {
