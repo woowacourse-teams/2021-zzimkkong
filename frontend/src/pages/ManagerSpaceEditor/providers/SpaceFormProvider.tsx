@@ -36,6 +36,18 @@ const SpaceFormProvider = ({ children }: Props): JSX.Element => {
 
   const values = { ...spaceFormValue, enabledWeekdays, area };
 
+  const setValues = (values: SpaceFormValue) => {
+    setEnabledWeekdays({ ...values.enabledWeekdays });
+    setArea(values.area === null ? null : { ...values.area });
+
+    const nextValues = { ...values };
+
+    delete (nextValues as WithOptional<SpaceFormValue, 'enabledWeekdays'>).enabledWeekdays;
+    delete (nextValues as WithOptional<SpaceFormValue, 'area'>).area;
+
+    setSpaceFormValues(nextValues);
+  };
+
   const updateWithSpace = (space: ManagerSpace) => {
     const { name, color, area, settings } = space;
 
@@ -52,16 +64,6 @@ const SpaceFormProvider = ({ children }: Props): JSX.Element => {
       enabledWeekdays: nextEnableWeekdays as SpaceFormValue['enabledWeekdays'],
       area,
     });
-  };
-
-  const setValues = (nextValues: SpaceFormValue) => {
-    setEnabledWeekdays({ ...nextValues.enabledWeekdays });
-    setArea(nextValues.area === null ? null : { ...nextValues.area });
-
-    delete (nextValues as WithOptional<SpaceFormValue, 'enabledWeekdays'>).enabledWeekdays;
-    delete (nextValues as WithOptional<SpaceFormValue, 'area'>).area;
-
-    setSpaceFormValues(nextValues);
   };
 
   const updateArea = (nextArea: Area) => {
