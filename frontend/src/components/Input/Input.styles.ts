@@ -74,5 +74,5 @@ export const Message = styled.p<MessageProps>`
   ${({ status = 'default' }) => statusCSS[status]};
   font-size: 0.75rem;
   position: absolute;
-  margin: 0.25rem 0.75rem;
+  margin: 0.25rem 0.5rem;
 `;

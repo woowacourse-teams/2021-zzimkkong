@@ -106,6 +106,8 @@ const PALETTE = {
     900: 'rgba(0, 0, 0, 0.9)',
   },
   WHITE: '#fff',
+
+  GITHUB: '#24292F',
 };
 
 export default PALETTE;

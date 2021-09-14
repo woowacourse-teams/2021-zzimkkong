@@ -1,6 +1,7 @@
 package com.woowacourse.zzimkkong.repository;
 
 import com.woowacourse.zzimkkong.domain.*;
+import org.assertj.core.api.AssertionsForClassTypes;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -24,9 +25,11 @@ class ReservationRepositoryTest extends RepositoryTest {
     private Reservation beNextDayAmSixTwelve;
     private Reservation fe1ZeroOne;
 
+    private Member pobi;
+
     @BeforeEach
     void setUp() {
-        Member pobi = new Member(EMAIL, PW, ORGANIZATION);
+        pobi = new Member(EMAIL, PW, ORGANIZATION);
         Map luther = new Map(LUTHER_NAME, MAP_DRAWING_DATA, MAP_IMAGE_URL, pobi);
 
         Setting beSetting = Setting.builder()

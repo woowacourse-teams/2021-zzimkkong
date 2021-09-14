@@ -5,9 +5,9 @@ import Main from 'pages/Main/Main';
 import ManagerJoin from 'pages/ManagerJoin/ManagerJoin';
 import ManagerLogin from 'pages/ManagerLogin/ManagerLogin';
 import ManagerMain from 'pages/ManagerMain/ManagerMain';
-import ManagerMapCreate from 'pages/ManagerMapCreate/ManagerMapCreate';
+import ManagerMapEditor from 'pages/ManagerMapEditor/ManagerMapEditor';
 import ManagerReservationEdit from 'pages/ManagerReservationEdit/ManagerReservationEdit';
-import ManagerSpaceEdit from 'pages/ManagerSpaceEdit/ManagerSpaceEdit';
+import ManagerSpaceEditor from 'pages/ManagerSpaceEditor/ManagerSpaceEditor';
 import PATH from './path';
 
 interface Route {
@@ -59,17 +59,17 @@ export const PRIVATE_ROUTES: PrivateRoute[] = [
   },
   {
     path: PATH.MANAGER_MAP_CREATE,
-    component: <ManagerMapCreate />,
+    component: <ManagerMapEditor />,
     redirectPath: PATH.MANAGER_LOGIN,
   },
   {
     path: PATH.MANAGER_MAP_EDIT,
-    component: <ManagerMapCreate />,
+    component: <ManagerMapEditor />,
     redirectPath: PATH.MANAGER_LOGIN,
   },
   {
     path: PATH.MANAGER_SPACE_EDIT,
-    component: <ManagerSpaceEdit />,
+    component: <ManagerSpaceEditor />,
     redirectPath: PATH.MANAGER_LOGIN,
   },
 ];

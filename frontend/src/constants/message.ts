@@ -55,10 +55,11 @@ const MESSAGE = {
       '프리셋을 삭제하는 중에 문제가 발생했습니다. 잠시 후에 다시 시도해주세요.',
     SPACE_CREATED: '공간이 생성되었습니다.',
     SPACE_SETTING_UPDATED: '공간 설정이 수정되었습니다.',
-    SPACE_DELETED: '공간이 생성되었습니다.',
+    SPACE_DELETED: '공간이 삭제되었습니다.',
     PRESET_CREATED: '프리셋이 추가되었습니다.',
     PRESET_DELETED: '프리셋이 삭제되었습니다.',
     DELETE_PRESET_CONFIRM: '이 프리셋을 삭제하시겠어요?',
+    FIND_PRESET_ERROR: '프리셋을 찾을 수 없습니다.',
   },
   MANAGER_MAP: {
     CREATE_SUCCESS_CONFIRM: '맵 생성 완료! 공간을 편집하러 가시겠어요?',
@@ -66,6 +67,8 @@ const MESSAGE = {
     CANCEL_CONFIRM: '편집 중인 맵은 저장되지 않으며, 메인 페이지로 돌아갑니다.',
     UNEXPECTED_MAP_CREATE_ERROR:
       '맵을 생성하는 중에 문제가 발생했습니다. 잠시 후에 다시 시도해주세요.',
+    UNEXPECTED_MAP_UPDATE_ERROR:
+      '맵을 수정하는 중에 문제가 발생했습니다. 잠시 후에 다시 시도해주세요.',
   },
 };
 

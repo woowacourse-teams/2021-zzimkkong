@@ -7,6 +7,6 @@ public class NoSuchReservationException extends ZzimkkongException {
     private static final String MESSAGE = "존재하지 않는 예약입니다.";
 
     public NoSuchReservationException() {
-        super(MESSAGE, HttpStatus.BAD_REQUEST);
+        super(MESSAGE, HttpStatus.NOT_FOUND);
     }
 }

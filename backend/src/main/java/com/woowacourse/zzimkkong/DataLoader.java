@@ -39,7 +39,9 @@ public class DataLoader implements CommandLineRunner {
         String meetingRoomColor = "#FFE3AC";
 
         Member pobi = members.save(
-                new Member("pobi@woowa.com", "test1234", "woowacourse")
+                new Member("pobi@woowa.com",
+                        "$2a$10$c3BysogWR4hnexYx60/r/e3lEUIbSs4zhW6kuX4UW733MW5/NmbW.", // test1234 입니다.
+                        "woowacourse")
         );
 
         Map luther = maps.save(
@@ -57,7 +59,7 @@ public class DataLoader implements CommandLineRunner {
                 .reservationMinimumTimeUnit(10)
                 .reservationMaximumTimeUnit(1440)
                 .reservationEnable(true)
-                .enabledDayOfWeek(null)
+                .enabledDayOfWeek("monday,tuesday,wednesday,thursday,friday,saturday,sunday")
                 .build();
 
         Space be = Space.builder()

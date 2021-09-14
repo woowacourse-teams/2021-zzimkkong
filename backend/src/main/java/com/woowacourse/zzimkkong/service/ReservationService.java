@@ -229,7 +229,7 @@ public class ReservationService {
     private void validateSpaceSetting(Space space, LocalDateTime startDateTime, LocalDateTime endDateTime) {
         int durationMinutes = (int) ChronoUnit.MINUTES.between(startDateTime, endDateTime);
 
-        if (space.isIncorrectTimeUnit(startDateTime.getMinute()) | space.isNotDivideBy(durationMinutes)) {
+        if (space.isNotDivisibleByTimeUnit(startDateTime.getMinute()) || space.isNotDivisibleByTimeUnit(durationMinutes)) {
             throw new InvalidTimeUnitException();
         }
 

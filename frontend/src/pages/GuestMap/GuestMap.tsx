@@ -17,9 +17,9 @@ import ReservationListItem from 'components/ReservationListItem/ReservationListI
 import { EDITOR } from 'constants/editor';
 import MESSAGE from 'constants/message';
 import PALETTE from 'constants/palette';
-import useGuestMap from 'hooks/useGuestMap';
-import useGuestReservations from 'hooks/useGuestReservations';
-import useGuestSpaces from 'hooks/useGuestSpaces';
+import useGuestMap from 'hooks/query/useGuestMap';
+import useGuestReservations from 'hooks/query/useGuestReservations';
+import useGuestSpaces from 'hooks/query/useGuestSpaces';
 import useInput from 'hooks/useInput';
 import { Area, MapDrawing, MapItem, Reservation, ScrollPosition, Space } from 'types/common';
 import { ErrorResponse } from 'types/response';
