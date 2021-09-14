@@ -1,11 +1,14 @@
 package com.woowacourse.zzimkkong.controller;
 
 import com.woowacourse.zzimkkong.domain.Member;
+import com.woowacourse.zzimkkong.domain.OauthProvider;
 import com.woowacourse.zzimkkong.domain.Preset;
 import com.woowacourse.zzimkkong.domain.Setting;
-import com.woowacourse.zzimkkong.dto.member.MemberSaveRequest;
-import com.woowacourse.zzimkkong.dto.member.PresetFindAllResponse;
-import com.woowacourse.zzimkkong.dto.member.PresetCreateRequest;
+import com.woowacourse.zzimkkong.domain.oauth.GithubUserInfo;
+import com.woowacourse.zzimkkong.domain.oauth.GoogleUserInfo;
+import com.woowacourse.zzimkkong.dto.member.*;
+import com.woowacourse.zzimkkong.dto.member.oauth.OauthMemberSaveRequest;
+import com.woowacourse.zzimkkong.dto.member.oauth.OauthReadyResponse;
 import com.woowacourse.zzimkkong.dto.space.SettingsRequest;
 import com.woowacourse.zzimkkong.infrastructure.AuthorizationExtractor;
 import io.restassured.RestAssured;
@@ -14,16 +17,20 @@ import io.restassured.response.Response;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.util.List;
+import java.util.Map;
 
 import static com.woowacourse.zzimkkong.Constants.*;
 import static com.woowacourse.zzimkkong.DocumentUtils.*;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.BDDMockito.given;
 import static org.springframework.restdocs.restassured3.RestAssuredRestDocumentation.document;
 
 class MemberControllerTest extends AcceptanceTest {
@@ -66,6 +73,65 @@ class MemberControllerTest extends AcceptanceTest {
 
         // when
         ExtractableResponse<Response> response = saveMember(newMemberSaveRequest);
+
+        //then
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
+    }
+
+    @Test
+    @DisplayName("Google Oauth 회원가입 입력이 들어오면 accessToken을 발급한다.")
+    void getReadyToJoinByGoogleOauth() {
+        // given
+        given(googleRequester.supports(any(OauthProvider.class)))
+                .willReturn(true);
+        given(googleRequester.getUserInfoByCode(anyString()))
+                .willReturn(GoogleUserInfo.from(
+                        Map.of("id", "123",
+                                "email", NEW_EMAIL)));
+
+        OauthProvider oauthProvider = OauthProvider.GOOGLE;
+        String code = "example-code";
+
+        // when
+        ExtractableResponse<Response> response = getReadyToJoin(oauthProvider, code);
+        OauthReadyResponse expected = OauthReadyResponse.of(NEW_EMAIL, oauthProvider);
+
+        //then
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
+        assertThat(response.body().as(OauthReadyResponse.class)).usingRecursiveComparison()
+                .isEqualTo(expected);
+    }
+
+    @Test
+    @DisplayName("Github Oauth 회원가입 입력이 들어오면 accessToken을 발급한다.")
+    void getReadyToJoinByGithubOauth() {
+        // given
+        given(githubRequester.supports(any(OauthProvider.class)))
+                .willReturn(true);
+        given(githubRequester.getUserInfoByCode(anyString()))
+                .willReturn(GithubUserInfo.from(Map.of("email", NEW_EMAIL)));
+
+        OauthProvider oauthProvider = OauthProvider.GITHUB;
+        String code = "example-code";
+
+        // when
+        ExtractableResponse<Response> response = getReadyToJoin(oauthProvider, code);
+        OauthReadyResponse oauthReadyResponse = response.as(OauthReadyResponse.class);
+
+        // then
+        assertThat(oauthReadyResponse.getOauthProvider()).isEqualTo(oauthProvider);
+        assertThat(oauthReadyResponse.getEmail()).isEqualTo(NEW_EMAIL);
+    }
+
+    @ParameterizedTest
+    @ValueSource(strings = {"GOOGLE", "GITHUB"})
+    @DisplayName("Oauth을 이용해 회원가입한다.")
+    void joinByOauth(String oauth) {
+        // given
+        OauthMemberSaveRequest oauthMemberSaveRequest = new OauthMemberSaveRequest(NEW_EMAIL, ORGANIZATION, oauth);
+
+        // when
+        ExtractableResponse<Response> response = saveMemberByOauth(oauthMemberSaveRequest);
 
         //then
         assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
@@ -138,7 +204,28 @@ class MemberControllerTest extends AcceptanceTest {
                 .filter(document("member/post", getRequestPreprocessor(), getResponsePreprocessor()))
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body(memberSaveRequest)
-                .when().post("/api/members")
+                .when().post("/api/managers")
+                .then().log().all().extract();
+    }
+
+    static ExtractableResponse<Response> getReadyToJoin(final OauthProvider oauthProvider, final String code) {
+        return RestAssured
+                .given(getRequestSpecification()).log().all()
+                .accept("application/json")
+                .filter(document("member/get/oauth/" + oauthProvider.name(), getRequestPreprocessor(), getResponsePreprocessor()))
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .when().get("/api/managers/" + oauthProvider + "?code=" + code)
+                .then().log().all().extract();
+    }
+
+    static ExtractableResponse<Response> saveMemberByOauth(final OauthMemberSaveRequest oauthMemberSaveRequest) {
+        return RestAssured
+                .given(getRequestSpecification()).log().all()
+                .accept("application/json")
+                .filter(document("member/post/oauth/" + oauthMemberSaveRequest.getOauthProvider(), getRequestPreprocessor(), getResponsePreprocessor()))
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .body(oauthMemberSaveRequest)
+                .when().post("/api/managers/oauth")
                 .then().log().all().extract();
     }
 
@@ -149,7 +236,7 @@ class MemberControllerTest extends AcceptanceTest {
                 .filter(document("member/get", getRequestPreprocessor(), getResponsePreprocessor()))
                 .queryParam("email", email)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .when().get("/api/members")
+                .when().get("/api/managers")
                 .then().log().all().extract();
     }
 
@@ -161,7 +248,7 @@ class MemberControllerTest extends AcceptanceTest {
                 .filter(document("preset/post", getRequestPreprocessor(), getResponsePreprocessor()))
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body(presetCreateRequest)
-                .when().post("/api/members/presets")
+                .when().post("/api/managers/presets")
                 .then().log().all().extract();
     }
 
@@ -172,7 +259,7 @@ class MemberControllerTest extends AcceptanceTest {
                 .header("Authorization", AuthorizationExtractor.AUTHENTICATION_TYPE + " " + accessToken)
                 .filter(document("preset/getAll", getRequestPreprocessor(), getResponsePreprocessor()))
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .when().get("/api/members/presets")
+                .when().get("/api/managers/presets")
                 .then().log().all().extract();
     }
 

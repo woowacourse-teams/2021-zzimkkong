@@ -26,11 +26,29 @@ public class AuthenticationPrincipalConfig implements WebMvcConfigurer {
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
         List<String> pathsToAdd = List.of(
-                "/api/members/token",
+                "/api/managers/token",
                 "/api/managers/**"
         );
 
+        List<String> pathsToExclude = List.of(
+                //manager join
+                "/api/managers",
+                "/api/managers/GOOGLE",
+                "/api/managers/GITHUB",
+                "/api/managers/google",
+                "/api/managers/github",
+                "/api/managers/oauth",
+
+                //manager login
+                "/api/managers/login/token",
+                "/api/managers/GOOGLE/login/token",
+                "/api/managers/GITHUB/login/token",
+                "/api/managers/google/login/token",
+                "/api/managers/github/login/token"
+        );
+
         registry.addInterceptor(loginInterceptor)
-                .addPathPatterns(pathsToAdd);
+                .addPathPatterns(pathsToAdd)
+                .excludePathPatterns(pathsToExclude);
     }
 }

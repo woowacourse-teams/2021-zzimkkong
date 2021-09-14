@@ -25,3 +25,39 @@ include::{snippets}/member/token/success/http-request.adoc[]
 include::{snippets}/member/token/success/http-response.adoc[]
 ==== Fail Response
 include::{snippets}/member/token/fail/http-response.adoc[]
+
+=== 멤버 구글 이메일 반환
+==== Request
+include::{snippets}/member/get/oauth/GOOGLE/http-request.adoc[]
+==== Response
+include::{snippets}/member/get/oauth/GOOGLE/http-response.adoc[]
+
+=== 멤버 깃헙 이메일 반환
+==== Request
+include::{snippets}/member/get/oauth/GITHUB/http-request.adoc[]
+==== Response
+include::{snippets}/member/get/oauth/GITHUB/http-response.adoc[]
+
+=== 멤버 구글 회원가입
+==== Request
+include::{snippets}/member/post/oauth/GOOGLE/http-request.adoc[]
+==== Response
+include::{snippets}/member/post/oauth/GOOGLE/http-response.adoc[]
+
+=== 멤버 깃헙 회원가입
+==== Request
+include::{snippets}/member/post/oauth/GITHUB/http-request.adoc[]
+==== Response
+include::{snippets}/member/post/oauth/GITHUB/http-response.adoc[]
+
+=== 멤버 구글 로그인
+==== Request
+include::{snippets}/member/login/oauth/GOOGLE/http-request.adoc[]
+==== Response
+include::{snippets}/member/login/oauth/GOOGLE/http-response.adoc[]
+
+=== 멤버 깃헙 로그인
+==== Request
+include::{snippets}/member/login/oauth/GITHUB/http-request.adoc[]
+==== Response
+include::{snippets}/member/login/oauth/GITHUB/http-response.adoc[]
