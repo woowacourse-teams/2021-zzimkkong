@@ -22,7 +22,7 @@ public class EnabledDayOfWeekResponse {
     public static EnabledDayOfWeekResponse from(final String enabledDayOfWeek) {
         final EnabledDayOfWeekResponse enabledDayOfWeekResponse = new EnabledDayOfWeekResponse();
 
-        final Field[] declaredFields = EnabledDayOfWeekResponse.class.getDeclaredFields();
+        final Field[] declaredFields = enabledDayOfWeekResponse.getClass().getDeclaredFields();
         Arrays.stream(enabledDayOfWeek.split(","))
                 .map(String::trim)
                 .map(String::toLowerCase)
@@ -43,7 +43,8 @@ public class EnabledDayOfWeekResponse {
 
     private static void setField(final EnabledDayOfWeekResponse enabledDayOfWeekResponse, final Field targetField) {
         try {
-            targetField.setBoolean(enabledDayOfWeekResponse, true);
+            targetField.setAccessible(true);
+            targetField.set(enabledDayOfWeekResponse, Boolean.TRUE);
         } catch (IllegalAccessException e) {
             throw new EnabledDayOfWeekResponseSetException();
         }
