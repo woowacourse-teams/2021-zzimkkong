@@ -16,12 +16,13 @@ export interface QueryManagerSpaceReservationsParams extends QueryMapReservation
   spaceId: number;
 }
 
-interface ReservationParams {
+export interface ReservationParams {
   reservation: {
     startDateTime: Date;
     endDateTime: Date;
     name: string;
     description: string;
+    password?: string;
   };
 }
 

@@ -2,7 +2,7 @@ import { AxiosError } from 'axios';
 import React, { useEffect } from 'react';
 import { useMutation } from 'react-query';
 import { useHistory, useLocation } from 'react-router-dom';
-import { ReservationParams } from 'api/guestReservation';
+import { ReservationParams } from 'api/managerReservation';
 import { postManagerReservation, putManagerReservation } from 'api/managerReservation';
 import Header from 'components/Header/Header';
 import Layout from 'components/Layout/Layout';
