@@ -53,11 +53,11 @@ public class DataLoader implements CommandLineRunner {
         );
 
         Setting defaultSetting = Setting.builder()
-                .availableStartTime(LocalTime.of(0, 0))
-                .availableEndTime(LocalTime.of(23, 59))
+                .availableStartTime(LocalTime.of(9, 0))
+                .availableEndTime(LocalTime.of(22, 00))
                 .reservationTimeUnit(10)
                 .reservationMinimumTimeUnit(10)
-                .reservationMaximumTimeUnit(1440)
+                .reservationMaximumTimeUnit(700)
                 .reservationEnable(true)
                 .enabledDayOfWeek("monday,tuesday,wednesday,thursday,friday,saturday,sunday")
                 .build();
