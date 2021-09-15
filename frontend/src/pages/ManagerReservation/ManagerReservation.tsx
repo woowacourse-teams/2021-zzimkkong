@@ -12,7 +12,7 @@ import { HREF } from 'constants/path';
 import useGuestReservations from 'hooks/query/useGuestReservations';
 import useInput from 'hooks/useInput';
 import { GuestMapState } from 'pages/GuestMap/GuestMap';
-import { MapItem, Reservation, ScrollPosition, Space } from 'types/common';
+import { MapItem, Reservation, Space } from 'types/common';
 import { ErrorResponse } from 'types/response';
 import * as Styled from './ManagerReservation.styles';
 import ManagerReservationForm from './units/ManagerReservationForm';
@@ -25,7 +25,6 @@ interface GuestReservationState {
   mapId: number;
   space: Space;
   selectedDate: string;
-  scrollPosition: ScrollPosition;
   reservation?: Reservation;
 }
 
@@ -38,7 +37,7 @@ const ManagerReservation = (): JSX.Element => {
   const history = useHistory<GuestMapState>();
   const { sharingMapId } = useParams<URLParameter>();
 
-  const { mapId, space, selectedDate, scrollPosition, reservation } = location.state;
+  const { mapId, space, selectedDate, reservation } = location.state;
 
   if (!mapId || !space) history.replace(HREF.GUEST_MAP(sharingMapId));
 
@@ -115,11 +114,10 @@ const ManagerReservation = (): JSX.Element => {
         location.state = {
           spaceId: space.id,
           targetDate: new Date(date),
-          scrollPosition,
         };
       }
     });
-  }, [history, scrollPosition, date, space, sharingMapId]);
+  }, [history, date, space, sharingMapId]);
 
   return (
     <>
