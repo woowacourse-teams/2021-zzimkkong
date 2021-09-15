@@ -1,7 +1,7 @@
 import { AxiosResponse } from 'axios';
 import { QueryFunction, QueryKey } from 'react-query';
 import THROW_ERROR from 'constants/throwError';
-import { QueryManagerReservationsSuccess } from 'types/response';
+import { QueryManagerMapReservationsSuccess } from 'types/response';
 import api from './api';
 
 export interface QueryMapReservationsParams {
@@ -35,8 +35,8 @@ interface DeleteReservationParams {
   reservationId: number;
 }
 
-export const queryManagerReservations: QueryFunction<
-  AxiosResponse<QueryManagerReservationsSuccess>,
+export const queryManagerMapReservations: QueryFunction<
+  AxiosResponse<QueryManagerMapReservationsSuccess>,
   [QueryKey, QueryMapReservationsParams]
 > = ({ queryKey }) => {
   const [, data] = queryKey;

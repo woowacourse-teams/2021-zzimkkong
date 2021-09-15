@@ -21,8 +21,8 @@ import Panel from 'components/Panel/Panel';
 import ReservationListItem from 'components/ReservationListItem/ReservationListItem';
 import MESSAGE from 'constants/message';
 import PATH, { HREF } from 'constants/path';
+import useManagerMapReservations from 'hooks/query/useManagerMapReservations';
 import useManagerMaps from 'hooks/query/useManagerMaps';
-import useManagerReservations from 'hooks/query/useManagerReservations';
 import useManagerSpaces from 'hooks/query/useManagerSpaces';
 import { Order, Reservation } from 'types/common';
 import { ErrorResponse, MapItemResponse } from 'types/response';
@@ -57,7 +57,7 @@ const ManagerMain = (): JSX.Element => {
   const organization = getMaps.data?.data.organization ?? '';
   const maps = useMemo((): MapItemResponse[] => getMaps.data?.data.maps ?? [], [getMaps]);
 
-  const getReservations = useManagerReservations(
+  const getReservations = useManagerMapReservations(
     {
       mapId: selectedMapId,
       date: formatDate(date),
