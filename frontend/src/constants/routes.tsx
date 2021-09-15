@@ -7,7 +7,7 @@ import ManagerLogin from 'pages/ManagerLogin/ManagerLogin';
 import ManagerMain from 'pages/ManagerMain/ManagerMain';
 import ManagerMapEditor from 'pages/ManagerMapEditor/ManagerMapEditor';
 import ManagerReservationEdit from 'pages/ManagerReservationEdit/ManagerReservationEdit';
-import ManagerSpaceEdit from 'pages/ManagerSpaceEdit/ManagerSpaceEdit';
+import ManagerSpaceEditor from 'pages/ManagerSpaceEditor/ManagerSpaceEditor';
 import PATH from './path';
 
 interface Route {
@@ -69,7 +69,7 @@ export const PRIVATE_ROUTES: PrivateRoute[] = [
   },
   {
     path: PATH.MANAGER_SPACE_EDIT,
-    component: <ManagerSpaceEdit />,
+    component: <ManagerSpaceEditor />,
     redirectPath: PATH.MANAGER_LOGIN,
   },
 ];

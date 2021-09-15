@@ -9,7 +9,7 @@ import PageHeader from 'components/PageHeader/PageHeader';
 import ReservationListItem from 'components/ReservationListItem/ReservationListItem';
 import MESSAGE from 'constants/message';
 import { HREF } from 'constants/path';
-import useGuestReservations from 'hooks/useGuestReservations';
+import useGuestReservations from 'hooks/query/useGuestReservations';
 import useInput from 'hooks/useInput';
 import { GuestMapState } from 'pages/GuestMap/GuestMap';
 import { MapItem, Reservation, ScrollPosition, Space } from 'types/common';
@@ -126,7 +126,7 @@ const GuestReservation = (): JSX.Element => {
       <Header />
       <Layout>
         <Styled.PageHeader title="공간 이름" data-testid="spaceName">
-          <Styled.ColorDot color={space.color} />
+          <Styled.ColorDot color={space.color} size="medium" />
           {space.name}
         </Styled.PageHeader>
         <ReservationForm

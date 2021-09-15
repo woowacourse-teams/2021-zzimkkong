@@ -1,5 +1,6 @@
 import { Dispatch, SetStateAction, useEffect, useState } from 'react';
 import { EditorBoard } from 'types/common';
+import { BOARD } from '../../constants/editor';
 
 interface Props {
   width: number;
@@ -7,8 +8,8 @@ interface Props {
 }
 
 const useBoardStatus = ({
-  width = 800,
-  height = 600,
+  width = BOARD.DEFAULT_WIDTH,
+  height = BOARD.DEFAULT_HEIGHT,
 }: Props): [EditorBoard, Dispatch<SetStateAction<EditorBoard>>] => {
   const [boardStatus, setBoardStatus] = useState<EditorBoard>({
     scale: 1,

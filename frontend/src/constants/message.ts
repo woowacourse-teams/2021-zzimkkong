@@ -24,7 +24,6 @@ const MESSAGE = {
     UNEXPECTED_ERROR: '예약하는 중에 문제가 발생했습니다. 잠시 후에 다시 시도해주세요.',
     UNEXPECTED_DELETE_ERROR:
       '예약을 삭제하는 중에 문제가 발생했습니다. 잠시 후에 다시 시도해주세요.',
-    INVALID_MAP_ID: '맵 ID가 올바르지 않습니다. 다시 확인해주세요.',
     PASSWORD_MESSAGE: '숫자 4자리를 입력해주세요.',
   },
   MANAGER_MAIN: {
@@ -55,7 +54,7 @@ const MESSAGE = {
       '프리셋을 삭제하는 중에 문제가 발생했습니다. 잠시 후에 다시 시도해주세요.',
     SPACE_CREATED: '공간이 생성되었습니다.',
     SPACE_SETTING_UPDATED: '공간 설정이 수정되었습니다.',
-    SPACE_DELETED: '공간이 생성되었습니다.',
+    SPACE_DELETED: '공간이 삭제되었습니다.',
     PRESET_CREATED: '프리셋이 추가되었습니다.',
     PRESET_DELETED: '프리셋이 삭제되었습니다.',
     DELETE_PRESET_CONFIRM: '이 프리셋을 삭제하시겠어요?',

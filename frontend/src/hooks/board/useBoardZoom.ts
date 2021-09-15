@@ -2,14 +2,14 @@ import { EDITOR } from 'constants/editor';
 import { EditorBoard } from 'types/common';
 
 const useBoardZoom = (
-  statusState: [EditorBoard, React.Dispatch<React.SetStateAction<EditorBoard>>]
+  boardState: [EditorBoard, React.Dispatch<React.SetStateAction<EditorBoard>>]
 ): {
   onWheel: (event: React.WheelEvent<SVGSVGElement>) => void;
 } => {
   const zoomBoard = ({ offsetX, offsetY, deltaY }: WheelEvent) => {
-    const [, setStatus] = statusState;
+    const [, setBoard] = boardState;
 
-    setStatus((prevStatus) => {
+    setBoard((prevStatus) => {
       const { scale, x, y, width, height } = prevStatus;
 
       const nextScale = scale - deltaY * EDITOR.SCALE_DELTA;
@@ -39,12 +39,12 @@ const useBoardZoom = (
     });
   };
 
-  const handleWheel = (event: React.WheelEvent<SVGSVGElement>) => {
+  const onWheel = (event: React.WheelEvent<SVGElement>) => {
     zoomBoard(event.nativeEvent);
   };
 
   return {
-    onWheel: handleWheel,
+    onWheel,
   };
 };
 

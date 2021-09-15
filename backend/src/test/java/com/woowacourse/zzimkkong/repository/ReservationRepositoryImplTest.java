@@ -6,11 +6,12 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 import static com.woowacourse.zzimkkong.Constants.*;
 
-public class ReservationRepositoryImplTest extends RepositoryTest {
+class ReservationRepositoryImplTest extends RepositoryTest {
     @ParameterizedTest
     @CsvSource({"true", "false"})
     @DisplayName("멤버를 이용해 오늘 이후의 예약이 존재하는지 확인할 수 있다.")
@@ -44,6 +45,7 @@ public class ReservationRepositoryImplTest extends RepositoryTest {
         spaces.save(be);
 
         Reservation beAmZeroOneYesterday = Reservation.builder()
+                .date(LocalDate.now().minusDays(1))
                 .startTime(LocalDateTime.now().minusDays(1))
                 .endTime(LocalDateTime.now().minusDays(1).plusHours(1))
                 .description(BE_AM_TEN_ELEVEN_DESCRIPTION)
@@ -56,6 +58,7 @@ public class ReservationRepositoryImplTest extends RepositoryTest {
 
         if (isReservationExists) {
             Reservation beAmZeroOne = Reservation.builder()
+                    .date(BE_AM_TEN_ELEVEN_START_TIME.toLocalDate())
                     .startTime(BE_AM_TEN_ELEVEN_START_TIME)
                     .endTime(BE_AM_TEN_ELEVEN_END_TIME)
                     .description(BE_AM_TEN_ELEVEN_DESCRIPTION)

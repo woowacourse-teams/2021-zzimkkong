@@ -6,13 +6,18 @@ const useBoardCoordinate = (
   boardStatus: EditorBoard
 ): {
   coordinate: Coordinate;
-  stickyCoordinate: Coordinate;
+  stickyDotCoordinate: Coordinate;
+  stickyRectCoordinate: Coordinate;
   onMouseMove: (event: React.MouseEvent<SVGSVGElement>) => void;
 } => {
   const [coordinate, setCoordinate] = useState<Coordinate>({ x: 0, y: 0 });
-  const stickyCoordinate: Coordinate = {
+  const stickyDotCoordinate: Coordinate = {
     x: Math.round(coordinate.x / EDITOR.GRID_SIZE) * EDITOR.GRID_SIZE,
     y: Math.round(coordinate.y / EDITOR.GRID_SIZE) * EDITOR.GRID_SIZE,
+  };
+  const stickyRectCoordinate: Coordinate = {
+    x: Math.floor(coordinate.x / EDITOR.GRID_SIZE) * EDITOR.GRID_SIZE,
+    y: Math.floor(coordinate.y / EDITOR.GRID_SIZE) * EDITOR.GRID_SIZE,
   };
 
   const getSVGCoordinate = (event: React.MouseEvent<SVGSVGElement>) => {
@@ -36,7 +41,7 @@ const useBoardCoordinate = (
     setCoordinate({ x, y });
   };
 
-  return { coordinate, stickyCoordinate, onMouseMove };
+  return { coordinate, stickyDotCoordinate, stickyRectCoordinate, onMouseMove };
 };
 
 export default useBoardCoordinate;

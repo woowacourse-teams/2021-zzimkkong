@@ -1,10 +1,6 @@
 import { Link } from 'react-router-dom';
 import styled from 'styled-components';
-import { Color } from 'types/common';
-
-interface ColorDotProps {
-  color: Color;
-}
+import ColorDotComponent from 'components/ColorDot/ColorDot';
 
 export const Page = styled.div`
   display: flex;
@@ -145,12 +141,7 @@ export const Message = styled.p`
   padding: 1rem 0;
 `;
 
-export const ColorDot = styled.span<ColorDotProps>`
-  display: inline-block;
-  width: 1rem;
-  height: 1rem;
-  background-color: ${({ color }) => color};
-  border-radius: 50%;
+export const ColorDot = styled(ColorDotComponent)`
   margin-right: 0.75rem;
 `;
 

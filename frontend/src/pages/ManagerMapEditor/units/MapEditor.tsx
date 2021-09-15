@@ -4,48 +4,48 @@ import { ReactComponent as LineIcon } from 'assets/svg/line.svg';
 import { ReactComponent as MoveIcon } from 'assets/svg/move.svg';
 import { ReactComponent as RectIcon } from 'assets/svg/rect.svg';
 import { ReactComponent as SelectIcon } from 'assets/svg/select.svg';
+import Board from 'components/Board/Board';
 import ColorPicker from 'components/ColorPicker/ColorPicker';
 import ColorPickerIcon from 'components/ColorPicker/ColorPickerIcon';
 import { EDITOR, KEY } from 'constants/editor';
 import PALETTE from 'constants/palette';
-import useBoardCoordinate from 'pages/ManagerMapEditor/hooks/useBoardCoordinate';
+import useBindKeyPress from 'hooks/board/useBindKeyPress';
+import useBoardCoordinate from 'hooks/board/useBoardCoordinate';
+import useBoardMove from 'hooks/board/useBoardMove';
+import useBoardStatus from 'hooks/board/useBoardStatus';
+import useBoardZoom from 'hooks/board/useBoardZoom';
 import { Color, DrawingStatus, ManagerSpace, MapElement } from 'types/common';
-import { MapElementType, Mode } from 'types/editor';
-import useBindKeyPress from '../hooks/useBindKeyPress';
+import { MapElementType, MapEditorMode } from 'types/editor';
 import useBoardEraserTool from '../hooks/useBoardEraserTool';
 import useBoardLineTool from '../hooks/useBoardLineTool';
-import useBoardMove from '../hooks/useBoardMove';
 import useBoardRectTool from '../hooks/useBoardRectTool';
 import useBoardSelect from '../hooks/useBoardSelect';
-import useBoardStatus from '../hooks/useBoardStatus';
-import useBoardZoom from '../hooks/useBoardZoom';
-import Board from './Board';
 import * as Styled from './MapEditor.styles';
 
 const toolbarItems = [
   {
     text: '선택',
-    mode: Mode.Select,
+    mode: MapEditorMode.Select,
     icon: <SelectIcon />,
   },
   {
     text: '이동',
-    mode: Mode.Move,
+    mode: MapEditorMode.Move,
     icon: <MoveIcon />,
   },
   {
     text: '선',
-    mode: Mode.Line,
+    mode: MapEditorMode.Line,
     icon: <LineIcon />,
   },
   {
     text: '사각형',
-    mode: Mode.Rect,
+    mode: MapEditorMode.Rect,
     icon: <RectIcon />,
   },
   {
     text: '지우개',
-    mode: Mode.Eraser,
+    mode: MapEditorMode.Eraser,
     icon: <EraserIcon />,
   },
 ];
@@ -64,7 +64,7 @@ const MapCreateEditor = ({
   mapElementsState: [mapElements, setMapElements],
   boardState: [{ width, height }, onChangeBoard],
 }: Props): JSX.Element => {
-  const [mode, setMode] = useState(Mode.Select);
+  const [mode, setMode] = useState(MapEditorMode.Select);
 
   const [color, setColor] = useState<Color>(PALETTE.BLACK[400]);
   const [isColorPickerOpen, setColorPickerOpen] = useState(false);
@@ -73,30 +73,31 @@ const MapCreateEditor = ({
 
   const { pressedKey } = useBindKeyPress();
   const isPressSpacebar = pressedKey === KEY.SPACE;
-  const isBoardDraggable = isPressSpacebar || mode === Mode.Move;
-  const isMapElementClickable = mode === Mode.Select && !isBoardDraggable;
-  const isMapElementEventAvailable = [Mode.Select, Mode.Eraser].includes(mode) && !isBoardDraggable;
+  const isBoardDraggable = isPressSpacebar || mode === MapEditorMode.Move;
+  const isMapElementClickable = mode === MapEditorMode.Select && !isBoardDraggable;
+  const isMapElementEventAvailable =
+    [MapEditorMode.Select, MapEditorMode.Eraser].includes(mode) && !isBoardDraggable;
 
   const [boardStatus, setBoardStatus] = useBoardStatus({
     width: Number(width),
     height: Number(height),
   });
-  const { stickyCoordinate, onMouseMove } = useBoardCoordinate(boardStatus);
+  const { stickyDotCoordinate, onMouseMove } = useBoardCoordinate(boardStatus);
   const { onWheel } = useBoardZoom([boardStatus, setBoardStatus]);
   const { gripPoints, selectedMapElementId, deselectMapElement, onClickBoard, onClickMapElement } =
     useBoardSelect();
-  const { isDragging, onDragStart, onDrag, onDragEnd, onMouseOut } = useBoardMove(
+  const { isMoving, onDragStart, onDrag, onDragEnd, onMouseOut } = useBoardMove(
     [boardStatus, setBoardStatus],
     isBoardDraggable
   );
   const { drawLineStart, drawLineEnd } = useBoardLineTool({
-    coordinate: stickyCoordinate,
+    coordinate: stickyDotCoordinate,
     color,
     drawingStatus: [drawingStatus, setDrawingStatus],
     mapElements: [mapElements, setMapElements],
   });
   const { drawRectStart, drawRectEnd } = useBoardRectTool({
-    coordinate: stickyCoordinate,
+    coordinate: stickyDotCoordinate,
     color,
     drawingStatus: [drawingStatus, setDrawingStatus],
     mapElements: [mapElements, setMapElements],
@@ -107,25 +108,25 @@ const MapCreateEditor = ({
 
   const toggleColorPicker = () => setColorPickerOpen((prevState) => !prevState);
 
-  const selectMode = (mode: Mode) => {
+  const selectMode = (mode: MapEditorMode) => {
     setDrawingStatus({});
     setMode(mode);
   };
 
   const handleMouseDown = () => {
-    if (isBoardDraggable || isDragging) return;
+    if (isBoardDraggable || isMoving) return;
 
-    if (mode === Mode.Line) drawLineStart();
-    else if (mode === Mode.Rect) drawRectStart();
-    else if (mode === Mode.Eraser) eraseStart();
+    if (mode === MapEditorMode.Line) drawLineStart();
+    else if (mode === MapEditorMode.Rect) drawRectStart();
+    else if (mode === MapEditorMode.Eraser) eraseStart();
   };
 
   const handleMouseUp = () => {
-    if (isBoardDraggable || isDragging) return;
+    if (isBoardDraggable || isMoving) return;
 
-    if (mode === Mode.Line) drawLineEnd();
-    else if (mode === Mode.Rect) drawRectEnd();
-    else if (mode === Mode.Eraser) eraseEnd();
+    if (mode === MapEditorMode.Line) drawLineEnd();
+    else if (mode === MapEditorMode.Rect) drawRectEnd();
+    else if (mode === MapEditorMode.Eraser) eraseEnd();
   };
 
   const deleteMapElement = useCallback(() => {
@@ -139,7 +140,7 @@ const MapCreateEditor = ({
   }, [deselectMapElement, selectedMapElementId, setMapElements]);
 
   useEffect(() => {
-    if (mode !== Mode.Select) return;
+    if (mode !== MapEditorMode.Select) return;
 
     const isPressedDeleteKey = pressedKey === KEY.DELETE || pressedKey === KEY.BACK_SPACE;
 
@@ -171,9 +172,9 @@ const MapCreateEditor = ({
       </Styled.ColorPicker>
       <Styled.Board>
         <Board
-          statusState={[boardStatus, setBoardStatus]}
-          isDraggable={isBoardDraggable}
-          isDragging={isDragging}
+          boardState={[boardStatus, setBoardStatus]}
+          movable={isBoardDraggable}
+          isMoving={isMoving}
           onClick={onClickBoard}
           onMouseMove={onMouseMove}
           onMouseDown={handleMouseDown}
@@ -184,10 +185,10 @@ const MapCreateEditor = ({
           onDragEnd={onDragEnd}
           onMouseOut={onMouseOut}
         >
-          {[Mode.Line, Mode.Rect].includes(mode) && (
+          {[MapEditorMode.Line, MapEditorMode.Rect].includes(mode) && (
             <circle
-              cx={stickyCoordinate.x}
-              cy={stickyCoordinate.y}
+              cx={stickyDotCoordinate.x}
+              cy={stickyDotCoordinate.y}
               r={EDITOR.CIRCLE_CURSOR_RADIUS}
               fill={EDITOR.CIRCLE_CURSOR_FILL}
               pointerEvents="none"
@@ -218,10 +219,10 @@ const MapCreateEditor = ({
             </g>
           ))}
 
-          {drawingStatus.start && mode === Mode.Line && (
+          {drawingStatus.start && mode === MapEditorMode.Line && (
             <polyline
               key={`preview-${MapElementType.Polyline}`}
-              points={`${drawingStatus.start.x},${drawingStatus.start.y} ${stickyCoordinate.x},${stickyCoordinate.y}`}
+              points={`${drawingStatus.start.x},${drawingStatus.start.y} ${stickyDotCoordinate.x},${stickyDotCoordinate.y}`}
               stroke={EDITOR.STROKE_PREVIEW}
               strokeWidth={EDITOR.STROKE_WIDTH}
               strokeLinecap="round"
@@ -229,13 +230,13 @@ const MapCreateEditor = ({
             />
           )}
 
-          {drawingStatus.start && mode === Mode.Rect && (
+          {drawingStatus.start && mode === MapEditorMode.Rect && (
             <rect
               key={`preview-${MapElementType.Rect}`}
-              x={Math.min(drawingStatus.start.x, stickyCoordinate.x)}
-              y={Math.min(drawingStatus.start.y, stickyCoordinate.y)}
-              width={Math.abs(drawingStatus.start.x - stickyCoordinate.x)}
-              height={Math.abs(drawingStatus.start.y - stickyCoordinate.y)}
+              x={Math.min(drawingStatus.start.x, stickyDotCoordinate.x)}
+              y={Math.min(drawingStatus.start.y, stickyDotCoordinate.y)}
+              width={Math.abs(drawingStatus.start.x - stickyDotCoordinate.x)}
+              height={Math.abs(drawingStatus.start.y - stickyDotCoordinate.y)}
               stroke={EDITOR.STROKE_PREVIEW}
               strokeWidth={EDITOR.STROKE_WIDTH}
               strokeLinecap="round"
@@ -296,7 +297,7 @@ const MapCreateEditor = ({
             return null;
           })}
 
-          {mode === Mode.Select &&
+          {mode === MapEditorMode.Select &&
             gripPoints.map(({ x, y }, index) => (
               <Styled.GripPoint key={index} cx={x} cy={y} r={4} />
             ))}
