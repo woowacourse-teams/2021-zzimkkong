@@ -23,6 +23,7 @@ import MESSAGE from 'constants/message';
 import PATH, { HREF } from 'constants/path';
 import useManagerMaps from 'hooks/query/useManagerMaps';
 import useManagerReservations from 'hooks/query/useManagerReservations';
+import useManagerSpaces from 'hooks/query/useManagerSpaces';
 import { Order, Reservation } from 'types/common';
 import { ErrorResponse, MapItemResponse } from 'types/response';
 import { formatDate } from 'utils/datetime';
@@ -67,6 +68,15 @@ const ManagerMain = (): JSX.Element => {
     }
   );
 
+  const getSpaces = useManagerSpaces(
+    {
+      mapId: selectedMapId,
+    },
+    {
+      enabled: !isNullish(selectedMapId),
+    }
+  );
+
   const removeReservation = useMutation(deleteManagerReservation, {
     onSuccess: () => {
       alert(MESSAGE.MANAGER_MAIN.RESERVATION_DELETE);
@@ -82,6 +92,8 @@ const ManagerMain = (): JSX.Element => {
     () => sortReservations(reservations, spacesOrder),
     [reservations, spacesOrder]
   );
+
+  const spaces = useMemo(() => getSpaces.data?.data.spaces ?? [], [getSpaces]);
 
   const handleClickSpacesOrder = () => {
     setSpacesOrder((prev) => (prev === Order.Ascending ? Order.Descending : Order.Ascending));
@@ -148,6 +160,19 @@ const ManagerMain = (): JSX.Element => {
     setSelectedMapId(mapId);
     setSelectedMapName(mapName);
     handleCloseDrawer();
+  };
+
+  const handleCreateReservation = (spaceId: number) => {
+    if (!selectedMapId) return;
+
+    history.push({
+      pathname: PATH.MANAGER_RESERVATION,
+      state: {
+        mapId: selectedMapId,
+        space: spaces?.find(({ id }) => id === spaceId),
+        selectedDate: formatDate(date),
+      },
+    });
   };
 
   const handleEditReservation = (reservation: Reservation, spaceId: number) => {
@@ -263,7 +288,11 @@ const ManagerMain = (): JSX.Element => {
                   <Panel.Header dotColor={spaceColor}>
                     <Styled.PanelHeadWrapper>
                       <Panel.Title>{spaceName}</Panel.Title>
-                      <Button variant="primary-text" size="dense">
+                      <Button
+                        variant="primary-text"
+                        size="dense"
+                        onClick={() => handleCreateReservation(spaceId)}
+                      >
                         예약 추가하기
                       </Button>
                     </Styled.PanelHeadWrapper>

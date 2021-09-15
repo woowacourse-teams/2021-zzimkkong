@@ -8,14 +8,14 @@ import RESERVATION from 'constants/reservation';
 import TIME from 'constants/time';
 import useInputs from 'hooks/useInputs';
 import useScrollToTop from 'hooks/useScrollToTop';
-import { Reservation, Space } from 'types/common';
+import { ManagerSpaceAPI, Reservation, Space } from 'types/common';
 import { formatDate, formatTime, formatTimePrettier } from 'utils/datetime';
 import { EditReservationParams } from '../ManagerReservation';
 import * as Styled from './ManagerReservationForm.styles';
 
 interface Props {
   isEditMode: boolean;
-  space: Space;
+  space: ManagerSpaceAPI;
   reservation?: Reservation;
   date: string;
   onChangeDate: ChangeEventHandler<HTMLInputElement>;
