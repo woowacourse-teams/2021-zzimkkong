@@ -9,6 +9,7 @@ import { ReactComponent as EditIcon } from 'assets/svg/edit.svg';
 import { ReactComponent as MapEditorIcon } from 'assets/svg/map-editor.svg';
 import { ReactComponent as MenuIcon } from 'assets/svg/menu.svg';
 import { ReactComponent as SpaceEditorIcon } from 'assets/svg/space-editor.svg';
+import Button from 'components/Button/Button';
 import DateInput from 'components/DateInput/DateInput';
 import Drawer from 'components/Drawer/Drawer';
 import Header from 'components/Header/Header';
@@ -258,9 +259,14 @@ const ManagerMain = (): JSX.Element => {
           <Styled.SpaceList>
             {sortedReservations &&
               sortedReservations.map(({ spaceId, spaceName, spaceColor, reservations }, index) => (
-                <Panel key={`space-${spaceId}`} role="listitem" expandable>
+                <Panel key={`space-${spaceId}`} role="listitem">
                   <Panel.Header dotColor={spaceColor}>
-                    <Panel.Title>{spaceName}</Panel.Title>
+                    <Styled.PanelHeadWrapper>
+                      <Panel.Title>{spaceName}</Panel.Title>
+                      <Button variant="primary-text" size="dense">
+                        예약 추가하기
+                      </Button>
+                    </Styled.PanelHeadWrapper>
                   </Panel.Header>
                   <Panel.Content>
                     {reservations.length === 0 ? (
