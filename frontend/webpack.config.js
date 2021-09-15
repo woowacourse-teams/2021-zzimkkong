@@ -3,6 +3,7 @@ const HtmlWebpackPlugin = require('html-webpack-plugin');
 const FaviconsWebpackPlugin = require('favicons-webpack-plugin');
 const TsconfigPathsPlugin = require('tsconfig-paths-webpack-plugin');
 const webpack = require('webpack');
+const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
 
 module.exports = () => {
   const isDevelopment = process.env.NODE_ENV !== 'production';
@@ -13,7 +14,7 @@ module.exports = () => {
     entry: './src/index.tsx',
     output: {
       publicPath: '/',
-      filename: 'bundle.js',
+      filename: 'bundle.[chunkhash].js',
       path: path.resolve(__dirname, 'dist'),
       clean: true,
     },
@@ -61,6 +62,11 @@ module.exports = () => {
         },
       ],
     },
+    optimization: {
+      splitChunks: {
+        chunks: 'all',
+      },
+    },
     plugins: [
       new HtmlWebpackPlugin({
         template: 'public/index.html',
@@ -74,6 +80,7 @@ module.exports = () => {
         'process.env.NODE_ENV': JSON.stringify(process.env.NODE_ENV),
         'process.env.DEPLOY_ENV': JSON.stringify(process.env.DEPLOY_ENV),
       }),
+      new BundleAnalyzerPlugin(),
     ],
   };
 };
