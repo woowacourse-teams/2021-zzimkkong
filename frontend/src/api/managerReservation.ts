@@ -1,6 +1,6 @@
 import { AxiosResponse } from 'axios';
 import { QueryFunction, QueryKey } from 'react-query';
-import MESSAGE from 'constants/message';
+import THROW_ERROR from 'constants/throwError';
 import { QueryManagerReservationsSuccess } from 'types/response';
 import api from './api';
 
@@ -38,7 +38,7 @@ export const queryManagerReservations: QueryFunction<
   const { mapId, date } = data;
 
   if (!mapId) {
-    throw new Error(MESSAGE.RESERVATION.INVALID_MAP_ID);
+    throw new Error(THROW_ERROR.INVALID_MAP_ID);
   }
 
   return api.get(`/managers/maps/${mapId}/spaces/reservations?date=${date}`);
