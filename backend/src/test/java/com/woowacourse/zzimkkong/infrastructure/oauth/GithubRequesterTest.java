@@ -2,6 +2,7 @@ package com.woowacourse.zzimkkong.infrastructure.oauth;
 
 import com.woowacourse.zzimkkong.Constants;
 import com.woowacourse.zzimkkong.domain.oauth.OauthUserInfo;
+import com.woowacourse.zzimkkong.exception.infrastructure.oauth.ErrorResponseToGetGithubAccessTokenException;
 import okhttp3.mockwebserver.MockResponse;
 import okhttp3.mockwebserver.MockWebServer;
 import org.junit.jupiter.api.DisplayName;
@@ -13,6 +14,7 @@ import org.springframework.test.context.ActiveProfiles;
 import java.io.IOException;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 @ActiveProfiles("test")
 class GithubRequesterTest {
@@ -65,7 +67,8 @@ class GithubRequesterTest {
             // given
             mockGithubServer.start();
 
-            setUpResponse(mockGithubServer);
+            setUpGetTokenResponse(mockGithubServer, ACCESS_TOKEN_RESPONSE_EXAMPLE);
+            setUpGetTokenResponse(mockGithubServer, USER_INFO_RESPONSE_EXAMPLE);
 
             GithubRequester githubRequester = new GithubRequester(
                     "clientId",
@@ -85,13 +88,39 @@ class GithubRequesterTest {
         }
     }
 
-    private void setUpResponse(MockWebServer mockGithubServer) {
-        mockGithubServer.enqueue(new MockResponse()
-                .setBody(ACCESS_TOKEN_RESPONSE_EXAMPLE)
-                .addHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE));
+    @Test
+    @DisplayName("오류가 발생하면 ErrorResponseToGetGithubAccessTokenException을 응답한다.")
+    void getTokenException() {
+        String getTokenErrorResponse = "{\n" +
+                "  \"error\": \"bad_verification_code\",\n" +
+                "  \"error_description\": \"The code passed is incorrect or expired.\",\n" +
+                "  \"error_uri\": \"/apps/managing-oauth-apps/troubleshooting-oauth-app-access-token-request-errors/#bad-verification-code\"\n" +
+                "}";
 
+        try (MockWebServer mockGithubServer = new MockWebServer()) {
+            // given
+            mockGithubServer.start();
+
+            setUpGetTokenResponse(mockGithubServer, getTokenErrorResponse);
+            setUpGetTokenResponse(mockGithubServer, USER_INFO_RESPONSE_EXAMPLE);
+
+            GithubRequester githubRequester = new GithubRequester(
+                    "clientId",
+                    "secretId",
+                    String.format("http://%s:%s", mockGithubServer.getHostName(), mockGithubServer.getPort()),
+                    String.format("http://%s:%s", mockGithubServer.getHostName(), mockGithubServer.getPort())
+            );
+
+            // when, then
+            assertThatThrownBy(() -> githubRequester.getUserInfoByCode("code"))
+                    .isInstanceOf(ErrorResponseToGetGithubAccessTokenException.class);
+        } catch (IOException ignored) {
+        }
+    }
+
+    private void setUpGetTokenResponse(MockWebServer mockGithubServer, String responseExample) {
         mockGithubServer.enqueue(new MockResponse()
-                .setBody(USER_INFO_RESPONSE_EXAMPLE)
+                .setBody(responseExample)
                 .addHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE));
     }
 }
