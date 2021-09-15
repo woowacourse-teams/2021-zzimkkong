@@ -18,6 +18,11 @@ interface ReservationParams {
   };
 }
 
+interface PostReservationParams extends ReservationParams {
+  mapId: number;
+  spaceId: number;
+}
+
 interface PutReservationParams extends ReservationParams {
   mapId: number;
   spaceId: number;
@@ -43,6 +48,13 @@ export const queryManagerReservations: QueryFunction<
 
   return api.get(`/managers/maps/${mapId}/spaces/reservations?date=${date}`);
 };
+
+export const postManagerReservation = ({
+  reservation,
+  mapId,
+  spaceId,
+}: PostReservationParams): Promise<AxiosResponse<never>> =>
+  api.post(`/managers/maps/${mapId}/spaces/${spaceId}/reservations`, reservation);
 
 export const putManagerReservation = ({
   reservation,
