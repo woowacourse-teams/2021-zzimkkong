@@ -1,17 +1,18 @@
 import { AxiosError } from 'axios';
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useMutation } from 'react-query';
 import { useHistory, useLocation } from 'react-router-dom';
-import { postGuestReservation, putGuestReservation, ReservationParams } from 'api/guestReservation';
+import { ReservationParams } from 'api/guestReservation';
+import { postManagerReservation, putManagerReservation } from 'api/managerReservation';
 import Header from 'components/Header/Header';
 import Layout from 'components/Layout/Layout';
 import PageHeader from 'components/PageHeader/PageHeader';
 import ReservationListItem from 'components/ReservationListItem/ReservationListItem';
 import MESSAGE from 'constants/message';
 import PATH from 'constants/path';
-import useGuestReservations from 'hooks/query/useGuestReservations';
+import useManagerSpaceReservations from 'hooks/query/useManagerSpaceReservations';
 import useInput from 'hooks/useInput';
-import { GuestMapState } from 'pages/GuestMap/GuestMap';
+import { ManagerMainState } from 'pages/ManagerMain/ManagerMain';
 import { ManagerSpaceAPI, Reservation } from 'types/common';
 import { ErrorResponse } from 'types/response';
 import * as Styled from './ManagerReservation.styles';
@@ -30,7 +31,7 @@ export interface EditReservationParams extends ReservationParams {
 
 const ManagerReservation = (): JSX.Element => {
   const location = useLocation<ManagerReservationState>();
-  const history = useHistory<GuestMapState>();
+  const history = useHistory<ManagerMainState>();
 
   const { mapId, space, selectedDate, reservation } = location.state;
 
@@ -40,13 +41,13 @@ const ManagerReservation = (): JSX.Element => {
 
   const isEditMode = !!reservation;
 
-  const getReservations = useGuestReservations({ mapId, spaceId: space.id, date });
+  const getReservations = useManagerSpaceReservations({ mapId, spaceId: space.id, date });
   const reservations = getReservations.data?.data?.reservations ?? [];
 
-  const addReservation = useMutation(postGuestReservation, {
+  const addReservation = useMutation(postManagerReservation, {
     onSuccess: () => {
       history.push(PATH.MANAGER_MAIN, {
-        spaceId: space.id,
+        mapId,
         targetDate: new Date(date),
       });
     },
@@ -55,10 +56,10 @@ const ManagerReservation = (): JSX.Element => {
     },
   });
 
-  const updateReservation = useMutation(putGuestReservation, {
+  const updateReservation = useMutation(putManagerReservation, {
     onSuccess: () => {
       history.push(PATH.MANAGER_MAIN, {
-        spaceId: space.id,
+        mapId,
         targetDate: new Date(date),
       });
     },
@@ -99,6 +100,20 @@ const ManagerReservation = (): JSX.Element => {
       ? editReservation({ reservation, reservationId })
       : createReservation({ reservation });
   };
+
+  useEffect(() => {
+    return history.listen((location) => {
+      if (
+        location.pathname === PATH.MANAGER_MAIN ||
+        location.pathname === PATH.MANAGER_MAIN + '/'
+      ) {
+        location.state = {
+          mapId,
+          targetDate: new Date(date),
+        };
+      }
+    });
+  }, [history, date, mapId]);
 
   return (
     <>

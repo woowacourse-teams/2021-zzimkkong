@@ -27,7 +27,7 @@ export interface QueryManagerMapsSuccess {
 }
 
 export interface QueryManagerSpaceReservationsSuccess {
-  data: SpaceReservation[];
+  reservations: Reservation[];
 }
 export interface QueryManagerMapReservationsSuccess {
   data: SpaceReservation[];

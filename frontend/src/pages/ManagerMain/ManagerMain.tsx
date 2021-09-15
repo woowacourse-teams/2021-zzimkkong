@@ -31,18 +31,22 @@ import { sortReservations } from 'utils/sort';
 import { isNullish } from 'utils/type';
 import * as Styled from './ManagerMain.styles';
 
-interface LocationState {
+export interface ManagerMainState {
   mapId?: number;
+  targetDate?: Date;
 }
 
 const ManagerMain = (): JSX.Element => {
   const history = useHistory();
-  const location = useLocation<LocationState>();
+  const location = useLocation<ManagerMainState>();
 
-  const [date, setDate] = useState(new Date());
+  const mapId = location.state?.mapId;
+  const targetDate = location.state?.targetDate;
+
+  const [date, setDate] = useState(targetDate ?? new Date());
   const [open, setOpen] = useState(false);
 
-  const [selectedMapId, setSelectedMapId] = useState<number | null>(location.state?.mapId ?? null);
+  const [selectedMapId, setSelectedMapId] = useState<number | null>(mapId ?? null);
   const [selectedMapName, setSelectedMapName] = useState('');
   const [spacesOrder, setSpacesOrder] = useState<Order>(Order.Ascending);
 
