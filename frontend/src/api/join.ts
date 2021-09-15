@@ -1,5 +1,6 @@
 import { AxiosResponse } from 'axios';
 import { QueryFunction } from 'react-query';
+import MESSAGE from 'constants/message';
 import api from './api';
 
 interface JoinParams {
@@ -11,7 +12,7 @@ interface JoinParams {
 export const queryValidateEmail: QueryFunction = ({ queryKey }) => {
   const [, email] = queryKey;
 
-  if (typeof email !== 'string') throw new Error('Email은 string 형식이어야 합니다.');
+  if (typeof email !== 'string') throw new Error(MESSAGE.JOIN.INVALID_EMAIL_FORMAT);
 
   return api.get(`/managers?email=${email}`);
 };

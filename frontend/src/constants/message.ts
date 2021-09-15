@@ -3,6 +3,7 @@ const MESSAGE = {
     SUCCESS: '회원가입에 성공했습니다.',
     FAILURE: '회원가입에 실패했습니다.',
     VALID_EMAIL: '사용 가능한 이메일입니다.',
+    INVALID_EMAIL_FORMAT: '이메일은 "string" 형식이어야 합니다.',
     VALID_PASSWORD: '사용 가능한 비밀번호입니다.',
     INVALID_PASSWORD: '영어와 숫자를 포함하여 8~20자로 입력해주세요.',
     VALID_PASSWORD_CONFIRM: '비밀번호가 일치합니다.',
