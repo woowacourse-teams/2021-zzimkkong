@@ -3,7 +3,6 @@ const MESSAGE = {
     SUCCESS: '회원가입에 성공했습니다.',
     FAILURE: '회원가입에 실패했습니다.',
     VALID_EMAIL: '사용 가능한 이메일입니다.',
-    INVALID_EMAIL_FORMAT: '이메일은 "string" 형식이어야 합니다.',
     VALID_PASSWORD: '사용 가능한 비밀번호입니다.',
     INVALID_PASSWORD: '영어와 숫자를 포함하여 8~20자로 입력해주세요.',
     VALID_PASSWORD_CONFIRM: '비밀번호가 일치합니다.',
@@ -25,7 +24,6 @@ const MESSAGE = {
     UNEXPECTED_ERROR: '예약하는 중에 문제가 발생했습니다. 잠시 후에 다시 시도해주세요.',
     UNEXPECTED_DELETE_ERROR:
       '예약을 삭제하는 중에 문제가 발생했습니다. 잠시 후에 다시 시도해주세요.',
-    INVALID_MAP_ID: '맵 ID가 올바르지 않습니다. 다시 확인해주세요.',
     PASSWORD_MESSAGE: '숫자 4자리를 입력해주세요.',
   },
   MANAGER_MAIN: {
@@ -60,7 +58,6 @@ const MESSAGE = {
     PRESET_CREATED: '프리셋이 추가되었습니다.',
     PRESET_DELETED: '프리셋이 삭제되었습니다.',
     DELETE_PRESET_CONFIRM: '이 프리셋을 삭제하시겠어요?',
-    FIND_PRESET_ERROR: '프리셋을 찾을 수 없습니다.',
   },
   MANAGER_MAP: {
     CREATE_SUCCESS_CONFIRM: '맵 생성 완료! 공간을 편집하러 가시겠어요?',
