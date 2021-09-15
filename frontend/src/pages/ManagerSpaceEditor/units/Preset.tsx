@@ -7,6 +7,7 @@ import Button from 'components/Button/Button';
 import IconButton from 'components/IconButton/IconButton';
 import Select from 'components/Select/Select';
 import MESSAGE from 'constants/message';
+import THROW_ERROR from 'constants/throwError';
 import usePresets from 'hooks/query/usePreset';
 import useFormContext from 'hooks/useFormContext';
 import useInput from 'hooks/useInput';
@@ -60,7 +61,7 @@ const Preset = (): JSX.Element => {
 
     const selectedPreset = presets.find((preset) => preset.id === id) ?? null;
 
-    if (selectedPreset === null) throw new Error(MESSAGE.MANAGER_SPACE.FIND_PRESET_ERROR);
+    if (selectedPreset === null) throw new Error(THROW_ERROR.NOT_EXIST_PRESET);
 
     const {
       availableStartTime,

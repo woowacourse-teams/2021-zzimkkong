@@ -1,3 +1,5 @@
+import THROW_ERROR from 'constants/throwError';
+
 export const getLocalStorageItem = ({
   key,
   defaultValue,
@@ -14,7 +16,7 @@ export const getLocalStorageItem = ({
   try {
     return JSON.parse(storedData);
   } catch {
-    throw new Error('Stored data is not JSON format.');
+    throw new Error(THROW_ERROR.NOT_JSON_FORMAT);
   }
 };
 
@@ -36,7 +38,7 @@ export const setLocalStorageItem = ({ key, item }: { key: string; item: unknown 
   const data = JSON.stringify(item, getCircularReplacer());
 
   if (data === undefined) {
-    throw new Error("Item type doesn't match with JSON");
+    throw new Error(THROW_ERROR.NOT_MATCHED_JSON);
   }
 
   localStorage.setItem(key, data);

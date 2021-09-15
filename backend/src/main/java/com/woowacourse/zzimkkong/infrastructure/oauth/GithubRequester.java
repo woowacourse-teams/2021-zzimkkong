@@ -3,6 +3,7 @@ package com.woowacourse.zzimkkong.infrastructure.oauth;
 import com.woowacourse.zzimkkong.domain.OauthProvider;
 import com.woowacourse.zzimkkong.domain.oauth.GithubUserInfo;
 import com.woowacourse.zzimkkong.domain.oauth.OauthUserInfo;
+import com.woowacourse.zzimkkong.exception.infrastructure.oauth.ErrorResponseToGetGithubAccessTokenException;
 import com.woowacourse.zzimkkong.exception.infrastructure.oauth.UnableToGetTokenResponseFromGithubException;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.core.ParameterizedTypeReference;
@@ -55,8 +56,14 @@ public class GithubRequester implements OauthAPIRequester {
                 })
                 .blockOptional()
                 .orElseThrow(UnableToGetTokenResponseFromGithubException::new);
-
+        validateResponseBody(responseBody);
         return responseBody.get("access_token").toString();
+    }
+
+    private void validateResponseBody(Map<String, Object> responseBody) {
+        if (!responseBody.containsKey("access_token")) {
+            throw new ErrorResponseToGetGithubAccessTokenException(responseBody.get("error_description").toString());
+        }
     }
 
     private OauthUserInfo getUserInfo(final String token) {
