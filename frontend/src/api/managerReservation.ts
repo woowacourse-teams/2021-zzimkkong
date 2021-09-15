@@ -1,12 +1,19 @@
 import { AxiosResponse } from 'axios';
 import { QueryFunction, QueryKey } from 'react-query';
 import THROW_ERROR from 'constants/throwError';
-import { QueryManagerMapReservationsSuccess } from 'types/response';
+import {
+  QueryManagerMapReservationsSuccess,
+  QueryManagerSpaceReservationsSuccess,
+} from 'types/response';
 import api from './api';
 
 export interface QueryMapReservationsParams {
   mapId: number | null;
   date: string;
+}
+
+export interface QueryManagerSpaceReservationsParams extends QueryMapReservationsParams {
+  spaceId: number;
 }
 
 interface ReservationParams {
@@ -34,6 +41,20 @@ interface DeleteReservationParams {
   spaceId: number;
   reservationId: number;
 }
+
+export const queryManagerSpaceReservations: QueryFunction<
+  AxiosResponse<QueryManagerSpaceReservationsSuccess>,
+  [QueryKey, QueryManagerSpaceReservationsParams]
+> = ({ queryKey }) => {
+  const [, data] = queryKey;
+  const { mapId, spaceId, date } = data;
+
+  if (!mapId) {
+    throw new Error(THROW_ERROR.INVALID_MAP_ID);
+  }
+
+  return api.get(`/managers/maps/${mapId}/spaces/${spaceId}/reservations?date=${date}`);
+};
 
 export const queryManagerMapReservations: QueryFunction<
   AxiosResponse<QueryManagerMapReservationsSuccess>,
