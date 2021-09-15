@@ -21,7 +21,7 @@ interface URLParameter {
   sharingMapId: MapItem['sharingMapId'];
 }
 
-interface GuestReservationState {
+interface ManagerReservationState {
   mapId: number;
   space: Space;
   selectedDate: string;
@@ -33,7 +33,7 @@ export interface EditReservationParams extends ReservationParams {
 }
 
 const ManagerReservation = (): JSX.Element => {
-  const location = useLocation<GuestReservationState>();
+  const location = useLocation<ManagerReservationState>();
   const history = useHistory<GuestMapState>();
   const { sharingMapId } = useParams<URLParameter>();
 
