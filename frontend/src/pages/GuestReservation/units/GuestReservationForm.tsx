@@ -11,7 +11,7 @@ import useScrollToTop from 'hooks/useScrollToTop';
 import { Reservation, Space } from 'types/common';
 import { formatDate, formatTime, formatTimePrettier } from 'utils/datetime';
 import { EditReservationParams } from '../GuestReservation';
-import * as Styled from './ReservationForm.styles';
+import * as Styled from './GuestReservationForm.styles';
 
 interface Props {
   isEditMode: boolean;
@@ -33,7 +33,7 @@ interface Form {
   password: string;
 }
 
-const ReservationForm = ({
+const GuestReservationForm = ({
   isEditMode,
   space,
   date,
@@ -186,4 +186,4 @@ const ReservationForm = ({
   );
 };
 
-export default ReservationForm;
+export default GuestReservationForm;
