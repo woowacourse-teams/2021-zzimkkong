@@ -8,7 +8,7 @@ import RESERVATION from 'constants/reservation';
 import TIME from 'constants/time';
 import useInputs from 'hooks/useInputs';
 import useScrollToTop from 'hooks/useScrollToTop';
-import { ManagerSpaceAPI, Reservation, Space } from 'types/common';
+import { ManagerSpaceAPI, Reservation } from 'types/common';
 import { formatDate, formatTime, formatTimePrettier } from 'utils/datetime';
 import { EditReservationParams } from '../ManagerReservation';
 import * as Styled from './ManagerReservationForm.styles';
@@ -161,21 +161,23 @@ const ManagerReservationForm = ({
             {formatTimePrettier(reservationMaximumTimeUnit)})
           </Styled.TimeFormMessage>
         </Styled.InputWrapper>
-        <Styled.InputWrapper>
-          <Input
-            type="password"
-            label="비밀번호"
-            name="password"
-            value={password}
-            onChange={onChangeForm}
-            minLength={RESERVATION.PASSWORD.MIN_LENGTH}
-            maxLength={RESERVATION.PASSWORD.MAX_LENGTH}
-            pattern={REGEXP.RESERVATION_PASSWORD.source}
-            inputMode="numeric"
-            message={MESSAGE.RESERVATION.PASSWORD_MESSAGE}
-            required
-          />
-        </Styled.InputWrapper>
+        {isEditMode || (
+          <Styled.InputWrapper>
+            <Input
+              type="password"
+              label="비밀번호"
+              name="password"
+              value={password}
+              onChange={onChangeForm}
+              minLength={RESERVATION.PASSWORD.MIN_LENGTH}
+              maxLength={RESERVATION.PASSWORD.MAX_LENGTH}
+              pattern={REGEXP.RESERVATION_PASSWORD.source}
+              inputMode="numeric"
+              message={MESSAGE.RESERVATION.PASSWORD_MESSAGE}
+              required
+            />
+          </Styled.InputWrapper>
+        )}
       </Styled.Section>
       <Styled.ButtonWrapper>
         <Button fullWidth variant="primary" size="large">

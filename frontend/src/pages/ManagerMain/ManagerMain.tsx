@@ -186,7 +186,7 @@ const ManagerMain = (): JSX.Element => {
       pathname: PATH.MANAGER_RESERVATION_EDIT,
       state: {
         mapId: selectedMapId,
-        spaceId,
+        space: spaces?.find(({ id }) => id === spaceId),
         reservation,
         selectedDate: formatDate(date),
       },
