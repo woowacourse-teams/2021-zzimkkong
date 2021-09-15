@@ -7,5 +7,5 @@ interface LoginParams {
 }
 
 export const postLogin = (loginData: LoginParams): Promise<AxiosResponse> => {
-  return api.post('/login/token', loginData);
+  return api.post('managers/login/token', loginData);
 };
