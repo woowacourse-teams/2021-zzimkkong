@@ -71,6 +71,14 @@ public class MapService {
                 .collect(collectingAndThen(toList(), mapFindResponses -> MapFindAllResponse.of(mapFindResponses, manager)));
     }
 
+    @Transactional(readOnly = true)
+    public MapFindResponse findMapBySharingId(final String sharingMapId) {
+        Long mapId = sharingIdGenerator.parseIdFrom(sharingMapId);
+        Map map = maps.findById(mapId)
+                .orElseThrow(NoSuchMapException::new);
+        return MapFindResponse.of(map, sharingIdGenerator.from(map));
+    }
+
     public void updateMap(final Long mapId, final MapCreateUpdateRequest mapCreateUpdateRequest,
                           final Member manager) {
         Map map = maps.findById(mapId)
@@ -111,12 +119,5 @@ public class MapService {
         if (map.isNotOwnedBy(manager)) {
             throw new NoAuthorityOnMapException();
         }
-    }
-
-    public MapFindResponse findMapBySharingId(final String sharingMapId) {
-        Long mapId = sharingIdGenerator.parseIdFrom(sharingMapId);
-        Map map = maps.findById(mapId)
-                .orElseThrow(NoSuchMapException::new);
-        return MapFindResponse.of(map, sharingIdGenerator.from(map));
     }
 }

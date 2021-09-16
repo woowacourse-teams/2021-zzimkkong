@@ -25,8 +25,6 @@ import java.util.stream.Collectors;
 
 @Configuration
 @Profile("prod")
-@EnableAutoConfiguration(exclude = {DataSourceAutoConfiguration.class}) // DataSource 자동 설정을 제외시킨다.
-@EnableConfigurationProperties(CustomDataSourceProperties.class)
 public class CustomDataSourceConfig {
 
     private final List<HikariDataSource> hikariDataSources;
