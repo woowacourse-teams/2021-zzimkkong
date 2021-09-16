@@ -8,7 +8,7 @@ import com.woowacourse.zzimkkong.dto.member.MemberSaveResponse;
 import com.woowacourse.zzimkkong.dto.member.MemberUpdateRequest;
 import com.woowacourse.zzimkkong.dto.member.oauth.OauthMemberSaveRequest;
 import com.woowacourse.zzimkkong.dto.member.oauth.OauthReadyResponse;
-import com.woowacourse.zzimkkong.exception.member.DuplicateEmailAsOauthException;
+import com.woowacourse.zzimkkong.exception.member.DuplicateEmailInOAuthFlowException;
 import com.woowacourse.zzimkkong.exception.member.DuplicateEmailException;
 import com.woowacourse.zzimkkong.exception.member.ReservationExistsOnMemberException;
 import com.woowacourse.zzimkkong.infrastructure.oauth.OauthHandler;
@@ -56,7 +56,7 @@ public class MemberService {
 
         members.findByEmail(email)
                 .ifPresent(member -> {
-                    throw DuplicateEmailAsOauthException.from(member.getOauthProvider());
+                    throw DuplicateEmailInOAuthFlowException.from(member.getOauthProvider());
                 });
 
         return OauthReadyResponse.of(email, oauthProvider);
