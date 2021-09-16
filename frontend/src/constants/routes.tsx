@@ -1,14 +1,17 @@
-import { ReactNode } from 'react';
-import GuestMap from 'pages/GuestMap/GuestMap';
-import GuestReservation from 'pages/GuestReservation/GuestReservation';
-import Main from 'pages/Main/Main';
-import ManagerJoin from 'pages/ManagerJoin/ManagerJoin';
-import ManagerLogin from 'pages/ManagerLogin/ManagerLogin';
-import ManagerMain from 'pages/ManagerMain/ManagerMain';
-import ManagerMapEditor from 'pages/ManagerMapEditor/ManagerMapEditor';
-import ManagerReservationEdit from 'pages/ManagerReservationEdit/ManagerReservationEdit';
-import ManagerSpaceEditor from 'pages/ManagerSpaceEditor/ManagerSpaceEditor';
+import React, { ReactNode } from 'react';
 import PATH from './path';
+
+const GuestMap = React.lazy(() => import('pages/GuestMap/GuestMap'));
+const GuestReservation = React.lazy(() => import('pages/GuestReservation/GuestReservation'));
+const Main = React.lazy(() => import('pages/Main/Main'));
+const ManagerJoin = React.lazy(() => import('pages/ManagerJoin/ManagerJoin'));
+const ManagerLogin = React.lazy(() => import('pages/ManagerLogin/ManagerLogin'));
+const ManagerMain = React.lazy(() => import('pages/ManagerMain/ManagerMain'));
+const ManagerMapEditor = React.lazy(() => import('pages/ManagerMapEditor/ManagerMapEditor'));
+const ManagerReservationEdit = React.lazy(
+  () => import('pages/ManagerReservationEdit/ManagerReservationEdit')
+);
+const ManagerSpaceEditor = React.lazy(() => import('pages/ManagerSpaceEditor/ManagerSpaceEditor'));
 
 interface Route {
   path: string;
