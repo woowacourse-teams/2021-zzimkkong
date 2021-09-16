@@ -35,7 +35,7 @@ const App = (): JSX.Element => {
                     {component}
                   </PrivateRoute>
                 ))}
-                <Route path={PATH.NOT_FOUND} component={NotFound} />
+                <Route path={['*', PATH.NOT_FOUND]} component={NotFound} />
               </Switch>
             </Suspense>
           </Router>

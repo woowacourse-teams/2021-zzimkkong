@@ -68,6 +68,9 @@ const MESSAGE = {
     UNEXPECTED_MAP_UPDATE_ERROR:
       '맵을 수정하는 중에 문제가 발생했습니다. 잠시 후에 다시 시도해주세요.',
   },
+  GUEST_MAP: {
+    MAP_DRAWING_PARSE_ERROR: '맵을 불러오는 중에 문제가 발생했습니다. 잠시 후에 다시 시도해주세요.',
+  },
 };
 
 export default MESSAGE;
