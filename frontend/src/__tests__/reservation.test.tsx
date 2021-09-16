@@ -71,7 +71,7 @@ describe('예약 추가', () => {
     const $reservationButton = await waitFor(() => screen.getByRole('link', { name: /예약하기/i }));
     userEvent.click($reservationButton);
 
-    const $pageTitle = screen.getByTestId(/spaceName/i);
+    const $pageTitle = await waitFor(() => screen.getByTestId(/spaceName/i));
 
     expect($pageTitle).toHaveTextContent('testSpace');
 
