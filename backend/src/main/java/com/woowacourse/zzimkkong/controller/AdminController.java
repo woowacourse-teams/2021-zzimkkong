@@ -1,7 +1,9 @@
 package com.woowacourse.zzimkkong.controller;
 
-import com.woowacourse.zzimkkong.dto.MembersResponse;
+import com.woowacourse.zzimkkong.dto.admin.MembersResponse;
 import com.woowacourse.zzimkkong.service.AdminService;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -15,7 +17,7 @@ public class AdminController {
     private static final String ADMIN_ID = "zzimkkong";
     private static final String ADMIN_PWD = "zzimkkong1!";
 
-    private AdminService adminService;
+    private final AdminService adminService;
 
     public AdminController(AdminService adminService) {
         this.adminService = adminService;
@@ -40,8 +42,7 @@ public class AdminController {
     }
 
     @GetMapping("/api/members")
-    public ResponseEntity<MembersResponse> member() {
-        MembersResponse members = adminService.findMembers();
-        return ResponseEntity.ok(members);
+    public ResponseEntity<MembersResponse> member(@PageableDefault(value = 20) Pageable pageable){
+        return ResponseEntity.ok(adminService.findMembers(pageable));
     }
 }
