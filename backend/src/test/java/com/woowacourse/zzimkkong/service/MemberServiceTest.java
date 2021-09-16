@@ -8,7 +8,6 @@ import com.woowacourse.zzimkkong.dto.member.MemberSaveResponse;
 import com.woowacourse.zzimkkong.dto.member.MemberUpdateRequest;
 import com.woowacourse.zzimkkong.dto.member.oauth.OauthMemberSaveRequest;
 import com.woowacourse.zzimkkong.dto.member.oauth.OauthReadyResponse;
-import com.woowacourse.zzimkkong.exception.member.DuplicateEmailInOAuthFlowException;
 import com.woowacourse.zzimkkong.exception.member.DuplicateEmailException;
 import com.woowacourse.zzimkkong.exception.member.ReservationExistsOnMemberException;
 import com.woowacourse.zzimkkong.infrastructure.oauth.OauthHandler;
@@ -111,12 +110,12 @@ class MemberServiceTest extends ServiceTest {
                 .willReturn(mockOauthUserInfo);
         given(mockOauthUserInfo.getEmail())
                 .willReturn(EMAIL);
-        given(members.findByEmail(EMAIL))
-                .willReturn(Optional.of(new Member(EMAIL, ORGANIZATION, oauthProvider)));
+        given(members.existsByEmail(EMAIL))
+                .willReturn(true);
 
         //when, then
         assertThatThrownBy(() -> memberService.getUserInfoFromOauth(oauthProvider, "code-example"))
-                .isInstanceOf(DuplicateEmailInOAuthFlowException.class);
+                .isInstanceOf(DuplicateEmailException.class);
     }
 
     @ParameterizedTest

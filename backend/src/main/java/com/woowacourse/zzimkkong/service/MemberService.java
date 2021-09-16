@@ -8,7 +8,6 @@ import com.woowacourse.zzimkkong.dto.member.MemberSaveResponse;
 import com.woowacourse.zzimkkong.dto.member.MemberUpdateRequest;
 import com.woowacourse.zzimkkong.dto.member.oauth.OauthMemberSaveRequest;
 import com.woowacourse.zzimkkong.dto.member.oauth.OauthReadyResponse;
-import com.woowacourse.zzimkkong.exception.member.DuplicateEmailInOAuthFlowException;
 import com.woowacourse.zzimkkong.exception.member.DuplicateEmailException;
 import com.woowacourse.zzimkkong.exception.member.ReservationExistsOnMemberException;
 import com.woowacourse.zzimkkong.infrastructure.oauth.OauthHandler;
@@ -54,6 +53,8 @@ public class MemberService {
         OauthUserInfo userInfo = oauthHandler.getUserInfoFromCode(oauthProvider, code);
         String email = userInfo.getEmail();
 
+        validateDuplicateEmail(email);
+
         return OauthReadyResponse.of(email, oauthProvider);
     }
 
@@ -61,13 +62,7 @@ public class MemberService {
         String email = oauthMemberSaveRequest.getEmail();
         OauthProvider oauthProvider = OauthProvider.valueOfWithIgnoreCase(oauthMemberSaveRequest.getOauthProvider());
 
-        members.findByEmail(email)
-                .ifPresent(member -> {
-                    if (member.getOauthProvider().equals(oauthProvider)) {
-                        throw new DuplicateEmailException();
-                    }
-                    throw DuplicateEmailInOAuthFlowException.from(member.getOauthProvider());
-                });
+        validateDuplicateEmail(email);
 
         Member member = new Member(
                 email,
