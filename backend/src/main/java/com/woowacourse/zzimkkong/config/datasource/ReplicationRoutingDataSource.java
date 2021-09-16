@@ -6,27 +6,25 @@ import org.springframework.transaction.support.TransactionSynchronizationManager
 import java.util.Map;
 import java.util.stream.Collectors;
 
-public class ReplicationRoutingDataSource extends AbstractRoutingDataSource {
+import static com.woowacourse.zzimkkong.config.datasource.CustomDataSourceConfig.MASTER;
+import static com.woowacourse.zzimkkong.config.datasource.CustomDataSourceConfig.SLAVE;
 
+public class ReplicationRoutingDataSource extends AbstractRoutingDataSource {
     private CircularList<String> dataSourceNameList;
 
     @Override
     public void setTargetDataSources(Map<Object, Object> targetDataSources) {
         super.setTargetDataSources(targetDataSources);
 
-        // slave db 정보를 CircularList로 관리
         dataSourceNameList = new CircularList<>(
                 targetDataSources.keySet()
                         .stream()
                         .map(Object::toString)
-                        .filter(string -> string.contains("slave"))
+                        .filter(string -> string.contains(SLAVE))
                         .collect(Collectors.toList())
         );
     }
 
-    /**
-     * 현재 요청에서 사용할 DataSource 결정할 key값 반환
-     */
     @Override
     protected Object determineCurrentLookupKey() {
         boolean isReadOnly = TransactionSynchronizationManager.isCurrentTransactionReadOnly();
@@ -35,7 +33,7 @@ public class ReplicationRoutingDataSource extends AbstractRoutingDataSource {
             return dataSourceNameList.getOne();
         } else {
             logger.info("Connection Master");
-            return "master";
+            return MASTER;
         }
     }
 }

@@ -26,7 +26,9 @@ import java.util.stream.Collectors;
 @Configuration
 @Profile("prod")
 public class CustomDataSourceConfig {
-
+    public static final String MASTER = "master";
+    public static final String SLAVE = "slave";
+    private static final String PACKAGE_PATH = "com.woowacourse.zzimkkong";
     private final List<HikariDataSource> hikariDataSources;
     private final JpaProperties jpaProperties;
 
@@ -35,23 +37,16 @@ public class CustomDataSourceConfig {
         this.jpaProperties = jpaProperties;
     }
 
-    /**
-     * 실제 쿼리가 실행될 때 Connection을 가져오기
-     */
     @Bean
     public DataSource dataSource() {
         return new LazyConnectionDataSourceProxy(routingDataSource());
     }
 
-    /**
-     * CustomDataSourceProperties를 통해 master, slave Datasource 생성 후
-     * ReplicationRoutingDataSource에 등록
-     */
     @Bean
     public DataSource routingDataSource() {
         final DataSource master = createMasterDataSource();
         final Map<Object, Object> slaves = createSlaveDataSources();
-        slaves.put("master", master);
+        slaves.put(MASTER, master);
 
         ReplicationRoutingDataSource replicationRoutingDataSource = new ReplicationRoutingDataSource();
         replicationRoutingDataSource.setDefaultTargetDataSource(master);
@@ -61,14 +56,14 @@ public class CustomDataSourceConfig {
 
     private DataSource createMasterDataSource() {
         return hikariDataSources.stream()
-                .filter(dataSource -> dataSource.getPoolName().startsWith("master"))
+                .filter(dataSource -> dataSource.getPoolName().startsWith(MASTER))
                 .findFirst()
                 .orElseThrow(NoMasterDataSourceException::new);
     }
 
     private Map<Object, Object> createSlaveDataSources() {
         final List<HikariDataSource> slaveDataSources = hikariDataSources.stream()
-                .filter(datasource -> Objects.nonNull(datasource.getPoolName()) && datasource.getPoolName().startsWith("slave"))
+                .filter(datasource -> Objects.nonNull(datasource.getPoolName()) && datasource.getPoolName().startsWith(SLAVE))
                 .collect(Collectors.toList());
 
         final Map<Object, Object> result = new HashMap<>();
@@ -78,14 +73,10 @@ public class CustomDataSourceConfig {
         return result;
     }
 
-    /**
-     * JPA에서 사용할 EntityManagerFactory 설정
-     * hibernate 설정 직접 주입
-     */
     @Bean
     public LocalContainerEntityManagerFactoryBean entityManagerFactory() {
         EntityManagerFactoryBuilder entityManagerFactoryBuilder = createEntityManagerFactoryBuilder(jpaProperties);
-        return entityManagerFactoryBuilder.dataSource(dataSource()).packages("com.woowacourse.zzimkkong").build();
+        return entityManagerFactoryBuilder.dataSource(dataSource()).packages(PACKAGE_PATH).build();
     }
 
     private EntityManagerFactoryBuilder createEntityManagerFactoryBuilder(JpaProperties jpaProperties) {
@@ -93,9 +84,6 @@ public class CustomDataSourceConfig {
         return new EntityManagerFactoryBuilder(vendorAdapter, jpaProperties.getProperties(), null);
     }
 
-    /**
-     * JPA에서 사용할 TransactionManager 설정
-     */
     @Bean
     public PlatformTransactionManager transactionManager(EntityManagerFactory entityManagerFactory) {
         JpaTransactionManager tm = new JpaTransactionManager();
