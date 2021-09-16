@@ -27,7 +27,7 @@ public class ControllerAdvice {
     private final Logger logger = LoggerFactory.getLogger(ControllerAdvice.class);
 
     @ExceptionHandler(NoSuchOAuthMemberException.class)
-    public ResponseEntity<OAuthLoginFailErrorResponse> handleOAuthLoginFailHandler(final NoSuchOAuthMemberException exception) {
+    public ResponseEntity<OAuthLoginFailErrorResponse> oAuthLoginFailHandler(final NoSuchOAuthMemberException exception) {
         logger.info(exception.getMessage());
         return ResponseEntity
                 .status(exception.getStatus())
