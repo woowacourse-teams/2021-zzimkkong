@@ -51,9 +51,12 @@ const GuestReservation = (): JSX.Element => {
 
   const addReservation = useMutation(postGuestReservation, {
     onSuccess: () => {
-      history.push(HREF.GUEST_MAP(sharingMapId), {
-        spaceId: space.id,
-        targetDate: new Date(date),
+      history.push({
+        pathname: HREF.GUEST_MAP(sharingMapId),
+        state: {
+          spaceId: space.id,
+          targetDate: new Date(date),
+        },
       });
     },
     onError: (error: AxiosError<ErrorResponse>) => {
@@ -63,9 +66,12 @@ const GuestReservation = (): JSX.Element => {
 
   const updateReservation = useMutation(putGuestReservation, {
     onSuccess: () => {
-      history.push(HREF.GUEST_MAP(sharingMapId), {
-        spaceId: space.id,
-        targetDate: new Date(date),
+      history.push({
+        pathname: HREF.GUEST_MAP(sharingMapId),
+        state: {
+          spaceId: space.id,
+          targetDate: new Date(date),
+        },
       });
     },
 

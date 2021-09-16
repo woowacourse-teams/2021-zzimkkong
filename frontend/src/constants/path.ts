@@ -10,7 +10,7 @@ const PATH = {
   GUEST_MAP: '/guest/:sharingMapId',
   GUEST_RESERVATION: '/guest/:sharingMapId/reservation',
   GUEST_RESERVATION_EDIT: '/guest/:sharingMapId/reservation/edit',
-  NOT_FOUND: ['*', '/not-found'],
+  NOT_FOUND: '/not-found',
 };
 
 export const HREF = {
@@ -19,6 +19,8 @@ export const HREF = {
     PATH.MANAGER_SPACE_EDIT.replace(':mapId', `${mapId}`),
   GUEST_MAP: (sharingMapId: string): string =>
     PATH.GUEST_MAP.replace(':sharingMapId', `${sharingMapId}`),
+  GUEST_RESERVATION: (sharingMapId: string): string =>
+    PATH.GUEST_RESERVATION.replace(':sharingMapId', `${sharingMapId}`),
 };
 
 export default PATH;
