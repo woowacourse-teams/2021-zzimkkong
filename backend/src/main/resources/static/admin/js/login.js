@@ -1,25 +1,25 @@
-let indexPage;
+let loginPage;
 
 document.addEventListener("DOMContentLoaded", function () {
-    indexPage = new IndexPage();
-    indexPage.initIndexPage();
+    loginPage = new LoginPage();
 });
 
-function IndexPage() {
-    this.postLogin = window.location.origin + "/api/login";
+function LoginPage() {
+    this.postLogin = window.location.origin + "/admin/api/login";
 }
 
-document.querySelector(".btn").addEventListener("click", function () {
+document.querySelector("#login").addEventListener("click", function () {
     let id = document.querySelector("#inputId").value;
     let password = document.querySelector("#inputPassword").value;
-    fetch(indexPage.postLogin + '?id=' + id + '&password=' + password, {
+
+    fetch(loginPage.postLogin + '?id=' + id + '&password=' + password, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
         }
     }).then(function (response) {
-        if (response.ok) {
-            return response.json().then(data => location.href = data);
+        if (response.status === 200) {
+            location.href = '/admin/members';
         } else {
             alert('관리자만 사용할 수 있습니다.');
         }
