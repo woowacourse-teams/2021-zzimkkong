@@ -145,6 +145,6 @@ sonarqube {
         property 'sonar.coverage.jacoco.xmlReportPaths', 'build/reports/jacoco/test/jacocoTestReport.xml'
         property 'sonar.java.binaries', 'build/classes'
         property 'sonar.test.inclusions', '**/*Test.java'
-        property 'sonar.exclusions', '**/*Doc*.java, **/resources/**'
+        property 'sonar.exclusions', '**/*Doc*.java, **/resources/**, **/config/datasource/**'
     }
 }
