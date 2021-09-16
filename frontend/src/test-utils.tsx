@@ -1,5 +1,5 @@
 import { render, RenderOptions, RenderResult } from '@testing-library/react';
-import React from 'react';
+import React, { Suspense } from 'react';
 import { QueryClient, QueryClientProvider } from 'react-query';
 import { BrowserRouter as Router } from 'react-router-dom';
 import { RecoilRoot } from 'recoil';
@@ -12,8 +12,10 @@ const AllTheProviders: React.FC = ({ children }): JSX.Element => (
   <QueryClientProvider client={queryClient}>
     <RecoilRoot>
       <ThemeProvider theme={theme}>
-        <GlobalStyle />
-        <Router>{children}</Router>
+        <Suspense fallback={<div></div>}>
+          <GlobalStyle />
+          <Router>{children}</Router>
+        </Suspense>
       </ThemeProvider>
     </RecoilRoot>
   </QueryClientProvider>
