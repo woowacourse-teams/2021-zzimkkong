@@ -5,7 +5,7 @@ import { QueryManagerSpacesSuccess } from 'types/response';
 import api from './api';
 
 export interface QueryManagerSpacesParams {
-  mapId: number | null;
+  mapId: number;
 }
 
 export const queryManagerSpaces: QueryFunction<

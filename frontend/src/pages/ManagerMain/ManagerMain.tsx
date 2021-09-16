@@ -74,7 +74,7 @@ const ManagerMain = (): JSX.Element => {
 
   const getSpaces = useManagerSpaces(
     {
-      mapId: selectedMapId,
+      mapId: selectedMapId as number,
     },
     {
       enabled: !isNullish(selectedMapId),
