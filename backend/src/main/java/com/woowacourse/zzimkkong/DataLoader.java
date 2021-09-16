@@ -13,8 +13,8 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.List;
 
-@Component
-@Profile({"local"})
+//@Component
+//@Profile({"local"})
 public class DataLoader implements CommandLineRunner {
     private final MemberRepository members;
     private final MapRepository maps;
