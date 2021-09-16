@@ -67,6 +67,7 @@
     "babel-eslint": "^10.0.0",
     "babel-loader": "^8.2.2",
     "cross-env": "^7.0.3",
+    "dotenv-webpack": "^7.0.3",
     "eslint": "^7.5.0",
     "eslint-config-prettier": "^8.3.0",
     "eslint-config-react-app": "^6.0.0",
