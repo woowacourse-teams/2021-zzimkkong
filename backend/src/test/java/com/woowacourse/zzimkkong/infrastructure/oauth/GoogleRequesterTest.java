@@ -83,12 +83,12 @@ class GoogleRequesterTest {
         assertThat(googleRequester.supports(OauthProvider.GITHUB)).isFalse();
     }
 
-    private void setUpResponse(MockWebServer mockGithubServer) {
-        mockGithubServer.enqueue(new MockResponse()
+    private void setUpResponse(MockWebServer mockGoogleServer) {
+        mockGoogleServer.enqueue(new MockResponse()
                 .setBody(GOOGLE_TOKEN_RESPONSE)
                 .addHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE));
 
-        mockGithubServer.enqueue(new MockResponse()
+        mockGoogleServer.enqueue(new MockResponse()
                 .setBody(USER_INFO_RESPONSE_EXAMPLE)
                 .addHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE));
     }
@@ -97,7 +97,7 @@ class GoogleRequesterTest {
     private String redirectUri;
 
     @Test
-    @DisplayName("오류가 발생하면 ErrorResponseToGetGithubAccessTokenException을 응답한다.")
+    @DisplayName("오류가 발생하면 ErrorResponseToGetAccessTokenException을 응답한다.")
     void getTokenException() {
         String getTokenErrorResponse = "{\n" +
                 "    \"error\": \"redirect_uri_mismatch\",\n" +
@@ -126,8 +126,8 @@ class GoogleRequesterTest {
         }
     }
 
-    private void setUpGetTokenResponse(MockWebServer mockGithubServer, String responseExample) {
-        mockGithubServer.enqueue(new MockResponse()
+    private void setUpGetTokenResponse(MockWebServer mockGoogleServer, String responseExample) {
+        mockGoogleServer.enqueue(new MockResponse()
                 .setBody(responseExample)
                 .addHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE));
     }
