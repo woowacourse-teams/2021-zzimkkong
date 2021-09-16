@@ -7,7 +7,10 @@ import ManagerLogin from 'pages/ManagerLogin/ManagerLogin';
 import ManagerMain from 'pages/ManagerMain/ManagerMain';
 import ManagerMapEditor from 'pages/ManagerMapEditor/ManagerMapEditor';
 import ManagerReservationEdit from 'pages/ManagerReservationEdit/ManagerReservationEdit';
+import ManagerSocialJoin from 'pages/ManagerSocialJoin/ManagerSocialJoin';
 import ManagerSpaceEditor from 'pages/ManagerSpaceEditor/ManagerSpaceEditor';
+import GithubOAuthRedirect from 'pages/OAuthRedirect/GithubOAuthRedirect';
+import GoogleOAuthRedirect from 'pages/OAuthRedirect/GoogleOAuthRedirect';
 import PATH from './path';
 
 interface Route {
@@ -31,6 +34,18 @@ export const PUBLIC_ROUTES: Route[] = [
   {
     path: PATH.MANAGER_JOIN,
     component: <ManagerJoin />,
+  },
+  {
+    path: PATH.MANAGER_SOCIAL_JOIN,
+    component: <ManagerSocialJoin />,
+  },
+  {
+    path: PATH.MANAGER_GITHUB_OAUTH_REDIRECT,
+    component: <GithubOAuthRedirect />,
+  },
+  {
+    path: PATH.MANAGER_GOOGLE_OAUTH_REDIRECT,
+    component: <GoogleOAuthRedirect />,
   },
   {
     path: PATH.GUEST_MAP,
