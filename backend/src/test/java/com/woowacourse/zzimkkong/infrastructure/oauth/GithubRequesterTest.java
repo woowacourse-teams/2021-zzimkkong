@@ -2,7 +2,7 @@ package com.woowacourse.zzimkkong.infrastructure.oauth;
 
 import com.woowacourse.zzimkkong.Constants;
 import com.woowacourse.zzimkkong.domain.oauth.OauthUserInfo;
-import com.woowacourse.zzimkkong.exception.infrastructure.oauth.ErrorResponseToGetGithubAccessTokenException;
+import com.woowacourse.zzimkkong.exception.infrastructure.oauth.ErrorResponseToGetAccessTokenException;
 import okhttp3.mockwebserver.MockResponse;
 import okhttp3.mockwebserver.MockWebServer;
 import org.junit.jupiter.api.DisplayName;
@@ -113,7 +113,7 @@ class GithubRequesterTest {
 
             // when, then
             assertThatThrownBy(() -> githubRequester.getUserInfoByCode("code"))
-                    .isInstanceOf(ErrorResponseToGetGithubAccessTokenException.class);
+                    .isInstanceOf(ErrorResponseToGetAccessTokenException.class);
         } catch (IOException ignored) {
         }
     }
