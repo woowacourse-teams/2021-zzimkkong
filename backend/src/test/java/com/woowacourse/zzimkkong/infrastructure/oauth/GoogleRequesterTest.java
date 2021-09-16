@@ -7,6 +7,7 @@ import okhttp3.mockwebserver.MockResponse;
 import okhttp3.mockwebserver.MockWebServer;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.ActiveProfiles;
@@ -92,10 +93,16 @@ class GoogleRequesterTest {
                 .addHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE));
     }
 
+    @Value("${google.uri.redirect}")
+    private String redirectUri;
+
     @Test
     @DisplayName("오류가 발생하면 ErrorResponseToGetGithubAccessTokenException을 응답한다.")
     void getTokenException() {
-        String getTokenErrorResponse = null;    // 실제 구글 무효 응답 확인
+        String getTokenErrorResponse = "{\n" +
+                "    \"error\": \"redirect_uri_mismatch\",\n" +
+                "    \"error_description\": \"Bad Request\"\n" +
+                "}";
 
         try (MockWebServer mockGithubServer = new MockWebServer()) {
             // given
@@ -104,15 +111,16 @@ class GoogleRequesterTest {
             setUpGetTokenResponse(mockGithubServer, getTokenErrorResponse);
             setUpGetTokenResponse(mockGithubServer, USER_INFO_RESPONSE_EXAMPLE);
 
-            GithubRequester githubRequester = new GithubRequester(
+            GoogleRequester googleRequester = new GoogleRequester(
                     "clientId",
                     "secretId",
+                    this.redirectUri,
                     String.format("http://%s:%s", mockGithubServer.getHostName(), mockGithubServer.getPort()),
                     String.format("http://%s:%s", mockGithubServer.getHostName(), mockGithubServer.getPort())
             );
 
             // when, then
-            assertThatThrownBy(() -> githubRequester.getUserInfoByCode("code"))
+            assertThatThrownBy(() -> googleRequester.getUserInfoByCode("code"))
                     .isInstanceOf(ErrorResponseToGetGithubAccessTokenException.class);
         } catch (IOException ignored) {
         }

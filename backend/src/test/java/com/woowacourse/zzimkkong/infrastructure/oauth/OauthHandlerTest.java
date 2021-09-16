@@ -14,7 +14,6 @@ import org.springframework.test.context.ActiveProfiles;
 
 import java.util.Map;
 
-import static com.woowacourse.zzimkkong.infrastructure.oauth.GoogleRequesterTest.SALLY_EMAIL;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.BDDMockito.given;
@@ -22,6 +21,8 @@ import static org.mockito.BDDMockito.given;
 @SpringBootTest
 @ActiveProfiles("test")
 class OauthHandlerTest {
+    public static final String SALLY_EMAIL = "dusdn1702@gmail.com";
+
     @Autowired
     private OauthHandler oauthHandler;
 
