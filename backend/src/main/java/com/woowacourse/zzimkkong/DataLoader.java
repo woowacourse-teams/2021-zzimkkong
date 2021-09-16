@@ -13,8 +13,8 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.List;
 
-//@Component
-//@Profile({"local"})
+@Component
+@Profile({"local"})
 public class DataLoader implements CommandLineRunner {
     private final MemberRepository members;
     private final MapRepository maps;
@@ -177,6 +177,7 @@ public class DataLoader implements CommandLineRunner {
         Reservation reservationBackEndTargetDate0To1 = Reservation.builder()
                 .startTime(targetDate.atStartOfDay())
                 .endTime(targetDate.atTime(1, 0, 0))
+                .date(targetDate)
                 .description("찜꽁 1차 회의")
                 .userName("찜꽁")
                 .password("1234")
@@ -186,6 +187,7 @@ public class DataLoader implements CommandLineRunner {
         Reservation reservationBackEndTargetDate13To14 = Reservation.builder()
                 .startTime(targetDate.atTime(13, 0, 0))
                 .endTime(targetDate.atTime(14, 0, 0))
+                .date(targetDate)
                 .description("찜꽁 2차 회의")
                 .userName("찜꽁")
                 .password("1234")
@@ -195,6 +197,7 @@ public class DataLoader implements CommandLineRunner {
         Reservation reservationBackEndTargetDate18To23 = Reservation.builder()
                 .startTime(targetDate.atTime(18, 0, 0))
                 .endTime(targetDate.atTime(23, 59, 59))
+                .date(targetDate)
                 .description("찜꽁 3차 회의")
                 .userName("찜꽁")
                 .password("6789")
@@ -204,6 +207,7 @@ public class DataLoader implements CommandLineRunner {
         Reservation reservationBackEndTheDayAfterTargetDate = Reservation.builder()
                 .startTime(targetDate.plusDays(1L).atStartOfDay())
                 .endTime(targetDate.plusDays(1L).atTime(1, 0, 0))
+                .date(targetDate)
                 .description("찜꽁 4차 회의")
                 .userName("찜꽁")
                 .password("1234")
@@ -213,6 +217,7 @@ public class DataLoader implements CommandLineRunner {
         Reservation reservationFrontEnd1TargetDate0to1 = Reservation.builder()
                 .startTime(targetDate.atStartOfDay())
                 .endTime(targetDate.atTime(1, 0, 0))
+                .date(targetDate)
                 .description("찜꽁 5차 회의")
                 .userName("찜꽁")
                 .password("1234")
