@@ -11,7 +11,7 @@ public class NoSuchOAuthMemberException extends ZzimkkongException {
     private final String email;
 
     public NoSuchOAuthMemberException(String email) {
-        super(MESSAGE, HttpStatus.BAD_REQUEST);
+        super(MESSAGE, HttpStatus.NOT_FOUND);
         this.email = email;
     }
 }

@@ -2,6 +2,7 @@ package com.woowacourse.zzimkkong.infrastructure.oauth;
 
 import com.woowacourse.zzimkkong.domain.OauthProvider;
 import com.woowacourse.zzimkkong.domain.oauth.OauthUserInfo;
+import com.woowacourse.zzimkkong.exception.infrastructure.oauth.ErrorResponseToGetGithubAccessTokenException;
 import okhttp3.mockwebserver.MockResponse;
 import okhttp3.mockwebserver.MockWebServer;
 import org.junit.jupiter.api.DisplayName;
@@ -13,6 +14,7 @@ import org.springframework.test.context.ActiveProfiles;
 import java.io.IOException;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 @ActiveProfiles("test")
 class GoogleRequesterTest {
@@ -87,6 +89,38 @@ class GoogleRequesterTest {
 
         mockGithubServer.enqueue(new MockResponse()
                 .setBody(USER_INFO_RESPONSE_EXAMPLE)
+                .addHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE));
+    }
+
+    @Test
+    @DisplayName("오류가 발생하면 ErrorResponseToGetGithubAccessTokenException을 응답한다.")
+    void getTokenException() {
+        String getTokenErrorResponse = null;    // 실제 구글 무효 응답 확인
+
+        try (MockWebServer mockGithubServer = new MockWebServer()) {
+            // given
+            mockGithubServer.start();
+
+            setUpGetTokenResponse(mockGithubServer, getTokenErrorResponse);
+            setUpGetTokenResponse(mockGithubServer, USER_INFO_RESPONSE_EXAMPLE);
+
+            GithubRequester githubRequester = new GithubRequester(
+                    "clientId",
+                    "secretId",
+                    String.format("http://%s:%s", mockGithubServer.getHostName(), mockGithubServer.getPort()),
+                    String.format("http://%s:%s", mockGithubServer.getHostName(), mockGithubServer.getPort())
+            );
+
+            // when, then
+            assertThatThrownBy(() -> githubRequester.getUserInfoByCode("code"))
+                    .isInstanceOf(ErrorResponseToGetGithubAccessTokenException.class);
+        } catch (IOException ignored) {
+        }
+    }
+
+    private void setUpGetTokenResponse(MockWebServer mockGithubServer, String responseExample) {
+        mockGithubServer.enqueue(new MockResponse()
+                .setBody(responseExample)
                 .addHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE));
     }
 }

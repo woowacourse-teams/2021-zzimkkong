@@ -8,6 +8,7 @@ import com.woowacourse.zzimkkong.dto.member.MemberSaveResponse;
 import com.woowacourse.zzimkkong.dto.member.MemberUpdateRequest;
 import com.woowacourse.zzimkkong.dto.member.oauth.OauthMemberSaveRequest;
 import com.woowacourse.zzimkkong.dto.member.oauth.OauthReadyResponse;
+import com.woowacourse.zzimkkong.exception.member.DuplicateEmailAsOauthException;
 import com.woowacourse.zzimkkong.exception.member.DuplicateEmailException;
 import com.woowacourse.zzimkkong.exception.member.ReservationExistsOnMemberException;
 import com.woowacourse.zzimkkong.infrastructure.oauth.OauthHandler;
@@ -24,7 +25,8 @@ import java.util.Optional;
 import static com.woowacourse.zzimkkong.Constants.*;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.mockito.ArgumentMatchers.*;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;
 
@@ -87,8 +89,8 @@ class MemberServiceTest extends ServiceTest {
                 .willReturn(mockOauthUserInfo);
         given(mockOauthUserInfo.getEmail())
                 .willReturn(EMAIL);
-        given(members.existsByEmail(EMAIL))
-                .willReturn(false);
+        given(members.findByEmail(EMAIL))
+                .willReturn(Optional.empty());
 
         //when
         OauthReadyResponse actual = memberService.getUserInfoFromOauth(oauthProvider, "code-example");
@@ -109,12 +111,12 @@ class MemberServiceTest extends ServiceTest {
                 .willReturn(mockOauthUserInfo);
         given(mockOauthUserInfo.getEmail())
                 .willReturn(EMAIL);
-        given(members.existsByEmail(EMAIL))
-                .willReturn(true);
+        given(members.findByEmail(EMAIL))
+                .willReturn(Optional.of(new Member(EMAIL, ORGANIZATION, oauthProvider)));
 
         //when, then
         assertThatThrownBy(() -> memberService.getUserInfoFromOauth(oauthProvider, "code-example"))
-                .isInstanceOf(DuplicateEmailException.class);
+                .isInstanceOf(DuplicateEmailAsOauthException.class);
     }
 
     @ParameterizedTest

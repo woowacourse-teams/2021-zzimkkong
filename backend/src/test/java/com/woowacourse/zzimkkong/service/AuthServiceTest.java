@@ -7,6 +7,7 @@ import com.woowacourse.zzimkkong.dto.member.LoginRequest;
 import com.woowacourse.zzimkkong.dto.member.TokenResponse;
 import com.woowacourse.zzimkkong.exception.authorization.OauthProviderMismatchException;
 import com.woowacourse.zzimkkong.exception.member.NoSuchMemberException;
+import com.woowacourse.zzimkkong.exception.member.NoSuchOAuthMemberException;
 import com.woowacourse.zzimkkong.exception.member.PasswordMismatchException;
 import com.woowacourse.zzimkkong.infrastructure.JwtUtils;
 import com.woowacourse.zzimkkong.infrastructure.oauth.OauthHandler;
@@ -133,7 +134,7 @@ class AuthServiceTest extends ServiceTest {
 
         // when, then
         assertThatThrownBy(() -> authService.loginByOauth(oauthProvider, mockCode))
-                .isInstanceOf(NoSuchMemberException.class);
+                .isInstanceOf(NoSuchOAuthMemberException.class);
     }
 
     @ParameterizedTest

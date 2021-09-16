@@ -3,7 +3,7 @@ package com.woowacourse.zzimkkong.controller;
 import com.fasterxml.jackson.databind.exc.InvalidFormatException;
 import com.woowacourse.zzimkkong.dto.ErrorResponse;
 import com.woowacourse.zzimkkong.dto.InputFieldErrorResponse;
-import com.woowacourse.zzimkkong.dto.OAuthLoginFailResponse;
+import com.woowacourse.zzimkkong.dto.OAuthLoginFailErrorResponse;
 import com.woowacourse.zzimkkong.exception.InputFieldException;
 import com.woowacourse.zzimkkong.exception.ZzimkkongException;
 import com.woowacourse.zzimkkong.exception.infrastructure.InfrastructureMalfunctionException;
@@ -27,11 +27,11 @@ public class ControllerAdvice {
     private final Logger logger = LoggerFactory.getLogger(ControllerAdvice.class);
 
     @ExceptionHandler(NoSuchOAuthMemberException.class)
-    public ResponseEntity<OAuthLoginFailResponse> handleOAuthRegisterFailHandler(final NoSuchOAuthMemberException exception) {
+    public ResponseEntity<OAuthLoginFailErrorResponse> handleOAuthRegisterFailHandler(final NoSuchOAuthMemberException exception) {
         logger.info(exception.getMessage());
         return ResponseEntity
                 .status(exception.getStatus())
-                .body(OAuthLoginFailResponse.from(exception));
+                .body(OAuthLoginFailErrorResponse.from(exception));
     }
 
     @ExceptionHandler(InputFieldException.class)
