@@ -54,19 +54,19 @@ public class MemberService {
         OauthUserInfo userInfo = oauthHandler.getUserInfoFromCode(oauthProvider, code);
         String email = userInfo.getEmail();
 
+        return OauthReadyResponse.of(email, oauthProvider);
+    }
+
+    public MemberSaveResponse saveMemberByOauth(final OauthMemberSaveRequest oauthMemberSaveRequest) {
+        String email = oauthMemberSaveRequest.getEmail();
+
         members.findByEmail(email)
                 .ifPresent(member -> {
                     throw DuplicateEmailInOAuthFlowException.from(member.getOauthProvider());
                 });
 
-        return OauthReadyResponse.of(email, oauthProvider);
-    }
-
-    public MemberSaveResponse saveMemberByOauth(final OauthMemberSaveRequest oauthMemberSaveRequest) {
-        validateDuplicateEmail(oauthMemberSaveRequest.getEmail());
-
         Member member = new Member(
-                oauthMemberSaveRequest.getEmail(),
+                email,
                 oauthMemberSaveRequest.getOrganization(),
                 OauthProvider.valueOfWithIgnoreCase(oauthMemberSaveRequest.getOauthProvider())
         );
