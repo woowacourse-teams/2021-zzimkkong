@@ -8,6 +8,7 @@ import com.woowacourse.zzimkkong.dto.member.MemberSaveResponse;
 import com.woowacourse.zzimkkong.dto.member.MemberUpdateRequest;
 import com.woowacourse.zzimkkong.dto.member.oauth.OauthMemberSaveRequest;
 import com.woowacourse.zzimkkong.dto.member.oauth.OauthReadyResponse;
+import com.woowacourse.zzimkkong.exception.authorization.OauthProviderMismatchException;
 import com.woowacourse.zzimkkong.exception.member.DuplicateEmailException;
 import com.woowacourse.zzimkkong.exception.member.ReservationExistsOnMemberException;
 import com.woowacourse.zzimkkong.infrastructure.oauth.OauthHandler;
@@ -53,7 +54,8 @@ public class MemberService {
         OauthUserInfo userInfo = oauthHandler.getUserInfoFromCode(oauthProvider, code);
         String email = userInfo.getEmail();
 
-        validateDuplicateEmail(email);
+        members.findByEmail(email)
+                .ifPresent(member -> validateOauthProvider(member.getOauthProvider(), member));
 
         return OauthReadyResponse.of(email, oauthProvider);
     }
@@ -91,5 +93,12 @@ public class MemberService {
         }
 
         members.delete(manager);
+    }
+
+    private void validateOauthProvider(final OauthProvider oauthProvider, final Member member) {
+        OauthProvider memberOauthProvider = member.getOauthProvider();
+        if (!oauthProvider.equals(memberOauthProvider)) {
+            throw new OauthProviderMismatchException(memberOauthProvider.name());
+        }
     }
 }
