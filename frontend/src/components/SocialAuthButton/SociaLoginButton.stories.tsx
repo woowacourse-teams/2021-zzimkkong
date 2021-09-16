@@ -7,7 +7,7 @@ export default {
   component: SocialLoginButton,
   argTypes: {
     provider: {
-      options: ['github', 'google'],
+      options: ['GITHUB', 'GOOGLE'],
       control: { type: 'radio' },
     },
   },
@@ -15,12 +15,22 @@ export default {
 
 const Template: Story<PropsWithChildren<Props>> = (args) => <SocialLoginButton {...args} />;
 
-export const Github = Template.bind({});
-Github.args = {
-  provider: 'github',
+export const GithubLogin = Template.bind({});
+GithubLogin.args = {
+  provider: 'GITHUB',
 };
 
-export const Google = Template.bind({});
-Google.args = {
-  provider: 'google',
+export const GoogleLogin = Template.bind({});
+GoogleLogin.args = {
+  provider: 'GOOGLE',
+};
+
+export const GithubJoin = Template.bind({});
+GithubJoin.args = {
+  provider: 'GITHUB',
+};
+
+export const GoogleJoin = Template.bind({});
+GoogleJoin.args = {
+  provider: 'GOOGLE',
 };
