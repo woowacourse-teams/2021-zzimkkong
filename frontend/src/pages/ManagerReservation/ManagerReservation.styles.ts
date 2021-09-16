@@ -1,8 +1,13 @@
 import styled from 'styled-components';
 import ColorDotComponent from 'components/ColorDot/ColorDot';
 
-export const Section = styled.section`
-  margin: 1.5rem 0 4.5rem;
+interface Props {
+  isEditMode: boolean;
+}
+
+export const Section = styled.section<Props>`
+  margin-top: ${({ isEditMode }) => (isEditMode ? '3rem' : '1.5rem')};
+  margin-bottom: 4.5rem;
 `;
 
 export const Message = styled.p`

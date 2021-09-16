@@ -131,7 +131,7 @@ const ManagerReservation = (): JSX.Element => {
           onChangeDate={onChangeDate}
           onSubmit={handleSubmit}
         />
-        <Styled.Section>
+        <Styled.Section isEditMode={isEditMode}>
           <PageHeader title={`${date}${date && '의'} 예약 목록`} />
           {getReservations.isLoadingError && (
             <Styled.Message>{MESSAGE.RESERVATION.ERROR}</Styled.Message>
