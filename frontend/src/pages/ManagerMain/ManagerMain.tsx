@@ -63,7 +63,7 @@ const ManagerMain = (): JSX.Element => {
 
   const getReservations = useManagerMapReservations(
     {
-      mapId: selectedMapId,
+      mapId: selectedMapId as number,
       date: formatDate(date),
     },
     {

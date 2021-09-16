@@ -1,6 +1,5 @@
 import { AxiosResponse } from 'axios';
 import { QueryFunction, QueryKey } from 'react-query';
-import THROW_ERROR from 'constants/throwError';
 import {
   QueryManagerMapReservationsSuccess,
   QueryManagerSpaceReservationsSuccess,
@@ -8,7 +7,7 @@ import {
 import api from './api';
 
 export interface QueryMapReservationsParams {
-  mapId: number | null;
+  mapId: number;
   date: string;
 }
 
@@ -53,10 +52,6 @@ export const queryManagerSpaceReservations: QueryFunction<
   const [, data] = queryKey;
   const { mapId, spaceId, date } = data;
 
-  if (!mapId) {
-    throw new Error(THROW_ERROR.INVALID_MAP_ID);
-  }
-
   return api.get(`/managers/maps/${mapId}/spaces/${spaceId}/reservations?date=${date}`);
 };
 
@@ -66,10 +61,6 @@ export const queryManagerMapReservations: QueryFunction<
 > = ({ queryKey }) => {
   const [, data] = queryKey;
   const { mapId, date } = data;
-
-  if (!mapId) {
-    throw new Error(THROW_ERROR.INVALID_MAP_ID);
-  }
 
   return api.get(`/managers/maps/${mapId}/spaces/reservations?date=${date}`);
 };
