@@ -59,16 +59,20 @@ public class MemberService {
 
     public MemberSaveResponse saveMemberByOauth(final OauthMemberSaveRequest oauthMemberSaveRequest) {
         String email = oauthMemberSaveRequest.getEmail();
+        OauthProvider oauthProvider = OauthProvider.valueOfWithIgnoreCase(oauthMemberSaveRequest.getOauthProvider());
 
         members.findByEmail(email)
                 .ifPresent(member -> {
+                    if (member.getOauthProvider().equals(oauthProvider)) {
+                        throw new DuplicateEmailException();
+                    }
                     throw DuplicateEmailInOAuthFlowException.from(member.getOauthProvider());
                 });
 
         Member member = new Member(
                 email,
                 oauthMemberSaveRequest.getOrganization(),
-                OauthProvider.valueOfWithIgnoreCase(oauthMemberSaveRequest.getOauthProvider())
+                oauthProvider
         );
         Member saveMember = members.save(member);
         return MemberSaveResponse.from(saveMember);
