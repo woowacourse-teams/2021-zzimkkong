@@ -1,60 +1,58 @@
 import { AxiosError } from 'axios';
-import React, { useEffect } from 'react';
+import { useEffect } from 'react';
 import { useMutation } from 'react-query';
-import { useHistory, useLocation, useParams } from 'react-router-dom';
-import { postGuestReservation, putGuestReservation, ReservationParams } from 'api/guestReservation';
+import { useHistory, useLocation } from 'react-router-dom';
+import {
+  postManagerReservation,
+  PostReservationParams,
+  putManagerReservation,
+  PutReservationParams,
+} from 'api/managerReservation';
 import Header from 'components/Header/Header';
 import Layout from 'components/Layout/Layout';
 import PageHeader from 'components/PageHeader/PageHeader';
 import ReservationListItem from 'components/ReservationListItem/ReservationListItem';
 import MESSAGE from 'constants/message';
-import { HREF } from 'constants/path';
-import useGuestReservations from 'hooks/query/useGuestReservations';
+import PATH from 'constants/path';
+import useManagerSpaceReservations from 'hooks/query/useManagerSpaceReservations';
 import useInput from 'hooks/useInput';
-import { GuestMapState } from 'pages/GuestMap/GuestMap';
-import { MapItem, Reservation, ScrollPosition, Space } from 'types/common';
+import { ManagerMainState } from 'pages/ManagerMain/ManagerMain';
+import { ManagerSpaceAPI, Reservation } from 'types/common';
 import { ErrorResponse } from 'types/response';
-import * as Styled from './GuestReservation.styles';
-import GuestReservationForm from './units/GuestReservationForm';
+import * as Styled from './ManagerReservation.styles';
+import ManagerReservationForm from './units/ManagerReservationForm';
 
-interface URLParameter {
-  sharingMapId: MapItem['sharingMapId'];
-}
+export type EditReservationParams = Omit<PutReservationParams, 'mapId' | 'spaceId'>;
+export type CreateReservationParams = Omit<PostReservationParams, 'mapId' | 'spaceId'>;
 
-interface GuestReservationState {
+interface ManagerReservationState {
   mapId: number;
-  space: Space;
+  space: ManagerSpaceAPI;
   selectedDate: string;
-  scrollPosition: ScrollPosition;
   reservation?: Reservation;
 }
 
-export interface EditReservationParams extends ReservationParams {
-  reservationId?: number;
-}
+const ManagerReservation = (): JSX.Element => {
+  const location = useLocation<ManagerReservationState>();
+  const history = useHistory<ManagerMainState>();
 
-const GuestReservation = (): JSX.Element => {
-  const location = useLocation<GuestReservationState>();
-  const history = useHistory<GuestMapState>();
-  const { sharingMapId } = useParams<URLParameter>();
+  const { mapId, space, selectedDate, reservation } = location.state;
 
-  const { mapId, space, selectedDate, scrollPosition, reservation } = location.state;
-
-  if (!mapId || !space) history.replace(HREF.GUEST_MAP(sharingMapId));
+  if (!mapId || !space) history.replace(PATH.MANAGER_MAIN);
 
   const [date, onChangeDate] = useInput(selectedDate);
 
   const isEditMode = !!reservation;
 
-  const getReservations = useGuestReservations({ mapId, spaceId: space.id, date });
+  const getReservations = useManagerSpaceReservations({ mapId, spaceId: space.id, date });
   const reservations = getReservations.data?.data?.reservations ?? [];
 
-  const addReservation = useMutation(postGuestReservation, {
+  const addReservation = useMutation(postManagerReservation, {
     onSuccess: () => {
       history.push({
-        pathname: HREF.GUEST_MAP(sharingMapId),
+        pathname: PATH.MANAGER_MAIN,
         state: {
-          spaceId: space.id,
+          mapId,
           targetDate: new Date(date),
         },
       });
@@ -64,12 +62,12 @@ const GuestReservation = (): JSX.Element => {
     },
   });
 
-  const updateReservation = useMutation(putGuestReservation, {
+  const updateReservation = useMutation(putManagerReservation, {
     onSuccess: () => {
       history.push({
-        pathname: HREF.GUEST_MAP(sharingMapId),
+        pathname: PATH.MANAGER_MAIN,
         state: {
-          spaceId: space.id,
+          mapId,
           targetDate: new Date(date),
         },
       });
@@ -80,7 +78,7 @@ const GuestReservation = (): JSX.Element => {
     },
   });
 
-  const createReservation = ({ reservation }: ReservationParams) => {
+  const createReservation = ({ reservation }: CreateReservationParams) => {
     if (addReservation.isLoading) return;
 
     addReservation.mutate({
@@ -101,31 +99,19 @@ const GuestReservation = (): JSX.Element => {
     });
   };
 
-  const handleSubmit = (
-    event: React.FormEvent<HTMLFormElement>,
-    { reservation, reservationId }: EditReservationParams
-  ) => {
-    event.preventDefault();
-
-    reservationId
-      ? editReservation({ reservation, reservationId })
-      : createReservation({ reservation });
-  };
-
   useEffect(() => {
     return history.listen((location) => {
       if (
-        location.pathname === HREF.GUEST_MAP(sharingMapId) ||
-        location.pathname === HREF.GUEST_MAP(sharingMapId) + '/'
+        location.pathname === PATH.MANAGER_MAIN ||
+        location.pathname === PATH.MANAGER_MAIN + '/'
       ) {
         location.state = {
-          spaceId: space.id,
+          mapId,
           targetDate: new Date(date),
-          scrollPosition,
         };
       }
     });
-  }, [history, scrollPosition, date, space, sharingMapId]);
+  }, [history, date, mapId]);
 
   return (
     <>
@@ -135,15 +121,16 @@ const GuestReservation = (): JSX.Element => {
           <Styled.ColorDot color={space.color} size="medium" />
           {space.name}
         </Styled.PageHeader>
-        <GuestReservationForm
+        <ManagerReservationForm
           isEditMode={isEditMode}
           space={space}
           reservation={reservation}
           date={date}
           onChangeDate={onChangeDate}
-          onSubmit={handleSubmit}
+          onCreateReservation={createReservation}
+          onEditReservation={editReservation}
         />
-        <Styled.Section>
+        <Styled.Section isEditMode={isEditMode}>
           <PageHeader title={`${date}${date && '의'} 예약 목록`} />
           {getReservations.isLoadingError && (
             <Styled.Message>{MESSAGE.RESERVATION.ERROR}</Styled.Message>
@@ -167,4 +154,4 @@ const GuestReservation = (): JSX.Element => {
   );
 };
 
-export default GuestReservation;
+export default ManagerReservation;

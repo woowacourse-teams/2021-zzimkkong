@@ -26,7 +26,10 @@ export interface QueryManagerMapsSuccess {
   organization: string;
 }
 
-export interface QueryManagerReservationsSuccess {
+export interface QueryManagerSpaceReservationsSuccess {
+  reservations: Reservation[];
+}
+export interface QueryManagerMapReservationsSuccess {
   data: SpaceReservation[];
 }
 

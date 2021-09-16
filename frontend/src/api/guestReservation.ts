@@ -5,7 +5,7 @@ import { QueryGuestReservationsSuccess } from 'types/response';
 import api from './api';
 
 export interface QueryMapReservationsParams {
-  mapId: number | null;
+  mapId: number;
   date: string;
 }
 

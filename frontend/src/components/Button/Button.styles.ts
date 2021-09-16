@@ -3,7 +3,7 @@ import styled, { css } from 'styled-components';
 interface Props {
   variant: 'primary' | 'primary-text' | 'text' | 'default';
   shape: 'default' | 'round';
-  size: 'small' | 'medium' | 'large';
+  size: 'dense' | 'small' | 'medium' | 'large';
   fullWidth: boolean;
 }
 
@@ -47,6 +47,9 @@ const shapeCSS = {
 };
 
 const sizeCSS = {
+  dense: css`
+    padding: 0 0.5rem;
+  `,
   small: css`
     padding: 0.25rem 0.5rem;
   `,

@@ -8,9 +8,7 @@ const ManagerJoin = React.lazy(() => import('pages/ManagerJoin/ManagerJoin'));
 const ManagerLogin = React.lazy(() => import('pages/ManagerLogin/ManagerLogin'));
 const ManagerMain = React.lazy(() => import('pages/ManagerMain/ManagerMain'));
 const ManagerMapEditor = React.lazy(() => import('pages/ManagerMapEditor/ManagerMapEditor'));
-const ManagerReservationEdit = React.lazy(
-  () => import('pages/ManagerReservationEdit/ManagerReservationEdit')
-);
+const ManagerReservation = React.lazy(() => import('pages/ManagerReservation/ManagerReservation'));
 const ManagerSpaceEditor = React.lazy(() => import('pages/ManagerSpaceEditor/ManagerSpaceEditor'));
 
 interface Route {
@@ -56,8 +54,13 @@ export const PRIVATE_ROUTES: PrivateRoute[] = [
     redirectPath: PATH.MANAGER_LOGIN,
   },
   {
+    path: PATH.MANAGER_RESERVATION,
+    component: <ManagerReservation />,
+    redirectPath: PATH.MANAGER_LOGIN,
+  },
+  {
     path: PATH.MANAGER_RESERVATION_EDIT,
-    component: <ManagerReservationEdit />,
+    component: <ManagerReservation />,
     redirectPath: PATH.MANAGER_LOGIN,
   },
   {
