@@ -80,7 +80,9 @@ module.exports = () => {
         'process.env.NODE_ENV': JSON.stringify(process.env.NODE_ENV),
         'process.env.DEPLOY_ENV': JSON.stringify(process.env.DEPLOY_ENV),
       }),
-      new BundleAnalyzerPlugin(),
+      new BundleAnalyzerPlugin({
+        analyzerMode: isDevelopment ? 'server' : 'static',
+      }),
     ],
   };
 };
