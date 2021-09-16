@@ -1,25 +1,36 @@
 package com.woowacourse.zzimkkong.config.datasource;
 
-import lombok.Getter;
-import lombok.Setter;
+import com.zaxxer.hikari.HikariDataSource;
+import org.springframework.boot.autoconfigure.jdbc.DataSourceProperties;
 import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Profile;
 
-import java.util.HashMap;
-import java.util.Map;
-
-@Getter
-@Setter
-@ConfigurationProperties(prefix = "datasource")
+@Configuration
+@Profile("prod")
 public class CustomDataSourceProperties {
-    private String url;
-    private String username;
-    private String password;
-    private final Map<String, Slave> slave = new HashMap<>();
+    @Bean
+    @ConfigurationProperties("app.datasource.master")
+    public DataSourceProperties masterDataSourceProperties() {
+        return new DataSourceProperties();
+    }
 
-    @Getter
-    @Setter
-    public static class Slave {
-        private String name;
-        private String url;
+    @Bean
+    @ConfigurationProperties("app.datasource.master.hikari")
+    public HikariDataSource masterDataSource() {
+        return masterDataSourceProperties().initializeDataSourceBuilder().type(HikariDataSource.class).build();
+    }
+
+    @Bean
+    @ConfigurationProperties("app.datasource.slave1")
+    public DataSourceProperties slave1DataSourceProperties() {
+        return new DataSourceProperties();
+    }
+
+    @Bean
+    @ConfigurationProperties("app.datasource.slave1.hikari")
+    public HikariDataSource slave1DataSource() {
+        return slave1DataSourceProperties().initializeDataSourceBuilder().type(HikariDataSource.class).build();
     }
 }

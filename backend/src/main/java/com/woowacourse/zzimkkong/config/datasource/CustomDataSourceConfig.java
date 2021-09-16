@@ -1,5 +1,6 @@
 package com.woowacourse.zzimkkong.config.datasource;
 
+import com.woowacourse.zzimkkong.exception.infrastructure.NoMasterDataSourceException;
 import com.zaxxer.hikari.HikariDataSource;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
@@ -19,8 +20,8 @@ import org.springframework.transaction.PlatformTransactionManager;
 
 import javax.persistence.EntityManagerFactory;
 import javax.sql.DataSource;
-import java.util.LinkedHashMap;
-import java.util.Map;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Configuration
 @Profile("prod")
@@ -28,25 +29,12 @@ import java.util.Map;
 @EnableConfigurationProperties(CustomDataSourceProperties.class)
 public class CustomDataSourceConfig {
 
-    private final CustomDataSourceProperties databaseProperty;
+    private final List<HikariDataSource> hikariDataSources;
     private final JpaProperties jpaProperties;
 
-    public CustomDataSourceConfig(CustomDataSourceProperties databaseProperty, JpaProperties jpaProperties) {
-        this.databaseProperty = databaseProperty;
+    public CustomDataSourceConfig(final List<HikariDataSource> hikariDataSources, final JpaProperties jpaProperties) {
+        this.hikariDataSources = hikariDataSources;
         this.jpaProperties = jpaProperties;
-    }
-
-    /**
-     * datasource 생성
-     */
-    public DataSource createDataSource(String url) {
-        return DataSourceBuilder.create()
-                .type(HikariDataSource.class)
-                .url(url)
-                .driverClassName("com.mysql.cj.jdbc.Driver")
-                .username(databaseProperty.getUsername())
-                .password(databaseProperty.getPassword())
-                .build();
     }
 
     /**
@@ -63,17 +51,33 @@ public class CustomDataSourceConfig {
      */
     @Bean
     public DataSource routingDataSource() {
-        DataSource master = createDataSource(databaseProperty.getUrl());
-
-        Map<Object, Object> dataSourceMap = new LinkedHashMap<>();
-        dataSourceMap.put("master", master);
-        databaseProperty.getSlave()
-                .forEach((key, value) -> dataSourceMap.put(value.getName(), createDataSource(value.getUrl())));
+        final DataSource master = createMasterDataSource();
+        final Map<Object, Object> slaves = createSlaveDataSources();
+        slaves.put("master", master);
 
         ReplicationRoutingDataSource replicationRoutingDataSource = new ReplicationRoutingDataSource();
         replicationRoutingDataSource.setDefaultTargetDataSource(master);
-        replicationRoutingDataSource.setTargetDataSources(dataSourceMap);
+        replicationRoutingDataSource.setTargetDataSources(slaves);
         return replicationRoutingDataSource;
+    }
+
+    private DataSource createMasterDataSource() {
+        return hikariDataSources.stream()
+                .filter(dataSource -> dataSource.getPoolName().startsWith("master"))
+                .findFirst()
+                .orElseThrow(NoMasterDataSourceException::new);
+    }
+
+    private Map<Object, Object> createSlaveDataSources() {
+        final List<HikariDataSource> slaveDataSources = hikariDataSources.stream()
+                .filter(datasource -> Objects.nonNull(datasource.getPoolName()) && datasource.getPoolName().startsWith("slave"))
+                .collect(Collectors.toList());
+
+        final Map<Object, Object> result = new HashMap<>();
+        for (final HikariDataSource slaveDataSource : slaveDataSources) {
+            result.put(slaveDataSource.getPoolName(), slaveDataSource);
+        }
+        return result;
     }
 
     /**
