@@ -1,9 +1,13 @@
 import { AxiosError } from 'axios';
-import React, { useEffect } from 'react';
+import { useEffect } from 'react';
 import { useMutation } from 'react-query';
 import { useHistory, useLocation } from 'react-router-dom';
-import { ReservationParams } from 'api/managerReservation';
-import { postManagerReservation, putManagerReservation } from 'api/managerReservation';
+import {
+  postManagerReservation,
+  PostReservationParams,
+  putManagerReservation,
+  PutReservationParams,
+} from 'api/managerReservation';
 import Header from 'components/Header/Header';
 import Layout from 'components/Layout/Layout';
 import PageHeader from 'components/PageHeader/PageHeader';
@@ -18,15 +22,14 @@ import { ErrorResponse } from 'types/response';
 import * as Styled from './ManagerReservation.styles';
 import ManagerReservationForm from './units/ManagerReservationForm';
 
+export type EditReservationParams = Omit<PutReservationParams, 'mapId' | 'spaceId'>;
+export type CreateReservationParams = Omit<PostReservationParams, 'mapId' | 'spaceId'>;
+
 interface ManagerReservationState {
   mapId: number;
   space: ManagerSpaceAPI;
   selectedDate: string;
   reservation?: Reservation;
-}
-
-export interface EditReservationParams extends ReservationParams {
-  reservationId?: number;
 }
 
 const ManagerReservation = (): JSX.Element => {
@@ -46,9 +49,12 @@ const ManagerReservation = (): JSX.Element => {
 
   const addReservation = useMutation(postManagerReservation, {
     onSuccess: () => {
-      history.push(PATH.MANAGER_MAIN, {
-        mapId,
-        targetDate: new Date(date),
+      history.push({
+        pathname: PATH.MANAGER_MAIN,
+        state: {
+          mapId,
+          targetDate: new Date(date),
+        },
       });
     },
     onError: (error: AxiosError<ErrorResponse>) => {
@@ -58,9 +64,12 @@ const ManagerReservation = (): JSX.Element => {
 
   const updateReservation = useMutation(putManagerReservation, {
     onSuccess: () => {
-      history.push(PATH.MANAGER_MAIN, {
-        mapId,
-        targetDate: new Date(date),
+      history.push({
+        pathname: PATH.MANAGER_MAIN,
+        state: {
+          mapId,
+          targetDate: new Date(date),
+        },
       });
     },
 
@@ -69,7 +78,7 @@ const ManagerReservation = (): JSX.Element => {
     },
   });
 
-  const createReservation = ({ reservation }: ReservationParams) => {
+  const createReservation = ({ reservation }: CreateReservationParams) => {
     if (addReservation.isLoading) return;
 
     addReservation.mutate({
@@ -88,17 +97,6 @@ const ManagerReservation = (): JSX.Element => {
       spaceId: space.id,
       reservationId,
     });
-  };
-
-  const handleSubmit = (
-    event: React.FormEvent<HTMLFormElement>,
-    { reservation, reservationId }: EditReservationParams
-  ) => {
-    event.preventDefault();
-
-    reservationId
-      ? editReservation({ reservation, reservationId })
-      : createReservation({ reservation });
   };
 
   useEffect(() => {
@@ -129,7 +127,8 @@ const ManagerReservation = (): JSX.Element => {
           reservation={reservation}
           date={date}
           onChangeDate={onChangeDate}
-          onSubmit={handleSubmit}
+          onCreateReservation={createReservation}
+          onEditReservation={editReservation}
         />
         <Styled.Section isEditMode={isEditMode}>
           <PageHeader title={`${date}${date && '의'} 예약 목록`} />

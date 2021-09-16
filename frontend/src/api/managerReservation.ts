@@ -16,25 +16,28 @@ export interface QueryManagerSpaceReservationsParams extends QueryMapReservation
   spaceId: number;
 }
 
-export interface ReservationParams {
+export interface PostReservationParams {
+  mapId: number;
+  spaceId: number;
   reservation: {
     startDateTime: Date;
     endDateTime: Date;
     name: string;
     description: string;
-    password?: string;
+    password: string;
   };
 }
 
-interface PostReservationParams extends ReservationParams {
-  mapId: number;
-  spaceId: number;
-}
-
-interface PutReservationParams extends ReservationParams {
+export interface PutReservationParams {
   mapId: number;
   spaceId: number;
   reservationId: number;
+  reservation: {
+    startDateTime: Date;
+    endDateTime: Date;
+    name: string;
+    description: string;
+  };
 }
 
 interface DeleteReservationParams {
