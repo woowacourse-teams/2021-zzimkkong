@@ -2,13 +2,10 @@ package com.woowacourse.zzimkkong.service;
 
 import com.woowacourse.zzimkkong.domain.Member;
 import com.woowacourse.zzimkkong.domain.OauthProvider;
-import com.woowacourse.zzimkkong.domain.oauth.OauthUserInfo;
 import com.woowacourse.zzimkkong.dto.member.MemberSaveRequest;
 import com.woowacourse.zzimkkong.dto.member.MemberSaveResponse;
 import com.woowacourse.zzimkkong.dto.member.MemberUpdateRequest;
 import com.woowacourse.zzimkkong.dto.member.oauth.OauthMemberSaveRequest;
-import com.woowacourse.zzimkkong.dto.member.oauth.OauthReadyResponse;
-import com.woowacourse.zzimkkong.exception.infrastructure.oauth.DuplicateEmailInOAuthFlowException;
 import com.woowacourse.zzimkkong.exception.member.DuplicateEmailException;
 import com.woowacourse.zzimkkong.exception.member.ReservationExistsOnMemberException;
 import com.woowacourse.zzimkkong.infrastructure.oauth.OauthHandler;
@@ -47,19 +44,6 @@ public class MemberService {
         );
         Member saveMember = members.save(member);
         return MemberSaveResponse.from(saveMember);
-    }
-
-    @Transactional(readOnly = true)
-    public OauthReadyResponse getUserInfoFromOauth(final OauthProvider oauthProvider, final String code) {
-        OauthUserInfo userInfo = oauthHandler.getUserInfoFromCode(oauthProvider, code);
-        String email = userInfo.getEmail();
-
-        members.findByEmail(email)
-                .ifPresent(member -> {
-                    throw DuplicateEmailInOAuthFlowException.from(member.getOauthProvider());
-                });
-
-        return OauthReadyResponse.of(email, oauthProvider);
     }
 
     public MemberSaveResponse saveMemberByOauth(final OauthMemberSaveRequest oauthMemberSaveRequest) {
