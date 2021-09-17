@@ -1,6 +1,6 @@
 {
   "name": "zzimkkong-frontend",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "main": "src/index.tsx",
   "license": "MIT",
   "homepage": "https://github.com/woowacourse-teams/2021-zzimkkong",
@@ -67,6 +67,7 @@
     "babel-eslint": "^10.0.0",
     "babel-loader": "^8.2.2",
     "cross-env": "^7.0.3",
+    "dotenv-webpack": "^7.0.3",
     "eslint": "^7.5.0",
     "eslint-config-prettier": "^8.3.0",
     "eslint-config-react-app": "^6.0.0",
@@ -93,6 +94,7 @@
     "typescript": "^4.3.5",
     "url-loader": "^4.1.1",
     "webpack": "^5.42.0",
+    "webpack-bundle-analyzer": "^4.4.2",
     "webpack-cli": "^4.7.2",
     "webpack-dev-server": "^3.11.2"
   }

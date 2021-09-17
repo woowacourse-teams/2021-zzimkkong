@@ -68,10 +68,12 @@ describe('예약 추가', () => {
     userEvent.type($targetDateInput, targetDate);
     userEvent.click($targetSpace);
 
-    const $reservationButton = await waitFor(() => screen.getByRole('link', { name: /예약하기/i }));
+    const $reservationButton = await waitFor(() =>
+      screen.getByRole('button', { name: /예약하기/i })
+    );
     userEvent.click($reservationButton);
 
-    const $pageTitle = screen.getByTestId(/spaceName/i);
+    const $pageTitle = await waitFor(() => screen.getByTestId(/spaceName/i));
 
     expect($pageTitle).toHaveTextContent('testSpace');
 

@@ -2,10 +2,12 @@ package com.woowacourse.zzimkkong.infrastructure.oauth;
 
 import com.woowacourse.zzimkkong.domain.OauthProvider;
 import com.woowacourse.zzimkkong.domain.oauth.OauthUserInfo;
+import com.woowacourse.zzimkkong.exception.infrastructure.oauth.ErrorResponseToGetAccessTokenException;
 import okhttp3.mockwebserver.MockResponse;
 import okhttp3.mockwebserver.MockWebServer;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.ActiveProfiles;
@@ -13,6 +15,7 @@ import org.springframework.test.context.ActiveProfiles;
 import java.io.IOException;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 @ActiveProfiles("test")
 class GoogleRequesterTest {
@@ -80,13 +83,52 @@ class GoogleRequesterTest {
         assertThat(googleRequester.supports(OauthProvider.GITHUB)).isFalse();
     }
 
-    private void setUpResponse(MockWebServer mockGithubServer) {
-        mockGithubServer.enqueue(new MockResponse()
+    private void setUpResponse(MockWebServer mockGoogleServer) {
+        mockGoogleServer.enqueue(new MockResponse()
                 .setBody(GOOGLE_TOKEN_RESPONSE)
                 .addHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE));
 
-        mockGithubServer.enqueue(new MockResponse()
+        mockGoogleServer.enqueue(new MockResponse()
                 .setBody(USER_INFO_RESPONSE_EXAMPLE)
+                .addHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE));
+    }
+
+    @Value("${google.uri.redirect}")
+    private String redirectUri;
+
+    @Test
+    @DisplayName("오류가 발생하면 ErrorResponseToGetAccessTokenException을 응답한다.")
+    void getTokenException() {
+        String getTokenErrorResponse = "{\n" +
+                "    \"error\": \"redirect_uri_mismatch\",\n" +
+                "    \"error_description\": \"Bad Request\"\n" +
+                "}";
+
+        try (MockWebServer mockGoogleServer = new MockWebServer()) {
+            // given
+            mockGoogleServer.start();
+
+            setUpGetTokenResponse(mockGoogleServer, getTokenErrorResponse);
+            setUpGetTokenResponse(mockGoogleServer, USER_INFO_RESPONSE_EXAMPLE);
+
+            GoogleRequester googleRequester = new GoogleRequester(
+                    "clientId",
+                    "secretId",
+                    this.redirectUri,
+                    String.format("http://%s:%s", mockGoogleServer.getHostName(), mockGoogleServer.getPort()),
+                    String.format("http://%s:%s", mockGoogleServer.getHostName(), mockGoogleServer.getPort())
+            );
+
+            // when, then
+            assertThatThrownBy(() -> googleRequester.getUserInfoByCode("code"))
+                    .isInstanceOf(ErrorResponseToGetAccessTokenException.class);
+        } catch (IOException ignored) {
+        }
+    }
+
+    private void setUpGetTokenResponse(MockWebServer mockGoogleServer, String responseExample) {
+        mockGoogleServer.enqueue(new MockResponse()
+                .setBody(responseExample)
                 .addHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE));
     }
 }

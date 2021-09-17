@@ -15,7 +15,7 @@ import { GuestMapState } from 'pages/GuestMap/GuestMap';
 import { MapItem, Reservation, ScrollPosition, Space } from 'types/common';
 import { ErrorResponse } from 'types/response';
 import * as Styled from './GuestReservation.styles';
-import ReservationForm from './units/ReservationForm';
+import GuestReservationForm from './units/GuestReservationForm';
 
 interface URLParameter {
   sharingMapId: MapItem['sharingMapId'];
@@ -51,9 +51,12 @@ const GuestReservation = (): JSX.Element => {
 
   const addReservation = useMutation(postGuestReservation, {
     onSuccess: () => {
-      history.push(HREF.GUEST_MAP(sharingMapId), {
-        spaceId: space.id,
-        targetDate: new Date(date),
+      history.push({
+        pathname: HREF.GUEST_MAP(sharingMapId),
+        state: {
+          spaceId: space.id,
+          targetDate: new Date(date),
+        },
       });
     },
     onError: (error: AxiosError<ErrorResponse>) => {
@@ -63,9 +66,12 @@ const GuestReservation = (): JSX.Element => {
 
   const updateReservation = useMutation(putGuestReservation, {
     onSuccess: () => {
-      history.push(HREF.GUEST_MAP(sharingMapId), {
-        spaceId: space.id,
-        targetDate: new Date(date),
+      history.push({
+        pathname: HREF.GUEST_MAP(sharingMapId),
+        state: {
+          spaceId: space.id,
+          targetDate: new Date(date),
+        },
       });
     },
 
@@ -129,7 +135,7 @@ const GuestReservation = (): JSX.Element => {
           <Styled.ColorDot color={space.color} size="medium" />
           {space.name}
         </Styled.PageHeader>
-        <ReservationForm
+        <GuestReservationForm
           isEditMode={isEditMode}
           space={space}
           reservation={reservation}

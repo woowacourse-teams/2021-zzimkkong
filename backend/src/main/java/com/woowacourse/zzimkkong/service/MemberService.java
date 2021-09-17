@@ -2,12 +2,10 @@ package com.woowacourse.zzimkkong.service;
 
 import com.woowacourse.zzimkkong.domain.Member;
 import com.woowacourse.zzimkkong.domain.OauthProvider;
-import com.woowacourse.zzimkkong.domain.oauth.OauthUserInfo;
 import com.woowacourse.zzimkkong.dto.member.MemberSaveRequest;
 import com.woowacourse.zzimkkong.dto.member.MemberSaveResponse;
 import com.woowacourse.zzimkkong.dto.member.MemberUpdateRequest;
 import com.woowacourse.zzimkkong.dto.member.oauth.OauthMemberSaveRequest;
-import com.woowacourse.zzimkkong.dto.member.oauth.OauthReadyResponse;
 import com.woowacourse.zzimkkong.exception.member.DuplicateEmailException;
 import com.woowacourse.zzimkkong.exception.member.ReservationExistsOnMemberException;
 import com.woowacourse.zzimkkong.infrastructure.oauth.OauthHandler;
@@ -48,23 +46,16 @@ public class MemberService {
         return MemberSaveResponse.from(saveMember);
     }
 
-    @Transactional(readOnly = true)
-    public OauthReadyResponse getUserInfoFromOauth(final OauthProvider oauthProvider, final String code) {
-        OauthUserInfo userInfo = oauthHandler.getUserInfoFromCode(oauthProvider, code);
-        String email = userInfo.getEmail();
+    public MemberSaveResponse saveMemberByOauth(final OauthMemberSaveRequest oauthMemberSaveRequest) {
+        String email = oauthMemberSaveRequest.getEmail();
+        OauthProvider oauthProvider = OauthProvider.valueOfWithIgnoreCase(oauthMemberSaveRequest.getOauthProvider());
 
         validateDuplicateEmail(email);
 
-        return OauthReadyResponse.of(email, oauthProvider);
-    }
-
-    public MemberSaveResponse saveMemberByOauth(final OauthMemberSaveRequest oauthMemberSaveRequest) {
-        validateDuplicateEmail(oauthMemberSaveRequest.getEmail());
-
         Member member = new Member(
-                oauthMemberSaveRequest.getEmail(),
+                email,
                 oauthMemberSaveRequest.getOrganization(),
-                OauthProvider.valueOfWithIgnoreCase(oauthMemberSaveRequest.getOauthProvider())
+                oauthProvider
         );
         Member saveMember = members.save(member);
         return MemberSaveResponse.from(saveMember);
