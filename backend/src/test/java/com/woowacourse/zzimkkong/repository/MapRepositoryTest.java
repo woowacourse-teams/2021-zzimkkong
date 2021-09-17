@@ -3,9 +3,13 @@ package com.woowacourse.zzimkkong.repository;
 import com.woowacourse.zzimkkong.domain.Map;
 import com.woowacourse.zzimkkong.domain.Member;
 import com.woowacourse.zzimkkong.exception.map.NoSuchMapException;
+import org.assertj.core.api.AssertionsForClassTypes;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 
 import java.util.List;
 
@@ -63,5 +67,22 @@ class MapRepositoryTest extends RepositoryTest {
 
         //then
         assertThat(actualMaps).containsExactlyInAnyOrderElementsOf(List.of(savedMap1, savedMap2));
+    }
+
+    @Test
+    @DisplayName("page로 모든 맵을 조회한다.")
+    void findAllByPaging() {
+        // given
+        Map save = maps.save(luther);
+
+        // when
+        PageRequest pageRequest = PageRequest.of(0, 20, Sort.unsorted());
+        Page<Map> actual = maps.findAll(pageRequest);
+
+        // then
+        AssertionsForClassTypes.assertThat(actual.getSize()).isEqualTo(20);
+        AssertionsForClassTypes.assertThat(actual.getContent().size()).isEqualTo(1);
+        AssertionsForClassTypes.assertThat(actual.getContent().get(0)).usingRecursiveComparison()
+                .isEqualTo(save);
     }
 }

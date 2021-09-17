@@ -1,8 +1,12 @@
 package com.woowacourse.zzimkkong.controller;
 
+import com.woowacourse.zzimkkong.domain.Map;
 import com.woowacourse.zzimkkong.domain.Member;
+import com.woowacourse.zzimkkong.dto.admin.MapsResponse;
 import com.woowacourse.zzimkkong.dto.admin.MembersResponse;
 import com.woowacourse.zzimkkong.dto.admin.PageInfo;
+import com.woowacourse.zzimkkong.dto.map.MapCreateUpdateRequest;
+import com.woowacourse.zzimkkong.dto.map.MapFindResponse;
 import com.woowacourse.zzimkkong.dto.member.MemberFindResponse;
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
@@ -14,7 +18,10 @@ import org.springframework.http.MediaType;
 
 import java.util.List;
 
+import static com.woowacourse.zzimkkong.Constants.*;
+import static com.woowacourse.zzimkkong.Constants.MAP_IMAGE_URL;
 import static com.woowacourse.zzimkkong.DocumentUtils.getRequestSpecification;
+import static com.woowacourse.zzimkkong.controller.MapControllerTest.saveMap;
 import static org.assertj.core.api.Assertions.assertThat;
 
 class AdminControllerTest extends AcceptanceTest {
@@ -52,6 +59,30 @@ class AdminControllerTest extends AcceptanceTest {
                 .isEqualTo(membersResponse);
     }
 
+    @Test
+    @DisplayName("모든 맵을 조회한다.")
+    void getMaps() {
+        // given
+        Member pobi = new Member(memberSaveRequest.getEmail(), memberSaveRequest.getPassword(), memberSaveRequest.getOrganization());
+        Map luther = new Map(LUTHER_NAME, MAP_DRAWING_DATA, MAP_IMAGE_URL, pobi);
+        MapCreateUpdateRequest mapCreateUpdateRequest = new MapCreateUpdateRequest(luther.getName(), luther.getMapDrawing(), MAP_SVG);
+        saveMap("api/managers/maps", mapCreateUpdateRequest);
+
+        // when
+        ExtractableResponse<Response> response = maps();
+        MapsResponse actual = response.body().as(MapsResponse.class);
+        MapsResponse expected = MapsResponse.from(
+                List.of(MapFindResponse.from(luther)),
+                PageInfo.from(0, 1, 20, 1)
+        );
+
+        // then
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
+        assertThat(actual).usingRecursiveComparison()
+                .ignoringExpectedNullFields()
+                .isEqualTo(expected);
+    }
+
     static ExtractableResponse<Response> login(String id, String password) {
         return RestAssured
                 .given(getRequestSpecification()).log().all()
@@ -69,6 +100,16 @@ class AdminControllerTest extends AcceptanceTest {
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body(loginRequest)
                 .when().get("/admin/api/members")
+                .then().log().all().extract();
+    }
+
+    private ExtractableResponse<Response> maps() {
+        return RestAssured
+                .given(getRequestSpecification()).log().all()
+                .accept("application/json")
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .body(loginRequest)
+                .when().get("/admin/api/maps")
                 .then().log().all().extract();
     }
 }

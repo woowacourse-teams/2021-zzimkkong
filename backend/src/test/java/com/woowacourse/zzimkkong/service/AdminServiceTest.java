@@ -1,8 +1,11 @@
 package com.woowacourse.zzimkkong.service;
 
+import com.woowacourse.zzimkkong.domain.Map;
 import com.woowacourse.zzimkkong.domain.Member;
+import com.woowacourse.zzimkkong.dto.admin.MapsResponse;
 import com.woowacourse.zzimkkong.dto.admin.MembersResponse;
 import com.woowacourse.zzimkkong.dto.admin.PageInfo;
+import com.woowacourse.zzimkkong.dto.map.MapFindResponse;
 import com.woowacourse.zzimkkong.dto.member.MemberFindResponse;
 import com.woowacourse.zzimkkong.exception.member.PasswordMismatchException;
 import org.junit.jupiter.api.BeforeEach;
@@ -58,5 +61,26 @@ class AdminServiceTest extends ServiceTest {
         //then
         assertThat(members).usingRecursiveComparison()
                 .isEqualTo(membersResponse);
+    }
+
+    @Test
+    @DisplayName("모든 맵을 페이지네이션을 이용해 조회한다.")
+    void findMaps() {
+        //given
+        Map luther = new Map(LUTHER_NAME, MAP_DRAWING_DATA, MAP_IMAGE_URL, pobi);
+        PageRequest pageRequest = PageRequest.of(0, 20, Sort.unsorted());
+        given(maps.findAll(any(Pageable.class)))
+                .willReturn(new PageImpl<>(List.of(luther), pageRequest, 1));
+
+        //when
+        MapsResponse mapsResponse = MapsResponse.from(
+                List.of(MapFindResponse.from(luther)),
+                PageInfo.from(0, 1, 20, 1)
+        );
+        MapsResponse maps = adminService.findMaps(pageRequest);
+
+        //then
+        assertThat(maps).usingRecursiveComparison()
+                .isEqualTo(mapsResponse);
     }
 }
