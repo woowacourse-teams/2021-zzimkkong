@@ -16,7 +16,7 @@ function getMembers(pageNumber) {
         method: 'GET'
     }).then(res => res.json())
         .then(async function (data) {
-            const memberList = document.querySelector(".members-table");
+            const memberList = document.querySelector(".members-row");
             for (let i = 0; i < data.members.length; i++) {
                 let member = data.members[i];
                 memberList.innerHTML +=
