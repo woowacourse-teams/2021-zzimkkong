@@ -7,8 +7,8 @@ import org.springframework.http.HttpStatus;
 public class OauthProviderMismatchException extends ZzimkkongException {
     private static final String MESSAGE_FORMAT = "소셜 로그인 제공자가 다릅니다. %s를 통해 로그인하세요.";
 
-    public OauthProviderMismatchException(final String oauthProvider) {
-        super(String.format(MESSAGE_FORMAT, oauthProvider), HttpStatus.UNAUTHORIZED);
+    public OauthProviderMismatchException(final String message) {
+        super(message, HttpStatus.UNAUTHORIZED);
     }
 
     public static OauthProviderMismatchException from(OauthProvider oauthProvider) {
