@@ -1,5 +1,6 @@
 package com.woowacourse.zzimkkong.controller;
 
+import com.woowacourse.zzimkkong.dto.admin.MapsResponse;
 import com.woowacourse.zzimkkong.dto.admin.MembersResponse;
 import com.woowacourse.zzimkkong.service.AdminService;
 import org.springframework.data.domain.Pageable;
@@ -30,6 +31,11 @@ public class AdminController {
         return "member";
     }
 
+    @GetMapping("/maps")
+    public String mapPage() {
+        return "map";
+    }
+
     @PostMapping("/api/login")
     public ResponseEntity<Void> login(@RequestParam String id, @RequestParam String password) {
         adminService.login(id, password);
@@ -40,5 +46,11 @@ public class AdminController {
     public ResponseEntity<MembersResponse> member(@PageableDefault(value = 20) Pageable pageable) {
         MembersResponse members = adminService.findMembers(pageable);
         return ResponseEntity.ok(members);
+    }
+
+    @GetMapping("/api/maps")
+    public ResponseEntity<MapsResponse> map(@PageableDefault(value = 20) Pageable pageable) {
+        MapsResponse maps = adminService.findMaps(pageable);
+        return ResponseEntity.ok(maps);
     }
 }

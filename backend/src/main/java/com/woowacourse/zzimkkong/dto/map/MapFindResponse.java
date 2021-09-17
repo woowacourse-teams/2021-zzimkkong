@@ -25,6 +25,16 @@ public class MapFindResponse {
         this.sharingMapId = sharingMapId;
     }
 
+    private MapFindResponse(final Long mapId,
+                            final String mapName,
+                            final String mapDrawing,
+                            final String mapImageUrl) {
+        this.mapId = mapId;
+        this.mapName = mapName;
+        this.mapDrawing = mapDrawing;
+        this.mapImageUrl = mapImageUrl;
+    }
+
     public static MapFindResponse of(final Map map,
                                      final String sharingMapId) {
         return new MapFindResponse(
@@ -33,6 +43,15 @@ public class MapFindResponse {
                 map.getMapDrawing(),
                 map.getMapImageUrl(),
                 sharingMapId
+        );
+    }
+
+    public static MapFindResponse from(final Map map) {
+        return new MapFindResponse(
+                map.getId(),
+                map.getName(),
+                map.getMapDrawing(),
+                map.getMapImageUrl()
         );
     }
 }
