@@ -6,18 +6,35 @@
     <title>모든 맵 조회</title>
 </head>
 <body>
+<div class="container mx-5" style="display: inline-block;text-align: center;">
+    <button id="btn-members" class="btn" onclick="move('members')">members</button>
+    <button id="btn-maps" class="btn" onclick="move('maps')">maps</button>
+    <button id="btn-spaces" class="btn" onclick="move('spaces')">spaces</button>
+    <button id="btn-reservations" class="btn" onclick="move('reservations')">reservations</button>
+</div>
+<div class="container mx-5" style="display: inline-block;text-align: center;">
 <table class="table" id="map-table">
     <thead>
     <tr>
-        <th scope="col">아이디</th>
+        <th scope="col"> </th>
         <th scope="col">이름</th>
-        <th scope="col">맵 사진 주소</th>
-        <th scope="col">맵 주인 이메일</th>
+        <th scope="col">사진 주소</th>
+        <th scope="col">공유 링크</th>
+        <th scope="col">주인 이메일</th>
     </tr>
     </thead>
     <tbody class="maps-row">
     </tbody>
 </table>
+</div>
+<style>
+    .btn{
+        display: inline-block;
+        background-color: darkorange;
+        color: white;
+        margin: 20px;
+    }
+</style>
 </body>
 <script src="/admin/js/map.js"></script>
 </html>

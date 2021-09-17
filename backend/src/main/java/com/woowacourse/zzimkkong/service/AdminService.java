@@ -6,6 +6,7 @@ import com.woowacourse.zzimkkong.dto.admin.PageInfo;
 import com.woowacourse.zzimkkong.dto.map.MapFindResponse;
 import com.woowacourse.zzimkkong.dto.member.MemberFindResponse;
 import com.woowacourse.zzimkkong.exception.member.PasswordMismatchException;
+import com.woowacourse.zzimkkong.infrastructure.SharingIdGenerator;
 import com.woowacourse.zzimkkong.repository.MapRepository;
 import com.woowacourse.zzimkkong.repository.MemberRepository;
 import org.springframework.data.domain.Page;
@@ -21,10 +22,14 @@ public class AdminService {
 
     private final MemberRepository members;
     private final MapRepository maps;
+    private final SharingIdGenerator sharingIdGenerator;
 
-    public AdminService(MemberRepository members, MapRepository maps) {
+    public AdminService(final MemberRepository members,
+                        final MapRepository maps,
+                        final SharingIdGenerator sharingIdGenerator) {
         this.members = members;
         this.maps = maps;
+        this.sharingIdGenerator = sharingIdGenerator;
     }
 
     public void login(final String id, final String password) {
@@ -42,7 +47,7 @@ public class AdminService {
 
     public MapsResponse findMaps(Pageable pageable) {
         Page<MapFindResponse> allMaps = maps.findAll(pageable)
-                .map(MapFindResponse::from);
+                .map(map -> MapFindResponse.ofAdmin(map, sharingIdGenerator.from(map)));
 
         return MapsResponse.from(allMaps.getContent(), makePageInfo(allMaps));
     }

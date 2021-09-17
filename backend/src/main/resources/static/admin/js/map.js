@@ -1,5 +1,5 @@
 let mapPage;
-let page = 0;
+let page;
 
 document.addEventListener("DOMContentLoaded", function () {
     mapPage = new MapPage();
@@ -24,6 +24,7 @@ function getMaps(pageNumber) {
                         <th scope="row">${map.mapId}</th>
                         <td>${map.mapName}</td>
                         <td>${map.mapImageUrl}</td>
+                        <td>${map.sharingMapId}</td>
                         <td>${map.managerEmail}</td>
                     </tr>`;
             }
@@ -31,6 +32,9 @@ function getMaps(pageNumber) {
 }
 
 MapPage.prototype.initMapPage = function () {
+    let btn = document.getElementById('btn-maps');
+    btn.disabled = true;
+    page = 0;
     getMaps(page);
 }
 
@@ -39,4 +43,9 @@ document.addEventListener('scroll', () => {
         getMaps(page + 1);
     }
 })
+
+function move(name) {
+    location.href = window.location.origin + '/admin/' + name;
+}
+
 //todo: 모듈 분리

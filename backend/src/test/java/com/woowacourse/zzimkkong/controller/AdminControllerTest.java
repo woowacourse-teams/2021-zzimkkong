@@ -72,7 +72,7 @@ class AdminControllerTest extends AcceptanceTest {
         ExtractableResponse<Response> response = maps();
         MapsResponse actual = response.body().as(MapsResponse.class);
         MapsResponse expected = MapsResponse.from(
-                List.of(MapFindResponse.from(luther)),
+                List.of(MapFindResponse.ofAdmin(luther, null)),
                 PageInfo.from(0, 1, 20, 1)
         );
 

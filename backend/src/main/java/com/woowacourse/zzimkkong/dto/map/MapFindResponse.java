@@ -28,11 +28,15 @@ public class MapFindResponse {
 
     private MapFindResponse(final Long mapId,
                             final String mapName,
+                            final String mapDrawing,
                             final String mapImageUrl,
+                            final String sharingMapId,
                             final String managerEmail) {
         this.mapId = mapId;
         this.mapName = mapName;
+        this.mapDrawing = mapDrawing;
         this.mapImageUrl = mapImageUrl;
+        this.sharingMapId = sharingMapId;
         this.managerEmail = managerEmail;
     }
 
@@ -47,11 +51,14 @@ public class MapFindResponse {
         );
     }
 
-    public static MapFindResponse from(final Map map) {
+    public static MapFindResponse ofAdmin(final Map map,
+                                          final String sharingMapId) {
         return new MapFindResponse(
                 map.getId(),
                 map.getName(),
+                map.getMapDrawing(),
                 map.getMapImageUrl(),
+                sharingMapId,
                 map.getMember().getEmail()
         );
     }

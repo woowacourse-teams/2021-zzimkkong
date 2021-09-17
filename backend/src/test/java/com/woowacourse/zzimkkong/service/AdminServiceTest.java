@@ -8,10 +8,12 @@ import com.woowacourse.zzimkkong.dto.admin.PageInfo;
 import com.woowacourse.zzimkkong.dto.map.MapFindResponse;
 import com.woowacourse.zzimkkong.dto.member.MemberFindResponse;
 import com.woowacourse.zzimkkong.exception.member.PasswordMismatchException;
+import com.woowacourse.zzimkkong.infrastructure.SharingIdGenerator;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -30,6 +32,9 @@ class AdminServiceTest extends ServiceTest {
 
     @Autowired
     private AdminService adminService;
+
+    @MockBean
+    private SharingIdGenerator sharingIdGenerator;
 
     @BeforeEach
     void setUp() {
@@ -71,10 +76,11 @@ class AdminServiceTest extends ServiceTest {
         PageRequest pageRequest = PageRequest.of(0, 20, Sort.unsorted());
         given(maps.findAll(any(Pageable.class)))
                 .willReturn(new PageImpl<>(List.of(luther), pageRequest, 1));
-
+        given(sharingIdGenerator.from(any(Map.class)))
+                .willReturn("someId");
         //when
         MapsResponse mapsResponse = MapsResponse.from(
-                List.of(MapFindResponse.from(luther)),
+                List.of(MapFindResponse.ofAdmin(luther, "someId")),
                 PageInfo.from(0, 1, 20, 1)
         );
         MapsResponse maps = adminService.findMaps(pageRequest);

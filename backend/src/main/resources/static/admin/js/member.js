@@ -1,5 +1,5 @@
 let memberPage;
-let page = 0;
+let page;
 
 document.addEventListener("DOMContentLoaded", function () {
     memberPage = new MemberPage();
@@ -29,12 +29,19 @@ function getMembers(pageNumber) {
         });
 }
 
+MemberPage.prototype.initMemberPage = function () {
+    let btn = document.getElementById('btn-members');
+    btn.disabled = true;
+    page = 0;
+    getMembers(page);
+}
+
 document.addEventListener('scroll', () => {
     if ((window.innerHeight + window.scrollY) >= document.body.offsetHeight) {
         getMembers(page + 1);
     }
 })
 
-MemberPage.prototype.initMemberPage = function () {
-    getMembers(page);
+function move(name) {
+    location.href = window.location.origin + '/admin/' + name;
 }
