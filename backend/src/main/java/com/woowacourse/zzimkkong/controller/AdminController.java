@@ -14,9 +14,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 @Controller
 @RequestMapping("/admin")
 public class AdminController {
-    private static final String ADMIN_ID = "zzimkkong";
-    private static final String ADMIN_PWD = "zzimkkong1!";
-
     private final AdminService adminService;
 
     public AdminController(AdminService adminService) {
@@ -35,14 +32,13 @@ public class AdminController {
 
     @PostMapping("/api/login")
     public ResponseEntity<Void> login(@RequestParam String id, @RequestParam String password) {
-        if (id.equals(ADMIN_ID) && password.equals(ADMIN_PWD)) {
-            return ResponseEntity.ok().build();
-        }
-        return ResponseEntity.badRequest().build();
+        adminService.login(id, password);
+        return ResponseEntity.ok().build();
     }
 
     @GetMapping("/api/members")
-    public ResponseEntity<MembersResponse> member(@PageableDefault(value = 20) Pageable pageable){
-        return ResponseEntity.ok(adminService.findMembers(pageable));
+    public ResponseEntity<MembersResponse> member(@PageableDefault(value = 20) Pageable pageable) {
+        MembersResponse members = adminService.findMembers(pageable);
+        return ResponseEntity.ok(members);
     }
 }
