@@ -104,19 +104,19 @@ class GoogleRequesterTest {
                 "    \"error_description\": \"Bad Request\"\n" +
                 "}";
 
-        try (MockWebServer mockGithubServer = new MockWebServer()) {
+        try (MockWebServer mockGoogleServer = new MockWebServer()) {
             // given
-            mockGithubServer.start();
+            mockGoogleServer.start();
 
-            setUpGetTokenResponse(mockGithubServer, getTokenErrorResponse);
-            setUpGetTokenResponse(mockGithubServer, USER_INFO_RESPONSE_EXAMPLE);
+            setUpGetTokenResponse(mockGoogleServer, getTokenErrorResponse);
+            setUpGetTokenResponse(mockGoogleServer, USER_INFO_RESPONSE_EXAMPLE);
 
             GoogleRequester googleRequester = new GoogleRequester(
                     "clientId",
                     "secretId",
                     this.redirectUri,
-                    String.format("http://%s:%s", mockGithubServer.getHostName(), mockGithubServer.getPort()),
-                    String.format("http://%s:%s", mockGithubServer.getHostName(), mockGithubServer.getPort())
+                    String.format("http://%s:%s", mockGoogleServer.getHostName(), mockGoogleServer.getPort()),
+                    String.format("http://%s:%s", mockGoogleServer.getHostName(), mockGoogleServer.getPort())
             );
 
             // when, then
