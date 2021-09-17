@@ -15,12 +15,16 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.EnumSource;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.security.core.parameters.P;
 
 import java.util.Arrays;
 import java.util.Optional;
+import java.util.stream.Stream;
 
 import static com.woowacourse.zzimkkong.Constants.*;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -137,16 +141,20 @@ class AuthServiceTest extends ServiceTest {
                 .isInstanceOf(NoSuchOAuthMemberException.class);
     }
 
+    static Stream<Arguments> loginByOauthInvalidProviderException() {
+        return Stream.of(
+                Arguments.of(OauthProvider.GITHUB, OauthProvider.GOOGLE),
+                Arguments.of(OauthProvider.GOOGLE, OauthProvider.GITHUB),
+                Arguments.of(OauthProvider.GOOGLE, null)
+        );
+    }
+
     @ParameterizedTest
-    @EnumSource(OauthProvider.class)
+    @MethodSource
     @DisplayName("회원가입한 provider와 다른 provider로 같은 이메일 oauth 로그인 시 오류가 발생한다.")
-    void loginByOauthInvalidProviderException(OauthProvider oauthProvider) {
+    void loginByOauthInvalidProviderException(OauthProvider oauthProvider, OauthProvider actualOauthProvider) {
         // given
         String mockCode = "Mock Code from OauthProvider";
-        OauthProvider anotherProvider = Arrays.stream(OauthProvider.values())
-                .filter(provider -> !provider.equals(oauthProvider))
-                .findAny()
-                .get();
 
         OauthUserInfo mockOauthUserInfo = mock(OauthUserInfo.class);
         given(oauthHandler.getUserInfoFromCode(any(OauthProvider.class), anyString()))
@@ -154,7 +162,7 @@ class AuthServiceTest extends ServiceTest {
         given(mockOauthUserInfo.getEmail())
                 .willReturn(EMAIL);
         given(members.findByEmail(EMAIL))
-                .willReturn(Optional.of(new Member(EMAIL, ORGANIZATION, anotherProvider)));
+                .willReturn(Optional.of(new Member(EMAIL, ORGANIZATION, actualOauthProvider)));
 
         // when, then
         assertThatThrownBy(() -> authService.loginByOauth(oauthProvider, mockCode))
