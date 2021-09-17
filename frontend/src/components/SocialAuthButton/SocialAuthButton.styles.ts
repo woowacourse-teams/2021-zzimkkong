@@ -1,22 +1,22 @@
 import styled, { css } from 'styled-components';
 import PALETTE from 'constants/palette';
-import { Props } from './SocialLoginButton';
+import { Props as JoinButtonProps } from './SocialJoinButton';
+import { Props as LoginButtonProps } from './SocialLoginButton';
 
 const providerCSS = {
-  github: css`
+  GITHUB: css`
     background-color: ${PALETTE.GITHUB};
     color: ${PALETTE.WHITE};
     border: none;
   `,
-  google: css`
+  GOOGLE: css`
     background-color: ${PALETTE.WHITE};
     color: ${PALETTE.BLACK[700]};
     border: 1px solid ${PALETTE.BLACK[700]};
   `,
 };
 
-export const SocialLoginButton = styled.a<Props>`
-  ${({ provider }) => providerCSS[provider]};
+const buttonCSS = css`
   display: flex;
   justify-content: center;
   align-items: center;
@@ -24,6 +24,19 @@ export const SocialLoginButton = styled.a<Props>`
   text-decoration: none;
   padding: 0.75rem 1rem;
   font-size: 1.25rem;
+  border-radius: 0.125rem;
+`;
+
+export const SocialLoginButton = styled.a<LoginButtonProps>`
+  ${({ provider }) => providerCSS[provider]}
+  ${buttonCSS};
+`;
+
+export const SocialJoinButton = styled.button<JoinButtonProps>`
+  ${({ provider }) => providerCSS[provider]}
+  ${buttonCSS};
+  width: 100%;
+  cursor: pointer;
 `;
 
 export const Icon = styled.div`

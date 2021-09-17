@@ -17,6 +17,16 @@ export interface LoginSuccess {
   accessToken: string;
 }
 
+export interface SocialLoginFailure {
+  message?: string;
+  email?: string;
+}
+
+export interface QuerySocialEmailSuccess {
+  email: string;
+  oauthProvider: 'GITHUB' | 'GOOGLE';
+}
+
 export type QueryGuestMapSuccess = MapItemResponse;
 
 export type QueryManagerMapSuccess = MapItemResponse;
