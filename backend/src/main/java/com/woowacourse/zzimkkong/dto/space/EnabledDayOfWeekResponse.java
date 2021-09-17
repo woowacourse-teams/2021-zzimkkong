@@ -11,6 +11,8 @@ import java.util.Arrays;
 @Getter
 @NoArgsConstructor
 public class EnabledDayOfWeekResponse {
+    private static final String DELIMITER = ",";
+
     private Boolean monday = false;
     private Boolean tuesday = false;
     private Boolean wednesday = false;
@@ -23,7 +25,7 @@ public class EnabledDayOfWeekResponse {
         final EnabledDayOfWeekResponse enabledDayOfWeekResponse = new EnabledDayOfWeekResponse();
 
         final Field[] declaredFields = enabledDayOfWeekResponse.getClass().getDeclaredFields();
-        Arrays.stream(enabledDayOfWeek.split(","))
+        Arrays.stream(enabledDayOfWeek.split(DELIMITER))
                 .map(String::trim)
                 .map(String::toLowerCase)
                 .forEach(dayOfWeek -> {
