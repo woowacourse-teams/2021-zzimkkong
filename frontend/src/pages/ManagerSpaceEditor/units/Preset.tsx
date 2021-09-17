@@ -55,8 +55,6 @@ const Preset = (): JSX.Element => {
   });
 
   const handleSelectPreset = (id: number | null) => {
-    setSelectedPresetId(id);
-
     if (id === null) return;
 
     const selectedPreset = presets.find((preset) => preset.id === id) ?? null;
@@ -86,6 +84,8 @@ const Preset = (): JSX.Element => {
       reservationMaximumTimeUnit,
       enabledWeekdays: enabledWeekdays as SpaceFormValue['enabledWeekdays'],
     });
+
+    setSelectedPresetId(id);
   };
 
   const handleAddPreset = () => {

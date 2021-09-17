@@ -1,7 +1,7 @@
 import { PropsWithChildren } from 'react';
 import { Redirect, Route, RouteProps } from 'react-router-dom';
-import { useRecoilValue } from 'recoil';
-import accessTokenState from 'state/accessTokenState';
+import { LOCAL_STORAGE_KEY } from 'constants/storage';
+import { getLocalStorageItem } from 'utils/localStorage';
 
 interface Props extends RouteProps {
   redirectPath: string;
@@ -12,7 +12,10 @@ const PrivateRoute = ({
   children,
   ...props
 }: PropsWithChildren<Props>): JSX.Element => {
-  const token = useRecoilValue(accessTokenState);
+  const token = getLocalStorageItem({
+    key: LOCAL_STORAGE_KEY.ACCESS_TOKEN,
+    defaultValue: '',
+  });
 
   return <Route {...props}>{token ? children : <Redirect to={redirectPath} />}</Route>;
 };

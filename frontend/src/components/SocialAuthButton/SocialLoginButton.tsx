@@ -1,18 +1,18 @@
 import { AnchorHTMLAttributes } from 'react';
 import { ReactComponent as GithubIcon } from 'assets/svg/github-logo.svg';
 import { ReactComponent as GoogleIcon } from 'assets/svg/google-logo.svg';
-import * as Styled from './SocialLoginButton.styles';
+import * as Styled from './SocialAuthButton.styles';
 
 export interface Props extends AnchorHTMLAttributes<HTMLAnchorElement> {
-  provider: 'github' | 'google';
+  provider: 'GITHUB' | 'GOOGLE';
 }
 
 const social = {
-  github: {
+  GITHUB: {
     icon: <GithubIcon />,
     text: 'Github로 로그인',
   },
-  google: {
+  GOOGLE: {
     icon: <GoogleIcon />,
     text: 'Google로 로그인',
   },

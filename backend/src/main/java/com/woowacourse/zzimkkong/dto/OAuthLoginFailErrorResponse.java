@@ -7,7 +7,7 @@ import lombok.Getter;
 public class OAuthLoginFailErrorResponse extends ErrorResponse {
     private final String email;
 
-    public OAuthLoginFailErrorResponse(String message, String email) {
+    private OAuthLoginFailErrorResponse(String message, String email) {
         super(message);
         this.email = email;
     }

@@ -68,6 +68,10 @@ export const Input = styled.input<InputProps>`
     border-color: ${({ theme }) => theme.primary[400]};
     box-shadow: inset 0px 0px 0px 1px ${({ theme }) => theme.primary[400]};
   }
+
+  &:disabled {
+    color: ${({ theme }) => theme.gray[400]};
+  }
 `;
 
 export const Message = styled.p<MessageProps>`

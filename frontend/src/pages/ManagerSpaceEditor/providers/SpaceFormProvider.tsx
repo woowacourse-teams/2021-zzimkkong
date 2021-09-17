@@ -57,6 +57,7 @@ const SpaceFormProvider = ({ children }: Props): JSX.Element => {
       (weekday) => (nextEnableWeekdays[weekday] = enableWeekdays.includes(weekday))
     );
 
+    setSelectedPresetId(null);
     setValues({
       name,
       color,
@@ -120,6 +121,7 @@ const SpaceFormProvider = ({ children }: Props): JSX.Element => {
   };
 
   const resetForm = () => {
+    setSelectedPresetId(null);
     setValues({ ...initialSpaceFormValue, enabledWeekdays: initialEnabledWeekdays, area: null });
   };
 

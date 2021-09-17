@@ -8,21 +8,19 @@ import RESERVATION from 'constants/reservation';
 import TIME from 'constants/time';
 import useInputs from 'hooks/useInputs';
 import useScrollToTop from 'hooks/useScrollToTop';
-import { Reservation, Space } from 'types/common';
+import { ManagerSpaceAPI, Reservation } from 'types/common';
 import { formatDate, formatTime, formatTimePrettier } from 'utils/datetime';
-import { EditReservationParams } from '../GuestReservation';
-import * as Styled from './ReservationForm.styles';
+import { CreateReservationParams, EditReservationParams } from '../ManagerReservation';
+import * as Styled from './ManagerReservationForm.styles';
 
 interface Props {
   isEditMode: boolean;
-  space: Space;
+  space: ManagerSpaceAPI;
   reservation?: Reservation;
   date: string;
   onChangeDate: ChangeEventHandler<HTMLInputElement>;
-  onSubmit: (
-    event: React.FormEvent<HTMLFormElement>,
-    { reservation, reservationId }: EditReservationParams
-  ) => void;
+  onCreateReservation: ({ reservation }: CreateReservationParams) => void;
+  onEditReservation: ({ reservation, reservationId }: EditReservationParams) => void;
 }
 
 interface Form {
@@ -33,13 +31,14 @@ interface Form {
   password: string;
 }
 
-const ReservationForm = ({
+const ManagerReservationForm = ({
   isEditMode,
   space,
   date,
   reservation,
-  onSubmit,
   onChangeDate,
+  onCreateReservation,
+  onEditReservation,
 }: Props): JSX.Element => {
   useScrollToTop();
 
@@ -84,21 +83,36 @@ const ReservationForm = ({
   const startDateTime = new Date(`${date}T${startTime}Z`);
   const endDateTime = new Date(`${date}T${endTime}Z`);
 
+  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+
+    if (!reservation) {
+      onCreateReservation({
+        reservation: {
+          startDateTime,
+          endDateTime,
+          password,
+          name,
+          description,
+        },
+      });
+
+      return;
+    }
+
+    onEditReservation({
+      reservation: {
+        startDateTime,
+        endDateTime,
+        name,
+        description,
+      },
+      reservationId: reservation?.id,
+    });
+  };
+
   return (
-    <Styled.ReservationForm
-      onSubmit={(event) =>
-        onSubmit(event, {
-          reservation: {
-            startDateTime,
-            endDateTime,
-            password,
-            name,
-            description,
-          },
-          reservationId: reservation?.id,
-        })
-      }
-    >
+    <Styled.ReservationForm onSubmit={(event) => handleSubmit(event)}>
       <Styled.Section>
         <Styled.InputWrapper>
           <Input
@@ -161,21 +175,23 @@ const ReservationForm = ({
             {formatTimePrettier(reservationMaximumTimeUnit)})
           </Styled.TimeFormMessage>
         </Styled.InputWrapper>
-        <Styled.InputWrapper>
-          <Input
-            type="password"
-            label="비밀번호"
-            name="password"
-            value={password}
-            onChange={onChangeForm}
-            minLength={RESERVATION.PASSWORD.MIN_LENGTH}
-            maxLength={RESERVATION.PASSWORD.MAX_LENGTH}
-            pattern={REGEXP.RESERVATION_PASSWORD.source}
-            inputMode="numeric"
-            message={MESSAGE.RESERVATION.PASSWORD_MESSAGE}
-            required
-          />
-        </Styled.InputWrapper>
+        {isEditMode || (
+          <Styled.InputWrapper>
+            <Input
+              type="password"
+              label="비밀번호"
+              name="password"
+              value={password}
+              onChange={onChangeForm}
+              minLength={RESERVATION.PASSWORD.MIN_LENGTH}
+              maxLength={RESERVATION.PASSWORD.MAX_LENGTH}
+              pattern={REGEXP.RESERVATION_PASSWORD.source}
+              inputMode="numeric"
+              message={MESSAGE.RESERVATION.PASSWORD_MESSAGE}
+              required
+            />
+          </Styled.InputWrapper>
+        )}
       </Styled.Section>
       <Styled.ButtonWrapper>
         <Button fullWidth variant="primary" size="large">
@@ -186,4 +202,4 @@ const ReservationForm = ({
   );
 };
 
-export default ReservationForm;
+export default ManagerReservationForm;
