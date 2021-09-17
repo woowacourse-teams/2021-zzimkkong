@@ -23,7 +23,7 @@ export const Default = Template.bind({});
 Default.args = {
   variant: 'default',
   checked: false,
-  text: '토글 비활성화됨',
+  uncheckedText: '토글 비활성화됨',
   checkedText: '토글 활성화됨',
   textPosition: 'left',
 };
@@ -32,7 +32,7 @@ export const Primary = Template.bind({});
 Primary.args = {
   variant: 'primary',
   checked: false,
-  text: '토글 비활성화됨',
+  uncheckedText: '토글 비활성화됨',
   checkedText: '토글 활성화됨',
   textPosition: 'right',
 };

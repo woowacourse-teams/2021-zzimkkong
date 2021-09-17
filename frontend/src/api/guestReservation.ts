@@ -1,11 +1,11 @@
 import { AxiosResponse } from 'axios';
 import { QueryFunction, QueryKey } from 'react-query';
-import MESSAGE from 'constants/message';
+import THROW_ERROR from 'constants/throwError';
 import { QueryGuestReservationsSuccess } from 'types/response';
 import api from './api';
 
 export interface QueryMapReservationsParams {
-  mapId: number | null;
+  mapId: number;
   date: string;
 }
 
@@ -13,7 +13,7 @@ export interface QuerySpaceReservationsParams extends QueryMapReservationsParams
   spaceId: number;
 }
 
-interface ReservationParams {
+export interface ReservationParams {
   reservation: {
     startDateTime: Date;
     endDateTime: Date;
@@ -49,7 +49,7 @@ export const queryGuestReservations: QueryFunction<
   const { mapId, spaceId, date } = data;
 
   if (!mapId) {
-    throw new Error(MESSAGE.RESERVATION.INVALID_MAP_ID);
+    throw new Error(THROW_ERROR.INVALID_MAP_ID);
   }
 
   return api.get(`/guests/maps/${mapId}/spaces/${spaceId}/reservations?date=${date}`);

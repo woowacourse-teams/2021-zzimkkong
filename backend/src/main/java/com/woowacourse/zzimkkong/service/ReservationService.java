@@ -29,8 +29,6 @@ import java.util.stream.Collectors;
 @Service
 @Transactional
 public class ReservationService {
-    private static final long ONE_DAY = 1L;
-
     private final MapRepository maps;
     private final ReservationRepository reservations;
 
@@ -62,6 +60,7 @@ public class ReservationService {
                 Reservation.builder()
                         .startTime(reservationCreateDto.getStartDateTime())
                         .endTime(reservationCreateDto.getEndDateTime())
+                        .date(reservationCreateDto.getStartDateTime().toLocalDate())
                         .password(reservationCreateDto.getPassword())
                         .userName(reservationCreateDto.getName())
                         .description(reservationCreateDto.getDescription())
@@ -157,6 +156,7 @@ public class ReservationService {
         Reservation updateReservation = Reservation.builder()
                 .startTime(reservationUpdateDto.getStartDateTime())
                 .endTime(reservationUpdateDto.getEndDateTime())
+                .date(reservationUpdateDto.getStartDateTime().toLocalDate())
                 .userName(reservationUpdateDto.getName())
                 .description(reservationUpdateDto.getDescription())
                 .space(space)
@@ -227,7 +227,7 @@ public class ReservationService {
     private void validateSpaceSetting(Space space, LocalDateTime startDateTime, LocalDateTime endDateTime) {
         int durationMinutes = (int) ChronoUnit.MINUTES.between(startDateTime, endDateTime);
 
-        if (space.isIncorrectTimeUnit(startDateTime.getMinute()) | space.isNotDivideBy(durationMinutes)) {
+        if (space.isNotDivisibleByTimeUnit(startDateTime.getMinute()) || space.isNotDivisibleByTimeUnit(durationMinutes)) {
             throw new InvalidTimeUnitException();
         }
 
@@ -260,19 +260,11 @@ public class ReservationService {
     }
 
     private List<Reservation> getReservations(final Collection<Space> findSpaces, final LocalDate date) {
-        LocalDateTime minimumDateTime = date.atStartOfDay();
-        LocalDateTime maximumDateTime = minimumDateTime.plusDays(ONE_DAY);
         List<Long> spaceIds = findSpaces.stream()
                 .map(Space::getId)
                 .collect(Collectors.toList());
 
-        return reservations.findAllBySpaceIdInAndStartTimeIsBetweenAndEndTimeIsBetween(
-                spaceIds,
-                minimumDateTime,
-                maximumDateTime,
-                minimumDateTime,
-                maximumDateTime
-        );
+        return reservations.findAllBySpaceIdInAndDate(spaceIds, date);
     }
 
     private void validateSpaceExistence(final Map map, final Long spaceId) {

@@ -9,6 +9,7 @@ import { ReactComponent as EditIcon } from 'assets/svg/edit.svg';
 import { ReactComponent as MapEditorIcon } from 'assets/svg/map-editor.svg';
 import { ReactComponent as MenuIcon } from 'assets/svg/menu.svg';
 import { ReactComponent as SpaceEditorIcon } from 'assets/svg/space-editor.svg';
+import Button from 'components/Button/Button';
 import DateInput from 'components/DateInput/DateInput';
 import Drawer from 'components/Drawer/Drawer';
 import Header from 'components/Header/Header';
@@ -20,28 +21,34 @@ import Panel from 'components/Panel/Panel';
 import ReservationListItem from 'components/ReservationListItem/ReservationListItem';
 import MESSAGE from 'constants/message';
 import PATH, { HREF } from 'constants/path';
-import useManagerMaps from 'hooks/useManagerMaps';
-import useManagerReservations from 'hooks/useManagerReservations';
+import useManagerMapReservations from 'hooks/query/useManagerMapReservations';
+import useManagerMaps from 'hooks/query/useManagerMaps';
+import useManagerSpaces from 'hooks/query/useManagerSpaces';
 import { Order, Reservation } from 'types/common';
 import { ErrorResponse, MapItemResponse } from 'types/response';
 import { formatDate } from 'utils/datetime';
+import { sortReservations } from 'utils/sort';
 import { isNullish } from 'utils/type';
 import * as Styled from './ManagerMain.styles';
 
-interface LocationState {
+export interface ManagerMainState {
   mapId?: number;
+  targetDate?: Date;
 }
 
 const ManagerMain = (): JSX.Element => {
   const history = useHistory();
-  const location = useLocation<LocationState>();
+  const location = useLocation<ManagerMainState>();
 
-  const [date, setDate] = useState(new Date());
+  const mapId = location.state?.mapId;
+  const targetDate = location.state?.targetDate;
+
+  const [date, setDate] = useState(targetDate ?? new Date());
   const [open, setOpen] = useState(false);
 
-  const [selectedMapId, setSelectedMapId] = useState<number | null>(location.state?.mapId ?? null);
+  const [selectedMapId, setSelectedMapId] = useState<number | null>(mapId ?? null);
   const [selectedMapName, setSelectedMapName] = useState('');
-  const [spacesOrder, setSpacesOrder] = useState<Order>('ascending');
+  const [spacesOrder, setSpacesOrder] = useState<Order>(Order.Ascending);
 
   const onRequestError = (error: AxiosError<ErrorResponse>) => {
     alert(error.response?.data?.message ?? MESSAGE.MANAGER_MAIN.UNEXPECTED_GET_DATA_ERROR);
@@ -54,14 +61,23 @@ const ManagerMain = (): JSX.Element => {
   const organization = getMaps.data?.data.organization ?? '';
   const maps = useMemo((): MapItemResponse[] => getMaps.data?.data.maps ?? [], [getMaps]);
 
-  const getReservations = useManagerReservations(
+  const getReservations = useManagerMapReservations(
     {
-      mapId: selectedMapId,
+      mapId: selectedMapId as number,
       date: formatDate(date),
     },
     {
       enabled: !isNullish(selectedMapId),
       onError: onRequestError,
+    }
+  );
+
+  const getSpaces = useManagerSpaces(
+    {
+      mapId: selectedMapId as number,
+    },
+    {
+      enabled: !isNullish(selectedMapId),
     }
   );
 
@@ -77,27 +93,14 @@ const ManagerMain = (): JSX.Element => {
 
   const reservations = useMemo(() => getReservations.data?.data?.data ?? [], [getReservations]);
   const sortedReservations = useMemo(
-    () =>
-      reservations.sort((a, b) => {
-        if (a.spaceColor !== b.spaceColor) {
-          if (spacesOrder === 'ascending') return a.spaceColor < b.spaceColor ? -1 : 1;
-
-          return a.spaceColor > b.spaceColor ? -1 : 1;
-        }
-
-        const aSpaceNameWithoutWhitespace = a.spaceName.replaceAll(' ', '');
-        const bSpaceNameWithoutWhitespace = b.spaceName.replaceAll(' ', '');
-
-        if (spacesOrder === 'ascending')
-          return aSpaceNameWithoutWhitespace < bSpaceNameWithoutWhitespace ? -1 : 1;
-
-        return aSpaceNameWithoutWhitespace > bSpaceNameWithoutWhitespace ? -1 : 1;
-      }),
+    () => sortReservations(reservations, spacesOrder),
     [reservations, spacesOrder]
   );
 
+  const spaces = useMemo(() => getSpaces.data?.data.spaces ?? [], [getSpaces]);
+
   const handleClickSpacesOrder = () => {
-    setSpacesOrder((prev) => (prev === 'ascending' ? 'descending' : 'ascending'));
+    setSpacesOrder((prev) => (prev === Order.Ascending ? Order.Descending : Order.Ascending));
   };
 
   const removeMap = useMutation(deleteMap, {
@@ -163,6 +166,19 @@ const ManagerMain = (): JSX.Element => {
     handleCloseDrawer();
   };
 
+  const handleCreateReservation = (spaceId: number) => {
+    if (!selectedMapId) return;
+
+    history.push({
+      pathname: PATH.MANAGER_RESERVATION,
+      state: {
+        mapId: selectedMapId,
+        space: spaces?.find(({ id }) => id === spaceId),
+        selectedDate: formatDate(date),
+      },
+    });
+  };
+
   const handleEditReservation = (reservation: Reservation, spaceId: number) => {
     if (!selectedMapId) return;
 
@@ -170,7 +186,7 @@ const ManagerMain = (): JSX.Element => {
       pathname: PATH.MANAGER_RESERVATION_EDIT,
       state: {
         mapId: selectedMapId,
-        spaceId,
+        space: spaces?.find(({ id }) => id === spaceId),
         reservation,
         selectedDate: formatDate(date),
       },
@@ -272,9 +288,18 @@ const ManagerMain = (): JSX.Element => {
           <Styled.SpaceList>
             {sortedReservations &&
               sortedReservations.map(({ spaceId, spaceName, spaceColor, reservations }, index) => (
-                <Panel key={`space-${spaceId}`} role="listitem" expandable>
+                <Panel key={`space-${spaceId}`} role="listitem">
                   <Panel.Header dotColor={spaceColor}>
-                    <Panel.Title>{spaceName}</Panel.Title>
+                    <Styled.PanelHeadWrapper>
+                      <Panel.Title>{spaceName}</Panel.Title>
+                      <Button
+                        variant="primary-text"
+                        size="dense"
+                        onClick={() => handleCreateReservation(spaceId)}
+                      >
+                        예약 추가하기
+                      </Button>
+                    </Styled.PanelHeadWrapper>
                   </Panel.Header>
                   <Panel.Content>
                     {reservations.length === 0 ? (

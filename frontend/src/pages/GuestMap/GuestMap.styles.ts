@@ -1,10 +1,4 @@
-import { Link } from 'react-router-dom';
 import styled from 'styled-components';
-import { Color } from 'types/common';
-
-interface ColorDotProps {
-  color: Color;
-}
 
 export const Page = styled.div`
   display: flex;
@@ -20,15 +14,6 @@ export const PageTitle = styled.h2`
   font-size: 1.5rem;
   font-weight: 700;
   margin: 1.5rem auto;
-`;
-
-export const SpaceTitle = styled.h3`
-  position: sticky;
-  top: 0;
-  font-size: 1.25rem;
-  text-align: center;
-  padding: 2rem;
-  background-color: ${({ theme }) => theme.white};
 `;
 
 export const MapContainer = styled.div`
@@ -74,37 +59,6 @@ export const SpaceAreaText = styled.text`
   user-select: none;
 `;
 
-export const ReservationContainer = styled.div`
-  padding: 0 2rem 2rem;
-`;
-
-export const ReservationLink = styled(Link)`
-  position: sticky;
-  bottom: 0;
-  left: 0;
-  width: 100%;
-  text-align: center;
-  display: block;
-  background: ${({ theme }) => theme.primary[400]};
-  color: ${({ theme }) => theme.white};
-  text-decoration: none;
-  padding: 1rem;
-  font-size: 1.25rem;
-  font-weight: 700;
-  cursor: pointer;
-`;
-
-export const ReservationList = styled.div`
-  overflow-y: auto;
-  & > [role='listitem'] {
-    border-bottom: 1px solid ${({ theme }) => theme.black[400]};
-
-    &:last-of-type {
-      border: 0;
-    }
-  }
-`;
-
 export const SelectBox = styled.div`
   display: flex;
   flex-direction: column;
@@ -139,22 +93,4 @@ export const DeleteModalContainer = styled.div`
   display: flex;
   justify-content: flex-end;
   margin-top: 1.5rem;
-`;
-
-export const Message = styled.p`
-  padding: 1rem 0;
-`;
-
-export const ColorDot = styled.span<ColorDotProps>`
-  display: inline-block;
-  width: 1rem;
-  height: 1rem;
-  background-color: ${({ color }) => color};
-  border-radius: 50%;
-  margin-right: 0.75rem;
-`;
-
-export const IconButtonWrapper = styled.div`
-  display: flex;
-  gap: 0.5rem;
 `;

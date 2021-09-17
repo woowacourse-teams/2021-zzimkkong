@@ -13,16 +13,7 @@ export const PageTitle = styled.h2`
   margin: 2.125rem auto;
 `;
 
-export const Form = styled.form`
-  margin: 3.75rem 0;
-
-  label {
-    margin-bottom: 3rem;
-  }
-`;
-
 export const JoinLinkMessage = styled.p`
-  margin: 1rem 0;
   text-align: center;
   font-size: 0.75rem;
   color: ${({ theme }) => theme.gray[500]};
@@ -36,4 +27,15 @@ export const JoinLinkMessage = styled.p`
       font-weight: 700;
     }
   }
+`;
+
+export const HorizontalLine = styled.hr`
+  margin: 1.5rem 0;
+`;
+
+export const SocialLogin = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  margin: 1.5rem 0;
 `;

@@ -2,11 +2,13 @@ package com.woowacourse.zzimkkong.dto;
 
 import com.woowacourse.zzimkkong.exception.InputFieldException;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 
 @Getter
+@NoArgsConstructor
 public class InputFieldErrorResponse extends ErrorResponse {
-    private final String field;
+    private String field;
 
     private InputFieldErrorResponse(final String message, final String field) {
         super(message);

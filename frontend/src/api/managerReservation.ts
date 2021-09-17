@@ -1,15 +1,36 @@
 import { AxiosResponse } from 'axios';
 import { QueryFunction, QueryKey } from 'react-query';
-import MESSAGE from 'constants/message';
-import { QueryManagerReservationsSuccess } from 'types/response';
+import {
+  QueryManagerMapReservationsSuccess,
+  QueryManagerSpaceReservationsSuccess,
+} from 'types/response';
 import api from './api';
 
 export interface QueryMapReservationsParams {
-  mapId: number | null;
+  mapId: number;
   date: string;
 }
 
-interface ReservationParams {
+export interface QueryManagerSpaceReservationsParams extends QueryMapReservationsParams {
+  spaceId: number;
+}
+
+export interface PostReservationParams {
+  mapId: number;
+  spaceId: number;
+  reservation: {
+    startDateTime: Date;
+    endDateTime: Date;
+    name: string;
+    description: string;
+    password: string;
+  };
+}
+
+export interface PutReservationParams {
+  mapId: number;
+  spaceId: number;
+  reservationId: number;
   reservation: {
     startDateTime: Date;
     endDateTime: Date;
@@ -18,31 +39,38 @@ interface ReservationParams {
   };
 }
 
-interface PutReservationParams extends ReservationParams {
-  mapId: number;
-  spaceId: number;
-  reservationId: number;
-}
-
 interface DeleteReservationParams {
   mapId: number;
   spaceId: number;
   reservationId: number;
 }
 
-export const queryManagerReservations: QueryFunction<
-  AxiosResponse<QueryManagerReservationsSuccess>,
+export const queryManagerSpaceReservations: QueryFunction<
+  AxiosResponse<QueryManagerSpaceReservationsSuccess>,
+  [QueryKey, QueryManagerSpaceReservationsParams]
+> = ({ queryKey }) => {
+  const [, data] = queryKey;
+  const { mapId, spaceId, date } = data;
+
+  return api.get(`/managers/maps/${mapId}/spaces/${spaceId}/reservations?date=${date}`);
+};
+
+export const queryManagerMapReservations: QueryFunction<
+  AxiosResponse<QueryManagerMapReservationsSuccess>,
   [QueryKey, QueryMapReservationsParams]
 > = ({ queryKey }) => {
   const [, data] = queryKey;
   const { mapId, date } = data;
 
-  if (!mapId) {
-    throw new Error(MESSAGE.RESERVATION.INVALID_MAP_ID);
-  }
-
   return api.get(`/managers/maps/${mapId}/spaces/reservations?date=${date}`);
 };
+
+export const postManagerReservation = ({
+  reservation,
+  mapId,
+  spaceId,
+}: PostReservationParams): Promise<AxiosResponse<never>> =>
+  api.post(`/managers/maps/${mapId}/spaces/${spaceId}/reservations`, reservation);
 
 export const putManagerReservation = ({
   reservation,

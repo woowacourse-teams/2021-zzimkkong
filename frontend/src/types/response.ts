@@ -17,6 +17,16 @@ export interface LoginSuccess {
   accessToken: string;
 }
 
+export interface SocialLoginFailure {
+  message?: string;
+  email?: string;
+}
+
+export interface QuerySocialEmailSuccess {
+  email: string;
+  oauthProvider: 'GITHUB' | 'GOOGLE';
+}
+
 export type QueryGuestMapSuccess = MapItemResponse;
 
 export type QueryManagerMapSuccess = MapItemResponse;
@@ -26,7 +36,10 @@ export interface QueryManagerMapsSuccess {
   organization: string;
 }
 
-export interface QueryManagerReservationsSuccess {
+export interface QueryManagerSpaceReservationsSuccess {
+  reservations: Reservation[];
+}
+export interface QueryManagerMapReservationsSuccess {
   data: SpaceReservation[];
 }
 

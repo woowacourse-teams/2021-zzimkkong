@@ -1,8 +1,12 @@
-import { DrawingAreaShape } from 'constants/editor';
+import { DrawingAreaShape } from 'types/editor';
+import { MapElementType } from './editor';
 
 export type Color = string;
 
-export type Order = 'ascending' | 'descending';
+export enum Order {
+  Ascending = 'ascending',
+  Descending = 'descending',
+}
 
 export interface Coordinate {
   x: number;
@@ -15,7 +19,7 @@ export interface ScrollPosition {
 }
 export interface MapElement {
   id: number;
-  type: 'polyline' | 'rect';
+  type: MapElementType;
   width?: number;
   height?: number;
   x?: number;
@@ -43,7 +47,7 @@ interface SpaceSetting {
 }
 
 export interface Area {
-  shape: string;
+  shape: DrawingAreaShape;
   width: number;
   height: number;
   x: number;

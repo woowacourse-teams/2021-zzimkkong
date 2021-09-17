@@ -68,11 +68,15 @@ export const Input = styled.input<InputProps>`
     border-color: ${({ theme }) => theme.primary[400]};
     box-shadow: inset 0px 0px 0px 1px ${({ theme }) => theme.primary[400]};
   }
+
+  &:disabled {
+    color: ${({ theme }) => theme.gray[400]};
+  }
 `;
 
 export const Message = styled.p<MessageProps>`
   ${({ status = 'default' }) => statusCSS[status]};
   font-size: 0.75rem;
   position: absolute;
-  margin: 0.25rem 0.75rem;
+  margin: 0.25rem 0.5rem;
 `;

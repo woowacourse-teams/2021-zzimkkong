@@ -1,6 +1,10 @@
 package com.woowacourse.zzimkkong.controller;
 
+import com.woowacourse.zzimkkong.domain.OauthProvider;
+import com.woowacourse.zzimkkong.domain.oauth.GithubUserInfo;
+import com.woowacourse.zzimkkong.domain.oauth.GoogleUserInfo;
 import com.woowacourse.zzimkkong.dto.member.LoginRequest;
+import com.woowacourse.zzimkkong.dto.member.oauth.OauthMemberSaveRequest;
 import com.woowacourse.zzimkkong.dto.member.TokenResponse;
 import com.woowacourse.zzimkkong.infrastructure.AuthorizationExtractor;
 import io.restassured.RestAssured;
@@ -11,9 +15,17 @@ import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 
+import java.util.Map;
+
+import static com.woowacourse.zzimkkong.Constants.NEW_EMAIL;
+import static com.woowacourse.zzimkkong.Constants.ORGANIZATION;
 import static com.woowacourse.zzimkkong.DocumentUtils.*;
 import static com.woowacourse.zzimkkong.controller.MemberControllerTest.saveMember;
+import static com.woowacourse.zzimkkong.controller.MemberControllerTest.saveMemberByOauth;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.BDDMockito.given;
 import static org.springframework.restdocs.restassured3.RestAssuredRestDocumentation.document;
 
 class AuthControllerTest extends AcceptanceTest {
@@ -25,6 +37,53 @@ class AuthControllerTest extends AcceptanceTest {
 
         // when
         ExtractableResponse<Response> response = login(loginRequest);
+        TokenResponse responseBody = response.body().as(TokenResponse.class);
+
+        // then
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
+        assertThat(responseBody.getAccessToken()).isInstanceOf(String.class);
+    }
+
+    @Test
+    @DisplayName("Github Oauth 로그인 요청이 오면 토큰을 발급한다.")
+    void loginByGithubOauth() {
+        // given
+        OauthProvider oauthProvider = OauthProvider.GITHUB;
+        saveMemberByOauth(new OauthMemberSaveRequest(NEW_EMAIL, ORGANIZATION, oauthProvider.name()));
+        String code = "example-code";
+
+        given(githubRequester.supports(OauthProvider.GITHUB))
+                .willReturn(true);
+        given(githubRequester.getUserInfoByCode(code))
+                .willReturn(GithubUserInfo.from(Map.of("email", NEW_EMAIL)));
+
+        // when
+        ExtractableResponse<Response> response = loginByOauth(oauthProvider, code);
+        TokenResponse responseBody = response.body().as(TokenResponse.class);
+
+        // then
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
+        assertThat(responseBody.getAccessToken()).isInstanceOf(String.class);
+
+    }
+
+    @Test
+    @DisplayName("Google Oauth 로그인 요청이 오면 토큰을 발급한다.")
+    void loginByGoogleOauth() {
+        // given
+        OauthProvider oauthProvider = OauthProvider.GOOGLE;
+        saveMemberByOauth(new OauthMemberSaveRequest(NEW_EMAIL, ORGANIZATION, oauthProvider.name()));
+        String code = "example-code";
+
+        given(googleRequester.supports(any(OauthProvider.class)))
+                .willReturn(true);
+        given(googleRequester.getUserInfoByCode(anyString()))
+                .willReturn(GoogleUserInfo.from(
+                        Map.of("id", "123",
+                                "email", NEW_EMAIL)));
+
+        // when
+        ExtractableResponse<Response> response = loginByOauth(oauthProvider, code);
         TokenResponse responseBody = response.body().as(TokenResponse.class);
 
         // then
@@ -73,7 +132,17 @@ class AuthControllerTest extends AcceptanceTest {
                 .filter(document("member/login", getRequestPreprocessor(), getResponsePreprocessor()))
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body(loginRequest)
-                .when().post("/api/login/token")
+                .when().post("/api/managers/login/token")
+                .then().log().all().extract();
+    }
+
+    static ExtractableResponse<Response> loginByOauth(final OauthProvider oauthProvider, final String code) {
+        return RestAssured
+                .given(getRequestSpecification()).log().all()
+                .accept("application/json")
+                .filter(document("member/login/oauth/" + oauthProvider.name(), getRequestPreprocessor(), getResponsePreprocessor()))
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .when().get("/api/managers/" + oauthProvider + "/login/token?code=" + code)
                 .then().log().all().extract();
     }
 
@@ -84,7 +153,7 @@ class AuthControllerTest extends AcceptanceTest {
                 .header("Authorization", token)
                 .filter(document("member/token/" + docName, getRequestPreprocessor(), getResponsePreprocessor()))
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .when().post("/api/members/token")
+                .when().post("/api/managers/token")
                 .then().log().all().extract();
     }
 }
