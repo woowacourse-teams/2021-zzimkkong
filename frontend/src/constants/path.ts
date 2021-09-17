@@ -16,6 +16,10 @@ const GITHUB_OAUTH_KEY = (() => {
 
 const GOOGLE_OAUTH_KEY = process.env.GOOGLE_OAUTH_KEY ?? '';
 
+const REDIRECT_URI = `${process.env.NODE_ENV === 'production' ? 'https://' : 'http://'}${
+  window.location.hostname
+}${window.location.port ? `:${window.location.port}` : ''}`;
+
 const PATH = {
   MAIN: '/',
   MANAGER_LOGIN: '/login',
@@ -33,7 +37,7 @@ const PATH = {
   GUEST_RESERVATION: '/guest/:sharingMapId/reservation',
   GUEST_RESERVATION_EDIT: '/guest/:sharingMapId/reservation/edit',
   NOT_FOUND: '/not-found',
-  GITHUB_LOGIN: `https://github.com/login/oauth/authorize?client_id=${GITHUB_OAUTH_KEY}&redirect_uri=http://localhost:3000/login/oauth/github`,
+  GITHUB_LOGIN: `https://github.com/login/oauth/authorize?client_id=${GITHUB_OAUTH_KEY}&redirect_uri=${REDIRECT_URI}/login/oauth/github`,
   GOOGLE_LOGIN:
     'https://accounts.google.com/o/oauth2/v2/auth?' +
     'scope=https://www.googleapis.com/auth/userinfo.email&' +
@@ -41,7 +45,7 @@ const PATH = {
     'include_granted_scopes=true&' +
     'response_type=code&' +
     'state=state_parameter_passthrough_value&' +
-    'redirect_uri=http://localhost:3000/login/oauth/google&' +
+    `redirect_uri=${REDIRECT_URI}/login/oauth/google&` +
     `client_id=${GOOGLE_OAUTH_KEY}`,
 };
 
