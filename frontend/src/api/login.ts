@@ -31,5 +31,5 @@ export const queryGoogleLogin: QueryFunction<
 > = ({ queryKey }) => {
   const [, { code }] = queryKey;
 
-  return api.get(`/api/managers/google/login/token?code=${code}`);
+  return api.get(`/managers/google/login/token?code=${code}`);
 };

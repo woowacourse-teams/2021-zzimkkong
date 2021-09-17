@@ -36,7 +36,7 @@ export const postSocialJoin = ({
   organization,
   oauthProvider,
 }: SocialJoinParams): Promise<AxiosResponse> =>
-  api.post(`/api/managers/oauth`, {
+  api.post(`/managers/oauth`, {
     email,
     organization,
     oauthProvider,
