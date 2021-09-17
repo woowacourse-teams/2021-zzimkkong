@@ -3,6 +3,7 @@ package com.woowacourse.zzimkkong.infrastructure.oauth;
 import com.woowacourse.zzimkkong.domain.OauthProvider;
 import com.woowacourse.zzimkkong.domain.oauth.GoogleUserInfo;
 import com.woowacourse.zzimkkong.domain.oauth.OauthUserInfo;
+import com.woowacourse.zzimkkong.exception.infrastructure.oauth.ErrorResponseToGetAccessTokenException;
 import com.woowacourse.zzimkkong.exception.infrastructure.oauth.UnableToGetTokenResponseFromGoogleException;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;
@@ -68,8 +69,14 @@ public class GoogleRequester implements OauthAPIRequester {
                 })
                 .blockOptional()
                 .orElseThrow(UnableToGetTokenResponseFromGoogleException::new);
-
+        validateResponseBody(responseBody);
         return responseBody.get("access_token").toString();
+    }
+
+    private void validateResponseBody(Map<String, Object> responseBody) {
+        if (!responseBody.containsKey("access_token")) {
+            throw new ErrorResponseToGetAccessTokenException(responseBody.get("error_description").toString());
+        }
     }
 
     private GoogleUserInfo getUserInfo(final String token) {

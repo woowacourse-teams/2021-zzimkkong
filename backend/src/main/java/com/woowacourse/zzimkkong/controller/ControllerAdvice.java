@@ -3,9 +3,11 @@ package com.woowacourse.zzimkkong.controller;
 import com.fasterxml.jackson.databind.exc.InvalidFormatException;
 import com.woowacourse.zzimkkong.dto.ErrorResponse;
 import com.woowacourse.zzimkkong.dto.InputFieldErrorResponse;
+import com.woowacourse.zzimkkong.dto.OAuthLoginFailErrorResponse;
 import com.woowacourse.zzimkkong.exception.InputFieldException;
 import com.woowacourse.zzimkkong.exception.ZzimkkongException;
 import com.woowacourse.zzimkkong.exception.infrastructure.InfrastructureMalfunctionException;
+import com.woowacourse.zzimkkong.exception.member.NoSuchOAuthMemberException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.dao.DataAccessException;
@@ -23,6 +25,14 @@ import static com.woowacourse.zzimkkong.dto.ValidatorMessage.SERVER_ERROR_MESSAG
 @RestControllerAdvice
 public class ControllerAdvice {
     private final Logger logger = LoggerFactory.getLogger(ControllerAdvice.class);
+
+    @ExceptionHandler(NoSuchOAuthMemberException.class)
+    public ResponseEntity<OAuthLoginFailErrorResponse> oAuthLoginFailHandler(final NoSuchOAuthMemberException exception) {
+        logger.info(exception.getMessage());
+        return ResponseEntity
+                .status(exception.getStatus())
+                .body(OAuthLoginFailErrorResponse.from(exception));
+    }
 
     @ExceptionHandler(InputFieldException.class)
     public ResponseEntity<InputFieldErrorResponse> inputFieldExceptionHandler(final InputFieldException exception) {

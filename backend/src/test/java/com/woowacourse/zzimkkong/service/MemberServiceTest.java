@@ -1,20 +1,16 @@
 package com.woowacourse.zzimkkong.service;
 
 import com.woowacourse.zzimkkong.domain.Member;
-import com.woowacourse.zzimkkong.domain.OauthProvider;
-import com.woowacourse.zzimkkong.domain.oauth.OauthUserInfo;
 import com.woowacourse.zzimkkong.dto.member.MemberSaveRequest;
 import com.woowacourse.zzimkkong.dto.member.MemberSaveResponse;
 import com.woowacourse.zzimkkong.dto.member.MemberUpdateRequest;
 import com.woowacourse.zzimkkong.dto.member.oauth.OauthMemberSaveRequest;
-import com.woowacourse.zzimkkong.dto.member.oauth.OauthReadyResponse;
 import com.woowacourse.zzimkkong.exception.member.DuplicateEmailException;
 import com.woowacourse.zzimkkong.exception.member.ReservationExistsOnMemberException;
 import com.woowacourse.zzimkkong.infrastructure.oauth.OauthHandler;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.EnumSource;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -24,9 +20,9 @@ import java.util.Optional;
 import static com.woowacourse.zzimkkong.Constants.*;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.mockito.ArgumentMatchers.*;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.mock;
 
 class MemberServiceTest extends ServiceTest {
     @Autowired
@@ -74,46 +70,6 @@ class MemberServiceTest extends ServiceTest {
 
         //then
         assertThatThrownBy(() -> memberService.saveMember(memberSaveRequest))
-                .isInstanceOf(DuplicateEmailException.class);
-    }
-
-    @ParameterizedTest
-    @EnumSource(OauthProvider.class)
-    @DisplayName("Oauth를 통해 얻을 수 없는 정보를 응답하며 회원가입 과정을 진행한다.")
-    void getUserInfoFromOauth(OauthProvider oauthProvider) {
-        //given
-        OauthUserInfo mockOauthUserInfo = mock(OauthUserInfo.class);
-        given(oauthHandler.getUserInfoFromCode(any(OauthProvider.class), anyString()))
-                .willReturn(mockOauthUserInfo);
-        given(mockOauthUserInfo.getEmail())
-                .willReturn(EMAIL);
-        given(members.existsByEmail(EMAIL))
-                .willReturn(false);
-
-        //when
-        OauthReadyResponse actual = memberService.getUserInfoFromOauth(oauthProvider, "code-example");
-        OauthReadyResponse expected = OauthReadyResponse.of(EMAIL, oauthProvider);
-
-        //then
-        assertThat(actual).usingRecursiveComparison()
-                .isEqualTo(expected);
-    }
-
-    @ParameterizedTest
-    @EnumSource(OauthProvider.class)
-    @DisplayName("이미 존재하는 이메일로 oauth 정보를 가져오면 에러가 발생한다.")
-    void getUserInfoFromOauthException(OauthProvider oauthProvider) {
-        //given
-        OauthUserInfo mockOauthUserInfo = mock(OauthUserInfo.class);
-        given(oauthHandler.getUserInfoFromCode(any(OauthProvider.class), anyString()))
-                .willReturn(mockOauthUserInfo);
-        given(mockOauthUserInfo.getEmail())
-                .willReturn(EMAIL);
-        given(members.existsByEmail(EMAIL))
-                .willReturn(true);
-
-        //when, then
-        assertThatThrownBy(() -> memberService.getUserInfoFromOauth(oauthProvider, "code-example"))
                 .isInstanceOf(DuplicateEmailException.class);
     }
 

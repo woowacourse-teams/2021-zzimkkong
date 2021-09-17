@@ -7,6 +7,7 @@ import com.woowacourse.zzimkkong.dto.member.LoginRequest;
 import com.woowacourse.zzimkkong.dto.member.TokenResponse;
 import com.woowacourse.zzimkkong.exception.authorization.OauthProviderMismatchException;
 import com.woowacourse.zzimkkong.exception.member.NoSuchMemberException;
+import com.woowacourse.zzimkkong.exception.member.NoSuchOAuthMemberException;
 import com.woowacourse.zzimkkong.exception.member.PasswordMismatchException;
 import com.woowacourse.zzimkkong.infrastructure.JwtUtils;
 import com.woowacourse.zzimkkong.infrastructure.oauth.OauthHandler;
@@ -51,8 +52,9 @@ public class AuthService {
     public TokenResponse loginByOauth(final OauthProvider oauthProvider, final String code) {
         OauthUserInfo userInfoFromCode = oauthHandler.getUserInfoFromCode(oauthProvider, code);
         String email = userInfoFromCode.getEmail();
+
         Member member = members.findByEmail(email)
-                .orElseThrow(NoSuchMemberException::new);
+                .orElseThrow(() -> new NoSuchOAuthMemberException(email));
 
         validateOauthProvider(oauthProvider, member);
 
@@ -77,7 +79,7 @@ public class AuthService {
     private void validateOauthProvider(final OauthProvider oauthProvider, final Member member) {
         OauthProvider memberOauthProvider = member.getOauthProvider();
         if (!oauthProvider.equals(memberOauthProvider)) {
-            throw new OauthProviderMismatchException(memberOauthProvider.name());
+            throw OauthProviderMismatchException.from(memberOauthProvider);
         }
     }
 }

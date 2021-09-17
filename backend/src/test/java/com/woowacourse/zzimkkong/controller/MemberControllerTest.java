@@ -4,14 +4,10 @@ import com.woowacourse.zzimkkong.domain.Member;
 import com.woowacourse.zzimkkong.domain.OauthProvider;
 import com.woowacourse.zzimkkong.domain.Preset;
 import com.woowacourse.zzimkkong.domain.Setting;
-import com.woowacourse.zzimkkong.domain.oauth.GithubUserInfo;
-import com.woowacourse.zzimkkong.domain.oauth.GoogleUserInfo;
-import com.woowacourse.zzimkkong.dto.member.*;
-import com.woowacourse.zzimkkong.dto.member.oauth.OauthMemberSaveRequest;
-import com.woowacourse.zzimkkong.dto.member.oauth.OauthReadyResponse;
 import com.woowacourse.zzimkkong.dto.ErrorResponse;
 import com.woowacourse.zzimkkong.dto.InputFieldErrorResponse;
 import com.woowacourse.zzimkkong.dto.member.*;
+import com.woowacourse.zzimkkong.dto.member.oauth.OauthMemberSaveRequest;
 import com.woowacourse.zzimkkong.dto.space.SettingsRequest;
 import com.woowacourse.zzimkkong.infrastructure.AuthorizationExtractor;
 import io.restassured.RestAssured;
@@ -26,14 +22,10 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 
 import java.util.List;
-import java.util.Map;
 
 import static com.woowacourse.zzimkkong.Constants.*;
 import static com.woowacourse.zzimkkong.DocumentUtils.*;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.BDDMockito.given;
 import static org.springframework.restdocs.restassured3.RestAssuredRestDocumentation.document;
 
 class MemberControllerTest extends AcceptanceTest {
@@ -79,51 +71,6 @@ class MemberControllerTest extends AcceptanceTest {
 
         //then
         assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
-    }
-
-    @Test
-    @DisplayName("Google Oauth 회원가입 입력이 들어오면 accessToken을 발급한다.")
-    void getReadyToJoinByGoogleOauth() {
-        // given
-        given(googleRequester.supports(any(OauthProvider.class)))
-                .willReturn(true);
-        given(googleRequester.getUserInfoByCode(anyString()))
-                .willReturn(GoogleUserInfo.from(
-                        Map.of("id", "123",
-                                "email", NEW_EMAIL)));
-
-        OauthProvider oauthProvider = OauthProvider.GOOGLE;
-        String code = "example-code";
-
-        // when
-        ExtractableResponse<Response> response = getReadyToJoin(oauthProvider, code);
-        OauthReadyResponse expected = OauthReadyResponse.of(NEW_EMAIL, oauthProvider);
-
-        //then
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
-        assertThat(response.body().as(OauthReadyResponse.class)).usingRecursiveComparison()
-                .isEqualTo(expected);
-    }
-
-    @Test
-    @DisplayName("Github Oauth 회원가입 입력이 들어오면 accessToken을 발급한다.")
-    void getReadyToJoinByGithubOauth() {
-        // given
-        given(githubRequester.supports(any(OauthProvider.class)))
-                .willReturn(true);
-        given(githubRequester.getUserInfoByCode(anyString()))
-                .willReturn(GithubUserInfo.from(Map.of("email", NEW_EMAIL)));
-
-        OauthProvider oauthProvider = OauthProvider.GITHUB;
-        String code = "example-code";
-
-        // when
-        ExtractableResponse<Response> response = getReadyToJoin(oauthProvider, code);
-        OauthReadyResponse oauthReadyResponse = response.as(OauthReadyResponse.class);
-
-        // then
-        assertThat(oauthReadyResponse.getOauthProvider()).isEqualTo(oauthProvider);
-        assertThat(oauthReadyResponse.getEmail()).isEqualTo(NEW_EMAIL);
     }
 
     @ParameterizedTest
