@@ -2,11 +2,15 @@ package com.woowacourse.zzimkkong.service;
 
 import com.woowacourse.zzimkkong.domain.Map;
 import com.woowacourse.zzimkkong.domain.Member;
+import com.woowacourse.zzimkkong.domain.Setting;
+import com.woowacourse.zzimkkong.domain.Space;
 import com.woowacourse.zzimkkong.dto.admin.MapsResponse;
 import com.woowacourse.zzimkkong.dto.admin.MembersResponse;
 import com.woowacourse.zzimkkong.dto.admin.PageInfo;
+import com.woowacourse.zzimkkong.dto.admin.SpacesResponse;
 import com.woowacourse.zzimkkong.dto.map.MapFindResponse;
 import com.woowacourse.zzimkkong.dto.member.MemberFindResponse;
+import com.woowacourse.zzimkkong.dto.space.SpaceFindDetailWithIdResponse;
 import com.woowacourse.zzimkkong.exception.member.PasswordMismatchException;
 import com.woowacourse.zzimkkong.infrastructure.SharingIdGenerator;
 import org.junit.jupiter.api.BeforeEach;
@@ -88,5 +92,45 @@ class AdminServiceTest extends ServiceTest {
         //then
         assertThat(maps).usingRecursiveComparison()
                 .isEqualTo(mapsResponse);
+    }
+
+    @Test
+    @DisplayName("모든 공간을 페이지네이션을 이용해 조회한다.")
+    void findSpaces() {
+        //given
+        Map luther = new Map(LUTHER_NAME, MAP_DRAWING_DATA, MAP_IMAGE_URL, pobi);
+        Setting beSetting = Setting.builder()
+                .availableStartTime(BE_AVAILABLE_START_TIME)
+                .availableEndTime(BE_AVAILABLE_END_TIME)
+                .reservationTimeUnit(BE_RESERVATION_TIME_UNIT)
+                .reservationMinimumTimeUnit(BE_RESERVATION_MINIMUM_TIME_UNIT)
+                .reservationMaximumTimeUnit(BE_RESERVATION_MAXIMUM_TIME_UNIT)
+                .reservationEnable(BE_RESERVATION_ENABLE)
+                .enabledDayOfWeek(BE_ENABLED_DAY_OF_WEEK)
+                .build();
+
+        Space be = Space.builder()
+                .id(1L)
+                .name(BE_NAME)
+                .map(luther)
+                .description(BE_DESCRIPTION)
+                .area(SPACE_DRAWING)
+                .setting(beSetting)
+                .build();
+
+        PageRequest pageRequest = PageRequest.of(0, 20, Sort.unsorted());
+        given(spaces.findAll(any(Pageable.class)))
+                .willReturn(new PageImpl<>(List.of(be), pageRequest, 1));
+
+        //when
+        SpacesResponse expected = SpacesResponse.from(
+                List.of(SpaceFindDetailWithIdResponse.from(be)),
+                PageInfo.from(0, 1, 20, 1)
+        );
+        SpacesResponse actual = adminService.findSpaces(pageRequest);
+
+        //then
+        assertThat(actual).usingRecursiveComparison()
+                .isEqualTo(expected);
     }
 }

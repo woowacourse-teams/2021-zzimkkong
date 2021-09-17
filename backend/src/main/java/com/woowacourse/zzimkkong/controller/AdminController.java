@@ -2,6 +2,7 @@ package com.woowacourse.zzimkkong.controller;
 
 import com.woowacourse.zzimkkong.dto.admin.MapsResponse;
 import com.woowacourse.zzimkkong.dto.admin.MembersResponse;
+import com.woowacourse.zzimkkong.dto.admin.SpacesResponse;
 import com.woowacourse.zzimkkong.service.AdminService;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
@@ -36,6 +37,11 @@ public class AdminController {
         return "map";
     }
 
+    @GetMapping("/spaces")
+    public String spacePage() {
+        return "space";
+    }
+
     @PostMapping("/api/login")
     public ResponseEntity<Void> login(@RequestParam String id, @RequestParam String password) {
         adminService.login(id, password);
@@ -43,14 +49,20 @@ public class AdminController {
     }
 
     @GetMapping("/api/members")
-    public ResponseEntity<MembersResponse> member(@PageableDefault(value = 20) Pageable pageable) {
+    public ResponseEntity<MembersResponse> members(@PageableDefault(value = 20) Pageable pageable) {
         MembersResponse members = adminService.findMembers(pageable);
         return ResponseEntity.ok(members);
     }
 
     @GetMapping("/api/maps")
-    public ResponseEntity<MapsResponse> map(@PageableDefault(value = 20) Pageable pageable) {
+    public ResponseEntity<MapsResponse> maps(@PageableDefault(value = 20) Pageable pageable) {
         MapsResponse maps = adminService.findMaps(pageable);
         return ResponseEntity.ok(maps);
+    }
+
+    @GetMapping("/api/spaces")
+    public ResponseEntity<SpacesResponse> spaces(@PageableDefault(value = 20) Pageable pageable) {
+        SpacesResponse spaces = adminService.findSpaces(pageable);
+        return ResponseEntity.ok(spaces);
     }
 }

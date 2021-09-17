@@ -4,9 +4,15 @@ import com.woowacourse.zzimkkong.domain.Map;
 import com.woowacourse.zzimkkong.domain.Member;
 import com.woowacourse.zzimkkong.domain.Setting;
 import com.woowacourse.zzimkkong.domain.Space;
+import org.assertj.core.api.AssertionsForClassTypes;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
+
+import java.util.List;
 
 import static com.woowacourse.zzimkkong.Constants.*;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -72,5 +78,23 @@ class SpaceRepositoryTest extends RepositoryTest {
         // then
         assertThat(savedSpace.getId()).isNotNull();
         assertThat(savedSpace).isEqualTo(be);
+    }
+
+    @Test
+    @DisplayName("page로 모든 공간을 조회한다.")
+    void findAllByPaging() {
+        // given
+        Space savedBe = spaces.save(be);
+        Space savedFe = spaces.save(fe);
+
+        // when
+        PageRequest pageRequest = PageRequest.of(0, 20, Sort.unsorted());
+        Page<Space> actual = spaces.findAll(pageRequest);
+
+        // then
+        AssertionsForClassTypes.assertThat(actual.getSize()).isEqualTo(20);
+        AssertionsForClassTypes.assertThat(actual.getContent().size()).isEqualTo(2);
+        AssertionsForClassTypes.assertThat(actual.getContent()).usingRecursiveComparison()
+                .isEqualTo(List.of(savedBe, savedFe));
     }
 }
