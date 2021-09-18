@@ -23,7 +23,6 @@ import java.util.List;
 import static com.woowacourse.zzimkkong.Constants.*;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 
@@ -46,12 +45,9 @@ class AdminServiceTest extends ServiceTest {
     void loginException() {
         assertThatThrownBy(() -> adminService.login("zzimkkong", "wrong"))
                 .isInstanceOf(PasswordMismatchException.class);
-    }
+        assertThatThrownBy(() -> adminService.login("wrong", "zzimkkong1!"))
+                .isInstanceOf(PasswordMismatchException.class);
 
-    @Test
-    @DisplayName("어드민 관리자 로그인 아이디, 비밀번호가 맞으면 통과한다.")
-    void login() {
-        assertDoesNotThrow(() -> adminService.login("zzimkkong", "zzimkkong1!"));
     }
 
     @Test

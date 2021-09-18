@@ -111,7 +111,8 @@ jacocoTestCoverageVerification {
             excludes = ["**.exception.**", "**.ControllerAdvice", "**.*ErrorResponse", "**.ValidatorMessage",
                         "**.ZzimkkongApplication", "**.*TimeConverter", "**.DataLoader", "**.*Config",
                         "**.LoginInterceptor", "**.AuthenticationPrincipalArgumentResolver",
-                        "**.slack.**", "**.Slack*"]
+                        "**.slack.**", "**.Slack*",
+                        "**.AdminController"] //todo: 해결책찾기..
             //todo: 패키지 분리하면 더 멋있게 해보겠슴,,
 
             limit {
