@@ -45,6 +45,11 @@ public class AdminController {
         return "space";
     }
 
+    @GetMapping("/reservations")
+    public String reservationPage() {
+        return "reservation";
+    }
+
     @PostMapping("/api/login")
     public ResponseEntity<Void> login(@RequestParam String id, @RequestParam String password) {
         adminService.login(id, password);
