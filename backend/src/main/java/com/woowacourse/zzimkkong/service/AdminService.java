@@ -59,7 +59,7 @@ public class AdminService {
 
     public SpacesResponse findSpaces(Pageable pageable) {
         Page<SpaceFindDetailWithIdResponse> allSpaces = spaces.findAll(pageable)
-                .map(SpaceFindDetailWithIdResponse::from);
+                .map(SpaceFindDetailWithIdResponse::fromAdmin);
 
         return SpacesResponse.from(allSpaces.getContent(), makePageInfo(allSpaces));
     }

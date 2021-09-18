@@ -31,6 +31,10 @@ function getSpaces(pageNumber) {
                         예약가능여부: ${space.settings.reservationEnable}, <br>
                         가능요일: ${space.settings.enabledDayOfWeek}
                         </td>
+                        <td>
+                        맵id: ${space.mapId} <br>
+                        매니저id: ${space.managerId}
+                        </td>
                     </tr>`;
             }
         });
