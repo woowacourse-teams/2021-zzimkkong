@@ -1,10 +1,10 @@
 import { AxiosError, AxiosResponse } from 'axios';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useMutation } from 'react-query';
 import { useHistory } from 'react-router';
 import { Link } from 'react-router-dom';
 import { useSetRecoilState } from 'recoil';
-import { postLogin } from 'api/login';
+import { postLogin, postTokenValidation } from 'api/login';
 import Header from 'components/Header/Header';
 import Layout from 'components/Layout/Layout';
 import SocialLoginButton from 'components/SocialAuthButton/SocialLoginButton';
@@ -36,6 +36,12 @@ const ManagerLogin = (): JSX.Element => {
     email: '',
     password: '',
   });
+
+  const { isError: tokenValidation } = useMutation(postTokenValidation);
+
+  if (!tokenValidation) {
+    setAccessToken('');
+  }
 
   const login = useMutation(postLogin, {
     onSuccess: (response: AxiosResponse<LoginSuccess>) => {
