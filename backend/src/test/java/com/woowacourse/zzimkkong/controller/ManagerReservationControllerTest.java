@@ -353,7 +353,7 @@ class ManagerReservationControllerTest extends AcceptanceTest {
                         .split("/")[8]);
     }
 
-    private ExtractableResponse<Response> saveReservation(
+    static ExtractableResponse<Response> saveReservation(
             final String api,
             final ReservationCreateUpdateWithPasswordRequest reservationCreateUpdateWithPasswordRequest) {
         return RestAssured

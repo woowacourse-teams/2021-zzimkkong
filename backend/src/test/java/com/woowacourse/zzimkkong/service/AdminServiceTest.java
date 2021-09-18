@@ -1,15 +1,10 @@
 package com.woowacourse.zzimkkong.service;
 
-import com.woowacourse.zzimkkong.domain.Map;
-import com.woowacourse.zzimkkong.domain.Member;
-import com.woowacourse.zzimkkong.domain.Setting;
-import com.woowacourse.zzimkkong.domain.Space;
-import com.woowacourse.zzimkkong.dto.admin.MapsResponse;
-import com.woowacourse.zzimkkong.dto.admin.MembersResponse;
-import com.woowacourse.zzimkkong.dto.admin.PageInfo;
-import com.woowacourse.zzimkkong.dto.admin.SpacesResponse;
+import com.woowacourse.zzimkkong.domain.*;
+import com.woowacourse.zzimkkong.dto.admin.*;
 import com.woowacourse.zzimkkong.dto.map.MapFindResponse;
 import com.woowacourse.zzimkkong.dto.member.MemberFindResponse;
+import com.woowacourse.zzimkkong.dto.reservation.ReservationResponse;
 import com.woowacourse.zzimkkong.dto.space.SpaceFindDetailWithIdResponse;
 import com.woowacourse.zzimkkong.exception.member.PasswordMismatchException;
 import com.woowacourse.zzimkkong.infrastructure.SharingIdGenerator;
@@ -124,10 +119,61 @@ class AdminServiceTest extends ServiceTest {
 
         //when
         SpacesResponse expected = SpacesResponse.from(
-                List.of(SpaceFindDetailWithIdResponse.from(be)),
+                List.of(SpaceFindDetailWithIdResponse.fromAdmin(be)),
                 PageInfo.from(0, 1, 20, 1)
         );
         SpacesResponse actual = adminService.findSpaces(pageRequest);
+
+        //then
+        assertThat(actual).usingRecursiveComparison()
+                .isEqualTo(expected);
+    }
+
+
+    @Test
+    @DisplayName("모든 예약을 페이지네이션을 이용해 조회한다.")
+    void findReservations() {
+        //given
+        Map luther = new Map(1L, LUTHER_NAME, MAP_DRAWING_DATA, MAP_IMAGE_URL, pobi);
+        Setting beSetting = Setting.builder()
+                .availableStartTime(BE_AVAILABLE_START_TIME)
+                .availableEndTime(BE_AVAILABLE_END_TIME)
+                .reservationTimeUnit(BE_RESERVATION_TIME_UNIT)
+                .reservationMinimumTimeUnit(BE_RESERVATION_MINIMUM_TIME_UNIT)
+                .reservationMaximumTimeUnit(BE_RESERVATION_MAXIMUM_TIME_UNIT)
+                .reservationEnable(BE_RESERVATION_ENABLE)
+                .enabledDayOfWeek(BE_ENABLED_DAY_OF_WEEK)
+                .build();
+
+        Space be = Space.builder()
+                .id(1L)
+                .name(BE_NAME)
+                .map(luther)
+                .description(BE_DESCRIPTION)
+                .area(SPACE_DRAWING)
+                .setting(beSetting)
+                .build();
+
+        Reservation beAmZeroOne = Reservation.builder()
+                .date(BE_AM_TEN_ELEVEN_START_TIME.toLocalDate())
+                .startTime(BE_AM_TEN_ELEVEN_START_TIME)
+                .endTime(BE_AM_TEN_ELEVEN_END_TIME)
+                .description(BE_AM_TEN_ELEVEN_DESCRIPTION)
+                .userName(BE_AM_TEN_ELEVEN_USERNAME)
+                .password(BE_AM_TEN_ELEVEN_PW)
+                .space(be)
+                .build();
+
+        PageRequest pageRequest = PageRequest.of(0, 20, Sort.unsorted());
+        given(reservations.findAll(any(Pageable.class)))
+                .willReturn(new PageImpl<>(List.of(beAmZeroOne), pageRequest, 1));
+
+        //when
+        ReservationsResponse expected = ReservationsResponse.from(
+                List.of(ReservationResponse.fromAdmin(beAmZeroOne)),
+                PageInfo.from(0, 1, 20, 1)
+        );
+        ReservationsResponse actual = adminService.findReservations(pageRequest);
 
         //then
         assertThat(actual).usingRecursiveComparison()

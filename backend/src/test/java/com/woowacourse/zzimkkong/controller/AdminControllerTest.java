@@ -1,16 +1,14 @@
 package com.woowacourse.zzimkkong.controller;
 
-import com.woowacourse.zzimkkong.domain.Map;
-import com.woowacourse.zzimkkong.domain.Member;
-import com.woowacourse.zzimkkong.domain.Setting;
-import com.woowacourse.zzimkkong.domain.Space;
-import com.woowacourse.zzimkkong.dto.admin.MapsResponse;
-import com.woowacourse.zzimkkong.dto.admin.MembersResponse;
-import com.woowacourse.zzimkkong.dto.admin.PageInfo;
-import com.woowacourse.zzimkkong.dto.admin.SpacesResponse;
+import com.woowacourse.zzimkkong.domain.*;
+import com.woowacourse.zzimkkong.dto.admin.*;
 import com.woowacourse.zzimkkong.dto.map.MapCreateUpdateRequest;
 import com.woowacourse.zzimkkong.dto.map.MapFindResponse;
 import com.woowacourse.zzimkkong.dto.member.MemberFindResponse;
+import com.woowacourse.zzimkkong.dto.reservation.ReservationCreateUpdateRequest;
+import com.woowacourse.zzimkkong.dto.reservation.ReservationCreateUpdateWithPasswordRequest;
+import com.woowacourse.zzimkkong.dto.reservation.ReservationFindResponse;
+import com.woowacourse.zzimkkong.dto.reservation.ReservationResponse;
 import com.woowacourse.zzimkkong.dto.space.SettingsRequest;
 import com.woowacourse.zzimkkong.dto.space.SpaceCreateResponse;
 import com.woowacourse.zzimkkong.dto.space.SpaceCreateUpdateRequest;
@@ -28,6 +26,7 @@ import java.util.List;
 import static com.woowacourse.zzimkkong.Constants.*;
 import static com.woowacourse.zzimkkong.Constants.MAP_IMAGE_URL;
 import static com.woowacourse.zzimkkong.DocumentUtils.getRequestSpecification;
+import static com.woowacourse.zzimkkong.controller.ManagerReservationControllerTest.saveReservation;
 import static com.woowacourse.zzimkkong.controller.ManagerSpaceControllerTest.saveSpace;
 import static com.woowacourse.zzimkkong.controller.MapControllerTest.saveMap;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -77,7 +76,7 @@ class AdminControllerTest extends AcceptanceTest {
         );
 
         // when
-        ExtractableResponse<Response> response = members();
+        ExtractableResponse<Response> response = get("/admin/api/members");
         MembersResponse actual = response.body().as(MembersResponse.class);
 
         // then
@@ -91,11 +90,10 @@ class AdminControllerTest extends AcceptanceTest {
     @DisplayName("모든 맵을 조회한다.")
     void getMaps() {
         // given
-        MapCreateUpdateRequest mapCreateUpdateRequest = new MapCreateUpdateRequest(LUTHER.getName(), LUTHER.getMapDrawing(), MAP_SVG);
         saveMap("api/managers/maps", mapCreateUpdateRequest);
 
         // when
-        ExtractableResponse<Response> response = maps();
+        ExtractableResponse<Response> response = get("/admin/api/maps");
         MapsResponse actual = response.body().as(MapsResponse.class);
         MapsResponse expected = MapsResponse.from(
                 List.of(MapFindResponse.ofAdmin(LUTHER, null)),
@@ -113,37 +111,55 @@ class AdminControllerTest extends AcceptanceTest {
     @DisplayName("모든 공간을 조회한다.")
     void getSpaces() {
         // given
-        MapCreateUpdateRequest mapCreateUpdateRequest = new MapCreateUpdateRequest(
-                LUTHER.getName(),
-                LUTHER.getMapDrawing(),
-                MAP_SVG
-        );
         String lutherId = saveMap("/api/managers/maps", mapCreateUpdateRequest).header("location").split("/")[4];
         String spaceApi = "/api/managers/maps/" + lutherId + "/spaces";
-        SettingsRequest settingsRequest = new SettingsRequest(
-                BE_SETTING.getAvailableStartTime(),
-                BE_SETTING.getAvailableEndTime(),
-                BE_SETTING.getReservationTimeUnit(),
-                BE_SETTING.getReservationMinimumTimeUnit(),
-                BE_SETTING.getReservationMaximumTimeUnit(),
-                BE_SETTING.getReservationEnable(),
-                BE_SETTING.getEnabledDayOfWeek()
-        );
-        SpaceCreateUpdateRequest newSpaceCreateUpdateRequest = new SpaceCreateUpdateRequest(
-                BE.getName(),
-                BE.getColor(),
-                BE.getDescription(),
-                SPACE_DRAWING,
-                settingsRequest,
-                MAP_SVG
-        );
-        saveSpace(spaceApi, newSpaceCreateUpdateRequest);
+        saveSpace(spaceApi, beSpaceCreateUpdateRequest);
 
         // when
-        ExtractableResponse<Response> response = spaces();
+        ExtractableResponse<Response> response = get("/admin/api/spaces");
         SpacesResponse actual = response.body().as(SpacesResponse.class);
         SpacesResponse expected = SpacesResponse.from(
-                List.of(SpaceFindDetailWithIdResponse.from(BE)),
+                List.of(SpaceFindDetailWithIdResponse.fromAdmin(BE)),
+                PageInfo.from(0, 1, 20, 1)
+        );
+
+        // then
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
+        assertThat(actual).usingRecursiveComparison()
+                .ignoringExpectedNullFields()
+                .isEqualTo(expected);
+    }
+
+    @Test
+    @DisplayName("모든 예약을 조회한다.")
+    void getReservations() {
+        // given
+        String lutherId = saveMap("/api/managers/maps", mapCreateUpdateRequest).header("location").split("/")[4];
+        String spaceApi = "/api/managers/maps/" + lutherId + "/spaces";
+        ExtractableResponse<Response> saveBeSpaceResponse = saveSpace(spaceApi, beSpaceCreateUpdateRequest);
+        String beReservationApi = saveBeSpaceResponse.header("location") + "/reservations";
+        ReservationCreateUpdateWithPasswordRequest newReservationCreateUpdateWithPasswordRequest = new ReservationCreateUpdateWithPasswordRequest(
+                THE_DAY_AFTER_TOMORROW.atTime(19, 0),
+                THE_DAY_AFTER_TOMORROW.atTime(20, 0),
+                SALLY_PW,
+                SALLY_NAME,
+                SALLY_DESCRIPTION);
+        saveReservation(beReservationApi, newReservationCreateUpdateWithPasswordRequest);
+        Reservation reservation = Reservation.builder()
+                .id(1L)
+                .startTime(newReservationCreateUpdateWithPasswordRequest.getStartDateTime())
+                .endTime(newReservationCreateUpdateWithPasswordRequest.getEndDateTime())
+                .userName(newReservationCreateUpdateWithPasswordRequest.getName())
+                .password(newReservationCreateUpdateWithPasswordRequest.getPassword())
+                .description(newReservationCreateUpdateWithPasswordRequest.getDescription())
+                .space(BE)
+                .build();
+
+        // when
+        ExtractableResponse<Response> response = get("/admin/api/reservations");
+        ReservationsResponse actual = response.body().as(ReservationsResponse.class);
+        ReservationsResponse expected = ReservationsResponse.from(
+                List.of(ReservationResponse.fromAdmin(reservation)),
                 PageInfo.from(0, 1, 20, 1)
         );
 
@@ -164,33 +180,12 @@ class AdminControllerTest extends AcceptanceTest {
                 .then().log().all().extract();
     }
 
-    static ExtractableResponse<Response> members() {
+    static ExtractableResponse<Response> get(String api) {
         return RestAssured
                 .given(getRequestSpecification()).log().all()
                 .accept("application/json")
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(loginRequest)
-                .when().get("/admin/api/members")
-                .then().log().all().extract();
-    }
-
-    private ExtractableResponse<Response> maps() {
-        return RestAssured
-                .given(getRequestSpecification()).log().all()
-                .accept("application/json")
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(loginRequest)
-                .when().get("/admin/api/maps")
-                .then().log().all().extract();
-    }
-
-    private ExtractableResponse<Response> spaces() {
-        return RestAssured
-                .given(getRequestSpecification()).log().all()
-                .accept("application/json")
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(loginRequest)
-                .when().get("/admin/api/spaces")
+                .when().get(api)
                 .then().log().all().extract();
     }
 }
