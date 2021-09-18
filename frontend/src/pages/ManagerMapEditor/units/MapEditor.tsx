@@ -82,10 +82,19 @@ const MapCreateEditor = ({
     width: Number(width),
     height: Number(height),
   });
-  const { stickyDotCoordinate, onMouseMove } = useBoardCoordinate(boardStatus);
+  const { coordinate, stickyDotCoordinate, onMouseMove } = useBoardCoordinate(boardStatus);
   const { onWheel } = useBoardZoom([boardStatus, setBoardStatus]);
-  const { gripPoints, selectedMapElementId, deselectMapElement, onClickBoard, onClickMapElement } =
-    useBoardSelect();
+  const {
+    isSelectDragging,
+    dragSelectRect,
+    gripPoints,
+    selectedMapElementId,
+    deselectMapElement,
+    onClickBoard,
+    onClickMapElement,
+    onSelectDragStart,
+    onSelectDragEnd,
+  } = useBoardSelect({ coordinate });
   const { isMoving, onDragStart, onDrag, onDragEnd, onMouseOut } = useBoardMove(
     [boardStatus, setBoardStatus],
     isBoardDraggable
@@ -127,6 +136,16 @@ const MapCreateEditor = ({
     if (mode === MapEditorMode.Line) drawLineEnd();
     else if (mode === MapEditorMode.Rect) drawRectEnd();
     else if (mode === MapEditorMode.Eraser) eraseEnd();
+  };
+
+  const handleDragStartBoard = (event: React.MouseEvent<SVGSVGElement>) => {
+    if (mode === MapEditorMode.Select) onSelectDragStart();
+    else onDragStart(event);
+  };
+
+  const handleDragEndBoard = () => {
+    if (mode === MapEditorMode.Select) onSelectDragEnd();
+    else onDragEnd();
   };
 
   const deleteMapElement = useCallback(() => {
@@ -180,9 +199,9 @@ const MapCreateEditor = ({
           onMouseDown={handleMouseDown}
           onMouseUp={handleMouseUp}
           onWheel={onWheel}
-          onDragStart={onDragStart}
+          onDragStart={handleDragStartBoard}
           onDrag={onDrag}
-          onDragEnd={onDragEnd}
+          onDragEnd={handleDragEndBoard}
           onMouseOut={onMouseOut}
         >
           {[MapEditorMode.Line, MapEditorMode.Rect].includes(mode) && (
@@ -218,6 +237,16 @@ const MapCreateEditor = ({
               </text>
             </g>
           ))}
+
+          {isSelectDragging && dragSelectRect && (
+            <rect
+              fill="rgba(0, 0, 0, 0.2)"
+              x={Math.min(dragSelectRect.x, coordinate.x)}
+              y={Math.min(dragSelectRect.y, coordinate.y)}
+              width={Math.abs(dragSelectRect.x - coordinate.x)}
+              height={Math.abs(dragSelectRect.y - coordinate.y)}
+            />
+          )}
 
           {drawingStatus.start && mode === MapEditorMode.Line && (
             <polyline

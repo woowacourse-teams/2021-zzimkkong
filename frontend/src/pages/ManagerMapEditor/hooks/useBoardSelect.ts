@@ -1,16 +1,53 @@
 import React, { useState } from 'react';
 import { Coordinate, GripPoint, MapElement } from 'types/common';
 
-const useBoardSelect = (): {
+interface Props {
+  coordinate: Coordinate;
+}
+
+const useBoardSelect = ({
+  coordinate,
+}: Props): {
+  isSelectDragging: boolean;
+  dragSelectRect: typeof dragSelectRect;
   gripPoints: GripPoint[];
   selectedMapElementId: number | null;
   deselectMapElement: () => void;
   onClickBoard: () => void;
   onClickMapElement: (event: React.MouseEvent<SVGPolylineElement | SVGRectElement>) => void;
+  onSelectDragStart: () => void;
+  onSelectDragEnd: () => void;
 } => {
+  const [isSelectDragging, setSelectDragging] = useState(false);
+  const [dragSelectRect, setDragSelectRect] = useState({
+    x: 0,
+    y: 0,
+    width: 0,
+    height: 0,
+  });
   const [gripPoints, setGripPoints] = useState<GripPoint[]>([]);
   const [selectedMapElementId, setSelectedMapElementId] = useState<MapElement['id'] | null>(null);
   const nextGripPointId = Math.max(...gripPoints.map(({ id }) => id), 1) + 1;
+
+  const onSelectDragStart = () => {
+    setSelectDragging(true);
+    setDragSelectRect({
+      x: coordinate.x,
+      y: coordinate.y,
+      width: 0,
+      height: 0,
+    });
+  };
+
+  const onSelectDragEnd = () => {
+    setSelectDragging(false);
+    setDragSelectRect({
+      x: 0,
+      y: 0,
+      width: 0,
+      height: 0,
+    });
+  };
 
   const selectLineElement = (target: SVGPolylineElement, id: MapElement['id']) => {
     const points = Object.values<Coordinate>(target?.points).map(({ x, y }) => ({ x, y }));
@@ -81,11 +118,15 @@ const useBoardSelect = (): {
   };
 
   return {
+    isSelectDragging,
+    dragSelectRect,
     gripPoints,
     selectedMapElementId,
     deselectMapElement,
     onClickBoard,
     onClickMapElement,
+    onSelectDragStart,
+    onSelectDragEnd,
   };
 };
 
