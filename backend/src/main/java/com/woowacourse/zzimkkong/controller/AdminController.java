@@ -2,7 +2,10 @@ package com.woowacourse.zzimkkong.controller;
 
 import com.woowacourse.zzimkkong.dto.admin.MapsResponse;
 import com.woowacourse.zzimkkong.dto.admin.MembersResponse;
+import com.woowacourse.zzimkkong.dto.admin.ReservationsResponse;
 import com.woowacourse.zzimkkong.dto.admin.SpacesResponse;
+import com.woowacourse.zzimkkong.dto.reservation.ReservationResponse;
+import com.woowacourse.zzimkkong.dto.reservation.ReservationSpaceResponse;
 import com.woowacourse.zzimkkong.service.AdminService;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
@@ -64,5 +67,11 @@ public class AdminController {
     public ResponseEntity<SpacesResponse> spaces(@PageableDefault(value = 20) Pageable pageable) {
         SpacesResponse spaces = adminService.findSpaces(pageable);
         return ResponseEntity.ok(spaces);
+    }
+
+    @GetMapping("/api/reservations")
+    public ResponseEntity<ReservationsResponse> reservations(@PageableDefault(value = 20) Pageable pageable) {
+        ReservationsResponse reservations = adminService.findReservations(pageable);
+        return ResponseEntity.ok(reservations);
     }
 }

@@ -24,6 +24,10 @@ public class ReservationResponse {
     @JsonProperty
     private String description;
 
+    private Long spaceId;
+    private Long mapId;
+    private Long managerId;
+
     private ReservationResponse(
             final Long id,
             final LocalDateTime startDateTime,
@@ -37,6 +41,21 @@ public class ReservationResponse {
         this.description = description;
     }
 
+    public ReservationResponse(
+            final Long id,
+            final LocalDateTime startDateTime,
+            final LocalDateTime endDateTime,
+            final String name,
+            final String description,
+            final Long spaceId,
+            final Long mapId,
+            final Long managerId) {
+        this(id, startDateTime, endDateTime, name, description);
+        this.spaceId = spaceId;
+        this.mapId = mapId;
+        this.managerId = managerId;
+    }
+
     public static ReservationResponse from(final Reservation reservation) {
         return new ReservationResponse(
                 reservation.getId(),
@@ -44,6 +63,19 @@ public class ReservationResponse {
                 reservation.getEndTime(),
                 reservation.getUserName(),
                 reservation.getDescription()
+        );
+    }
+
+    public static ReservationResponse fromAdmin(final Reservation reservation) {
+        return new ReservationResponse(
+                reservation.getId(),
+                reservation.getStartTime(),
+                reservation.getEndTime(),
+                reservation.getUserName(),
+                reservation.getDescription(),
+                reservation.getSpace().getId(),
+                reservation.getSpace().getMap().getId(),
+                reservation.getSpace().getMap().getMember().getId()
         );
     }
 }

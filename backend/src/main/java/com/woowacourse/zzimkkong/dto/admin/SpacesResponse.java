@@ -17,8 +17,8 @@ public class SpacesResponse {
         this.pageInfo = pageInfo;
     }
 
-    public static SpacesResponse from(List<SpaceFindDetailWithIdResponse> maps, PageInfo pageInfo) {
-        return new SpacesResponse(maps, pageInfo);
+    public static SpacesResponse from(List<SpaceFindDetailWithIdResponse> spaces, PageInfo pageInfo) {
+        return new SpacesResponse(spaces, pageInfo);
     }
 }
 
