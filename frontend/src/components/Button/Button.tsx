@@ -4,7 +4,7 @@ import * as Styled from './Button.styles';
 export interface Props extends ButtonHTMLAttributes<HTMLButtonElement> {
   variant?: 'primary' | 'primary-text' | 'text' | 'default';
   shape?: 'default' | 'round';
-  size?: 'small' | 'medium' | 'large';
+  size?: 'dense' | 'small' | 'medium' | 'large';
   fullWidth?: boolean;
 }
 

@@ -9,6 +9,16 @@ interface JoinParams {
   organization: string;
 }
 
+interface SocialJoinParams {
+  email: string;
+  organization: string;
+  oauthProvider: 'GITHUB' | 'GOOGLE';
+}
+
+export interface QueryEmailParams {
+  code: string;
+}
+
 export const queryValidateEmail: QueryFunction = ({ queryKey }) => {
   const [, email] = queryKey;
 
@@ -20,3 +30,14 @@ export const queryValidateEmail: QueryFunction = ({ queryKey }) => {
 export const postJoin = ({ email, password, organization }: JoinParams): Promise<AxiosResponse> => {
   return api.post('/managers', { email, password, organization });
 };
+
+export const postSocialJoin = ({
+  email,
+  organization,
+  oauthProvider,
+}: SocialJoinParams): Promise<AxiosResponse> =>
+  api.post(`/managers/oauth`, {
+    email,
+    organization,
+    oauthProvider,
+  });

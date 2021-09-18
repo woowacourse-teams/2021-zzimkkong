@@ -7,7 +7,7 @@ import { useSetRecoilState } from 'recoil';
 import { postLogin } from 'api/login';
 import Header from 'components/Header/Header';
 import Layout from 'components/Layout/Layout';
-import SocialLoginButton from 'components/SocialLoginButton/SocialLoginButton';
+import SocialLoginButton from 'components/SocialAuthButton/SocialLoginButton';
 import MESSAGE from 'constants/message';
 import PATH from 'constants/path';
 import { LOCAL_STORAGE_KEY } from 'constants/storage';
@@ -74,8 +74,8 @@ const ManagerLogin = (): JSX.Element => {
           <LoginForm errorMessage={errorMessage} onSubmit={handleSubmit} />
           <Styled.HorizontalLine />
           <Styled.SocialLogin>
-            <SocialLoginButton provider="github" />
-            <SocialLoginButton provider="google" />
+            <SocialLoginButton provider="GITHUB" href={PATH.GITHUB_LOGIN} />
+            <SocialLoginButton provider="GOOGLE" href={PATH.GOOGLE_LOGIN} />
           </Styled.SocialLogin>
           <Styled.JoinLinkMessage>
             아직 회원이 아니신가요?

@@ -3,28 +3,24 @@ import { FormEventHandler, useEffect, useMemo, useRef, useState } from 'react';
 import { useMutation } from 'react-query';
 import { useHistory, useLocation, useParams } from 'react-router-dom';
 import { deleteGuestReservation } from 'api/guestReservation';
-import { ReactComponent as DeleteIcon } from 'assets/svg/delete.svg';
-import { ReactComponent as EditIcon } from 'assets/svg/edit.svg';
 import Button from 'components/Button/Button';
 import DateInput from 'components/DateInput/DateInput';
-import Drawer from 'components/Drawer/Drawer';
 import Header from 'components/Header/Header';
-import IconButton from 'components/IconButton/IconButton';
 import Input from 'components/Input/Input';
 import Layout from 'components/Layout/Layout';
 import Modal from 'components/Modal/Modal';
-import ReservationListItem from 'components/ReservationListItem/ReservationListItem';
 import { EDITOR } from 'constants/editor';
 import MESSAGE from 'constants/message';
 import PALETTE from 'constants/palette';
+import PATH, { HREF } from 'constants/path';
 import useGuestMap from 'hooks/query/useGuestMap';
-import useGuestReservations from 'hooks/query/useGuestReservations';
 import useGuestSpaces from 'hooks/query/useGuestSpaces';
 import useInput from 'hooks/useInput';
 import { Area, MapDrawing, MapItem, Reservation, ScrollPosition, Space } from 'types/common';
 import { ErrorResponse } from 'types/response';
 import { formatDate } from 'utils/datetime';
 import * as Styled from './GuestMap.styles';
+import ReservationDrawer from './units/ReservationDrawer';
 
 export interface GuestMapState {
   spaceId?: Space['id'];
@@ -38,7 +34,6 @@ export interface URLParameter {
 
 const GuestMap = (): JSX.Element => {
   const [detailOpen, setDetailOpen] = useState(false);
-  const [modalOpen, setModalOpen] = useState(false);
   const [passwordInputModalOpen, setPasswordInputModalOpen] = useState(false);
   const [selectedReservation, setSelectedReservation] = useState<Reservation>();
 
@@ -54,24 +49,25 @@ const GuestMap = (): JSX.Element => {
   const targetDate = location.state?.targetDate;
   const scrollPosition = location.state?.scrollPosition;
 
-  const now = new Date();
-  const todayDate = new Date(now.getFullYear(), now.getMonth(), now.getDate());
-
   const [map, setMap] = useState<MapItem | null>(null);
   const mapDrawing = map?.mapDrawing;
   const getMap = useGuestMap(
     { sharingMapId },
     {
       onError: () => {
-        history.push('/not-found');
+        history.push(PATH.NOT_FOUND[1]);
       },
       onSuccess: (response) => {
         const mapData = response.data;
 
-        setMap({
-          ...mapData,
-          mapDrawing: JSON.parse(mapData.mapDrawing) as MapDrawing,
-        });
+        try {
+          setMap({
+            ...mapData,
+            mapDrawing: JSON.parse(mapData.mapDrawing) as MapDrawing,
+          });
+        } catch (error) {
+          alert(MESSAGE.GUEST_MAP.MAP_DRAWING_PARSE_ERROR);
+        }
       },
       retry: false,
     }
@@ -104,23 +100,9 @@ const GuestMap = (): JSX.Element => {
 
   const [date, setDate] = useState(targetDate ? new Date(targetDate) : new Date());
 
-  const getReservations = useGuestReservations(
-    {
-      mapId: map?.mapId as number,
-      spaceId: Number(selectedSpaceId),
-      date: formatDate(date),
-    },
-    {
-      enabled: map?.mapId !== undefined && selectedSpaceId !== null,
-    }
-  );
-  const reservations = getReservations.data?.data?.reservations ?? [];
-  const reservationAvailable = new Date(date) > todayDate;
-
   const removeReservation = useMutation(deleteGuestReservation, {
     onSuccess: () => {
       window.alert(MESSAGE.RESERVATION.DELETE_SUCCESS);
-      setModalOpen(false);
       setPasswordInputModalOpen(false);
     },
 
@@ -134,7 +116,7 @@ const GuestMap = (): JSX.Element => {
     setDetailOpen(true);
   };
 
-  const handleSelectEdit = (reservation: Reservation) => {
+  const handleEdit = (reservation: Reservation) => {
     if (!selectedSpaceId) return;
 
     history.push({
@@ -144,11 +126,12 @@ const GuestMap = (): JSX.Element => {
         space: spaces[selectedSpaceId],
         reservation,
         selectedDate: formatDate(date),
+        scrollPosition: { x: mapRef?.current?.scrollLeft, y: mapRef?.current?.scrollTop },
       },
     });
   };
 
-  const handleSelectDelete = (reservation: Reservation): void => {
+  const handleDelete = (reservation: Reservation) => {
     setPasswordInputModalOpen(true);
     setSelectedReservation(reservation);
   };
@@ -163,6 +146,20 @@ const GuestMap = (): JSX.Element => {
       spaceId: selectedSpaceId,
       password: passwordInput,
       reservationId: Number(selectedReservation?.id),
+    });
+  };
+
+  const handleReservation = () => {
+    if (!selectedSpaceId) return;
+
+    history.push({
+      pathname: HREF.GUEST_RESERVATION(sharingMapId),
+      state: {
+        mapId: map?.mapId,
+        space: spaces[selectedSpaceId],
+        selectedDate: formatDate(date),
+        scrollPosition: { x: mapRef?.current?.scrollLeft, y: mapRef?.current?.scrollTop },
+      },
     });
   };
 
@@ -250,103 +247,52 @@ const GuestMap = (): JSX.Element => {
         </Styled.Page>
       </Layout>
 
-      <Drawer open={detailOpen} placement="bottom" onClose={() => setDetailOpen(false)}>
-        {spaceList.length > 0 && selectedSpaceId !== null && (
-          <>
-            <Styled.SpaceTitle>
-              <Styled.ColorDot color={spaces[selectedSpaceId].color} />
-              {spaces[selectedSpaceId].name}
-            </Styled.SpaceTitle>
-            <Styled.ReservationContainer>
-              {getReservations.isLoadingError && (
-                <Styled.Message>
-                  예약 목록을 불러오는 데 문제가 생겼어요!
-                  <br />
-                  새로 고침으로 다시 시도해주세요.
-                </Styled.Message>
-              )}
-              {getReservations.isLoading && !getReservations.isLoadingError && (
-                <Styled.Message>불러오는 중입니다...</Styled.Message>
-              )}
-              {getReservations.isSuccess && reservations?.length === 0 && (
-                <Styled.Message>오늘의 첫 예약을 잡아보세요!</Styled.Message>
-              )}
-              {getReservations.isSuccess && reservations.length > 0 && (
-                <Styled.ReservationList role="list">
-                  {reservations.map((reservation: Reservation) => (
-                    <ReservationListItem
-                      key={reservation.id}
-                      data-testid={`reservation-${reservation.id}`}
-                      reservation={reservation}
-                      control={
-                        <Styled.IconButtonWrapper>
-                          <IconButton
-                            size="small"
-                            onClick={() => handleSelectEdit(reservation)}
-                            aria-label="수정"
-                          >
-                            <EditIcon width="100%" height="100%" />
-                          </IconButton>
-                          <IconButton
-                            size="small"
-                            onClick={() => handleSelectDelete(reservation)}
-                            aria-label="삭제"
-                          >
-                            <DeleteIcon width="100%" height="100%" />
-                          </IconButton>
-                        </Styled.IconButtonWrapper>
-                      }
-                    />
-                  ))}
-                </Styled.ReservationList>
-              )}
-            </Styled.ReservationContainer>
-          </>
-        )}
-        {spaceList.length > 0 && selectedSpaceId !== null && reservationAvailable && (
-          <Styled.ReservationLink
-            to={{
-              pathname: `/guest/${sharingMapId}/reservation`,
-              state: {
-                mapId: map?.mapId,
-                space: spaces[selectedSpaceId],
-                selectedDate: formatDate(date),
-                scrollPosition: { x: mapRef?.current?.scrollLeft, y: mapRef?.current?.scrollTop },
-              },
-            }}
-          >
-            예약하기
-          </Styled.ReservationLink>
-        )}
-      </Drawer>
+      {selectedSpaceId && map?.mapId && detailOpen && (
+        <ReservationDrawer
+          mapId={map.mapId}
+          space={spaces[selectedSpaceId]}
+          date={date}
+          open={detailOpen}
+          onClose={() => setDetailOpen(false)}
+          onClickReservation={handleReservation}
+          onEdit={handleEdit}
+          onDelete={handleDelete}
+        />
+      )}
 
-      <Modal
-        open={passwordInputModalOpen}
-        isClosableDimmer={true}
-        onClose={() => setModalOpen(false)}
-      >
-        <Modal.Header>예약시 사용하신 비밀번호를 입력해주세요.</Modal.Header>
-        <Modal.Inner>
-          <form onSubmit={handleDeleteReservation}>
-            <Input
-              type="password"
-              label="비밀번호"
-              minLength={4}
-              maxLength={4}
-              value={passwordInput}
-              onChange={onChangePasswordInput}
-            />
-            <Styled.DeleteModalContainer>
-              <Button variant="text" type="button" onClick={() => setPasswordInputModalOpen(false)}>
-                취소
-              </Button>
-              <Button variant="text" type="submit">
-                확인
-              </Button>
-            </Styled.DeleteModalContainer>
-          </form>
-        </Modal.Inner>
-      </Modal>
+      {passwordInputModalOpen && (
+        <Modal
+          open={passwordInputModalOpen}
+          isClosableDimmer={true}
+          onClose={() => setPasswordInputModalOpen(false)}
+        >
+          <Modal.Header>예약시 사용하신 비밀번호를 입력해주세요.</Modal.Header>
+          <Modal.Inner>
+            <form onSubmit={handleDeleteReservation}>
+              <Input
+                type="password"
+                label="비밀번호"
+                minLength={4}
+                maxLength={4}
+                value={passwordInput}
+                onChange={onChangePasswordInput}
+              />
+              <Styled.DeleteModalContainer>
+                <Button
+                  variant="text"
+                  type="button"
+                  onClick={() => setPasswordInputModalOpen(false)}
+                >
+                  취소
+                </Button>
+                <Button variant="text" type="submit">
+                  확인
+                </Button>
+              </Styled.DeleteModalContainer>
+            </form>
+          </Modal.Inner>
+        </Modal>
+      )}
     </>
   );
 };

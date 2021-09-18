@@ -114,3 +114,9 @@ export const IconButtonWrapper = styled.div`
   display: flex;
   gap: 0.5rem;
 `;
+
+export const PanelHeadWrapper = styled.div`
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+`;

@@ -2,10 +2,8 @@ package com.woowacourse.zzimkkong.controller;
 
 import com.woowacourse.zzimkkong.domain.Manager;
 import com.woowacourse.zzimkkong.domain.Member;
-import com.woowacourse.zzimkkong.domain.OauthProvider;
 import com.woowacourse.zzimkkong.dto.member.*;
 import com.woowacourse.zzimkkong.dto.member.oauth.OauthMemberSaveRequest;
-import com.woowacourse.zzimkkong.dto.member.oauth.OauthReadyResponse;
 import com.woowacourse.zzimkkong.service.MemberService;
 import com.woowacourse.zzimkkong.service.PresetService;
 import org.springframework.http.ResponseEntity;
@@ -40,13 +38,6 @@ public class MemberController {
                 .build();
     }
 
-    @GetMapping("/{oauthProvider}")
-    public ResponseEntity<OauthReadyResponse> getReadyToJoinByOauth(@PathVariable OauthProvider oauthProvider, @RequestParam String code) {
-        OauthReadyResponse oauthReadyResponse = memberService.getUserInfoFromOauth(oauthProvider, code);
-        return ResponseEntity
-                .ok(oauthReadyResponse);
-    }
-
     @PostMapping("/oauth")
     public ResponseEntity<Void> joinByOauth(@RequestBody @Valid final OauthMemberSaveRequest oauthMemberSaveRequest) {
         MemberSaveResponse memberSaveResponse = memberService.saveMemberByOauth(oauthMemberSaveRequest);
@@ -59,8 +50,7 @@ public class MemberController {
     public ResponseEntity<Void> validateEmail(
             @RequestParam
             @NotBlank(message = EMPTY_MESSAGE)
-            @Email(message = EMAIL_MESSAGE)
-            final String email) {
+            @Email(message = EMAIL_MESSAGE) final String email) {
         memberService.validateDuplicateEmail(email);
         return ResponseEntity.ok().build();
     }
