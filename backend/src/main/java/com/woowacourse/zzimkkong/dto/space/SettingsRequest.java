@@ -49,6 +49,6 @@ public class SettingsRequest {
     }
 
     public String enabledDayOfWeekAsString() {
-        return enabledDayOfWeek.asString();
+        return enabledDayOfWeek.toString();
     }
 }
