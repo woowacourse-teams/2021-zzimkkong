@@ -13,12 +13,12 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static com.woowacourse.zzimkkong.domain.Space.DELIMITER;
+
 @Getter
 @NoArgsConstructor
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class EnabledDayOfWeekDto {
-    private static final String DELIMITER = ",";
-
     private Boolean monday = true;
     private Boolean tuesday = true;
     private Boolean wednesday = true;
@@ -33,7 +33,7 @@ public class EnabledDayOfWeekDto {
         return enabledDayOfWeekDto;
     }
 
-    public String toString() {
+    public String asString() {
         final Field[] fields = this.getClass().getDeclaredFields();
         final List<String> enabledDayOfWeek = getEnabledDayOfWeek(fields);
         return String.join(DELIMITER, enabledDayOfWeek);
@@ -65,10 +65,7 @@ public class EnabledDayOfWeekDto {
 
         Arrays.stream(fields)
                 .filter(field -> !enabledFieldNames.contains(field.getName()))
-                .forEach(field -> {
-                    final Field targetField = findFieldByDayOfWeek(fields, field.getName());
-                    setFalse(enabledDayOfWeekDto, targetField);
-                });
+                .forEach(field -> setFalse(enabledDayOfWeekDto, field));
     }
 
     private static List<String> getEnabledFieldNames(final String enabledDayOfWeekString) {
@@ -76,13 +73,6 @@ public class EnabledDayOfWeekDto {
                 .map(String::trim)
                 .map(String::toLowerCase)
                 .collect(Collectors.toList());
-    }
-
-    private static Field findFieldByDayOfWeek(final Field[] fields, final String dayOfWeek) {
-        return Arrays.stream(fields)
-                .filter(field -> dayOfWeek.equals(field.getName()))
-                .findFirst()
-                .orElseThrow(NoSuchDayOfWeekException::new);
     }
 
     private static void setFalse(final EnabledDayOfWeekDto enabledDayOfWeekDto, final Field targetField) {
