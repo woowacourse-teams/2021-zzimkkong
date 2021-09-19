@@ -24,7 +24,7 @@ class EnabledDayOfWeekDtoTest {
 
     @Test
     @DisplayName("필드 중 true인 부분만 추출해서 ','으로 join한 string을 반환한다")
-    void asString() {
+    void convertToString() {
         final EnabledDayOfWeekDto enabledDayOfWeekDto = EnabledDayOfWeekDto.from("monday,tuesday,wednesday");
         assertThat(enabledDayOfWeekDto.toString()).isEqualTo("monday,tuesday,wednesday");
     }
