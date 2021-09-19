@@ -17,7 +17,7 @@ export const postLogin = (loginData: LoginParams): Promise<AxiosResponse> => {
 };
 
 export const postTokenValidation = (): Promise<AxiosResponse> => {
-  return api.post('/managers/login/token');
+  return api.post('/managers/token');
 };
 
 export const queryGithubLogin: QueryFunction<
