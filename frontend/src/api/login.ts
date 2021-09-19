@@ -16,6 +16,10 @@ export const postLogin = (loginData: LoginParams): Promise<AxiosResponse> => {
   return api.post('/managers/login/token', loginData);
 };
 
+export const postTokenValidation = (): Promise<AxiosResponse> => {
+  return api.post('/managers/token');
+};
+
 export const queryGithubLogin: QueryFunction<
   AxiosResponse<LoginSuccess>,
   [QueryKey, SocialLoginParams]
