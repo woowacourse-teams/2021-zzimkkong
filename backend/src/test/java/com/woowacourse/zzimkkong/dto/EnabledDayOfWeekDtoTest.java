@@ -25,4 +25,9 @@ class EnabledDayOfWeekDtoTest {
         assertThat(enabledDayOfWeekDto.getSaturday()).isFalse();
         assertThat(enabledDayOfWeekDto.getSunday()).isFalse();
     }
+
+    @Test
+    void asString() {
+
+    }
 }

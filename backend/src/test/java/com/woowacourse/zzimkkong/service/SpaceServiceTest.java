@@ -288,7 +288,7 @@ class SpaceServiceTest extends ServiceTest {
                 pobi));
 
         assertThat(be.getReservationTimeUnit()).isEqualTo(settingsRequest.getReservationTimeUnit());
-        assertThat(be.getEnabledDayOfWeek()).isEqualTo(settingsRequest.getEnabledDayOfWeekDto());
+        assertThat(be.getEnabledDayOfWeek()).isEqualTo(settingsRequest.enabledDayOfWeekAsString());
     }
 
     @Test

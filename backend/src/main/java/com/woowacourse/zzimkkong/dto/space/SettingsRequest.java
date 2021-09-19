@@ -29,7 +29,7 @@ public class SettingsRequest {
 
     private Boolean reservationEnable = true;
 
-    private EnabledDayOfWeekDto enabledDayOfWeekDto = new EnabledDayOfWeekDto();
+    private EnabledDayOfWeekDto enabledDayOfWeek = new EnabledDayOfWeekDto();
 
     public SettingsRequest(
             final LocalTime availableStartTime,
@@ -38,17 +38,17 @@ public class SettingsRequest {
             final Integer reservationMinimumTimeUnit,
             final Integer reservationMaximumTimeUnit,
             final Boolean reservationEnable,
-            final EnabledDayOfWeekDto enabledDayOfWeekDto) {
+            final EnabledDayOfWeekDto enabledDayOfWeek) {
         this.availableStartTime = availableStartTime;
         this.availableEndTime = availableEndTime;
         this.reservationTimeUnit = reservationTimeUnit;
         this.reservationMinimumTimeUnit = reservationMinimumTimeUnit;
         this.reservationMaximumTimeUnit = reservationMaximumTimeUnit;
         this.reservationEnable = reservationEnable;
-        this.enabledDayOfWeekDto = enabledDayOfWeekDto;
+        this.enabledDayOfWeek = enabledDayOfWeek;
     }
 
-    public String getEnabledDayOfWeekDto() {
-        return enabledDayOfWeekDto.asString();
+    public String enabledDayOfWeekAsString() {
+        return enabledDayOfWeek.asString();
     }
 }
