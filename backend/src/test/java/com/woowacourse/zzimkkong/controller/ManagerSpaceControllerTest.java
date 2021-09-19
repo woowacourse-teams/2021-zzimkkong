@@ -94,7 +94,7 @@ class ManagerSpaceControllerTest extends AcceptanceTest {
                 60,
                 120,
                 true,
-                "monday, tuesday, wednesday, thursday, friday, saturday, sunday"
+                EnabledDayOfWeekDto.from("monday, tuesday, wednesday, thursday, friday, saturday, sunday")
         );
 
         SpaceCreateUpdateRequest newSpaceCreateUpdateRequest = new SpaceCreateUpdateRequest(
@@ -211,7 +211,7 @@ class ManagerSpaceControllerTest extends AcceptanceTest {
                 60,
                 120,
                 false,
-                "monday, tuesday, wednesday, thursday, friday, saturday, sunday"
+                EnabledDayOfWeekDto.from("monday, tuesday, wednesday, thursday, friday, saturday, sunday")
         );
 
         SpaceCreateUpdateRequest updateSpaceCreateUpdateRequest = new SpaceCreateUpdateRequest(

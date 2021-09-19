@@ -32,7 +32,7 @@ public class PresetService {
                 .reservationMinimumTimeUnit(settingsRequest.getReservationMinimumTimeUnit())
                 .reservationMaximumTimeUnit(settingsRequest.getReservationMaximumTimeUnit())
                 .reservationEnable(settingsRequest.getReservationEnable())
-                .enabledDayOfWeek(settingsRequest.getEnabledDayOfWeek())
+                .enabledDayOfWeek(settingsRequest.getEnabledDayOfWeekDto())
                 .build();
 
         Preset preset = presets.save(new Preset(presetCreateRequest.getName(), setting, manager));

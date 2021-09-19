@@ -8,6 +8,7 @@ import com.woowacourse.zzimkkong.dto.ErrorResponse;
 import com.woowacourse.zzimkkong.dto.InputFieldErrorResponse;
 import com.woowacourse.zzimkkong.dto.member.*;
 import com.woowacourse.zzimkkong.dto.member.oauth.OauthMemberSaveRequest;
+import com.woowacourse.zzimkkong.dto.space.EnabledDayOfWeekDto;
 import com.woowacourse.zzimkkong.dto.space.SettingsRequest;
 import com.woowacourse.zzimkkong.infrastructure.AuthorizationExtractor;
 import io.restassured.RestAssured;
@@ -55,7 +56,7 @@ class MemberControllerTest extends AcceptanceTest {
                 BE_RESERVATION_MINIMUM_TIME_UNIT,
                 BE_RESERVATION_MAXIMUM_TIME_UNIT,
                 BE_RESERVATION_ENABLE,
-                BE_ENABLED_DAY_OF_WEEK
+                EnabledDayOfWeekDto.from(BE_ENABLED_DAY_OF_WEEK)
         );
         presetCreateRequest = new PresetCreateRequest(PRESET_NAME1, settingsRequest);
     }

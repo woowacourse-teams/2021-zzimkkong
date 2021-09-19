@@ -1,6 +1,7 @@
 package com.woowacourse.zzimkkong.dto;
 
 import com.woowacourse.zzimkkong.dto.member.PresetCreateRequest;
+import com.woowacourse.zzimkkong.dto.space.EnabledDayOfWeekDto;
 import com.woowacourse.zzimkkong.dto.space.SettingsRequest;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -19,7 +20,7 @@ class PresetCreateRequestTest extends RequestTest {
             BE_RESERVATION_MINIMUM_TIME_UNIT,
             BE_RESERVATION_MAXIMUM_TIME_UNIT,
             BE_RESERVATION_ENABLE,
-            BE_ENABLED_DAY_OF_WEEK
+            EnabledDayOfWeekDto.from(BE_ENABLED_DAY_OF_WEEK)
     );
 
     @ParameterizedTest

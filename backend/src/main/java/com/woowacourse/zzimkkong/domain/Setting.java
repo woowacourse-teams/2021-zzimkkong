@@ -36,6 +36,7 @@ public class Setting {
     @Column(nullable = false)
     private String enabledDayOfWeek;
 
+    // TODO: Build 하는 곳에서 EnabledDayOfWeek.toString() 해주기
     protected Setting(
             final LocalTime availableStartTime,
             final LocalTime availableEndTime,

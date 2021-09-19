@@ -37,7 +37,7 @@ class SpaceServiceTest extends ServiceTest {
             BE_RESERVATION_MINIMUM_TIME_UNIT,
             BE_RESERVATION_MAXIMUM_TIME_UNIT,
             BE_RESERVATION_ENABLE,
-            BE_ENABLED_DAY_OF_WEEK
+            EnabledDayOfWeekDto.from(BE_ENABLED_DAY_OF_WEEK)
     );
 
     private final SpaceCreateUpdateRequest spaceCreateUpdateRequest = new SpaceCreateUpdateRequest(
@@ -288,7 +288,7 @@ class SpaceServiceTest extends ServiceTest {
                 pobi));
 
         assertThat(be.getReservationTimeUnit()).isEqualTo(settingsRequest.getReservationTimeUnit());
-        assertThat(be.getEnabledDayOfWeek()).isEqualTo(settingsRequest.getEnabledDayOfWeek());
+        assertThat(be.getEnabledDayOfWeek()).isEqualTo(settingsRequest.getEnabledDayOfWeekDto());
     }
 
     @Test

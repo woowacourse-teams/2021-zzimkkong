@@ -6,6 +6,7 @@ import com.woowacourse.zzimkkong.domain.Setting;
 import com.woowacourse.zzimkkong.dto.member.PresetCreateRequest;
 import com.woowacourse.zzimkkong.dto.member.PresetCreateResponse;
 import com.woowacourse.zzimkkong.dto.member.PresetFindAllResponse;
+import com.woowacourse.zzimkkong.dto.space.EnabledDayOfWeekDto;
 import com.woowacourse.zzimkkong.dto.space.SettingsRequest;
 import com.woowacourse.zzimkkong.exception.preset.NoSuchPresetException;
 import com.woowacourse.zzimkkong.repository.PresetRepository;
@@ -38,7 +39,7 @@ class PresetServiceTest extends ServiceTest {
             BE_RESERVATION_MINIMUM_TIME_UNIT,
             BE_RESERVATION_MAXIMUM_TIME_UNIT,
             BE_RESERVATION_ENABLE,
-            BE_ENABLED_DAY_OF_WEEK
+            EnabledDayOfWeekDto.from(BE_ENABLED_DAY_OF_WEEK)
     );
 
     private final Setting setting = Setting.builder()
