@@ -9,10 +9,10 @@ import java.net.URI;
 
 @Slf4j
 @Service
-public class AmazonS3Service {
+public class S3Service {
     private final S3Uploader s3Uploader;
 
-    public AmazonS3Service(S3Uploader s3Uploader) {
+    public S3Service(S3Uploader s3Uploader) {
         this.s3Uploader = s3Uploader;
     }
 

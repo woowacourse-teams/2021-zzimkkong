@@ -17,12 +17,12 @@ import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;
 
-class AmazonS3ServiceTest extends ServiceTest {
+class S3ServiceTest extends ServiceTest {
     @MockBean
     private S3Uploader s3Uploader;
 
     @Autowired
-    private AmazonS3Service amazonS3Service;
+    private S3Service s3Service;
 
     @BeforeEach
     void mockingS3Uploader() {
@@ -37,7 +37,7 @@ class AmazonS3ServiceTest extends ServiceTest {
         MultipartFile multipartFile = mock(MultipartFile.class);
 
         // when
-        URI actual = amazonS3Service.upload(multipartFile, "thumbnails");
+        URI actual = s3Service.upload(multipartFile, "thumbnails");
 
         // then
         assertThat(actual).isEqualTo(URI.create(LUTHER_IMAGE_URI_CLOUDFRONT));
