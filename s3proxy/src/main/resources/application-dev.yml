@@ -1,0 +1,5 @@
+aws:
+  s3:
+    bucket-name: zzimkkong-thumbnail-dev
+    mapped-cloudfront: https://d3tdpsdxqmqd52.cloudfront.net
+    region: ap-northeast-2
