@@ -19,23 +19,21 @@ import java.net.URL;
 
 @Component
 public class S3Uploader {
-    private static final String S3_DOMAIN_FORMAT = "https://%s.s3.%s.amazonaws.com";
+    private static final String S3_HOST_URL_SUFFIX = "amazonaws.com";
     private static final String PATH_DELIMITER = "/";
+    public static final int RESOURCE_URL_INDEX = 1;
 
     private final AmazonS3 amazonS3;
     private final String bucketName;
-    private final String s3DomainUrl;
-    private final String urlReplacement;
+    private final String cloudFrontUrl;
 
     public S3Uploader(
             final AmazonS3 amazonS3,
             @Value("${aws.s3.bucket-name}") final String bucketName,
-            @Value("${aws.s3.region}") final String regionName,
             @Value("${aws.s3.mapped-cloudfront}") final String cloudFrontUrl) {
         this.amazonS3 = amazonS3;
         this.bucketName = bucketName;
-        this.s3DomainUrl = String.format(S3_DOMAIN_FORMAT, this.bucketName, regionName);
-        this.urlReplacement = cloudFrontUrl;
+        this.cloudFrontUrl = cloudFrontUrl;
     }
 
     public URI upload(MultipartFile multipartFile, String directoryPath) {
@@ -51,7 +49,7 @@ public class S3Uploader {
 
             URL fileUrl = amazonS3.getUrl(this.bucketName, directoryPath);
 
-            return replaceUrl(fileUrl, urlReplacement);
+            return makeAccessibleUrl(fileUrl, cloudFrontUrl);
         } catch (AmazonClientException | IOException exception) {
             throw new S3UploadException(exception);
         }
@@ -73,8 +71,9 @@ public class S3Uploader {
         return directoryPath + PATH_DELIMITER + fileName;
     }
 
-    private URI replaceUrl(final URL origin, final String replacement) {
-        String replacedUrl = origin.toString().replace(s3DomainUrl, replacement);
+    private URI makeAccessibleUrl(final URL origin, final String cloudFrontUrl) {
+        String uriWithoutHost = origin.toString().split(S3_HOST_URL_SUFFIX)[RESOURCE_URL_INDEX];
+        String replacedUrl = cloudFrontUrl + uriWithoutHost;
         return URI.create(replacedUrl);
     }
 

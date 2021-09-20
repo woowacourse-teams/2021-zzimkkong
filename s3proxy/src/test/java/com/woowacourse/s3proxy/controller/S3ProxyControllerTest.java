@@ -15,7 +15,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.File;
 import java.net.URI;
 
-import static com.woowacourse.s3proxy.Constants.LUTHER_IMAGE;
+import static com.woowacourse.s3proxy.Constants.LUTHER_IMAGE_URI_CLOUDFRONT;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
@@ -28,7 +28,7 @@ class S3ProxyControllerTest extends AcceptanceTest {
     @BeforeEach
     void setUp() {
         given(s3Uploader.upload(any(MultipartFile.class), anyString()))
-                .willReturn(URI.create(LUTHER_IMAGE));
+                .willReturn(URI.create(LUTHER_IMAGE_URI_CLOUDFRONT));
     }
 
     @Test
