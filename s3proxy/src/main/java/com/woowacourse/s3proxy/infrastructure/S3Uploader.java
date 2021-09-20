@@ -5,6 +5,7 @@ import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.model.DeleteObjectRequest;
 import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.woowacourse.s3proxy.exception.S3UploadException;
+import com.woowacourse.s3proxy.exception.UnsupportedFileExtensionException;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.MediaType;
 import org.springframework.http.MediaTypeFactory;
@@ -15,10 +16,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
 import java.net.URL;
-import java.util.Arrays;
-
-import static java.util.stream.Collectors.collectingAndThen;
-import static java.util.stream.Collectors.toList;
 
 @Component
 public class S3Uploader {
@@ -63,7 +60,7 @@ public class S3Uploader {
     private ObjectMetadata createObjectMetadata(MultipartFile multipartFile) {
         String filename = multipartFile.getOriginalFilename();
         MediaType mediaType = MediaTypeFactory.getMediaType(filename)
-                .orElseThrow(); // todo 사용자 정의 예외 throw
+                .orElseThrow(UnsupportedFileExtensionException::new);
 
         ObjectMetadata objectMetadata = new ObjectMetadata();
         objectMetadata.setContentType(mediaType.toString());

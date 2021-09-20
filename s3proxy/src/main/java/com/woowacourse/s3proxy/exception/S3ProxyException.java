@@ -1,7 +1,9 @@
 package com.woowacourse.s3proxy.exception;
 
+import lombok.Getter;
 import org.springframework.http.HttpStatus;
 
+@Getter
 public abstract class S3ProxyException extends RuntimeException {
     protected final HttpStatus status;
 
