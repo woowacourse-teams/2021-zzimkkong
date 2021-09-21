@@ -50,4 +50,21 @@ class S3UploaderTest {
         // then
         assertThat(actual).isEqualTo(URI.create(expectedUri));
     }
+
+    @Test
+    @DisplayName("경로를 입력받아 파일을 삭제할 수 있다.")
+    void delete() {
+        // given
+        AmazonS3 amazonS3 = mock(AmazonS3.class);
+        String bucketName = "testBucketName";
+        String cloudFrontUrl = "https://testCloudFrontUrl.net";
+
+        S3Uploader s3Uploader = new S3Uploader(amazonS3, bucketName, cloudFrontUrl);
+
+        String fileName = "filename.png";
+        String directory = "directoryName";
+
+        // when, then
+        s3Uploader.delete(directory + "/" + fileName);
+    }
 }

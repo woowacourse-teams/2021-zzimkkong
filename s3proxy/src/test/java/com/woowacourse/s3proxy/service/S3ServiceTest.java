@@ -42,4 +42,15 @@ class S3ServiceTest extends ServiceTest {
         // then
         assertThat(actual).isEqualTo(URI.create(LUTHER_IMAGE_URI_CLOUDFRONT));
     }
+
+    @Test
+    @DisplayName("스토리지의 파일을 삭제할 수 있다.")
+    void delete() {
+        // given
+        String fileName = "filename.png";
+        String directory = "directoryName";
+
+        // when, then
+        s3Service.delete(directory, fileName);
+    }
 }
