@@ -18,9 +18,10 @@ public class StorageConfig {
                 .build();
     }
 
-    @Bean
+    @Bean(name = "amazonS3")
     @Profile({"test", "local"})
-    public AmazonS3 amazonS3Local(@Value("cloud.aws.region.static") String region) {
+    public AmazonS3 amazonS3Local(@Value("${cloud.aws.region.static}") String region) {
+
         return AmazonS3ClientBuilder
                 .standard()
                 .withRegion(region)
