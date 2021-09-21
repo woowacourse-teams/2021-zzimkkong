@@ -46,6 +46,27 @@ class S3ProxyControllerTest extends AcceptanceTest {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
     }
 
+    @Test
+    @DisplayName("스토리지의 파일을 삭제한다.")
+    void delete() {
+        // given
+        String fileName = "filename.png";
+        String directory = "directoryName";
+
+        // when
+        ExtractableResponse<Response> response = deleteFile(directory, fileName);
+
+        // then
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
+    }
+
+    private ExtractableResponse<Response> deleteFile(String directory, String fileName) {
+        return RestAssured.given()
+                .log().all()
+                .when().delete("/api/storage/" + directory + "/" + fileName)
+                .then().log().all().extract();
+    }
+
     private ExtractableResponse<Response> uploadFile(String directory, File file) {
         return RestAssured.given()
                 .log().all()

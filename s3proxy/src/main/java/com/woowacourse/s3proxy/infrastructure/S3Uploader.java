@@ -19,8 +19,8 @@ import java.net.URL;
 
 @Component
 public class S3Uploader {
+    public static final String PATH_DELIMITER = "/";
     private static final String S3_HOST_URL_SUFFIX = "amazonaws.com";
-    private static final String PATH_DELIMITER = "/";
     private static final int RESOURCE_URL_INDEX = 1;
 
     private final AmazonS3 amazonS3;

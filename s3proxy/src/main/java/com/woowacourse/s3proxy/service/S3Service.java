@@ -19,4 +19,8 @@ public class S3Service {
     public URI upload(MultipartFile multipartFile, String directoryPath) {
         return s3Uploader.upload(multipartFile, directoryPath);
     }
+
+    public void delete(String directoryPath, String fileName) {
+        s3Uploader.delete(directoryPath + S3Uploader.PATH_DELIMITER + fileName);
+    }
 }

@@ -19,8 +19,18 @@ public class S3ProxyController {
     }
 
     @PostMapping("/{directoryPath}")
-    public ResponseEntity<Void> submit(@RequestParam("file") MultipartFile file, @PathVariable("directoryPath") String directoryPath) {
+    public ResponseEntity<Void> submit(
+            @RequestParam("file") MultipartFile file,
+            @PathVariable("directoryPath") String directoryPath) {
         URI location = s3Service.upload(file, directoryPath);
         return ResponseEntity.created(location).build();
+    }
+
+    @DeleteMapping("/{directoryPath}/{fileName}")
+    public ResponseEntity<Void> delete(
+            @PathVariable("directoryPath") String directoryPath,
+            @PathVariable("fileName") String fileName) {
+        s3Service.delete(directoryPath, fileName);
+        return ResponseEntity.noContent().build();
     }
 }
