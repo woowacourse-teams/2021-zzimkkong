@@ -1,4 +1,4 @@
-import { Dispatch, SetStateAction } from 'react';
+import { createRef, Dispatch, SetStateAction } from 'react';
 import { Color, Coordinate, DrawingStatus, MapElement } from 'types/common';
 import { MapElementType } from 'types/editor';
 
@@ -32,6 +32,7 @@ const useBoardLineTool = ({
           type: MapElementType.Polyline,
           stroke: color,
           points: [startPoint, endPoint],
+          ref: createRef<SVGPolylineElement>(),
         },
       ]);
 
@@ -61,6 +62,7 @@ const useBoardLineTool = ({
         type: MapElementType.Polyline,
         stroke: color,
         points: [startPoint, endPoint],
+        ref: createRef<SVGPolylineElement>(),
       },
     ]);
   };

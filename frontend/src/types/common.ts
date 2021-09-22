@@ -1,3 +1,4 @@
+import React from 'react';
 import { DrawingAreaShape } from 'types/editor';
 import { MapElementType } from './editor';
 
@@ -26,6 +27,7 @@ export interface MapElement {
   y?: number;
   stroke: Color;
   points: string[];
+  ref: React.RefObject<SVGPolylineElement | SVGRectElement>;
 }
 
 export interface MapItem {
@@ -118,7 +120,7 @@ export interface MapDrawing {
 
 export interface GripPoint {
   id: number;
-  mapElementId: MapElement['id'];
+  mapElement: MapElement;
   x: number;
   y: number;
 }

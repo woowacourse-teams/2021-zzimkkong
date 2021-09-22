@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { ReactComponent as EraserIcon } from 'assets/svg/eraser.svg';
 import { ReactComponent as LineIcon } from 'assets/svg/line.svg';
 import { ReactComponent as MoveIcon } from 'assets/svg/move.svg';
@@ -64,8 +64,10 @@ const MapCreateEditor = ({
   mapElementsState: [mapElements, setMapElements],
   boardState: [{ width, height }, onChangeBoard],
 }: Props): JSX.Element => {
-  const [mode, setMode] = useState(MapEditorMode.Select);
+  const boardRef = useRef<SVGSVGElement>(null);
+  const selectRectRef = useRef<SVGRectElement>(null);
 
+  const [mode, setMode] = useState(MapEditorMode.Select);
   const [color, setColor] = useState<Color>(PALETTE.BLACK[400]);
   const [isColorPickerOpen, setColorPickerOpen] = useState(false);
 
@@ -82,19 +84,20 @@ const MapCreateEditor = ({
     width: Number(width),
     height: Number(height),
   });
-  const { coordinate, stickyDotCoordinate, onMouseMove } = useBoardCoordinate(boardStatus);
+  const { stickyDotCoordinate, onMouseMove } = useBoardCoordinate(boardStatus);
   const { onWheel } = useBoardZoom([boardStatus, setBoardStatus]);
   const {
     isSelectDragging,
     dragSelectRect,
     gripPoints,
-    selectedMapElementId,
+    selectedMapElements,
+    selectMapElement,
     deselectMapElement,
     onClickBoard,
-    onClickMapElement,
     onSelectDragStart,
+    onSelectDrag,
     onSelectDragEnd,
-  } = useBoardSelect({ coordinate });
+  } = useBoardSelect({ mapElements, boardRef, selectRectRef });
   const { isMoving, onDragStart, onDrag, onDragEnd, onMouseOut } = useBoardMove(
     [boardStatus, setBoardStatus],
     isBoardDraggable
@@ -133,40 +136,46 @@ const MapCreateEditor = ({
   const handleMouseUp = () => {
     if (isBoardDraggable || isMoving) return;
 
-    if (mode === MapEditorMode.Line) drawLineEnd();
+    if (mode === MapEditorMode.Select) onSelectDragEnd();
+    else if (mode === MapEditorMode.Line) drawLineEnd();
     else if (mode === MapEditorMode.Rect) drawRectEnd();
     else if (mode === MapEditorMode.Eraser) eraseEnd();
   };
 
   const handleDragStartBoard = (event: React.MouseEvent<SVGSVGElement>) => {
-    if (mode === MapEditorMode.Select) onSelectDragStart();
+    if (mode === MapEditorMode.Select) onSelectDragStart(event);
     else onDragStart(event);
   };
 
+  const handleDragBoard = (event: React.MouseEvent<SVGSVGElement>) => {
+    if (mode === MapEditorMode.Select && isSelectDragging) onSelectDrag(event);
+    else onDrag(event);
+  };
+
   const handleDragEndBoard = () => {
-    if (mode === MapEditorMode.Select) onSelectDragEnd();
+    if (mode === MapEditorMode.Select && isSelectDragging) onSelectDragEnd();
     else onDragEnd();
   };
 
   const deleteMapElement = useCallback(() => {
-    if (!selectedMapElementId) return;
+    if (!selectedMapElements) return;
 
     setMapElements((prevMapElements) =>
-      prevMapElements.filter(({ id }) => id !== selectedMapElementId)
+      prevMapElements.filter(({ id }) => !selectedMapElements.find((element) => element.id === id))
     );
 
     deselectMapElement();
-  }, [deselectMapElement, selectedMapElementId, setMapElements]);
+  }, [deselectMapElement, selectedMapElements, setMapElements]);
 
   useEffect(() => {
     if (mode !== MapEditorMode.Select) return;
 
     const isPressedDeleteKey = pressedKey === KEY.DELETE || pressedKey === KEY.BACK_SPACE;
 
-    if (isPressedDeleteKey && selectedMapElementId) {
+    if (isPressedDeleteKey && selectedMapElements) {
       deleteMapElement();
     }
-  }, [deleteMapElement, mode, pressedKey, selectedMapElementId]);
+  }, [deleteMapElement, mode, pressedKey, selectedMapElements]);
 
   return (
     <Styled.Editor>
@@ -194,15 +203,30 @@ const MapCreateEditor = ({
           boardState={[boardStatus, setBoardStatus]}
           movable={isBoardDraggable}
           isMoving={isMoving}
+          ref={boardRef}
           onClick={onClickBoard}
           onMouseMove={onMouseMove}
           onMouseDown={handleMouseDown}
           onMouseUp={handleMouseUp}
           onWheel={onWheel}
           onDragStart={handleDragStartBoard}
-          onDrag={onDrag}
+          onDrag={handleDragBoard}
           onDragEnd={handleDragEndBoard}
           onMouseOut={onMouseOut}
+          rootSvgChildren={
+            <>
+              {dragSelectRect && (
+                <rect
+                  fill="rgba(0, 0, 0, 0.2)"
+                  x={dragSelectRect.x}
+                  y={dragSelectRect.y}
+                  width={dragSelectRect.width}
+                  height={dragSelectRect.height}
+                  ref={selectRectRef}
+                />
+              )}
+            </>
+          }
         >
           {[MapEditorMode.Line, MapEditorMode.Rect].includes(mode) && (
             <circle
@@ -237,16 +261,6 @@ const MapCreateEditor = ({
               </text>
             </g>
           ))}
-
-          {isSelectDragging && dragSelectRect && (
-            <rect
-              fill="rgba(0, 0, 0, 0.2)"
-              x={Math.min(dragSelectRect.x, coordinate.x)}
-              y={Math.min(dragSelectRect.y, coordinate.y)}
-              width={Math.abs(dragSelectRect.x - coordinate.x)}
-              height={Math.abs(dragSelectRect.y - coordinate.y)}
-            />
-          )}
 
           {drawingStatus.start && mode === MapEditorMode.Line && (
             <polyline
@@ -291,8 +305,9 @@ const MapCreateEditor = ({
                       ? EDITOR.OPACITY_DELETING
                       : EDITOR.OPACITY
                   }
-                  onClickCapture={onClickMapElement}
+                  onClickCapture={() => selectMapElement(element)}
                   onMouseOverCapture={onMouseOverMapElement}
+                  ref={element.ref as React.RefObject<SVGPolylineElement>}
                 />
               );
             }
@@ -317,8 +332,9 @@ const MapCreateEditor = ({
                       ? EDITOR.OPACITY_DELETING
                       : EDITOR.OPACITY
                   }
-                  onClickCapture={onClickMapElement}
+                  onClickCapture={() => selectMapElement(element)}
                   onMouseOverCapture={onMouseOverMapElement}
+                  ref={element.ref as React.RefObject<SVGRectElement>}
                 />
               );
             }

@@ -1,5 +1,5 @@
 import { AxiosError } from 'axios';
-import React, { useMemo, useState } from 'react';
+import React, { createRef, useMemo, useState } from 'react';
 import { useMutation } from 'react-query';
 import { useHistory, useParams } from 'react-router';
 import { postMap, putMap } from 'api/managerMap';
@@ -64,8 +64,12 @@ const ManagerMapEditor = (): JSX.Element => {
 
         try {
           const { mapElements, width, height } = JSON.parse(mapDrawing) as MapDrawing;
+          const mapElementsWithRef = mapElements.map((element) => ({
+            ...element,
+            ref: createRef<SVGPolylineElement | SVGRectElement>(),
+          }));
 
-          setMapElements(mapElements);
+          setMapElements(mapElementsWithRef);
           setBoard({
             name: mapName ?? '',
             width: `${width}`,

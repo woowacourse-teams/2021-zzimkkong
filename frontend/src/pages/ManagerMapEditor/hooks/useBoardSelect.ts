@@ -1,21 +1,27 @@
 import React, { useState } from 'react';
 import { Coordinate, GripPoint, MapElement } from 'types/common';
+import { MapElementType } from 'types/editor';
 
 interface Props {
-  coordinate: Coordinate;
+  mapElements: MapElement[];
+  boardRef: React.RefObject<SVGSVGElement>;
+  selectRectRef: React.RefObject<SVGRectElement>;
 }
 
 const useBoardSelect = ({
-  coordinate,
+  mapElements,
+  boardRef,
+  selectRectRef,
 }: Props): {
   isSelectDragging: boolean;
   dragSelectRect: typeof dragSelectRect;
   gripPoints: GripPoint[];
-  selectedMapElementId: number | null;
+  selectedMapElements: MapElement[];
   deselectMapElement: () => void;
   onClickBoard: () => void;
-  onClickMapElement: (event: React.MouseEvent<SVGPolylineElement | SVGRectElement>) => void;
-  onSelectDragStart: () => void;
+  selectMapElement: (mapElement: MapElement) => void;
+  onSelectDragStart: (event: React.MouseEvent<SVGSVGElement>) => void;
+  onSelectDrag: (event: React.MouseEvent<SVGSVGElement>) => void;
   onSelectDragEnd: () => void;
 } => {
   const [isSelectDragging, setSelectDragging] = useState(false);
@@ -25,22 +31,64 @@ const useBoardSelect = ({
     width: 0,
     height: 0,
   });
+  const [startCoordinate, setStartCoordinate] = useState<Coordinate>({ x: 0, y: 0 });
   const [gripPoints, setGripPoints] = useState<GripPoint[]>([]);
-  const [selectedMapElementId, setSelectedMapElementId] = useState<MapElement['id'] | null>(null);
+  const [selectedMapElements, setSelectedMapElements] = useState<MapElement[]>([]);
   const nextGripPointId = Math.max(...gripPoints.map(({ id }) => id), 1) + 1;
 
-  const onSelectDragStart = () => {
+  const checkSelection = () => {
+    if (!selectRectRef.current) return;
+
+    const selections: MapElement[] = [];
+    const selectRectBBox = selectRectRef.current.getBBox();
+    console.log(selectRectBBox, selectRectRef.current);
+
+    mapElements.forEach((element) => {
+      if (element.ref.current) {
+        const hasIntersection = boardRef.current?.checkIntersection(
+          element.ref?.current,
+          selectRectBBox
+        );
+
+        if (hasIntersection) {
+          console.log(element.ref.current);
+          selections.push(element);
+        }
+      }
+    });
+
+    setSelectedMapElements(selections);
+  };
+
+  const onSelectDragStart = (event: React.MouseEvent<SVGSVGElement>) => {
+    const { offsetX, offsetY } = event.nativeEvent;
+
     setSelectDragging(true);
+    setStartCoordinate({ x: offsetX, y: offsetY });
     setDragSelectRect({
-      x: coordinate.x,
-      y: coordinate.y,
+      x: offsetX,
+      y: offsetY,
       width: 0,
       height: 0,
     });
   };
 
+  const onSelectDrag = (event: React.MouseEvent<SVGSVGElement>) => {
+    const { offsetX, offsetY } = event.nativeEvent;
+
+    setDragSelectRect({
+      x: Math.min(startCoordinate.x, offsetX),
+      y: Math.min(startCoordinate.y, offsetY),
+      width: Math.abs(startCoordinate.x - offsetX),
+      height: Math.abs(startCoordinate.y - offsetY),
+    });
+  };
+
   const onSelectDragEnd = () => {
     setSelectDragging(false);
+    checkSelection();
+
+    setStartCoordinate({ x: 0, y: 0 });
     setDragSelectRect({
       x: 0,
       y: 0,
@@ -49,29 +97,33 @@ const useBoardSelect = ({
     });
   };
 
-  const selectLineElement = (target: SVGPolylineElement, id: MapElement['id']) => {
-    const points = Object.values<Coordinate>(target?.points).map(({ x, y }) => ({ x, y }));
+  const selectLineElement = (mapElement: MapElement) => {
+    const points = mapElement.points.map((point) => {
+      const [x, y] = point.split(',');
+
+      return { x: Number(x), y: Number(y) };
+    });
 
     const newGripPoints = points.map(
       (point, index): GripPoint => ({
         id: nextGripPointId + index,
-        mapElementId: id,
+        mapElement,
         x: point.x,
         y: point.y,
       })
     );
 
-    setSelectedMapElementId(id);
+    setSelectedMapElements([mapElement]);
     setGripPoints([...newGripPoints]);
   };
 
-  const selectRectElement = (target: SVGRectElement, id: MapElement['id']) => {
-    const { x, y, width, height } = target;
+  const selectRectElement = (mapElement: MapElement) => {
+    const { x, y, width, height } = mapElement;
 
-    const pointX = x.baseVal.value;
-    const pointY = y.baseVal.value;
-    const widthValue = width.baseVal.value;
-    const heightValue = height.baseVal.value;
+    const pointX = Number(x);
+    const pointY = Number(y);
+    const widthValue = Number(width);
+    const heightValue = Number(height);
 
     const points = [
       { x: pointX, y: pointY },
@@ -83,18 +135,18 @@ const useBoardSelect = ({
     const newGripPoints = points.map(
       (point, index): GripPoint => ({
         id: nextGripPointId + index,
-        mapElementId: id,
+        mapElement,
         x: point.x,
         y: point.y,
       })
     );
 
-    setSelectedMapElementId(id);
+    setSelectedMapElements([mapElement]);
     setGripPoints([...newGripPoints]);
   };
 
   const deselectMapElement = () => {
-    setSelectedMapElementId(null);
+    setSelectedMapElements([]);
     setGripPoints([]);
   };
 
@@ -102,18 +154,15 @@ const useBoardSelect = ({
     deselectMapElement();
   };
 
-  const onClickMapElement = (event: React.MouseEvent<SVGPolylineElement | SVGRectElement>) => {
-    const target = event.target as SVGElement;
-    const [mapElementType, mapElementId] = target.id.split('-');
-
-    if (mapElementType === 'polyline') {
-      selectLineElement(event.target as SVGPolylineElement, Number(mapElementId));
+  const selectMapElement = (mapElement: MapElement) => {
+    if (mapElement.type === MapElementType.Polyline) {
+      selectLineElement(mapElement);
 
       return;
     }
 
-    if (mapElementType === 'rect') {
-      selectRectElement(event.target as SVGRectElement, Number(mapElementId));
+    if (mapElement.type === MapElementType.Rect) {
+      selectRectElement(mapElement);
     }
   };
 
@@ -121,11 +170,12 @@ const useBoardSelect = ({
     isSelectDragging,
     dragSelectRect,
     gripPoints,
-    selectedMapElementId,
+    selectedMapElements,
     deselectMapElement,
     onClickBoard,
-    onClickMapElement,
+    selectMapElement,
     onSelectDragStart,
+    onSelectDrag,
     onSelectDragEnd,
   };
 };
