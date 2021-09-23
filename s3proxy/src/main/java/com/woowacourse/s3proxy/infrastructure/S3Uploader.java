@@ -47,7 +47,7 @@ public class S3Uploader {
 
             amazonS3.putObject(this.bucketName, fileFullPath, inputStream, objectMetadata);
 
-            URL fileUrl = amazonS3.getUrl(this.bucketName, directoryPath);
+            URL fileUrl = amazonS3.getUrl(this.bucketName, fileFullPath);
 
             return makeAccessibleUrl(fileUrl, cloudFrontUrl);
         } catch (AmazonClientException | IOException exception) {
