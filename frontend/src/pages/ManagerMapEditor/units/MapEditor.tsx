@@ -87,13 +87,12 @@ const MapCreateEditor = ({
   const { stickyDotCoordinate, onMouseMove } = useBoardCoordinate(boardStatus);
   const { onWheel } = useBoardZoom([boardStatus, setBoardStatus]);
   const {
-    isSelectDragging,
     dragSelectRect,
     gripPoints,
     selectedMapElements,
     selectMapElement,
-    deselectMapElement,
-    onClickBoard,
+    deselectMapElements,
+
     onSelectDragStart,
     onSelectDrag,
     onSelectDragEnd,
@@ -148,12 +147,12 @@ const MapCreateEditor = ({
   };
 
   const handleDragBoard = (event: React.MouseEvent<SVGSVGElement>) => {
-    if (mode === MapEditorMode.Select && isSelectDragging) onSelectDrag(event);
+    if (mode === MapEditorMode.Select) onSelectDrag(event);
     else onDrag(event);
   };
 
   const handleDragEndBoard = () => {
-    if (mode === MapEditorMode.Select && isSelectDragging) onSelectDragEnd();
+    if (mode === MapEditorMode.Select) onSelectDragEnd();
     else onDragEnd();
   };
 
@@ -164,8 +163,8 @@ const MapCreateEditor = ({
       prevMapElements.filter(({ id }) => !selectedMapElements.find((element) => element.id === id))
     );
 
-    deselectMapElement();
-  }, [deselectMapElement, selectedMapElements, setMapElements]);
+    deselectMapElements();
+  }, [deselectMapElements, selectedMapElements, setMapElements]);
 
   useEffect(() => {
     if (mode !== MapEditorMode.Select) return;
@@ -204,7 +203,6 @@ const MapCreateEditor = ({
           movable={isBoardDraggable}
           isMoving={isMoving}
           ref={boardRef}
-          onClick={onClickBoard}
           onMouseMove={onMouseMove}
           onMouseDown={handleMouseDown}
           onMouseUp={handleMouseUp}
@@ -298,6 +296,9 @@ const MapCreateEditor = ({
                   stroke={element.stroke}
                   strokeWidth={EDITOR.STROKE_WIDTH}
                   strokeLinecap="round"
+                  visibility={
+                    selectedMapElements.find(({ id }) => element.id === id) ? 'hidden' : 'visible'
+                  }
                   cursor={isMapElementClickable ? 'pointer' : 'default'}
                   pointerEvents={isMapElementEventAvailable ? 'auto' : 'none'}
                   opacity={
@@ -307,7 +308,7 @@ const MapCreateEditor = ({
                   }
                   onClickCapture={() => selectMapElement(element)}
                   onMouseOverCapture={onMouseOverMapElement}
-                  ref={element.ref as React.RefObject<SVGPolylineElement>}
+                  ref={(el) => (element.ref.current = el)}
                 />
               );
             }
@@ -325,6 +326,9 @@ const MapCreateEditor = ({
                   fill="none"
                   strokeWidth={EDITOR.STROKE_WIDTH}
                   strokeLinecap="round"
+                  visibility={
+                    selectedMapElements.find(({ id }) => element.id === id) ? 'hidden' : 'visible'
+                  }
                   cursor={isMapElementClickable ? 'pointer' : 'default'}
                   pointerEvents={isMapElementEventAvailable ? 'auto' : 'none'}
                   opacity={
@@ -334,13 +338,65 @@ const MapCreateEditor = ({
                   }
                   onClickCapture={() => selectMapElement(element)}
                   onMouseOverCapture={onMouseOverMapElement}
-                  ref={element.ref as React.RefObject<SVGRectElement>}
+                  ref={(el) => (element.ref.current = el)}
                 />
               );
             }
 
             return null;
           })}
+
+          <g pointerEvents="none">
+            {selectedMapElements.map((element) => {
+              if (element.type === MapElementType.Polyline) {
+                return (
+                  <polyline
+                    key={`${MapElementType.Polyline}-${element.id}`}
+                    id={`${MapElementType.Polyline}-${element.id}`}
+                    points={element.points.join(' ')}
+                    stroke="#ff0000"
+                    strokeWidth={EDITOR.STROKE_WIDTH}
+                    strokeLinecap="round"
+                    cursor={isMapElementClickable ? 'pointer' : 'default'}
+                    opacity={
+                      erasingMapElementIds.includes(element.id)
+                        ? EDITOR.OPACITY_DELETING
+                        : EDITOR.OPACITY
+                    }
+                    onClickCapture={() => selectMapElement(element)}
+                    onMouseOverCapture={onMouseOverMapElement}
+                  />
+                );
+              }
+
+              if (element.type === MapElementType.Rect) {
+                return (
+                  <rect
+                    key={`${MapElementType.Rect}-${element.id}`}
+                    id={`${MapElementType.Rect}-${element.id}`}
+                    x={element?.x}
+                    y={element?.y}
+                    width={element?.width}
+                    height={element?.height}
+                    stroke="#ff0000"
+                    fill="none"
+                    strokeWidth={EDITOR.STROKE_WIDTH}
+                    strokeLinecap="round"
+                    cursor={isMapElementClickable ? 'pointer' : 'default'}
+                    opacity={
+                      erasingMapElementIds.includes(element.id)
+                        ? EDITOR.OPACITY_DELETING
+                        : EDITOR.OPACITY
+                    }
+                    onClickCapture={() => selectMapElement(element)}
+                    onMouseOverCapture={onMouseOverMapElement}
+                  />
+                );
+              }
+
+              return null;
+            })}
+          </g>
 
           {mode === MapEditorMode.Select &&
             gripPoints.map(({ x, y }, index) => (

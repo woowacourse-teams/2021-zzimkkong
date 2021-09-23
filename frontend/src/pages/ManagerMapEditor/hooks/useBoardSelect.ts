@@ -13,12 +13,10 @@ const useBoardSelect = ({
   boardRef,
   selectRectRef,
 }: Props): {
-  isSelectDragging: boolean;
   dragSelectRect: typeof dragSelectRect;
   gripPoints: GripPoint[];
   selectedMapElements: MapElement[];
-  deselectMapElement: () => void;
-  onClickBoard: () => void;
+  deselectMapElements: () => void;
   selectMapElement: (mapElement: MapElement) => void;
   onSelectDragStart: (event: React.MouseEvent<SVGSVGElement>) => void;
   onSelectDrag: (event: React.MouseEvent<SVGSVGElement>) => void;
@@ -36,12 +34,16 @@ const useBoardSelect = ({
   const [selectedMapElements, setSelectedMapElements] = useState<MapElement[]>([]);
   const nextGripPointId = Math.max(...gripPoints.map(({ id }) => id), 1) + 1;
 
-  const checkSelection = () => {
-    if (!selectRectRef.current) return;
+  const deselectMapElements = () => {
+    setSelectedMapElements([]);
+    setGripPoints([]);
+  };
+
+  const getSelections = () => {
+    if (!selectRectRef.current) return [];
 
     const selections: MapElement[] = [];
     const selectRectBBox = selectRectRef.current.getBBox();
-    console.log(selectRectBBox, selectRectRef.current);
 
     mapElements.forEach((element) => {
       if (element.ref.current) {
@@ -51,17 +53,18 @@ const useBoardSelect = ({
         );
 
         if (hasIntersection) {
-          console.log(element.ref.current);
           selections.push(element);
         }
       }
     });
 
-    setSelectedMapElements(selections);
+    return selections;
   };
 
   const onSelectDragStart = (event: React.MouseEvent<SVGSVGElement>) => {
     const { offsetX, offsetY } = event.nativeEvent;
+
+    deselectMapElements();
 
     setSelectDragging(true);
     setStartCoordinate({ x: offsetX, y: offsetY });
@@ -74,6 +77,8 @@ const useBoardSelect = ({
   };
 
   const onSelectDrag = (event: React.MouseEvent<SVGSVGElement>) => {
+    if (!isSelectDragging) return;
+
     const { offsetX, offsetY } = event.nativeEvent;
 
     setDragSelectRect({
@@ -85,9 +90,12 @@ const useBoardSelect = ({
   };
 
   const onSelectDragEnd = () => {
-    setSelectDragging(false);
-    checkSelection();
+    if (!isSelectDragging) return;
 
+    const selections = getSelections();
+    setSelectedMapElements(selections);
+
+    setSelectDragging(false);
     setStartCoordinate({ x: 0, y: 0 });
     setDragSelectRect({
       x: 0,
@@ -145,15 +153,6 @@ const useBoardSelect = ({
     setGripPoints([...newGripPoints]);
   };
 
-  const deselectMapElement = () => {
-    setSelectedMapElements([]);
-    setGripPoints([]);
-  };
-
-  const onClickBoard = () => {
-    deselectMapElement();
-  };
-
   const selectMapElement = (mapElement: MapElement) => {
     if (mapElement.type === MapElementType.Polyline) {
       selectLineElement(mapElement);
@@ -167,12 +166,10 @@ const useBoardSelect = ({
   };
 
   return {
-    isSelectDragging,
     dragSelectRect,
     gripPoints,
     selectedMapElements,
-    deselectMapElement,
-    onClickBoard,
+    deselectMapElements,
     selectMapElement,
     onSelectDragStart,
     onSelectDrag,

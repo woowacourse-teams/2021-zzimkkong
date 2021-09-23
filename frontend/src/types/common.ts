@@ -18,6 +18,7 @@ export interface ScrollPosition {
   x?: number;
   y?: number;
 }
+
 export interface MapElement {
   id: number;
   type: MapElementType;
@@ -27,7 +28,7 @@ export interface MapElement {
   y?: number;
   stroke: Color;
   points: string[];
-  ref: React.RefObject<SVGPolylineElement | SVGRectElement>;
+  ref: React.MutableRefObject<SVGPolylineElement | SVGRectElement | null>;
 }
 
 export interface MapItem {
