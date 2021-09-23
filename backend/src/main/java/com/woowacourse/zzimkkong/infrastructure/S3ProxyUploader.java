@@ -1,5 +1,6 @@
 package com.woowacourse.zzimkkong.infrastructure;
 
+import com.woowacourse.zzimkkong.exception.infrastructure.S3ProxyRespondedFailException;
 import com.woowacourse.zzimkkong.exception.infrastructure.S3UploadException;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.ByteArrayResource;
@@ -20,14 +21,14 @@ import java.util.Objects;
 
 @Component
 public class S3ProxyUploader implements StorageUploader {
-    public static final String PATH_DELIMETER = "/";
-    public static final String API_PATH = "/api/storage";
+    private static final String PATH_DELIMETER = "/";
+    private static final String API_PATH = "/api/storage";
+    private static final String CONTENT_DISPOSITION_HEADER_VALUE_FORMAT = "form-data; name=file; filename=%s";
 
     private final WebClient proxyServerClient;
 
     public S3ProxyUploader(
-            @Value("${s3proxy.server-uri}")
-            final String serverUri) {
+            @Value("${s3proxy.server-uri}") final String serverUri) {
         this.proxyServerClient = WebClient.builder()
                 .baseUrl(serverUri)
                 .build();
@@ -40,7 +41,8 @@ public class S3ProxyUploader implements StorageUploader {
 
             MultipartBodyBuilder multipartBodyBuilder = new MultipartBodyBuilder();
             multipartBodyBuilder.part("file", new ByteArrayResource(byteArrayOfFile))
-                    .header(HttpHeaders.CONTENT_DISPOSITION, "form-data; name=file; filename=" + uploadFile.getName());
+                    .header(HttpHeaders.CONTENT_DISPOSITION,
+                            String.format(CONTENT_DISPOSITION_HEADER_VALUE_FORMAT, uploadFile.getName()));
 
             return proxyServerClient
                     .method(HttpMethod.POST)
@@ -49,15 +51,15 @@ public class S3ProxyUploader implements StorageUploader {
                     .body(BodyInserters.fromMultipartData(multipartBodyBuilder.build()))
                     .exchangeToMono(clientResponse -> {
                         if (clientResponse.statusCode().equals(HttpStatus.CREATED)) {
-                            String location = Objects.requireNonNull(clientResponse.headers().asHttpHeaders().get(HttpHeaders.LOCATION))
+                            String location = Objects.requireNonNull(
+                                            clientResponse.headers().asHttpHeaders().get(HttpHeaders.LOCATION))
                                     .stream().findFirst()
                                     .orElseThrow(S3UploadException::new);
                             return Mono.just(location);
                         }
-                        return Mono.error(S3UploadException::new);
+                        return Mono.error(S3ProxyRespondedFailException::new);
                     })
                     .block();
-            // todo 에러 구체화
         } catch (IOException exception) {
             throw new S3UploadException(exception);
         }
