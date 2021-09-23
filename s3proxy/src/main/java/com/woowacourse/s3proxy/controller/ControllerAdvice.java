@@ -11,8 +11,8 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 @RestControllerAdvice
 public class ControllerAdvice {
     @ExceptionHandler(S3ProxyException.class)
-    public ResponseEntity<ErrorResponse> zzimkkongExceptionHandler(final S3ProxyException exception) {
-        log.info(exception.getMessage());
+    public ResponseEntity<ErrorResponse> s3ProxyExceptionHandler(final S3ProxyException exception) {
+        log.warn(exception.getMessage(), exception);
         return ResponseEntity
                 .status(exception.getStatus())
                 .body(ErrorResponse.from(exception));
