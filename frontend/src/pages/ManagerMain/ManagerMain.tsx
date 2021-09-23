@@ -11,11 +11,9 @@ import { ReactComponent as MenuIcon } from 'assets/svg/menu.svg';
 import { ReactComponent as SpaceEditorIcon } from 'assets/svg/space-editor.svg';
 import Button from 'components/Button/Button';
 import DateInput from 'components/DateInput/DateInput';
-import Drawer from 'components/Drawer/Drawer';
 import Header from 'components/Header/Header';
 import IconButton from 'components/IconButton/IconButton';
 import Layout from 'components/Layout/Layout';
-import MapListItem from 'components/MapListItem/MapListItem';
 import PageHeader from 'components/PageHeader/PageHeader';
 import Panel from 'components/Panel/Panel';
 import ReservationListItem from 'components/ReservationListItem/ReservationListItem';
@@ -30,6 +28,7 @@ import { formatDate } from 'utils/datetime';
 import { sortReservations } from 'utils/sort';
 import { isNullish } from 'utils/type';
 import * as Styled from './ManagerMain.styles';
+import MapDrawer from './units/MapDrawer';
 
 export interface ManagerMainState {
   mapId?: number;
@@ -338,38 +337,17 @@ const ManagerMain = (): JSX.Element => {
         </Styled.ReservationsContainer>
       </Layout>
 
-      <Drawer open={open} placement="left" maxwidth="450px" onClose={handleCloseDrawer}>
-        <Drawer.Inner>
-          <Drawer.Header>
-            <Drawer.HeaderText>{organization}</Drawer.HeaderText>
-            <Drawer.CloseButton />
-          </Drawer.Header>
-          {maps.map(({ mapId, mapName, mapImageUrl }) => (
-            <Styled.SpaceWrapper key={`map-${mapId}`}>
-              <MapListItem
-                onClick={() => handleSelectMap(mapId, mapName)}
-                thumbnail={{ src: mapImageUrl, alt: mapName }}
-                title={mapName}
-                selected={mapId === selectedMapId}
-                control={
-                  <>
-                    <IconButton size="small">
-                      <EditIcon width="100%" height="100%" />
-                    </IconButton>
-                    <IconButton size="small" onClick={() => handleDeleteMap(mapId)}>
-                      <DeleteIcon width="100%" height="100%" />
-                    </IconButton>
-                  </>
-                }
-              />
-            </Styled.SpaceWrapper>
-          ))}
-
-          <Styled.CreateMapButton to={PATH.MANAGER_MAP_CREATE}>
-            <Styled.PlusIcon width="100%" height="100%" />
-          </Styled.CreateMapButton>
-        </Drawer.Inner>
-      </Drawer>
+      {selectedMapId && maps && (
+        <MapDrawer
+          selectedMapId={selectedMapId}
+          organization={organization}
+          maps={maps}
+          open={open}
+          onClose={() => setOpen(false)}
+          onSelectMap={handleSelectMap}
+          onDeleteMap={handleDeleteMap}
+        />
+      )}
     </>
   );
 };
