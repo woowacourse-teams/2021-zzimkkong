@@ -6,11 +6,10 @@ import com.amazonaws.services.s3.model.DeleteObjectRequest;
 import com.amazonaws.services.s3.model.PutObjectRequest;
 import com.woowacourse.zzimkkong.exception.infrastructure.S3UploadException;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Component;
 
 import java.io.File;
 
-@Component
+// todo S3ProxyUploader 동작 확인 후 삭제
 public class S3Uploader implements StorageUploader {
     private static final String S3_DOMAIN_FORMAT = "https://%s.s3.%s.amazonaws.com";
     private static final String PATH_DELIMITER = "/";
