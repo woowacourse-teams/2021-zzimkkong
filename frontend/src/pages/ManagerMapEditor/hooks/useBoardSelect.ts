@@ -61,8 +61,27 @@ const useBoardSelect = ({
     return selections;
   };
 
+  const selectDragEnd = () => {
+    const selections = getSelections();
+    setSelectedMapElements(selections);
+
+    setSelectDragging(false);
+    setStartCoordinate({ x: 0, y: 0 });
+    setDragSelectRect({
+      x: 0,
+      y: 0,
+      width: 0,
+      height: 0,
+    });
+  };
+
   const onSelectDragStart = (event: React.MouseEvent<SVGSVGElement>) => {
     const { offsetX, offsetY } = event.nativeEvent;
+
+    if (isSelectDragging) {
+      selectDragEnd();
+      return;
+    }
 
     deselectMapElements();
 
@@ -92,17 +111,7 @@ const useBoardSelect = ({
   const onSelectDragEnd = () => {
     if (!isSelectDragging) return;
 
-    const selections = getSelections();
-    setSelectedMapElements(selections);
-
-    setSelectDragging(false);
-    setStartCoordinate({ x: 0, y: 0 });
-    setDragSelectRect({
-      x: 0,
-      y: 0,
-      width: 0,
-      height: 0,
-    });
+    selectDragEnd();
   };
 
   const selectLineElement = (mapElement: MapElement) => {
