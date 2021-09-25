@@ -12,9 +12,7 @@ function MemberPage() {
 
 function getMembers(pageNumber) {
     page = pageNumber;
-    fetch(memberPage.getMembers + "?page=" + pageNumber, {
-        method: 'GET'
-    }).then(res => res.json())
+    fetch(memberPage.getMembers + "?page=" + pageNumber).then(res => res.json())
         .then(async function (data) {
             const memberList = document.querySelector(".members-row");
             for (let i = 0; i < data.members.length; i++) {

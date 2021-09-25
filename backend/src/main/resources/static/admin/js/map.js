@@ -12,9 +12,7 @@ function MapPage() {
 
 function getMaps(pageNumber) {
     page = pageNumber;
-    fetch(mapPage.getMaps + "?page=" + pageNumber, {
-        method: 'GET'
-    }).then(res => res.json())
+    fetch(mapPage.getMaps + "?page=" + pageNumber).then(res => res.json())
         .then(async function (data) {
             const mapList = document.querySelector(".maps-row");
                 mapList.innerHTML += data.maps.map(map =>

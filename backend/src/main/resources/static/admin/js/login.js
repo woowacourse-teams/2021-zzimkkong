@@ -12,7 +12,7 @@ document.querySelector("#login").addEventListener("click", function () {
     let id = document.querySelector("#inputId").value;
     let password = document.querySelector("#inputPassword").value;
 
-    fetch(loginPage.postLogin + '?id=' + id + '&password=' + password, {
+    fetch(`${loginPage.postLogin}?id=${id}&password=${password}`, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
