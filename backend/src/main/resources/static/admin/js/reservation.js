@@ -13,7 +13,7 @@ function ReservationPage() {
 function getReservations(pageNumber) {
     page = pageNumber;
     fetch(reservationPage.getReservations + "?page=" + pageNumber).then(res => res.json())
-        .then(async function (data) {
+        .then(function (data) {
             const reservationList = document.querySelector(".reservations-row");
             console.log(data);
             for (let i = 0; i < data.reservations.length; i++) {

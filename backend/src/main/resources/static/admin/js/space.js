@@ -13,7 +13,7 @@ function SpacePage() {
 function getSpaces(pageNumber) {
     page = pageNumber;
     fetch(spacePage.getSpaces + "?page=" + pageNumber).then(res => res.json())
-        .then(async function (data) {
+        .then(function (data) {
             const spaceList = document.querySelector(".spaces-row");
             for (let i = 0; i < data.spaces.length; i++) {
                 let space = data.spaces[i];
