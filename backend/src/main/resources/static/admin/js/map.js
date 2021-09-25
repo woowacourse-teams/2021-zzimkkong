@@ -17,17 +17,15 @@ function getMaps(pageNumber) {
     }).then(res => res.json())
         .then(async function (data) {
             const mapList = document.querySelector(".maps-row");
-            for (let i = 0; i < data.maps.length; i++) {
-                let map = data.maps[i];
-                mapList.innerHTML +=
+                mapList.innerHTML += data.maps.map(map =>
                     `<tr class="map">
                         <th scope="row">${map.mapId}</th>
                         <td>${map.mapName}</td>
                         <td>${map.mapImageUrl}</td>
                         <td>${map.sharingMapId}</td>
                         <td>${map.managerEmail}</td>
-                    </tr>`;
-            }
+                    </tr>`
+                ).join("");
         });
 }
 
