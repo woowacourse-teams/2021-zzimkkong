@@ -36,7 +36,7 @@ function getReservations(pageNumber) {
 }
 
 ReservationPage.prototype.initReservationPage = function () {
-    let btn = document.getElementById('btn-reservations');
+    const btn = document.getElementById('btn-reservations');
     btn.disabled = true;
     page = 0;
     getReservations(page);

@@ -39,7 +39,7 @@ function getSpaces(pageNumber) {
 }
 
 SpacePage.prototype.initSpacePage = function () {
-    let btn = document.getElementById('btn-spaces');
+    const btn = document.getElementById('btn-spaces');
     btn.disabled = true;
     page = 0;
     getSpaces(page);

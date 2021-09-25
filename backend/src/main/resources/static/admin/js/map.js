@@ -28,7 +28,7 @@ function getMaps(pageNumber) {
 }
 
 MapPage.prototype.initMapPage = function () {
-    let btn = document.getElementById('btn-maps');
+    const btn = document.getElementById('btn-maps');
     btn.disabled = true;
     page = 0;
     getMaps(page);

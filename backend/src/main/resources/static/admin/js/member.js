@@ -28,7 +28,7 @@ function getMembers(pageNumber) {
 }
 
 MemberPage.prototype.initMemberPage = function () {
-    let btn = document.getElementById('btn-members');
+    const btn = document.getElementById('btn-members');
     btn.disabled = true;
     page = 0;
     getMembers(page);
