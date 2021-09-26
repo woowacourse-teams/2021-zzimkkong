@@ -7,7 +7,7 @@ import java.io.File;
 
 @Component
 public class ThumbnailManagerImpl implements ThumbnailManager {
-    public static final String THUMBNAILS_DIRECTORY_NAME = "thumbnailsTest";
+    public static final String THUMBNAILS_DIRECTORY_NAME = "thumbnails";
     public static final String THUMBNAIL_EXTENSION = ".png";
     private static final String THUMBNAIL_FILE_FORMAT = "%s";
 
