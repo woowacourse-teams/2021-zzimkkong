@@ -1,9 +1,9 @@
 package com.woowacourse.zzimkkong.controller;
 
 import com.woowacourse.zzimkkong.domain.Manager;
-import com.woowacourse.zzimkkong.domain.Member;
 import com.woowacourse.zzimkkong.dto.reservation.*;
 import com.woowacourse.zzimkkong.dto.slack.SlackResponse;
+import com.woowacourse.zzimkkong.infrastructure.LoginEmail;
 import com.woowacourse.zzimkkong.service.ReservationService;
 import com.woowacourse.zzimkkong.service.SlackService;
 import com.woowacourse.zzimkkong.service.strategy.ManagerReservationStrategy;
@@ -37,12 +37,12 @@ public class ManagerReservationController {
             @PathVariable final Long mapId,
             @PathVariable final Long spaceId,
             @RequestBody @Valid final ReservationCreateUpdateWithPasswordRequest reservationCreateUpdateWithPasswordRequest,
-            @Manager final Member manager) {
+            @Manager final LoginEmail loginEmail) {
         ReservationCreateDto reservationCreateDto = ReservationCreateDto.of(
                 mapId,
                 spaceId,
                 reservationCreateUpdateWithPasswordRequest,
-                manager);
+                loginEmail);
         ReservationCreateResponse reservationCreateResponse = reservationService.saveReservation(reservationCreateDto, managerReservationStrategy);
         return ResponseEntity
                 .created(URI.create("/api/managers/maps/" + mapId + "/spaces/" + spaceId + "/reservations/" + reservationCreateResponse.getId()))
@@ -53,11 +53,11 @@ public class ManagerReservationController {
     public ResponseEntity<ReservationFindAllResponse> findAll(
             @PathVariable final Long mapId,
             @RequestParam @DateTimeFormat(pattern = DATE_FORMAT) final LocalDate date,
-            @Manager final Member manager) {
+            @Manager final LoginEmail loginEmail) {
         ReservationFindAllDto reservationFindAllDto = ReservationFindAllDto.of(
                 mapId,
                 date,
-                manager);
+                loginEmail);
         ReservationFindAllResponse reservationFindAllResponse = reservationService.findAllReservations(reservationFindAllDto, managerReservationStrategy);
         return ResponseEntity.ok().body(reservationFindAllResponse);
     }
@@ -67,12 +67,12 @@ public class ManagerReservationController {
             @PathVariable final Long mapId,
             @PathVariable final Long spaceId,
             @RequestParam @DateTimeFormat(pattern = DATE_FORMAT) final LocalDate date,
-            @Manager final Member manager) {
+            @Manager final LoginEmail loginEmail) {
         ReservationFindDto reservationFindDto = ReservationFindDto.of(
                 mapId,
                 spaceId,
                 date,
-                manager);
+                loginEmail);
         ReservationFindResponse reservationFindResponse = reservationService.findReservations(reservationFindDto, managerReservationStrategy);
         return ResponseEntity.ok().body(reservationFindResponse);
     }
@@ -82,12 +82,12 @@ public class ManagerReservationController {
             @PathVariable final Long mapId,
             @PathVariable final Long spaceId,
             @PathVariable final Long reservationId,
-            @Manager final Member manager) {
+            @Manager final LoginEmail loginEmail) {
         ReservationAuthenticationDto reservationAuthenticationDto = ReservationAuthenticationDto.of(
                 mapId,
                 spaceId,
                 reservationId,
-                manager);
+                loginEmail);
         ReservationResponse reservationResponse = reservationService.findReservation(reservationAuthenticationDto, managerReservationStrategy);
         return ResponseEntity.ok().body(reservationResponse);
     }
@@ -98,13 +98,13 @@ public class ManagerReservationController {
             @PathVariable final Long spaceId,
             @PathVariable final Long reservationId,
             @RequestBody @Valid final ReservationCreateUpdateRequest reservationCreateUpdateRequest,
-            @Manager final Member manager) {
+            @Manager final LoginEmail loginEmail) {
         ReservationUpdateDto reservationUpdateDto = ReservationUpdateDto.of(
                 mapId,
                 spaceId,
                 reservationId,
                 reservationCreateUpdateRequest,
-                manager);
+                loginEmail);
         SlackResponse slackResponse = reservationService.updateReservation(reservationUpdateDto, managerReservationStrategy);
         slackService.sendUpdateMessage(slackResponse);
         return ResponseEntity.ok().build();
@@ -115,12 +115,12 @@ public class ManagerReservationController {
             @PathVariable final Long mapId,
             @PathVariable final Long spaceId,
             @PathVariable final Long reservationId,
-            @Manager final Member manager) {
+            @Manager final LoginEmail loginEmail) {
         ReservationAuthenticationDto reservationAuthenticationDto = ReservationAuthenticationDto.of(
                 mapId,
                 spaceId,
                 reservationId,
-                manager);
+                loginEmail);
         SlackResponse slackResponse = reservationService.deleteReservation(reservationAuthenticationDto, managerReservationStrategy);
         slackService.sendUpdateMessage(slackResponse);
         return ResponseEntity.noContent().build();
