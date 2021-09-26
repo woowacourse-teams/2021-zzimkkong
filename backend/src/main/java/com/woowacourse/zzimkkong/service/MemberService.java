@@ -2,12 +2,15 @@ package com.woowacourse.zzimkkong.service;
 
 import com.woowacourse.zzimkkong.domain.Member;
 import com.woowacourse.zzimkkong.domain.OauthProvider;
+import com.woowacourse.zzimkkong.dto.member.MemberFindResponse;
 import com.woowacourse.zzimkkong.dto.member.MemberSaveRequest;
 import com.woowacourse.zzimkkong.dto.member.MemberSaveResponse;
 import com.woowacourse.zzimkkong.dto.member.MemberUpdateRequest;
 import com.woowacourse.zzimkkong.dto.member.oauth.OauthMemberSaveRequest;
 import com.woowacourse.zzimkkong.exception.member.DuplicateEmailException;
+import com.woowacourse.zzimkkong.exception.member.NoSuchMemberException;
 import com.woowacourse.zzimkkong.exception.member.ReservationExistsOnMemberException;
+import com.woowacourse.zzimkkong.infrastructure.LoginEmail;
 import com.woowacourse.zzimkkong.infrastructure.oauth.OauthHandler;
 import com.woowacourse.zzimkkong.repository.MemberRepository;
 import com.woowacourse.zzimkkong.repository.ReservationRepository;
@@ -68,11 +71,18 @@ public class MemberService {
         }
     }
 
-    public void updateMember(final Member member, final MemberUpdateRequest memberUpdateRequest) {
+    public MemberFindResponse findMember(final LoginEmail loginEmail) {
+        Member member = members.findByEmail(loginEmail.getEmail()).orElseThrow(NoSuchMemberException::new);
+        return MemberFindResponse.from(member);
+    }
+
+    public void updateMember(final LoginEmail loginEmail, final MemberUpdateRequest memberUpdateRequest) {
+        Member member = members.findByEmail(loginEmail.getEmail()).orElseThrow(NoSuchMemberException::new);
         member.update(memberUpdateRequest.getOrganization());
     }
 
-    public void deleteMember(final Member manager) {
+    public void deleteMember(final LoginEmail loginEmail) {
+        Member manager = members.findByEmail(loginEmail.getEmail()).orElseThrow(NoSuchMemberException::new);
         boolean hasAnyReservations = reservations.existsReservationsByMemberFromToday(manager);
         if (hasAnyReservations) {
             throw new ReservationExistsOnMemberException();
