@@ -1,4 +1,4 @@
-package com.woowacourse.zzimkkong.infrastructure;
+package com.woowacourse.zzimkkong.infrastructure.thumbnail;
 
 import com.woowacourse.zzimkkong.infrastructure.thumbnail.BatikConverter;
 import com.woowacourse.zzimkkong.infrastructure.thumbnail.S3Uploader;
