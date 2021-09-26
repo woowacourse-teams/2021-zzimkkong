@@ -21,6 +21,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.BDDMockito.given;
+import static org.springframework.restdocs.request.RequestDocumentation.parameterWithName;
+import static org.springframework.restdocs.request.RequestDocumentation.pathParameters;
 import static org.springframework.restdocs.restassured3.RestAssuredRestDocumentation.document;
 
 class S3ProxyControllerTest extends AcceptanceTest {
@@ -65,18 +67,27 @@ class S3ProxyControllerTest extends AcceptanceTest {
     private ExtractableResponse<Response> uploadFile(String directory, File file) {
         return RestAssured.given(getRequestSpecification())
                 .log().all()
-                .filter(document("s3/post", getRequestPreprocessor(), getResponsePreprocessor()))
+                .filter(document(
+                        "s3/post", getRequestPreprocessor(), getResponsePreprocessor(),
+                        pathParameters(parameterWithName("directory").description("저장하고자 하는 스토리지 내의 디렉토리 이름"))))
                 .contentType(MediaType.MULTIPART_FORM_DATA_VALUE)
                 .multiPart("file", file)
-                .when().post("/api/storage/" + directory)
+                .pathParam("directory", directory)
+                .when().post("/api/storage/{directory}")
                 .then().log().all().extract();
     }
 
     private ExtractableResponse<Response> deleteFile(String directory, String fileName) {
         return RestAssured.given(getRequestSpecification())
                 .log().all()
-                .filter(document("s3/delete", getRequestPreprocessor(), getResponsePreprocessor()))
-                .when().delete("/api/storage/" + directory + "/" + fileName)
+                .filter(document("s3/delete", getRequestPreprocessor(), getResponsePreprocessor(),
+                        pathParameters(
+                                parameterWithName("directory").description("저장하고자 하는 스토리지 내의 디렉토리 이름"),
+                                parameterWithName("filename").description("삭제하고자 하는 파일의 이름(확장자 포함)"))))
+                .when()
+                .pathParam("directory", directory)
+                .pathParam("filename", fileName)
+                .delete("/api/storage/{directory}/{filename}")
                 .then().log().all().extract();
     }
 }

@@ -10,12 +10,15 @@
 
 === Upload
 ==== Request
+include::{snippets}/s3/post/path-parameters.adoc[]
 include::{snippets}/s3/post/http-request.adoc[]
+
 ==== Response
 include::{snippets}/s3/post/http-response.adoc[]
 
 === Delete
 ==== Request
+include::{snippets}/s3/delete/path-parameters.adoc[]
 include::{snippets}/s3/delete/http-request.adoc[]
 ==== Response
 include::{snippets}/s3/delete/http-response.adoc[]
