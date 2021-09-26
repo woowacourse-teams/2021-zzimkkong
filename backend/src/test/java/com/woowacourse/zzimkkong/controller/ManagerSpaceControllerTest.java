@@ -5,7 +5,7 @@ import com.woowacourse.zzimkkong.domain.Member;
 import com.woowacourse.zzimkkong.domain.Setting;
 import com.woowacourse.zzimkkong.domain.Space;
 import com.woowacourse.zzimkkong.dto.space.*;
-import com.woowacourse.zzimkkong.infrastructure.AuthorizationExtractor;
+import com.woowacourse.zzimkkong.infrastructure.auth.AuthorizationExtractor;
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;

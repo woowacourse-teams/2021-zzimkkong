@@ -1,6 +1,7 @@
 package com.woowacourse.zzimkkong.infrastructure;
 
 import com.woowacourse.zzimkkong.exception.infrastructure.SvgToPngConvertException;
+import com.woowacourse.zzimkkong.infrastructure.thumbnail.BatikConverter;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

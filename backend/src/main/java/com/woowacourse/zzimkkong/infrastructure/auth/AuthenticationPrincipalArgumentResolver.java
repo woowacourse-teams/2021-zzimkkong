@@ -1,4 +1,4 @@
-package com.woowacourse.zzimkkong.infrastructure;
+package com.woowacourse.zzimkkong.infrastructure.auth;
 
 import com.woowacourse.zzimkkong.domain.Manager;
 import org.springframework.core.MethodParameter;

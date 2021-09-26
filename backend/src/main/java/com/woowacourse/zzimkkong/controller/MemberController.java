@@ -3,7 +3,7 @@ package com.woowacourse.zzimkkong.controller;
 import com.woowacourse.zzimkkong.domain.Manager;
 import com.woowacourse.zzimkkong.dto.member.*;
 import com.woowacourse.zzimkkong.dto.member.oauth.OauthMemberSaveRequest;
-import com.woowacourse.zzimkkong.infrastructure.LoginEmail;
+import com.woowacourse.zzimkkong.infrastructure.auth.LoginEmail;
 import com.woowacourse.zzimkkong.service.MemberService;
 import com.woowacourse.zzimkkong.service.PresetService;
 import org.springframework.http.ResponseEntity;

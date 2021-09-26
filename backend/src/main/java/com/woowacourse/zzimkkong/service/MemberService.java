@@ -10,7 +10,7 @@ import com.woowacourse.zzimkkong.dto.member.oauth.OauthMemberSaveRequest;
 import com.woowacourse.zzimkkong.exception.member.DuplicateEmailException;
 import com.woowacourse.zzimkkong.exception.member.NoSuchMemberException;
 import com.woowacourse.zzimkkong.exception.member.ReservationExistsOnMemberException;
-import com.woowacourse.zzimkkong.infrastructure.LoginEmail;
+import com.woowacourse.zzimkkong.infrastructure.auth.LoginEmail;
 import com.woowacourse.zzimkkong.infrastructure.oauth.OauthHandler;
 import com.woowacourse.zzimkkong.repository.MemberRepository;
 import com.woowacourse.zzimkkong.repository.ReservationRepository;

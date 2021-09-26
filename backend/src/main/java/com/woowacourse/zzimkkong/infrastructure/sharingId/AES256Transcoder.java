@@ -1,4 +1,4 @@
-package com.woowacourse.zzimkkong.infrastructure;
+package com.woowacourse.zzimkkong.infrastructure.sharingId;
 
 import com.woowacourse.zzimkkong.exception.infrastructure.DecodingException;
 import com.woowacourse.zzimkkong.exception.infrastructure.EncodingException;

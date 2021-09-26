@@ -1,4 +1,4 @@
-package com.woowacourse.zzimkkong.infrastructure;
+package com.woowacourse.zzimkkong.infrastructure.thumbnail;
 
 import java.io.File;
 

@@ -2,7 +2,7 @@ package com.woowacourse.zzimkkong.controller;
 
 import com.woowacourse.zzimkkong.domain.Manager;
 import com.woowacourse.zzimkkong.dto.space.*;
-import com.woowacourse.zzimkkong.infrastructure.LoginEmail;
+import com.woowacourse.zzimkkong.infrastructure.auth.LoginEmail;
 import com.woowacourse.zzimkkong.service.SpaceService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;

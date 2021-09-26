@@ -1,4 +1,4 @@
-package com.woowacourse.zzimkkong.infrastructure;
+package com.woowacourse.zzimkkong.infrastructure.auth;
 
 public class LoginEmail {
     private String email;

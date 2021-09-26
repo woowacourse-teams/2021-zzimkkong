@@ -9,7 +9,7 @@ import com.woowacourse.zzimkkong.dto.space.SettingsRequest;
 import com.woowacourse.zzimkkong.dto.member.PresetCreateRequest;
 import com.woowacourse.zzimkkong.exception.member.NoSuchMemberException;
 import com.woowacourse.zzimkkong.exception.preset.NoSuchPresetException;
-import com.woowacourse.zzimkkong.infrastructure.LoginEmail;
+import com.woowacourse.zzimkkong.infrastructure.auth.LoginEmail;
 import com.woowacourse.zzimkkong.repository.MemberRepository;
 import com.woowacourse.zzimkkong.repository.PresetRepository;
 import org.springframework.stereotype.Service;

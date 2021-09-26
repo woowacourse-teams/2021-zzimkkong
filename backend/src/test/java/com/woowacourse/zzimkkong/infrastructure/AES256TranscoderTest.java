@@ -3,6 +3,7 @@ package com.woowacourse.zzimkkong.infrastructure;
 import com.woowacourse.zzimkkong.exception.infrastructure.DecodingException;
 import com.woowacourse.zzimkkong.exception.infrastructure.EncodingException;
 import com.woowacourse.zzimkkong.exception.infrastructure.InsufficientSecretKeyLengthException;
+import com.woowacourse.zzimkkong.infrastructure.sharingId.AES256Transcoder;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

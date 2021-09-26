@@ -3,7 +3,7 @@ package com.woowacourse.zzimkkong.controller;
 import com.woowacourse.zzimkkong.domain.Manager;
 import com.woowacourse.zzimkkong.dto.reservation.*;
 import com.woowacourse.zzimkkong.dto.slack.SlackResponse;
-import com.woowacourse.zzimkkong.infrastructure.LoginEmail;
+import com.woowacourse.zzimkkong.infrastructure.auth.LoginEmail;
 import com.woowacourse.zzimkkong.service.ReservationService;
 import com.woowacourse.zzimkkong.service.SlackService;
 import com.woowacourse.zzimkkong.service.strategy.ManagerReservationStrategy;

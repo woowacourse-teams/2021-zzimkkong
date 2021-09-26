@@ -11,7 +11,7 @@ import com.woowacourse.zzimkkong.dto.map.MapFindResponse;
 import com.woowacourse.zzimkkong.exception.authorization.NoAuthorityOnMapException;
 import com.woowacourse.zzimkkong.exception.map.InvalidAccessLinkException;
 import com.woowacourse.zzimkkong.exception.space.ReservationExistOnSpaceException;
-import com.woowacourse.zzimkkong.infrastructure.SharingIdGenerator;
+import com.woowacourse.zzimkkong.infrastructure.sharingId.SharingIdGenerator;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

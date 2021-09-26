@@ -3,6 +3,8 @@ package com.woowacourse.zzimkkong.infrastructure;
 import com.woowacourse.zzimkkong.domain.Map;
 import com.woowacourse.zzimkkong.domain.Member;
 import com.woowacourse.zzimkkong.exception.map.InvalidAccessLinkException;
+import com.woowacourse.zzimkkong.infrastructure.sharingId.SharingIdGenerator;
+import com.woowacourse.zzimkkong.infrastructure.sharingId.Transcoder;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

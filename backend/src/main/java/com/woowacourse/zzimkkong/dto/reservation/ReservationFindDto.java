@@ -1,6 +1,6 @@
 package com.woowacourse.zzimkkong.dto.reservation;
 
-import com.woowacourse.zzimkkong.infrastructure.LoginEmail;
+import com.woowacourse.zzimkkong.infrastructure.auth.LoginEmail;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
