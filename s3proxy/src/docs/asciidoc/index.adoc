@@ -1,4 +1,4 @@
-= ZZIMKKONG Application API Document
+= ZZIMKKONG S3 Proxy Server Application API Document
 :doctype: book
 :icons: font
 :source-highlighter: highlightjs
