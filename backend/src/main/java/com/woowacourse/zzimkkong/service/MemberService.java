@@ -24,16 +24,13 @@ public class MemberService {
     private final MemberRepository members;
     private final ReservationRepository reservations;
     private final PasswordEncoder passwordEncoder;
-    private final OauthHandler oauthHandler;
 
     public MemberService(final MemberRepository members,
                          final ReservationRepository reservations,
-                         final PasswordEncoder passwordEncoder,
-                         final OauthHandler oauthHandler) {
+                         final PasswordEncoder passwordEncoder) {
         this.members = members;
         this.reservations = reservations;
         this.passwordEncoder = passwordEncoder;
-        this.oauthHandler = oauthHandler;
     }
 
     public MemberSaveResponse saveMember(final MemberSaveRequest memberSaveRequest) {

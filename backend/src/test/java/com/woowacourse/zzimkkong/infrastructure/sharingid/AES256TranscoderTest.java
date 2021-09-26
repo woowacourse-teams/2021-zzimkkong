@@ -1,9 +1,9 @@
-package com.woowacourse.zzimkkong.infrastructure.sharingId;
+package com.woowacourse.zzimkkong.infrastructure.sharingid;
 
 import com.woowacourse.zzimkkong.exception.infrastructure.DecodingException;
 import com.woowacourse.zzimkkong.exception.infrastructure.EncodingException;
 import com.woowacourse.zzimkkong.exception.infrastructure.InsufficientSecretKeyLengthException;
-import com.woowacourse.zzimkkong.infrastructure.sharingId.AES256Transcoder;
+import com.woowacourse.zzimkkong.infrastructure.sharingid.AES256Transcoder;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

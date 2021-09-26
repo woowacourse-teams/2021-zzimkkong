@@ -1,4 +1,4 @@
-package com.woowacourse.zzimkkong.infrastructure.sharingId;
+package com.woowacourse.zzimkkong.infrastructure.sharingid;
 
 public interface Transcoder {
     String encode(String input);

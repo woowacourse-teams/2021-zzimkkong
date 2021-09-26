@@ -6,7 +6,7 @@ import com.woowacourse.zzimkkong.dto.map.MapCreateUpdateRequest;
 import com.woowacourse.zzimkkong.dto.map.MapFindAllResponse;
 import com.woowacourse.zzimkkong.dto.map.MapFindResponse;
 import com.woowacourse.zzimkkong.infrastructure.auth.AuthorizationExtractor;
-import com.woowacourse.zzimkkong.infrastructure.sharingId.SharingIdGenerator;
+import com.woowacourse.zzimkkong.infrastructure.sharingid.SharingIdGenerator;
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
