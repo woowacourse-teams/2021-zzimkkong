@@ -1,8 +1,6 @@
 package com.woowacourse.zzimkkong.infrastructure;
 
 import com.woowacourse.zzimkkong.domain.Manager;
-import com.woowacourse.zzimkkong.exception.member.NoSuchMemberException;
-import com.woowacourse.zzimkkong.repository.MemberRepository;
 import org.springframework.core.MethodParameter;
 import org.springframework.stereotype.Component;
 import org.springframework.web.bind.support.WebDataBinderFactory;
@@ -15,11 +13,9 @@ import javax.servlet.http.HttpServletRequest;
 @Component
 public class AuthenticationPrincipalArgumentResolver implements HandlerMethodArgumentResolver {
     private final JwtUtils jwtUtils;
-    private final MemberRepository members;
 
-    public AuthenticationPrincipalArgumentResolver(final JwtUtils jwtUtils, final MemberRepository members) {
+    public AuthenticationPrincipalArgumentResolver(final JwtUtils jwtUtils) {
         this.jwtUtils = jwtUtils;
-        this.members = members;
     }
 
     @Override
@@ -31,6 +27,6 @@ public class AuthenticationPrincipalArgumentResolver implements HandlerMethodArg
     public Object resolveArgument(MethodParameter parameter, ModelAndViewContainer mavContainer, NativeWebRequest webRequest, WebDataBinderFactory binderFactory) {
         String token = AuthorizationExtractor.extractAccessToken((HttpServletRequest) webRequest.getNativeRequest());
         String email = jwtUtils.getPayload(token);
-        return members.findByEmail(email).orElseThrow(NoSuchMemberException::new);
+        return LoginEmail.from(email);
     }
 }
