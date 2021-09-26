@@ -24,12 +24,8 @@ public class AcceptanceTest {
     @LocalServerPort
     int port;
 
-//    @BeforeEach
-//    void setPort() {
-//    }
-
     @BeforeEach
-    void setDocs(RestDocumentationContextProvider restDocumentation) {
+    void setUp(RestDocumentationContextProvider restDocumentation) {
                 RestAssured.port = this.port;
         RequestSpecification spec = new RequestSpecBuilder()
                 .addFilter(documentationConfiguration(restDocumentation))
