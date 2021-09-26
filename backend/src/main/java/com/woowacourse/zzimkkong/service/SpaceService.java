@@ -51,7 +51,8 @@ public class SpaceService {
             final LoginEmail loginEmail) {
         Map map = maps.findById(mapId)
                 .orElseThrow(NoSuchMapException::new);
-        Member manager = members.findByEmail(loginEmail.getEmail()).orElseThrow(NoSuchMemberException::new);
+        Member manager = members.findByEmail(loginEmail.getEmail())
+                .orElseThrow(NoSuchMemberException::new);
         validateManagerOfMap(map, manager);
 
         Setting setting = getSetting(spaceCreateUpdateRequest);
@@ -76,7 +77,8 @@ public class SpaceService {
             final LoginEmail loginEmail) {
         Map map = maps.findById(mapId)
                 .orElseThrow(NoSuchMapException::new);
-        Member manager = members.findByEmail(loginEmail.getEmail()).orElseThrow(NoSuchMemberException::new);
+        Member manager = members.findByEmail(loginEmail.getEmail())
+                .orElseThrow(NoSuchMemberException::new);
         validateManagerOfMap(map, manager);
 
         Space space = map.findSpaceById(spaceId)
@@ -90,7 +92,8 @@ public class SpaceService {
             final LoginEmail loginEmail) {
         Map map = maps.findById(mapId)
                 .orElseThrow(NoSuchMapException::new);
-        Member manager = members.findByEmail(loginEmail.getEmail()).orElseThrow(NoSuchMemberException::new);
+        Member manager = members.findByEmail(loginEmail.getEmail())
+                .orElseThrow(NoSuchMemberException::new);
         validateManagerOfMap(map, manager);
 
         List<Space> findAllSpaces = map.getSpaces();
@@ -114,7 +117,8 @@ public class SpaceService {
             final LoginEmail loginEmail) {
         Map map = maps.findById(mapId)
                 .orElseThrow(NoSuchMapException::new);
-        Member manager = members.findByEmail(loginEmail.getEmail()).orElseThrow(NoSuchMemberException::new);
+        Member manager = members.findByEmail(loginEmail.getEmail())
+                .orElseThrow(NoSuchMemberException::new);
         validateManagerOfMap(map, manager);
 
         Space space = map.findSpaceById(spaceId)
@@ -140,7 +144,8 @@ public class SpaceService {
             final LoginEmail loginEmail) {
         Map map = maps.findById(mapId)
                 .orElseThrow(NoSuchMapException::new);
-        Member manager = members.findByEmail(loginEmail.getEmail()).orElseThrow(NoSuchMemberException::new);
+        Member manager = members.findByEmail(loginEmail.getEmail())
+                .orElseThrow(NoSuchMemberException::new);
         validateManagerOfMap(map, manager);
 
         Space space = map.findSpaceById(spaceId)

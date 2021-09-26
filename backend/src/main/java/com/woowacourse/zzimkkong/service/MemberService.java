@@ -68,23 +68,27 @@ public class MemberService {
         }
     }
 
+    @Transactional(readOnly = true)
     public MemberFindResponse findMember(final LoginEmail loginEmail) {
-        Member member = members.findByEmail(loginEmail.getEmail()).orElseThrow(NoSuchMemberException::new);
+        Member member = members.findByEmail(loginEmail.getEmail())
+                .orElseThrow(NoSuchMemberException::new);
         return MemberFindResponse.from(member);
     }
 
     public void updateMember(final LoginEmail loginEmail, final MemberUpdateRequest memberUpdateRequest) {
-        Member member = members.findByEmail(loginEmail.getEmail()).orElseThrow(NoSuchMemberException::new);
+        Member member = members.findByEmail(loginEmail.getEmail())
+                .orElseThrow(NoSuchMemberException::new);
         member.update(memberUpdateRequest.getOrganization());
     }
 
     public void deleteMember(final LoginEmail loginEmail) {
-        Member manager = members.findByEmail(loginEmail.getEmail()).orElseThrow(NoSuchMemberException::new);
-        boolean hasAnyReservations = reservations.existsReservationsByMemberFromToday(manager);
+        Member member = members.findByEmail(loginEmail.getEmail())
+                .orElseThrow(NoSuchMemberException::new);
+        boolean hasAnyReservations = reservations.existsReservationsByMemberFromToday(member);
         if (hasAnyReservations) {
             throw new ReservationExistsOnMemberException();
         }
 
-        members.delete(manager);
+        members.delete(member);
     }
 }

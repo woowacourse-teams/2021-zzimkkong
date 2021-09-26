@@ -42,7 +42,8 @@ public class PresetService {
                 .enabledDayOfWeek(settingsRequest.getEnabledDayOfWeek())
                 .build();
 
-        Member manager = members.findByEmail(loginEmail.getEmail()).orElseThrow(NoSuchMemberException::new);
+        Member manager = members.findByEmail(loginEmail.getEmail())
+                .orElseThrow(NoSuchMemberException::new);
         Preset preset = presets.save(new Preset(presetCreateRequest.getName(), setting, manager));
 
         return PresetCreateResponse.from(preset);
@@ -50,13 +51,15 @@ public class PresetService {
 
     @Transactional(readOnly = true)
     public PresetFindAllResponse findAllPresets(final LoginEmail loginEmail) {
-        Member manager = members.findByEmail(loginEmail.getEmail()).orElseThrow(NoSuchMemberException::new);
+        Member manager = members.findByEmail(loginEmail.getEmail())
+                .orElseThrow(NoSuchMemberException::new);
         List<Preset> findPresets = manager.getPresets();
         return PresetFindAllResponse.from(findPresets);
     }
 
     public void deletePreset(final Long presetId, final LoginEmail loginEmail) {
-        Member manager = members.findByEmail(loginEmail.getEmail()).orElseThrow(NoSuchMemberException::new);
+        Member manager = members.findByEmail(loginEmail.getEmail())
+                .orElseThrow(NoSuchMemberException::new);
         Preset preset = manager.findPresetById(presetId)
                 .orElseThrow(NoSuchPresetException::new);
 

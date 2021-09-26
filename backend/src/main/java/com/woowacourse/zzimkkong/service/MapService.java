@@ -49,7 +49,8 @@ public class MapService {
     }
 
     public MapCreateResponse saveMap(final MapCreateUpdateRequest mapCreateUpdateRequest, final LoginEmail loginEmail) {
-        Member manager = members.findByEmail(loginEmail.getEmail()).orElseThrow(NoSuchMemberException::new);
+        Member manager = members.findByEmail(loginEmail.getEmail())
+                .orElseThrow(NoSuchMemberException::new);
         Map saveMap = maps.save(new Map(
                 mapCreateUpdateRequest.getMapName(),
                 mapCreateUpdateRequest.getMapDrawing(),
@@ -66,14 +67,16 @@ public class MapService {
     public MapFindResponse findMap(final Long mapId, final LoginEmail loginEmail) {
         Map map = maps.findById(mapId)
                 .orElseThrow(NoSuchMapException::new);
-        Member manager = members.findByEmail(loginEmail.getEmail()).orElseThrow(NoSuchMemberException::new);
+        Member manager = members.findByEmail(loginEmail.getEmail())
+                .orElseThrow(NoSuchMemberException::new);
         validateManagerOfMap(map, manager);
         return MapFindResponse.of(map, sharingIdGenerator.from(map));
     }
 
     @Transactional(readOnly = true)
     public MapFindAllResponse findAllMaps(final LoginEmail loginEmail) {
-        Member manager = members.findByEmail(loginEmail.getEmail()).orElseThrow(NoSuchMemberException::new);
+        Member manager = members.findByEmail(loginEmail.getEmail())
+                .orElseThrow(NoSuchMemberException::new);
         List<Map> findMaps = maps.findAllByMember(manager);
         return findMaps.stream()
                 .map(map -> MapFindResponse.of(map, sharingIdGenerator.from(map)))
@@ -93,7 +96,8 @@ public class MapService {
                           final LoginEmail loginEmail) {
         Map map = maps.findById(mapId)
                 .orElseThrow(NoSuchMapException::new);
-        Member manager = members.findByEmail(loginEmail.getEmail()).orElseThrow(NoSuchMemberException::new);
+        Member manager = members.findByEmail(loginEmail.getEmail())
+                .orElseThrow(NoSuchMemberException::new);
         validateManagerOfMap(map, manager);
 
         thumbnailManager.uploadMapThumbnail(mapCreateUpdateRequest.getMapImageSvg(), map);
@@ -105,7 +109,8 @@ public class MapService {
     public void deleteMap(final Long mapId, final LoginEmail loginEmail) {
         Map map = maps.findById(mapId)
                 .orElseThrow(NoSuchMapException::new);
-        Member manager = members.findByEmail(loginEmail.getEmail()).orElseThrow(NoSuchMemberException::new);
+        Member manager = members.findByEmail(loginEmail.getEmail())
+                .orElseThrow(NoSuchMemberException::new);
 
         validateManagerOfMap(map, manager);
         validateExistReservations(map);
