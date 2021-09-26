@@ -2,3 +2,5 @@
 .idea
 .DS_Store
 
+
+s3proxy/src/main/resources/static/docs/index.html

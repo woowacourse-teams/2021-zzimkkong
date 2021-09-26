@@ -16,10 +16,12 @@ import java.io.File;
 import java.net.URI;
 
 import static com.woowacourse.s3proxy.Constants.LUTHER_IMAGE_URI_CLOUDFRONT;
+import static com.woowacourse.s3proxy.DocumentUtils.*;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.BDDMockito.given;
+import static org.springframework.restdocs.restassured3.RestAssuredRestDocumentation.document;
 
 class S3ProxyControllerTest extends AcceptanceTest {
     @MockBean
@@ -35,7 +37,7 @@ class S3ProxyControllerTest extends AcceptanceTest {
     @DisplayName("스토리지에 파일을 업로드한다.")
     void upload() {
         // given
-        String directory = "thumbnails";
+        String directory = "testdir";
         String filePath = getClass().getClassLoader().getResource("luther.png").getFile();
         File file = new File(filePath);
 
@@ -51,7 +53,7 @@ class S3ProxyControllerTest extends AcceptanceTest {
     void delete() {
         // given
         String fileName = "filename.png";
-        String directory = "directoryName";
+        String directory = "testdir";
 
         // when
         ExtractableResponse<Response> response = deleteFile(directory, fileName);
@@ -60,19 +62,21 @@ class S3ProxyControllerTest extends AcceptanceTest {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
     }
 
-    private ExtractableResponse<Response> deleteFile(String directory, String fileName) {
-        return RestAssured.given()
-                .log().all()
-                .when().delete("/api/storage/" + directory + "/" + fileName)
-                .then().log().all().extract();
-    }
-
     private ExtractableResponse<Response> uploadFile(String directory, File file) {
-        return RestAssured.given()
+        return RestAssured.given(getRequestSpecification())
                 .log().all()
+                .filter(document("s3/post", getRequestPreprocessor(), getResponsePreprocessor()))
                 .contentType(MediaType.MULTIPART_FORM_DATA_VALUE)
                 .multiPart("file", file)
                 .when().post("/api/storage/" + directory)
+                .then().log().all().extract();
+    }
+
+    private ExtractableResponse<Response> deleteFile(String directory, String fileName) {
+        return RestAssured.given(getRequestSpecification())
+                .log().all()
+                .filter(document("s3/delete", getRequestPreprocessor(), getResponsePreprocessor()))
+                .when().delete("/api/storage/" + directory + "/" + fileName)
                 .then().log().all().extract();
     }
 }

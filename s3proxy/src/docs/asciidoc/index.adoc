@@ -1,0 +1,21 @@
+= ZZIMKKONG Application API Document
+:doctype: book
+:icons: font
+:source-highlighter: highlightjs
+:toc: left
+:toclevels: 3
+:sectlinks:
+
+== Multi-Part Upload
+
+=== Upload
+==== Request
+include::{snippets}/s3/post/http-request.adoc[]
+==== Response
+include::{snippets}/s3/post/http-response.adoc[]
+
+=== Delete
+==== Request
+include::{snippets}/s3/delete/http-request.adoc[]
+==== Response
+include::{snippets}/s3/delete/http-response.adoc[]
