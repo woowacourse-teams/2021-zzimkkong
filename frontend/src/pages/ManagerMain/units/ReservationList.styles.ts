@@ -1,6 +1,6 @@
 import { Link } from 'react-router-dom';
 import styled from 'styled-components';
-import { Button } from 'components/Button/Button.styles';
+import Button from 'components/Button/Button';
 
 export const ReservationsContainer = styled.div`
   margin: 2rem 0 5rem;
