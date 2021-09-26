@@ -1,13 +1,11 @@
 package com.woowacourse.zzimkkong.service;
 
 import com.woowacourse.zzimkkong.domain.Map;
-import com.woowacourse.zzimkkong.domain.Member;
 import com.woowacourse.zzimkkong.domain.Reservation;
 import com.woowacourse.zzimkkong.domain.Space;
 import com.woowacourse.zzimkkong.dto.reservation.*;
 import com.woowacourse.zzimkkong.dto.slack.SlackResponse;
 import com.woowacourse.zzimkkong.exception.map.NoSuchMapException;
-import com.woowacourse.zzimkkong.exception.member.NoSuchMemberException;
 import com.woowacourse.zzimkkong.exception.reservation.*;
 import com.woowacourse.zzimkkong.exception.space.NoSuchSpaceException;
 import com.woowacourse.zzimkkong.repository.MapRepository;
@@ -49,11 +47,10 @@ public class ReservationService {
             final ReservationStrategy reservationStrategy) {
         Long mapId = reservationCreateDto.getMapId();
         String loginEmail = reservationCreateDto.getLoginEmail();
-        Member manager = members.findByEmail(loginEmail).orElseThrow(NoSuchMemberException::new);
 
         Map map = maps.findById(mapId)
                 .orElseThrow(NoSuchMapException::new);
-        reservationStrategy.validateManagerOfMap(map, manager);
+        reservationStrategy.validateManagerOfMap(map, members, loginEmail);
 
         Long spaceId = reservationCreateDto.getSpaceId();
         Space space = map.findSpaceById(spaceId)
@@ -83,11 +80,10 @@ public class ReservationService {
             final ReservationStrategy reservationStrategy) {
         Long mapId = reservationFindAllDto.getMapId();
         String loginEmail = reservationFindAllDto.getLoginEmail();
-        Member manager = members.findByEmail(loginEmail).orElseThrow(NoSuchMemberException::new);
 
         Map map = maps.findById(mapId)
                 .orElseThrow(NoSuchMapException::new);
-        reservationStrategy.validateManagerOfMap(map, manager);
+        reservationStrategy.validateManagerOfMap(map, members, loginEmail);
 
         List<Space> findSpaces = map.getSpaces();
         LocalDate date = reservationFindAllDto.getDate();
@@ -102,11 +98,10 @@ public class ReservationService {
             final ReservationStrategy reservationStrategy) {
         Long mapId = reservationFindDto.getMapId();
         String loginEmail = reservationFindDto.getLoginEmail();
-        Member manager = members.findByEmail(loginEmail).orElseThrow(NoSuchMemberException::new);
 
         Map map = maps.findById(mapId)
                 .orElseThrow(NoSuchMapException::new);
-        reservationStrategy.validateManagerOfMap(map, manager);
+        reservationStrategy.validateManagerOfMap(map, members, loginEmail);
 
         Long spaceId = reservationFindDto.getSpaceId();
         LocalDate date = reservationFindDto.getDate();
@@ -123,11 +118,10 @@ public class ReservationService {
             final ReservationStrategy reservationStrategy) {
         Long mapId = reservationAuthenticationDto.getMapId();
         String loginEmail = reservationAuthenticationDto.getLoginEmail();
-        Member manager = members.findByEmail(loginEmail).orElseThrow(NoSuchMemberException::new);
 
         Map map = maps.findById(mapId)
                 .orElseThrow(NoSuchMapException::new);
-        reservationStrategy.validateManagerOfMap(map, manager);
+        reservationStrategy.validateManagerOfMap(map, members, loginEmail);
 
         Long spaceId = reservationAuthenticationDto.getSpaceId();
         validateSpaceExistence(map, spaceId);
@@ -147,11 +141,10 @@ public class ReservationService {
             final ReservationStrategy reservationStrategy) {
         Long mapId = reservationUpdateDto.getMapId();
         String loginEmail = reservationUpdateDto.getLoginEmail();
-        Member manager = members.findByEmail(loginEmail).orElseThrow(NoSuchMemberException::new);
 
         Map map = maps.findById(mapId)
                 .orElseThrow(NoSuchMapException::new);
-        reservationStrategy.validateManagerOfMap(map, manager);
+        reservationStrategy.validateManagerOfMap(map, members, loginEmail);
 
         Long spaceId = reservationUpdateDto.getSpaceId();
         Space space = map.findSpaceById(spaceId)
@@ -187,11 +180,10 @@ public class ReservationService {
             final ReservationStrategy reservationStrategy) {
         Long mapId = reservationAuthenticationDto.getMapId();
         String loginEmail = reservationAuthenticationDto.getLoginEmail();
-        Member manager = members.findByEmail(loginEmail).orElseThrow(NoSuchMemberException::new);
 
         Map map = maps.findById(mapId)
                 .orElseThrow(NoSuchMapException::new);
-        reservationStrategy.validateManagerOfMap(map, manager);
+        reservationStrategy.validateManagerOfMap(map, members, loginEmail);
 
         Long spaceId = reservationAuthenticationDto.getSpaceId();
         validateSpaceExistence(map, spaceId);

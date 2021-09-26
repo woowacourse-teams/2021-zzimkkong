@@ -8,6 +8,7 @@ import com.woowacourse.zzimkkong.dto.member.PresetCreateResponse;
 import com.woowacourse.zzimkkong.dto.member.PresetFindAllResponse;
 import com.woowacourse.zzimkkong.dto.space.SettingsRequest;
 import com.woowacourse.zzimkkong.exception.preset.NoSuchPresetException;
+import com.woowacourse.zzimkkong.infrastructure.auth.LoginEmail;
 import com.woowacourse.zzimkkong.repository.PresetRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -16,12 +17,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.mock.mockito.MockBean;
 
 import java.util.List;
+import java.util.Optional;
 
 import static com.woowacourse.zzimkkong.Constants.*;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.BDDMockito.given;
 
 class PresetServiceTest extends ServiceTest {
@@ -52,10 +55,12 @@ class PresetServiceTest extends ServiceTest {
             .build();
 
     private Member pobi;
+    private LoginEmail pobiEmail;
 
     @BeforeEach
     void setUp() {
         pobi = new Member(1L, EMAIL, PW, ORGANIZATION);
+        pobiEmail = LoginEmail.from(EMAIL);
     }
 
     @Test
@@ -63,14 +68,15 @@ class PresetServiceTest extends ServiceTest {
     void save() {
         //given
         PresetCreateRequest presetCreateRequest = new PresetCreateRequest(PRESET_NAME1, settingsRequest);
-
         Preset expected = new Preset(1L, presetCreateRequest.getName(), setting, pobi);
 
+        given(members.findByEmail(anyString()))
+                .willReturn(Optional.of(pobi));
         given(presets.save(any(Preset.class)))
                 .willReturn(expected);
 
         //when
-        PresetCreateResponse presetCreateResponse = presetService.savePreset(presetCreateRequest, pobi);
+        PresetCreateResponse presetCreateResponse = presetService.savePreset(presetCreateRequest, pobiEmail);
 
         //then
         assertThat(presetCreateResponse.getId()).isNotNull();
@@ -84,9 +90,11 @@ class PresetServiceTest extends ServiceTest {
         Preset secondPreset = new Preset(2L, PRESET_NAME2, setting, pobi);
 
         List<Preset> expectedPresets = List.of(firstPreset, secondPreset);
+        given(members.findByEmail(anyString()))
+                .willReturn(Optional.of(pobi));
 
         //when
-        PresetFindAllResponse presetFindAllResponse = presetService.findAllPresets(pobi);
+        PresetFindAllResponse presetFindAllResponse = presetService.findAllPresets(pobiEmail);
 
         //then
         assertThat(presetFindAllResponse).usingRecursiveComparison()
@@ -98,9 +106,11 @@ class PresetServiceTest extends ServiceTest {
     void delete() {
         //given
         Preset savedPreset = new Preset(1L, PRESET_NAME1, setting, pobi);
+        given(members.findByEmail(anyString()))
+                .willReturn(Optional.of(pobi));
 
         //when, then
-        assertDoesNotThrow(() -> presetService.deletePreset(savedPreset.getId(), pobi));
+        assertDoesNotThrow(() -> presetService.deletePreset(savedPreset.getId(), pobiEmail));
     }
 
     @Test
@@ -108,19 +118,26 @@ class PresetServiceTest extends ServiceTest {
     void deleteOwnerException() {
         //given
         Preset savedPreset = new Preset(1L, PRESET_NAME1, setting, pobi);
+        LoginEmail anotherEmail = LoginEmail.from(NEW_EMAIL);
+        Member anotherMember = new Member(NEW_EMAIL, PW, ORGANIZATION);
 
-        Member jason = new Member(2L, "jason@email.com", PW, ORGANIZATION);
+        given(members.findByEmail(anyString()))
+                .willReturn(Optional.of(anotherMember));
         Long savedPresetId = savedPreset.getId();
 
         //when, then
-        assertThatThrownBy(() -> presetService.deletePreset(savedPresetId, jason)).isInstanceOf(NoSuchPresetException.class);
+        assertThatThrownBy(() -> presetService.deletePreset(savedPresetId, anotherEmail)).isInstanceOf(NoSuchPresetException.class);
     }
 
     @Test
     @DisplayName("프리셋 삭제 요청 시, 프리셋이 존재하지 않으면 예외가 발생한다.")
     void deleteInvalidPresetException() {
-        //given, when, then
-        assertThatThrownBy(() -> presetService.deletePreset(1L, pobi))
+        //given, when
+        given(members.findByEmail(anyString()))
+                .willReturn(Optional.of(pobi));
+
+        //then
+        assertThatThrownBy(() -> presetService.deletePreset(1L, pobiEmail))
                 .isInstanceOf(NoSuchPresetException.class);
     }
 }

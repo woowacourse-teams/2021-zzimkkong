@@ -7,6 +7,7 @@ import com.woowacourse.zzimkkong.dto.member.MemberUpdateRequest;
 import com.woowacourse.zzimkkong.dto.member.oauth.OauthMemberSaveRequest;
 import com.woowacourse.zzimkkong.exception.member.DuplicateEmailException;
 import com.woowacourse.zzimkkong.exception.member.ReservationExistsOnMemberException;
+import com.woowacourse.zzimkkong.infrastructure.auth.LoginEmail;
 import com.woowacourse.zzimkkong.infrastructure.oauth.OauthHandler;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -123,14 +124,15 @@ class MemberServiceTest extends ServiceTest {
     @DisplayName("회원은 자신의 정보를 수정할 수 있다.")
     void updateMember() {
         // given
+        LoginEmail loginEmail = LoginEmail.from(EMAIL);
         Member member = new Member(EMAIL, PW, ORGANIZATION);
         MemberUpdateRequest memberUpdateRequest = new MemberUpdateRequest("woowabros");
 
-        given(members.findByEmail(any(String.class)))
+        given(members.findByEmail(anyString()))
                 .willReturn(Optional.of(member));
 
         // when
-        memberService.updateMember(member, memberUpdateRequest);
+        memberService.updateMember(loginEmail, memberUpdateRequest);
 
         assertThat(members.findByEmail(EMAIL).orElseThrow().getOrganization()).isEqualTo("woowabros");
     }
@@ -139,24 +141,30 @@ class MemberServiceTest extends ServiceTest {
     @DisplayName("회원을 삭제할 수 있다.")
     void deleteMember() {
         // given
-        Member member = new Member(1L, EMAIL, PW, ORGANIZATION);
+        LoginEmail loginEmail = LoginEmail.from(EMAIL);
+        Member pobi = new Member(EMAIL, PW, ORGANIZATION);
+        given(members.findByEmail(anyString()))
+                .willReturn(Optional.of(pobi));
         given(reservations.existsReservationsByMemberFromToday(any(Member.class)))
                 .willReturn(false);
 
         // when, then
-        memberService.deleteMember(member);
+        memberService.deleteMember(loginEmail);
     }
 
     @Test
     @DisplayName("회원이 소유한 공간에 예약이 있다면 탈퇴할 수 없다.")
     void deleteMemberFailWhenAnyReservationsExists() {
         // given
-        Member member = new Member(1L, EMAIL, PW, ORGANIZATION);
+        LoginEmail loginEmail = LoginEmail.from(EMAIL);
+        Member pobi = new Member(EMAIL, PW, ORGANIZATION);
+        given(members.findByEmail(anyString()))
+                .willReturn(Optional.of(pobi));
         given(reservations.existsReservationsByMemberFromToday(any(Member.class)))
                 .willReturn(true);
 
         // when, then
-        assertThatThrownBy(() -> memberService.deleteMember(member))
+        assertThatThrownBy(() -> memberService.deleteMember(loginEmail))
                 .isInstanceOf(ReservationExistsOnMemberException.class);
     }
 }
