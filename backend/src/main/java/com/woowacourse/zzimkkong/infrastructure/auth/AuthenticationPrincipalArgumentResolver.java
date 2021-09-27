@@ -1,6 +1,6 @@
 package com.woowacourse.zzimkkong.infrastructure.auth;
 
-import com.woowacourse.zzimkkong.domain.Manager;
+import com.woowacourse.zzimkkong.domain.LoginEmail;
 import com.woowacourse.zzimkkong.dto.member.LoginEmailDto;
 import org.springframework.core.MethodParameter;
 import org.springframework.stereotype.Component;
@@ -21,7 +21,7 @@ public class AuthenticationPrincipalArgumentResolver implements HandlerMethodArg
 
     @Override
     public boolean supportsParameter(MethodParameter parameter) {
-        return parameter.hasParameterAnnotation(Manager.class);
+        return parameter.hasParameterAnnotation(LoginEmail.class);
     }
 
     @Override

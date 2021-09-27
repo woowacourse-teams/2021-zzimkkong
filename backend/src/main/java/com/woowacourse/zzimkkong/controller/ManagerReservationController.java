@@ -1,6 +1,6 @@
 package com.woowacourse.zzimkkong.controller;
 
-import com.woowacourse.zzimkkong.domain.Manager;
+import com.woowacourse.zzimkkong.domain.LoginEmail;
 import com.woowacourse.zzimkkong.dto.reservation.*;
 import com.woowacourse.zzimkkong.dto.slack.SlackResponse;
 import com.woowacourse.zzimkkong.dto.member.LoginEmailDto;
@@ -37,7 +37,7 @@ public class ManagerReservationController {
             @PathVariable final Long mapId,
             @PathVariable final Long spaceId,
             @RequestBody @Valid final ReservationCreateUpdateWithPasswordRequest reservationCreateUpdateWithPasswordRequest,
-            @Manager final LoginEmailDto loginEmailDto) {
+            @LoginEmail final LoginEmailDto loginEmailDto) {
         ReservationCreateDto reservationCreateDto = ReservationCreateDto.of(
                 mapId,
                 spaceId,
@@ -53,7 +53,7 @@ public class ManagerReservationController {
     public ResponseEntity<ReservationFindAllResponse> findAll(
             @PathVariable final Long mapId,
             @RequestParam @DateTimeFormat(pattern = DATE_FORMAT) final LocalDate date,
-            @Manager final LoginEmailDto loginEmailDto) {
+            @LoginEmail final LoginEmailDto loginEmailDto) {
         ReservationFindAllDto reservationFindAllDto = ReservationFindAllDto.of(
                 mapId,
                 date,
@@ -67,7 +67,7 @@ public class ManagerReservationController {
             @PathVariable final Long mapId,
             @PathVariable final Long spaceId,
             @RequestParam @DateTimeFormat(pattern = DATE_FORMAT) final LocalDate date,
-            @Manager final LoginEmailDto loginEmailDto) {
+            @LoginEmail final LoginEmailDto loginEmailDto) {
         ReservationFindDto reservationFindDto = ReservationFindDto.of(
                 mapId,
                 spaceId,
@@ -82,7 +82,7 @@ public class ManagerReservationController {
             @PathVariable final Long mapId,
             @PathVariable final Long spaceId,
             @PathVariable final Long reservationId,
-            @Manager final LoginEmailDto loginEmailDto) {
+            @LoginEmail final LoginEmailDto loginEmailDto) {
         ReservationAuthenticationDto reservationAuthenticationDto = ReservationAuthenticationDto.of(
                 mapId,
                 spaceId,
@@ -98,7 +98,7 @@ public class ManagerReservationController {
             @PathVariable final Long spaceId,
             @PathVariable final Long reservationId,
             @RequestBody @Valid final ReservationCreateUpdateRequest reservationCreateUpdateRequest,
-            @Manager final LoginEmailDto loginEmailDto) {
+            @LoginEmail final LoginEmailDto loginEmailDto) {
         ReservationUpdateDto reservationUpdateDto = ReservationUpdateDto.of(
                 mapId,
                 spaceId,
@@ -115,7 +115,7 @@ public class ManagerReservationController {
             @PathVariable final Long mapId,
             @PathVariable final Long spaceId,
             @PathVariable final Long reservationId,
-            @Manager final LoginEmailDto loginEmailDto) {
+            @LoginEmail final LoginEmailDto loginEmailDto) {
         ReservationAuthenticationDto reservationAuthenticationDto = ReservationAuthenticationDto.of(
                 mapId,
                 spaceId,
