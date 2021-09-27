@@ -92,7 +92,6 @@ const MapCreateEditor = ({
     selectedMapElements,
     selectMapElement,
     deselectMapElements,
-
     onSelectDragStart,
     onSelectDrag,
     onSelectDragEnd,
@@ -120,6 +119,7 @@ const MapCreateEditor = ({
   const toggleColorPicker = () => setColorPickerOpen((prevState) => !prevState);
 
   const selectMode = (mode: MapEditorMode) => {
+    deselectMapElements();
     setDrawingStatus({});
     setMode(mode);
   };
