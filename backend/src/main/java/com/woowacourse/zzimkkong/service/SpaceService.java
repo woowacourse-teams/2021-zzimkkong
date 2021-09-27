@@ -9,7 +9,7 @@ import com.woowacourse.zzimkkong.exception.map.NoSuchMapException;
 import com.woowacourse.zzimkkong.exception.member.NoSuchMemberException;
 import com.woowacourse.zzimkkong.exception.space.NoSuchSpaceException;
 import com.woowacourse.zzimkkong.exception.space.ReservationExistOnSpaceException;
-import com.woowacourse.zzimkkong.infrastructure.auth.LoginEmail;
+import com.woowacourse.zzimkkong.dto.member.LoginEmailDto;
 import com.woowacourse.zzimkkong.infrastructure.thumbnail.ThumbnailManager;
 import com.woowacourse.zzimkkong.repository.MapRepository;
 import com.woowacourse.zzimkkong.repository.MemberRepository;
@@ -48,10 +48,10 @@ public class SpaceService {
     public SpaceCreateResponse saveSpace(
             final Long mapId,
             final SpaceCreateUpdateRequest spaceCreateUpdateRequest,
-            final LoginEmail loginEmail) {
+            final LoginEmailDto loginEmailDto) {
         Map map = maps.findById(mapId)
                 .orElseThrow(NoSuchMapException::new);
-        Member manager = members.findByEmail(loginEmail.getEmail())
+        Member manager = members.findByEmail(loginEmailDto.getEmail())
                 .orElseThrow(NoSuchMemberException::new);
         validateManagerOfMap(map, manager);
 
@@ -74,10 +74,10 @@ public class SpaceService {
     public SpaceFindDetailResponse findSpace(
             final Long mapId,
             final Long spaceId,
-            final LoginEmail loginEmail) {
+            final LoginEmailDto loginEmailDto) {
         Map map = maps.findById(mapId)
                 .orElseThrow(NoSuchMapException::new);
-        Member manager = members.findByEmail(loginEmail.getEmail())
+        Member manager = members.findByEmail(loginEmailDto.getEmail())
                 .orElseThrow(NoSuchMemberException::new);
         validateManagerOfMap(map, manager);
 
@@ -89,10 +89,10 @@ public class SpaceService {
     @Transactional(readOnly = true)
     public SpaceFindAllResponse findAllSpace(
             final Long mapId,
-            final LoginEmail loginEmail) {
+            final LoginEmailDto loginEmailDto) {
         Map map = maps.findById(mapId)
                 .orElseThrow(NoSuchMapException::new);
-        Member manager = members.findByEmail(loginEmail.getEmail())
+        Member manager = members.findByEmail(loginEmailDto.getEmail())
                 .orElseThrow(NoSuchMemberException::new);
         validateManagerOfMap(map, manager);
 
@@ -114,10 +114,10 @@ public class SpaceService {
             final Long mapId,
             final Long spaceId,
             final SpaceCreateUpdateRequest spaceCreateUpdateRequest,
-            final LoginEmail loginEmail) {
+            final LoginEmailDto loginEmailDto) {
         Map map = maps.findById(mapId)
                 .orElseThrow(NoSuchMapException::new);
-        Member manager = members.findByEmail(loginEmail.getEmail())
+        Member manager = members.findByEmail(loginEmailDto.getEmail())
                 .orElseThrow(NoSuchMemberException::new);
         validateManagerOfMap(map, manager);
 
@@ -141,10 +141,10 @@ public class SpaceService {
             final Long mapId,
             final Long spaceId,
             final SpaceDeleteRequest spaceDeleteRequest,
-            final LoginEmail loginEmail) {
+            final LoginEmailDto loginEmailDto) {
         Map map = maps.findById(mapId)
                 .orElseThrow(NoSuchMapException::new);
-        Member manager = members.findByEmail(loginEmail.getEmail())
+        Member manager = members.findByEmail(loginEmailDto.getEmail())
                 .orElseThrow(NoSuchMemberException::new);
         validateManagerOfMap(map, manager);
 

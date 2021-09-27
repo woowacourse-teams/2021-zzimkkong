@@ -11,7 +11,7 @@ import com.woowacourse.zzimkkong.exception.authorization.NoAuthorityOnMapExcepti
 import com.woowacourse.zzimkkong.exception.map.NoSuchMapException;
 import com.woowacourse.zzimkkong.exception.member.NoSuchMemberException;
 import com.woowacourse.zzimkkong.exception.space.ReservationExistOnSpaceException;
-import com.woowacourse.zzimkkong.infrastructure.auth.LoginEmail;
+import com.woowacourse.zzimkkong.dto.member.LoginEmailDto;
 import com.woowacourse.zzimkkong.infrastructure.sharingid.SharingIdGenerator;
 import com.woowacourse.zzimkkong.infrastructure.thumbnail.ThumbnailManager;
 import com.woowacourse.zzimkkong.repository.MapRepository;
@@ -48,8 +48,8 @@ public class MapService {
         this.sharingIdGenerator = sharingIdGenerator;
     }
 
-    public MapCreateResponse saveMap(final MapCreateUpdateRequest mapCreateUpdateRequest, final LoginEmail loginEmail) {
-        Member manager = members.findByEmail(loginEmail.getEmail())
+    public MapCreateResponse saveMap(final MapCreateUpdateRequest mapCreateUpdateRequest, final LoginEmailDto loginEmailDto) {
+        Member manager = members.findByEmail(loginEmailDto.getEmail())
                 .orElseThrow(NoSuchMemberException::new);
         Map saveMap = maps.save(new Map(
                 mapCreateUpdateRequest.getMapName(),
@@ -64,18 +64,18 @@ public class MapService {
     }
 
     @Transactional(readOnly = true)
-    public MapFindResponse findMap(final Long mapId, final LoginEmail loginEmail) {
+    public MapFindResponse findMap(final Long mapId, final LoginEmailDto loginEmailDto) {
         Map map = maps.findById(mapId)
                 .orElseThrow(NoSuchMapException::new);
-        Member manager = members.findByEmail(loginEmail.getEmail())
+        Member manager = members.findByEmail(loginEmailDto.getEmail())
                 .orElseThrow(NoSuchMemberException::new);
         validateManagerOfMap(map, manager);
         return MapFindResponse.of(map, sharingIdGenerator.from(map));
     }
 
     @Transactional(readOnly = true)
-    public MapFindAllResponse findAllMaps(final LoginEmail loginEmail) {
-        Member manager = members.findByEmail(loginEmail.getEmail())
+    public MapFindAllResponse findAllMaps(final LoginEmailDto loginEmailDto) {
+        Member manager = members.findByEmail(loginEmailDto.getEmail())
                 .orElseThrow(NoSuchMemberException::new);
         List<Map> findMaps = maps.findAllByMember(manager);
         return findMaps.stream()
@@ -93,10 +93,10 @@ public class MapService {
 
     public void updateMap(final Long mapId,
                           final MapCreateUpdateRequest mapCreateUpdateRequest,
-                          final LoginEmail loginEmail) {
+                          final LoginEmailDto loginEmailDto) {
         Map map = maps.findById(mapId)
                 .orElseThrow(NoSuchMapException::new);
-        Member manager = members.findByEmail(loginEmail.getEmail())
+        Member manager = members.findByEmail(loginEmailDto.getEmail())
                 .orElseThrow(NoSuchMemberException::new);
         validateManagerOfMap(map, manager);
 
@@ -106,10 +106,10 @@ public class MapService {
                 mapCreateUpdateRequest.getMapDrawing());
     }
 
-    public void deleteMap(final Long mapId, final LoginEmail loginEmail) {
+    public void deleteMap(final Long mapId, final LoginEmailDto loginEmailDto) {
         Map map = maps.findById(mapId)
                 .orElseThrow(NoSuchMapException::new);
-        Member manager = members.findByEmail(loginEmail.getEmail())
+        Member manager = members.findByEmail(loginEmailDto.getEmail())
                 .orElseThrow(NoSuchMemberException::new);
 
         validateManagerOfMap(map, manager);

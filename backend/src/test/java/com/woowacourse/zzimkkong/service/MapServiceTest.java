@@ -11,7 +11,7 @@ import com.woowacourse.zzimkkong.dto.map.MapFindResponse;
 import com.woowacourse.zzimkkong.exception.authorization.NoAuthorityOnMapException;
 import com.woowacourse.zzimkkong.exception.map.InvalidAccessLinkException;
 import com.woowacourse.zzimkkong.exception.space.ReservationExistOnSpaceException;
-import com.woowacourse.zzimkkong.infrastructure.auth.LoginEmail;
+import com.woowacourse.zzimkkong.dto.member.LoginEmailDto;
 import com.woowacourse.zzimkkong.infrastructure.sharingid.SharingIdGenerator;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -36,7 +36,7 @@ class MapServiceTest extends ServiceTest {
     @Autowired
     private MapService mapService;
     private Member pobi;
-    private LoginEmail pobiEmail;
+    private LoginEmailDto pobiEmail;
     private Map luther;
     private Map smallHouse;
     private Long lutherId;
@@ -44,7 +44,7 @@ class MapServiceTest extends ServiceTest {
     @BeforeEach
     void setUp() {
         pobi = new Member(EMAIL, PW, ORGANIZATION);
-        pobiEmail = LoginEmail.from(EMAIL);
+        pobiEmail = LoginEmailDto.from(EMAIL);
         luther = new Map(1L, LUTHER_NAME, MAP_DRAWING_DATA, MAP_IMAGE_URL, pobi);
         smallHouse = new Map(2L, SMALL_HOUSE_NAME, MAP_DRAWING_DATA, MAP_IMAGE_URL, pobi);
         lutherId = luther.getId();
@@ -167,7 +167,7 @@ class MapServiceTest extends ServiceTest {
     @DisplayName("권한이 없는 관리자가 맵을 수정하려고 할 경우 예외가 발생한다.")
     void updateManagerException() {
         //given
-        LoginEmail anotherEmail = LoginEmail.from(NEW_EMAIL);
+        LoginEmailDto anotherEmail = LoginEmailDto.from(NEW_EMAIL);
         Member anotherMember = new Member(NEW_EMAIL, PW, ORGANIZATION);
         MapCreateUpdateRequest mapCreateUpdateRequest = new MapCreateUpdateRequest("이름을 바꿔요", luther.getMapDrawing(), MAP_SVG);
 

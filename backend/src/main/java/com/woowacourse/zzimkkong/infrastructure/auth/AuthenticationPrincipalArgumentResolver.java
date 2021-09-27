@@ -1,6 +1,7 @@
 package com.woowacourse.zzimkkong.infrastructure.auth;
 
 import com.woowacourse.zzimkkong.domain.Manager;
+import com.woowacourse.zzimkkong.dto.member.LoginEmailDto;
 import org.springframework.core.MethodParameter;
 import org.springframework.stereotype.Component;
 import org.springframework.web.bind.support.WebDataBinderFactory;
@@ -27,6 +28,6 @@ public class AuthenticationPrincipalArgumentResolver implements HandlerMethodArg
     public Object resolveArgument(MethodParameter parameter, ModelAndViewContainer mavContainer, NativeWebRequest webRequest, WebDataBinderFactory binderFactory) {
         String token = AuthorizationExtractor.extractAccessToken((HttpServletRequest) webRequest.getNativeRequest());
         String email = jwtUtils.getPayload(token);
-        return LoginEmail.from(email);
+        return LoginEmailDto.from(email);
     }
 }

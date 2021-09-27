@@ -1,6 +1,6 @@
 package com.woowacourse.zzimkkong.dto.reservation;
 
-import com.woowacourse.zzimkkong.infrastructure.auth.LoginEmail;
+import com.woowacourse.zzimkkong.dto.member.LoginEmailDto;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -18,12 +18,12 @@ public class ReservationAuthenticationDto {
             final Long spaceId,
             final Long reservationId,
             final ReservationPasswordAuthenticationRequest request,
-            final LoginEmail loginEmail) {
+            final LoginEmailDto loginEmailDto) {
         this.mapId = mapId;
         this.spaceId = spaceId;
         this.reservationId = reservationId;
         this.password = request.getPassword();
-        this.loginEmail = loginEmail.getEmail();
+        this.loginEmail = loginEmailDto.getEmail();
     }
 
     public static ReservationAuthenticationDto of(
@@ -36,19 +36,19 @@ public class ReservationAuthenticationDto {
                 spaceId,
                 reservationId,
                 request,
-                new LoginEmail());
+                new LoginEmailDto());
     }
 
     public static ReservationAuthenticationDto of(
             final Long mapId,
             final Long spaceId,
             final Long reservationId,
-            final LoginEmail loginEmail) {
+            final LoginEmailDto loginEmailDto) {
         return new ReservationAuthenticationDto(
                 mapId,
                 spaceId,
                 reservationId,
                 new ReservationPasswordAuthenticationRequest(),
-                loginEmail);
+                loginEmailDto);
     }
 }

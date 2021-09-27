@@ -6,7 +6,7 @@ import com.woowacourse.zzimkkong.exception.authorization.NoAuthorityOnMapExcepti
 import com.woowacourse.zzimkkong.exception.map.NoSuchMapException;
 import com.woowacourse.zzimkkong.exception.reservation.*;
 import com.woowacourse.zzimkkong.exception.space.NoSuchSpaceException;
-import com.woowacourse.zzimkkong.infrastructure.auth.LoginEmail;
+import com.woowacourse.zzimkkong.dto.member.LoginEmailDto;
 import com.woowacourse.zzimkkong.service.strategy.ManagerReservationStrategy;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -53,8 +53,8 @@ class ManagerReservationServiceTest extends ServiceTest {
 
     private Member pobi;
     private Member sakjung;
-    private LoginEmail pobiEmail;
-    private LoginEmail sakjungEmail;
+    private LoginEmailDto pobiEmail;
+    private LoginEmailDto sakjungEmail;
     private Map luther;
     private Space be;
     private Space fe;
@@ -71,8 +71,8 @@ class ManagerReservationServiceTest extends ServiceTest {
     void setUp() {
         pobi = new Member(EMAIL, PW, ORGANIZATION);
         sakjung = new Member(NEW_EMAIL, PW, ORGANIZATION);
-        pobiEmail = LoginEmail.from(EMAIL);
-        sakjungEmail = LoginEmail.from(NEW_EMAIL);
+        pobiEmail = LoginEmailDto.from(EMAIL);
+        sakjungEmail = LoginEmailDto.from(NEW_EMAIL);
         luther = new Map(1L, LUTHER_NAME, MAP_DRAWING_DATA, MAP_IMAGE_URL, pobi);
 
         Setting beSetting = Setting.builder()

@@ -3,7 +3,7 @@ package com.woowacourse.zzimkkong.controller;
 import com.woowacourse.zzimkkong.domain.Manager;
 import com.woowacourse.zzimkkong.dto.member.*;
 import com.woowacourse.zzimkkong.dto.member.oauth.OauthMemberSaveRequest;
-import com.woowacourse.zzimkkong.infrastructure.auth.LoginEmail;
+import com.woowacourse.zzimkkong.dto.member.LoginEmailDto;
 import com.woowacourse.zzimkkong.service.MemberService;
 import com.woowacourse.zzimkkong.service.PresetService;
 import org.springframework.http.ResponseEntity;
@@ -58,45 +58,45 @@ public class MemberController {
     @PostMapping("/presets")
     public ResponseEntity<Void> createPreset(
             @RequestBody @Valid final PresetCreateRequest presetCreateRequest,
-            @Manager final LoginEmail loginEmail) {
-        PresetCreateResponse presetCreateResponse = presetService.savePreset(presetCreateRequest, loginEmail);
+            @Manager final LoginEmailDto loginEmailDto) {
+        PresetCreateResponse presetCreateResponse = presetService.savePreset(presetCreateRequest, loginEmailDto);
         return ResponseEntity
                 .created(URI.create("/api/managers/presets/" + presetCreateResponse.getId()))
                 .build();
     }
 
     @GetMapping("/presets")
-    public ResponseEntity<PresetFindAllResponse> findAllPresets(@Manager final LoginEmail loginEmail) {
-        PresetFindAllResponse presetFindAllResponse = presetService.findAllPresets(loginEmail);
+    public ResponseEntity<PresetFindAllResponse> findAllPresets(@Manager final LoginEmailDto loginEmailDto) {
+        PresetFindAllResponse presetFindAllResponse = presetService.findAllPresets(loginEmailDto);
         return ResponseEntity.ok().body(presetFindAllResponse);
     }
 
     @DeleteMapping("/presets/{presetId}")
     public ResponseEntity<Void> deletePreset(
             @PathVariable final Long presetId,
-            @Manager final LoginEmail loginEmail) {
-        presetService.deletePreset(presetId, loginEmail);
+            @Manager final LoginEmailDto loginEmailDto) {
+        presetService.deletePreset(presetId, loginEmailDto);
 
         return ResponseEntity.noContent().build();
     }
 
     @GetMapping("/me")
-    public ResponseEntity<MemberFindResponse> findMember(@Manager final LoginEmail loginEmail) {
-        MemberFindResponse memberFindResponse = memberService.findMember(loginEmail);
+    public ResponseEntity<MemberFindResponse> findMember(@Manager final LoginEmailDto loginEmailDto) {
+        MemberFindResponse memberFindResponse = memberService.findMember(loginEmailDto);
         return ResponseEntity.ok().body(memberFindResponse);
     }
 
     @PutMapping("/me")
     public ResponseEntity<MemberFindResponse> updateMember(
-            @Manager final LoginEmail loginEmail,
+            @Manager final LoginEmailDto loginEmailDto,
             @RequestBody @Valid final MemberUpdateRequest memberUpdateRequest) {
-        memberService.updateMember(loginEmail, memberUpdateRequest);
+        memberService.updateMember(loginEmailDto, memberUpdateRequest);
         return ResponseEntity.ok().build();
     }
 
     @DeleteMapping("/me")
-    public ResponseEntity<Void> deleteMember(@Manager final LoginEmail loginEmail) {
-        memberService.deleteMember(loginEmail);
+    public ResponseEntity<Void> deleteMember(@Manager final LoginEmailDto loginEmailDto) {
+        memberService.deleteMember(loginEmailDto);
         return ResponseEntity.noContent().build();
     }
 }

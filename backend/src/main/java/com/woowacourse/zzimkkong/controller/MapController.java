@@ -5,7 +5,7 @@ import com.woowacourse.zzimkkong.dto.map.MapCreateResponse;
 import com.woowacourse.zzimkkong.dto.map.MapCreateUpdateRequest;
 import com.woowacourse.zzimkkong.dto.map.MapFindAllResponse;
 import com.woowacourse.zzimkkong.dto.map.MapFindResponse;
-import com.woowacourse.zzimkkong.infrastructure.auth.LoginEmail;
+import com.woowacourse.zzimkkong.dto.member.LoginEmailDto;
 import com.woowacourse.zzimkkong.service.MapService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -23,20 +23,20 @@ public class MapController {
     }
 
     @GetMapping("/{mapId}")
-    public ResponseEntity<MapFindResponse> find(@PathVariable final Long mapId, @Manager final LoginEmail loginEmail) {
-        MapFindResponse mapFindResponse = mapService.findMap(mapId, loginEmail);
+    public ResponseEntity<MapFindResponse> find(@PathVariable final Long mapId, @Manager final LoginEmailDto loginEmailDto) {
+        MapFindResponse mapFindResponse = mapService.findMap(mapId, loginEmailDto);
         return ResponseEntity.ok().body(mapFindResponse);
     }
 
     @GetMapping
-    public ResponseEntity<MapFindAllResponse> findAll(@Manager final LoginEmail loginEmail) {
-        MapFindAllResponse mapFindAllResponse = mapService.findAllMaps(loginEmail);
+    public ResponseEntity<MapFindAllResponse> findAll(@Manager final LoginEmailDto loginEmailDto) {
+        MapFindAllResponse mapFindAllResponse = mapService.findAllMaps(loginEmailDto);
         return ResponseEntity.ok().body(mapFindAllResponse);
     }
 
     @PostMapping
-    public ResponseEntity<Void> create(@Valid @RequestBody final MapCreateUpdateRequest mapCreateUpdateRequest, @Manager final LoginEmail loginEmail) {
-        MapCreateResponse mapCreateResponse = mapService.saveMap(mapCreateUpdateRequest, loginEmail);
+    public ResponseEntity<Void> create(@Valid @RequestBody final MapCreateUpdateRequest mapCreateUpdateRequest, @Manager final LoginEmailDto loginEmailDto) {
+        MapCreateResponse mapCreateResponse = mapService.saveMap(mapCreateUpdateRequest, loginEmailDto);
         return ResponseEntity.created(URI.create("/api/managers/maps/" + mapCreateResponse.getId()))
                 .build();
     }
@@ -45,14 +45,14 @@ public class MapController {
     public ResponseEntity<Void> update(
             @PathVariable final Long mapId,
             @Valid @RequestBody final MapCreateUpdateRequest mapCreateUpdateRequest,
-            @Manager final LoginEmail loginEmail) {
-        mapService.updateMap(mapId, mapCreateUpdateRequest, loginEmail);
+            @Manager final LoginEmailDto loginEmailDto) {
+        mapService.updateMap(mapId, mapCreateUpdateRequest, loginEmailDto);
         return ResponseEntity.ok().build();
     }
 
     @DeleteMapping("/{mapId}")
-    public ResponseEntity<Void> delete(@PathVariable final Long mapId, @Manager final LoginEmail loginEmail) {
-        mapService.deleteMap(mapId, loginEmail);
+    public ResponseEntity<Void> delete(@PathVariable final Long mapId, @Manager final LoginEmailDto loginEmailDto) {
+        mapService.deleteMap(mapId, loginEmailDto);
         return ResponseEntity.noContent().build();
     }
 }

@@ -9,7 +9,7 @@ import com.woowacourse.zzimkkong.dto.space.SettingsRequest;
 import com.woowacourse.zzimkkong.dto.member.PresetCreateRequest;
 import com.woowacourse.zzimkkong.exception.member.NoSuchMemberException;
 import com.woowacourse.zzimkkong.exception.preset.NoSuchPresetException;
-import com.woowacourse.zzimkkong.infrastructure.auth.LoginEmail;
+import com.woowacourse.zzimkkong.dto.member.LoginEmailDto;
 import com.woowacourse.zzimkkong.repository.MemberRepository;
 import com.woowacourse.zzimkkong.repository.PresetRepository;
 import org.springframework.stereotype.Service;
@@ -30,7 +30,7 @@ public class PresetService {
         this.presets = presets;
     }
 
-    public PresetCreateResponse savePreset(final PresetCreateRequest presetCreateRequest, final LoginEmail loginEmail) {
+    public PresetCreateResponse savePreset(final PresetCreateRequest presetCreateRequest, final LoginEmailDto loginEmailDto) {
         SettingsRequest settingsRequest = presetCreateRequest.getSettingsRequest();
         Setting setting = Setting.builder()
                 .availableStartTime(settingsRequest.getAvailableStartTime())
@@ -42,7 +42,7 @@ public class PresetService {
                 .enabledDayOfWeek(settingsRequest.getEnabledDayOfWeek())
                 .build();
 
-        Member manager = members.findByEmail(loginEmail.getEmail())
+        Member manager = members.findByEmail(loginEmailDto.getEmail())
                 .orElseThrow(NoSuchMemberException::new);
         Preset preset = presets.save(new Preset(presetCreateRequest.getName(), setting, manager));
 
@@ -50,15 +50,15 @@ public class PresetService {
     }
 
     @Transactional(readOnly = true)
-    public PresetFindAllResponse findAllPresets(final LoginEmail loginEmail) {
-        Member manager = members.findByEmail(loginEmail.getEmail())
+    public PresetFindAllResponse findAllPresets(final LoginEmailDto loginEmailDto) {
+        Member manager = members.findByEmail(loginEmailDto.getEmail())
                 .orElseThrow(NoSuchMemberException::new);
         List<Preset> findPresets = manager.getPresets();
         return PresetFindAllResponse.from(findPresets);
     }
 
-    public void deletePreset(final Long presetId, final LoginEmail loginEmail) {
-        Member manager = members.findByEmail(loginEmail.getEmail())
+    public void deletePreset(final Long presetId, final LoginEmailDto loginEmailDto) {
+        Member manager = members.findByEmail(loginEmailDto.getEmail())
                 .orElseThrow(NoSuchMemberException::new);
         Preset preset = manager.findPresetById(presetId)
                 .orElseThrow(NoSuchPresetException::new);

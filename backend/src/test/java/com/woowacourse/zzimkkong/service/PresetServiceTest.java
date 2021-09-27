@@ -8,7 +8,7 @@ import com.woowacourse.zzimkkong.dto.member.PresetCreateResponse;
 import com.woowacourse.zzimkkong.dto.member.PresetFindAllResponse;
 import com.woowacourse.zzimkkong.dto.space.SettingsRequest;
 import com.woowacourse.zzimkkong.exception.preset.NoSuchPresetException;
-import com.woowacourse.zzimkkong.infrastructure.auth.LoginEmail;
+import com.woowacourse.zzimkkong.dto.member.LoginEmailDto;
 import com.woowacourse.zzimkkong.repository.PresetRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -55,12 +55,12 @@ class PresetServiceTest extends ServiceTest {
             .build();
 
     private Member pobi;
-    private LoginEmail pobiEmail;
+    private LoginEmailDto pobiEmail;
 
     @BeforeEach
     void setUp() {
         pobi = new Member(1L, EMAIL, PW, ORGANIZATION);
-        pobiEmail = LoginEmail.from(EMAIL);
+        pobiEmail = LoginEmailDto.from(EMAIL);
     }
 
     @Test
@@ -118,7 +118,7 @@ class PresetServiceTest extends ServiceTest {
     void deleteOwnerException() {
         //given
         Preset savedPreset = new Preset(1L, PRESET_NAME1, setting, pobi);
-        LoginEmail anotherEmail = LoginEmail.from(NEW_EMAIL);
+        LoginEmailDto anotherEmail = LoginEmailDto.from(NEW_EMAIL);
         Member anotherMember = new Member(NEW_EMAIL, PW, ORGANIZATION);
 
         given(members.findByEmail(anyString()))

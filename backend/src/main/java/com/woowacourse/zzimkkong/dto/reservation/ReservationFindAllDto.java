@@ -1,6 +1,6 @@
 package com.woowacourse.zzimkkong.dto.reservation;
 
-import com.woowacourse.zzimkkong.infrastructure.auth.LoginEmail;
+import com.woowacourse.zzimkkong.dto.member.LoginEmailDto;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -16,22 +16,22 @@ public class ReservationFindAllDto {
     protected ReservationFindAllDto(
             final Long mapId,
             final LocalDate date,
-            final LoginEmail loginEmail) {
+            final LoginEmailDto loginEmailDto) {
         this.mapId = mapId;
         this.date = date;
-        this.loginEmail = loginEmail.getEmail();
+        this.loginEmail = loginEmailDto.getEmail();
     }
 
     public static ReservationFindAllDto of(
             final Long mapId,
             final LocalDate date,
-            final LoginEmail loginEmail) {
-        return new ReservationFindAllDto(mapId, date, loginEmail);
+            final LoginEmailDto loginEmailDto) {
+        return new ReservationFindAllDto(mapId, date, loginEmailDto);
     }
 
     public static ReservationFindAllDto of(
             final Long mapId,
             final LocalDate date) {
-        return new ReservationFindAllDto(mapId, date, new LoginEmail());
+        return new ReservationFindAllDto(mapId, date, new LoginEmailDto());
     }
 }

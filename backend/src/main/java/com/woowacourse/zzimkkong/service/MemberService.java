@@ -10,8 +10,7 @@ import com.woowacourse.zzimkkong.dto.member.oauth.OauthMemberSaveRequest;
 import com.woowacourse.zzimkkong.exception.member.DuplicateEmailException;
 import com.woowacourse.zzimkkong.exception.member.NoSuchMemberException;
 import com.woowacourse.zzimkkong.exception.member.ReservationExistsOnMemberException;
-import com.woowacourse.zzimkkong.infrastructure.auth.LoginEmail;
-import com.woowacourse.zzimkkong.infrastructure.oauth.OauthHandler;
+import com.woowacourse.zzimkkong.dto.member.LoginEmailDto;
 import com.woowacourse.zzimkkong.repository.MemberRepository;
 import com.woowacourse.zzimkkong.repository.ReservationRepository;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -69,20 +68,20 @@ public class MemberService {
     }
 
     @Transactional(readOnly = true)
-    public MemberFindResponse findMember(final LoginEmail loginEmail) {
-        Member member = members.findByEmail(loginEmail.getEmail())
+    public MemberFindResponse findMember(final LoginEmailDto loginEmailDto) {
+        Member member = members.findByEmail(loginEmailDto.getEmail())
                 .orElseThrow(NoSuchMemberException::new);
         return MemberFindResponse.from(member);
     }
 
-    public void updateMember(final LoginEmail loginEmail, final MemberUpdateRequest memberUpdateRequest) {
-        Member member = members.findByEmail(loginEmail.getEmail())
+    public void updateMember(final LoginEmailDto loginEmailDto, final MemberUpdateRequest memberUpdateRequest) {
+        Member member = members.findByEmail(loginEmailDto.getEmail())
                 .orElseThrow(NoSuchMemberException::new);
         member.update(memberUpdateRequest.getOrganization());
     }
 
-    public void deleteMember(final LoginEmail loginEmail) {
-        Member member = members.findByEmail(loginEmail.getEmail())
+    public void deleteMember(final LoginEmailDto loginEmailDto) {
+        Member member = members.findByEmail(loginEmailDto.getEmail())
                 .orElseThrow(NoSuchMemberException::new);
         boolean hasAnyReservations = reservations.existsReservationsByMemberFromToday(member);
         if (hasAnyReservations) {
