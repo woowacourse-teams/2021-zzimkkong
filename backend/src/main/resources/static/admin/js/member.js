@@ -15,15 +15,13 @@ function getMembers(pageNumber) {
     fetch(memberPage.getMembers + "?page=" + pageNumber).then(res => res.json())
         .then(function (data) {
             const memberList = document.querySelector(".members-row");
-            for (let i = 0; i < data.members.length; i++) {
-                let member = data.members[i];
-                memberList.innerHTML +=
-                    `<tr class="member">
+            memberList.innerHTML += data.members.map(member =>
+                `<tr class="member">
                         <th scope="row">${member.id}</th>
                         <td>${member.email}</td>
                         <td>${member.organization}</td>
-                    </tr>`;
-            }
+                    </tr>`
+            ).join("");
         });
 }
 

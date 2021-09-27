@@ -15,10 +15,8 @@ function getSpaces(pageNumber) {
     fetch(spacePage.getSpaces + "?page=" + pageNumber).then(res => res.json())
         .then(function (data) {
             const spaceList = document.querySelector(".spaces-row");
-            for (let i = 0; i < data.spaces.length; i++) {
-                let space = data.spaces[i];
-                spaceList.innerHTML +=
-                    `<tr class="space">
+            spaceList.innerHTML += data.spaces.map(space =>
+                `<tr class="space">
                         <th scope="row">${space.id}</th>
                         <td>${space.name}</td>
                         <td>${space.color}</td>
@@ -33,8 +31,8 @@ function getSpaces(pageNumber) {
                         맵id: ${space.mapId} <br>
                         매니저id: ${space.managerId}
                         </td>
-                    </tr>`;
-            }
+                    </tr>`
+            ).join("");
         });
 }
 

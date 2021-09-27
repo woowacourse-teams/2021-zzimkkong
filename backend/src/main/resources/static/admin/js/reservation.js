@@ -15,11 +15,8 @@ function getReservations(pageNumber) {
     fetch(reservationPage.getReservations + "?page=" + pageNumber).then(res => res.json())
         .then(function (data) {
             const reservationList = document.querySelector(".reservations-row");
-            console.log(data);
-            for (let i = 0; i < data.reservations.length; i++) {
-                let reservation = data.reservations[i];
-                reservationList.innerHTML +=
-                    `<tr class="reservation">
+            reservationList.innerHTML += data.reservations.map(reservation =>
+                `<tr class="reservation">
                         <th scope="row">${reservation.id}</th>
                         <td>${reservation.startDateTime}</td>
                         <td>${reservation.endDateTime}</td>
@@ -30,8 +27,8 @@ function getReservations(pageNumber) {
                         맵id: ${reservation.mapId} <br>
                         맵관리자id: ${reservation.managerId}
                         </td>
-                    </tr>`;
-            }
+                    </tr>`
+            ).join("");
         });
 }
 

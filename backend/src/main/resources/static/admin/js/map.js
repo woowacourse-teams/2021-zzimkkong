@@ -15,15 +15,15 @@ function getMaps(pageNumber) {
     fetch(mapPage.getMaps + "?page=" + pageNumber).then(res => res.json())
         .then(function (data) {
             const mapList = document.querySelector(".maps-row");
-                mapList.innerHTML += data.maps.map(map =>
-                    `<tr class="map">
+            mapList.innerHTML += data.maps.map(map =>
+                `<tr class="map">
                         <th scope="row">${map.mapId}</th>
                         <td>${map.mapName}</td>
                         <td>${map.mapImageUrl}</td>
                         <td>${map.sharingMapId}</td>
                         <td>${map.managerEmail}</td>
                     </tr>`
-                ).join("");
+            ).join("");
         });
 }
 
