@@ -79,7 +79,7 @@ const Editor = ({
     [isDrawingMode, spaces, setSelectedSpaceId, updateWithSpace]
   );
 
-  const handleDrawingStart = useCallback(() => {
+  const handleMouseDown = useCallback(() => {
     if (!isDrawingMode) return;
 
     setIsDrawing(true);
@@ -101,7 +101,7 @@ const Editor = ({
     [isDrawing, isDrawingMode, mode, rect, updateArea, updateRect, updateCoordinate]
   );
 
-  const handleDrawingEnd = useCallback(() => {
+  const handleMouseUp = useCallback(() => {
     if (!isDrawingMode || !isDrawing) return;
 
     setMode(Mode.Form);
@@ -123,8 +123,8 @@ const Editor = ({
       onDragEnd={onDragEnd}
       onMouseOut={onMouseOut}
       onMouseMove={handleMouseMove}
-      onMouseDown={handleDrawingStart}
-      onMouseUp={handleDrawingEnd}
+      onMouseDown={handleMouseDown}
+      onMouseUp={handleMouseUp}
       onWheel={onWheel}
     >
       {values.area && (
