@@ -16,9 +16,11 @@
     <!--    Profiles    -->
     <springProfile name="local">
         <include resource="appenders/console-appender.xml"/>
+        <include resource="appenders/logstash-appender.xml"/>
 
         <root level="INFO">
             <appender-ref ref="CONSOLE_APPENDER"/>
+            <appender-ref ref="STASH"/>
         </root>
     </springProfile>
 
