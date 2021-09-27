@@ -1,4 +1,4 @@
-package com.woowacourse.zzimkkong.infrastructure;
+package com.woowacourse.zzimkkong.infrastructure.thumbnail;
 
 import com.woowacourse.zzimkkong.domain.Map;
 import org.springframework.stereotype.Component;

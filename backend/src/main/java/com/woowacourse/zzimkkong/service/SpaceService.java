@@ -6,10 +6,13 @@ import com.woowacourse.zzimkkong.domain.Setting;
 import com.woowacourse.zzimkkong.domain.Space;
 import com.woowacourse.zzimkkong.dto.space.*;
 import com.woowacourse.zzimkkong.exception.map.NoSuchMapException;
+import com.woowacourse.zzimkkong.exception.member.NoSuchMemberException;
 import com.woowacourse.zzimkkong.exception.space.NoSuchSpaceException;
 import com.woowacourse.zzimkkong.exception.space.ReservationExistOnSpaceException;
-import com.woowacourse.zzimkkong.infrastructure.ThumbnailManager;
+import com.woowacourse.zzimkkong.dto.member.LoginEmailDto;
+import com.woowacourse.zzimkkong.infrastructure.thumbnail.ThumbnailManager;
 import com.woowacourse.zzimkkong.repository.MapRepository;
+import com.woowacourse.zzimkkong.repository.MemberRepository;
 import com.woowacourse.zzimkkong.repository.ReservationRepository;
 import com.woowacourse.zzimkkong.repository.SpaceRepository;
 import org.springframework.stereotype.Service;
@@ -23,16 +26,19 @@ import static com.woowacourse.zzimkkong.service.MapService.validateManagerOfMap;
 @Service
 @Transactional
 public class SpaceService {
+    private final MemberRepository members;
     private final MapRepository maps;
     private final SpaceRepository spaces;
     private final ReservationRepository reservations;
     private final ThumbnailManager thumbnailManager;
 
     public SpaceService(
+            final MemberRepository members,
             final MapRepository maps,
             final SpaceRepository spaces,
             final ReservationRepository reservations,
             final ThumbnailManager thumbnailManager) {
+        this.members = members;
         this.maps = maps;
         this.spaces = spaces;
         this.reservations = reservations;
@@ -42,9 +48,11 @@ public class SpaceService {
     public SpaceCreateResponse saveSpace(
             final Long mapId,
             final SpaceCreateUpdateRequest spaceCreateUpdateRequest,
-            final Member manager) {
+            final LoginEmailDto loginEmailDto) {
         Map map = maps.findById(mapId)
                 .orElseThrow(NoSuchMapException::new);
+        Member manager = members.findByEmail(loginEmailDto.getEmail())
+                .orElseThrow(NoSuchMemberException::new);
         validateManagerOfMap(map, manager);
 
         Setting setting = getSetting(spaceCreateUpdateRequest);
@@ -66,9 +74,11 @@ public class SpaceService {
     public SpaceFindDetailResponse findSpace(
             final Long mapId,
             final Long spaceId,
-            final Member manager) {
+            final LoginEmailDto loginEmailDto) {
         Map map = maps.findById(mapId)
                 .orElseThrow(NoSuchMapException::new);
+        Member manager = members.findByEmail(loginEmailDto.getEmail())
+                .orElseThrow(NoSuchMemberException::new);
         validateManagerOfMap(map, manager);
 
         Space space = map.findSpaceById(spaceId)
@@ -79,9 +89,11 @@ public class SpaceService {
     @Transactional(readOnly = true)
     public SpaceFindAllResponse findAllSpace(
             final Long mapId,
-            final Member manager) {
+            final LoginEmailDto loginEmailDto) {
         Map map = maps.findById(mapId)
                 .orElseThrow(NoSuchMapException::new);
+        Member manager = members.findByEmail(loginEmailDto.getEmail())
+                .orElseThrow(NoSuchMemberException::new);
         validateManagerOfMap(map, manager);
 
         List<Space> findAllSpaces = map.getSpaces();
@@ -102,9 +114,11 @@ public class SpaceService {
             final Long mapId,
             final Long spaceId,
             final SpaceCreateUpdateRequest spaceCreateUpdateRequest,
-            final Member manager) {
+            final LoginEmailDto loginEmailDto) {
         Map map = maps.findById(mapId)
                 .orElseThrow(NoSuchMapException::new);
+        Member manager = members.findByEmail(loginEmailDto.getEmail())
+                .orElseThrow(NoSuchMemberException::new);
         validateManagerOfMap(map, manager);
 
         Space space = map.findSpaceById(spaceId)
@@ -127,9 +141,11 @@ public class SpaceService {
             final Long mapId,
             final Long spaceId,
             final SpaceDeleteRequest spaceDeleteRequest,
-            final Member manager) {
+            final LoginEmailDto loginEmailDto) {
         Map map = maps.findById(mapId)
                 .orElseThrow(NoSuchMapException::new);
+        Member manager = members.findByEmail(loginEmailDto.getEmail())
+                .orElseThrow(NoSuchMemberException::new);
         validateManagerOfMap(map, manager);
 
         Space space = map.findSpaceById(spaceId)

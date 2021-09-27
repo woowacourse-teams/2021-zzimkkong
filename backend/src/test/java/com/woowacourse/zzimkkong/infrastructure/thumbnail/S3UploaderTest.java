@@ -1,5 +1,7 @@
-package com.woowacourse.zzimkkong.infrastructure;
+package com.woowacourse.zzimkkong.infrastructure.thumbnail;
 
+import com.woowacourse.zzimkkong.infrastructure.thumbnail.BatikConverter;
+import com.woowacourse.zzimkkong.infrastructure.thumbnail.S3Uploader;
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
