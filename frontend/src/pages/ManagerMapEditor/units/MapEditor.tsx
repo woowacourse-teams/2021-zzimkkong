@@ -142,18 +142,18 @@ const MapCreateEditor = ({
   };
 
   const handleDragStartBoard = (event: React.MouseEvent<SVGSVGElement>) => {
-    if (mode === MapEditorMode.Select) onSelectDragStart(event);
-    else onDragStart(event);
+    if (isBoardDraggable) onDragStart(event);
+    else if (mode === MapEditorMode.Select) onSelectDragStart(event);
   };
 
   const handleDragBoard = (event: React.MouseEvent<SVGSVGElement>) => {
-    if (mode === MapEditorMode.Select) onSelectDrag(event);
-    else onDrag(event);
+    if (isBoardDraggable) onDrag(event);
+    else if (mode === MapEditorMode.Select) onSelectDrag(event);
   };
 
   const handleDragEndBoard = () => {
-    if (mode === MapEditorMode.Select) onSelectDragEnd();
-    else onDragEnd();
+    if (isBoardDraggable) onDragEnd();
+    else if (mode === MapEditorMode.Select) onSelectDragEnd();
   };
 
   const deleteMapElement = useCallback(() => {
