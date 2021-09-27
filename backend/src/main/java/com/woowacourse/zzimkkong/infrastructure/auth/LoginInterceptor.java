@@ -1,4 +1,4 @@
-package com.woowacourse.zzimkkong.infrastructure;
+package com.woowacourse.zzimkkong.infrastructure.auth;
 
 import org.springframework.http.HttpMethod;
 import org.springframework.stereotype.Component;

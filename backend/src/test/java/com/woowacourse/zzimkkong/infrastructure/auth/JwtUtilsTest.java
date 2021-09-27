@@ -1,9 +1,10 @@
-package com.woowacourse.zzimkkong.infrastructure;
+package com.woowacourse.zzimkkong.infrastructure.auth;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.woowacourse.zzimkkong.exception.authorization.InvalidTokenException;
 import com.woowacourse.zzimkkong.exception.authorization.TokenExpiredException;
+import com.woowacourse.zzimkkong.infrastructure.auth.JwtUtils;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

@@ -5,7 +5,7 @@ import com.woowacourse.zzimkkong.dto.member.LoginRequest;
 import com.woowacourse.zzimkkong.dto.member.MemberSaveRequest;
 import com.woowacourse.zzimkkong.dto.space.SettingsRequest;
 import com.woowacourse.zzimkkong.dto.space.SpaceCreateUpdateRequest;
-import com.woowacourse.zzimkkong.infrastructure.StorageUploader;
+import com.woowacourse.zzimkkong.infrastructure.thumbnail.StorageUploader;
 import com.woowacourse.zzimkkong.infrastructure.oauth.GithubRequester;
 import com.woowacourse.zzimkkong.infrastructure.oauth.GoogleRequester;
 import io.restassured.RestAssured;

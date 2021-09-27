@@ -1,4 +1,4 @@
-package com.woowacourse.zzimkkong.infrastructure;
+package com.woowacourse.zzimkkong.infrastructure.auth;
 
 import com.woowacourse.zzimkkong.exception.authorization.InvalidTokenException;
 import com.woowacourse.zzimkkong.exception.authorization.TokenExpiredException;

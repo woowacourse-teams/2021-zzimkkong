@@ -9,6 +9,7 @@ import com.woowacourse.zzimkkong.exception.authorization.NoAuthorityOnMapExcepti
 import com.woowacourse.zzimkkong.exception.map.NoSuchMapException;
 import com.woowacourse.zzimkkong.exception.space.NoSuchSpaceException;
 import com.woowacourse.zzimkkong.exception.space.ReservationExistOnSpaceException;
+import com.woowacourse.zzimkkong.dto.member.LoginEmailDto;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -60,10 +61,11 @@ class SpaceServiceTest extends ServiceTest {
 
     private Member pobi;
     private Member sakjung;
+    private LoginEmailDto pobiEmail;
+    private LoginEmailDto sakjungEmail;
     private Map luther;
     private Space be;
     private Space fe;
-
 
     private Long lutherId;
     private Long beId;
@@ -74,6 +76,8 @@ class SpaceServiceTest extends ServiceTest {
     void setUp() {
         pobi = new Member(EMAIL, PW, ORGANIZATION);
         sakjung = new Member(NEW_EMAIL, PW, ORGANIZATION);
+        pobiEmail = LoginEmailDto.from(EMAIL);
+        sakjungEmail = LoginEmailDto.from(NEW_EMAIL);
         luther = new Map(1L, LUTHER_NAME, MAP_DRAWING_DATA, MAP_IMAGE_URL, pobi);
 
         Setting beSetting = Setting.builder()
@@ -144,6 +148,8 @@ class SpaceServiceTest extends ServiceTest {
                 .setting(setting)
                 .build();
 
+        given(members.findByEmail(anyString()))
+                .willReturn(Optional.of(pobi));
         given(maps.findById(anyLong()))
                 .willReturn(Optional.of(luther));
         given(spaces.save(any(Space.class)))
@@ -152,7 +158,7 @@ class SpaceServiceTest extends ServiceTest {
                 .willReturn(MAP_IMAGE_URL);
 
         // when
-        SpaceCreateResponse spaceCreateResponse = spaceService.saveSpace(luther.getId(), spaceCreateUpdateRequest, pobi);
+        SpaceCreateResponse spaceCreateResponse = spaceService.saveSpace(luther.getId(), spaceCreateUpdateRequest, pobiEmail);
 
         // then
         assertThat(spaceCreateResponse.getId()).isEqualTo(newSpace.getId());
@@ -166,7 +172,7 @@ class SpaceServiceTest extends ServiceTest {
                 .willReturn(Optional.empty());
 
         // when, then
-        assertThatThrownBy(() -> spaceService.saveSpace(noneExistingMapId, spaceCreateUpdateRequest, pobi))
+        assertThatThrownBy(() -> spaceService.saveSpace(noneExistingMapId, spaceCreateUpdateRequest, pobiEmail))
                 .isInstanceOf(NoSuchMapException.class);
     }
 
@@ -174,13 +180,15 @@ class SpaceServiceTest extends ServiceTest {
     @DisplayName("공간 생성 요청 시, 맵에 대한 권한이 없다면 예외가 발생한다.")
     void saveNoAuthorityOnMapException() {
         // given
+        given(members.findByEmail(anyString()))
+                .willReturn(Optional.of(sakjung));
         given(maps.findById(anyLong()))
                 .willReturn(Optional.of(luther));
         given(spaces.save(any(Space.class)))
                 .willReturn(be);
 
         // when, then
-        assertThatThrownBy(() -> spaceService.saveSpace(lutherId, spaceCreateUpdateRequest, sakjung))
+        assertThatThrownBy(() -> spaceService.saveSpace(lutherId, spaceCreateUpdateRequest, sakjungEmail))
                 .isInstanceOf(NoAuthorityOnMapException.class);
     }
 
@@ -188,13 +196,15 @@ class SpaceServiceTest extends ServiceTest {
     @DisplayName("공간 조회 시, spaceId를 가진 공간이 있다면 조회한다.")
     void find() {
         // given
+        given(members.findByEmail(anyString()))
+                .willReturn(Optional.of(pobi));
         given(maps.findById(anyLong()))
                 .willReturn(Optional.of(luther));
         given(spaces.findById(anyLong()))
                 .willReturn(Optional.of(be));
 
         // when
-        SpaceFindDetailResponse actual = spaceService.findSpace(luther.getId(), be.getId(), pobi);
+        SpaceFindDetailResponse actual = spaceService.findSpace(luther.getId(), be.getId(), pobiEmail);
 
         // then
         assertThat(actual).usingRecursiveComparison()
@@ -205,11 +215,13 @@ class SpaceServiceTest extends ServiceTest {
     @DisplayName("공간 조회 시, spaceId에 맞는 공간이 없다면 예외를 발생시킨다.")
     void findFail() {
         // given
+        given(members.findByEmail(anyString()))
+                .willReturn(Optional.of(pobi));
         given(maps.findById(anyLong()))
                 .willReturn(Optional.of(luther));
 
         // when, then
-        assertThatThrownBy(() -> spaceService.findSpace(lutherId, noneExistingSpaceId, pobi))
+        assertThatThrownBy(() -> spaceService.findSpace(lutherId, noneExistingSpaceId, pobiEmail))
                 .isInstanceOf(NoSuchSpaceException.class);
     }
 
@@ -217,13 +229,15 @@ class SpaceServiceTest extends ServiceTest {
     @DisplayName("공간 조회 시, 공간 관리자가 아니라면 예외를 발생시킨다.")
     void findNoAuthorityOnMap() {
         // given
+        given(members.findByEmail(anyString()))
+                .willReturn(Optional.of(sakjung));
         given(maps.findById(anyLong()))
                 .willReturn(Optional.of(luther));
         given(spaces.findById(anyLong()))
                 .willReturn(Optional.of(be));
 
         // when, then
-        assertThatThrownBy(() -> spaceService.findSpace(lutherId, beId, sakjung))
+        assertThatThrownBy(() -> spaceService.findSpace(lutherId, beId, sakjungEmail))
                 .isInstanceOf(NoAuthorityOnMapException.class);
     }
 
@@ -231,11 +245,13 @@ class SpaceServiceTest extends ServiceTest {
     @DisplayName("전체 공간을 조회한다.")
     void findAll() {
         // given
+        given(members.findByEmail(anyString()))
+                .willReturn(Optional.of(pobi));
         given(maps.findById(anyLong()))
                 .willReturn(Optional.of(luther));
 
         // when
-        SpaceFindAllResponse actual = spaceService.findAllSpace(luther.getId(), pobi);
+        SpaceFindAllResponse actual = spaceService.findAllSpace(luther.getId(), pobiEmail);
 
         // then
         assertThat(actual).usingRecursiveComparison()
@@ -246,11 +262,13 @@ class SpaceServiceTest extends ServiceTest {
     @DisplayName("공간 전체 조회시, 공간 관리자가 아니라면 예외를 발생시킨다.")
     void findAllNoAuthorityOnMap() {
         // given
+        given(members.findByEmail(anyString()))
+                .willReturn(Optional.of(sakjung));
         given(maps.findById(anyLong()))
                 .willReturn(Optional.of(luther));
 
         // when, then
-        assertThatThrownBy(() -> spaceService.findAllSpace(lutherId, sakjung))
+        assertThatThrownBy(() -> spaceService.findAllSpace(lutherId, sakjungEmail))
                 .isInstanceOf(NoAuthorityOnMapException.class);
     }
 
@@ -258,6 +276,8 @@ class SpaceServiceTest extends ServiceTest {
     @DisplayName("예약자 전체 공간을 조회한다.")
     void findAllGuest() {
         // given
+        given(members.findByEmail(anyString()))
+                .willReturn(Optional.of(pobi));
         given(maps.findById(anyLong()))
                 .willReturn(Optional.of(luther));
 
@@ -273,6 +293,8 @@ class SpaceServiceTest extends ServiceTest {
     @DisplayName("공간을 수정한다.")
     void update() {
         // given, when
+        given(members.findByEmail(anyString()))
+                .willReturn(Optional.of(pobi));
         given(maps.findById(anyLong()))
                 .willReturn(Optional.of(luther));
         given(spaces.findById(anyLong()))
@@ -285,7 +307,7 @@ class SpaceServiceTest extends ServiceTest {
                 luther.getId(),
                 fe.getId(),
                 updateSpaceCreateUpdateRequest,
-                pobi));
+                pobiEmail));
 
         assertThat(be.getReservationTimeUnit()).isEqualTo(settingsRequest.getReservationTimeUnit());
         assertThat(be.getEnabledDayOfWeek()).isEqualTo(settingsRequest.getEnabledDayOfWeek());
@@ -295,6 +317,8 @@ class SpaceServiceTest extends ServiceTest {
     @DisplayName("공간 수정 요청 시, 해당 공간에 대한 권한이 없으면 수정할 수 없다.")
     void updateNoAuthorityException() {
         // given, when
+        given(members.findByEmail(anyString()))
+                .willReturn(Optional.of(sakjung));
         given(maps.findById(anyLong()))
                 .willReturn(Optional.of(luther));
         given(spaces.findById(anyLong()))
@@ -305,7 +329,7 @@ class SpaceServiceTest extends ServiceTest {
                 lutherId,
                 beId,
                 updateSpaceCreateUpdateRequest,
-                sakjung))
+                sakjungEmail))
                 .isInstanceOf(NoAuthorityOnMapException.class);
     }
 
@@ -313,6 +337,8 @@ class SpaceServiceTest extends ServiceTest {
     @DisplayName("공간 삭제 요청이 옳다면 삭제한다.")
     void deleteReservation() {
         //given
+        given(members.findByEmail(anyString()))
+                .willReturn(Optional.of(pobi));
         given(maps.findById(anyLong()))
                 .willReturn(Optional.of(luther));
         given(spaces.findById(anyLong()))
@@ -322,19 +348,21 @@ class SpaceServiceTest extends ServiceTest {
         SpaceDeleteRequest spaceDeleteRequest = new SpaceDeleteRequest(MAP_SVG);
 
         //then
-        assertDoesNotThrow(() -> spaceService.deleteSpace(luther.getId(), be.getId(), spaceDeleteRequest, pobi));
+        assertDoesNotThrow(() -> spaceService.deleteSpace(luther.getId(), be.getId(), spaceDeleteRequest, pobiEmail));
     }
 
     @Test
     @DisplayName("공간 삭제 요청 시, 해당 맵의 관리자가 아니라면 오류가 발생한다.")
     void deleteNoAuthorityException() {
         //given
+        given(members.findByEmail(anyString()))
+                .willReturn(Optional.of(sakjung));
         given(maps.findById(anyLong()))
                 .willReturn(Optional.of(luther));
         SpaceDeleteRequest spaceDeleteRequest = new SpaceDeleteRequest(MAP_SVG);
 
         //then
-        assertThatThrownBy(() -> spaceService.deleteSpace(lutherId, beId, spaceDeleteRequest, sakjung))
+        assertThatThrownBy(() -> spaceService.deleteSpace(lutherId, beId, spaceDeleteRequest, sakjungEmail))
                 .isInstanceOf(NoAuthorityOnMapException.class);
     }
 
@@ -342,6 +370,8 @@ class SpaceServiceTest extends ServiceTest {
     @DisplayName("공간 삭제 요청 시, 공간이 존재하지 않는다면 오류가 발생한다.")
     void deleteNoSuchSpaceException() {
         //given
+        given(members.findByEmail(anyString()))
+                .willReturn(Optional.of(pobi));
         given(maps.findById(anyLong()))
                 .willReturn(Optional.of(luther));
         given(spaces.findById(anyLong()))
@@ -349,7 +379,7 @@ class SpaceServiceTest extends ServiceTest {
         SpaceDeleteRequest spaceDeleteRequest = new SpaceDeleteRequest(MAP_SVG);
 
         //then
-        assertThatThrownBy(() -> spaceService.deleteSpace(lutherId, noneExistingSpaceId, spaceDeleteRequest, pobi))
+        assertThatThrownBy(() -> spaceService.deleteSpace(lutherId, noneExistingSpaceId, spaceDeleteRequest, pobiEmail))
                 .isInstanceOf(NoSuchSpaceException.class);
     }
 
@@ -357,6 +387,8 @@ class SpaceServiceTest extends ServiceTest {
     @DisplayName("공간 삭제 요청 시, 해당 공간에 예약이 존재한다면 오류가 발생한다.")
     void deleteReservationExistException() {
         //given
+        given(members.findByEmail(anyString()))
+                .willReturn(Optional.of(pobi));
         given(maps.findById(anyLong()))
                 .willReturn(Optional.of(luther));
         given(spaces.findById(anyLong()))
@@ -365,7 +397,7 @@ class SpaceServiceTest extends ServiceTest {
                 .willReturn(true);
         SpaceDeleteRequest spaceDeleteRequest = new SpaceDeleteRequest(MAP_SVG);
 
-        assertThatThrownBy(() -> spaceService.deleteSpace(lutherId, beId, spaceDeleteRequest, pobi))
+        assertThatThrownBy(() -> spaceService.deleteSpace(lutherId, beId, spaceDeleteRequest, pobiEmail))
                 .isInstanceOf(ReservationExistOnSpaceException.class);
     }
 }

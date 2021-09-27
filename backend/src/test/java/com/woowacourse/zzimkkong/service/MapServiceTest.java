@@ -11,7 +11,8 @@ import com.woowacourse.zzimkkong.dto.map.MapFindResponse;
 import com.woowacourse.zzimkkong.exception.authorization.NoAuthorityOnMapException;
 import com.woowacourse.zzimkkong.exception.map.InvalidAccessLinkException;
 import com.woowacourse.zzimkkong.exception.space.ReservationExistOnSpaceException;
-import com.woowacourse.zzimkkong.infrastructure.SharingIdGenerator;
+import com.woowacourse.zzimkkong.dto.member.LoginEmailDto;
+import com.woowacourse.zzimkkong.infrastructure.sharingid.SharingIdGenerator;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -35,6 +36,7 @@ class MapServiceTest extends ServiceTest {
     @Autowired
     private MapService mapService;
     private Member pobi;
+    private LoginEmailDto pobiEmail;
     private Map luther;
     private Map smallHouse;
     private Long lutherId;
@@ -42,6 +44,7 @@ class MapServiceTest extends ServiceTest {
     @BeforeEach
     void setUp() {
         pobi = new Member(EMAIL, PW, ORGANIZATION);
+        pobiEmail = LoginEmailDto.from(EMAIL);
         luther = new Map(1L, LUTHER_NAME, MAP_DRAWING_DATA, MAP_IMAGE_URL, pobi);
         smallHouse = new Map(2L, SMALL_HOUSE_NAME, MAP_DRAWING_DATA, MAP_IMAGE_URL, pobi);
         lutherId = luther.getId();
@@ -94,13 +97,15 @@ class MapServiceTest extends ServiceTest {
     void create() {
         //given, when
         MapCreateUpdateRequest mapCreateUpdateRequest = new MapCreateUpdateRequest(luther.getName(), luther.getMapDrawing(), MAP_SVG);
+        given(members.findByEmail(anyString()))
+                .willReturn(Optional.of(pobi));
         given(maps.save(any(Map.class)))
                 .willReturn(luther);
         given(storageUploader.upload(anyString(), any(File.class)))
                 .willReturn(MAP_IMAGE_URL);
 
         //then
-        MapCreateResponse mapCreateResponse = mapService.saveMap(mapCreateUpdateRequest, pobi);
+        MapCreateResponse mapCreateResponse = mapService.saveMap(mapCreateUpdateRequest, pobiEmail);
         assertThat(mapCreateResponse.getId()).isEqualTo(luther.getId());
     }
 
@@ -108,11 +113,13 @@ class MapServiceTest extends ServiceTest {
     @DisplayName("맵 조회 요청 시, mapId에 해당하는 맵을 조회한다.")
     void find() {
         //given
+        given(members.findByEmail(anyString()))
+                .willReturn(Optional.of(pobi));
         given(maps.findById(anyLong()))
                 .willReturn(Optional.of(luther));
 
         //when
-        MapFindResponse mapFindResponse = mapService.findMap(luther.getId(), pobi);
+        MapFindResponse mapFindResponse = mapService.findMap(luther.getId(), pobiEmail);
 
         //then
         assertThat(mapFindResponse)
@@ -125,11 +132,13 @@ class MapServiceTest extends ServiceTest {
     void findAll() {
         //given
         List<Map> expectedMaps = List.of(luther, smallHouse);
+        given(members.findByEmail(anyString()))
+                .willReturn(Optional.of(pobi));
         given(maps.findAllByMember(any(Member.class)))
                 .willReturn(expectedMaps);
 
         //when
-        MapFindAllResponse mapFindAllResponse = mapService.findAllMaps(pobi);
+        MapFindAllResponse mapFindAllResponse = mapService.findAllMaps(pobiEmail);
 
         //then
         assertThat(mapFindAllResponse).usingRecursiveComparison()
@@ -143,27 +152,32 @@ class MapServiceTest extends ServiceTest {
     void update() {
         //given
         MapCreateUpdateRequest mapCreateUpdateRequest = new MapCreateUpdateRequest("이름을 바꿔요", luther.getMapDrawing(), MAP_SVG);
+        given(members.findByEmail(anyString()))
+                .willReturn(Optional.of(pobi));
         given(maps.findById(anyLong()))
                 .willReturn(Optional.of(luther));
         given(storageUploader.upload(anyString(), any(File.class)))
                 .willReturn(MAP_IMAGE_URL);
 
         //when, then
-        assertDoesNotThrow(() -> mapService.updateMap(luther.getId(), mapCreateUpdateRequest, pobi));
+        assertDoesNotThrow(() -> mapService.updateMap(luther.getId(), mapCreateUpdateRequest, pobiEmail));
     }
 
     @Test
     @DisplayName("권한이 없는 관리자가 맵을 수정하려고 할 경우 예외가 발생한다.")
     void updateManagerException() {
         //given
-        Member anotherMember = new Member("sally@email.com", "password", "organization");
+        LoginEmailDto anotherEmail = LoginEmailDto.from(NEW_EMAIL);
+        Member anotherMember = new Member(NEW_EMAIL, PW, ORGANIZATION);
         MapCreateUpdateRequest mapCreateUpdateRequest = new MapCreateUpdateRequest("이름을 바꿔요", luther.getMapDrawing(), MAP_SVG);
 
+        given(members.findByEmail(anyString()))
+                .willReturn(Optional.of(anotherMember));
         given(maps.findById(anyLong()))
                 .willReturn(Optional.of(luther));
 
         // when, then
-        assertThatThrownBy(() -> mapService.updateMap(lutherId, mapCreateUpdateRequest, anotherMember))
+        assertThatThrownBy(() -> mapService.updateMap(lutherId, mapCreateUpdateRequest, anotherEmail))
                 .isInstanceOf(NoAuthorityOnMapException.class);
     }
 
@@ -171,26 +185,30 @@ class MapServiceTest extends ServiceTest {
     @DisplayName("맵 삭제 요청 시, 이후에 존재하는 예약이 없다면 삭제한다.")
     void delete() {
         //given
+        given(members.findByEmail(anyString()))
+                .willReturn(Optional.of(pobi));
         given(maps.findById(anyLong()))
                 .willReturn(Optional.of(luther));
         given(reservations.existsBySpaceIdAndEndTimeAfter(anyLong(), any(LocalDateTime.class)))
                 .willReturn(false);
 
         //when, then
-        assertDoesNotThrow(() -> mapService.deleteMap(luther.getId(), pobi));
+        assertDoesNotThrow(() -> mapService.deleteMap(luther.getId(), pobiEmail));
     }
 
     @Test
     @DisplayName("맵 삭제 요청 시, 이후에 존재하는 예약이 있다면 예외가 발생한다.")
     void deleteExistReservationException() {
         //given
+        given(members.findByEmail(anyString()))
+                .willReturn(Optional.of(pobi));
         given(maps.findById(anyLong()))
                 .willReturn(Optional.of(luther));
         given(reservations.existsBySpaceIdAndEndTimeAfter(anyLong(), any(LocalDateTime.class)))
                 .willReturn(true);
 
         //when, then
-        assertThatThrownBy(() -> mapService.deleteMap(lutherId, pobi))
+        assertThatThrownBy(() -> mapService.deleteMap(lutherId, pobiEmail))
                 .isInstanceOf(ReservationExistOnSpaceException.class);
     }
 
