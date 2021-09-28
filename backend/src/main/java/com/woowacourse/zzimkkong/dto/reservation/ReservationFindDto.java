@@ -1,6 +1,6 @@
 package com.woowacourse.zzimkkong.dto.reservation;
 
-import com.woowacourse.zzimkkong.domain.Member;
+import com.woowacourse.zzimkkong.dto.member.LoginEmailDto;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -15,8 +15,8 @@ public class ReservationFindDto extends ReservationFindAllDto {
             final Long mapId,
             final Long spaceId,
             final LocalDate date,
-            final Member manager) {
-        super(mapId, date, manager);
+            final LoginEmailDto loginEmailDto) {
+        super(mapId, date, loginEmailDto);
         this.spaceId = spaceId;
     }
 
@@ -24,14 +24,14 @@ public class ReservationFindDto extends ReservationFindAllDto {
             final Long mapId,
             final Long spaceId,
             final LocalDate date) {
-        return new ReservationFindDto(mapId, spaceId, date, new Member());
+        return new ReservationFindDto(mapId, spaceId, date, new LoginEmailDto());
     }
 
     public static ReservationFindDto of(
             final Long mapId,
             final Long spaceId,
             final LocalDate date,
-            final Member manager) {
-        return new ReservationFindDto(mapId, spaceId, date, manager);
+            final LoginEmailDto loginEmailDto) {
+        return new ReservationFindDto(mapId, spaceId, date, loginEmailDto);
     }
 }

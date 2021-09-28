@@ -1,7 +1,7 @@
 package com.woowacourse.zzimkkong.config;
 
-import com.woowacourse.zzimkkong.infrastructure.AuthenticationPrincipalArgumentResolver;
-import com.woowacourse.zzimkkong.infrastructure.LoginInterceptor;
+import com.woowacourse.zzimkkong.infrastructure.auth.AuthenticationPrincipalArgumentResolver;
+import com.woowacourse.zzimkkong.infrastructure.auth.LoginInterceptor;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;

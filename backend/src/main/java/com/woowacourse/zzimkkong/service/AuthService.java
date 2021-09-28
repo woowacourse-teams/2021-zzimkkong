@@ -9,7 +9,7 @@ import com.woowacourse.zzimkkong.exception.authorization.OauthProviderMismatchEx
 import com.woowacourse.zzimkkong.exception.member.NoSuchMemberException;
 import com.woowacourse.zzimkkong.exception.member.NoSuchOAuthMemberException;
 import com.woowacourse.zzimkkong.exception.member.PasswordMismatchException;
-import com.woowacourse.zzimkkong.infrastructure.JwtUtils;
+import com.woowacourse.zzimkkong.infrastructure.auth.JwtUtils;
 import com.woowacourse.zzimkkong.infrastructure.oauth.OauthHandler;
 import com.woowacourse.zzimkkong.repository.MemberRepository;
 import org.springframework.security.crypto.password.PasswordEncoder;
