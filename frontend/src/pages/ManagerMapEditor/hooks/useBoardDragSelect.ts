@@ -47,12 +47,9 @@ const useBoardDragSelect = ({
 
     mapElements.forEach((element) => {
       if (element.ref.current) {
-        const hasIntersection = boardRef.current?.checkIntersection(
-          element.ref?.current,
-          selectRectBBox
-        );
+        const hasEnclosure = boardRef.current?.checkEnclosure(element.ref?.current, selectRectBBox);
 
-        if (hasIntersection) {
+        if (hasEnclosure) {
           selections.push(element);
         }
       }
