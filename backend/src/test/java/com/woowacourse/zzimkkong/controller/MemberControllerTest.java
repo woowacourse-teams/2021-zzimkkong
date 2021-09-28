@@ -1,7 +1,6 @@
 package com.woowacourse.zzimkkong.controller;
 
 import com.woowacourse.zzimkkong.domain.Member;
-import com.woowacourse.zzimkkong.domain.OauthProvider;
 import com.woowacourse.zzimkkong.domain.Preset;
 import com.woowacourse.zzimkkong.domain.Setting;
 import com.woowacourse.zzimkkong.dto.ErrorResponse;
@@ -200,16 +199,6 @@ class MemberControllerTest extends AcceptanceTest {
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body(memberSaveRequest)
                 .when().post("/api/managers")
-                .then().log().all().extract();
-    }
-
-    static ExtractableResponse<Response> getReadyToJoin(final OauthProvider oauthProvider, final String code) {
-        return RestAssured
-                .given(getRequestSpecification()).log().all()
-                .accept("application/json")
-                .filter(document("member/get/oauth/" + oauthProvider.name(), getRequestPreprocessor(), getResponsePreprocessor()))
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .when().get("/api/managers/" + oauthProvider + "?code=" + code)
                 .then().log().all().extract();
     }
 
