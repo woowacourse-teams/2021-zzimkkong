@@ -10,13 +10,10 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 
-@Controller
-@RequestMapping("/admin")
+@RestController
+@RequestMapping("/admin/api")
 public class AdminController {
     private final AdminService adminService;
 
@@ -24,56 +21,31 @@ public class AdminController {
         this.adminService = adminService;
     }
 
-    @GetMapping("/login")
-    public String loginPage() {
-        return "login";
-    }
-
-    @GetMapping("/members")
-    public String memberPage() {
-        return "member";
-    }
-
-    @GetMapping("/maps")
-    public String mapPage() {
-        return "map";
-    }
-
-    @GetMapping("/spaces")
-    public String spacePage() {
-        return "space";
-    }
-
-    @GetMapping("/reservations")
-    public String reservationPage() {
-        return "reservation";
-    }
-
-    @PostMapping("/api/login")
+    @PostMapping("/login")
     public ResponseEntity<TokenResponse> login(@RequestParam String id, @RequestParam String password) {
         TokenResponse tokenResponse = adminService.login(id, password);
         return ResponseEntity.ok(tokenResponse);
     }
 
-    @GetMapping("/api/members")
+    @GetMapping("/members")
     public ResponseEntity<MembersResponse> members(@PageableDefault(value = 20) Pageable pageable) {
         MembersResponse members = adminService.findMembers(pageable);
         return ResponseEntity.ok(members);
     }
 
-    @GetMapping("/api/maps")
+    @GetMapping("/maps")
     public ResponseEntity<MapsResponse> maps(@PageableDefault(value = 20) Pageable pageable) {
         MapsResponse maps = adminService.findMaps(pageable);
         return ResponseEntity.ok(maps);
     }
 
-    @GetMapping("/api/spaces")
+    @GetMapping("/spaces")
     public ResponseEntity<SpacesResponse> spaces(@PageableDefault(value = 20) Pageable pageable) {
         SpacesResponse spaces = adminService.findSpaces(pageable);
         return ResponseEntity.ok(spaces);
     }
 
-    @GetMapping("/api/reservations")
+    @GetMapping("/reservations")
     public ResponseEntity<ReservationsResponse> reservations(@PageableDefault(value = 20) Pageable pageable) {
         ReservationsResponse reservations = adminService.findReservations(pageable);
         return ResponseEntity.ok(reservations);
