@@ -7,7 +7,7 @@ import com.woowacourse.zzimkkong.dto.member.MemberFindResponse;
 import com.woowacourse.zzimkkong.dto.reservation.ReservationResponse;
 import com.woowacourse.zzimkkong.dto.space.SpaceFindDetailWithIdResponse;
 import com.woowacourse.zzimkkong.exception.member.PasswordMismatchException;
-import com.woowacourse.zzimkkong.infrastructure.SharingIdGenerator;
+import com.woowacourse.zzimkkong.infrastructure.sharingid.SharingIdGenerator;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
