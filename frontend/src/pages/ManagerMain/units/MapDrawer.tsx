@@ -12,22 +12,22 @@ interface Props {
   organization: string;
   maps: MapItemResponse[];
   open: boolean;
-  onClose: () => void;
+  onCloseDrawer: () => void;
   onSelectMap: (mapId: number, mapName: string) => void;
   onDeleteMap: (mapId: number) => void;
 }
 
 const MapDrawer = ({
   selectedMapId,
-  open,
-  onClose,
-  maps,
   organization,
+  maps,
+  open,
+  onCloseDrawer,
   onSelectMap,
   onDeleteMap,
 }: Props): JSX.Element => {
   return (
-    <Drawer open={open} placement="left" maxwidth="450px" onClose={onClose}>
+    <Drawer open={open} placement="left" maxwidth="450px" onClose={onCloseDrawer}>
       <Drawer.Inner>
         <Drawer.Header>
           <Drawer.HeaderText>{organization}</Drawer.HeaderText>

@@ -246,7 +246,7 @@ const ManagerMain = (): JSX.Element => {
           organization={organization}
           maps={maps}
           open={open}
-          onClose={() => setOpen(false)}
+          onCloseDrawer={handleCloseDrawer}
           onSelectMap={handleSelectMap}
           onDeleteMap={handleDeleteMap}
         />
