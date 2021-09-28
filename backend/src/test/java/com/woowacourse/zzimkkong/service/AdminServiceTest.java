@@ -4,6 +4,7 @@ import com.woowacourse.zzimkkong.domain.*;
 import com.woowacourse.zzimkkong.dto.admin.*;
 import com.woowacourse.zzimkkong.dto.map.MapFindResponse;
 import com.woowacourse.zzimkkong.dto.member.MemberFindResponse;
+import com.woowacourse.zzimkkong.dto.member.TokenResponse;
 import com.woowacourse.zzimkkong.dto.reservation.ReservationResponse;
 import com.woowacourse.zzimkkong.dto.space.SpaceFindDetailWithIdResponse;
 import com.woowacourse.zzimkkong.exception.member.PasswordMismatchException;
@@ -41,13 +42,22 @@ class AdminServiceTest extends ServiceTest {
     }
 
     @Test
+    @DisplayName("어드민 관리자가 로그인하면 토큰을 반환한다.")
+    void login() {
+        //given, when
+        TokenResponse tokenResponse = adminService.login("zzimkkong", "zzimkkong1!");
+
+        //then
+        assertThat(tokenResponse).isNotNull();
+    }
+
+    @Test
     @DisplayName("어드민 관리자 로그인 아이디, 비밀번호가 옳지 않으면 에러가 발생한다.")
     void loginException() {
         assertThatThrownBy(() -> adminService.login("zzimkkong", "wrong"))
                 .isInstanceOf(PasswordMismatchException.class);
         assertThatThrownBy(() -> adminService.login("wrong", "zzimkkong1!"))
                 .isInstanceOf(PasswordMismatchException.class);
-
     }
 
     @Test

@@ -12,17 +12,27 @@ function MemberPage() {
 
 function getMembers(pageNumber) {
     page = pageNumber;
-    fetch(memberPage.getMembers + "?page=" + pageNumber).then(res => res.json())
-        .then(function (data) {
-            const memberList = document.querySelector(".members-row");
-            memberList.innerHTML += data.members.map(member =>
-                `<tr class="member">
+    fetch(memberPage.getMembers + "?page=" + pageNumber, {
+        headers: {
+            Authorization: window.localStorage.getItem('accessToken')
+        }
+    }).then(function (response) {
+        if (response.status === 401) {
+            alert('관리자만 사용할 수 있습니다.');
+            location.href = '/';
+        } else {
+            response.json().then(data => {
+                const memberList = document.querySelector(".members-row");
+                memberList.innerHTML += data.members.map(member =>
+                    `<tr class="member">
                         <th scope="row">${member.id}</th>
                         <td>${member.email}</td>
                         <td>${member.organization}</td>
                     </tr>`
-            ).join("");
-        });
+                ).join("");
+            });
+        }
+    });
 }
 
 MemberPage.prototype.initMemberPage = function () {

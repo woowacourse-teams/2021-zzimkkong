@@ -5,6 +5,7 @@ import com.woowacourse.zzimkkong.dto.admin.*;
 import com.woowacourse.zzimkkong.dto.map.MapCreateUpdateRequest;
 import com.woowacourse.zzimkkong.dto.map.MapFindResponse;
 import com.woowacourse.zzimkkong.dto.member.MemberFindResponse;
+import com.woowacourse.zzimkkong.dto.member.TokenResponse;
 import com.woowacourse.zzimkkong.dto.reservation.ReservationCreateUpdateRequest;
 import com.woowacourse.zzimkkong.dto.reservation.ReservationCreateUpdateWithPasswordRequest;
 import com.woowacourse.zzimkkong.dto.reservation.ReservationFindResponse;
@@ -13,9 +14,11 @@ import com.woowacourse.zzimkkong.dto.space.SettingsRequest;
 import com.woowacourse.zzimkkong.dto.space.SpaceCreateResponse;
 import com.woowacourse.zzimkkong.dto.space.SpaceCreateUpdateRequest;
 import com.woowacourse.zzimkkong.dto.space.SpaceFindDetailWithIdResponse;
+import com.woowacourse.zzimkkong.infrastructure.auth.AuthorizationExtractor;
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
@@ -32,7 +35,6 @@ import static com.woowacourse.zzimkkong.controller.MapControllerTest.saveMap;
 import static org.assertj.core.api.Assertions.assertThat;
 
 class AdminControllerTest extends AcceptanceTest {
-
     private static final Member POBI = new Member(memberSaveRequest.getEmail(), memberSaveRequest.getPassword(), memberSaveRequest.getOrganization());
     private static final Map LUTHER = new Map(LUTHER_NAME, MAP_DRAWING_DATA, MAP_IMAGE_URL, POBI);
     private static final Setting BE_SETTING = Setting.builder()
@@ -54,13 +56,20 @@ class AdminControllerTest extends AcceptanceTest {
             .setting(BE_SETTING)
             .build();
 
+    private static String token;
+
+    @BeforeEach
+    void setUp() {
+        postLogin();
+    }
+
     @Test
     @DisplayName("올바른 로그인이 들어오면 200 ok를 반환한다.")
     void postLogin() {
         // given, when
-        String id = "zzimkkong";
-        String password = "zzimkkong1!";
-        ExtractableResponse<Response> response = login(id, password);
+        ExtractableResponse<Response> response = login("zzimkkong", "zzimkkong1!");
+        TokenResponse tokenResponse = response.as(TokenResponse.class);
+        token = tokenResponse.getAccessToken();
 
         // then
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
@@ -185,6 +194,7 @@ class AdminControllerTest extends AcceptanceTest {
                 .given(getRequestSpecification()).log().all()
                 .accept("application/json")
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .header("Authorization", AuthorizationExtractor.AUTHENTICATION_TYPE + " " + token)
                 .when().get(api)
                 .then().log().all().extract();
     }

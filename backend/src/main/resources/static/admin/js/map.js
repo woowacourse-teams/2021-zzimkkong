@@ -12,19 +12,29 @@ function MapPage() {
 
 function getMaps(pageNumber) {
     page = pageNumber;
-    fetch(mapPage.getMaps + "?page=" + pageNumber).then(res => res.json())
-        .then(function (data) {
-            const mapList = document.querySelector(".maps-row");
-            mapList.innerHTML += data.maps.map(map =>
-                `<tr class="map">
+    fetch(mapPage.getMaps + "?page=" + pageNumber, {
+        headers: {
+            Authorization: window.localStorage.getItem('accessToken')
+        }
+    }).then(function (response) {
+        if (response.status === 401) {
+            alert('관리자만 사용할 수 있습니다.');
+            location.href = '/';
+        } else {
+            response.json().then(data => {
+                const mapList = document.querySelector(".maps-row");
+                mapList.innerHTML += data.maps.map(map =>
+                    `<tr class="map">
                         <th scope="row">${map.mapId}</th>
                         <td>${map.mapName}</td>
                         <td>${map.mapImageUrl}</td>
                         <td>${map.sharingMapId}</td>
                         <td>${map.managerEmail}</td>
                     </tr>`
-            ).join("");
-        });
+                ).join("");
+            });
+        }
+    });
 }
 
 MapPage.prototype.initMapPage = function () {

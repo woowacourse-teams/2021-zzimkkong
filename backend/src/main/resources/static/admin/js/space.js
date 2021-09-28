@@ -12,11 +12,19 @@ function SpacePage() {
 
 function getSpaces(pageNumber) {
     page = pageNumber;
-    fetch(spacePage.getSpaces + "?page=" + pageNumber).then(res => res.json())
-        .then(function (data) {
-            const spaceList = document.querySelector(".spaces-row");
-            spaceList.innerHTML += data.spaces.map(space =>
-                `<tr class="space">
+    fetch(spacePage.getSpaces + "?page=" + pageNumber, {
+        headers: {
+            Authorization: window.localStorage.getItem('accessToken')
+        }
+    }).then(function (response) {
+        if (response.status === 401) {
+            alert('관리자만 사용할 수 있습니다.');
+            location.href = '/';
+        } else {
+            response.json().then(data => {
+                const spaceList = document.querySelector(".spaces-row");
+                spaceList.innerHTML += data.spaces.map(space =>
+                    `<tr class="space">
                         <th scope="row">${space.id}</th>
                         <td>${space.name}</td>
                         <td>${space.color}</td>
@@ -32,8 +40,10 @@ function getSpaces(pageNumber) {
                         매니저id: ${space.managerId}
                         </td>
                     </tr>`
-            ).join("");
-        });
+                ).join("");
+            });
+        }
+    });
 }
 
 SpacePage.prototype.initSpacePage = function () {

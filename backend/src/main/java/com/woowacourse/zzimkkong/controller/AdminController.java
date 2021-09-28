@@ -4,8 +4,7 @@ import com.woowacourse.zzimkkong.dto.admin.MapsResponse;
 import com.woowacourse.zzimkkong.dto.admin.MembersResponse;
 import com.woowacourse.zzimkkong.dto.admin.ReservationsResponse;
 import com.woowacourse.zzimkkong.dto.admin.SpacesResponse;
-import com.woowacourse.zzimkkong.dto.reservation.ReservationResponse;
-import com.woowacourse.zzimkkong.dto.reservation.ReservationSpaceResponse;
+import com.woowacourse.zzimkkong.dto.member.TokenResponse;
 import com.woowacourse.zzimkkong.service.AdminService;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
@@ -51,9 +50,9 @@ public class AdminController {
     }
 
     @PostMapping("/api/login")
-    public ResponseEntity<Void> login(@RequestParam String id, @RequestParam String password) {
-        adminService.login(id, password);
-        return ResponseEntity.ok().build();
+    public ResponseEntity<TokenResponse> login(@RequestParam String id, @RequestParam String password) {
+        TokenResponse tokenResponse = adminService.login(id, password);
+        return ResponseEntity.ok(tokenResponse);
     }
 
     @GetMapping("/api/members")

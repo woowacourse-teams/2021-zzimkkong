@@ -19,9 +19,10 @@ document.querySelector("#login").addEventListener("click", function () {
         }
     }).then(function (response) {
         if (response.status === 200) {
+            response.json().then(data => window.localStorage.setItem('accessToken', 'Bearer ' + data.accessToken));
             location.href = '/admin/members';
         } else {
-            alert('관리자만 사용할 수 있습니다.');
+            alert('아이디/비밀번호가 올바르지 않습니다.');
         }
     });
 });

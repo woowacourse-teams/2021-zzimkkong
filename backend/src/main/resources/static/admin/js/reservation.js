@@ -12,11 +12,19 @@ function ReservationPage() {
 
 function getReservations(pageNumber) {
     page = pageNumber;
-    fetch(reservationPage.getReservations + "?page=" + pageNumber).then(res => res.json())
-        .then(function (data) {
-            const reservationList = document.querySelector(".reservations-row");
-            reservationList.innerHTML += data.reservations.map(reservation =>
-                `<tr class="reservation">
+    fetch(reservationPage.getReservations + "?page=" + pageNumber, {
+        headers: {
+            Authorization: window.localStorage.getItem('accessToken')
+        }
+    }).then(function (response) {
+        if (response.status === 401) {
+            alert('관리자만 사용할 수 있습니다.');
+            location.href = '/';
+        } else {
+            response.json().then(data => {
+                const reservationList = document.querySelector(".reservations-row");
+                reservationList.innerHTML += data.reservations.map(reservation =>
+                    `<tr class="reservation">
                         <th scope="row">${reservation.id}</th>
                         <td>${reservation.startDateTime}</td>
                         <td>${reservation.endDateTime}</td>
@@ -28,8 +36,10 @@ function getReservations(pageNumber) {
                         맵관리자id: ${reservation.managerId}
                         </td>
                     </tr>`
-            ).join("");
-        });
+                ).join("");
+            });
+        }
+    });
 }
 
 ReservationPage.prototype.initReservationPage = function () {

@@ -3,9 +3,11 @@ package com.woowacourse.zzimkkong.service;
 import com.woowacourse.zzimkkong.dto.admin.*;
 import com.woowacourse.zzimkkong.dto.map.MapFindResponse;
 import com.woowacourse.zzimkkong.dto.member.MemberFindResponse;
+import com.woowacourse.zzimkkong.dto.member.TokenResponse;
 import com.woowacourse.zzimkkong.dto.reservation.ReservationResponse;
 import com.woowacourse.zzimkkong.dto.space.SpaceFindDetailWithIdResponse;
 import com.woowacourse.zzimkkong.exception.member.PasswordMismatchException;
+import com.woowacourse.zzimkkong.infrastructure.auth.JwtUtils;
 import com.woowacourse.zzimkkong.infrastructure.sharingid.SharingIdGenerator;
 import com.woowacourse.zzimkkong.repository.MapRepository;
 import com.woowacourse.zzimkkong.repository.MemberRepository;
@@ -16,23 +18,28 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Map;
+
 @Service
 @Transactional(readOnly = true)
 public class AdminService {
     private static final String ADMIN_ID = "zzimkkong";
     private static final String ADMIN_PWD = "zzimkkong1!";
 
+    private final JwtUtils jwtUtils;
     private final MemberRepository members;
     private final MapRepository maps;
     private final SpaceRepository spaces;
     private final ReservationRepository reservations;
     private final SharingIdGenerator sharingIdGenerator;
 
-    public AdminService(final MemberRepository members,
+    public AdminService(final JwtUtils jwtUtils,
+                        final MemberRepository members,
                         final MapRepository maps,
                         final SpaceRepository spaces,
                         final ReservationRepository reservations,
                         final SharingIdGenerator sharingIdGenerator) {
+        this.jwtUtils = jwtUtils;
         this.members = members;
         this.maps = maps;
         this.spaces = spaces;
@@ -40,10 +47,21 @@ public class AdminService {
         this.sharingIdGenerator = sharingIdGenerator;
     }
 
-    public void login(final String id, final String password) {
+    public TokenResponse login(final String id, final String password) {
         if (!id.equals(ADMIN_ID) || !password.equals(ADMIN_PWD)) {
             throw new PasswordMismatchException();
         }
+        String token = issueToken(id);
+
+        return TokenResponse.from(token);
+    }
+
+    private String issueToken(final String id) {
+        Map<String, Object> payload = JwtUtils.payloadBuilder()
+                .setSubject(id)
+                .build();
+
+        return jwtUtils.createToken(payload);
     }
 
     public MembersResponse findMembers(Pageable pageable) {

@@ -27,7 +27,8 @@ public class AuthenticationPrincipalConfig implements WebMvcConfigurer {
     public void addInterceptors(InterceptorRegistry registry) {
         List<String> pathsToAdd = List.of(
                 "/api/managers/token",
-                "/api/managers/**"
+                "/api/managers/**",
+                "/admin/api/**"
         );
 
         List<String> pathsToExclude = List.of(
@@ -44,7 +45,11 @@ public class AuthenticationPrincipalConfig implements WebMvcConfigurer {
                 "/api/managers/GOOGLE/login/token",
                 "/api/managers/GITHUB/login/token",
                 "/api/managers/google/login/token",
-                "/api/managers/github/login/token"
+                "/api/managers/github/login/token",
+
+                //admin login
+                "/admin/login/",
+                "/admin/api/login"
         );
 
         registry.addInterceptor(loginInterceptor)
