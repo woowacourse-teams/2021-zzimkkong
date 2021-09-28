@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useRef, useState } from 'react';
 import { GripPoint, MapElement } from 'types/common';
 import useBoardDragSelect from './useBoardDragSelect';
 import useBoardSingleSelect from './useBoardSingleSelect';
@@ -6,23 +6,26 @@ import useBoardSingleSelect from './useBoardSingleSelect';
 interface Props {
   mapElements: MapElement[];
   boardRef: React.RefObject<SVGSVGElement>;
-  selectRectRef: React.RefObject<SVGRectElement>;
 }
 
 const useBoardSelect = ({
   mapElements,
   boardRef,
-  selectRectRef,
 }: Props): {
   dragSelectRect: typeof dragSelectRect;
   gripPoints: GripPoint[];
   selectedMapElements: MapElement[];
+  selectedGroupBBox: DOMRect | null;
+  selectRectRef: React.RefObject<SVGRectElement>;
+  selectedMapElementsGroupRef: React.RefObject<SVGGElement>;
   selectMapElement: (mapElement: MapElement) => void;
   deselectMapElements: () => void;
   onSelectDragStart: (event: React.MouseEvent<SVGSVGElement>) => void;
   onSelectDrag: (event: React.MouseEvent<SVGSVGElement>) => void;
   onSelectDragEnd: () => void;
 } => {
+  const selectRectRef = useRef<SVGRectElement>(null);
+
   const [gripPoints, setGripPoints] = useState<GripPoint[]>([]);
   const [selectedMapElements, setSelectedMapElements] = useState<MapElement[]>([]);
   const nextGripPointId = Math.max(...gripPoints.map(({ id }) => id), 1) + 1;
@@ -38,11 +41,19 @@ const useBoardSelect = ({
     setSelectedMapElements,
   });
 
-  const { dragSelectRect, onSelectDragStart, onSelectDrag, onSelectDragEnd } = useBoardDragSelect({
+  const {
+    dragSelectRect,
+    selectedGroupBBox,
+    selectedMapElementsGroupRef,
+    onSelectDragStart,
+    onSelectDrag,
+    onSelectDragEnd,
+  } = useBoardDragSelect({
     mapElements,
     boardRef,
     selectRectRef,
-    setSelectedMapElements,
+    selectedMapElementsState: [selectedMapElements, setSelectedMapElements],
+    selectSingleMapElement: selectMapElement,
     deselectMapElements,
   });
 
@@ -50,6 +61,9 @@ const useBoardSelect = ({
     dragSelectRect,
     gripPoints,
     selectedMapElements,
+    selectedGroupBBox,
+    selectRectRef,
+    selectedMapElementsGroupRef,
     deselectMapElements,
     selectMapElement,
     onSelectDragStart,

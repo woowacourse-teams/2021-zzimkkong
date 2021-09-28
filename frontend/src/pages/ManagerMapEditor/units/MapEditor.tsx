@@ -1,4 +1,5 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react';
+import { theme } from 'App.styles';
 import { ReactComponent as EraserIcon } from 'assets/svg/eraser.svg';
 import { ReactComponent as LineIcon } from 'assets/svg/line.svg';
 import { ReactComponent as MoveIcon } from 'assets/svg/move.svg';
@@ -65,7 +66,6 @@ const MapCreateEditor = ({
   boardState: [{ width, height }, onChangeBoard],
 }: Props): JSX.Element => {
   const boardRef = useRef<SVGSVGElement>(null);
-  const selectRectRef = useRef<SVGRectElement>(null);
 
   const [mode, setMode] = useState(MapEditorMode.Select);
   const [color, setColor] = useState<Color>(PALETTE.BLACK[400]);
@@ -90,12 +90,15 @@ const MapCreateEditor = ({
     dragSelectRect,
     gripPoints,
     selectedMapElements,
+    selectedGroupBBox,
+    selectRectRef,
+    selectedMapElementsGroupRef,
     selectMapElement,
     deselectMapElements,
     onSelectDragStart,
     onSelectDrag,
     onSelectDragEnd,
-  } = useBoardSelect({ mapElements, boardRef, selectRectRef });
+  } = useBoardSelect({ mapElements, boardRef });
   const { isMoving, onDragStart, onDrag, onDragEnd, onMouseOut } = useBoardMove(
     [boardStatus, setBoardStatus],
     isBoardDraggable
@@ -345,8 +348,7 @@ const MapCreateEditor = ({
 
             return null;
           })}
-
-          <g pointerEvents="none">
+          <g pointerEvents="none" ref={selectedMapElementsGroupRef}>
             {selectedMapElements.map((element) => {
               if (element.type === MapElementType.Polyline) {
                 return (
@@ -354,7 +356,7 @@ const MapCreateEditor = ({
                     key={`${MapElementType.Polyline}-${element.id}`}
                     id={`${MapElementType.Polyline}-${element.id}`}
                     points={element.points.join(' ')}
-                    stroke="#ff0000"
+                    stroke={element.stroke}
                     strokeWidth={EDITOR.STROKE_WIDTH}
                     strokeLinecap="round"
                     cursor={isMapElementClickable ? 'pointer' : 'default'}
@@ -378,7 +380,7 @@ const MapCreateEditor = ({
                     y={element?.y}
                     width={element?.width}
                     height={element?.height}
-                    stroke="#ff0000"
+                    stroke={element.stroke}
                     fill="none"
                     strokeWidth={EDITOR.STROKE_WIDTH}
                     strokeLinecap="round"
@@ -397,6 +399,18 @@ const MapCreateEditor = ({
               return null;
             })}
           </g>
+
+          {selectedGroupBBox && (
+            <rect
+              x={selectedGroupBBox.x}
+              y={selectedGroupBBox.y}
+              width={selectedGroupBBox.width}
+              height={selectedGroupBBox.height}
+              stroke={theme.primary[500]}
+              strokeWidth={3}
+              fill="none"
+            />
+          )}
 
           {mode === MapEditorMode.Select &&
             gripPoints.map(({ x, y }, index) => (
