@@ -8,15 +8,20 @@ function LoginPage() {
     this.postLogin = window.location.origin + "/admin/api/login";
 }
 
-document.querySelector("#login").addEventListener("click", function () {
-    let id = document.querySelector("#inputId").value;
-    let password = document.querySelector("#inputPassword").value;
+document.querySelector("#login-form").addEventListener("submit", function (event ) {
+    event.preventDefault();
+    const id = document.querySelector("#inputId").value;
+    const password = document.querySelector("#inputPassword").value;
 
-    fetch(`${loginPage.postLogin}?id=${id}&password=${password}`, {
+    fetch(loginPage.postLogin, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
-        }
+        },
+        body: JSON.stringify({
+            'email': id,
+            'password': password
+        })
     }).then(function (response) {
         if (response.status === 200) {
             response.json().then(data => window.localStorage.setItem('accessToken', 'Bearer ' + data.accessToken));

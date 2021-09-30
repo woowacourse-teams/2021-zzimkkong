@@ -4,6 +4,7 @@ import com.woowacourse.zzimkkong.dto.admin.MapsResponse;
 import com.woowacourse.zzimkkong.dto.admin.MembersResponse;
 import com.woowacourse.zzimkkong.dto.admin.ReservationsResponse;
 import com.woowacourse.zzimkkong.dto.admin.SpacesResponse;
+import com.woowacourse.zzimkkong.dto.member.LoginRequest;
 import com.woowacourse.zzimkkong.dto.member.TokenResponse;
 import com.woowacourse.zzimkkong.service.AdminService;
 import org.springframework.data.domain.Pageable;
@@ -11,6 +12,8 @@ import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
+
+import javax.validation.Valid;
 
 @RestController
 @RequestMapping("/admin/api")
@@ -22,8 +25,8 @@ public class AdminController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<TokenResponse> login(@RequestParam String id, @RequestParam String password) {
-        TokenResponse tokenResponse = adminService.login(id, password);
+    public ResponseEntity<TokenResponse> login(@RequestBody final LoginRequest loginRequest) {
+        TokenResponse tokenResponse = adminService.login(loginRequest.getEmail(), loginRequest.getPassword());
         return ResponseEntity.ok(tokenResponse);
     }
 
