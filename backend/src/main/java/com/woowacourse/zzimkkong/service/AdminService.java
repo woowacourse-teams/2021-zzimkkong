@@ -13,6 +13,7 @@ import com.woowacourse.zzimkkong.repository.MapRepository;
 import com.woowacourse.zzimkkong.repository.MemberRepository;
 import com.woowacourse.zzimkkong.repository.ReservationRepository;
 import com.woowacourse.zzimkkong.repository.SpaceRepository;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -23,8 +24,9 @@ import java.util.Map;
 @Service
 @Transactional(readOnly = true)
 public class AdminService {
-    private static final String ADMIN_ID = "zzimkkong";
-    private static final String ADMIN_PWD = "zzimkkong1!";
+
+    private final String id;
+    private final String pwd;
 
     private final JwtUtils jwtUtils;
     private final MemberRepository members;
@@ -33,12 +35,16 @@ public class AdminService {
     private final ReservationRepository reservations;
     private final SharingIdGenerator sharingIdGenerator;
 
-    public AdminService(final JwtUtils jwtUtils,
+    public AdminService(@Value("${admin.id}") String adminId,
+                        @Value("${admin.pwd}") String adminPwd,
+                        final JwtUtils jwtUtils,
                         final MemberRepository members,
                         final MapRepository maps,
                         final SpaceRepository spaces,
                         final ReservationRepository reservations,
                         final SharingIdGenerator sharingIdGenerator) {
+        id = adminId;
+        pwd = adminPwd;
         this.jwtUtils = jwtUtils;
         this.members = members;
         this.maps = maps;
@@ -48,7 +54,7 @@ public class AdminService {
     }
 
     public TokenResponse login(final String id, final String password) {
-        if (!id.equals(ADMIN_ID) || !password.equals(ADMIN_PWD)) {
+        if (!id.equals(this.id) || !password.equals(pwd)) {
             throw new PasswordMismatchException();
         }
         String token = issueToken(id);
