@@ -7,7 +7,7 @@ import com.woowacourse.zzimkkong.dto.member.MemberFindResponse;
 import com.woowacourse.zzimkkong.dto.member.TokenResponse;
 import com.woowacourse.zzimkkong.dto.reservation.ReservationResponse;
 import com.woowacourse.zzimkkong.dto.space.SpaceFindDetailWithIdResponse;
-import com.woowacourse.zzimkkong.exception.member.PasswordMismatchException;
+import com.woowacourse.zzimkkong.exception.member.IdPasswordMismatchException;
 import com.woowacourse.zzimkkong.infrastructure.sharingid.SharingIdGenerator;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -55,9 +55,9 @@ class AdminServiceTest extends ServiceTest {
     @DisplayName("어드민 관리자 로그인 아이디, 비밀번호가 옳지 않으면 에러가 발생한다.")
     void loginException() {
         assertThatThrownBy(() -> adminService.login("zzimkkong", "wrong"))
-                .isInstanceOf(PasswordMismatchException.class);
+                .isInstanceOf(IdPasswordMismatchException.class);
         assertThatThrownBy(() -> adminService.login("wrong", "zzimkkong1!"))
-                .isInstanceOf(PasswordMismatchException.class);
+                .isInstanceOf(IdPasswordMismatchException.class);
     }
 
     @Test

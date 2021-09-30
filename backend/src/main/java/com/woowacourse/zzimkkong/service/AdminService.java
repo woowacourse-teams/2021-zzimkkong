@@ -6,7 +6,7 @@ import com.woowacourse.zzimkkong.dto.member.MemberFindResponse;
 import com.woowacourse.zzimkkong.dto.member.TokenResponse;
 import com.woowacourse.zzimkkong.dto.reservation.ReservationResponse;
 import com.woowacourse.zzimkkong.dto.space.SpaceFindDetailWithIdResponse;
-import com.woowacourse.zzimkkong.exception.member.PasswordMismatchException;
+import com.woowacourse.zzimkkong.exception.member.IdPasswordMismatchException;
 import com.woowacourse.zzimkkong.infrastructure.auth.JwtUtils;
 import com.woowacourse.zzimkkong.infrastructure.sharingid.SharingIdGenerator;
 import com.woowacourse.zzimkkong.repository.MapRepository;
@@ -55,7 +55,7 @@ public class AdminService {
 
     public TokenResponse login(final String id, final String password) {
         if (!id.equals(this.id) || !password.equals(pwd)) {
-            throw new PasswordMismatchException();
+            throw new IdPasswordMismatchException();
         }
         String token = issueToken(id);
 
