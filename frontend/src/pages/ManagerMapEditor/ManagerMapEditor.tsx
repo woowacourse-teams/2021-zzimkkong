@@ -6,6 +6,7 @@ import { postMap, putMap } from 'api/managerMap';
 import Button from 'components/Button/Button';
 import Header from 'components/Header/Header';
 import Layout from 'components/Layout/Layout';
+import { BOARD } from 'constants/editor';
 import MESSAGE from 'constants/message';
 import PATH, { HREF } from 'constants/path';
 import useManagerMap from 'hooks/query/useManagerMap';
@@ -37,8 +38,8 @@ const ManagerMapEditor = (): JSX.Element => {
   const [mapElements, setMapElements] = useState<MapElement[]>([]);
   const [{ name, width, height }, onChangeBoard, setBoard] = useInputs<Board>({
     name: '',
-    width: '800',
-    height: '600',
+    width: `${BOARD.DEFAULT_WIDTH}`,
+    height: `${BOARD.DEFAULT_HEIGHT}`,
   });
 
   const managerSpaces = useManagerSpaces({ mapId: Number(mapId) }, { enabled: isEdit });
