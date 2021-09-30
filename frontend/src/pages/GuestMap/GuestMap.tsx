@@ -17,6 +17,7 @@ import useGuestMap from 'hooks/query/useGuestMap';
 import useGuestSpaces from 'hooks/query/useGuestSpaces';
 import useInput from 'hooks/useInput';
 import { Area, MapDrawing, MapItem, Reservation, ScrollPosition, Space } from 'types/common';
+import { GuestPageURLParams } from 'types/guest';
 import { ErrorResponse } from 'types/response';
 import { formatDate } from 'utils/datetime';
 import * as Styled from './GuestMap.styles';
@@ -28,10 +29,6 @@ export interface GuestMapState {
   scrollPosition?: ScrollPosition;
 }
 
-export interface URLParameter {
-  sharingMapId: MapItem['sharingMapId'];
-}
-
 const GuestMap = (): JSX.Element => {
   const [detailOpen, setDetailOpen] = useState(false);
   const [passwordInputModalOpen, setPasswordInputModalOpen] = useState(false);
@@ -41,7 +38,7 @@ const GuestMap = (): JSX.Element => {
 
   const history = useHistory();
   const location = useLocation<GuestMapState>();
-  const { sharingMapId } = useParams<URLParameter>();
+  const { sharingMapId } = useParams<GuestPageURLParams>();
 
   const mapRef = useRef<HTMLDivElement | null>(null);
 
@@ -167,11 +164,13 @@ const GuestMap = (): JSX.Element => {
     if (scrollPosition) {
       mapRef?.current?.scrollTo(scrollPosition.x ?? 0, scrollPosition.y ?? 0);
     }
+  }, [scrollPosition]);
 
+  useEffect(() => {
     if (targetDate) {
       setDate(new Date(targetDate));
     }
-  }, [scrollPosition, targetDate]);
+  }, [targetDate]);
 
   return (
     <>
