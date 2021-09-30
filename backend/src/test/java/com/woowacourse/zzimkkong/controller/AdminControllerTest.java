@@ -3,6 +3,7 @@ package com.woowacourse.zzimkkong.controller;
 import com.woowacourse.zzimkkong.domain.*;
 import com.woowacourse.zzimkkong.dto.admin.*;
 import com.woowacourse.zzimkkong.dto.map.MapFindResponse;
+import com.woowacourse.zzimkkong.dto.member.LoginRequest;
 import com.woowacourse.zzimkkong.dto.member.MemberFindResponse;
 import com.woowacourse.zzimkkong.dto.member.TokenResponse;
 import com.woowacourse.zzimkkong.dto.reservation.ReservationCreateUpdateWithPasswordRequest;
@@ -21,7 +22,6 @@ import org.springframework.http.MediaType;
 import java.util.List;
 
 import static com.woowacourse.zzimkkong.Constants.*;
-import static com.woowacourse.zzimkkong.Constants.MAP_IMAGE_URL;
 import static com.woowacourse.zzimkkong.DocumentUtils.getRequestSpecification;
 import static com.woowacourse.zzimkkong.controller.ManagerReservationControllerTest.saveReservation;
 import static com.woowacourse.zzimkkong.controller.ManagerSpaceControllerTest.saveSpace;
@@ -54,14 +54,15 @@ class AdminControllerTest extends AcceptanceTest {
 
     @BeforeEach
     void setUp() {
-        postLogin();
+        postAdminLogin();
     }
 
     @Test
     @DisplayName("올바른 로그인이 들어오면 200 ok를 반환한다.")
-    void postLogin() {
+    void postAdminLogin() {
         // given, when
-        ExtractableResponse<Response> response = login("asdf", "asdf");
+        LoginRequest adminLoginRequest = new LoginRequest("asdf", "asdf");
+        ExtractableResponse<Response> response = login(adminLoginRequest);
         TokenResponse tokenResponse = response.as(TokenResponse.class);
         token = tokenResponse.getAccessToken();
 
@@ -173,13 +174,13 @@ class AdminControllerTest extends AcceptanceTest {
                 .isEqualTo(expected);
     }
 
-    static ExtractableResponse<Response> login(String id, String password) {
+    static ExtractableResponse<Response> login(LoginRequest adminLoginRequest) {
         return RestAssured
                 .given(getRequestSpecification()).log().all()
                 .accept("application/json")
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(loginRequest)
-                .when().post("/admin/api/login?id=" + id + "&password=" + password)
+                .body(adminLoginRequest)
+                .when().post("/admin/api/login")
                 .then().log().all().extract();
     }
 
