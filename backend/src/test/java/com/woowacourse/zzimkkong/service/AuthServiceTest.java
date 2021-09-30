@@ -8,7 +8,7 @@ import com.woowacourse.zzimkkong.dto.member.TokenResponse;
 import com.woowacourse.zzimkkong.exception.authorization.OauthProviderMismatchException;
 import com.woowacourse.zzimkkong.exception.member.NoSuchMemberException;
 import com.woowacourse.zzimkkong.exception.member.NoSuchOAuthMemberException;
-import com.woowacourse.zzimkkong.exception.member.PasswordMismatchException;
+import com.woowacourse.zzimkkong.exception.member.IdPasswordMismatchException;
 import com.woowacourse.zzimkkong.infrastructure.auth.JwtUtils;
 import com.woowacourse.zzimkkong.infrastructure.oauth.OauthHandler;
 import org.junit.jupiter.api.BeforeEach;
@@ -92,7 +92,7 @@ class AuthServiceTest extends ServiceTest {
 
         //then
         assertThatThrownBy(() -> authService.login(loginRequest))
-                .isInstanceOf(PasswordMismatchException.class);
+                .isInstanceOf(IdPasswordMismatchException.class);
     }
 
     @ParameterizedTest

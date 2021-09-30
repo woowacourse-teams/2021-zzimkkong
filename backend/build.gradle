@@ -109,10 +109,9 @@ jacocoTestCoverageVerification {
         rule {
             element = 'CLASS'
             excludes = ["**.exception.**", "**.ControllerAdvice", "**.*ErrorResponse", "**.ValidatorMessage",
-                        "**.ZzimkkongApplication", "**.*TimeConverter", "**.DataLoader", "**.*Config",
+                        "**.ZzimkkongApplication", "**.DataLoader", "**.config.**",
                         "**.LoginInterceptor", "**.AuthenticationPrincipalArgumentResolver",
-                        "**.slack.**", "**.Slack*", "**.datasource.**"]
-            //todo: 패키지 분리하면 더 멋있게 해보겠슴,,
+                        "**.slack.**", "**.Slack*", "**.AdminPageController"]
 
             limit {
                 counter = 'BRANCH'

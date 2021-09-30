@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>로그인입니다</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.1/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-F3w7mX95PdgyTmZZMECAngseQB83DfGTowi0iMjiWaeVhAn4FJkqJByhZMI3AhiU" crossorigin="anonymous">
+    <style>
+        .btn{
+            background-color: darkorange;
+            color: white;
+            margin: auto;
+            display: block;
+        }
+        .login{
+            width: 500px;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%,-50%);
+        }
+    </style>
+</head>
+<body>
+
+<div class="login">
+    <h4 style="text-align: center">찜꽁 관리자 로그인</h4>
+    <form id="login-form">
+        <div class="mb-3 mx-5">
+            <label for="inputId" class="form-label">아이디</label>
+            <input class="form-control" id="inputId">
+        </div>
+        <div class="mb-3 mx-5">
+            <label for="inputPassword" class="form-label">비밀번호</label>
+            <input class="form-control" id="inputPassword" type="password">
+        </div>
+        <div class="mb-3 mx-5">
+            <button id="login" class="btn">로그인</button>
+        </div>
+    </form>
+</div>
+<script src="/admin/js/login.js"></script>
+</body>
+</html>
