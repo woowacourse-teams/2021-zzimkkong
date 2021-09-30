@@ -33,6 +33,7 @@ public class EnabledDayOfWeekDto {
         return enabledDayOfWeekDto;
     }
 
+    @Override
     public String toString() {
         final Field[] fields = this.getClass().getDeclaredFields();
         final List<String> enabledDayOfWeek = getEnabledDayOfWeek(fields);
