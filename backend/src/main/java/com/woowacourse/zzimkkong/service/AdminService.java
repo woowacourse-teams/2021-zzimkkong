@@ -1,11 +1,11 @@
 package com.woowacourse.zzimkkong.service;
 
+import com.woowacourse.zzimkkong.domain.Member;
+import com.woowacourse.zzimkkong.domain.Reservation;
+import com.woowacourse.zzimkkong.domain.Space;
 import com.woowacourse.zzimkkong.dto.admin.*;
 import com.woowacourse.zzimkkong.dto.map.MapFindResponse;
-import com.woowacourse.zzimkkong.dto.member.MemberFindResponse;
 import com.woowacourse.zzimkkong.dto.member.TokenResponse;
-import com.woowacourse.zzimkkong.dto.reservation.ReservationResponse;
-import com.woowacourse.zzimkkong.dto.space.SpaceFindDetailWithIdResponse;
 import com.woowacourse.zzimkkong.exception.member.IdPasswordMismatchException;
 import com.woowacourse.zzimkkong.infrastructure.auth.JwtUtils;
 import com.woowacourse.zzimkkong.infrastructure.sharingid.SharingIdGenerator;
@@ -71,38 +71,24 @@ public class AdminService {
     }
 
     public MembersResponse findMembers(Pageable pageable) {
-        Page<MemberFindResponse> allMembers = members.findAll(pageable)
-                .map(MemberFindResponse::from);
-
-        return MembersResponse.from(allMembers.getContent(), makePageInfo(allMembers));
+        Page<Member> allMembers = members.findAll(pageable);
+        return MembersResponse.from(allMembers);
     }
 
     public MapsResponse findMaps(Pageable pageable) {
         Page<MapFindResponse> allMaps = maps.findAll(pageable)
                 .map(map -> MapFindResponse.ofAdmin(map, sharingIdGenerator.from(map)));
 
-        return MapsResponse.from(allMaps.getContent(), makePageInfo(allMaps));
+        return MapsResponse.of(allMaps.getContent(), PageInfo.from(allMaps));
     }
 
     public SpacesResponse findSpaces(Pageable pageable) {
-        Page<SpaceFindDetailWithIdResponse> allSpaces = spaces.findAll(pageable)
-                .map(SpaceFindDetailWithIdResponse::fromAdmin);
-
-        return SpacesResponse.from(allSpaces.getContent(), makePageInfo(allSpaces));
+        Page<Space> allSpaces = spaces.findAll(pageable);
+        return SpacesResponse.from(allSpaces);
     }
 
     public ReservationsResponse findReservations(Pageable pageable) {
-        Page<ReservationResponse> allReservations = reservations.findAll(pageable)
-                .map(ReservationResponse::fromAdmin);
-
-        return ReservationsResponse.from(allReservations.getContent(), makePageInfo(allReservations));
-    }
-
-    private PageInfo makePageInfo(Page<?> data) {
-        return PageInfo.from(
-                data.getPageable().getPageNumber(),
-                data.getTotalPages(),
-                data.getPageable().getPageSize(),
-                data.getTotalElements());
+        Page<Reservation> allReservations = reservations.findAll(pageable);
+        return ReservationsResponse.from(allReservations);
     }
 }

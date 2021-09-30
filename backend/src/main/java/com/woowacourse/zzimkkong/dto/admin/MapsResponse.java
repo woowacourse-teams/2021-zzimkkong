@@ -17,7 +17,7 @@ public class MapsResponse {
         this.pageInfo = pageInfo;
     }
 
-    public static MapsResponse from(List<MapFindResponse> maps, PageInfo pageInfo) {
+    public static MapsResponse of(List<MapFindResponse> maps, PageInfo pageInfo) {
         return new MapsResponse(maps, pageInfo);
     }
 }

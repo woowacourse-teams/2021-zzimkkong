@@ -2,17 +2,11 @@ package com.woowacourse.zzimkkong.controller;
 
 import com.woowacourse.zzimkkong.domain.*;
 import com.woowacourse.zzimkkong.dto.admin.*;
-import com.woowacourse.zzimkkong.dto.map.MapCreateUpdateRequest;
 import com.woowacourse.zzimkkong.dto.map.MapFindResponse;
 import com.woowacourse.zzimkkong.dto.member.MemberFindResponse;
 import com.woowacourse.zzimkkong.dto.member.TokenResponse;
-import com.woowacourse.zzimkkong.dto.reservation.ReservationCreateUpdateRequest;
 import com.woowacourse.zzimkkong.dto.reservation.ReservationCreateUpdateWithPasswordRequest;
-import com.woowacourse.zzimkkong.dto.reservation.ReservationFindResponse;
 import com.woowacourse.zzimkkong.dto.reservation.ReservationResponse;
-import com.woowacourse.zzimkkong.dto.space.SettingsRequest;
-import com.woowacourse.zzimkkong.dto.space.SpaceCreateResponse;
-import com.woowacourse.zzimkkong.dto.space.SpaceCreateUpdateRequest;
 import com.woowacourse.zzimkkong.dto.space.SpaceFindDetailWithIdResponse;
 import com.woowacourse.zzimkkong.infrastructure.auth.AuthorizationExtractor;
 import io.restassured.RestAssured;
@@ -79,9 +73,9 @@ class AdminControllerTest extends AcceptanceTest {
     @DisplayName("모든 회원을 조회한다.")
     void getMembers() {
         // given
-        MembersResponse membersResponse = MembersResponse.from(
+        MembersResponse membersResponse = MembersResponse.of(
                 List.of(MemberFindResponse.from(POBI)),
-                PageInfo.from(0, 1, 20, 1)
+                PageInfo.of(0, 1, 20, 1)
         );
 
         // when
@@ -104,9 +98,9 @@ class AdminControllerTest extends AcceptanceTest {
         // when
         ExtractableResponse<Response> response = get("/admin/api/maps");
         MapsResponse actual = response.body().as(MapsResponse.class);
-        MapsResponse expected = MapsResponse.from(
+        MapsResponse expected = MapsResponse.of(
                 List.of(MapFindResponse.ofAdmin(LUTHER, null)),
-                PageInfo.from(0, 1, 20, 1)
+                PageInfo.of(0, 1, 20, 1)
         );
 
         // then
@@ -127,9 +121,9 @@ class AdminControllerTest extends AcceptanceTest {
         // when
         ExtractableResponse<Response> response = get("/admin/api/spaces");
         SpacesResponse actual = response.body().as(SpacesResponse.class);
-        SpacesResponse expected = SpacesResponse.from(
+        SpacesResponse expected = SpacesResponse.of(
                 List.of(SpaceFindDetailWithIdResponse.fromAdmin(BE)),
-                PageInfo.from(0, 1, 20, 1)
+                PageInfo.of(0, 1, 20, 1)
         );
 
         // then
@@ -167,9 +161,9 @@ class AdminControllerTest extends AcceptanceTest {
         // when
         ExtractableResponse<Response> response = get("/admin/api/reservations");
         ReservationsResponse actual = response.body().as(ReservationsResponse.class);
-        ReservationsResponse expected = ReservationsResponse.from(
+        ReservationsResponse expected = ReservationsResponse.of(
                 List.of(ReservationResponse.fromAdmin(reservation)),
-                PageInfo.from(0, 1, 20, 1)
+                PageInfo.of(0, 1, 20, 1)
         );
 
         // then

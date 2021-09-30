@@ -69,9 +69,9 @@ class AdminServiceTest extends ServiceTest {
                 .willReturn(new PageImpl<>(List.of(pobi), pageRequest, 1));
 
         //when
-        MembersResponse expected = MembersResponse.from(
+        MembersResponse expected = MembersResponse.of(
                 List.of(MemberFindResponse.from(pobi)),
-                PageInfo.from(0, 1, 20, 1)
+                PageInfo.of(0, 1, 20, 1)
         );
         MembersResponse actual = adminService.findMembers(pageRequest);
 
@@ -91,9 +91,9 @@ class AdminServiceTest extends ServiceTest {
         given(sharingIdGenerator.from(any(Map.class)))
                 .willReturn("someId");
         //when
-        MapsResponse expected = MapsResponse.from(
+        MapsResponse expected = MapsResponse.of(
                 List.of(MapFindResponse.ofAdmin(luther, "someId")),
-                PageInfo.from(0, 1, 20, 1)
+                PageInfo.of(0, 1, 20, 1)
         );
         MapsResponse actual = adminService.findMaps(pageRequest);
 
@@ -131,9 +131,9 @@ class AdminServiceTest extends ServiceTest {
                 .willReturn(new PageImpl<>(List.of(be), pageRequest, 1));
 
         //when
-        SpacesResponse expected = SpacesResponse.from(
+        SpacesResponse expected = SpacesResponse.of(
                 List.of(SpaceFindDetailWithIdResponse.fromAdmin(be)),
-                PageInfo.from(0, 1, 20, 1)
+                PageInfo.of(0, 1, 20, 1)
         );
         SpacesResponse actual = adminService.findSpaces(pageRequest);
 
@@ -182,9 +182,9 @@ class AdminServiceTest extends ServiceTest {
                 .willReturn(new PageImpl<>(List.of(beAmZeroOne), pageRequest, 1));
 
         //when
-        ReservationsResponse expected = ReservationsResponse.from(
+        ReservationsResponse expected = ReservationsResponse.of(
                 List.of(ReservationResponse.fromAdmin(beAmZeroOne)),
-                PageInfo.from(0, 1, 20, 1)
+                PageInfo.of(0, 1, 20, 1)
         );
         ReservationsResponse actual = adminService.findReservations(pageRequest);
 
