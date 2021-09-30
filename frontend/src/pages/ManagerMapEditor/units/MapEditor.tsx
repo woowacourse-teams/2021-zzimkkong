@@ -290,6 +290,9 @@ const MapCreateEditor = ({
           )}
 
           {mapElements.map((element) => {
+            const isSelected = selectedMapElements.find(({ id }) => element.id === id);
+            const isDeleting = erasingMapElementIds.includes(element.id);
+
             if (element.type === MapElementType.Polyline) {
               return (
                 <polyline
@@ -299,16 +302,10 @@ const MapCreateEditor = ({
                   stroke={element.stroke}
                   strokeWidth={EDITOR.STROKE_WIDTH}
                   strokeLinecap="round"
-                  visibility={
-                    selectedMapElements.find(({ id }) => element.id === id) ? 'hidden' : 'visible'
-                  }
+                  visibility={isSelected ? 'hidden' : 'visible'}
                   cursor={isMapElementClickable ? 'pointer' : 'default'}
                   pointerEvents={isMapElementEventAvailable ? 'auto' : 'none'}
-                  opacity={
-                    erasingMapElementIds.includes(element.id)
-                      ? EDITOR.OPACITY_DELETING
-                      : EDITOR.OPACITY
-                  }
+                  opacity={isDeleting ? EDITOR.OPACITY_DELETING : EDITOR.OPACITY}
                   onClickCapture={() => selectMapElement(element)}
                   onMouseOverCapture={onMouseOverMapElement}
                   ref={(el) => (element.ref.current = el)}
@@ -329,16 +326,10 @@ const MapCreateEditor = ({
                   fill="none"
                   strokeWidth={EDITOR.STROKE_WIDTH}
                   strokeLinecap="round"
-                  visibility={
-                    selectedMapElements.find(({ id }) => element.id === id) ? 'hidden' : 'visible'
-                  }
+                  visibility={isSelected ? 'hidden' : 'visible'}
                   cursor={isMapElementClickable ? 'pointer' : 'default'}
                   pointerEvents={isMapElementEventAvailable ? 'auto' : 'none'}
-                  opacity={
-                    erasingMapElementIds.includes(element.id)
-                      ? EDITOR.OPACITY_DELETING
-                      : EDITOR.OPACITY
-                  }
+                  opacity={isDeleting ? EDITOR.OPACITY_DELETING : EDITOR.OPACITY}
                   onClickCapture={() => selectMapElement(element)}
                   onMouseOverCapture={onMouseOverMapElement}
                   ref={(el) => (element.ref.current = el)}
@@ -348,6 +339,7 @@ const MapCreateEditor = ({
 
             return null;
           })}
+
           <g pointerEvents="none" ref={selectedMapElementsGroupRef}>
             {selectedMapElements.map((element) => {
               if (element.type === MapElementType.Polyline) {
@@ -360,11 +352,6 @@ const MapCreateEditor = ({
                     strokeWidth={EDITOR.STROKE_WIDTH}
                     strokeLinecap="round"
                     cursor={isMapElementClickable ? 'pointer' : 'default'}
-                    opacity={
-                      erasingMapElementIds.includes(element.id)
-                        ? EDITOR.OPACITY_DELETING
-                        : EDITOR.OPACITY
-                    }
                     onClickCapture={() => selectMapElement(element)}
                     onMouseOverCapture={onMouseOverMapElement}
                   />
@@ -385,11 +372,6 @@ const MapCreateEditor = ({
                     strokeWidth={EDITOR.STROKE_WIDTH}
                     strokeLinecap="round"
                     cursor={isMapElementClickable ? 'pointer' : 'default'}
-                    opacity={
-                      erasingMapElementIds.includes(element.id)
-                        ? EDITOR.OPACITY_DELETING
-                        : EDITOR.OPACITY
-                    }
                     onClickCapture={() => selectMapElement(element)}
                     onMouseOverCapture={onMouseOverMapElement}
                   />
