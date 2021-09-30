@@ -1,9 +1,7 @@
 package com.woowacourse.zzimkkong.dto.space;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.annotation.JsonProperty;
 import com.woowacourse.zzimkkong.exception.dto.EnabledDayOfWeekResponseReflectionException;
-import com.woowacourse.zzimkkong.exception.space.NoSuchDayOfWeekException;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -33,6 +31,31 @@ public class EnabledDayOfWeekDto {
         return enabledDayOfWeekDto;
     }
 
+    private static void setFields(final EnabledDayOfWeekDto enabledDayOfWeekDto, final String enabledDayOfWeekString) {
+        final Field[] fields = enabledDayOfWeekDto.getClass().getDeclaredFields();
+        final List<String> enabledFieldNames = getEnabledFieldNames(enabledDayOfWeekString);
+
+        Arrays.stream(fields)
+                .filter(field -> !enabledFieldNames.contains(field.getName()))
+                .forEach(field -> setFalse(enabledDayOfWeekDto, field));
+    }
+
+    private static List<String> getEnabledFieldNames(final String enabledDayOfWeekString) {
+        return Arrays.stream(enabledDayOfWeekString.split(DELIMITER))
+                .map(String::trim)
+                .map(String::toLowerCase)
+                .collect(Collectors.toList());
+    }
+
+    private static void setFalse(final EnabledDayOfWeekDto enabledDayOfWeekDto, final Field targetField) {
+        try {
+            targetField.setAccessible(true);
+            targetField.set(enabledDayOfWeekDto, Boolean.FALSE);
+        } catch (IllegalAccessException e) {
+            throw new EnabledDayOfWeekResponseReflectionException();
+        }
+    }
+
     @Override
     public String toString() {
         final Field[] fields = this.getClass().getDeclaredFields();
@@ -55,31 +78,6 @@ public class EnabledDayOfWeekDto {
     private Boolean getValue(final Field field) {
         try {
             return (Boolean) field.get(this);
-        } catch (IllegalAccessException e) {
-            throw new EnabledDayOfWeekResponseReflectionException();
-        }
-    }
-
-    private static void setFields(final EnabledDayOfWeekDto enabledDayOfWeekDto, final String enabledDayOfWeekString) {
-        final Field[] fields = enabledDayOfWeekDto.getClass().getDeclaredFields();
-        final List<String> enabledFieldNames = getEnabledFieldNames(enabledDayOfWeekString);
-
-        Arrays.stream(fields)
-                .filter(field -> !enabledFieldNames.contains(field.getName()))
-                .forEach(field -> setFalse(enabledDayOfWeekDto, field));
-    }
-
-    private static List<String> getEnabledFieldNames(final String enabledDayOfWeekString) {
-        return Arrays.stream(enabledDayOfWeekString.split(DELIMITER))
-                .map(String::trim)
-                .map(String::toLowerCase)
-                .collect(Collectors.toList());
-    }
-
-    private static void setFalse(final EnabledDayOfWeekDto enabledDayOfWeekDto, final Field targetField) {
-        try {
-            targetField.setAccessible(true);
-            targetField.set(enabledDayOfWeekDto, Boolean.FALSE);
         } catch (IllegalAccessException e) {
             throw new EnabledDayOfWeekResponseReflectionException();
         }
