@@ -407,7 +407,7 @@ const MapCreateEditor = ({
               width={selectedGroupBBox.width}
               height={selectedGroupBBox.height}
               stroke={theme.primary[500]}
-              strokeWidth={3}
+              strokeWidth={EDITOR.SELECTED_GROUP_BBOX_STROKE_WIDTH}
               fill="none"
             />
           )}

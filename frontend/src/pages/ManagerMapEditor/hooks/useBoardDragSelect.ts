@@ -122,7 +122,7 @@ const useBoardDragSelect = ({
 
   const setGroupBBox = useCallback(() => {
     const bBox = selectedMapElementsGroupRef.current?.getBBox() ?? null;
-    const positionOffset = 4;
+    const positionOffset = 2;
     const marginOffset = positionOffset * 2;
 
     if (!bBox?.width || !bBox?.height) {
