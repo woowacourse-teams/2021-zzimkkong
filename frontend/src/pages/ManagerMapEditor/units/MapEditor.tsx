@@ -218,7 +218,7 @@ const MapCreateEditor = ({
             <>
               {dragSelectRect && (
                 <rect
-                  fill="rgba(0, 0, 0, 0.2)"
+                  fill={EDITOR.DRAG_SELECT_RECT_FILL}
                   x={dragSelectRect.x}
                   y={dragSelectRect.y}
                   width={dragSelectRect.width}
