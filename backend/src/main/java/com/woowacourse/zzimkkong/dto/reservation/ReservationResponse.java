@@ -2,7 +2,10 @@ package com.woowacourse.zzimkkong.dto.reservation;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.woowacourse.zzimkkong.domain.Map;
+import com.woowacourse.zzimkkong.domain.Member;
 import com.woowacourse.zzimkkong.domain.Reservation;
+import com.woowacourse.zzimkkong.domain.Space;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -67,15 +70,19 @@ public class ReservationResponse {
     }
 
     public static ReservationResponse fromAdmin(final Reservation reservation) {
+        Space space = reservation.getSpace();
+        Map map = space.getMap();
+        Member member = map.getMember();
+
         return new ReservationResponse(
                 reservation.getId(),
                 reservation.getStartTime(),
                 reservation.getEndTime(),
                 reservation.getUserName(),
                 reservation.getDescription(),
-                reservation.getSpace().getId(),
-                reservation.getSpace().getMap().getId(),
-                reservation.getSpace().getMap().getMember().getId()
+                space.getId(),
+                map.getId(),
+                member.getId()
         );
     }
 }

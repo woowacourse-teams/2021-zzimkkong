@@ -1,6 +1,8 @@
 package com.woowacourse.zzimkkong.dto.space;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.woowacourse.zzimkkong.domain.Map;
+import com.woowacourse.zzimkkong.domain.Member;
 import com.woowacourse.zzimkkong.domain.Space;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -54,6 +56,8 @@ public class SpaceFindDetailWithIdResponse extends SpaceFindDetailResponse {
     public static SpaceFindDetailWithIdResponse fromAdmin(final Space space) {
         SettingResponse settingResponse = SettingResponse.from(space);
 
+        Map map = space.getMap();
+        Member member = map.getMember();
         return new SpaceFindDetailWithIdResponse(
                 space.getName(),
                 space.getColor(),
@@ -61,7 +65,7 @@ public class SpaceFindDetailWithIdResponse extends SpaceFindDetailResponse {
                 space.getArea(),
                 settingResponse,
                 space.getId(),
-                space.getMap().getMember().getId(),
-                space.getMap().getId());
+                member.getId(),
+                map.getId());
     }
 }
