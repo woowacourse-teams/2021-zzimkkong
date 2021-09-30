@@ -45,7 +45,7 @@ class AdminServiceTest extends ServiceTest {
     @DisplayName("어드민 관리자가 로그인하면 토큰을 반환한다.")
     void login() {
         //given, when
-        TokenResponse tokenResponse = adminService.login("zzimkkong", "zzimkkong1!");
+        TokenResponse tokenResponse = adminService.login("asdf", "asdf");
 
         //then
         assertThat(tokenResponse).isNotNull();
@@ -54,9 +54,9 @@ class AdminServiceTest extends ServiceTest {
     @Test
     @DisplayName("어드민 관리자 로그인 아이디, 비밀번호가 옳지 않으면 에러가 발생한다.")
     void loginException() {
-        assertThatThrownBy(() -> adminService.login("zzimkkong", "wrong"))
+        assertThatThrownBy(() -> adminService.login("asdf", "wrong"))
                 .isInstanceOf(IdPasswordMismatchException.class);
-        assertThatThrownBy(() -> adminService.login("wrong", "zzimkkong1!"))
+        assertThatThrownBy(() -> adminService.login("wrong", "asdf"))
                 .isInstanceOf(IdPasswordMismatchException.class);
     }
 

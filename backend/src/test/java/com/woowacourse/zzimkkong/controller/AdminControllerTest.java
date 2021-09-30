@@ -61,7 +61,7 @@ class AdminControllerTest extends AcceptanceTest {
     @DisplayName("올바른 로그인이 들어오면 200 ok를 반환한다.")
     void postLogin() {
         // given, when
-        ExtractableResponse<Response> response = login("zzimkkong", "zzimkkong1!");
+        ExtractableResponse<Response> response = login("asdf", "asdf");
         TokenResponse tokenResponse = response.as(TokenResponse.class);
         token = tokenResponse.getAccessToken();
 
