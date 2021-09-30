@@ -32,25 +32,25 @@ public class AdminController {
 
     @GetMapping("/members")
     public ResponseEntity<MembersResponse> members(@PageableDefault(value = 20) Pageable pageable) {
-        MembersResponse members = adminService.findMembers(pageable);
-        return ResponseEntity.ok(members);
+        MembersResponse membersResponse = adminService.findMembers(pageable);
+        return ResponseEntity.ok(membersResponse);
     }
 
     @GetMapping("/maps")
     public ResponseEntity<MapsResponse> maps(@PageableDefault(value = 20) Pageable pageable) {
-        MapsResponse maps = adminService.findMaps(pageable);
-        return ResponseEntity.ok(maps);
+        MapsResponse mapsResponse = adminService.findMaps(pageable);
+        return ResponseEntity.ok(mapsResponse);
     }
 
     @GetMapping("/spaces")
     public ResponseEntity<SpacesResponse> spaces(@PageableDefault(value = 20) Pageable pageable) {
-        SpacesResponse spaces = adminService.findSpaces(pageable);
-        return ResponseEntity.ok(spaces);
+        SpacesResponse spacesResponse = adminService.findSpaces(pageable);
+        return ResponseEntity.ok(spacesResponse);
     }
 
     @GetMapping("/reservations")
     public ResponseEntity<ReservationsResponse> reservations(@PageableDefault(value = 20) Pageable pageable) {
-        ReservationsResponse reservations = adminService.findReservations(pageable);
-        return ResponseEntity.ok(reservations);
+        ReservationsResponse reservationsResponse = adminService.findReservations(pageable);
+        return ResponseEntity.ok(reservationsResponse);
     }
 }

@@ -12,7 +12,7 @@ public class ReservationsResponse {
     private List<ReservationResponse> reservations;
     private PageInfo pageInfo;
 
-    public ReservationsResponse(List<ReservationResponse> reservations, PageInfo pageInfo) {
+    private ReservationsResponse(List<ReservationResponse> reservations, PageInfo pageInfo) {
         this.reservations = reservations;
         this.pageInfo = pageInfo;
     }

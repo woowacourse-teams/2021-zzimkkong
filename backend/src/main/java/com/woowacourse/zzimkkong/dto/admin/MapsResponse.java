@@ -12,7 +12,7 @@ public class MapsResponse {
     private List<MapFindResponse> maps;
     private PageInfo pageInfo;
 
-    public MapsResponse(List<MapFindResponse> maps, PageInfo pageInfo) {
+    private MapsResponse(List<MapFindResponse> maps, PageInfo pageInfo) {
         this.maps = maps;
         this.pageInfo = pageInfo;
     }

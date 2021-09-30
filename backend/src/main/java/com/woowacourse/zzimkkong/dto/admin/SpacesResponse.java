@@ -12,7 +12,7 @@ public class SpacesResponse {
     private List<SpaceFindDetailWithIdResponse> spaces;
     private PageInfo pageInfo;
 
-    public SpacesResponse(List<SpaceFindDetailWithIdResponse> spaces, PageInfo pageInfo) {
+    private SpacesResponse(List<SpaceFindDetailWithIdResponse> spaces, PageInfo pageInfo) {
         this.spaces = spaces;
         this.pageInfo = pageInfo;
     }

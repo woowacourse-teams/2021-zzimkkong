@@ -3,7 +3,6 @@ package com.woowacourse.zzimkkong.dto.admin;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-
 @NoArgsConstructor
 @Getter
 public class PageInfo {
@@ -12,7 +11,7 @@ public class PageInfo {
     private int countPerPage;
     private long totalSize;
 
-    public PageInfo(int currentPage, int lastPage, int countPerPage, long totalSize) {
+    private PageInfo(int currentPage, int lastPage, int countPerPage, long totalSize) {
         this.currentPage = currentPage;
         this.lastPage = lastPage;
         this.countPerPage = countPerPage;

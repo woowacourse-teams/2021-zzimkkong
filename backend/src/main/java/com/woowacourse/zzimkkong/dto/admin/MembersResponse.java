@@ -12,7 +12,7 @@ public class MembersResponse {
     private List<MemberFindResponse> members;
     private PageInfo pageInfo;
 
-    public MembersResponse(List<MemberFindResponse> members, PageInfo pageInfo) {
+    private MembersResponse(List<MemberFindResponse> members, PageInfo pageInfo) {
         this.members = members;
         this.pageInfo = pageInfo;
     }

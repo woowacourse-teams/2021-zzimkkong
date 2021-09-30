@@ -26,7 +26,7 @@ public class SpaceFindDetailWithIdResponse extends SpaceFindDetailResponse {
         this.id = id;
     }
 
-    public SpaceFindDetailWithIdResponse(
+    private SpaceFindDetailWithIdResponse(
             final String name,
             final String color,
             final String description,
