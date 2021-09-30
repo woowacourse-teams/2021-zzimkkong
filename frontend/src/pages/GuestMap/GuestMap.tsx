@@ -221,22 +221,24 @@ const GuestMap = (): JSX.Element => {
                         onClick={() => handleClickSpaceArea(id)}
                       >
                         {area.shape === 'rect' && (
-                          <Styled.SpaceArea
-                            x={area.x}
-                            y={area.y}
-                            width={area.width}
-                            height={area.height}
-                            fill={color ?? PALETTE.RED[200]}
-                            opacity="0.3"
-                          />
+                          <>
+                            <Styled.SpaceArea
+                              x={area.x}
+                              y={area.y}
+                              width={area.width}
+                              height={area.height}
+                              fill={color ?? PALETTE.RED[200]}
+                              opacity="0.3"
+                            />
+                            <Styled.SpaceAreaText
+                              x={area.x + area.width / 2}
+                              y={area.y + area.height / 2}
+                            >
+                              {name}
+                            </Styled.SpaceAreaText>
+                          </>
+                          // TODO 폴리곤 완성 후 렌더 로직 추가
                         )}
-
-                        <Styled.SpaceAreaText
-                          x={area.x + area.width / 2}
-                          y={area.y + area.height / 2}
-                        >
-                          {name}
-                        </Styled.SpaceAreaText>
                       </Styled.Space>
                     ))}
                 </svg>

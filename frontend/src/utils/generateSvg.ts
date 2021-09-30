@@ -38,7 +38,9 @@ const generateMapSvg = (mapElements: MapSvgData['mapElements']): string =>
 const generateSpaceSvg = (spaces: MapSvgData['spaces']) =>
   spaces
     .map(
-      ({ color, area }) => `
+      ({ color, area }) =>
+        area.shape === 'rect'
+          ? `
         <g>
           <rect
             x='${area.x}'
@@ -50,6 +52,8 @@ const generateSpaceSvg = (spaces: MapSvgData['spaces']) =>
           />
         </g>
       `
+          : ''
+      // TODO 폴리곤 완성 후 렌더 로직 추가
     )
     .join('');
 

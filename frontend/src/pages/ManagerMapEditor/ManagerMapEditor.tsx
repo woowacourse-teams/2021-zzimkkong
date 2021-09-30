@@ -13,7 +13,7 @@ import useManagerMap from 'hooks/query/useManagerMap';
 import useManagerSpaces from 'hooks/query/useManagerSpaces';
 import useInputs from 'hooks/useInputs';
 import useListenManagerMainState from 'hooks/useListenManagerMainState';
-import { ManagerSpace, MapDrawing, MapElement, SpaceArea } from 'types/common';
+import { Area, ManagerSpace, MapDrawing, MapElement } from 'types/common';
 import { ErrorResponse } from 'types/response';
 import { createMapImageSvg } from 'utils/map';
 import * as Styled from './ManagerMapEditor.styles';
@@ -48,7 +48,7 @@ const ManagerMapEditor = (): JSX.Element => {
       return (
         managerSpaces.data?.data.spaces.map((space) => ({
           ...space,
-          area: JSON.parse(space.area) as SpaceArea,
+          area: JSON.parse(space.area) as Area,
         })) ?? []
       );
     } catch (error) {

@@ -12,6 +12,8 @@ interface Props {
 const BoardSpace = ({ space, drawing, selected, onClick }: Props): JSX.Element => {
   const { color, area, name } = space;
 
+  if (area.shape !== 'rect') return <g></g>;
+
   return (
     <g>
       <Styled.SpaceRect

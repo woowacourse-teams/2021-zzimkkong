@@ -24,7 +24,9 @@ export const createMapImageSvg = ({
     >
       ${spaces
         ?.map(
-          ({ color, area }) => `
+          ({ color, area }) =>
+            area.shape === 'rect'
+              ? `
             <g>
               <rect
                 x='${area.x}'
@@ -35,6 +37,8 @@ export const createMapImageSvg = ({
                 opacity='0.3'
               />
             </g>`
+              : ''
+          // TODO 폴리곤 완성 후 렌더 로직 추가
         )
         .join('')}
 
