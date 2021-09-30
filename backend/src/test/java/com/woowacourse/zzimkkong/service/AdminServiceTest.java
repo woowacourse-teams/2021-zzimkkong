@@ -69,15 +69,15 @@ class AdminServiceTest extends ServiceTest {
                 .willReturn(new PageImpl<>(List.of(pobi), pageRequest, 1));
 
         //when
-        MembersResponse membersResponse = MembersResponse.from(
+        MembersResponse expected = MembersResponse.from(
                 List.of(MemberFindResponse.from(pobi)),
                 PageInfo.from(0, 1, 20, 1)
         );
-        MembersResponse members = adminService.findMembers(pageRequest);
+        MembersResponse actual = adminService.findMembers(pageRequest);
 
         //then
-        assertThat(members).usingRecursiveComparison()
-                .isEqualTo(membersResponse);
+        assertThat(actual).usingRecursiveComparison()
+                .isEqualTo(expected);
     }
 
     @Test
@@ -91,15 +91,15 @@ class AdminServiceTest extends ServiceTest {
         given(sharingIdGenerator.from(any(Map.class)))
                 .willReturn("someId");
         //when
-        MapsResponse mapsResponse = MapsResponse.from(
+        MapsResponse expected = MapsResponse.from(
                 List.of(MapFindResponse.ofAdmin(luther, "someId")),
                 PageInfo.from(0, 1, 20, 1)
         );
-        MapsResponse maps = adminService.findMaps(pageRequest);
+        MapsResponse actual = adminService.findMaps(pageRequest);
 
         //then
-        assertThat(maps).usingRecursiveComparison()
-                .isEqualTo(mapsResponse);
+        assertThat(actual).usingRecursiveComparison()
+                .isEqualTo(expected);
     }
 
     @Test

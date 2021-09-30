@@ -4,7 +4,6 @@ import com.woowacourse.zzimkkong.domain.Map;
 import com.woowacourse.zzimkkong.domain.Member;
 import com.woowacourse.zzimkkong.domain.Setting;
 import com.woowacourse.zzimkkong.domain.Space;
-import org.assertj.core.api.AssertionsForClassTypes;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -92,9 +91,9 @@ class SpaceRepositoryTest extends RepositoryTest {
         Page<Space> actual = spaces.findAll(pageRequest);
 
         // then
-        AssertionsForClassTypes.assertThat(actual.getSize()).isEqualTo(20);
-        AssertionsForClassTypes.assertThat(actual.getContent().size()).isEqualTo(2);
-        AssertionsForClassTypes.assertThat(actual.getContent()).usingRecursiveComparison()
+        assertThat(actual.getSize()).isEqualTo(20);
+        assertThat(actual.getContent()).hasSize(2);
+        assertThat(actual.getContent()).usingRecursiveComparison()
                 .isEqualTo(List.of(savedBe, savedFe));
     }
 }

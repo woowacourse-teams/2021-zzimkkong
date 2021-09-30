@@ -1,7 +1,6 @@
 package com.woowacourse.zzimkkong.repository;
 
 import com.woowacourse.zzimkkong.domain.*;
-import org.assertj.core.api.AssertionsForClassTypes;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -231,9 +230,9 @@ class ReservationRepositoryTest extends RepositoryTest {
         Page<Reservation> actual = reservations.findAll(pageRequest);
 
         // then
-        AssertionsForClassTypes.assertThat(actual.getSize()).isEqualTo(20);
-        AssertionsForClassTypes.assertThat(actual.getContent().size()).isEqualTo(4);
-        AssertionsForClassTypes.assertThat(actual.getContent()).usingRecursiveComparison()
+        assertThat(actual.getSize()).isEqualTo(20);
+        assertThat(actual.getContent()).hasSize(4);
+        assertThat(actual.getContent()).usingRecursiveComparison()
                 .isEqualTo(List.of(beAmZeroOne, bePmOneTwo, beNextDayAmSixTwelve, fe1ZeroOne));
     }
 

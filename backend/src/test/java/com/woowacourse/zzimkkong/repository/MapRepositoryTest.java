@@ -3,7 +3,6 @@ package com.woowacourse.zzimkkong.repository;
 import com.woowacourse.zzimkkong.domain.Map;
 import com.woowacourse.zzimkkong.domain.Member;
 import com.woowacourse.zzimkkong.exception.map.NoSuchMapException;
-import org.assertj.core.api.AssertionsForClassTypes;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -80,9 +79,9 @@ class MapRepositoryTest extends RepositoryTest {
         Page<Map> actual = maps.findAll(pageRequest);
 
         // then
-        AssertionsForClassTypes.assertThat(actual.getSize()).isEqualTo(20);
-        AssertionsForClassTypes.assertThat(actual.getContent().size()).isEqualTo(1);
-        AssertionsForClassTypes.assertThat(actual.getContent().get(0)).usingRecursiveComparison()
+        assertThat(actual.getSize()).isEqualTo(20);
+        assertThat(actual.getContent()).hasSize(1);
+        assertThat(actual.getContent().get(0)).usingRecursiveComparison()
                 .isEqualTo(save);
     }
 }
