@@ -24,6 +24,7 @@ export const KEY = {
   DELETE: 'Delete',
   BACK_SPACE: 'Backspace',
   SPACE: ' ',
+  ENTER: 'Enter',
 };
 
 export const EDITOR = {
