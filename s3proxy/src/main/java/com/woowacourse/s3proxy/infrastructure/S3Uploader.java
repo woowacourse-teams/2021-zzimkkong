@@ -42,8 +42,7 @@ public class S3Uploader {
         String fileName = multipartFile.getOriginalFilename();
         String fileFullPath = generateFullPath(directoryPath, fileName);
 
-        try {
-            InputStream inputStream = multipartFile.getInputStream();
+        try(InputStream inputStream = multipartFile.getInputStream()) {
 
             amazonS3.putObject(this.bucketName, fileFullPath, inputStream, objectMetadata);
 
