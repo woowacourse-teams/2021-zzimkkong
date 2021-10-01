@@ -12,6 +12,7 @@ import java.net.URI;
 
 import static com.woowacourse.s3proxy.Constants.LUTHER_IMAGE_URI_CLOUDFRONT;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.BDDMockito.given;
@@ -51,6 +52,6 @@ class S3ServiceTest extends ServiceTest {
         String directory = "directoryName";
 
         // when, then
-        s3Service.delete(directory, fileName);
+        assertDoesNotThrow(() -> s3Service.delete(directory, fileName));
     }
 }

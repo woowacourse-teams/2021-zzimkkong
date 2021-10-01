@@ -13,6 +13,7 @@ import java.util.Random;
 
 import static com.woowacourse.s3proxy.Constants.LUTHER_IMAGE_URI_S3;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;
@@ -65,6 +66,6 @@ class S3UploaderTest {
         String directory = "directoryName";
 
         // when, then
-        s3Uploader.delete(directory + "/" + fileName);
+        assertDoesNotThrow(() -> s3Uploader.delete(directory + "/" + fileName));
     }
 }
