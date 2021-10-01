@@ -1,5 +1,5 @@
 import { ChangeEventHandler } from 'react';
-import * as Styled from './FormWeekdaySelect.styles';
+import * as Styled from './FormDayOfWeekSelect.styles';
 
 interface Props {
   onChange: ChangeEventHandler<HTMLInputElement>;
@@ -52,7 +52,7 @@ const displayOrder = [
   weekday.sunday,
 ];
 
-const FormWeekdaySelect = ({ onChange, enabledDayOfWeek }: Props): JSX.Element => {
+const FormDayOfWeekSelect = ({ onChange, enabledDayOfWeek }: Props): JSX.Element => {
   return (
     <Styled.Container>
       {displayOrder.map(({ displayName, inputName }) => (
@@ -70,4 +70,4 @@ const FormWeekdaySelect = ({ onChange, enabledDayOfWeek }: Props): JSX.Element =
   );
 };
 
-export default FormWeekdaySelect;
+export default FormDayOfWeekSelect;

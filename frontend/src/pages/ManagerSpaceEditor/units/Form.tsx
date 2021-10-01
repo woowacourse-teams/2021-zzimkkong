@@ -18,8 +18,8 @@ import { generateSvg, MapSvgData } from 'utils/generateSvg';
 import { colorSelectOptions, timeUnits } from '../data';
 import { SpaceFormContext } from '../providers/SpaceFormProvider';
 import * as Styled from './Form.styles';
+import FormDayOfWeekSelect from './FormDayOfWeekSelect';
 import FormTimeUnitSelect from './FormTimeUnitSelect';
-import FormWeekdaySelect from './FormWeekdaySelect';
 import Preset from './Preset';
 
 interface Props {
@@ -248,7 +248,7 @@ const Form = ({
           <Styled.Row>
             <Styled.Fieldset>
               <Styled.Label>예약 가능한 요일</Styled.Label>
-              <FormWeekdaySelect onChange={onChange} enabledDayOfWeek={values.enabledDayOfWeek} />
+              <FormDayOfWeekSelect onChange={onChange} enabledDayOfWeek={values.enabledDayOfWeek} />
             </Styled.Fieldset>
           </Styled.Row>
 
