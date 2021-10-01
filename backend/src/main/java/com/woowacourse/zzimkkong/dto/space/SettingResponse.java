@@ -26,7 +26,7 @@ public class SettingResponse {
     @JsonProperty
     private Boolean reservationEnable;
     @JsonProperty
-    private String enabledDayOfWeek;
+    private EnabledDayOfWeekDto enabledDayOfWeek;
 
     protected SettingResponse(
             final LocalTime availableStartTime,
@@ -35,7 +35,7 @@ public class SettingResponse {
             final Integer reservationMinimumTimeUnit,
             final Integer reservationMaximumTimeUnit,
             final Boolean reservationEnable,
-            final String enabledDayOfWeek) {
+            final EnabledDayOfWeekDto enabledDayOfWeek) {
         this.availableStartTime = availableStartTime;
         this.availableEndTime = availableEndTime;
         this.reservationTimeUnit = reservationTimeUnit;
@@ -53,7 +53,7 @@ public class SettingResponse {
                 space.getReservationMinimumTimeUnit(),
                 space.getReservationMaximumTimeUnit(),
                 space.getReservationEnable(),
-                space.getEnabledDayOfWeek()
+                EnabledDayOfWeekDto.from(space.getEnabledDayOfWeek())
         );
     }
 }
