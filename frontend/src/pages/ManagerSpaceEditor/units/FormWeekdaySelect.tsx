@@ -3,7 +3,7 @@ import * as Styled from './FormWeekdaySelect.styles';
 
 interface Props {
   onChange: ChangeEventHandler<HTMLInputElement>;
-  enabledWeekdays: { [key: string]: boolean };
+  enabledDayOfWeek: { [key: string]: boolean };
 }
 
 interface Weekday<T> {
@@ -11,7 +11,7 @@ interface Weekday<T> {
   inputName: T;
 }
 
-const weekday: { [key in keyof Props['enabledWeekdays']]: Weekday<key> } = {
+const weekday: { [key in keyof Props['enabledDayOfWeek']]: Weekday<key> } = {
   monday: {
     displayName: '월',
     inputName: 'monday',
@@ -52,7 +52,7 @@ const displayOrder = [
   weekday.sunday,
 ];
 
-const FormWeekdaySelect = ({ onChange, enabledWeekdays }: Props): JSX.Element => {
+const FormWeekdaySelect = ({ onChange, enabledDayOfWeek }: Props): JSX.Element => {
   return (
     <Styled.Container>
       {displayOrder.map(({ displayName, inputName }) => (
@@ -60,7 +60,7 @@ const FormWeekdaySelect = ({ onChange, enabledWeekdays }: Props): JSX.Element =>
           <Styled.DisplayName>{displayName}</Styled.DisplayName>
           <input
             type="checkbox"
-            checked={enabledWeekdays[inputName]}
+            checked={enabledDayOfWeek[inputName]}
             name={inputName}
             onChange={onChange}
           />

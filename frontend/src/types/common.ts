@@ -85,7 +85,15 @@ export interface ReservationSettings {
   reservationMinimumTimeUnit: number;
   reservationMaximumTimeUnit: number;
   reservationEnable: boolean;
-  enabledDayOfWeek: string | null;
+  enabledDayOfWeek: {
+    monday: boolean;
+    tuesday: boolean;
+    wednesday: boolean;
+    thursday: boolean;
+    friday: boolean;
+    saturday: boolean;
+    sunday: boolean;
+  };
 }
 
 export interface Preset extends ReservationSettings {

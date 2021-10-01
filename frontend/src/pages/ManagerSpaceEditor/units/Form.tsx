@@ -248,7 +248,7 @@ const Form = ({
           <Styled.Row>
             <Styled.Fieldset>
               <Styled.Label>예약 가능한 요일</Styled.Label>
-              <FormWeekdaySelect onChange={onChange} enabledWeekdays={values.enabledWeekdays} />
+              <FormWeekdaySelect onChange={onChange} enabledDayOfWeek={values.enabledDayOfWeek} />
             </Styled.Fieldset>
           </Styled.Row>
 
