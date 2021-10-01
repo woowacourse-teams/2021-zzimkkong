@@ -14,7 +14,7 @@ import java.net.URI;
 public class S3ProxyController {
     private final S3Service s3Service;
 
-    public S3ProxyController(S3Service s3Service) {
+    public S3ProxyController(final S3Service s3Service) {
         this.s3Service = s3Service;
     }
 

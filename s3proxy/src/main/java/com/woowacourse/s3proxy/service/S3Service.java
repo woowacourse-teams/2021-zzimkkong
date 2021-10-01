@@ -12,7 +12,7 @@ import java.net.URI;
 public class S3Service {
     private final S3Uploader s3Uploader;
 
-    public S3Service(S3Uploader s3Uploader) {
+    public S3Service(final S3Uploader s3Uploader) {
         this.s3Uploader = s3Uploader;
     }
 
