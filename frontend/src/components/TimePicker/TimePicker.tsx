@@ -1,4 +1,4 @@
-import React, { ChangeEventHandler, MouseEventHandler, useState } from 'react';
+import React, { MouseEventHandler, useState } from 'react';
 import * as Styled from './TimePicker.styles';
 import TimePickerOptions from './TimePickerOptions';
 
@@ -49,52 +49,21 @@ const TimePicker = ({ label, step = 1, minTime, maxTime }: Props): JSX.Element =
     setSelectedTime(currentTarget.name as SelectedTime);
   };
 
-  const onChangeMidday: ChangeEventHandler<HTMLInputElement> = ({ target }) => {
-    if (selectedTime === null) return;
+  const onChange =
+    (name: string) =>
+    ({ target }: React.ChangeEvent<HTMLInputElement>) => {
+      if (selectedTime === null) return;
 
-    setRange((prev) => ({
-      ...prev,
-      [selectedTime]: {
-        ...prev[selectedTime],
-        midday: target.value,
-      },
-    }));
-  };
+      const value = name === 'midday' ? target.value : Number(target.value);
 
-  const onChangeHour: ChangeEventHandler<HTMLInputElement> = ({ target }) => {
-    if (selectedTime === null) return;
-
-    setRange((prev) => ({
-      ...prev,
-      [selectedTime]: {
-        ...prev[selectedTime],
-        hour: Number(target.value),
-      },
-    }));
-  };
-
-  const onChangeMinute: ChangeEventHandler<HTMLInputElement> = ({ target }) => {
-    if (selectedTime === null) return;
-
-    setRange((prev) => ({
-      ...prev,
-      [selectedTime]: {
-        ...prev[selectedTime],
-        minute: Number(target.value),
-      },
-    }));
-  };
-
-  const setTime = (value: Time) => {
-    if (selectedTime === null) return;
-
-    setRange((prev) => ({
-      ...prev,
-      [selectedTime]: {
-        ...value,
-      },
-    }));
-  };
+      setRange((prev) => ({
+        ...prev,
+        [selectedTime]: {
+          ...prev[selectedTime],
+          [name]: value,
+        },
+      }));
+    };
 
   return (
     <Styled.Container>
@@ -124,14 +93,7 @@ const TimePicker = ({ label, step = 1, minTime, maxTime }: Props): JSX.Element =
 
       {selectedTime !== null && (
         <Styled.OptionsContainer>
-          <TimePickerOptions
-            time={range[selectedTime]}
-            setTime={setTime}
-            step={step}
-            onChangeMidday={onChangeMidday}
-            onChangeHour={onChangeHour}
-            onChangeMinute={onChangeMinute}
-          />
+          <TimePickerOptions time={range[selectedTime]} step={step} onChange={onChange} />
         </Styled.OptionsContainer>
       )}
     </Styled.Container>

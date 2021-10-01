@@ -1,24 +1,14 @@
-import { ChangeEventHandler, useEffect, useRef } from 'react';
+import React, { useEffect, useRef } from 'react';
 import { Time } from './TimePicker';
 import * as Styled from './TimePickerOptions.styles';
 
 interface Props {
   time: Time;
-  setTime: (value: Time) => void;
   step?: 1 | 5 | 10 | 15 | 20 | 30;
-  onChangeMidday: ChangeEventHandler<HTMLInputElement>;
-  onChangeHour: ChangeEventHandler<HTMLInputElement>;
-  onChangeMinute: ChangeEventHandler<HTMLInputElement>;
+  onChange: (name: string) => (event: React.ChangeEvent<HTMLInputElement>) => void;
 }
 
-const TimePickerOptions = ({
-  time,
-  setTime,
-  step = 1,
-  onChangeMidday,
-  onChangeHour,
-  onChangeMinute,
-}: Props): JSX.Element => {
+const TimePickerOptions = ({ time, step = 1, onChange }: Props): JSX.Element => {
   const middayRef = useRef<HTMLDivElement | null>(null);
   const hourRef = useRef<HTMLDivElement | null>(null);
   const minuteRef = useRef<HTMLDivElement | null>(null);
@@ -45,7 +35,7 @@ const TimePickerOptions = ({
             type="radio"
             name="midday"
             value="오전"
-            onChange={onChangeMidday}
+            onChange={onChange('midday')}
             checked={time.midday === '오전'}
           />
           <Styled.OptionText>오전</Styled.OptionText>
@@ -55,7 +45,7 @@ const TimePickerOptions = ({
             type="radio"
             name="midday"
             value="오후"
-            onChange={onChangeMidday}
+            onChange={onChange('midday')}
             checked={time.midday === '오후'}
           />
           <Styled.OptionText>오후</Styled.OptionText>
@@ -70,7 +60,7 @@ const TimePickerOptions = ({
                 type="radio"
                 name="hour"
                 value={index + 1}
-                onChange={onChangeHour}
+                onChange={onChange('hour')}
                 checked={index + 1 === time.hour}
               />
               <Styled.OptionText>{String(index + 1).padStart(2, '0')} 시</Styled.OptionText>
@@ -86,7 +76,7 @@ const TimePickerOptions = ({
                 type="radio"
                 name="minute"
                 value={index * step}
-                onChange={onChangeMinute}
+                onChange={onChange('minute')}
                 checked={index * step === time.minute}
               />
               <Styled.OptionText>{String(index * step).padStart(2, '0')} 분</Styled.OptionText>
