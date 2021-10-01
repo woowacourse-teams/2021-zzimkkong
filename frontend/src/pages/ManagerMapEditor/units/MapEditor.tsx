@@ -1,4 +1,5 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
+import { theme } from 'App.styles';
 import { ReactComponent as EraserIcon } from 'assets/svg/eraser.svg';
 import { ReactComponent as LineIcon } from 'assets/svg/line.svg';
 import { ReactComponent as MoveIcon } from 'assets/svg/move.svg';
@@ -64,8 +65,9 @@ const MapCreateEditor = ({
   mapElementsState: [mapElements, setMapElements],
   boardState: [{ width, height }, onChangeBoard],
 }: Props): JSX.Element => {
-  const [mode, setMode] = useState(MapEditorMode.Select);
+  const boardRef = useRef<SVGSVGElement>(null);
 
+  const [mode, setMode] = useState(MapEditorMode.Select);
   const [color, setColor] = useState<Color>(PALETTE.BLACK[400]);
   const [isColorPickerOpen, setColorPickerOpen] = useState(false);
 
@@ -84,8 +86,19 @@ const MapCreateEditor = ({
   });
   const { stickyDotCoordinate, onMouseMove } = useBoardCoordinate(boardStatus);
   const { onWheel } = useBoardZoom([boardStatus, setBoardStatus]);
-  const { gripPoints, selectedMapElementId, deselectMapElement, onClickBoard, onClickMapElement } =
-    useBoardSelect();
+  const {
+    dragSelectRect,
+    gripPoints,
+    selectedMapElements,
+    selectedGroupBBox,
+    selectRectRef,
+    selectedMapElementsGroupRef,
+    selectMapElement,
+    deselectMapElements,
+    onSelectDragStart,
+    onSelectDrag,
+    onSelectDragEnd,
+  } = useBoardSelect({ mapElements, boardRef });
   const { isMoving, onDragStart, onDrag, onDragEnd, onMouseOut } = useBoardMove(
     [boardStatus, setBoardStatus],
     isBoardDraggable
@@ -109,6 +122,7 @@ const MapCreateEditor = ({
   const toggleColorPicker = () => setColorPickerOpen((prevState) => !prevState);
 
   const selectMode = (mode: MapEditorMode) => {
+    deselectMapElements();
     setDrawingStatus({});
     setMode(mode);
   };
@@ -124,30 +138,46 @@ const MapCreateEditor = ({
   const handleMouseUp = () => {
     if (isBoardDraggable || isMoving) return;
 
-    if (mode === MapEditorMode.Line) drawLineEnd();
+    if (mode === MapEditorMode.Select) onSelectDragEnd();
+    else if (mode === MapEditorMode.Line) drawLineEnd();
     else if (mode === MapEditorMode.Rect) drawRectEnd();
     else if (mode === MapEditorMode.Eraser) eraseEnd();
   };
 
+  const handleDragStartBoard = (event: React.MouseEvent<SVGSVGElement>) => {
+    if (isBoardDraggable) onDragStart(event);
+    else if (mode === MapEditorMode.Select) onSelectDragStart(event);
+  };
+
+  const handleDragBoard = (event: React.MouseEvent<SVGSVGElement>) => {
+    if (isBoardDraggable) onDrag(event);
+    else if (mode === MapEditorMode.Select) onSelectDrag(event);
+  };
+
+  const handleDragEndBoard = () => {
+    if (isBoardDraggable) onDragEnd();
+    else if (mode === MapEditorMode.Select) onSelectDragEnd();
+  };
+
   const deleteMapElement = useCallback(() => {
-    if (!selectedMapElementId) return;
+    if (!selectedMapElements) return;
 
     setMapElements((prevMapElements) =>
-      prevMapElements.filter(({ id }) => id !== selectedMapElementId)
+      prevMapElements.filter(({ id }) => !selectedMapElements.find((element) => element.id === id))
     );
 
-    deselectMapElement();
-  }, [deselectMapElement, selectedMapElementId, setMapElements]);
+    deselectMapElements();
+  }, [deselectMapElements, selectedMapElements, setMapElements]);
 
   useEffect(() => {
     if (mode !== MapEditorMode.Select) return;
 
     const isPressedDeleteKey = pressedKey === KEY.DELETE || pressedKey === KEY.BACK_SPACE;
 
-    if (isPressedDeleteKey && selectedMapElementId) {
+    if (isPressedDeleteKey && selectedMapElements) {
       deleteMapElement();
     }
-  }, [deleteMapElement, mode, pressedKey, selectedMapElementId]);
+  }, [deleteMapElement, mode, pressedKey, selectedMapElements]);
 
   return (
     <Styled.Editor>
@@ -175,15 +205,29 @@ const MapCreateEditor = ({
           boardState={[boardStatus, setBoardStatus]}
           movable={isBoardDraggable}
           isMoving={isMoving}
-          onClick={onClickBoard}
+          ref={boardRef}
           onMouseMove={onMouseMove}
           onMouseDown={handleMouseDown}
           onMouseUp={handleMouseUp}
           onWheel={onWheel}
-          onDragStart={onDragStart}
-          onDrag={onDrag}
-          onDragEnd={onDragEnd}
+          onDragStart={handleDragStartBoard}
+          onDrag={handleDragBoard}
+          onDragEnd={handleDragEndBoard}
           onMouseOut={onMouseOut}
+          rootSvgChildren={
+            <>
+              {dragSelectRect && (
+                <rect
+                  fill={EDITOR.DRAG_SELECT_RECT_FILL}
+                  x={dragSelectRect.x}
+                  y={dragSelectRect.y}
+                  width={dragSelectRect.width}
+                  height={dragSelectRect.height}
+                  ref={selectRectRef}
+                />
+              )}
+            </>
+          }
         >
           {[MapEditorMode.Line, MapEditorMode.Rect].includes(mode) && (
             <circle
@@ -246,6 +290,9 @@ const MapCreateEditor = ({
           )}
 
           {mapElements.map((element) => {
+            const isSelected = selectedMapElements.find(({ id }) => element.id === id);
+            const isDeleting = erasingMapElementIds.includes(element.id);
+
             if (element.type === MapElementType.Polyline) {
               return (
                 <polyline
@@ -255,15 +302,13 @@ const MapCreateEditor = ({
                   stroke={element.stroke}
                   strokeWidth={EDITOR.STROKE_WIDTH}
                   strokeLinecap="round"
+                  visibility={isSelected ? 'hidden' : 'visible'}
                   cursor={isMapElementClickable ? 'pointer' : 'default'}
                   pointerEvents={isMapElementEventAvailable ? 'auto' : 'none'}
-                  opacity={
-                    erasingMapElementIds.includes(element.id)
-                      ? EDITOR.OPACITY_DELETING
-                      : EDITOR.OPACITY
-                  }
-                  onClickCapture={onClickMapElement}
+                  opacity={isDeleting ? EDITOR.OPACITY_DELETING : EDITOR.OPACITY}
+                  onClickCapture={() => selectMapElement(element)}
                   onMouseOverCapture={onMouseOverMapElement}
+                  ref={(el) => (element.ref.current = el)}
                 />
               );
             }
@@ -281,21 +326,73 @@ const MapCreateEditor = ({
                   fill="none"
                   strokeWidth={EDITOR.STROKE_WIDTH}
                   strokeLinecap="round"
+                  visibility={isSelected ? 'hidden' : 'visible'}
                   cursor={isMapElementClickable ? 'pointer' : 'default'}
                   pointerEvents={isMapElementEventAvailable ? 'auto' : 'none'}
-                  opacity={
-                    erasingMapElementIds.includes(element.id)
-                      ? EDITOR.OPACITY_DELETING
-                      : EDITOR.OPACITY
-                  }
-                  onClickCapture={onClickMapElement}
+                  opacity={isDeleting ? EDITOR.OPACITY_DELETING : EDITOR.OPACITY}
+                  onClickCapture={() => selectMapElement(element)}
                   onMouseOverCapture={onMouseOverMapElement}
+                  ref={(el) => (element.ref.current = el)}
                 />
               );
             }
 
             return null;
           })}
+
+          <g pointerEvents="none" ref={selectedMapElementsGroupRef}>
+            {selectedMapElements.map((element) => {
+              if (element.type === MapElementType.Polyline) {
+                return (
+                  <polyline
+                    key={`${MapElementType.Polyline}-${element.id}`}
+                    id={`${MapElementType.Polyline}-${element.id}`}
+                    points={element.points.join(' ')}
+                    stroke={element.stroke}
+                    strokeWidth={EDITOR.STROKE_WIDTH}
+                    strokeLinecap="round"
+                    cursor={isMapElementClickable ? 'pointer' : 'default'}
+                    onClickCapture={() => selectMapElement(element)}
+                    onMouseOverCapture={onMouseOverMapElement}
+                  />
+                );
+              }
+
+              if (element.type === MapElementType.Rect) {
+                return (
+                  <rect
+                    key={`${MapElementType.Rect}-${element.id}`}
+                    id={`${MapElementType.Rect}-${element.id}`}
+                    x={element?.x}
+                    y={element?.y}
+                    width={element?.width}
+                    height={element?.height}
+                    stroke={element.stroke}
+                    fill="none"
+                    strokeWidth={EDITOR.STROKE_WIDTH}
+                    strokeLinecap="round"
+                    cursor={isMapElementClickable ? 'pointer' : 'default'}
+                    onClickCapture={() => selectMapElement(element)}
+                    onMouseOverCapture={onMouseOverMapElement}
+                  />
+                );
+              }
+
+              return null;
+            })}
+          </g>
+
+          {selectedGroupBBox && (
+            <rect
+              x={selectedGroupBBox.x}
+              y={selectedGroupBBox.y}
+              width={selectedGroupBBox.width}
+              height={selectedGroupBBox.height}
+              stroke={theme.primary[500]}
+              strokeWidth={EDITOR.SELECTED_GROUP_BBOX_STROKE_WIDTH}
+              fill="none"
+            />
+          )}
 
           {mode === MapEditorMode.Select &&
             gripPoints.map(({ x, y }, index) => (

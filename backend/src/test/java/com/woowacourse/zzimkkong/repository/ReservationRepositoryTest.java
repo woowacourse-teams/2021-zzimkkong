@@ -1,12 +1,14 @@
 package com.woowacourse.zzimkkong.repository;
 
 import com.woowacourse.zzimkkong.domain.*;
-import org.assertj.core.api.AssertionsForClassTypes;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -218,6 +220,20 @@ class ReservationRepositoryTest extends RepositoryTest {
 
         //then
         assertThat(actual).isEqualTo(expected);
+    }
+
+    @Test
+    @DisplayName("page로 모든 예약을 조회한다.")
+    void findAllByPaging() {
+        // given, when
+        PageRequest pageRequest = PageRequest.of(0, 20, Sort.unsorted());
+        Page<Reservation> actual = reservations.findAll(pageRequest);
+
+        // then
+        assertThat(actual.getSize()).isEqualTo(20);
+        assertThat(actual.getContent()).hasSize(4);
+        assertThat(actual.getContent()).usingRecursiveComparison()
+                .isEqualTo(List.of(beAmZeroOne, bePmOneTwo, beNextDayAmSixTwelve, fe1ZeroOne));
     }
 
     private List<Reservation> getReservations(List<Long> spaceIds, LocalDate date) {

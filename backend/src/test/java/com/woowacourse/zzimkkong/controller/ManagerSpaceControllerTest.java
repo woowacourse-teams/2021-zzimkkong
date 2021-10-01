@@ -5,7 +5,7 @@ import com.woowacourse.zzimkkong.domain.Member;
 import com.woowacourse.zzimkkong.domain.Setting;
 import com.woowacourse.zzimkkong.domain.Space;
 import com.woowacourse.zzimkkong.dto.space.*;
-import com.woowacourse.zzimkkong.infrastructure.AuthorizationExtractor;
+import com.woowacourse.zzimkkong.infrastructure.auth.AuthorizationExtractor;
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
@@ -94,7 +94,7 @@ class ManagerSpaceControllerTest extends AcceptanceTest {
                 60,
                 120,
                 true,
-                "monday, tuesday, wednesday, thursday, friday, saturday, sunday"
+                EnabledDayOfWeekDto.from("monday, tuesday, wednesday, thursday, friday, saturday, sunday")
         );
 
         SpaceCreateUpdateRequest newSpaceCreateUpdateRequest = new SpaceCreateUpdateRequest(
@@ -211,7 +211,7 @@ class ManagerSpaceControllerTest extends AcceptanceTest {
                 60,
                 120,
                 false,
-                "monday, tuesday, wednesday, thursday, friday, saturday, sunday"
+                EnabledDayOfWeekDto.from("monday, tuesday, wednesday, thursday, friday, saturday, sunday")
         );
 
         SpaceCreateUpdateRequest updateSpaceCreateUpdateRequest = new SpaceCreateUpdateRequest(

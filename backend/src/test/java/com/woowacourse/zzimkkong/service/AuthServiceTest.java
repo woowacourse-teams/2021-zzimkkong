@@ -8,8 +8,8 @@ import com.woowacourse.zzimkkong.dto.member.TokenResponse;
 import com.woowacourse.zzimkkong.exception.authorization.OauthProviderMismatchException;
 import com.woowacourse.zzimkkong.exception.member.NoSuchMemberException;
 import com.woowacourse.zzimkkong.exception.member.NoSuchOAuthMemberException;
-import com.woowacourse.zzimkkong.exception.member.PasswordMismatchException;
-import com.woowacourse.zzimkkong.infrastructure.JwtUtils;
+import com.woowacourse.zzimkkong.exception.member.IdPasswordMismatchException;
+import com.woowacourse.zzimkkong.infrastructure.auth.JwtUtils;
 import com.woowacourse.zzimkkong.infrastructure.oauth.OauthHandler;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -20,9 +20,7 @@ import org.junit.jupiter.params.provider.EnumSource;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.security.core.parameters.P;
 
-import java.util.Arrays;
 import java.util.Optional;
 import java.util.stream.Stream;
 
@@ -94,7 +92,7 @@ class AuthServiceTest extends ServiceTest {
 
         //then
         assertThatThrownBy(() -> authService.login(loginRequest))
-                .isInstanceOf(PasswordMismatchException.class);
+                .isInstanceOf(IdPasswordMismatchException.class);
     }
 
     @ParameterizedTest

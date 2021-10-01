@@ -2,13 +2,15 @@ package com.woowacourse.zzimkkong.service;
 
 import com.woowacourse.zzimkkong.domain.Member;
 import com.woowacourse.zzimkkong.domain.OauthProvider;
+import com.woowacourse.zzimkkong.dto.member.MemberFindResponse;
 import com.woowacourse.zzimkkong.dto.member.MemberSaveRequest;
 import com.woowacourse.zzimkkong.dto.member.MemberSaveResponse;
 import com.woowacourse.zzimkkong.dto.member.MemberUpdateRequest;
 import com.woowacourse.zzimkkong.dto.member.oauth.OauthMemberSaveRequest;
 import com.woowacourse.zzimkkong.exception.member.DuplicateEmailException;
+import com.woowacourse.zzimkkong.exception.member.NoSuchMemberException;
 import com.woowacourse.zzimkkong.exception.member.ReservationExistsOnMemberException;
-import com.woowacourse.zzimkkong.infrastructure.oauth.OauthHandler;
+import com.woowacourse.zzimkkong.dto.member.LoginEmailDto;
 import com.woowacourse.zzimkkong.repository.MemberRepository;
 import com.woowacourse.zzimkkong.repository.ReservationRepository;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -21,16 +23,13 @@ public class MemberService {
     private final MemberRepository members;
     private final ReservationRepository reservations;
     private final PasswordEncoder passwordEncoder;
-    private final OauthHandler oauthHandler;
 
     public MemberService(final MemberRepository members,
                          final ReservationRepository reservations,
-                         final PasswordEncoder passwordEncoder,
-                         final OauthHandler oauthHandler) {
+                         final PasswordEncoder passwordEncoder) {
         this.members = members;
         this.reservations = reservations;
         this.passwordEncoder = passwordEncoder;
-        this.oauthHandler = oauthHandler;
     }
 
     public MemberSaveResponse saveMember(final MemberSaveRequest memberSaveRequest) {
@@ -68,16 +67,27 @@ public class MemberService {
         }
     }
 
-    public void updateMember(final Member member, final MemberUpdateRequest memberUpdateRequest) {
+    @Transactional(readOnly = true)
+    public MemberFindResponse findMember(final LoginEmailDto loginEmailDto) {
+        Member member = members.findByEmail(loginEmailDto.getEmail())
+                .orElseThrow(NoSuchMemberException::new);
+        return MemberFindResponse.from(member);
+    }
+
+    public void updateMember(final LoginEmailDto loginEmailDto, final MemberUpdateRequest memberUpdateRequest) {
+        Member member = members.findByEmail(loginEmailDto.getEmail())
+                .orElseThrow(NoSuchMemberException::new);
         member.update(memberUpdateRequest.getOrganization());
     }
 
-    public void deleteMember(final Member manager) {
-        boolean hasAnyReservations = reservations.existsReservationsByMemberFromToday(manager);
+    public void deleteMember(final LoginEmailDto loginEmailDto) {
+        Member member = members.findByEmail(loginEmailDto.getEmail())
+                .orElseThrow(NoSuchMemberException::new);
+        boolean hasAnyReservations = reservations.existsReservationsByMemberFromToday(member);
         if (hasAnyReservations) {
             throw new ReservationExistsOnMemberException();
         }
 
-        members.delete(manager);
+        members.delete(member);
     }
 }

@@ -250,12 +250,14 @@ class GuestReservationControllerTest extends AcceptanceTest {
     @Test
     @DisplayName("올바른 비밀번호와 함께 예약을 삭제한다.")
     void delete() {
-        //given, when
+        //given
         ReservationPasswordAuthenticationRequest reservationPasswordAuthenticationRequest = new ReservationPasswordAuthenticationRequest(SALLY_PW);
         String api = beReservationApi + "/" + savedReservationId;
 
-        //then
+        //when
         ExtractableResponse<Response> response = deleteReservation(api, reservationPasswordAuthenticationRequest);
+
+        //then
         assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
     }
 
