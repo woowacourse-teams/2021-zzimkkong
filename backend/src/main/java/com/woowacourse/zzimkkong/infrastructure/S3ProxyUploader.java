@@ -22,7 +22,7 @@ import java.util.Objects;
 
 @Component
 public class S3ProxyUploader implements StorageUploader {
-    private static final String PATH_DELIMETER = "/";
+    private static final String PATH_DELIMITER = "/";
     private static final String API_PATH = "/api/storage";
     private static final String CONTENT_DISPOSITION_HEADER_VALUE_FORMAT = "form-data; name=file; filename=%s";
 
