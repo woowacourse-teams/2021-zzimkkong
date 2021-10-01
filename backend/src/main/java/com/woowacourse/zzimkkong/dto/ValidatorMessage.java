@@ -25,5 +25,4 @@ public class ValidatorMessage {
     public static final String ORGANIZATION_FORMAT = "^[ a-zA-Z0-9ㄱ-힣]{1,20}$";
     public static final String NAMING_FORMAT = "^[-_!?.,a-zA-Z0-9ㄱ-힣]{1,20}$";
     public static final String PRESET_NAME_FORMAT = "^[-_!?., a-zA-Z0-9ㄱ-힣]{1,20}$";
-
 }
