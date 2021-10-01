@@ -2,6 +2,7 @@ package com.woowacourse.zzimkkong.infrastructure;
 
 import com.woowacourse.zzimkkong.exception.infrastructure.S3ProxyRespondedFailException;
 import com.woowacourse.zzimkkong.exception.infrastructure.S3UploadException;
+import com.woowacourse.zzimkkong.infrastructure.thumbnail.StorageUploader;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.http.HttpHeaders;

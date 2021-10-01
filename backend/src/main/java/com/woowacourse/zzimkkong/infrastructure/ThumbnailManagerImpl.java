@@ -1,6 +1,9 @@
 package com.woowacourse.zzimkkong.infrastructure;
 
 import com.woowacourse.zzimkkong.domain.Map;
+import com.woowacourse.zzimkkong.infrastructure.thumbnail.StorageUploader;
+import com.woowacourse.zzimkkong.infrastructure.thumbnail.SvgConverter;
+import com.woowacourse.zzimkkong.infrastructure.thumbnail.ThumbnailManager;
 import org.springframework.stereotype.Component;
 
 import java.io.File;
