@@ -47,7 +47,7 @@ public class S3ProxyUploader implements StorageUploader {
 
             return proxyServerClient
                     .method(HttpMethod.POST)
-                    .uri(String.join(PATH_DELIMETER, API_PATH, directoryName))
+                    .uri(String.join(PATH_DELIMITER, API_PATH, directoryName))
                     .header(HttpHeaders.CONTENT_TYPE, MediaType.MULTIPART_FORM_DATA_VALUE)
                     .body(BodyInserters.fromMultipartData(multipartBodyBuilder.build()))
                     .exchangeToMono(clientResponse -> {
@@ -70,7 +70,7 @@ public class S3ProxyUploader implements StorageUploader {
     public void delete(String directoryName, String fileName) {
         proxyServerClient
                 .method(HttpMethod.DELETE)
-                .uri(String.join(PATH_DELIMETER, API_PATH, directoryName, fileName))
+                .uri(String.join(PATH_DELIMITER, API_PATH, directoryName, fileName))
                 .retrieve()
                 .bodyToMono(String.class)
                 .block();
