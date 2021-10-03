@@ -1,5 +1,6 @@
 package com.woowacourse.zzimkkong.controller;
 
+import com.woowacourse.zzimkkong.config.logaspect.LogMethodExecutionTime;
 import com.woowacourse.zzimkkong.domain.Manager;
 import com.woowacourse.zzimkkong.domain.Member;
 import com.woowacourse.zzimkkong.dto.member.*;
@@ -18,6 +19,7 @@ import java.net.URI;
 import static com.woowacourse.zzimkkong.dto.ValidatorMessage.EMAIL_MESSAGE;
 import static com.woowacourse.zzimkkong.dto.ValidatorMessage.EMPTY_MESSAGE;
 
+@LogMethodExecutionTime(group = "controller")
 @RestController
 @RequestMapping("/api/managers")
 @Validated
