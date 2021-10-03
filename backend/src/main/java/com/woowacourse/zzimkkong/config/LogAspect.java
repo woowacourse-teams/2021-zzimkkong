@@ -1,5 +1,6 @@
 package com.woowacourse.zzimkkong.config;
 
+import com.woowacourse.zzimkkong.config.logaspect.LogMethodExecutionTime;
 import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.ProceedingJoinPoint;
@@ -34,11 +35,14 @@ public class LogAspect {
         Object result = joinPoint.proceed();
 
         long endTime = System.currentTimeMillis();
-        long timeTaken = endTime - startTime;
 
-        log.info("API call: {} took {} ms",
+        long timeTaken = endTime - startTime;
+        Class<?> targetClass = joinPoint.getTarget().getClass();
+        String logGroup = targetClass.getAnnotation(LogMethodExecutionTime.class).group();
+        log.info("{} took {} ms. (info group by '{}')",
                 value("method", methodSignature.getDeclaringTypeName() + "." + methodSignature.getName() + "()"),
-                value("execution_time", timeTaken));
+                value("execution_time", timeTaken),
+                value("group", logGroup));
 
         return result;
     }
