@@ -10,14 +10,18 @@ import com.woowacourse.zzimkkong.dto.reservation.ReservationCreateUpdateWithPass
 import com.woowacourse.zzimkkong.dto.reservation.ReservationResponse;
 import com.woowacourse.zzimkkong.dto.space.SpaceFindDetailWithIdResponse;
 import com.woowacourse.zzimkkong.infrastructure.auth.AuthorizationExtractor;
+import com.woowacourse.zzimkkong.service.AdminService;
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 
 import java.util.List;
 
@@ -27,6 +31,7 @@ import static com.woowacourse.zzimkkong.controller.ManagerReservationControllerT
 import static com.woowacourse.zzimkkong.controller.ManagerSpaceControllerTest.saveSpace;
 import static com.woowacourse.zzimkkong.controller.MapControllerTest.saveMap;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Mockito.mock;
 
 class AdminControllerTest extends AcceptanceTest {
     private static final Member POBI = new Member(memberSaveRequest.getEmail(), memberSaveRequest.getPassword(), memberSaveRequest.getOrganization());
@@ -172,6 +177,32 @@ class AdminControllerTest extends AcceptanceTest {
         assertThat(actual).usingRecursiveComparison()
                 .ignoringExpectedNullFields()
                 .isEqualTo(expected);
+    }
+
+    @Test
+    @DisplayName("test로 동작 시 해당 profile을 조회한다.")
+    void getProfile() {
+        // given, when
+        ExtractableResponse<Response> response = get("/admin/api/profile");
+
+        // then
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+    }
+
+    @ParameterizedTest
+    @DisplayName("dev, prod로 동작 시 해당 profile을 조회한다.")
+    @CsvSource(value = {"dev:307:dev.zzimkkong.com", "prod:308:zzimkkong.com"}, delimiter = ':')
+    void getOtherProfile(String profile, int status, String url) {
+        //given
+        AdminService adminService = mock(AdminService.class);
+        AdminController adminController = new AdminController(profile, adminService);
+
+        //when
+        ResponseEntity<String> response = adminController.profile();
+
+        //then
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.valueOf(status));
+        assertThat(response.getBody()).isEqualTo(url);
     }
 
     static ExtractableResponse<Response> login(LoginRequest adminLoginRequest) {
