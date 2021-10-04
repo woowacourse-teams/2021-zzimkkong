@@ -1,9 +1,6 @@
-package com.woowacourse.zzimkkong.infrastructure;
+package com.woowacourse.zzimkkong.infrastructure.thumbnail;
 
 import com.woowacourse.zzimkkong.domain.Map;
-import com.woowacourse.zzimkkong.infrastructure.thumbnail.StorageUploader;
-import com.woowacourse.zzimkkong.infrastructure.thumbnail.SvgConverter;
-import com.woowacourse.zzimkkong.infrastructure.thumbnail.ThumbnailManager;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
@@ -21,8 +18,7 @@ public class ThumbnailManagerImpl implements ThumbnailManager {
     public ThumbnailManagerImpl(
             final SvgConverter svgConverter,
             final StorageUploader storageUploader,
-            @Value("${s3proxy.thumbnails-directory}")
-            final String thumbnailsDirectoryName) {
+            @Value("${s3proxy.thumbnails-directory}") final String thumbnailsDirectoryName) {
         this.svgConverter = svgConverter;
         this.storageUploader = storageUploader;
         this.thumbnailsDirectoryName = thumbnailsDirectoryName;
