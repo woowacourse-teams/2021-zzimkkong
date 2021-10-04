@@ -14,6 +14,7 @@ import static net.logstash.logback.argument.StructuredArguments.value;
 @Component
 @Aspect
 public class LogAspect {
+    private static final String GROUP_NAME_OF_REPOSITORY = "repository";
 
     @Around("@target(com.woowacourse.zzimkkong.config.logaspect.LogMethodExecutionTime) " +
             "&& execution(* com.woowacourse..*(..))")
@@ -25,20 +26,11 @@ public class LogAspect {
         long timeTaken = endTime - startTime;
 
         String logGroup = getLogGroup(joinPoint);
-
         MethodSignature methodSignature = (MethodSignature) joinPoint.getSignature();
-        log.info("{} took {} ms. (info group by '{}')",
-                value("method", methodSignature.getDeclaringTypeName() + "." + methodSignature.getName() + "()"),
-                value("execution_time", timeTaken),
-                value("group", logGroup));
+
+        logExecutionInfo(methodSignature, timeTaken, logGroup);
 
         return result;
-    }
-
-    private String getLogGroup(ProceedingJoinPoint joinPoint) {
-        Class<?> targetClass = joinPoint.getTarget().getClass();
-        String logGroup = targetClass.getAnnotation(LogMethodExecutionTime.class).group();
-        return logGroup;
     }
 
     @Around("execution(public * org.springframework.data.repository.Repository+.*(..))")
@@ -50,12 +42,21 @@ public class LogAspect {
         long timeTaken = endTime - startTime;
 
         MethodSignature methodSignature = (MethodSignature) joinPoint.getSignature();
-        String logGroup = "repository";
+
+        logExecutionInfo(methodSignature, timeTaken, GROUP_NAME_OF_REPOSITORY);
+
+        return result;
+    }
+
+    private String getLogGroup(ProceedingJoinPoint joinPoint) {
+        Class<?> targetClass = joinPoint.getTarget().getClass();
+        return targetClass.getAnnotation(LogMethodExecutionTime.class).group();
+    }
+
+    private void logExecutionInfo(MethodSignature methodSignature, long timeTaken, String logGroup) {
         log.info("{} took {} ms. (info group by '{}')",
                 value("method", methodSignature.getDeclaringTypeName() + "." + methodSignature.getName() + "()"),
                 value("execution_time", timeTaken),
                 value("group", logGroup));
-
-        return result;
     }
 }
