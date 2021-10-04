@@ -33,7 +33,13 @@ function getSpaces(pageNumber) {
                         시작시간: ${space.settings.availableStartTime}, 끝시간: ${space.settings.availableEndTime}, <br>
                         단위시간: ${space.settings.reservationTimeUnit}, 최소시간: ${space.settings.reservationMinimumTimeUnit}, 최대시간: ${space.settings.reservationMaximumTimeUnit}, <br>
                         예약가능여부: ${space.settings.reservationEnable}, <br>
-                        가능요일: ${space.settings.enabledDayOfWeek}
+                        월: ${space.settings.enabledDayOfWeek.monday}, 
+                        화: ${space.settings.enabledDayOfWeek.tuesday}, 
+                        수: ${space.settings.enabledDayOfWeek.wednesday}, 
+                        목: ${space.settings.enabledDayOfWeek.thursday}, 
+                        금: ${space.settings.enabledDayOfWeek.friday}, 
+                        토: ${space.settings.enabledDayOfWeek.saturday}, 
+                        일: ${space.settings.enabledDayOfWeek.sunday}
                         </td>
                         <td>
                         맵id: ${space.mapId} <br>
