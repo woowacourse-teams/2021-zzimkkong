@@ -60,6 +60,7 @@ public class AdminController {
 
     @GetMapping("/profile")
     public ResponseEntity<String> profile() {
+        System.out.println("!@#!@#!@#" + profile);
         if (profile.equals("dev")) {
             return ResponseEntity.status(HttpStatus.TEMPORARY_REDIRECT).body(DEV_URL);
         }
