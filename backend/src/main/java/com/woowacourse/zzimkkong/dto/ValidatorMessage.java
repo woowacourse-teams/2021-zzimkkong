@@ -20,10 +20,9 @@ public class ValidatorMessage {
     public static final String DATE_FORMAT = "yyyy-MM-dd";
     public static final String TIME_FORMAT = "HH:mm:ss";
     public static final String DATETIME_FORMAT = "yyyy-MM-dd'T'HH:mm:ss";
-    public static final String MEMBER_PW_FORMAT = "^(?=.*[A-Za-z])(?=.*[0-9])[A-Za-z0-9]{8,20}$";
+    public static final String MEMBER_PW_FORMAT = "^(?=.*[a-zA-Z])(?=.*[0-9]).{8,20}$";
     public static final String RESERVATION_PW_FORMAT = "^[0-9]{4}$";
     public static final String ORGANIZATION_FORMAT = "^[ a-zA-Z0-9ㄱ-힣]{1,20}$";
     public static final String NAMING_FORMAT = "^[-_!?.,a-zA-Z0-9ㄱ-힣]{1,20}$";
     public static final String PRESET_NAME_FORMAT = "^[-_!?., a-zA-Z0-9ㄱ-힣]{1,20}$";
-
 }

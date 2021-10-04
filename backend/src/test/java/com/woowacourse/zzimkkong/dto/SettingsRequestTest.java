@@ -1,5 +1,6 @@
 package com.woowacourse.zzimkkong.dto;
 
+import com.woowacourse.zzimkkong.dto.space.EnabledDayOfWeekDto;
 import com.woowacourse.zzimkkong.dto.space.SettingsRequest;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -25,7 +26,7 @@ class SettingsRequestTest extends RequestTest {
                 60,
                 120,
                 true,
-                "Monday, Tuesday"
+                EnabledDayOfWeekDto.from("Monday, Tuesday")
         );
 
         assertThat(getConstraintViolations(settingsRequest).stream()
@@ -45,51 +46,11 @@ class SettingsRequestTest extends RequestTest {
                 60,
                 120,
                 true,
-                "Monday, Tuesday"
+                EnabledDayOfWeekDto.from("Monday, Tuesday")
         );
 
         assertThat(getConstraintViolations(settingsRequest).stream()
                 .noneMatch(violation -> violation.getMessage().equals(TIME_UNIT_MESSAGE)))
                 .isTrue();
     }
-
-    @ParameterizedTest
-    @NullSource
-    @ValueSource(strings = {"Monday, Tuesday, Wednesday", "Monday,tuesday", "monday"})
-    @DisplayName("공간의 예약 설정에 예약 가능 요일이 올바르지 않게 들어온다.")
-    void validEnabledDayOfWeek(String days) {
-        SettingsRequest settingsRequest = new SettingsRequest(
-                LocalTime.of(10, 0),
-                LocalTime.of(22, 0),
-                10,
-                60,
-                120,
-                true,
-                days
-        );
-
-        assertThat(getConstraintViolations(settingsRequest).stream()
-                .noneMatch(violation -> violation.getMessage().equals(DAY_OF_WEEK_MESSAGE)))
-                .isTrue();
-    }
-
-    @ParameterizedTest
-    @ValueSource(strings = {"mon, tue", "monday, monday", "Tueday"})
-    @DisplayName("공간의 예약 설정에 예약 가능 요일이 올바르게 들어온다.")
-    void invalidEnabledDayOfWeek(String days) {
-        SettingsRequest settingsRequest = new SettingsRequest(
-                LocalTime.of(10, 0),
-                LocalTime.of(22, 0),
-                10,
-                60,
-                120,
-                true,
-                days
-        );
-
-        assertThat(getConstraintViolations(settingsRequest).stream()
-                .noneMatch(violation -> violation.getMessage().equals(DAY_OF_WEEK_MESSAGE)))
-                .isFalse();
-    }
-
 }

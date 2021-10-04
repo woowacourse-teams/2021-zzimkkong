@@ -12,7 +12,7 @@ export interface SpaceFormValue {
   reservationMinimumTimeUnit: string | number;
   reservationMaximumTimeUnit: string | number;
   reservationEnable: boolean;
-  enabledWeekdays: {
+  enabledDayOfWeek: {
     monday: boolean;
     tuesday: boolean;
     wednesday: boolean;
@@ -26,7 +26,7 @@ export interface SpaceFormValue {
 
 const today = formatDate(new Date());
 
-export const initialSpaceFormValue: Omit<SpaceFormValue, 'enabledWeekdays' | 'area'> = {
+export const initialSpaceFormValue: Omit<SpaceFormValue, 'enabledDayOfWeek' | 'area'> = {
   reservationEnable: true,
   name: '',
   color: PALETTE.RED[500],
@@ -37,7 +37,7 @@ export const initialSpaceFormValue: Omit<SpaceFormValue, 'enabledWeekdays' | 'ar
   reservationMaximumTimeUnit: '1440',
 };
 
-export const initialEnabledWeekdays: SpaceFormValue['enabledWeekdays'] = {
+export const initialEnabledDayOfWeek: SpaceFormValue['enabledDayOfWeek'] = {
   monday: true,
   tuesday: true,
   wednesday: true,
