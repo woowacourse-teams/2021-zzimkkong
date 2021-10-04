@@ -16,15 +16,6 @@ import static net.logstash.logback.argument.StructuredArguments.*;
 @Component
 @Aspect
 public class LogAspect {
-    @Before("@target(com.woowacourse.zzimkkong.config.logaspect.LogEveryMethodCall) " +
-            "&& execution(* com.woowacourse..*(..)))")
-    public void logEveryMethodCall(JoinPoint joinPoint) {
-        MethodSignature methodSignature = (MethodSignature) joinPoint.getSignature();
-
-        log.info("API call: {}",
-                value("method", methodSignature.getDeclaringTypeName() + "." + methodSignature.getName() + "()"));
-    }
-
     @Around("@target(com.woowacourse.zzimkkong.config.logaspect.LogMethodExecutionTime) " +
             "&& execution(* com.woowacourse..*(..)))")
     public Object logExecutionTime(ProceedingJoinPoint joinPoint) throws Throwable {
