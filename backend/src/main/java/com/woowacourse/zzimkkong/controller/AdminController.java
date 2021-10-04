@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.*;
 public class AdminController {
     private static final String DEV_URL = "dev.zzimkkong.com";
     private static final String PROD_URL = "zzimkkong.com";
+
     private final AdminService adminService;
     private final String profile;
 
@@ -60,7 +61,6 @@ public class AdminController {
 
     @GetMapping("/profile")
     public ResponseEntity<String> profile() {
-        System.out.println("!@#!@#!@#" + profile);
         if (profile.equals("dev")) {
             return ResponseEntity.status(HttpStatus.TEMPORARY_REDIRECT).body(DEV_URL);
         }
