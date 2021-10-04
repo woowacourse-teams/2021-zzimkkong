@@ -8,6 +8,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
 function MapPage() {
     this.getMaps = window.location.origin + "/admin/api/maps";
+    this.getProfile = window.location.origin + "/admin/api/profile";
 }
 
 function getMaps(pageNumber) {
@@ -28,7 +29,7 @@ function getMaps(pageNumber) {
                         <th scope="row">${map.mapId}</th>
                         <td>${map.mapName}</td>
                         <td>${map.mapImageUrl}</td>
-                        <td>${map.sharingMapId}</td>
+                        <td onclick="moveToMap('${map.sharingMapId}')">${map.sharingMapId}</td>
                         <td>${map.managerEmail}</td>
                     </tr>`
                 ).join("");
@@ -54,4 +55,16 @@ function move(name) {
     location.href = window.location.origin + '/admin/' + name;
 }
 
-//todo: 모듈 분리
+function moveToMap(sharingMapId) {
+    fetch(mapPage.getProfile, {
+        headers: {
+            Authorization: window.localStorage.getItem('accessToken')
+        }
+    }).then(res => {
+        if (res.status === 400) {
+            alert('로컬에서는 맵을 조회할 수 없습니다.')
+        } else {
+            res.text().then(data => location.href = data + '/guest/' + sharingMapId);
+        }
+    });
+}
