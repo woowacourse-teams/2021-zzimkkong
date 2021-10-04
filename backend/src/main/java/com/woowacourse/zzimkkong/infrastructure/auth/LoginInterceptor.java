@@ -1,5 +1,6 @@
 package com.woowacourse.zzimkkong.infrastructure.auth;
 
+import com.woowacourse.zzimkkong.config.logaspect.LogMethodExecutionTime;
 import org.springframework.http.HttpMethod;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.HandlerInterceptor;
@@ -8,6 +9,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 @Component
+@LogMethodExecutionTime(group = "infrastructure")
 public class LoginInterceptor implements HandlerInterceptor {
     private final JwtUtils jwtUtils;
 

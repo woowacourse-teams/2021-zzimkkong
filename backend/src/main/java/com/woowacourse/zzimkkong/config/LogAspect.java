@@ -17,7 +17,7 @@ import static net.logstash.logback.argument.StructuredArguments.*;
 @Aspect
 public class LogAspect {
     @Around("@target(com.woowacourse.zzimkkong.config.logaspect.LogMethodExecutionTime) " +
-            "&& execution(* com.woowacourse..*(..)))")
+            "&& execution(* com.woowacourse..*(..))")
     public Object logExecutionTime(ProceedingJoinPoint joinPoint) throws Throwable {
         MethodSignature methodSignature = (MethodSignature) joinPoint.getSignature();
 
@@ -30,6 +30,26 @@ public class LogAspect {
         long timeTaken = endTime - startTime;
         Class<?> targetClass = joinPoint.getTarget().getClass();
         String logGroup = targetClass.getAnnotation(LogMethodExecutionTime.class).group();
+        log.info("{} took {} ms. (info group by '{}')",
+                value("method", methodSignature.getDeclaringTypeName() + "." + methodSignature.getName() + "()"),
+                value("execution_time", timeTaken),
+                value("group", logGroup));
+
+        return result;
+    }
+
+    @Around("execution(public * org.springframework.data.repository.Repository+.*(..))")
+    public Object logExecutionTimeOfRepository(ProceedingJoinPoint joinPoint) throws Throwable {
+        MethodSignature methodSignature = (MethodSignature) joinPoint.getSignature();
+
+        long startTime = System.currentTimeMillis();
+
+        Object result = joinPoint.proceed();
+
+        long endTime = System.currentTimeMillis();
+
+        long timeTaken = endTime - startTime;
+        String logGroup = "repository";
         log.info("{} took {} ms. (info group by '{}')",
                 value("method", methodSignature.getDeclaringTypeName() + "." + methodSignature.getName() + "()"),
                 value("execution_time", timeTaken),

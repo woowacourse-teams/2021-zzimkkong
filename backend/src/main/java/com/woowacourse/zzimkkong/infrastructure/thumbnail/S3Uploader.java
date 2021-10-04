@@ -4,6 +4,7 @@ import com.amazonaws.AmazonClientException;
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.model.DeleteObjectRequest;
 import com.amazonaws.services.s3.model.PutObjectRequest;
+import com.woowacourse.zzimkkong.config.logaspect.LogMethodExecutionTime;
 import com.woowacourse.zzimkkong.exception.infrastructure.S3UploadException;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
@@ -11,6 +12,7 @@ import org.springframework.stereotype.Component;
 import java.io.File;
 
 @Component
+@LogMethodExecutionTime(group = "infrastructure")
 public class S3Uploader implements StorageUploader {
     private static final String S3_DOMAIN_FORMAT = "https://%s.s3.%s.amazonaws.com";
     private static final String PATH_DELIMITER = "/";

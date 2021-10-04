@@ -1,5 +1,6 @@
 package com.woowacourse.zzimkkong.infrastructure.auth;
 
+import com.woowacourse.zzimkkong.config.logaspect.LogMethodExecutionTime;
 import com.woowacourse.zzimkkong.exception.authorization.InvalidTokenException;
 import com.woowacourse.zzimkkong.exception.authorization.TokenExpiredException;
 import io.jsonwebtoken.*;
@@ -10,6 +11,7 @@ import java.util.Date;
 import java.util.Map;
 
 @Component
+@LogMethodExecutionTime(group = "infrastructure")
 public class JwtUtils {
     private final String secretKey;
     private final long validityInMilliseconds;

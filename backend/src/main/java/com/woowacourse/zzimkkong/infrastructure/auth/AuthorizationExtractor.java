@@ -1,10 +1,12 @@
 package com.woowacourse.zzimkkong.infrastructure.auth;
 
+import com.woowacourse.zzimkkong.config.logaspect.LogMethodExecutionTime;
 import com.woowacourse.zzimkkong.exception.authorization.AuthorizationHeaderUninvolvedException;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.Enumeration;
 
+@LogMethodExecutionTime(group = "infrastructure")
 public class AuthorizationExtractor {
     private AuthorizationExtractor() {
     }

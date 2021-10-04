@@ -1,11 +1,13 @@
 package com.woowacourse.zzimkkong.infrastructure.thumbnail;
 
+import com.woowacourse.zzimkkong.config.logaspect.LogMethodExecutionTime;
 import com.woowacourse.zzimkkong.domain.Map;
 import org.springframework.stereotype.Component;
 
 import java.io.File;
 
 @Component
+@LogMethodExecutionTime(group = "infrastructure")
 public class ThumbnailManager {
     public static final String THUMBNAILS_DIRECTORY_NAME = "thumbnails";
     public static final String THUMBNAIL_EXTENSION = ".png";
