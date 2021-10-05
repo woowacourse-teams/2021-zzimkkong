@@ -1,4 +1,4 @@
-import { Dispatch, SetStateAction } from 'react';
+import { createRef, Dispatch, SetStateAction } from 'react';
 import { Color, Coordinate, DrawingStatus, MapElement } from 'types/common';
 import { MapElementType } from 'types/editor';
 
@@ -32,6 +32,7 @@ const useBoardRectTool = ({
           type: MapElementType.Rect,
           stroke: color,
           points: [startPoint, endPoint],
+          ref: createRef<SVGRectElement>(),
         },
       ]);
 
@@ -75,6 +76,7 @@ const useBoardRectTool = ({
           type: MapElementType.Polyline,
           stroke: color,
           points: [`${startPoint.x},${startPoint.y}`, `${endPoint.x},${endPoint.y}`],
+          ref: createRef<SVGPolylineElement>(),
         },
       ]);
 
@@ -92,6 +94,7 @@ const useBoardRectTool = ({
         x: Math.min(startPoint.x, endPoint.x),
         y: Math.min(startPoint.y, endPoint.y),
         points: [startCoordinate, endCoordinate],
+        ref: createRef<SVGRectElement>(),
       },
     ]);
   };

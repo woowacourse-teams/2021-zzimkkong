@@ -1,7 +1,6 @@
 package com.woowacourse.zzimkkong.exception.space;
 
 import com.woowacourse.zzimkkong.exception.InputFieldException;
-import com.woowacourse.zzimkkong.exception.ZzimkkongException;
 import org.springframework.http.HttpStatus;
 
 public class TimeUnitInconsistencyException extends InputFieldException {

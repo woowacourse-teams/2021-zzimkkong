@@ -1,15 +1,15 @@
 package com.woowacourse.zzimkkong.controller;
 
 import com.woowacourse.zzimkkong.domain.Member;
-import com.woowacourse.zzimkkong.domain.OauthProvider;
 import com.woowacourse.zzimkkong.domain.Preset;
 import com.woowacourse.zzimkkong.domain.Setting;
 import com.woowacourse.zzimkkong.dto.ErrorResponse;
 import com.woowacourse.zzimkkong.dto.InputFieldErrorResponse;
 import com.woowacourse.zzimkkong.dto.member.*;
 import com.woowacourse.zzimkkong.dto.member.oauth.OauthMemberSaveRequest;
+import com.woowacourse.zzimkkong.dto.space.EnabledDayOfWeekDto;
 import com.woowacourse.zzimkkong.dto.space.SettingsRequest;
-import com.woowacourse.zzimkkong.infrastructure.AuthorizationExtractor;
+import com.woowacourse.zzimkkong.infrastructure.auth.AuthorizationExtractor;
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
@@ -55,7 +55,7 @@ class MemberControllerTest extends AcceptanceTest {
                 BE_RESERVATION_MINIMUM_TIME_UNIT,
                 BE_RESERVATION_MAXIMUM_TIME_UNIT,
                 BE_RESERVATION_ENABLE,
-                BE_ENABLED_DAY_OF_WEEK
+                EnabledDayOfWeekDto.from(BE_ENABLED_DAY_OF_WEEK)
         );
         presetCreateRequest = new PresetCreateRequest(PRESET_NAME1, settingsRequest);
     }
@@ -200,16 +200,6 @@ class MemberControllerTest extends AcceptanceTest {
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body(memberSaveRequest)
                 .when().post("/api/managers")
-                .then().log().all().extract();
-    }
-
-    static ExtractableResponse<Response> getReadyToJoin(final OauthProvider oauthProvider, final String code) {
-        return RestAssured
-                .given(getRequestSpecification()).log().all()
-                .accept("application/json")
-                .filter(document("member/get/oauth/" + oauthProvider.name(), getRequestPreprocessor(), getResponsePreprocessor()))
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .when().get("/api/managers/" + oauthProvider + "?code=" + code)
                 .then().log().all().extract();
     }
 

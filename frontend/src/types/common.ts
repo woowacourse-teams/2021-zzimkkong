@@ -1,3 +1,4 @@
+import React from 'react';
 import { DrawingAreaShape } from 'types/editor';
 import { MapElementType } from './editor';
 
@@ -17,6 +18,7 @@ export interface ScrollPosition {
   x?: number;
   y?: number;
 }
+
 export interface MapElement {
   id: number;
   type: MapElementType;
@@ -26,6 +28,7 @@ export interface MapElement {
   y?: number;
   stroke: Color;
   points: string[];
+  ref: React.MutableRefObject<SVGPolylineElement | SVGRectElement | null>;
 }
 
 export interface MapItem {
@@ -85,7 +88,15 @@ export interface ReservationSettings {
   reservationMinimumTimeUnit: number;
   reservationMaximumTimeUnit: number;
   reservationEnable: boolean;
-  enabledDayOfWeek: string | null;
+  enabledDayOfWeek: {
+    monday: boolean;
+    tuesday: boolean;
+    wednesday: boolean;
+    thursday: boolean;
+    friday: boolean;
+    saturday: boolean;
+    sunday: boolean;
+  };
 }
 
 export interface Preset extends ReservationSettings {
@@ -118,7 +129,7 @@ export interface MapDrawing {
 
 export interface GripPoint {
   id: number;
-  mapElementId: MapElement['id'];
+  mapElement: MapElement;
   x: number;
   y: number;
 }

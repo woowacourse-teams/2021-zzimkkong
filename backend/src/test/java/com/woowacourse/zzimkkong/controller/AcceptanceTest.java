@@ -3,11 +3,12 @@ package com.woowacourse.zzimkkong.controller;
 import com.woowacourse.zzimkkong.dto.map.MapCreateUpdateRequest;
 import com.woowacourse.zzimkkong.dto.member.LoginRequest;
 import com.woowacourse.zzimkkong.dto.member.MemberSaveRequest;
+import com.woowacourse.zzimkkong.dto.space.EnabledDayOfWeekDto;
 import com.woowacourse.zzimkkong.dto.space.SettingsRequest;
 import com.woowacourse.zzimkkong.dto.space.SpaceCreateUpdateRequest;
-import com.woowacourse.zzimkkong.infrastructure.StorageUploader;
 import com.woowacourse.zzimkkong.infrastructure.oauth.GithubRequester;
 import com.woowacourse.zzimkkong.infrastructure.oauth.GoogleRequester;
+import com.woowacourse.zzimkkong.infrastructure.thumbnail.StorageUploader;
 import io.restassured.RestAssured;
 import io.restassured.builder.RequestSpecBuilder;
 import io.restassured.specification.RequestSpecification;
@@ -53,7 +54,7 @@ class AcceptanceTest {
             BE_RESERVATION_MINIMUM_TIME_UNIT,
             BE_RESERVATION_MAXIMUM_TIME_UNIT,
             BE_RESERVATION_ENABLE,
-            BE_ENABLED_DAY_OF_WEEK
+            EnabledDayOfWeekDto.from(BE_ENABLED_DAY_OF_WEEK)
     );
     protected final SpaceCreateUpdateRequest beSpaceCreateUpdateRequest = new SpaceCreateUpdateRequest(
             BE_NAME,
@@ -70,7 +71,7 @@ class AcceptanceTest {
             FE_RESERVATION_MINIMUM_TIME_UNIT,
             FE_RESERVATION_MAXIMUM_TIME_UNIT,
             FE_RESERVATION_ENABLE,
-            FE_ENABLED_DAY_OF_WEEK
+            EnabledDayOfWeekDto.from(FE_ENABLED_DAY_OF_WEEK)
     );
     protected final SpaceCreateUpdateRequest feSpaceCreateUpdateRequest = new SpaceCreateUpdateRequest(
             FE_NAME,

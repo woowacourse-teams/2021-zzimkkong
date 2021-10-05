@@ -2,7 +2,7 @@ package com.woowacourse.zzimkkong.controller;
 
 import com.woowacourse.zzimkkong.domain.*;
 import com.woowacourse.zzimkkong.dto.reservation.*;
-import com.woowacourse.zzimkkong.infrastructure.AuthorizationExtractor;
+import com.woowacourse.zzimkkong.infrastructure.auth.AuthorizationExtractor;
 import com.woowacourse.zzimkkong.service.SlackService;
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
@@ -353,7 +353,7 @@ class ManagerReservationControllerTest extends AcceptanceTest {
                         .split("/")[8]);
     }
 
-    private ExtractableResponse<Response> saveReservation(
+    static ExtractableResponse<Response> saveReservation(
             final String api,
             final ReservationCreateUpdateWithPasswordRequest reservationCreateUpdateWithPasswordRequest) {
         return RestAssured

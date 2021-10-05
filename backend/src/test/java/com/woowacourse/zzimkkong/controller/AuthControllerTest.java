@@ -6,7 +6,7 @@ import com.woowacourse.zzimkkong.domain.oauth.GoogleUserInfo;
 import com.woowacourse.zzimkkong.dto.member.LoginRequest;
 import com.woowacourse.zzimkkong.dto.member.oauth.OauthMemberSaveRequest;
 import com.woowacourse.zzimkkong.dto.member.TokenResponse;
-import com.woowacourse.zzimkkong.infrastructure.AuthorizationExtractor;
+import com.woowacourse.zzimkkong.infrastructure.auth.AuthorizationExtractor;
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;

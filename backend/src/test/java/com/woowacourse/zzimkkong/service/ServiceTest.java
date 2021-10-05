@@ -1,6 +1,6 @@
 package com.woowacourse.zzimkkong.service;
 
-import com.woowacourse.zzimkkong.infrastructure.StorageUploader;
+import com.woowacourse.zzimkkong.infrastructure.thumbnail.StorageUploader;
 import com.woowacourse.zzimkkong.repository.MapRepository;
 import com.woowacourse.zzimkkong.repository.MemberRepository;
 import com.woowacourse.zzimkkong.repository.ReservationRepository;

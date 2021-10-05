@@ -13,7 +13,6 @@ import useFormContext from 'hooks/useFormContext';
 import useInput from 'hooks/useInput';
 import { Preset as PresetType } from 'types/common';
 import { ErrorResponse } from 'types/response';
-import { SpaceFormValue } from '../data';
 import { SpaceFormContext } from '../providers/SpaceFormProvider';
 import * as Styled from './Preset.styles';
 import PresetNameModal from './PresetNameModal';
@@ -67,13 +66,8 @@ const Preset = (): JSX.Element => {
       reservationTimeUnit,
       reservationMinimumTimeUnit,
       reservationMaximumTimeUnit,
+      enabledDayOfWeek,
     } = selectedPreset;
-
-    const enabledDayOfWeek = selectedPreset.enabledDayOfWeek?.split(',') ?? [];
-    const enabledWeekdays: { [key: string]: boolean } = {};
-    Object.keys(values.enabledWeekdays).forEach(
-      (weekday) => (enabledWeekdays[weekday] = enabledDayOfWeek?.includes(weekday))
-    );
 
     setValues({
       ...values,
@@ -82,7 +76,7 @@ const Preset = (): JSX.Element => {
       reservationTimeUnit,
       reservationMinimumTimeUnit,
       reservationMaximumTimeUnit,
-      enabledWeekdays: enabledWeekdays as SpaceFormValue['enabledWeekdays'],
+      enabledDayOfWeek,
     });
 
     setSelectedPresetId(id);

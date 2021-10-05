@@ -2,6 +2,7 @@ package com.woowacourse.zzimkkong.dto.member;
 
 import com.woowacourse.zzimkkong.domain.Preset;
 import com.woowacourse.zzimkkong.domain.Setting;
+import com.woowacourse.zzimkkong.dto.space.EnabledDayOfWeekDto;
 import com.woowacourse.zzimkkong.dto.space.SettingResponse;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -22,9 +23,9 @@ public class PresetFindResponse extends SettingResponse {
             final Integer reservationMinimumTimeUnit,
             final Integer reservationMaximumTimeUnit,
             final Boolean reservationEnable,
-            final String enabledDayOfWeek,
+            final EnabledDayOfWeekDto enabledDayOfWeekDto,
             final String name) {
-        super(availableStartTime, availableEndTime, reservationTimeUnit, reservationMinimumTimeUnit, reservationMaximumTimeUnit, reservationEnable, enabledDayOfWeek);
+        super(availableStartTime, availableEndTime, reservationTimeUnit, reservationMinimumTimeUnit, reservationMaximumTimeUnit, reservationEnable, enabledDayOfWeekDto);
         this.id = id;
         this.name = name;
     }
@@ -40,7 +41,7 @@ public class PresetFindResponse extends SettingResponse {
                 setting.getReservationMinimumTimeUnit(),
                 setting.getReservationMaximumTimeUnit(),
                 setting.getReservationEnable(),
-                setting.getEnabledDayOfWeek(),
+                EnabledDayOfWeekDto.from(setting.getEnabledDayOfWeek()),
                 preset.getName());
     }
 }
