@@ -3,7 +3,7 @@ import { Time } from './TimePicker';
 import * as Styled from './TimePickerOptions.styles';
 
 interface Props {
-  time: Time;
+  time: Time | null;
   step?: 1 | 5 | 10 | 15 | 20 | 30;
   onChange: (name: string) => (event: React.ChangeEvent<HTMLInputElement>) => void;
 }
@@ -14,6 +14,8 @@ const TimePickerOptions = ({ time, step = 1, onChange }: Props): JSX.Element => 
   const minuteRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
+    if (time === null) return;
+
     if (middayRef.current !== null) {
       middayRef.current.scrollTo(0, time.midday === '오전' ? 0 : 32);
     }
@@ -36,7 +38,7 @@ const TimePickerOptions = ({ time, step = 1, onChange }: Props): JSX.Element => 
             name="midday"
             value="오전"
             onChange={onChange('midday')}
-            checked={time.midday === '오전'}
+            checked={time?.midday === '오전'}
           />
           <Styled.OptionText>오전</Styled.OptionText>
         </Styled.Option>
@@ -46,7 +48,7 @@ const TimePickerOptions = ({ time, step = 1, onChange }: Props): JSX.Element => 
             name="midday"
             value="오후"
             onChange={onChange('midday')}
-            checked={time.midday === '오후'}
+            checked={time?.midday === '오후'}
           />
           <Styled.OptionText>오후</Styled.OptionText>
         </Styled.Option>
@@ -61,7 +63,7 @@ const TimePickerOptions = ({ time, step = 1, onChange }: Props): JSX.Element => 
                 name="hour"
                 value={index + 1}
                 onChange={onChange('hour')}
-                checked={index + 1 === time.hour}
+                checked={index + 1 === time?.hour}
               />
               <Styled.OptionText>{String(index + 1).padStart(2, '0')} 시</Styled.OptionText>
             </Styled.Option>
@@ -77,7 +79,7 @@ const TimePickerOptions = ({ time, step = 1, onChange }: Props): JSX.Element => 
                 name="minute"
                 value={index * step}
                 onChange={onChange('minute')}
-                checked={index * step === time.minute}
+                checked={index * step === time?.minute}
               />
               <Styled.OptionText>{String(index * step).padStart(2, '0')} 분</Styled.OptionText>
             </Styled.Option>

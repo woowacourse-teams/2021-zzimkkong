@@ -22,5 +22,13 @@ Default.args = {
 
 export const WithoutLabel = Template.bind({});
 WithoutLabel.args = {
-  step: 1,
+  step: 10,
+};
+
+export const HasDefaultTime = Template.bind({});
+WithoutLabel.args = {
+  label: '기본 값이 존재하는 경우',
+  step: 15,
+  defaultStartTime: new Date(),
+  defaultEndTime: new Date(),
 };
