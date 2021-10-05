@@ -3,13 +3,14 @@ import { ReactComponent as Logo } from 'assets/svg/logo.svg';
 import Header from 'components/Header/Header';
 import Layout from 'components/Layout/Layout';
 import { HREF } from 'constants/path';
-import { GuestMapState } from 'pages/GuestMap/GuestMap';
+import { Space } from 'types/common';
 import { GuestPageURLParams } from 'types/guest';
 import { formatDateWithDay, formatTime } from 'utils/datetime';
 import * as Styled from './GuestReservationSuccess.styles';
 
-interface GuestReservationSuccessState extends GuestMapState {
-  spaceName: string;
+export interface GuestReservationSuccessState {
+  space: Space;
+  targetDate: Date;
   reservation: {
     name: string;
     description: string;
@@ -24,12 +25,11 @@ const GuestReservationSuccess = (): JSX.Element => {
 
   if (!location.state) return <Redirect to={HREF.GUEST_MAP(sharingMapId)} />;
 
-  const { spaceId, spaceName, targetDate, reservation } = location.state;
-  const { name, description, startDateTime, endDateTime } = reservation;
+  const { space, reservation, targetDate } = location.state;
 
-  const date = formatDateWithDay(new Date(startDateTime));
-  const start = formatTime(new Date(startDateTime));
-  const end = formatTime(new Date(endDateTime));
+  const reservationDate = formatDateWithDay(new Date(reservation.startDateTime));
+  const reservationStartTime = formatTime(new Date(reservation.startDateTime));
+  const reservationEndTime = formatTime(new Date(reservation.endDateTime));
 
   return (
     <>
@@ -42,7 +42,7 @@ const GuestReservationSuccess = (): JSX.Element => {
             <Styled.PageLink
               to={{
                 pathname: HREF.GUEST_MAP(sharingMapId),
-                state: { spaceId, targetDate },
+                state: { spaceId: space?.id, targetDate },
               }}
             >
               맵으로 돌아가기
@@ -52,20 +52,20 @@ const GuestReservationSuccess = (): JSX.Element => {
           <Styled.Info>
             <Styled.InfoRow>
               <Styled.InfoLabel>공간이름</Styled.InfoLabel>
-              <Styled.InfoText>{spaceName}</Styled.InfoText>
+              <Styled.InfoText>{space?.name}</Styled.InfoText>
             </Styled.InfoRow>
             <Styled.InfoRow>
               <Styled.InfoLabel>예약자명</Styled.InfoLabel>
-              <Styled.InfoText>{name}</Styled.InfoText>
+              <Styled.InfoText>{reservation?.name}</Styled.InfoText>
             </Styled.InfoRow>
             <Styled.InfoRow>
               <Styled.InfoLabel>사용목적</Styled.InfoLabel>
-              <Styled.InfoText>{description}</Styled.InfoText>
+              <Styled.InfoText>{reservation?.description}</Styled.InfoText>
             </Styled.InfoRow>
             <Styled.InfoRow>
               <Styled.InfoLabel>예약일시</Styled.InfoLabel>
               <Styled.InfoText>
-                {date} {start} - {end}
+                {reservationDate} {reservationStartTime} - {reservationEndTime}
               </Styled.InfoText>
             </Styled.InfoRow>
           </Styled.Info>

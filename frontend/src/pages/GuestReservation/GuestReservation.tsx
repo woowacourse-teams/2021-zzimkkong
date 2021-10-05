@@ -11,10 +11,12 @@ import MESSAGE from 'constants/message';
 import { HREF } from 'constants/path';
 import useGuestReservations from 'hooks/query/useGuestReservations';
 import useInput from 'hooks/useInput';
+import { GuestMapState } from 'pages/GuestMap/GuestMap';
 import { Reservation, ScrollPosition, Space } from 'types/common';
 import { GuestPageURLParams } from 'types/guest';
 import { ErrorResponse } from 'types/response';
 import * as Styled from './GuestReservation.styles';
+import { GuestReservationSuccessState } from './GuestReservationSuccess';
 import GuestReservationForm from './units/GuestReservationForm';
 
 interface GuestReservationState {
@@ -31,7 +33,7 @@ export interface EditReservationParams extends ReservationParams {
 
 const GuestReservation = (): JSX.Element => {
   const location = useLocation<GuestReservationState>();
-  const history = useHistory();
+  const history = useHistory<GuestReservationSuccessState | GuestMapState>();
   const { sharingMapId } = useParams<GuestPageURLParams>();
 
   const { mapId, space, selectedDate, scrollPosition, reservation } = location.state;
@@ -52,8 +54,7 @@ const GuestReservation = (): JSX.Element => {
       history.push({
         pathname: HREF.GUEST_RESERVATION_SUCCESS(sharingMapId),
         state: {
-          spaceId: space.id,
-          spaceName: space.name,
+          space,
           reservation: {
             startDateTime,
             endDateTime,
