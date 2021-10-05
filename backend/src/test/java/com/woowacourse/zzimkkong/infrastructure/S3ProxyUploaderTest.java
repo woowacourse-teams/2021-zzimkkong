@@ -2,6 +2,7 @@ package com.woowacourse.zzimkkong.infrastructure;
 
 import com.woowacourse.zzimkkong.exception.infrastructure.S3ProxyRespondedFailException;
 import com.woowacourse.zzimkkong.exception.infrastructure.S3UploadException;
+import com.woowacourse.zzimkkong.infrastructure.thumbnail.S3ProxyUploader;
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
