@@ -2,3 +2,7 @@
 	path = backend/src/main/resources/config
 	url = git@github.com:zzimkkong/config.git
 	branch = main
+[submodule "s3proxy/src/main/resources/s3proxy-config"]
+	path = s3proxy/src/main/resources/s3proxy-config
+	url = git@github.com:zzimkkong/s3proxy-config.git
+	branch = main
