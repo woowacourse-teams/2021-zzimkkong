@@ -26,6 +26,7 @@ public class ThumbnailManager {
         String thumbnailUrl = storageUploader.upload(THUMBNAILS_DIRECTORY_NAME, pngFile);
 
         pngFile.delete();
+
         return thumbnailUrl;
     }
 
