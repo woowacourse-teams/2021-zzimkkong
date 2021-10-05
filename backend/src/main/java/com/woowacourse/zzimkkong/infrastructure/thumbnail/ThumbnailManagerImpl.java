@@ -1,6 +1,7 @@
 package com.woowacourse.zzimkkong.infrastructure.thumbnail;
 
 import com.woowacourse.zzimkkong.domain.Map;
+import com.woowacourse.zzimkkong.exception.infrastructure.CannotDeleteConvertedFileException;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
@@ -31,7 +32,9 @@ public class ThumbnailManagerImpl implements ThumbnailManager {
 
         String thumbnailUrl = storageUploader.upload(thumbnailsDirectoryName, pngFile);
 
-        pngFile.delete();
+        if (!pngFile.delete()) {
+            throw new CannotDeleteConvertedFileException();
+        }
         return thumbnailUrl;
     }
 
