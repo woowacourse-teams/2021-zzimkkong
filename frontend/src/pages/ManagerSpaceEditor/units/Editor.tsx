@@ -20,6 +20,7 @@ import { SpaceEditorMode as Mode } from 'types/editor';
 import { drawingModes } from '../data';
 import useDrawingRect from '../hooks/useDrawingRect';
 import { SpaceFormContext } from '../providers/SpaceFormProvider';
+import BoardCursorDot from './BoardCursorDot';
 import BoardCursorRect from './BoardCursorRect';
 import BoardMapElement from './BoardMapElement';
 import BoardSpace from './BoardSpace';
@@ -47,7 +48,11 @@ const Editor = ({
   const [movable, setMovable] = useState(pressedKey === KEY.SPACE);
 
   const { values, updateWithSpace, updateArea } = useFormContext(SpaceFormContext);
-  const { stickyRectCoordinate, onMouseMove: updateCoordinate } = useBoardCoordinate(board);
+  const {
+    stickyDotCoordinate,
+    stickyRectCoordinate,
+    onMouseMove: updateCoordinate,
+  } = useBoardCoordinate(board);
 
   const { onWheel } = useBoardZoom(boardState);
   const { isMoving, onDragStart, onDrag, onDragEnd, onMouseOut } = useBoardMove(
@@ -139,8 +144,12 @@ const Editor = ({
         />
       )}
 
-      {isDrawingMode && (
+      {isDrawingMode && mode === Mode.Rect && (
         <BoardCursorRect coordinate={stickyRectCoordinate} size={EDITOR.GRID_SIZE} />
+      )}
+
+      {isDrawingMode && mode === Mode.Polygon && (
+        <BoardCursorDot coordinate={stickyDotCoordinate} />
       )}
 
       {unSelectedSpaces?.map((space, index) => (
