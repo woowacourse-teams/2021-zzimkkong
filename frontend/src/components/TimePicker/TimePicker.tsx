@@ -1,7 +1,7 @@
 import React, { MouseEventHandler } from 'react';
+import { Range } from '../../hooks/useTimePicker';
 import * as Styled from './TimePicker.styles';
 import TimePickerOptions from './TimePickerOptions';
-import { Range } from './useTimePicker';
 
 interface Props {
   label?: string;

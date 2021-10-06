@@ -1,6 +1,6 @@
 import { Story } from '@storybook/react';
+import useTimePicker from '../../hooks/useTimePicker';
 import TimePicker from './TimePicker';
-import useTimePicker from './useTimePicker';
 
 export default {
   title: 'shared/TimePicker',
