@@ -44,7 +44,13 @@ export const Space = styled.g`
   cursor: pointer;
 `;
 
-export const SpaceArea = styled.rect`
+export const SpaceRect = styled.rect`
+  &:hover {
+    opacity: 0.5;
+  }
+`;
+
+export const SpacePolygon = styled.polygon`
   &:hover {
     opacity: 0.5;
   }

@@ -239,8 +239,8 @@ const MapCreateEditor = ({
             />
           )}
 
-          {spaces.map(({ id, color, area, name }) =>
-            area.shape === 'rect' ? (
+          {spaces.map(({ id, color, area, name }) => {
+            area.shape === 'rect' && (
               <g key={id} pointerEvents="none">
                 <rect
                   x={area.x}
@@ -262,11 +262,27 @@ const MapCreateEditor = ({
                   {name}
                 </text>
               </g>
-            ) : (
-              <g></g>
-              // TODO 폴리곤 완성 후 렌더 로직 추가
-            )
-          )}
+            );
+            // TODO Text 위치 잡기
+            area.shape === 'polygon' && (
+              <g key={id} pointerEvents="none">
+                <polygon
+                  points={area.points.map(({ x, y }) => `${x},${y}`).join(' ')}
+                  fill={color}
+                  opacity={EDITOR.SPACE_OPACITY}
+                />
+                <text
+                  dominantBaseline="middle"
+                  textAnchor="middle"
+                  fill={EDITOR.TEXT_FILL}
+                  fontSize={EDITOR.TEXT_FONT_SIZE}
+                  opacity={EDITOR.TEXT_OPACITY}
+                >
+                  {name}
+                </text>
+              </g>
+            );
+          })}
 
           {drawingStatus.start && mode === MapEditorMode.Line && (
             <polyline

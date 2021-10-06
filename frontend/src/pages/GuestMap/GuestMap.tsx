@@ -222,7 +222,7 @@ const GuestMap = (): JSX.Element => {
                       >
                         {area.shape === 'rect' && (
                           <>
-                            <Styled.SpaceArea
+                            <Styled.SpaceRect
                               x={area.x}
                               y={area.y}
                               width={area.width}
@@ -237,7 +237,18 @@ const GuestMap = (): JSX.Element => {
                               {name}
                             </Styled.SpaceAreaText>
                           </>
-                          // TODO 폴리곤 완성 후 렌더 로직 추가
+                        )}
+                        {area.shape === 'polygon' && (
+                          //TODO Text 위치 잡기
+                          <>
+                            <Styled.SpacePolygon
+                              points={area.points.map(({ x, y }) => `${x},${y}`).join(' ')}
+                              fill={color ?? PALETTE.RED[200]}
+                            />
+                            <Styled.SpaceAreaText x="50%" y="50%">
+                              {name}
+                            </Styled.SpaceAreaText>
+                          </>
                         )}
                       </Styled.Space>
                     ))}
