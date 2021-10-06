@@ -1,5 +1,6 @@
 import { Story } from '@storybook/react';
-import TimePicker, { Props } from './TimePicker';
+import TimePicker from './TimePicker';
+import useTimePicker from './useTimePicker';
 
 export default {
   title: 'shared/TimePicker',
@@ -12,7 +13,18 @@ export default {
   },
 };
 
-const Template: Story<Props> = (args) => <TimePicker {...args} />;
+interface Props {
+  label?: string;
+  defaultStartTime?: Date;
+  defaultEndTime?: Date;
+  step?: 1 | 5 | 10 | 15 | 20 | 30;
+}
+
+const Template: Story<Props> = (args) => {
+  const timePicker = useTimePicker(args);
+
+  return <TimePicker {...timePicker} label={args?.label} step={args?.step} />;
+};
 
 export const Default = Template.bind({});
 Default.args = {
@@ -20,15 +32,15 @@ Default.args = {
   step: 5,
 };
 
-export const WithoutLabel = Template.bind({});
-WithoutLabel.args = {
-  step: 10,
-};
-
 export const HasDefaultTime = Template.bind({});
-WithoutLabel.args = {
+HasDefaultTime.args = {
   label: '기본 값이 존재하는 경우',
   step: 15,
   defaultStartTime: new Date(),
   defaultEndTime: new Date(),
+};
+
+export const WithoutLabel = Template.bind({});
+WithoutLabel.args = {
+  step: 10,
 };

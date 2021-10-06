@@ -1,5 +1,5 @@
 import React, { useEffect, useRef } from 'react';
-import { Time } from './TimePicker';
+import { Midday, Time } from 'types/time';
 import * as Styled from './TimePickerOptions.styles';
 
 interface Props {
@@ -17,7 +17,7 @@ const TimePickerOptions = ({ time, step = 1, onChange }: Props): JSX.Element => 
     if (time === null) return;
 
     if (middayRef.current !== null) {
-      middayRef.current.scrollTo(0, time.midday === '오전' ? 0 : 32);
+      middayRef.current.scrollTo(0, time.midday === Midday.AM ? 0 : 32);
     }
 
     if (hourRef.current !== null) {
@@ -38,7 +38,7 @@ const TimePickerOptions = ({ time, step = 1, onChange }: Props): JSX.Element => 
             name="midday"
             value="오전"
             onChange={onChange('midday')}
-            checked={time?.midday === '오전'}
+            checked={time?.midday === Midday.AM}
           />
           <Styled.OptionText>오전</Styled.OptionText>
         </Styled.Option>
@@ -48,7 +48,7 @@ const TimePickerOptions = ({ time, step = 1, onChange }: Props): JSX.Element => 
             name="midday"
             value="오후"
             onChange={onChange('midday')}
-            checked={time?.midday === '오후'}
+            checked={time?.midday === Midday.PM}
           />
           <Styled.OptionText>오후</Styled.OptionText>
         </Styled.Option>
