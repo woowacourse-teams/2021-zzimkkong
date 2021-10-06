@@ -180,7 +180,7 @@ class AdminControllerTest extends AcceptanceTest {
     }
 
     @Test
-    @DisplayName("test로 동작 시 해당 profile을 조회한다.")
+    @DisplayName("test로 동작 시 url이 존재하지 않아 400 에러가 발생한다..")
     void getProfile() {
         // given, when
         ExtractableResponse<Response> response = get("/admin/api/profile");
@@ -190,12 +190,12 @@ class AdminControllerTest extends AcceptanceTest {
     }
 
     @ParameterizedTest
-    @DisplayName("dev, prod로 동작 시 해당 profile을 조회한다.")
+    @DisplayName("dev, prod로 동작 시 해당 profile을 조회해 알맞는 url을 반환한다..")
     @CsvSource(value = {"dev:307:dev.zzimkkong.com", "prod:308:zzimkkong.com"}, delimiter = ':')
     void getOtherProfile(String profile, int status, String url) {
         //given
         AdminService adminService = mock(AdminService.class);
-        AdminController adminController = new AdminController(profile, adminService);
+        AdminController adminController = new AdminController(adminService, profile);
 
         //when
         ResponseEntity<String> response = adminController.profile();

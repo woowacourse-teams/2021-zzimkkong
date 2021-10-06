@@ -23,10 +23,10 @@ public class AdminController {
     private final AdminService adminService;
     private final String profile;
 
-    public AdminController(final @Value("${spring.profiles.active}") String profile,
-                           final AdminService adminService) {
-        this.profile = profile;
+    public AdminController(final AdminService adminService,
+                           final @Value("${spring.profiles.active}") String profile) {
         this.adminService = adminService;
+        this.profile = profile;
     }
 
     @PostMapping("/login")
