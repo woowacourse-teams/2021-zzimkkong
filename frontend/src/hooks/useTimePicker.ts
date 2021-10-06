@@ -37,6 +37,7 @@ const useTimePicker = ({
   selectedTime: SelectedTime;
   onClick: MouseEventHandler<HTMLButtonElement>;
   onChange: (name: string) => (event: React.ChangeEvent<HTMLInputElement>) => void;
+  onCloseOptions: () => void;
 } => {
   const [selectedTime, setSelectedTime] = useState<SelectedTime>(null);
   const [range, setRange] = useState<Range>({
@@ -105,7 +106,11 @@ const useTimePicker = ({
       }));
     };
 
-  return { range, selectedTime, onClick: onClickTimeButton, onChange };
+  const onCloseOptions = () => {
+    setSelectedTime(null);
+  };
+
+  return { range, selectedTime, onClick: onClickTimeButton, onChange, onCloseOptions };
 };
 
 export default useTimePicker;

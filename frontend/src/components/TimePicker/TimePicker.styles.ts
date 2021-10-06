@@ -1,4 +1,5 @@
 import styled, { css } from 'styled-components';
+import { Z_INDEX } from 'constants/style';
 
 interface TimeContainerProps {
   labelText?: string;
@@ -61,4 +62,15 @@ export const OptionsContainer = styled.div`
   width: 100%;
   position: absolute;
   top: 3rem;
+`;
+
+export const Dimmer = styled.div`
+  width: 100vh;
+  height: 100vh;
+  position: fixed;
+  top: 0;
+  right: 0;
+  left: 0;
+  bottom: 0;
+  z-index: ${Z_INDEX.TIME_PICKER_DIMMER};
 `;

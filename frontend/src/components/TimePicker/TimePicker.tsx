@@ -7,9 +7,10 @@ interface Props {
   label?: string;
   step?: 1 | 5 | 10 | 15 | 20 | 30;
   range: Range;
+  selectedTime: keyof Range | null;
   onClick: MouseEventHandler<HTMLButtonElement>;
   onChange: (name: string) => (event: React.ChangeEvent<HTMLInputElement>) => void;
-  selectedTime: keyof Range | null;
+  onCloseOptions: () => void;
 }
 
 const TimePicker = ({
@@ -19,6 +20,7 @@ const TimePicker = ({
   selectedTime,
   onClick,
   onChange,
+  onCloseOptions,
 }: Props): JSX.Element => {
   const getTimeText = (key: keyof Range) => {
     const time = range[key];
@@ -60,6 +62,8 @@ const TimePicker = ({
           <TimePickerOptions time={range[selectedTime]} step={step} onChange={onChange} />
         </Styled.OptionsContainer>
       )}
+
+      {selectedTime !== null && <Styled.Dimmer onClick={onCloseOptions} />}
     </Styled.Container>
   );
 };
