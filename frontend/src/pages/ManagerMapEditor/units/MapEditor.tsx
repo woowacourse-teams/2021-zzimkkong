@@ -239,8 +239,8 @@ const MapCreateEditor = ({
             />
           )}
 
-          {spaces.map(({ id, color, area, name }) => {
-            area.shape === 'rect' && (
+          {spaces.map(({ id, color, area, name }) =>
+            area.shape === 'rect' ? (
               <g key={id} pointerEvents="none">
                 <rect
                   x={area.x}
@@ -262,9 +262,7 @@ const MapCreateEditor = ({
                   {name}
                 </text>
               </g>
-            );
-            // TODO Text 위치 잡기
-            area.shape === 'polygon' && (
+            ) : (
               <g key={id} pointerEvents="none">
                 <polygon
                   points={area.points.map(({ x, y }) => `${x},${y}`).join(' ')}
@@ -281,8 +279,8 @@ const MapCreateEditor = ({
                   {name}
                 </text>
               </g>
-            );
-          })}
+            )
+          )}
 
           {drawingStatus.start && mode === MapEditorMode.Line && (
             <polyline
