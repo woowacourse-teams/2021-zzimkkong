@@ -1,6 +1,6 @@
 package com.woowacourse.zzimkkong.controller;
 
-import com.woowacourse.zzimkkong.DatabaseClean;
+import com.woowacourse.zzimkkong.DatabaseCleaner;
 import com.woowacourse.zzimkkong.dto.map.MapCreateUpdateRequest;
 import com.woowacourse.zzimkkong.dto.member.LoginRequest;
 import com.woowacourse.zzimkkong.dto.member.MemberSaveRequest;
@@ -86,7 +86,7 @@ class AcceptanceTest {
     int port;
 
     @Autowired
-    private DatabaseClean databaseClean;
+    private DatabaseCleaner databaseCleaner;
 
     @MockBean
     private StorageUploader storageUploader;
@@ -117,6 +117,6 @@ class AcceptanceTest {
 
     @AfterEach
     void deleteAll() {
-        databaseClean.execute();
+        databaseCleaner.execute();
     }
 }

@@ -5,7 +5,6 @@ import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.persistence.Entity;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import java.util.List;
@@ -14,7 +13,7 @@ import java.util.stream.Collectors;
 
 @Component
 @Profile("test")
-public class DatabaseClean implements InitializingBean {
+public class DatabaseCleaner implements InitializingBean {
     @PersistenceContext
     private EntityManager entityManager;
 
@@ -23,8 +22,7 @@ public class DatabaseClean implements InitializingBean {
     @Override
     public void afterPropertiesSet() {
         tableNames = entityManager.getMetamodel().getEntities().stream()
-                .filter(entityType -> entityType.getJavaType().getAnnotation(Entity.class) != null)
-                .map(e -> e.getName().toLowerCase(Locale.ROOT))
+                .map(entry -> entry.getName().toLowerCase(Locale.ROOT))
                 .collect(Collectors.toList());
     }
 
@@ -36,6 +34,6 @@ public class DatabaseClean implements InitializingBean {
             entityManager.createNativeQuery("TRUNCATE TABLE " + tableName).executeUpdate();
             entityManager.createNativeQuery("ALTER TABLE " + tableName + " ALTER COLUMN id RESTART WITH 1").executeUpdate();
         }
-        entityManager.createNativeQuery("SET REFERENTIAL_INTEGRITY FALSE").executeUpdate();
+        entityManager.createNativeQuery("SET REFERENTIAL_INTEGRITY TRUE").executeUpdate();
     }
 }
