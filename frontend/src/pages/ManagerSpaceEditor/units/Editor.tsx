@@ -15,8 +15,8 @@ import useBoardCoordinate from 'hooks/board/useBoardCoordinate';
 import useBoardMove from 'hooks/board/useBoardMove';
 import useBoardZoom from 'hooks/board/useBoardZoom';
 import useFormContext from 'hooks/useFormContext';
-import { Area, EditorBoard, ManagerSpace, MapElement } from 'types/common';
-import { SpaceEditorMode as Mode } from 'types/editor';
+import { Area, Coordinate, EditorBoard, ManagerSpace, MapElement } from 'types/common';
+import { DrawingAreaShape, SpaceEditorMode as Mode } from 'types/editor';
 import { drawingModes } from '../data';
 import useDrawingRect from '../hooks/useDrawingRect';
 import { SpaceFormContext } from '../providers/SpaceFormProvider';
@@ -84,13 +84,57 @@ const Editor = ({
     [isDrawingMode, spaces, setSelectedSpaceId, updateWithSpace]
   );
 
+  // TODO POLYGON START
+
+  const [polygon, setPolygon] = useState<Area | null>(null);
+  const [points, setPoints] = useState<Coordinate[]>([]);
+  const [startPoint, setStartPoint] = useState<Coordinate | null>(null);
+  const [currentPoint, setCurrentPoint] = useState<Coordinate | null>(null);
+
+  const startDrawingPolygon = useCallback(() => {
+    setPoints([stickyDotCoordinate]);
+    setStartPoint(stickyDotCoordinate);
+    setCurrentPoint(stickyDotCoordinate);
+  }, [stickyDotCoordinate]);
+
+  const updatePolygon = useCallback(() => {
+    setPoints([...points, stickyDotCoordinate]);
+    setCurrentPoint(stickyDotCoordinate);
+  }, [points, stickyDotCoordinate]);
+
+  const endDrawingPolygon = useCallback(() => {
+    if (startPoint?.x !== stickyDotCoordinate.x || startPoint?.y !== stickyDotCoordinate.y) return;
+    if (points.length < 3) return;
+
+    // 초기화
+    setPoints([]);
+    setStartPoint(null);
+    setCurrentPoint(null);
+
+    setMode(Mode.Form);
+    setIsDrawing(false);
+  }, [setMode, startPoint, stickyDotCoordinate, points]);
+
+  // TODO POLYGON END
+
+  useEffect(() => {
+    console.log('points : ', points);
+    console.log('startPoint : ', startPoint);
+    console.log('currentPoint : ', currentPoint);
+    console.log(
+      points.map((point) => `${point.x},${point.y}`).join(' ') +
+        `${stickyDotCoordinate.x},${stickyDotCoordinate.y}`
+    );
+  }, [currentPoint, points, startPoint, stickyDotCoordinate.x, stickyDotCoordinate.y]);
+
   const handleMouseDown = useCallback(() => {
     if (!isDrawingMode) return;
 
     setIsDrawing(true);
 
     if (mode === Mode.Rect) startDrawingRect();
-  }, [isDrawingMode, setIsDrawing, mode, startDrawingRect]);
+    else if (mode === Mode.Polygon) startPoint === null ? startDrawingPolygon() : updatePolygon();
+  }, [updatePolygon, isDrawingMode, mode, startDrawingPolygon, startDrawingRect, startPoint]);
 
   const handleMouseMove: MouseEventHandler<SVGSVGElement> = useCallback(
     (event) => {
@@ -103,16 +147,21 @@ const Editor = ({
         updateArea(rect as Area);
       }
     },
-    [isDrawing, isDrawingMode, mode, rect, updateArea, updateRect, updateCoordinate]
+    [updateCoordinate, isDrawingMode, isDrawing, mode, updateRect, updateArea, rect]
   );
 
   const handleMouseUp = useCallback(() => {
     if (!isDrawingMode || !isDrawing) return;
 
+    if (mode === Mode.Rect) endDrawingRect();
+    else if (mode === Mode.Polygon) {
+      endDrawingPolygon();
+      return;
+    }
+
     setMode(Mode.Form);
-    endDrawingRect();
     setIsDrawing(false);
-  }, [isDrawing, isDrawingMode, setMode, endDrawingRect]);
+  }, [isDrawingMode, isDrawing, mode, endDrawingRect, endDrawingPolygon, setMode]);
 
   useEffect(() => {
     setMovable(pressedKey === KEY.SPACE);
@@ -149,7 +198,22 @@ const Editor = ({
       )}
 
       {isDrawingMode && mode === Mode.Polygon && (
-        <BoardCursorDot coordinate={stickyDotCoordinate} />
+        <>
+          <BoardCursorDot coordinate={stickyDotCoordinate} />
+          {/* <polygon points={points.map((point) => `${point.x},${point.y}`).join(' ')} /> */}
+          {currentPoint && (
+            <polygon
+              key={`preview-polyline-${DrawingAreaShape.Polygon}`}
+              points={
+                points.map((point) => `${point.x},${point.y}`).join(' ') +
+                ` ${stickyDotCoordinate.x},${stickyDotCoordinate.y}`
+              }
+              stroke={EDITOR.STROKE_PREVIEW}
+              strokeWidth={EDITOR.STROKE_WIDTH}
+              pointerEvents="none"
+            />
+          )}
+        </>
       )}
 
       {unSelectedSpaces?.map((space, index) => (
