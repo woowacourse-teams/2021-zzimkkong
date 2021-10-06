@@ -1,5 +1,6 @@
 package com.woowacourse.zzimkkong.infrastructure.thumbnail;
 
+import com.woowacourse.zzimkkong.config.logaspect.LogMethodExecutionTime;
 import com.woowacourse.zzimkkong.exception.infrastructure.S3ProxyRespondedFailException;
 import com.woowacourse.zzimkkong.exception.infrastructure.S3UploadException;
 import com.woowacourse.zzimkkong.infrastructure.thumbnail.StorageUploader;
@@ -21,6 +22,7 @@ import java.nio.file.Files;
 import java.util.Objects;
 
 @Component
+@LogMethodExecutionTime(group = "infrastructure")
 public class S3ProxyUploader implements StorageUploader {
     private static final String PATH_DELIMITER = "/";
     private static final String API_PATH = "/api/storage";
