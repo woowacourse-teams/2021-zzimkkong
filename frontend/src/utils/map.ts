@@ -23,10 +23,9 @@ export const createMapImageSvg = ({
       viewBox='0 0 ${width} ${height}'
     >
       ${spaces
-        ?.map(
-          ({ color, area }) =>
-            area.shape === 'rect'
-              ? `
+        ?.map(({ color, area }) =>
+          area.shape === 'rect'
+            ? `
             <g>
               <rect
                 x='${area.x}'
@@ -37,8 +36,13 @@ export const createMapImageSvg = ({
                 opacity='0.3'
               />
             </g>`
-              : ''
-          // TODO 폴리곤 완성 후 렌더 로직 추가
+            : `<g>
+              <polygon
+                points='${area.points.map(({ x, y }) => `${x},${y}`).join(' ')}'
+                fill='${color}'
+                opacity='0.3'
+              />
+            </g>`
         )
         .join('')}
 
