@@ -200,7 +200,6 @@ const Editor = ({
       {isDrawingMode && mode === Mode.Polygon && (
         <>
           <BoardCursorDot coordinate={stickyDotCoordinate} />
-          {/* <polygon points={points.map((point) => `${point.x},${point.y}`).join(' ')} /> */}
           {currentPoint && (
             <polygon
               key={`preview-polyline-${DrawingAreaShape.Polygon}`}
@@ -209,6 +208,7 @@ const Editor = ({
                 ` ${stickyDotCoordinate.x},${stickyDotCoordinate.y}`
               }
               stroke={EDITOR.STROKE_PREVIEW}
+              fill={EDITOR.POLYGON_PREVIEW}
               strokeWidth={EDITOR.STROKE_WIDTH}
               pointerEvents="none"
             />
