@@ -12,7 +12,7 @@ interface Props {
 const BoardSpace = ({ space, drawing, selected, onClick }: Props): JSX.Element => {
   const { color, area, name } = space;
 
-  if (area.shape !== 'rect')
+  if (area.shape === 'polygon')
     return (
       <g>
         <Styled.SpacePolygon
