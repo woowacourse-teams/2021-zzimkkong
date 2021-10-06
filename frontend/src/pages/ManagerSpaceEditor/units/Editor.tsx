@@ -100,7 +100,12 @@ const Editor = ({
   const updatePolygon = useCallback(() => {
     setPoints([...points, stickyDotCoordinate]);
     setCurrentPoint(stickyDotCoordinate);
-  }, [points, stickyDotCoordinate]);
+    setPolygon({
+      shape: DrawingAreaShape.Polygon,
+      points: [...points, stickyDotCoordinate],
+    });
+    updateArea(polygon as Area);
+  }, [points, polygon, stickyDotCoordinate, updateArea]);
 
   const endDrawingPolygon = useCallback(() => {
     if (startPoint?.x !== stickyDotCoordinate.x || startPoint?.y !== stickyDotCoordinate.y) return;
@@ -202,9 +207,8 @@ const Editor = ({
           <BoardCursorDot coordinate={stickyDotCoordinate} />
           {currentPoint && (
             <polygon
-              key={`preview-polyline-${DrawingAreaShape.Polygon}`}
               points={
-                points.map((point) => `${point.x},${point.y}`).join(' ') +
+                points.map(({ x, y }) => `${x},${y}`).join(' ') +
                 ` ${stickyDotCoordinate.x},${stickyDotCoordinate.y}`
               }
               stroke={EDITOR.STROKE_PREVIEW}

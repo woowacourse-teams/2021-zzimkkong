@@ -1,3 +1,4 @@
+import { EDITOR } from 'constants/editor';
 import { ManagerSpace } from 'types/common';
 import { WithOptional } from 'types/util';
 import * as Styled from './BoardSpace.styles';
@@ -12,7 +13,22 @@ interface Props {
 const BoardSpace = ({ space, drawing, selected, onClick }: Props): JSX.Element => {
   const { color, area, name } = space;
 
-  if (area.shape !== 'rect') return <g></g>;
+  if (area.shape !== 'rect')
+    return (
+      <g>
+        <Styled.SpacePolygon
+          points={area.points.map(({ x, y }) => `${x},${y}`).join(' ')}
+          stroke={EDITOR.STROKE_PREVIEW}
+          fill={color}
+          strokeWidth={EDITOR.STROKE_WIDTH}
+          pointerEvents="none"
+          onClick={onClick}
+          disabled={drawing || selected}
+          selected={selected}
+        />
+        <Styled.SpaceText>{name}</Styled.SpaceText>
+      </g>
+    );
 
   return (
     <g>
