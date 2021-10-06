@@ -244,6 +244,7 @@ const GuestMap = (): JSX.Element => {
                             <Styled.SpacePolygon
                               points={area.points.map(({ x, y }) => `${x},${y}`).join(' ')}
                               fill={color ?? PALETTE.RED[200]}
+                              opacity="0.3"
                             />
                             <Styled.SpaceAreaText x="50%" y="50%">
                               {name}
