@@ -15,9 +15,10 @@ import useBoardCoordinate from 'hooks/board/useBoardCoordinate';
 import useBoardMove from 'hooks/board/useBoardMove';
 import useBoardZoom from 'hooks/board/useBoardZoom';
 import useFormContext from 'hooks/useFormContext';
-import { Area, Coordinate, EditorBoard, ManagerSpace, MapElement } from 'types/common';
-import { DrawingAreaShape, SpaceEditorMode as Mode } from 'types/editor';
+import { Area, EditorBoard, ManagerSpace, MapElement } from 'types/common';
+import { SpaceEditorMode as Mode } from 'types/editor';
 import { drawingModes } from '../data';
+import useDrawingPolygon from '../hooks/useDrawingPolygon';
 import useDrawingRect from '../hooks/useDrawingRect';
 import { SpaceFormContext } from '../providers/SpaceFormProvider';
 import BoardCursorDot from './BoardCursorDot';
@@ -62,6 +63,15 @@ const Editor = ({
 
   const { rect, startDrawingRect, updateRect, endDrawingRect } =
     useDrawingRect(stickyRectCoordinate);
+  const {
+    polygon,
+    isDrawingPolygon,
+    startPoint,
+    points,
+    startDrawingPolygon,
+    updatePolygon,
+    endDrawingPolygon,
+  } = useDrawingPolygon(stickyDotCoordinate);
   const [isDrawing, setIsDrawing] = useState(false);
 
   const isDrawingMode = useMemo(() => drawingModes.includes(mode) && !movable, [mode, movable]);
@@ -84,53 +94,28 @@ const Editor = ({
     [isDrawingMode, spaces, setSelectedSpaceId, updateWithSpace]
   );
 
-  // TODO POLYGON START
+  const handleEndDrawingRect = useCallback(() => {
+    endDrawingRect();
+    setMode(Mode.Form);
+    setIsDrawing(false);
+  }, [endDrawingRect, setMode]);
 
-  const [polygon, setPolygon] = useState<Area | null>(null);
-  const [points, setPoints] = useState<Coordinate[]>([]);
-  const [startPoint, setStartPoint] = useState<Coordinate | null>(null);
-  const [currentPoint, setCurrentPoint] = useState<Coordinate | null>(null);
-
-  const startDrawingPolygon = useCallback(() => {
-    setPoints([stickyDotCoordinate]);
-    setStartPoint(stickyDotCoordinate);
-    setCurrentPoint(stickyDotCoordinate);
-  }, [stickyDotCoordinate]);
-
-  const updatePolygon = useCallback(() => {
-    setPoints([...points, stickyDotCoordinate]);
-    setCurrentPoint(stickyDotCoordinate);
-    setPolygon({
-      shape: DrawingAreaShape.Polygon,
-      points: [...points, stickyDotCoordinate],
-    });
-    updateArea(polygon as Area);
-  }, [points, polygon, stickyDotCoordinate, updateArea]);
-
-  const endDrawingPolygon = useCallback(() => {
+  const handleEndDrawingPolygon = useCallback(() => {
     if (startPoint?.x !== stickyDotCoordinate.x || startPoint?.y !== stickyDotCoordinate.y) return;
     if (points.length < 3) return;
 
-    // 초기화
-    setPoints([]);
-    setStartPoint(null);
-    setCurrentPoint(null);
-
+    endDrawingPolygon();
     setMode(Mode.Form);
     setIsDrawing(false);
-  }, [setMode, startPoint, stickyDotCoordinate, points]);
-
-  // TODO POLYGON END
-
-  useEffect(() => {
-    console.log('points : ', points);
-    console.log('startPoint : ', startPoint);
-    console.log('currentPoint : ', currentPoint);
-    console.log(
-      points.map((point) => `${point.x},${point.y}`).join(' ') +
-        `${stickyDotCoordinate.x},${stickyDotCoordinate.y}`
-    );
-  }, [currentPoint, points, startPoint, stickyDotCoordinate.x, stickyDotCoordinate.y]);
+  }, [
+    endDrawingPolygon,
+    points.length,
+    setMode,
+    startPoint?.x,
+    startPoint?.y,
+    stickyDotCoordinate.x,
+    stickyDotCoordinate.y,
+  ]);
 
   const handleMouseDown = useCallback(() => {
     if (!isDrawingMode) return;
@@ -138,8 +123,8 @@ const Editor = ({
     setIsDrawing(true);
 
     if (mode === Mode.Rect) startDrawingRect();
-    else if (mode === Mode.Polygon) startPoint === null ? startDrawingPolygon() : updatePolygon();
-  }, [updatePolygon, isDrawingMode, mode, startDrawingPolygon, startDrawingRect, startPoint]);
+    else if (mode === Mode.Polygon) isDrawingPolygon ? updatePolygon() : startDrawingPolygon();
+  }, [isDrawingMode, mode, startDrawingRect, isDrawingPolygon, updatePolygon, startDrawingPolygon]);
 
   const handleMouseMove: MouseEventHandler<SVGSVGElement> = useCallback(
     (event) => {
@@ -151,22 +136,20 @@ const Editor = ({
         updateRect();
         updateArea(rect as Area);
       }
+
+      if (mode === Mode.Polygon) {
+        updateArea(polygon as Area);
+      }
     },
-    [updateCoordinate, isDrawingMode, isDrawing, mode, updateRect, updateArea, rect]
+    [updateCoordinate, isDrawingMode, isDrawing, mode, updateRect, updateArea, rect, polygon]
   );
 
   const handleMouseUp = useCallback(() => {
     if (!isDrawingMode || !isDrawing) return;
 
-    if (mode === Mode.Rect) endDrawingRect();
-    else if (mode === Mode.Polygon) {
-      endDrawingPolygon();
-      return;
-    }
-
-    setMode(Mode.Form);
-    setIsDrawing(false);
-  }, [isDrawingMode, isDrawing, mode, endDrawingRect, endDrawingPolygon, setMode]);
+    if (mode === Mode.Rect) handleEndDrawingRect();
+    if (mode === Mode.Polygon) handleEndDrawingPolygon();
+  }, [isDrawingMode, isDrawing, mode, handleEndDrawingRect, handleEndDrawingPolygon]);
 
   useEffect(() => {
     setMovable(pressedKey === KEY.SPACE);
@@ -205,7 +188,7 @@ const Editor = ({
       {isDrawingMode && mode === Mode.Polygon && (
         <>
           <BoardCursorDot coordinate={stickyDotCoordinate} />
-          {currentPoint && (
+          {isDrawingPolygon && (
             <polygon
               points={
                 points.map(({ x, y }) => `${x},${y}`).join(' ') +
