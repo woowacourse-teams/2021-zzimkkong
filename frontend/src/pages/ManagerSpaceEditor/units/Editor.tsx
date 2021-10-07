@@ -25,6 +25,7 @@ import BoardCursorDot from './BoardCursorDot';
 import BoardCursorRect from './BoardCursorRect';
 import BoardMapElement from './BoardMapElement';
 import BoardSpace from './BoardSpace';
+import PolygonPreview from './PolygonPreview';
 
 interface Props {
   modeState: [Mode, Dispatch<SetStateAction<Mode>>];
@@ -188,18 +189,7 @@ const Editor = ({
       {isDrawingMode && mode === Mode.Polygon && (
         <>
           <BoardCursorDot coordinate={stickyDotCoordinate} />
-          {isDrawingPolygon && (
-            <polygon
-              points={
-                points.map(({ x, y }) => `${x},${y}`).join(' ') +
-                ` ${stickyDotCoordinate.x},${stickyDotCoordinate.y}`
-              }
-              stroke={EDITOR.STROKE_PREVIEW}
-              fill={EDITOR.POLYGON_PREVIEW}
-              strokeWidth={EDITOR.STROKE_WIDTH}
-              pointerEvents="none"
-            />
-          )}
+          <PolygonPreview points={points} stickyDotCoordinate={stickyDotCoordinate} />
         </>
       )}
 
