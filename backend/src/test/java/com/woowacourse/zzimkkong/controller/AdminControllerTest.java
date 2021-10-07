@@ -191,7 +191,7 @@ class AdminControllerTest extends AcceptanceTest {
 
     @ParameterizedTest
     @DisplayName("dev, prod로 동작 시 해당 profile을 조회해 알맞는 url을 반환한다..")
-    @CsvSource(value = {"dev:307:dev.zzimkkong.com", "prod:308:zzimkkong.com"}, delimiter = ':')
+    @CsvSource(value = {"dev:200:dev.zzimkkong.com", "prod:200:zzimkkong.com"}, delimiter = ':')
     void getOtherProfile(String profile, int status, String url) {
         //given
         AdminService adminService = mock(AdminService.class);
