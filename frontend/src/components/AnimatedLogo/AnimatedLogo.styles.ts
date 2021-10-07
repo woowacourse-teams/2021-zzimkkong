@@ -1,6 +1,6 @@
-import { createGlobalStyle } from 'styled-components';
+import styled from 'styled-components';
 
-export const AnimatedLogoStyle = createGlobalStyle`
+export const AnimatedLogoSvg = styled.svg`
   #e2duQ5ri1xy2 {
     animation: e2duQ5ri1xy2_c_o 1000ms linear 1 normal forwards;
   }
