@@ -170,14 +170,14 @@ const MapCreateEditor = ({
   }, [deselectMapElements, selectedMapElements, setMapElements]);
 
   useEffect(() => {
-    if (mode !== MapEditorMode.Select) return;
+    if (!selectedMapElements.length) return;
 
     const isPressedDeleteKey = pressedKey === KEY.DELETE || pressedKey === KEY.BACK_SPACE;
 
     if (isPressedDeleteKey && selectedMapElements) {
       deleteMapElement();
     }
-  }, [deleteMapElement, mode, pressedKey, selectedMapElements]);
+  }, [deleteMapElement, pressedKey, selectedMapElements]);
 
   return (
     <Styled.Editor>
