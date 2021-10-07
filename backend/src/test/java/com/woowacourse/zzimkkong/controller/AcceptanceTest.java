@@ -1,5 +1,6 @@
 package com.woowacourse.zzimkkong.controller;
 
+import com.woowacourse.zzimkkong.DatabaseCleaner;
 import com.woowacourse.zzimkkong.dto.map.MapCreateUpdateRequest;
 import com.woowacourse.zzimkkong.dto.member.LoginRequest;
 import com.woowacourse.zzimkkong.dto.member.MemberSaveRequest;
@@ -12,6 +13,7 @@ import com.woowacourse.zzimkkong.infrastructure.thumbnail.StorageUploader;
 import io.restassured.RestAssured;
 import io.restassured.builder.RequestSpecBuilder;
 import io.restassured.specification.RequestSpecification;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,7 +24,6 @@ import org.springframework.boot.web.server.LocalServerPort;
 import org.springframework.restdocs.RestDocumentationContextProvider;
 import org.springframework.restdocs.RestDocumentationExtension;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
@@ -38,7 +39,6 @@ import static org.mockito.BDDMockito.given;
 import static org.springframework.restdocs.restassured3.RestAssuredRestDocumentation.documentationConfiguration;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-@DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
 @ExtendWith({RestDocumentationExtension.class, SpringExtension.class})
 @AutoConfigureRestDocs
 @ActiveProfiles("test")
@@ -85,6 +85,9 @@ class AcceptanceTest {
     @LocalServerPort
     int port;
 
+    @Autowired
+    private DatabaseCleaner databaseCleaner;
+
     @MockBean
     private StorageUploader storageUploader;
 
@@ -110,5 +113,10 @@ class AcceptanceTest {
 
         given(storageUploader.upload(anyString(), any(File.class)))
                 .willReturn(MAP_IMAGE_URL);
+    }
+
+    @AfterEach
+    void deleteAll() {
+        databaseCleaner.execute();
     }
 }

@@ -46,7 +46,6 @@ class AdminControllerTest extends AcceptanceTest {
             .enabledDayOfWeek(BE_ENABLED_DAY_OF_WEEK)
             .build();
     private static final Space BE = Space.builder()
-            .id(1L)
             .name(BE_NAME)
             .color(BE_COLOR)
             .map(LUTHER)
@@ -155,7 +154,6 @@ class AdminControllerTest extends AcceptanceTest {
                 SALLY_DESCRIPTION);
         saveReservation(beReservationApi, newReservationCreateUpdateWithPasswordRequest);
         Reservation reservation = Reservation.builder()
-                .id(1L)
                 .startTime(newReservationCreateUpdateWithPasswordRequest.getStartDateTime())
                 .endTime(newReservationCreateUpdateWithPasswordRequest.getEndDateTime())
                 .userName(newReservationCreateUpdateWithPasswordRequest.getName())
