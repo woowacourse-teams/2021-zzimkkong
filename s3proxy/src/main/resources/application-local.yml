@@ -1,0 +1,14 @@
+cloud:
+  aws:
+    stack:
+      auto: false
+    credentials:
+      instance-profile: false
+    region:
+      static: ap-northeast-2
+
+aws:
+  s3:
+    bucket-name: zzimkkong-personal
+    mapped-cloudfront: https://zzimkkong-personal.s3.ap-northeast-2.amazonaws.com
+    region: ap-northeast-2

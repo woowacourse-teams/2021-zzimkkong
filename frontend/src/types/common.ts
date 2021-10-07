@@ -121,10 +121,11 @@ export interface DrawingStatus {
   start?: Coordinate;
   end?: Coordinate;
 }
+
 export interface MapDrawing {
   width: number;
   height: number;
-  mapElements: MapElement[];
+  mapElements: Omit<MapElement[], 'ref'>;
 }
 
 export interface GripPoint {
