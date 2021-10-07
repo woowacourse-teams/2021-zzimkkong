@@ -8,7 +8,7 @@ import com.woowacourse.zzimkkong.dto.member.TokenResponse;
 import com.woowacourse.zzimkkong.exception.authorization.OauthProviderMismatchException;
 import com.woowacourse.zzimkkong.exception.member.NoSuchMemberException;
 import com.woowacourse.zzimkkong.exception.member.NoSuchOAuthMemberException;
-import com.woowacourse.zzimkkong.exception.member.PasswordMismatchException;
+import com.woowacourse.zzimkkong.exception.member.IdPasswordMismatchException;
 import com.woowacourse.zzimkkong.infrastructure.auth.JwtUtils;
 import com.woowacourse.zzimkkong.infrastructure.oauth.OauthHandler;
 import com.woowacourse.zzimkkong.repository.MemberRepository;
@@ -72,7 +72,7 @@ public class AuthService {
 
     private void validatePassword(final Member findMember, final String password) {
         if (!passwordEncoder.matches(password, findMember.getPassword())) {
-            throw new PasswordMismatchException();
+            throw new IdPasswordMismatchException();
         }
     }
 

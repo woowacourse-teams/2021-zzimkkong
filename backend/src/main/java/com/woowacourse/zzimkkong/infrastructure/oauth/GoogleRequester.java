@@ -1,5 +1,6 @@
 package com.woowacourse.zzimkkong.infrastructure.oauth;
 
+import com.woowacourse.zzimkkong.config.logaspect.LogMethodExecutionTime;
 import com.woowacourse.zzimkkong.domain.OauthProvider;
 import com.woowacourse.zzimkkong.domain.oauth.GoogleUserInfo;
 import com.woowacourse.zzimkkong.domain.oauth.OauthUserInfo;
@@ -19,6 +20,7 @@ import java.util.Map;
 
 @Component
 @PropertySource("classpath:config/oauth.properties")
+@LogMethodExecutionTime(group = "infrastructure")
 public class GoogleRequester implements OauthAPIRequester {
     private final String clientId;
     private final String secretId;

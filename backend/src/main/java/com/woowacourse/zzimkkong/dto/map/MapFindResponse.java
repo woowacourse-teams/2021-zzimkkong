@@ -12,6 +12,7 @@ public class MapFindResponse {
     private String mapDrawing;
     private String mapImageUrl;
     private String sharingMapId;
+    private String managerEmail;
 
     private MapFindResponse(final Long mapId,
                             final String mapName,
@@ -25,6 +26,20 @@ public class MapFindResponse {
         this.sharingMapId = sharingMapId;
     }
 
+    private MapFindResponse(final Long mapId,
+                            final String mapName,
+                            final String mapDrawing,
+                            final String mapImageUrl,
+                            final String sharingMapId,
+                            final String managerEmail) {
+        this.mapId = mapId;
+        this.mapName = mapName;
+        this.mapDrawing = mapDrawing;
+        this.mapImageUrl = mapImageUrl;
+        this.sharingMapId = sharingMapId;
+        this.managerEmail = managerEmail;
+    }
+
     public static MapFindResponse of(final Map map,
                                      final String sharingMapId) {
         return new MapFindResponse(
@@ -33,6 +48,18 @@ public class MapFindResponse {
                 map.getMapDrawing(),
                 map.getMapImageUrl(),
                 sharingMapId
+        );
+    }
+
+    public static MapFindResponse ofAdmin(final Map map,
+                                          final String sharingMapId) {
+        return new MapFindResponse(
+                map.getId(),
+                map.getName(),
+                map.getMapDrawing(),
+                map.getMapImageUrl(),
+                sharingMapId,
+                map.getMember().getEmail()
         );
     }
 }

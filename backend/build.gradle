@@ -26,8 +26,6 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-web'
     implementation 'org.springframework.boot:spring-boot-starter-webflux'
 
-    implementation 'org.springframework.cloud:spring-cloud-starter-aws:2.2.6.RELEASE'
-
     // Security
     implementation 'org.springframework.boot:spring-boot-starter-security'
     testImplementation 'org.springframework.security:spring-security-test'
@@ -66,6 +64,10 @@ dependencies {
     // Mock Web Server
     testImplementation 'com.squareup.okhttp3:okhttp:4.0.1'
     testImplementation 'com.squareup.okhttp3:mockwebserver:4.0.1'
+
+    // Logstash
+    implementation 'net.logstash.logback:logstash-logback-encoder:6.6'
+
 }
 
 test {
@@ -109,10 +111,9 @@ jacocoTestCoverageVerification {
         rule {
             element = 'CLASS'
             excludes = ["**.exception.**", "**.ControllerAdvice", "**.*ErrorResponse", "**.ValidatorMessage",
-                        "**.ZzimkkongApplication", "**.*TimeConverter", "**.DataLoader", "**.*Config",
+                        "**.ZzimkkongApplication", "**.DataLoader", "**.config.**",
                         "**.LoginInterceptor", "**.AuthenticationPrincipalArgumentResolver",
-                        "**.slack.**", "**.Slack*", "**.datasource.**"]
-            //todo: 패키지 분리하면 더 멋있게 해보겠슴,,
+                        "**.slack.**", "**.Slack*", "**.AdminPageController"]
 
             limit {
                 counter = 'BRANCH'

@@ -2,7 +2,6 @@ package com.woowacourse.zzimkkong.dto.space;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonInclude;
-import com.woowacourse.zzimkkong.dto.DayOfWeekConstraint;
 import com.woowacourse.zzimkkong.dto.TimeUnit;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -30,8 +29,7 @@ public class SettingsRequest {
 
     private Boolean reservationEnable = true;
 
-    @DayOfWeekConstraint
-    private String enabledDayOfWeek = "monday, tuesday, wednesday, thursday, friday, saturday, sunday";
+    private EnabledDayOfWeekDto enabledDayOfWeek = new EnabledDayOfWeekDto();
 
     public SettingsRequest(
             final LocalTime availableStartTime,
@@ -40,7 +38,7 @@ public class SettingsRequest {
             final Integer reservationMinimumTimeUnit,
             final Integer reservationMaximumTimeUnit,
             final Boolean reservationEnable,
-            final String enabledDayOfWeek) {
+            final EnabledDayOfWeekDto enabledDayOfWeek) {
         this.availableStartTime = availableStartTime;
         this.availableEndTime = availableEndTime;
         this.reservationTimeUnit = reservationTimeUnit;
@@ -48,5 +46,9 @@ public class SettingsRequest {
         this.reservationMaximumTimeUnit = reservationMaximumTimeUnit;
         this.reservationEnable = reservationEnable;
         this.enabledDayOfWeek = enabledDayOfWeek;
+    }
+
+    public String enabledDayOfWeekAsString() {
+        return enabledDayOfWeek.toString();
     }
 }

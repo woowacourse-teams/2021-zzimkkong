@@ -39,7 +39,7 @@ public class PresetService {
                 .reservationMinimumTimeUnit(settingsRequest.getReservationMinimumTimeUnit())
                 .reservationMaximumTimeUnit(settingsRequest.getReservationMaximumTimeUnit())
                 .reservationEnable(settingsRequest.getReservationEnable())
-                .enabledDayOfWeek(settingsRequest.getEnabledDayOfWeek())
+                .enabledDayOfWeek(settingsRequest.enabledDayOfWeekAsString())
                 .build();
 
         Member manager = members.findByEmail(loginEmailDto.getEmail())

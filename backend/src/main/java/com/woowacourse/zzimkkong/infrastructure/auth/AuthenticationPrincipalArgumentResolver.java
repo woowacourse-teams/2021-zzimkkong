@@ -1,5 +1,6 @@
 package com.woowacourse.zzimkkong.infrastructure.auth;
 
+import com.woowacourse.zzimkkong.config.logaspect.LogMethodExecutionTime;
 import com.woowacourse.zzimkkong.domain.LoginEmail;
 import com.woowacourse.zzimkkong.dto.member.LoginEmailDto;
 import org.springframework.core.MethodParameter;
@@ -12,6 +13,7 @@ import org.springframework.web.method.support.ModelAndViewContainer;
 import javax.servlet.http.HttpServletRequest;
 
 @Component
+@LogMethodExecutionTime(group = "infrastructure")
 public class AuthenticationPrincipalArgumentResolver implements HandlerMethodArgumentResolver {
     private final JwtUtils jwtUtils;
 

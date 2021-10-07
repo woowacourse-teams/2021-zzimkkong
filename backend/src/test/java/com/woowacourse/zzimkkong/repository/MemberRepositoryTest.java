@@ -8,6 +8,9 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 import org.springframework.dao.DataAccessException;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 
 import static com.woowacourse.zzimkkong.Constants.*;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -68,5 +71,22 @@ class MemberRepositoryTest extends RepositoryTest {
         // then
         assertThatThrownBy(() -> members.save(sameEmailMember))
                 .isInstanceOf(DataAccessException.class);
+    }
+
+    @Test
+    @DisplayName("page로 모든 회원을 조회한다.")
+    void findAll() {
+        // given
+        Member save = members.save(pobi);
+
+        // when
+        PageRequest pageRequest = PageRequest.of(0, 20, Sort.unsorted());
+        Page<Member> actual = members.findAll(pageRequest);
+
+        // then
+        assertThat(actual.getSize()).isEqualTo(20);
+        assertThat(actual.getContent().size()).isEqualTo(1);
+        assertThat(actual.getContent().get(0)).usingRecursiveComparison()
+                .isEqualTo(save);
     }
 }

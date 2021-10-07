@@ -1,5 +1,6 @@
 package com.woowacourse.zzimkkong.infrastructure.thumbnail;
 
+import com.woowacourse.zzimkkong.config.logaspect.LogMethodExecutionTime;
 import com.woowacourse.zzimkkong.exception.infrastructure.SvgToPngConvertException;
 import org.apache.batik.transcoder.TranscoderException;
 import org.apache.batik.transcoder.TranscoderInput;
@@ -11,6 +12,7 @@ import org.springframework.stereotype.Component;
 import java.io.*;
 
 @Component
+@LogMethodExecutionTime(group = "infrastructure")
 public class BatikConverter implements SvgConverter {
     private final String saveDirectoryPath;
 

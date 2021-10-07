@@ -1,5 +1,6 @@
 package com.woowacourse.zzimkkong.infrastructure.oauth;
 
+import com.woowacourse.zzimkkong.config.logaspect.LogMethodExecutionTime;
 import com.woowacourse.zzimkkong.domain.OauthProvider;
 import com.woowacourse.zzimkkong.domain.oauth.GithubUserInfo;
 import com.woowacourse.zzimkkong.domain.oauth.OauthUserInfo;
@@ -14,6 +15,7 @@ import org.springframework.web.reactive.function.client.WebClient;
 import java.util.Map;
 
 @PropertySource("classpath:config/oauth.properties")
+@LogMethodExecutionTime(group = "infrastructure")
 public class GithubRequester implements OauthAPIRequester {
     private final String clientId;
     private final String secretId;

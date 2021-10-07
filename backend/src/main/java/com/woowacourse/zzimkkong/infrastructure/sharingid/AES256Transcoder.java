@@ -1,5 +1,6 @@
 package com.woowacourse.zzimkkong.infrastructure.sharingid;
 
+import com.woowacourse.zzimkkong.config.logaspect.LogMethodExecutionTime;
 import com.woowacourse.zzimkkong.exception.infrastructure.DecodingException;
 import com.woowacourse.zzimkkong.exception.infrastructure.EncodingException;
 import com.woowacourse.zzimkkong.exception.infrastructure.InsufficientSecretKeyLengthException;
@@ -18,6 +19,7 @@ import java.security.NoSuchAlgorithmException;
 
 @Component
 @PropertySource("classpath:config/AES256Transcoder.properties")
+@LogMethodExecutionTime(group = "infrastructure")
 public class AES256Transcoder implements Transcoder {
     private static final int MINIMUM_LENGTH_OF_SECRET_KEY = 32;
     private static final int LENGTH_OF_INITIALIZATION_VECTOR = 16;

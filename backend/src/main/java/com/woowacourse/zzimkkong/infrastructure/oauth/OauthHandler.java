@@ -1,5 +1,6 @@
 package com.woowacourse.zzimkkong.infrastructure.oauth;
 
+import com.woowacourse.zzimkkong.config.logaspect.LogMethodExecutionTime;
 import com.woowacourse.zzimkkong.domain.OauthProvider;
 import com.woowacourse.zzimkkong.domain.oauth.OauthUserInfo;
 import com.woowacourse.zzimkkong.exception.infrastructure.UnsupportedOauthProviderException;
@@ -8,6 +9,7 @@ import org.springframework.stereotype.Component;
 import java.util.List;
 
 @Component
+@LogMethodExecutionTime(group = "infrastructure")
 public class OauthHandler {
     private final List<OauthAPIRequester> oauthAPIRequesters;
 

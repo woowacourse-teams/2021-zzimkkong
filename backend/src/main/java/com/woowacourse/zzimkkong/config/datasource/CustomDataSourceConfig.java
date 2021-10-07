@@ -1,89 +1,62 @@
 package com.woowacourse.zzimkkong.config.datasource;
 
-import com.woowacourse.zzimkkong.exception.infrastructure.NoMasterDataSourceException;
 import com.zaxxer.hikari.HikariDataSource;
-import org.springframework.boot.autoconfigure.orm.jpa.JpaProperties;
-import org.springframework.boot.orm.jpa.EntityManagerFactoryBuilder;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
+import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
+import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.boot.jdbc.DataSourceBuilder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Primary;
 import org.springframework.context.annotation.Profile;
+import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.jdbc.datasource.LazyConnectionDataSourceProxy;
-import org.springframework.orm.jpa.JpaTransactionManager;
-import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
-import org.springframework.orm.jpa.vendor.AbstractJpaVendorAdapter;
-import org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter;
-import org.springframework.transaction.PlatformTransactionManager;
+import org.springframework.transaction.annotation.EnableTransactionManagement;
 
-import javax.persistence.EntityManagerFactory;
 import javax.sql.DataSource;
 import java.util.*;
-import java.util.stream.Collectors;
+
+import static com.woowacourse.zzimkkong.config.datasource.ReplicationRoutingDataSource.DATASOURCE_KEY_MASTER;
+import static com.woowacourse.zzimkkong.config.datasource.ReplicationRoutingDataSource.DATASOURCE_KEY_SLAVE;
 
 @Configuration
+@EnableAutoConfiguration(exclude = {DataSourceAutoConfiguration.class})
+@EnableTransactionManagement
+@EnableJpaRepositories(basePackages = {"com.woowacourse.zzimkkong"})
 @Profile("prod")
 public class CustomDataSourceConfig {
-    public static final String MASTER = "master";
-    public static final String SLAVE = "slave";
-    private static final String PACKAGE_PATH = "com.woowacourse.zzimkkong";
-    private final List<HikariDataSource> hikariDataSources;
-    private final JpaProperties jpaProperties;
 
-    public CustomDataSourceConfig(final List<HikariDataSource> hikariDataSources, final JpaProperties jpaProperties) {
-        this.hikariDataSources = hikariDataSources;
-        this.jpaProperties = jpaProperties;
+    @Bean
+    @ConfigurationProperties(prefix = "spring.datasource.hikari.master")
+    public DataSource masterDataSource() {
+        return DataSourceBuilder.create().type(HikariDataSource.class).build();
     }
 
     @Bean
-    public DataSource dataSource() {
-        return new LazyConnectionDataSourceProxy(routingDataSource());
+    @ConfigurationProperties(prefix = "spring.datasource.hikari.slave")
+    public DataSource slaveDataSource() {
+        return DataSourceBuilder.create().type(HikariDataSource.class).build();
     }
 
     @Bean
-    public DataSource routingDataSource() {
-        final DataSource master = createMasterDataSource();
-        final Map<Object, Object> slaves = createSlaveDataSources();
-        slaves.put(MASTER, master);
+    public DataSource routingDataSource(@Qualifier("masterDataSource") DataSource master,
+                                        @Qualifier("slaveDataSource") DataSource slave) {
+        ReplicationRoutingDataSource routingDataSource = new ReplicationRoutingDataSource();
 
-        ReplicationRoutingDataSource replicationRoutingDataSource = new ReplicationRoutingDataSource();
-        replicationRoutingDataSource.setDefaultTargetDataSource(master);
-        replicationRoutingDataSource.setTargetDataSources(slaves);
-        return replicationRoutingDataSource;
+        HashMap<Object, Object> sources = new HashMap<>();
+        sources.put(DATASOURCE_KEY_MASTER, master);
+        sources.put(DATASOURCE_KEY_SLAVE, slave);
+
+        routingDataSource.setTargetDataSources(sources);
+        routingDataSource.setDefaultTargetDataSource(master);
+
+        return routingDataSource;
     }
 
-    private DataSource createMasterDataSource() {
-        return hikariDataSources.stream()
-                .filter(dataSource -> dataSource.getPoolName().startsWith(MASTER))
-                .findFirst()
-                .orElseThrow(NoMasterDataSourceException::new);
-    }
-
-    private Map<Object, Object> createSlaveDataSources() {
-        final List<HikariDataSource> slaveDataSources = hikariDataSources.stream()
-                .filter(datasource -> Objects.nonNull(datasource.getPoolName()) && datasource.getPoolName().startsWith(SLAVE))
-                .collect(Collectors.toList());
-
-        final Map<Object, Object> result = new HashMap<>();
-        for (final HikariDataSource slaveDataSource : slaveDataSources) {
-            result.put(slaveDataSource.getPoolName(), slaveDataSource);
-        }
-        return result;
-    }
-
+    @Primary
     @Bean
-    public LocalContainerEntityManagerFactoryBean entityManagerFactory() {
-        EntityManagerFactoryBuilder entityManagerFactoryBuilder = createEntityManagerFactoryBuilder(jpaProperties);
-        return entityManagerFactoryBuilder.dataSource(dataSource()).packages(PACKAGE_PATH).build();
-    }
-
-    private EntityManagerFactoryBuilder createEntityManagerFactoryBuilder(JpaProperties jpaProperties) {
-        AbstractJpaVendorAdapter vendorAdapter = new HibernateJpaVendorAdapter();
-        return new EntityManagerFactoryBuilder(vendorAdapter, jpaProperties.getProperties(), null);
-    }
-
-    @Bean
-    public PlatformTransactionManager transactionManager(EntityManagerFactory entityManagerFactory) {
-        JpaTransactionManager tm = new JpaTransactionManager();
-        tm.setEntityManagerFactory(entityManagerFactory);
-        return tm;
+    public DataSource dataSource(@Qualifier("routingDataSource") DataSource routingDataSource) {
+        return new LazyConnectionDataSourceProxy(routingDataSource);
     }
 }

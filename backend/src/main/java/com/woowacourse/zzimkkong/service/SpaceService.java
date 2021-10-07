@@ -167,7 +167,7 @@ public class SpaceService {
                 .reservationEnable(settingsRequest.getReservationEnable())
                 .reservationMinimumTimeUnit(settingsRequest.getReservationMinimumTimeUnit())
                 .reservationMaximumTimeUnit(settingsRequest.getReservationMaximumTimeUnit())
-                .enabledDayOfWeek(settingsRequest.getEnabledDayOfWeek())
+                .enabledDayOfWeek(settingsRequest.enabledDayOfWeekAsString())
                 .build();
     }
 

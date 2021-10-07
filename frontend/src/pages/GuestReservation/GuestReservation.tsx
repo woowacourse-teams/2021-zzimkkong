@@ -12,14 +12,12 @@ import { HREF } from 'constants/path';
 import useGuestReservations from 'hooks/query/useGuestReservations';
 import useInput from 'hooks/useInput';
 import { GuestMapState } from 'pages/GuestMap/GuestMap';
-import { MapItem, Reservation, ScrollPosition, Space } from 'types/common';
+import { Reservation, ScrollPosition, Space } from 'types/common';
+import { GuestPageURLParams } from 'types/guest';
 import { ErrorResponse } from 'types/response';
 import * as Styled from './GuestReservation.styles';
+import { GuestReservationSuccessState } from './GuestReservationSuccess';
 import GuestReservationForm from './units/GuestReservationForm';
-
-interface URLParameter {
-  sharingMapId: MapItem['sharingMapId'];
-}
 
 interface GuestReservationState {
   mapId: number;
@@ -35,8 +33,8 @@ export interface EditReservationParams extends ReservationParams {
 
 const GuestReservation = (): JSX.Element => {
   const location = useLocation<GuestReservationState>();
-  const history = useHistory<GuestMapState>();
-  const { sharingMapId } = useParams<URLParameter>();
+  const history = useHistory<GuestReservationSuccessState | GuestMapState>();
+  const { sharingMapId } = useParams<GuestPageURLParams>();
 
   const { mapId, space, selectedDate, scrollPosition, reservation } = location.state;
 
@@ -50,11 +48,19 @@ const GuestReservation = (): JSX.Element => {
   const reservations = getReservations.data?.data?.reservations ?? [];
 
   const addReservation = useMutation(postGuestReservation, {
-    onSuccess: () => {
+    onSuccess: (_, { reservation }) => {
+      const { startDateTime, endDateTime, name, description } = reservation;
+
       history.push({
-        pathname: HREF.GUEST_MAP(sharingMapId),
+        pathname: HREF.GUEST_RESERVATION_SUCCESS(sharingMapId),
         state: {
-          spaceId: space.id,
+          space,
+          reservation: {
+            startDateTime,
+            endDateTime,
+            name,
+            description,
+          },
           targetDate: new Date(date),
         },
       });

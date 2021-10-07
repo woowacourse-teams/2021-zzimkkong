@@ -1,11 +1,12 @@
 import { AxiosError } from 'axios';
-import React, { useMemo, useState } from 'react';
+import React, { createRef, useMemo, useState } from 'react';
 import { useMutation } from 'react-query';
 import { useHistory, useParams } from 'react-router';
 import { postMap, putMap } from 'api/managerMap';
 import Button from 'components/Button/Button';
 import Header from 'components/Header/Header';
 import Layout from 'components/Layout/Layout';
+import { BOARD } from 'constants/editor';
 import MESSAGE from 'constants/message';
 import PATH, { HREF } from 'constants/path';
 import useManagerMap from 'hooks/query/useManagerMap';
@@ -37,8 +38,8 @@ const ManagerMapEditor = (): JSX.Element => {
   const [mapElements, setMapElements] = useState<MapElement[]>([]);
   const [{ name, width, height }, onChangeBoard, setBoard] = useInputs<Board>({
     name: '',
-    width: '800',
-    height: '600',
+    width: `${BOARD.DEFAULT_WIDTH}`,
+    height: `${BOARD.DEFAULT_HEIGHT}`,
   });
 
   const managerSpaces = useManagerSpaces({ mapId: Number(mapId) }, { enabled: isEdit });
@@ -64,8 +65,12 @@ const ManagerMapEditor = (): JSX.Element => {
 
         try {
           const { mapElements, width, height } = JSON.parse(mapDrawing) as MapDrawing;
+          const mapElementsWithRef = mapElements.map((element) => ({
+            ...element,
+            ref: createRef<SVGPolylineElement | SVGRectElement>(),
+          }));
 
-          setMapElements(mapElements);
+          setMapElements(mapElementsWithRef);
           setBoard({
             name: mapName ?? '',
             width: `${width}`,
@@ -116,7 +121,12 @@ const ManagerMapEditor = (): JSX.Element => {
 
     if (createMap.isLoading || updateMap.isLoading) return;
 
-    const mapDrawing = JSON.stringify({ width, height, mapElements });
+    const mapDrawing = JSON.stringify({
+      width,
+      height,
+      mapElements: mapElements.map(({ ref, ...props }) => props),
+    });
+
     const mapImageSvg = createMapImageSvg({
       mapElements,
       spaces,
