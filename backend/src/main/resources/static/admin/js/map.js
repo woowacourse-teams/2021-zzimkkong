@@ -64,7 +64,10 @@ function moveToMap(sharingMapId) {
         if (res.status === 400) {
             alert('로컬에서는 맵을 조회할 수 없습니다.')
         } else {
-            res.text().then(data => location.href = data + '/guest/' + sharingMapId);
+            res.text().then(data => {
+                console.log(location.href);
+                location.href = 'https://' + data + '/guest/' + sharingMapId
+            });
         }
     });
 }
