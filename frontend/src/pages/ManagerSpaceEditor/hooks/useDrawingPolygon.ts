@@ -40,6 +40,7 @@ const useDrawingPolygon = ({
 
   const endDrawingPolygon = () => {
     setPoints([]);
+    setPolygon(null);
     setStartPoint(null);
     setIsDrawingPolygon(false);
   };
