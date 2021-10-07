@@ -62,10 +62,10 @@ public class AdminController {
     @GetMapping("/profile")
     public ResponseEntity<String> profile() {
         if (profile.equals("dev")) {
-            return ResponseEntity.status(HttpStatus.TEMPORARY_REDIRECT).body(DEV_URL);
+            return ResponseEntity.status(HttpStatus.OK).body(DEV_URL);
         }
         if (profile.equals("prod")) {
-            return ResponseEntity.status(HttpStatus.PERMANENT_REDIRECT).body(PROD_URL);
+            return ResponseEntity.status(HttpStatus.OK).body(PROD_URL);
         }
         return ResponseEntity.badRequest().build();
     }
