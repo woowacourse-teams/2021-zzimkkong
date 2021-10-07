@@ -1,5 +1,6 @@
 import { Redirect, useLocation, useParams } from 'react-router';
 import { ReactComponent as Logo } from 'assets/svg/logo.svg';
+import AnimatedLogo from 'components/AnimatedLogo/AnimatedLogo';
 import Header from 'components/Header/Header';
 import Layout from 'components/Layout/Layout';
 import { HREF } from 'constants/path';
@@ -36,7 +37,7 @@ const GuestReservationSuccess = (): JSX.Element => {
       <Header />
       <Layout>
         <Styled.Container>
-          <Logo />
+          <AnimatedLogo />
           <Styled.MessageContainer>
             <Styled.Message>예약이 완료되었습니다!</Styled.Message>
             <Styled.PageLink
