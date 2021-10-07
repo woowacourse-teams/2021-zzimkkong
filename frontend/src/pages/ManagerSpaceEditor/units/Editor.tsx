@@ -107,7 +107,7 @@ const Editor = ({
 
   const handleEndDrawingPolygon = useCallback(() => {
     if (startPoint?.x !== stickyDotCoordinate.x || startPoint?.y !== stickyDotCoordinate.y) return;
-    if (points.length < 3) return;
+    if (points.length < EDITOR.MIN_POLYGON_SIDES) return;
 
     endDrawingPolygon();
     setMode(Mode.Form);
