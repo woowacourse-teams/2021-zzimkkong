@@ -1,11 +1,13 @@
 package com.woowacourse.zzimkkong.infrastructure.sharingid;
 
+import com.woowacourse.zzimkkong.config.logaspect.LogMethodExecutionTime;
 import com.woowacourse.zzimkkong.domain.Map;
 import com.woowacourse.zzimkkong.exception.infrastructure.DecodingException;
 import com.woowacourse.zzimkkong.exception.map.InvalidAccessLinkException;
 import org.springframework.stereotype.Component;
 
 @Component
+@LogMethodExecutionTime(group = "infrastructure")
 public class SharingIdGenerator {
     private final Transcoder transcoder;
 

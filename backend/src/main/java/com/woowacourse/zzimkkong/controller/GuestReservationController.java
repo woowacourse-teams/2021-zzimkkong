@@ -1,5 +1,6 @@
 package com.woowacourse.zzimkkong.controller;
 
+import com.woowacourse.zzimkkong.config.logaspect.LogMethodExecutionTime;
 import com.woowacourse.zzimkkong.dto.reservation.*;
 import com.woowacourse.zzimkkong.service.ReservationService;
 import com.woowacourse.zzimkkong.service.strategy.GuestReservationStrategy;
@@ -13,6 +14,7 @@ import java.time.LocalDate;
 
 import static com.woowacourse.zzimkkong.dto.ValidatorMessage.DATE_FORMAT;
 
+@LogMethodExecutionTime(group = "controller")
 @RestController
 @RequestMapping("/api/guests/maps/{mapId}/spaces")
 public class GuestReservationController {
