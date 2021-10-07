@@ -26,6 +26,7 @@ import BoardCursorRect from './BoardCursorRect';
 import BoardMapElement from './BoardMapElement';
 import BoardSpace from './BoardSpace';
 import PolygonPreview from './PolygonPreview';
+import PolygonStartPoint from './PolygonStartPoint';
 
 interface Props {
   modeState: [Mode, Dispatch<SetStateAction<Mode>>];
@@ -72,7 +73,10 @@ const Editor = ({
     startDrawingPolygon,
     updatePolygon,
     endDrawingPolygon,
-  } = useDrawingPolygon(stickyDotCoordinate);
+  } = useDrawingPolygon({
+    coordinate: stickyDotCoordinate,
+    mode,
+  });
   const [isDrawing, setIsDrawing] = useState(false);
 
   const isDrawingMode = useMemo(() => drawingModes.includes(mode) && !movable, [mode, movable]);
@@ -188,6 +192,7 @@ const Editor = ({
 
       {isDrawingMode && mode === Mode.Polygon && (
         <>
+          {startPoint && <PolygonStartPoint coordinate={startPoint} />}
           <BoardCursorDot coordinate={stickyDotCoordinate} />
           <PolygonPreview points={points} stickyDotCoordinate={stickyDotCoordinate} />
         </>

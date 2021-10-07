@@ -1,10 +1,16 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Area, Coordinate } from 'types/common';
-import { DrawingAreaShape } from 'types/editor';
+import { DrawingAreaShape, SpaceEditorMode as Mode } from 'types/editor';
 
-const useDrawingPolygon = (
-  coordinate: Coordinate
-): {
+interface Props {
+  coordinate: Coordinate;
+  mode: Mode;
+}
+
+const useDrawingPolygon = ({
+  coordinate,
+  mode,
+}: Props): {
   polygon: Area | null;
   isDrawingPolygon: boolean;
   startPoint: Coordinate | null;
@@ -37,6 +43,10 @@ const useDrawingPolygon = (
     setStartPoint(null);
     setIsDrawingPolygon(false);
   };
+
+  useEffect(() => {
+    mode !== Mode.Polygon && endDrawingPolygon();
+  }, [mode]);
 
   return {
     polygon,
