@@ -17,6 +17,7 @@ import useBoardStatus from 'hooks/board/useBoardStatus';
 import useBoardZoom from 'hooks/board/useBoardZoom';
 import { Color, DrawingStatus, ManagerSpace, MapElement } from 'types/common';
 import { MapElementType, MapEditorMode } from 'types/editor';
+import { getPolygonCenterPoint } from 'utils/editor';
 import useBoardEraserTool from '../hooks/useBoardEraserTool';
 import useBoardLineTool from '../hooks/useBoardLineTool';
 import useBoardRectTool from '../hooks/useBoardRectTool';
@@ -270,6 +271,8 @@ const MapCreateEditor = ({
                   opacity={EDITOR.SPACE_OPACITY}
                 />
                 <text
+                  x={getPolygonCenterPoint(area.points).x}
+                  y={getPolygonCenterPoint(area.points).y}
                   dominantBaseline="middle"
                   textAnchor="middle"
                   fill={EDITOR.TEXT_FILL}

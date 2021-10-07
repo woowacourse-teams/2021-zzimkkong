@@ -1,5 +1,6 @@
 import { ManagerSpace } from 'types/common';
 import { WithOptional } from 'types/util';
+import { getPolygonCenterPoint } from 'utils/editor';
 import * as Styled from './BoardSpace.styles';
 
 interface Props {
@@ -12,7 +13,9 @@ interface Props {
 const BoardSpace = ({ space, drawing, selected, onClick }: Props): JSX.Element => {
   const { color, area, name } = space;
 
-  if (area.shape === 'polygon')
+  if (area.shape === 'polygon') {
+    const centerPoint = getPolygonCenterPoint(area.points);
+
     return (
       <g>
         <Styled.SpacePolygon
@@ -22,11 +25,12 @@ const BoardSpace = ({ space, drawing, selected, onClick }: Props): JSX.Element =
           disabled={drawing || selected}
           selected={selected}
         />
-        <Styled.SpaceText x="50%" y="50%">
+        <Styled.SpaceText x={centerPoint.x} y={centerPoint.y}>
           {name}
         </Styled.SpaceText>
       </g>
     );
+  }
 
   return (
     <g>
