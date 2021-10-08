@@ -55,36 +55,32 @@ const TimePickerOptions = ({ time, step = 1, onChange }: Props): JSX.Element => 
         </Styled.Option>
       </Styled.OptionContainer>
       <Styled.OptionContainer ref={hourRef}>
-        {Array(12)
-          .fill(undefined)
-          .map((_, index) => (
-            <Styled.Option key={`${index}-hour`} tabIndex={0}>
-              <Styled.Radio
-                type="radio"
-                name="hour"
-                value={index + 1}
-                onChange={onChange('hour')}
-                checked={index + 1 === time?.hour}
-              />
-              <Styled.OptionText>{String(index + 1).padStart(2, '0')} 시</Styled.OptionText>
-            </Styled.Option>
-          ))}
+        {Array.from({ length: 12 }).map((_, index) => (
+          <Styled.Option key={`${index}-hour`} tabIndex={0}>
+            <Styled.Radio
+              type="radio"
+              name="hour"
+              value={index + 1}
+              onChange={onChange('hour')}
+              checked={index + 1 === time?.hour}
+            />
+            <Styled.OptionText>{String(index + 1).padStart(2, '0')} 시</Styled.OptionText>
+          </Styled.Option>
+        ))}
       </Styled.OptionContainer>
       <Styled.OptionContainer ref={minuteRef}>
-        {Array(60 / step)
-          .fill(undefined)
-          .map((_, index) => (
-            <Styled.Option key={`${index}-minute`} tabIndex={0}>
-              <Styled.Radio
-                type="radio"
-                name="minute"
-                value={index * step}
-                onChange={onChange('minute')}
-                checked={index * step === time?.minute}
-              />
-              <Styled.OptionText>{String(index * step).padStart(2, '0')} 분</Styled.OptionText>
-            </Styled.Option>
-          ))}
+        {Array.from({ length: 60 / step }).map((_, index) => (
+          <Styled.Option key={`${index}-minute`} tabIndex={0}>
+            <Styled.Radio
+              type="radio"
+              name="minute"
+              value={index * step}
+              onChange={onChange('minute')}
+              checked={index * step === time?.minute}
+            />
+            <Styled.OptionText>{String(index * step).padStart(2, '0')} 분</Styled.OptionText>
+          </Styled.Option>
+        ))}
       </Styled.OptionContainer>
     </Styled.OptionsContainer>
   );
