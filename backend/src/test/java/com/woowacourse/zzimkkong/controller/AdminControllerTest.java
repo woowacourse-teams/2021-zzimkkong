@@ -11,6 +11,7 @@ import com.woowacourse.zzimkkong.dto.reservation.ReservationResponse;
 import com.woowacourse.zzimkkong.dto.space.SpaceFindDetailWithIdResponse;
 import com.woowacourse.zzimkkong.infrastructure.auth.AuthorizationExtractor;
 import com.woowacourse.zzimkkong.service.AdminService;
+import com.woowacourse.zzimkkong.service.SlackService;
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
@@ -19,6 +20,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -34,6 +36,9 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
 
 class AdminControllerTest extends AcceptanceTest {
+    @MockBean
+    private SlackService slackService;
+
     private static final Member POBI = new Member(memberSaveRequest.getEmail(), memberSaveRequest.getPassword(), memberSaveRequest.getOrganization());
     private static final Map LUTHER = new Map(LUTHER_NAME, MAP_DRAWING_DATA, MAP_IMAGE_URL, POBI);
     private static final Setting BE_SETTING = Setting.builder()
