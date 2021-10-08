@@ -1,5 +1,5 @@
 import React, { MouseEventHandler } from 'react';
-import { Range } from '../../hooks/useTimePicker';
+import { Range } from 'types/time';
 import * as Styled from './TimePicker.styles';
 import TimePickerOptions from './TimePickerOptions';
 

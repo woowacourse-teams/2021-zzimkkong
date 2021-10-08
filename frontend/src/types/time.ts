@@ -7,3 +7,8 @@ export interface Time {
   hour: number;
   minute: number;
 }
+
+export interface Range {
+  start: Time | null;
+  end: Time | null;
+}
