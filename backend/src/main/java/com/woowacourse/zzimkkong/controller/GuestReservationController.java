@@ -2,7 +2,9 @@ package com.woowacourse.zzimkkong.controller;
 
 import com.woowacourse.zzimkkong.config.logaspect.LogMethodExecutionTime;
 import com.woowacourse.zzimkkong.dto.reservation.*;
+import com.woowacourse.zzimkkong.dto.slack.SlackResponse;
 import com.woowacourse.zzimkkong.service.ReservationService;
+import com.woowacourse.zzimkkong.service.SlackService;
 import com.woowacourse.zzimkkong.service.strategy.GuestReservationStrategy;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
@@ -18,10 +20,14 @@ import static com.woowacourse.zzimkkong.dto.ValidatorMessage.DATE_FORMAT;
 @RestController
 @RequestMapping("/api/guests/maps/{mapId}/spaces")
 public class GuestReservationController {
+    private final SlackService slackService;
     private final ReservationService reservationService;
     private final GuestReservationStrategy guestReservationStrategy;
 
-    public GuestReservationController(final ReservationService reservationService) {
+    public GuestReservationController(
+            final SlackService slackService,
+            final ReservationService reservationService) {
+        this.slackService = slackService;
         this.reservationService = reservationService;
         this.guestReservationStrategy = new GuestReservationStrategy();
     }
@@ -36,6 +42,7 @@ public class GuestReservationController {
                 spaceId,
                 reservationCreateUpdateWithPasswordRequest);
         ReservationCreateResponse reservationCreateResponse = reservationService.saveReservation(reservationCreateDto, guestReservationStrategy);
+        slackService.sendCreateMessage(reservationCreateResponse.getSlackResponse());
         return ResponseEntity
                 .created(URI.create("/api/guests/maps/" + mapId + "/spaces/" + spaceId + "/reservations/" + reservationCreateResponse.getId()))
                 .build();
@@ -92,7 +99,8 @@ public class GuestReservationController {
                 spaceId,
                 reservationId,
                 reservationCreateUpdateWithPasswordRequest);
-        reservationService.updateReservation(reservationUpdateDto, guestReservationStrategy);
+        SlackResponse slackResponse = reservationService.updateReservation(reservationUpdateDto, guestReservationStrategy);
+        slackService.sendUpdateMessage(slackResponse);
         return ResponseEntity.ok().build();
     }
 
@@ -107,7 +115,8 @@ public class GuestReservationController {
                 spaceId,
                 reservationId,
                 reservationPasswordAuthenticationRequest);
-        reservationService.deleteReservation(reservationAuthenticationDto, guestReservationStrategy);
+        SlackResponse slackResponse = reservationService.deleteReservation(reservationAuthenticationDto, guestReservationStrategy);
+        slackService.sendDeleteMessage(slackResponse);
         return ResponseEntity.noContent().build();
     }
 }

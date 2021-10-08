@@ -15,16 +15,24 @@ import org.springframework.web.client.RestTemplate;
 @Transactional(readOnly = true)
 public class SlackService {
     private final SlackUrl slackUrl;
+    private final RestTemplate restTemplate;
+    private final HttpHeaders headers;
 
     public SlackService(final SlackUrl slackUrl) {
         this.slackUrl = slackUrl;
+        restTemplate = new RestTemplate();
+        headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+    }
+
+    public void sendCreateMessage(SlackResponse slackResponse) {
+        Attachments attachments = Attachments.createMessageFrom(slackResponse);
+        HttpEntity<String> requestEntity = new HttpEntity<>(attachments.toString(), headers);
+
+        restTemplate.exchange(slackUrl.getUrl(), HttpMethod.POST, requestEntity, String.class);
     }
 
     public void sendUpdateMessage(SlackResponse slackResponse) {
-        RestTemplate restTemplate = new RestTemplate();
-        HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.APPLICATION_JSON);
-
         Attachments attachments = Attachments.updateMessageFrom(slackResponse);
         HttpEntity<String> requestEntity = new HttpEntity<>(attachments.toString(), headers);
 
@@ -32,10 +40,6 @@ public class SlackService {
     }
 
     public void sendDeleteMessage(SlackResponse slackResponse) {
-        RestTemplate restTemplate = new RestTemplate();
-        HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.APPLICATION_JSON);
-
         Attachments attachments = Attachments.deleteMessageFrom(slackResponse);
         HttpEntity<String> requestEntity = new HttpEntity<>(attachments.toString(), headers);
 

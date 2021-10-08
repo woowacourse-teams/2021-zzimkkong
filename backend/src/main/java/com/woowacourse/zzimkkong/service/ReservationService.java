@@ -172,7 +172,7 @@ public class ReservationService {
 
         reservation.update(updateReservation, space);
 
-        return reservationStrategy.createSlackResponse(reservation);
+        return SlackResponse.from(reservation);
     }
 
     public SlackResponse deleteReservation(
@@ -196,7 +196,7 @@ public class ReservationService {
         reservationStrategy.checkCorrectPassword(reservation, password);
 
         reservations.delete(reservation);
-        return reservationStrategy.createSlackResponse(reservation);
+        return SlackResponse.from(reservation);
     }
 
     private void validateTime(final ReservationCreateDto reservationCreateDto) {
