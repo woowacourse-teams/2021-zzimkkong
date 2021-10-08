@@ -10,9 +10,9 @@ interface Props {
 }
 
 const TimePickerOptions = ({ time, step = 1, onChange }: Props): JSX.Element => {
-  const middayRef = useRef<HTMLDivElement | null>(null);
-  const hourRef = useRef<HTMLDivElement | null>(null);
-  const minuteRef = useRef<HTMLDivElement | null>(null);
+  const middayRef = useRef<HTMLDivElement>(null);
+  const hourRef = useRef<HTMLDivElement>(null);
+  const minuteRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     if (time === null) return;
