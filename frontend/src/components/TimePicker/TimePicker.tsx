@@ -3,9 +3,10 @@ import { Range } from '../../hooks/useTimePicker';
 import * as Styled from './TimePicker.styles';
 import TimePickerOptions from './TimePickerOptions';
 
+export type Step = 1 | 5 | 10 | 15 | 20 | 30 | 60;
 interface Props {
   label?: string;
-  step?: 1 | 5 | 10 | 15 | 20 | 30;
+  step?: Step;
   range: Range;
   selectedTime: keyof Range | null;
   onClick: MouseEventHandler<HTMLButtonElement>;

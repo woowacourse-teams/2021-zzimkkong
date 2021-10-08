@@ -1,4 +1,5 @@
 import { MouseEventHandler, useState } from 'react';
+import { Step } from 'components/TimePicker/TimePicker';
 import { Midday, Time } from 'types/time';
 
 type SelectedTime = keyof Range | null;
@@ -11,7 +12,7 @@ export interface Range {
 interface Props {
   defaultStartTime?: Date;
   defaultEndTime?: Date;
-  step?: 1 | 5 | 10 | 15 | 20 | 30;
+  step?: Step;
 }
 
 const generateTo12Hour = (hour: number) => (hour > 12 ? hour % 12 : hour);
@@ -87,7 +88,7 @@ const useTimePicker = ({
       setInitialTime(key);
     }
 
-    setSelectedTime(key as SelectedTime);
+    setSelectedTime(key);
   };
 
   const onChange =

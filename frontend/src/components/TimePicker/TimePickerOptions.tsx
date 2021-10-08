@@ -1,10 +1,11 @@
 import React, { useEffect, useRef } from 'react';
 import { Midday, Time } from 'types/time';
+import { Step } from './TimePicker';
 import * as Styled from './TimePickerOptions.styles';
 
 interface Props {
   time: Time | null;
-  step?: 1 | 5 | 10 | 15 | 20 | 30;
+  step?: Step;
   onChange: (name: string) => (event: React.ChangeEvent<HTMLInputElement>) => void;
 }
 

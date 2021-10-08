@@ -1,13 +1,13 @@
 import { Story } from '@storybook/react';
 import useTimePicker from '../../hooks/useTimePicker';
-import TimePicker from './TimePicker';
+import TimePicker, { Step } from './TimePicker';
 
 export default {
   title: 'shared/TimePicker',
   component: TimePicker,
   argTypes: {
     step: {
-      options: [1, 5, 10, 15, 20, 30],
+      options: [1, 5, 10, 15, 20, 30, 60],
       control: { type: 'radio' },
     },
   },
@@ -17,7 +17,7 @@ interface Props {
   label?: string;
   defaultStartTime?: Date;
   defaultEndTime?: Date;
-  step?: 1 | 5 | 10 | 15 | 20 | 30;
+  step?: Step;
 }
 
 const Template: Story<Props> = (args) => {
