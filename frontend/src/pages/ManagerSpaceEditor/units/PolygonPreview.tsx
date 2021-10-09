@@ -14,7 +14,7 @@ const PolygonPreview = ({ points, stickyDotCoordinate }: Props): JSX.Element => 
         ` ${stickyDotCoordinate.x},${stickyDotCoordinate.y}`
       }
       stroke={EDITOR.STROKE_PREVIEW}
-      fill={EDITOR.POLYGON_PREVIEW}
+      fill={EDITOR.POLYGON_PREVIEW_FILL}
       strokeWidth={EDITOR.STROKE_WIDTH}
       pointerEvents="none"
     />
