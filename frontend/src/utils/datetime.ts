@@ -44,7 +44,6 @@ export const formatTimePrettier = (minutes: number): string => {
   return `${hour ? `${hour}시간` : ''}${minute ? ' ' : ''}${minute ? `${minute}분` : ''}`;
 };
 
-// Note: 인자로 받은 time이 현재보다 과거 시간안자 판별 과거시간일 경우 -> true 리턴
 export const isPastTime = (time: Date): boolean => {
   return time.getTime() < new Date().getTime();
 };
