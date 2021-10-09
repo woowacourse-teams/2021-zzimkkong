@@ -20,6 +20,7 @@ import { Area, MapDrawing, MapItem, Reservation, ScrollPosition, Space } from 't
 import { GuestPageURLParams } from 'types/guest';
 import { ErrorResponse } from 'types/response';
 import { formatDate } from 'utils/datetime';
+import { getPolygonCenterPoint } from 'utils/editor';
 import * as Styled from './GuestMap.styles';
 import ReservationDrawer from './units/ReservationDrawer';
 
@@ -239,14 +240,16 @@ const GuestMap = (): JSX.Element => {
                           </>
                         )}
                         {area.shape === 'polygon' && (
-                          //TODO Text 위치 잡기
                           <>
                             <Styled.SpacePolygon
                               points={area.points.map(({ x, y }) => `${x},${y}`).join(' ')}
                               fill={color ?? PALETTE.RED[200]}
                               opacity="0.3"
                             />
-                            <Styled.SpaceAreaText x="50%" y="50%">
+                            <Styled.SpaceAreaText
+                              x={getPolygonCenterPoint(area.points).x}
+                              y={getPolygonCenterPoint(area.points).y}
+                            >
                               {name}
                             </Styled.SpaceAreaText>
                           </>
