@@ -46,7 +46,9 @@ const useDrawingPolygon = ({
   };
 
   useEffect(() => {
-    mode !== Mode.Polygon && endDrawingPolygon();
+    if (mode !== Mode.Polygon) {
+      endDrawingPolygon();
+    }
   }, [mode]);
 
   return {
