@@ -1,4 +1,5 @@
 import { Coordinate } from 'types/common';
+
 export const getPolygonCenterPoint = (coordinates: Coordinate[]): Coordinate => {
   const x = coordinates.map((p) => p.x);
   const y = coordinates.map((p) => p.y);
