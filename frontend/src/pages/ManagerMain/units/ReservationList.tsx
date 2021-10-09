@@ -11,7 +11,7 @@ import PATH, { HREF } from 'constants/path';
 import useManagerMapReservations from 'hooks/query/useManagerMapReservations';
 import { Order, Reservation } from 'types/common';
 import { ErrorResponse } from 'types/response';
-import { formatDate } from 'utils/datetime';
+import { formatDate, isPastTime } from 'utils/datetime';
 import { sortReservations } from 'utils/sort';
 import { isNullish } from 'utils/type';
 import * as Styled from './ReservationList.styles';
@@ -86,7 +86,7 @@ const ReservationList = ({
         </Styled.SpacesOrderButton>
         <Styled.SpaceList>
           {sortedReservations &&
-            sortedReservations.map(({ spaceId, spaceName, spaceColor, reservations }, index) => (
+            sortedReservations.map(({ spaceId, spaceName, spaceColor, reservations }) => (
               <Panel key={`space-${spaceId}`} role="listitem">
                 <Panel.Header dotColor={spaceColor}>
                   <Styled.PanelHeadWrapper>
@@ -110,21 +110,23 @@ const ReservationList = ({
                           key={`reservation-${reservation.id}`}
                           reservation={reservation}
                           control={
-                            <Styled.IconButtonWrapper>
-                              <IconButton
-                                size="small"
-                                onClick={() => onEditReservation(reservation, spaceId)}
-                              >
-                                <EditIcon width="100%" height="100%" />
-                              </IconButton>
+                            !isPastTime(new Date(reservation.endDateTime)) && (
+                              <Styled.IconButtonWrapper>
+                                <IconButton
+                                  size="small"
+                                  onClick={() => onEditReservation(reservation, spaceId)}
+                                >
+                                  <EditIcon width="100%" height="100%" />
+                                </IconButton>
 
-                              <IconButton
-                                size="small"
-                                onClick={() => onDeleteReservation(reservation.id, spaceId)}
-                              >
-                                <DeleteIcon width="100%" height="100%" />
-                              </IconButton>
-                            </Styled.IconButtonWrapper>
+                                <IconButton
+                                  size="small"
+                                  onClick={() => onDeleteReservation(reservation.id, spaceId)}
+                                >
+                                  <DeleteIcon width="100%" height="100%" />
+                                </IconButton>
+                              </Styled.IconButtonWrapper>
+                            )
                           }
                         />
                       ))}
