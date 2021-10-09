@@ -51,13 +51,15 @@ const generateSpaceSvg = (spaces: MapSvgData['spaces']) =>
           />
         </g>
       `
-        : `<g>
+        : `
+        <g>
           <polygon
             points='${area.points.map(({ x, y }) => `${x},${y}`).join(' ')}'
             fill='${color}'
             opacity='0.3'
           />
-        </g>`
+        </g>
+        `
     )
     .join('');
 
