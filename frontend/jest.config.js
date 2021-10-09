@@ -9,4 +9,5 @@ module.exports = {
       '<rootDir>/src/__mocks__/fileMock.ts',
   },
   setupFilesAfterEnv: ['./src/__mocks__/setupTest.ts', '@testing-library/jest-dom/extend-expect'],
+  setupFiles: ['@testing-library/react/dont-cleanup-after-each'],
 };
