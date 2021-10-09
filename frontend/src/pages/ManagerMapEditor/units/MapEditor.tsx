@@ -240,50 +240,54 @@ const MapCreateEditor = ({
             />
           )}
 
-          {spaces.map(({ id, color, area, name }) =>
-            area.shape === 'rect' ? (
-              <g key={id} pointerEvents="none">
-                <rect
-                  x={area.x}
-                  y={area.y}
-                  width={area.width}
-                  height={area.height}
-                  fill={color}
-                  opacity={EDITOR.SPACE_OPACITY}
-                />
-                <text
-                  x={area.x + area.width / 2}
-                  y={area.y + area.height / 2}
-                  dominantBaseline="middle"
-                  textAnchor="middle"
-                  fill={EDITOR.TEXT_FILL}
-                  fontSize={EDITOR.TEXT_FONT_SIZE}
-                  opacity={EDITOR.TEXT_OPACITY}
-                >
-                  {name}
-                </text>
-              </g>
-            ) : (
-              <g key={id} pointerEvents="none">
-                <polygon
-                  points={area.points.map(({ x, y }) => `${x},${y}`).join(' ')}
-                  fill={color}
-                  opacity={EDITOR.SPACE_OPACITY}
-                />
-                <text
-                  x={getPolygonCenterPoint(area.points).x}
-                  y={getPolygonCenterPoint(area.points).y}
-                  dominantBaseline="middle"
-                  textAnchor="middle"
-                  fill={EDITOR.TEXT_FILL}
-                  fontSize={EDITOR.TEXT_FONT_SIZE}
-                  opacity={EDITOR.TEXT_OPACITY}
-                >
-                  {name}
-                </text>
-              </g>
-            )
-          )}
+          {spaces.map(({ id, color, area, name }) => (
+            <>
+              {area.shape === 'rect' && (
+                <g key={id} pointerEvents="none">
+                  <rect
+                    x={area.x}
+                    y={area.y}
+                    width={area.width}
+                    height={area.height}
+                    fill={color}
+                    opacity={EDITOR.SPACE_OPACITY}
+                  />
+                  <text
+                    x={area.x + area.width / 2}
+                    y={area.y + area.height / 2}
+                    dominantBaseline="middle"
+                    textAnchor="middle"
+                    fill={EDITOR.TEXT_FILL}
+                    fontSize={EDITOR.TEXT_FONT_SIZE}
+                    opacity={EDITOR.TEXT_OPACITY}
+                  >
+                    {name}
+                  </text>
+                </g>
+              )}
+
+              {area.shape === 'polygon' && (
+                <g key={id} pointerEvents="none">
+                  <polygon
+                    points={area.points.map(({ x, y }) => `${x},${y}`).join(' ')}
+                    fill={color}
+                    opacity={EDITOR.SPACE_OPACITY}
+                  />
+                  <text
+                    x={getPolygonCenterPoint(area.points).x}
+                    y={getPolygonCenterPoint(area.points).y}
+                    dominantBaseline="middle"
+                    textAnchor="middle"
+                    fill={EDITOR.TEXT_FILL}
+                    fontSize={EDITOR.TEXT_FONT_SIZE}
+                    opacity={EDITOR.TEXT_OPACITY}
+                  >
+                    {name}
+                  </text>
+                </g>
+              )}
+            </>
+          ))}
 
           {drawingStatus.start && mode === MapEditorMode.Line && (
             <polyline
