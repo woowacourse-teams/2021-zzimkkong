@@ -5,7 +5,7 @@ import IconButton from 'components/IconButton/IconButton';
 import ReservationListItem from 'components/ReservationListItem/ReservationListItem';
 import useGuestReservations from 'hooks/query/useGuestReservations';
 import { Reservation, Space } from 'types/common';
-import { formatDate, isPastTime } from 'utils/datetime';
+import { formatDate, isPastDay, isPastTime } from 'utils/datetime';
 import * as Styled from './ReservationDrawer.styles';
 
 interface Props {
@@ -86,14 +86,17 @@ const ReservationDrawer = ({
           </Styled.ReservationList>
         )}
       </Styled.ReservationContainer>
-      <Styled.ReservationButton
-        variant="primary"
-        size="large"
-        fullWidth
-        onClick={onClickReservation}
-      >
-        예약하기
-      </Styled.ReservationButton>
+
+      {!isPastDay(date) && (
+        <Styled.ReservationButton
+          variant="primary"
+          size="large"
+          fullWidth
+          onClick={onClickReservation}
+        >
+          예약하기
+        </Styled.ReservationButton>
+      )}
     </Drawer>
   );
 };

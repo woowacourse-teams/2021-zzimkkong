@@ -47,3 +47,7 @@ export const formatTimePrettier = (minutes: number): string => {
 export const isPastTime = (time: Date): boolean => {
   return time.getTime() < new Date().getTime();
 };
+
+export const isPastDay = (time: Date): boolean => {
+  return time.getTime() < new Date().getTime() - 1000 * 60 * 60 * 24;
+};
