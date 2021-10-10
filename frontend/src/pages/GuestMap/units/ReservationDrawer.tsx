@@ -36,6 +36,7 @@ const ReservationDrawer = ({
   });
 
   const reservations = getReservations.data?.data?.reservations ?? [];
+  const isPastDate = isPastDay(date);
 
   return (
     <Drawer open={open} placement="bottom" onClose={onClose}>
@@ -51,8 +52,11 @@ const ReservationDrawer = ({
             새로 고침으로 다시 시도해주세요.
           </Styled.Message>
         )}
-        {getReservations.isSuccess && reservations?.length === 0 && (
+        {getReservations.isSuccess && reservations?.length === 0 && !isPastDate && (
           <Styled.Message>오늘의 첫 예약을 잡아보세요!</Styled.Message>
+        )}
+        {getReservations.isSuccess && reservations?.length === 0 && isPastDate && (
+          <Styled.Message>과거 날짜엔 예약할 수 없습니다!</Styled.Message>
         )}
         {getReservations.isSuccess && reservations.length > 0 && (
           <Styled.ReservationList role="list">
@@ -87,7 +91,7 @@ const ReservationDrawer = ({
         )}
       </Styled.ReservationContainer>
 
-      {!isPastDay(date) && (
+      {!isPastDate && (
         <Styled.ReservationButton
           variant="primary"
           size="large"
