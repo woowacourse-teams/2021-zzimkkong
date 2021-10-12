@@ -16,7 +16,8 @@ import useBoardMove from 'hooks/board/useBoardMove';
 import useBoardStatus from 'hooks/board/useBoardStatus';
 import useBoardZoom from 'hooks/board/useBoardZoom';
 import { Color, DrawingStatus, ManagerSpace, MapElement } from 'types/common';
-import { MapElementType, MapEditorMode } from 'types/editor';
+import { MapElementType, MapEditorMode, DrawingAreaShape } from 'types/editor';
+import { getPolygonCenterPoint } from 'utils/editor';
 import useBoardEraserTool from '../hooks/useBoardEraserTool';
 import useBoardLineTool from '../hooks/useBoardLineTool';
 import useBoardRectTool from '../hooks/useBoardRectTool';
@@ -170,14 +171,14 @@ const MapCreateEditor = ({
   }, [deselectMapElements, selectedMapElements, setMapElements]);
 
   useEffect(() => {
-    if (mode !== MapEditorMode.Select) return;
+    if (!selectedMapElements.length) return;
 
     const isPressedDeleteKey = pressedKey === KEY.DELETE || pressedKey === KEY.BACK_SPACE;
 
     if (isPressedDeleteKey && selectedMapElements) {
       deleteMapElement();
     }
-  }, [deleteMapElement, mode, pressedKey, selectedMapElements]);
+  }, [deleteMapElement, pressedKey, selectedMapElements]);
 
   return (
     <Styled.Editor>
@@ -240,27 +241,52 @@ const MapCreateEditor = ({
           )}
 
           {spaces.map(({ id, color, area, name }) => (
-            <g key={id} pointerEvents="none">
-              <rect
-                x={area.x}
-                y={area.y}
-                width={area.width}
-                height={area.height}
-                fill={color}
-                opacity={EDITOR.SPACE_OPACITY}
-              />
-              <text
-                x={area.x + area.width / 2}
-                y={area.y + area.height / 2}
-                dominantBaseline="middle"
-                textAnchor="middle"
-                fill={EDITOR.TEXT_FILL}
-                fontSize={EDITOR.TEXT_FONT_SIZE}
-                opacity={EDITOR.TEXT_OPACITY}
-              >
-                {name}
-              </text>
-            </g>
+            <>
+              {area.shape === DrawingAreaShape.Rect && (
+                <g key={id} pointerEvents="none">
+                  <rect
+                    x={area.x}
+                    y={area.y}
+                    width={area.width}
+                    height={area.height}
+                    fill={color}
+                    opacity={EDITOR.SPACE_OPACITY}
+                  />
+                  <text
+                    x={area.x + area.width / 2}
+                    y={area.y + area.height / 2}
+                    dominantBaseline="middle"
+                    textAnchor="middle"
+                    fill={EDITOR.TEXT_FILL}
+                    fontSize={EDITOR.TEXT_FONT_SIZE}
+                    opacity={EDITOR.TEXT_OPACITY}
+                  >
+                    {name}
+                  </text>
+                </g>
+              )}
+
+              {area.shape === DrawingAreaShape.Polygon && (
+                <g key={id} pointerEvents="none">
+                  <polygon
+                    points={area.points.map(({ x, y }) => `${x},${y}`).join(' ')}
+                    fill={color}
+                    opacity={EDITOR.SPACE_OPACITY}
+                  />
+                  <text
+                    x={getPolygonCenterPoint(area.points).x}
+                    y={getPolygonCenterPoint(area.points).y}
+                    dominantBaseline="middle"
+                    textAnchor="middle"
+                    fill={EDITOR.TEXT_FILL}
+                    fontSize={EDITOR.TEXT_FONT_SIZE}
+                    opacity={EDITOR.TEXT_OPACITY}
+                  >
+                    {name}
+                  </text>
+                </g>
+              )}
+            </>
           ))}
 
           {drawingStatus.start && mode === MapEditorMode.Line && (

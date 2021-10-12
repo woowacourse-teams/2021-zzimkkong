@@ -18,7 +18,7 @@ import useBoardStatus from 'hooks/board/useBoardStatus';
 import useManagerMap from 'hooks/query/useManagerMap';
 import useManagerSpaces from 'hooks/query/useManagerSpaces';
 import useListenManagerMainState from 'hooks/useListenManagerMainState';
-import { ManagerSpace, MapDrawing, SpaceArea } from 'types/common';
+import { Area, ManagerSpace, MapDrawing } from 'types/common';
 import { SpaceEditorMode as Mode } from 'types/editor';
 import { ErrorResponse } from 'types/response';
 import * as Styled from './ManagerSpaceEditor.styles';
@@ -56,7 +56,7 @@ const ManagerSpaceEditor = (): JSX.Element => {
       return (
         managerSpaces.data?.data.spaces.map((space) => ({
           ...space,
-          area: JSON.parse(space.area) as SpaceArea,
+          area: JSON.parse(space.area) as Area,
         })) ?? []
       );
     } catch (error) {
