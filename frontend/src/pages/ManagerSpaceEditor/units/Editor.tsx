@@ -185,11 +185,11 @@ const Editor = ({
         />
       )}
 
-      {isDrawingMode && mode === Mode.Rect && (
+      {mode === Mode.Rect && (
         <BoardCursorRect coordinate={stickyRectCoordinate} size={EDITOR.GRID_SIZE} />
       )}
 
-      {isDrawingMode && mode === Mode.Polygon && (
+      {mode === Mode.Polygon && (
         <>
           {startPoint && <PolygonStartPoint coordinate={startPoint} />}
           <BoardCursorDot coordinate={stickyDotCoordinate} />
