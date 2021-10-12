@@ -1,4 +1,5 @@
 import React, { ReactNode } from 'react';
+import GuestReservationSuccess from 'pages/GuestReservation/GuestReservationSuccess';
 import PATH from './path';
 
 const GuestMap = React.lazy(() => import('pages/GuestMap/GuestMap'));
@@ -59,6 +60,10 @@ export const PUBLIC_ROUTES: Route[] = [
   {
     path: PATH.GUEST_RESERVATION_EDIT,
     component: <GuestReservation />,
+  },
+  {
+    path: PATH.GUEST_RESERVATION_SUCCESS,
+    component: <GuestReservationSuccess />,
   },
 ];
 

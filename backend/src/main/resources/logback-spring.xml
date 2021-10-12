@@ -16,11 +16,9 @@
     <!--    Profiles    -->
     <springProfile name="local">
         <include resource="appenders/console-appender.xml"/>
-        <include resource="infra-appender/kafka-appender-dev.xml"/>
 
         <root level="INFO">
             <appender-ref ref="CONSOLE_APPENDER"/>
-            <appender-ref ref="KAFKA_APPENDER_DEV"/>
         </root>
     </springProfile>
 

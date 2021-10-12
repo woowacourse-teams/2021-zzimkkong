@@ -121,7 +121,12 @@ const ManagerMapEditor = (): JSX.Element => {
 
     if (createMap.isLoading || updateMap.isLoading) return;
 
-    const mapDrawing = JSON.stringify({ width, height, mapElements });
+    const mapDrawing = JSON.stringify({
+      width,
+      height,
+      mapElements: mapElements.map(({ ref, ...props }) => props),
+    });
+
     const mapImageSvg = createMapImageSvg({
       mapElements,
       spaces,
