@@ -99,29 +99,6 @@ const Editor = ({
     [isDrawingMode, spaces, setSelectedSpaceId, updateWithSpace]
   );
 
-  const handleEndDrawingRect = useCallback(() => {
-    endDrawingRect();
-    setMode(Mode.Form);
-    setIsDrawing(false);
-  }, [endDrawingRect, setMode]);
-
-  const handleEndDrawingPolygon = useCallback(() => {
-    if (startPoint?.x !== stickyDotCoordinate.x || startPoint?.y !== stickyDotCoordinate.y) return;
-    if (points.length < EDITOR.MIN_POLYGON_SIDES) return;
-
-    endDrawingPolygon();
-    setMode(Mode.Form);
-    setIsDrawing(false);
-  }, [
-    endDrawingPolygon,
-    points.length,
-    setMode,
-    startPoint?.x,
-    startPoint?.y,
-    stickyDotCoordinate.x,
-    stickyDotCoordinate.y,
-  ]);
-
   const handleMouseDown = useCallback(() => {
     if (!isDrawingMode) return;
 
@@ -152,9 +129,31 @@ const Editor = ({
   const handleMouseUp = useCallback(() => {
     if (!isDrawingMode || !isDrawing) return;
 
-    if (mode === Mode.Rect) handleEndDrawingRect();
-    if (mode === Mode.Polygon) handleEndDrawingPolygon();
-  }, [isDrawingMode, isDrawing, mode, handleEndDrawingRect, handleEndDrawingPolygon]);
+    if (mode === Mode.Rect) {
+      endDrawingRect();
+    } else if (mode === Mode.Polygon) {
+      if (startPoint?.x !== stickyDotCoordinate.x || startPoint?.y !== stickyDotCoordinate.y)
+        return;
+      if (points.length < EDITOR.MIN_POLYGON_SIDES) return;
+
+      endDrawingPolygon();
+    }
+
+    setMode(Mode.Form);
+    setIsDrawing(false);
+  }, [
+    isDrawingMode,
+    isDrawing,
+    mode,
+    setMode,
+    endDrawingRect,
+    startPoint?.x,
+    startPoint?.y,
+    stickyDotCoordinate.x,
+    stickyDotCoordinate.y,
+    points.length,
+    endDrawingPolygon,
+  ]);
 
   useEffect(() => {
     setMovable(pressedKey === KEY.SPACE);
