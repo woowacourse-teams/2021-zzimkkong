@@ -27,7 +27,7 @@ interface Reservations {
 export const guestMaps: GuestMaps = {
   JMTGR: {
     mapId: 1,
-    mapName: 'guestMap-1',
+    mapName: 'GUEST_TEST_MAP',
     mapDrawing:
       '{"width":800,"height":600,"mapElements":[{"id":2,"type":"rect","stroke":"#333333","points":["210,90","650,230"]},{"id":3,"type":"rect","stroke":"#333333","width":440,"height":140,"x":210,"y":90,"points":["210, 90","650, 230"]}]}',
     mapImageUrl: '',
