@@ -9,3 +9,4 @@
 [submodule "backend/src/main/resources/infra-appender"]
 	path = backend/src/main/resources/infra-appender
 	url = git@github.com:zzimkkong/infra-appender.git
+	branch = main
