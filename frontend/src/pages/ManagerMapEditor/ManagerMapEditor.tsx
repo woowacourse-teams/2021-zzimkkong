@@ -60,6 +60,7 @@ const ManagerMapEditor = (): JSX.Element => {
     { mapId: Number(mapId) },
     {
       enabled: isEdit,
+      refetchOnWindowFocus: false,
       onSuccess: ({ data }) => {
         const { mapName, mapDrawing } = data;
 
