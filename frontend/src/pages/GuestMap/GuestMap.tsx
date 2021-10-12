@@ -17,6 +17,7 @@ import useGuestMap from 'hooks/query/useGuestMap';
 import useGuestSpaces from 'hooks/query/useGuestSpaces';
 import useInput from 'hooks/useInput';
 import { Area, MapDrawing, MapItem, Reservation, ScrollPosition, Space } from 'types/common';
+import { DrawingAreaShape } from 'types/editor';
 import { GuestPageURLParams } from 'types/guest';
 import { ErrorResponse } from 'types/response';
 import { formatDate } from 'utils/datetime';
@@ -221,7 +222,7 @@ const GuestMap = (): JSX.Element => {
                         data-testid={id}
                         onClick={() => handleClickSpaceArea(id)}
                       >
-                        {area.shape === 'rect' && (
+                        {area.shape === DrawingAreaShape.Rect && (
                           <>
                             <Styled.SpaceRect
                               x={area.x}
@@ -239,7 +240,7 @@ const GuestMap = (): JSX.Element => {
                             </Styled.SpaceAreaText>
                           </>
                         )}
-                        {area.shape === 'polygon' && (
+                        {area.shape === DrawingAreaShape.Polygon && (
                           <>
                             <Styled.SpacePolygon
                               points={area.points.map(({ x, y }) => `${x},${y}`).join(' ')}

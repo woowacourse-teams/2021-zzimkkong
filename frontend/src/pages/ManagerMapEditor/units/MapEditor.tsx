@@ -16,7 +16,7 @@ import useBoardMove from 'hooks/board/useBoardMove';
 import useBoardStatus from 'hooks/board/useBoardStatus';
 import useBoardZoom from 'hooks/board/useBoardZoom';
 import { Color, DrawingStatus, ManagerSpace, MapElement } from 'types/common';
-import { MapElementType, MapEditorMode } from 'types/editor';
+import { MapElementType, MapEditorMode, DrawingAreaShape } from 'types/editor';
 import { getPolygonCenterPoint } from 'utils/editor';
 import useBoardEraserTool from '../hooks/useBoardEraserTool';
 import useBoardLineTool from '../hooks/useBoardLineTool';
@@ -242,7 +242,7 @@ const MapCreateEditor = ({
 
           {spaces.map(({ id, color, area, name }) => (
             <>
-              {area.shape === 'rect' && (
+              {area.shape === DrawingAreaShape.Rect && (
                 <g key={id} pointerEvents="none">
                   <rect
                     x={area.x}
@@ -266,7 +266,7 @@ const MapCreateEditor = ({
                 </g>
               )}
 
-              {area.shape === 'polygon' && (
+              {area.shape === DrawingAreaShape.Polygon && (
                 <g key={id} pointerEvents="none">
                   <polygon
                     points={area.points.map(({ x, y }) => `${x},${y}`).join(' ')}

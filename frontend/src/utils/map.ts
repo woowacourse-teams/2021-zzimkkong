@@ -1,5 +1,6 @@
 import { EDITOR } from 'constants/editor';
 import { ManagerSpace, MapElement } from 'types/common';
+import { DrawingAreaShape, MapElementType } from 'types/editor';
 
 interface CreateMapImageSvgParams {
   mapElements: MapElement[];
@@ -24,7 +25,7 @@ export const createMapImageSvg = ({
     >
       ${spaces
         ?.map(({ color, area }) =>
-          area.shape === 'rect'
+          area.shape === DrawingAreaShape.Rect
             ? `
             <g>
               <rect
@@ -50,7 +51,7 @@ export const createMapImageSvg = ({
 
       ${mapElements
         .map((element) =>
-          element.type === 'polyline'
+          element.type === MapElementType.Polyline
             ? `
             <polyline
               points='${element.points.join(' ')}'

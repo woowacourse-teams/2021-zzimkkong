@@ -1,4 +1,5 @@
 import { EDITOR } from 'constants/editor';
+import { DrawingAreaShape, MapElementType } from 'types/editor';
 import { WithOptional } from 'types/util';
 import { MapElement, ManagerSpace } from './../types/common';
 
@@ -12,7 +13,7 @@ export interface MapSvgData {
 const generateMapSvg = (mapElements: MapSvgData['mapElements']): string =>
   mapElements
     .map((element) =>
-      element.type === 'polyline'
+      element.type === MapElementType.Polyline
         ? `
             <polyline
               points='${element.points.join(' ')}'
@@ -38,7 +39,7 @@ const generateMapSvg = (mapElements: MapSvgData['mapElements']): string =>
 const generateSpaceSvg = (spaces: MapSvgData['spaces']) =>
   spaces
     .map(({ color, area }) =>
-      area.shape === 'rect'
+      area.shape === DrawingAreaShape.Rect
         ? `
         <g>
           <rect
