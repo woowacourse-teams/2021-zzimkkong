@@ -17,9 +17,11 @@ import useGuestMap from 'hooks/query/useGuestMap';
 import useGuestSpaces from 'hooks/query/useGuestSpaces';
 import useInput from 'hooks/useInput';
 import { Area, MapDrawing, MapItem, Reservation, ScrollPosition, Space } from 'types/common';
+import { DrawingAreaShape } from 'types/editor';
 import { GuestPageURLParams } from 'types/guest';
 import { ErrorResponse } from 'types/response';
 import { formatDate } from 'utils/datetime';
+import { getPolygonCenterPoint } from 'utils/editor';
 import * as Styled from './GuestMap.styles';
 import ReservationDrawer from './units/ReservationDrawer';
 
@@ -220,23 +222,39 @@ const GuestMap = (): JSX.Element => {
                         data-testid={id}
                         onClick={() => handleClickSpaceArea(id)}
                       >
-                        {area.shape === 'rect' && (
-                          <Styled.SpaceArea
-                            x={area.x}
-                            y={area.y}
-                            width={area.width}
-                            height={area.height}
-                            fill={color ?? PALETTE.RED[200]}
-                            opacity="0.3"
-                          />
+                        {area.shape === DrawingAreaShape.Rect && (
+                          <>
+                            <Styled.SpaceRect
+                              x={area.x}
+                              y={area.y}
+                              width={area.width}
+                              height={area.height}
+                              fill={color ?? PALETTE.RED[200]}
+                              opacity="0.3"
+                            />
+                            <Styled.SpaceAreaText
+                              x={area.x + area.width / 2}
+                              y={area.y + area.height / 2}
+                            >
+                              {name}
+                            </Styled.SpaceAreaText>
+                          </>
                         )}
-
-                        <Styled.SpaceAreaText
-                          x={area.x + area.width / 2}
-                          y={area.y + area.height / 2}
-                        >
-                          {name}
-                        </Styled.SpaceAreaText>
+                        {area.shape === DrawingAreaShape.Polygon && (
+                          <>
+                            <Styled.SpacePolygon
+                              points={area.points.map(({ x, y }) => `${x},${y}`).join(' ')}
+                              fill={color ?? PALETTE.RED[200]}
+                              opacity="0.3"
+                            />
+                            <Styled.SpaceAreaText
+                              x={getPolygonCenterPoint(area.points).x}
+                              y={getPolygonCenterPoint(area.points).y}
+                            >
+                              {name}
+                            </Styled.SpaceAreaText>
+                          </>
+                        )}
                       </Styled.Space>
                     ))}
                 </svg>

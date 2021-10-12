@@ -1,4 +1,5 @@
 import { ReactComponent as CloseIcon } from 'assets/svg/close.svg';
+import { ReactComponent as PolygonIcon } from 'assets/svg/polygon.svg';
 import { ReactComponent as RectIcon } from 'assets/svg/rect.svg';
 import useFormContext from 'hooks/useFormContext';
 import { SpaceEditorMode as Mode } from 'types/editor';
@@ -29,6 +30,13 @@ const ShapeSelectToolbar = ({ mode, setMode }: Props): JSX.Element => {
         onClick={() => setMode(Mode.Rect)}
       >
         <RectIcon />
+      </Styled.ToolbarButton>
+      <Styled.ToolbarButton
+        text="다각형"
+        selected={mode === Mode.Polygon}
+        onClick={() => setMode(Mode.Polygon)}
+      >
+        <PolygonIcon />
       </Styled.ToolbarButton>
     </Styled.Container>
   );
