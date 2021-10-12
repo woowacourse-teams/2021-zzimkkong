@@ -104,8 +104,12 @@ const Editor = ({
 
     setIsDrawing(true);
 
-    if (mode === Mode.Rect) startDrawingRect();
-    else if (mode === Mode.Polygon) isDrawingPolygon ? updatePolygon() : startDrawingPolygon();
+    if (mode === Mode.Rect) {
+      startDrawingRect();
+    } else if (mode === Mode.Polygon) {
+      if (isDrawingPolygon) updatePolygon();
+      else startDrawingPolygon();
+    }
   }, [isDrawingMode, mode, startDrawingRect, isDrawingPolygon, updatePolygon, startDrawingPolygon]);
 
   const handleMouseMove: MouseEventHandler<SVGSVGElement> = useCallback(
