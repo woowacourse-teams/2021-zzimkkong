@@ -4,20 +4,39 @@
 <h1 align="middle">찜꽁</h1>
 <p align="middle">공간을 한 눈에, 예약은 한 번에! 맞춤형 공간예약 서비스 제작 플랫폼 찜꽁입니다!</p>
 
-## 1. 프로젝트 소개 📝
+## 프로젝트 소개 📝
 
 공간 제공자(관리자)는 에디터를 통해 공간을 생성할 수 있습니다!
 
 생성한 공간은 링크를 통해 사용자에게 제공할 수 있으며, 사용자는 링크를 통해 간편하게 공간을 확인하고 예약을 진행할 수 있습니다!
 
-## 2. 팀원 👨‍👨‍👧‍👧👩‍👦‍👦
+## 팀원 👨‍👨‍👧‍👧👩‍👦‍👦
 
 |                                         Backend                                          |                                         Backend                                          |                                         Backend                                          |                                         Backend                                         |                                       Frontend                                        |                                        Frontend                                         |                                        Frontend                                        |
 | :--------------------------------------------------------------------------------------: | :--------------------------------------------------------------------------------------: | :--------------------------------------------------------------------------------------: | :-------------------------------------------------------------------------------------: | :-----------------------------------------------------------------------------------: | :-------------------------------------------------------------------------------------: | :------------------------------------------------------------------------------------: |
 | <img src="https://avatars.githubusercontent.com/u/49346677?v=4" width=400px alt="김김"/> | <img src="https://avatars.githubusercontent.com/u/56033755?v=4" width=400px alt="바다"/> | <img src="https://avatars.githubusercontent.com/u/58401309?v=4" width=400px alt="삭정"/> | <img src="https://avatars.githubusercontent.com/u/43775108?v=4" width=400px alt="샐리"> | <img src="https://avatars.githubusercontent.com/u/45230497?v=4" width=400px alt="썬"> | <img src="https://avatars.githubusercontent.com/u/61097373?v=4" width=400px alt="유조"> | <img src="https://avatars.githubusercontent.com/u/2542730?v=4" width=400px alt="체프"> |
 |                       [김김](https://github.com/tributetothemoon)                        |                            [바다](https://github.com/xrabcde)                            |                            [삭정](https://github.com/sakjung)                            |                          [샐리](https://github.com/dusdn1702)                           |                         [썬](https://github.com/SunYoungKwon)                         |                            [유조](https://github.com/yujo11)                            |                          [체프](https://github.com/Puterism)                           |
 
-## 3. 팀 문화 🏠
+## 프로젝트 기술스택 💡
+
+#### 프론트엔드
+
+#### 백엔드
+
+
+## 프로젝트 아키텍쳐 🏛
+
+#### 프론트엔드
+![front](https://user-images.githubusercontent.com/43775108/136993729-f7dd6aef-b6c6-4e49-87e0-212f19ba3b04.png)
+
+#### 백엔드
+![backend](https://user-images.githubusercontent.com/43775108/136995087-be6e2422-2b21-48ed-aea1-c455723b0968.png)
+
+#### CI/CD
+![ci_cd](https://user-images.githubusercontent.com/43775108/136994974-e6a0bce4-7fba-42fe-882e-a61237a2c7a3.png)
+
+
+## 팀 문화 🏠
 
 #### 1. 인정? 인정!
 
