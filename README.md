@@ -34,14 +34,11 @@
 
 ## 프로젝트 아키텍쳐 🏛
 
-#### 프론트엔드
-![frontend](https://user-images.githubusercontent.com/43775108/137057513-89a28a51-ea09-4926-a60a-3502573f04bd.png)
-
 #### 백엔드
 ![backend](https://user-images.githubusercontent.com/43775108/137057532-6a93c778-2910-45d2-8940-548773dd8eb0.png)
 
 #### CI/CD
-![ci_cd](https://user-images.githubusercontent.com/43775108/137057524-99c31058-dda5-4bd4-9520-2e2f7fe2fc42.png)
+![ci_cd](https://user-images.githubusercontent.com/43775108/137168393-82d2e8c2-7e53-4db1-a14a-96af974c9ea9.png)
 
 ## 팀 문화 🏠
 
