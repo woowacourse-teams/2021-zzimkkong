@@ -66,7 +66,7 @@ public class SpaceService {
                 .build();
         Space saveSpace = spaces.save(space);
 
-        thumbnailManager.uploadMapThumbnail(spaceCreateUpdateRequest.getMapImageSvg(), map);
+        thumbnailManager.uploadMapThumbnailInMemory(spaceCreateUpdateRequest.getMapImageSvg(), map);
         return SpaceCreateResponse.from(saveSpace);
     }
 
@@ -134,7 +134,7 @@ public class SpaceService {
                 .build();
 
         space.update(updateSpace);
-        thumbnailManager.uploadMapThumbnail(spaceCreateUpdateRequest.getMapImageSvg(), map);
+        thumbnailManager.uploadMapThumbnailInMemory(spaceCreateUpdateRequest.getMapImageSvg(), map);
     }
 
     public void deleteSpace(
@@ -154,7 +154,7 @@ public class SpaceService {
         validateReservationExistence(spaceId);
 
         spaces.delete(space);
-        thumbnailManager.uploadMapThumbnail(spaceDeleteRequest.getMapImageSvg(), map);
+        thumbnailManager.uploadMapThumbnailInMemory(spaceDeleteRequest.getMapImageSvg(), map);
     }
 
     private Setting getSetting(final SpaceCreateUpdateRequest spaceCreateUpdateRequest) {

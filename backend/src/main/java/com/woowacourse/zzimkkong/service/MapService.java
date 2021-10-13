@@ -57,7 +57,6 @@ public class MapService {
                 mapCreateUpdateRequest.getMapImageSvg().substring(0, 10),
                 manager));
 
-//        String thumbnailUrl = thumbnailManager.uploadMapThumbnail(mapCreateUpdateRequest.getMapImageSvg(), saveMap);
         final String thumbnailUrl = thumbnailManager.uploadMapThumbnailInMemory(mapCreateUpdateRequest.getMapImageSvg(), saveMap);
         saveMap.updateImageUrl(thumbnailUrl);
 
@@ -101,7 +100,7 @@ public class MapService {
                 .orElseThrow(NoSuchMemberException::new);
         validateManagerOfMap(map, manager);
 
-        thumbnailManager.uploadMapThumbnail(mapCreateUpdateRequest.getMapImageSvg(), map);
+        thumbnailManager.uploadMapThumbnailInMemory(mapCreateUpdateRequest.getMapImageSvg(), map);
         map.update(
                 mapCreateUpdateRequest.getMapName(),
                 mapCreateUpdateRequest.getMapDrawing());

@@ -24,19 +24,6 @@ public class ThumbnailManagerImpl implements ThumbnailManager {
         this.svgConverter = svgConverter;
         this.storageUploader = storageUploader;
         this.thumbnailsDirectoryName = thumbnailsDirectoryName;
-
-    }
-
-    public String uploadMapThumbnail(final String svgData, final Map map) {
-        String fileName = makeThumbnailFileName(map);
-        File pngFile = svgConverter.convertSvgToPngFile(svgData, fileName);
-
-        String thumbnailUrl = storageUploader.upload(thumbnailsDirectoryName, pngFile);
-
-        if (!pngFile.delete()) {
-            throw new CannotDeleteConvertedFileException();
-        }
-        return thumbnailUrl;
     }
 
     public String uploadMapThumbnailInMemory(final String svgData, final Map map) {
