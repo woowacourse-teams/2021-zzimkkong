@@ -18,6 +18,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.test.context.ActiveProfiles;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.util.regex.Matcher;
@@ -55,12 +57,34 @@ class S3ProxyUploaderTest {
     }
 
     @Test
-    @DisplayName("업로드된 파일을 삭제한다.")
-    void delete() {
-        String filePath = getClass().getClassLoader().getResource("luther.png").getFile();
+    @DisplayName("데이터를 업로드한 후 파일의 url을 받아온다.")
+    void uploadInputStreamData() throws FileNotFoundException {
+        // given
+        final String fileName = "luther.png";
+        String filePath = getClass().getClassLoader().getResource(fileName).getFile();
         testFile = new File(filePath);
 
-        String uri = s3ProxyUploader.upload("testDirectoryName", testFile);
+        final FileInputStream fileInputStream = new FileInputStream(testFile);
+
+        // when
+        String uri = s3ProxyUploader.upload(testDirectoryName, fileName, fileInputStream);
+        System.out.println("uri = " + uri);
+        Matcher matcher = URL_PATTERN.matcher(uri);
+
+        // then
+        assertThat(matcher.find()).isTrue();
+    }
+
+    @Test
+    @DisplayName("업로드된 파일을 삭제한다.")
+    void delete() throws FileNotFoundException {
+        final String fileName = "luther.png";
+        String filePath = getClass().getClassLoader().getResource(fileName).getFile();
+        testFile = new File(filePath);
+
+        final FileInputStream fileInputStream = new FileInputStream(testFile);
+
+        String uri = s3ProxyUploader.upload(testDirectoryName, fileName, fileInputStream);
 
         // when
         s3ProxyUploader.delete(testDirectoryName, testFile.getName());
@@ -113,7 +137,7 @@ class S3ProxyUploaderTest {
     @AfterEach
     void tearDown() {
         if (testFile != null) {
-            s3ProxyUploader.delete(testDirectoryName, testFile.getName());
+//            s3ProxyUploader.delete(testDirectoryName, testFile.getName());
             testFile = null;
         }
     }

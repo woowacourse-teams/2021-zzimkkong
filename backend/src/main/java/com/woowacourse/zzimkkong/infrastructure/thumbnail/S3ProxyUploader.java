@@ -6,6 +6,7 @@ import com.woowacourse.zzimkkong.exception.infrastructure.S3UploadException;
 import com.woowacourse.zzimkkong.infrastructure.thumbnail.StorageUploader;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.ByteArrayResource;
+import org.springframework.core.io.InputStreamResource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
@@ -18,6 +19,7 @@ import reactor.core.publisher.Mono;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.nio.file.Files;
 import java.util.Objects;
 
@@ -47,25 +49,39 @@ public class S3ProxyUploader implements StorageUploader {
                     .header(HttpHeaders.CONTENT_DISPOSITION,
                             String.format(CONTENT_DISPOSITION_HEADER_VALUE_FORMAT, uploadFile.getName()));
 
-            return proxyServerClient
-                    .method(HttpMethod.POST)
-                    .uri(String.join(PATH_DELIMITER, API_PATH, directoryName))
-                    .header(HttpHeaders.CONTENT_TYPE, MediaType.MULTIPART_FORM_DATA_VALUE)
-                    .body(BodyInserters.fromMultipartData(multipartBodyBuilder.build()))
-                    .exchangeToMono(clientResponse -> {
-                        if (clientResponse.statusCode().equals(HttpStatus.CREATED)) {
-                            String location = Objects.requireNonNull(
-                                            clientResponse.headers().asHttpHeaders().get(HttpHeaders.LOCATION))
-                                    .stream().findFirst()
-                                    .orElseThrow(S3UploadException::new);
-                            return Mono.just(location);
-                        }
-                        return Mono.error(S3ProxyRespondedFailException::new);
-                    })
-                    .block();
+            return requestMultipartUpload(directoryName, multipartBodyBuilder);
         } catch (IOException exception) {
             throw new S3UploadException(exception);
         }
+    }
+
+    @Override
+    public String upload(String directoryName, String uploadFileName, InputStream inputStream) {
+        MultipartBodyBuilder multipartBodyBuilder = new MultipartBodyBuilder();
+        multipartBodyBuilder.part("file", new InputStreamResource(inputStream))
+                .header(HttpHeaders.CONTENT_DISPOSITION,
+                        String.format(CONTENT_DISPOSITION_HEADER_VALUE_FORMAT, uploadFileName));
+
+        return requestMultipartUpload(directoryName, multipartBodyBuilder);
+    }
+
+    private String requestMultipartUpload(String directoryName, MultipartBodyBuilder multipartBodyBuilder) {
+        return proxyServerClient
+                .method(HttpMethod.POST)
+                .uri(String.join(PATH_DELIMITER, API_PATH, directoryName))
+                .header(HttpHeaders.CONTENT_TYPE, MediaType.MULTIPART_FORM_DATA_VALUE)
+                .body(BodyInserters.fromMultipartData(multipartBodyBuilder.build()))
+                .exchangeToMono(clientResponse -> {
+                    if (clientResponse.statusCode().equals(HttpStatus.CREATED)) {
+                        String location = Objects.requireNonNull(
+                                        clientResponse.headers().asHttpHeaders().get(HttpHeaders.LOCATION))
+                                .stream().findFirst()
+                                .orElseThrow(S3UploadException::new);
+                        return Mono.just(location);
+                    }
+                    return Mono.error(S3ProxyRespondedFailException::new);
+                })
+                .block();
     }
 
     @Override
