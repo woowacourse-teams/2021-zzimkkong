@@ -20,7 +20,7 @@
 ## 프로젝트 기술스택 💡
 
 #### 프론트엔드
-![image](https://user-images.githubusercontent.com/43775108/137057157-fa0b0cb6-38f3-4114-becd-d32ed9dd6054.png)
+![image](https://user-images.githubusercontent.com/43775108/137170616-f33e12f1-cbfa-457d-80c0-156765bf2597.png)
 
 #### 백엔드
 ![image](https://user-images.githubusercontent.com/43775108/137057384-c9d7ce28-cf8d-4f6e-87eb-952ed4f2cdef.png)
