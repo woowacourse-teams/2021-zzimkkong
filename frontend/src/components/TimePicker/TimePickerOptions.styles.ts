@@ -68,7 +68,13 @@ export const Option = styled.label`
   }
 `;
 
-export const OptionText = styled.span``;
+export const OptionText = styled.span`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: inherit;
+  height: inherit;
+`;
 
 export const Radio = styled.input`
   appearance: none;
@@ -76,5 +82,9 @@ export const Radio = styled.input`
   &:checked + ${OptionText} {
     color: ${({ theme }) => theme.gray[600]};
     font-weight: 600;
+  }
+
+  &:focus + ${OptionText} {
+    border-bottom: 1px solid ${({ theme }) => theme.primary[400]};
   }
 `;
