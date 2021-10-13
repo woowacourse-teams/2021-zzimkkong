@@ -62,6 +62,7 @@ export const OptionsContainer = styled.div`
   width: 100%;
   position: absolute;
   top: 3rem;
+  user-select: none;
 `;
 
 export const Dimmer = styled.div`
