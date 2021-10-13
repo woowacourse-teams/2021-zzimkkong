@@ -20,21 +20,28 @@
 ## 프로젝트 기술스택 💡
 
 #### 프론트엔드
+![image](https://user-images.githubusercontent.com/43775108/137057157-fa0b0cb6-38f3-4114-becd-d32ed9dd6054.png)
 
 #### 백엔드
+![image](https://user-images.githubusercontent.com/43775108/137057384-c9d7ce28-cf8d-4f6e-87eb-952ed4f2cdef.png)
+
+#### 인프라
+![image](https://user-images.githubusercontent.com/43775108/137057398-f8db5d6d-d644-4837-a7b6-710e61f37a63.png)
+
+#### CI/CD
+![image](https://user-images.githubusercontent.com/43775108/137057413-05c416de-e132-470a-854f-8a5f9fcfc680.png)
 
 
 ## 프로젝트 아키텍쳐 🏛
 
 #### 프론트엔드
-![front](https://user-images.githubusercontent.com/43775108/136993729-f7dd6aef-b6c6-4e49-87e0-212f19ba3b04.png)
+![frontend](https://user-images.githubusercontent.com/43775108/137057513-89a28a51-ea09-4926-a60a-3502573f04bd.png)
 
 #### 백엔드
-![backend](https://user-images.githubusercontent.com/43775108/136995087-be6e2422-2b21-48ed-aea1-c455723b0968.png)
+![backend](https://user-images.githubusercontent.com/43775108/137057532-6a93c778-2910-45d2-8940-548773dd8eb0.png)
 
 #### CI/CD
-![ci_cd](https://user-images.githubusercontent.com/43775108/136994974-e6a0bce4-7fba-42fe-882e-a61237a2c7a3.png)
-
+![ci_cd](https://user-images.githubusercontent.com/43775108/137057524-99c31058-dda5-4bd4-9520-2e2f7fe2fc42.png)
 
 ## 팀 문화 🏠
 
