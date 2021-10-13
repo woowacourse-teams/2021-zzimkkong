@@ -43,6 +43,9 @@ const ReservationDrawer = ({
       <Styled.SpaceTitle>
         <Styled.ColorDot color={space.color} />
         {space.name}
+        {isPastDate && (
+          <Styled.PastDateMessage>이전 날짜에는 예약할 수 없습니다.</Styled.PastDateMessage>
+        )}
       </Styled.SpaceTitle>
       <Styled.ReservationContainer>
         {getReservations.isLoadingError && (
@@ -54,6 +57,9 @@ const ReservationDrawer = ({
         )}
         {getReservations.isSuccess && reservations?.length === 0 && !isPastDate && (
           <Styled.Message>오늘의 첫 예약을 잡아보세요!</Styled.Message>
+        )}
+        {getReservations.isSuccess && reservations?.length === 0 && isPastDate && (
+          <Styled.Message>예약이 없습니다.</Styled.Message>
         )}
 
         {getReservations.isSuccess && reservations.length > 0 && (
