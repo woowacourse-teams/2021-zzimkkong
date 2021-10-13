@@ -25,6 +25,7 @@ export const ReservationButton = styled(Button)`
   &:disabled {
     background-color: ${({ theme }) => theme.gray[400]};
     color: ${({ theme }) => theme.gray[300]};
+    cursor: not-allowed;
   }
 `;
 
