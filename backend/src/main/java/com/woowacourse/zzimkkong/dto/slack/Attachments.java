@@ -10,7 +10,8 @@ import java.util.List;
 @NoArgsConstructor
 public class Attachments {
     private static final String COLOR = "#FF7515";
-    private static final String TITLE_LINK = "https://zzimkkong.o-r.kr/";
+    private static final String TITLE_LINK_MESSAGE = "예약링크 바로가기";
+    private static final String TITLE_LINK = "https://zzimkkong.com";
 
     private List<Attachment> messageBody;
 
@@ -18,12 +19,23 @@ public class Attachments {
         this.messageBody = messageBody;
     }
 
+    public static Attachments createMessageFrom(final SlackResponse slackResponse) {
+        Attachment attachment = Attachment.of(
+                "🎉 예약 생성 알림 🎉",
+                COLOR,
+                "🎉 예약이 생성되었습니다.",
+                TITLE_LINK_MESSAGE,
+                TITLE_LINK,
+                slackResponse);
+        return Attachments.from(attachment);
+    }
+
     public static Attachments updateMessageFrom(final SlackResponse slackResponse) {
         Attachment attachment = Attachment.of(
                 "✏️ 예약 수정 알림 ✏️",
                 COLOR,
                 "✏️ 예약이 수정되었습니다.",
-                "변경된 예약내용",
+                TITLE_LINK_MESSAGE,
                 TITLE_LINK,
                 slackResponse);
         return Attachments.from(attachment);
@@ -34,7 +46,7 @@ public class Attachments {
                 "🗑 예약 삭제 알림 🗑",
                 COLOR,
                 "🗑 예약이 삭제되었습니다.",
-                "삭제된 예약내용",
+                TITLE_LINK_MESSAGE,
                 TITLE_LINK,
                 slackResponse);
         return Attachments.from(attachment);

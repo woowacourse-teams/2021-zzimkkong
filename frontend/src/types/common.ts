@@ -49,20 +49,27 @@ interface SpaceSetting {
   disabledWeekdays: string[];
 }
 
-export interface Area {
-  shape: DrawingAreaShape;
+export interface AreaRect {
+  shape: DrawingAreaShape.Rect;
   width: number;
   height: number;
   x: number;
   y: number;
 }
 
+export interface AreaPolygon {
+  shape: DrawingAreaShape.Polygon;
+  points: Coordinate[];
+}
+
+export type Area = AreaRect | AreaPolygon;
+
 export interface Space {
   id: number;
   name: string;
   color: Color;
   description: string;
-  area: Area;
+  area: AreaRect | AreaPolygon;
   settings: SpaceSetting;
 }
 
@@ -109,7 +116,7 @@ export interface ManagerSpace {
   name: string;
   color: Color;
   description: string;
-  area: SpaceArea;
+  area: Area;
   settings: ReservationSettings;
 }
 
@@ -141,12 +148,4 @@ export interface EditorBoard {
   x: number;
   y: number;
   scale: number;
-}
-
-export interface SpaceArea {
-  shape: DrawingAreaShape;
-  x: number;
-  y: number;
-  width: number;
-  height: number;
 }

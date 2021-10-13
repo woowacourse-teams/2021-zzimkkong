@@ -47,6 +47,7 @@ public class ManagerReservationController {
                 reservationCreateUpdateWithPasswordRequest,
                 loginEmailDto);
         ReservationCreateResponse reservationCreateResponse = reservationService.saveReservation(reservationCreateDto, managerReservationStrategy);
+        slackService.sendCreateMessage(reservationCreateResponse.getSlackResponse());
         return ResponseEntity
                 .created(URI.create("/api/managers/maps/" + mapId + "/spaces/" + spaceId + "/reservations/" + reservationCreateResponse.getId()))
                 .build();
@@ -125,7 +126,7 @@ public class ManagerReservationController {
                 reservationId,
                 loginEmailDto);
         SlackResponse slackResponse = reservationService.deleteReservation(reservationAuthenticationDto, managerReservationStrategy);
-        slackService.sendUpdateMessage(slackResponse);
+        slackService.sendDeleteMessage(slackResponse);
         return ResponseEntity.noContent().build();
     }
 }

@@ -6,3 +6,7 @@
 	path = s3proxy/src/main/resources/s3proxy-config
 	url = git@github.com:zzimkkong/s3proxy-config.git
 	branch = main
+[submodule "backend/src/main/resources/infra-appender"]
+	path = backend/src/main/resources/infra-appender
+	url = git@github.com:zzimkkong/infra-appender.git
+	branch = main

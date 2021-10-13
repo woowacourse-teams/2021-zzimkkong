@@ -19,6 +19,7 @@ export enum SpaceEditorMode {
 export enum MapElementType {
   Polyline = 'polyline',
   Rect = 'rect',
+  Polygon = 'polygon',
 }
 
 export enum DrawingAreaShape {
