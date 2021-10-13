@@ -19,7 +19,7 @@ public class SlackConfig implements WebMvcConfigurer {
     }
 
     @Bean
-    @Profile({"{local", "dev"})
+    @Profile({"local", "dev"})
     public SlackUrl slackUrlDev(
             @Value("${slack.webhook.local}") final String devUrl) {
         return new SlackUrl(devUrl);
