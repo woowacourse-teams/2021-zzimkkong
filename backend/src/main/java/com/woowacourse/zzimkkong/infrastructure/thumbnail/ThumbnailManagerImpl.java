@@ -2,10 +2,11 @@ package com.woowacourse.zzimkkong.infrastructure.thumbnail;
 
 import com.woowacourse.zzimkkong.domain.Map;
 import com.woowacourse.zzimkkong.exception.infrastructure.CannotDeleteConvertedFileException;
+import com.woowacourse.zzimkkong.exception.infrastructure.CannotGenerateInputStreamFromSvgDataException;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
-import java.io.File;
+import java.io.*;
 
 @Component
 public class ThumbnailManagerImpl implements ThumbnailManager {
@@ -38,12 +39,37 @@ public class ThumbnailManagerImpl implements ThumbnailManager {
         return thumbnailUrl;
     }
 
-    public void deleteThumbnail(final Map map) {
-        String fileName = makeThumbnailFileName(map);
-        storageUploader.delete(thumbnailsDirectoryName, fileName + THUMBNAIL_EXTENSION);
+    public String uploadMapThumbnailInMemory(final String svgData, final Map map) {
+        try (final ByteArrayInputStream svgInputStream = new ByteArrayInputStream(svgData.getBytes());
+             final ByteArrayOutputStream pngOutputStream = new ByteArrayOutputStream()) {
+            final BufferedInputStream bufferedSvgInputStream = new BufferedInputStream(svgInputStream);
+            final BufferedOutputStream bufferedPngOutputStream = new BufferedOutputStream(pngOutputStream);
+
+            final String fileName = makeThumbnailFileNameWithExtension(map);
+            svgConverter.convertSvgToPng(bufferedSvgInputStream, bufferedPngOutputStream);
+
+            return uploadFromByteArray(fileName, pngOutputStream.toByteArray());
+        } catch (IOException exception) {
+            throw new CannotGenerateInputStreamFromSvgDataException(exception);
+        }
     }
 
     private String makeThumbnailFileName(final Map map) {
         return String.format(THUMBNAIL_FILE_FORMAT, map.getId().toString());
+    }
+
+    private String makeThumbnailFileNameWithExtension(final Map map) {
+        return String.format(THUMBNAIL_FILE_FORMAT, map.getId().toString() + THUMBNAIL_EXTENSION);
+    }
+
+    private String uploadFromByteArray(String fileName, byte[] byteArray) throws IOException {
+        try (final BufferedInputStream bufferedPngInputStream = new BufferedInputStream(new ByteArrayInputStream(byteArray))) {
+            return storageUploader.upload(thumbnailsDirectoryName, fileName, bufferedPngInputStream);
+        }
+    }
+
+    public void deleteThumbnail(final Map map) {
+        String fileName = makeThumbnailFileName(map);
+        storageUploader.delete(thumbnailsDirectoryName, fileName + THUMBNAIL_EXTENSION);
     }
 }

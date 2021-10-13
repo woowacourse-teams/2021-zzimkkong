@@ -1,6 +1,5 @@
 package com.woowacourse.zzimkkong.infrastructure.thumbnail;
 
-import com.woowacourse.zzimkkong.Constants;
 import com.woowacourse.zzimkkong.domain.Map;
 import com.woowacourse.zzimkkong.exception.infrastructure.CannotDeleteConvertedFileException;
 import org.junit.jupiter.api.DisplayName;
@@ -12,7 +11,6 @@ import org.springframework.test.context.ActiveProfiles;
 
 import java.io.File;
 import java.io.InputStream;
-import java.io.OutputStream;
 import java.util.Random;
 
 import static com.woowacourse.zzimkkong.Constants.MAP_IMAGE_URL;
@@ -57,6 +55,24 @@ class ThumbnailManagerImplTest {
 
         // when
         String mapThumbnailUrl = thumbnailManager.uploadMapThumbnail(MAP_SVG, mockMap);
+
+        assertThat(mapThumbnailUrl).isEqualTo(MAP_IMAGE_URL);
+    }
+
+    @Test
+    @DisplayName("Map의 svg 데이터와 Map을 받고 썸네일의 url을 받아온다.")
+    void uploadMapThumbnailInmemory() {
+        // given
+        Map mockMap = mock(Map.class);
+        long mapId = new Random().nextLong();
+        given(mockMap.getId())
+                .willReturn(mapId);
+
+        given(storageUploader.upload(anyString(), anyString(), any(InputStream.class)))
+                .willReturn(MAP_IMAGE_URL);
+
+        // when
+        String mapThumbnailUrl = thumbnailManager.uploadMapThumbnailInMemory(MAP_SVG, mockMap);
 
         assertThat(mapThumbnailUrl).isEqualTo(MAP_IMAGE_URL);
     }

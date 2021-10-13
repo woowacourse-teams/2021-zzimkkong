@@ -57,7 +57,8 @@ public class MapService {
                 mapCreateUpdateRequest.getMapImageSvg().substring(0, 10),
                 manager));
 
-        String thumbnailUrl = thumbnailManager.uploadMapThumbnail(mapCreateUpdateRequest.getMapImageSvg(), saveMap);
+//        String thumbnailUrl = thumbnailManager.uploadMapThumbnail(mapCreateUpdateRequest.getMapImageSvg(), saveMap);
+        final String thumbnailUrl = thumbnailManager.uploadMapThumbnailInMemory(mapCreateUpdateRequest.getMapImageSvg(), saveMap);
         saveMap.updateImageUrl(thumbnailUrl);
 
         return MapCreateResponse.from(saveMap);
