@@ -38,7 +38,7 @@
 ![backend](https://user-images.githubusercontent.com/43775108/137057532-6a93c778-2910-45d2-8940-548773dd8eb0.png)
 
 #### CI/CD
-![ci_cd](https://user-images.githubusercontent.com/43775108/137168393-82d2e8c2-7e53-4db1-a14a-96af974c9ea9.png)
+![ci_cd](https://user-images.githubusercontent.com/43775108/137171201-fe79450d-d28c-4458-8a0f-a6f7aacfc2a1.png)
 
 ## 팀 문화 🏠
 
