@@ -19,13 +19,12 @@
 
         <root level="INFO">
             <appender-ref ref="CONSOLE_APPENDER"/>
-
         </root>
     </springProfile>
 
     <springProfile name="dev">
         <include resource="appenders/console-appender.xml"/>
-        <include resource="appenders/logstash-appender-dev.xml"/>
+        <include resource="infra-appender/kafka-appender-dev.xml"/>
 
         <include resource="appenders/file-appender-info.xml"/>
         <include resource="appenders/file-appender-error.xml"/>
@@ -33,7 +32,7 @@
 
         <root level="INFO">
             <appender-ref ref="CONSOLE_APPENDER"/>
-            <appender-ref ref="STASH"/>
+            <appender-ref ref="KAFKA_APPENDER_DEV"/>
 
             <appender-ref ref="FILE_APPENDER_INFO"/>
             <appender-ref ref="FILE_APPENDER_ERROR"/>
@@ -43,14 +42,14 @@
 
     <springProfile name="prod">
         <include resource="appenders/console-appender.xml"/>
-        <include resource="appenders/logstash-appender-prod.xml"/>
+        <include resource="infra-appender/kafka-appender-prod.xml"/>
 
         <include resource="appenders/file-appender-error.xml"/>
         <include resource="appenders/file-appender-warn.xml"/>
 
         <root level="WARN">
             <appender-ref ref="CONSOLE_APPENDER"/>
-            <appender-ref ref="STASH"/>
+            <appender-ref ref="KAFKA_APPENDER_PROD"/>
 
             <appender-ref ref="FILE_APPENDER_ERROR"/>
             <appender-ref ref="FILE_APPENDER_WARN"/>
