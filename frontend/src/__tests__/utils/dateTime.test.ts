@@ -28,10 +28,8 @@ describe('datetime 관련 util 함수 테스트', () => {
 
   describe('formatTimeWithSecond Function Test', () => {
     test('Date가 HH:MM:SS 형태로 변환 된다.', () => {
-      expect(formatTimeWithSecond(new Date('2021-11-17T00:00:00.000Z'))).toBe('09:00:00');
-      expect(
-        formatTimeWithSecond(new Date('Wed Oct 13 2021 18:48:47 GMT+0900 (한국 표준시)'))
-      ).toBe('18:48:47');
+      expect(formatTimeWithSecond(new Date('Wed Oct 13 2021 00:01:00'))).toBe('00:01:00');
+      expect(formatTimeWithSecond(new Date('Wed Oct 13 2021 18:48:47'))).toBe('18:48:47');
     });
   });
 
