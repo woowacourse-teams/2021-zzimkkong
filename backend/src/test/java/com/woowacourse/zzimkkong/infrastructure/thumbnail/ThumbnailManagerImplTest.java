@@ -1,7 +1,6 @@
 package com.woowacourse.zzimkkong.infrastructure.thumbnail;
 
 import com.woowacourse.zzimkkong.domain.Map;
-import com.woowacourse.zzimkkong.exception.infrastructure.CannotDeleteConvertedFileException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,7 +8,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.ActiveProfiles;
 
-import java.io.File;
 import java.io.InputStream;
 import java.util.Random;
 
@@ -47,7 +45,7 @@ class ThumbnailManagerImplTest {
                 .willReturn(MAP_IMAGE_URL);
 
         // when
-        String mapThumbnailUrl = thumbnailManager.uploadMapThumbnailInMemory(MAP_SVG, mockMap);
+        String mapThumbnailUrl = thumbnailManager.uploadMapThumbnail(MAP_SVG, mockMap);
 
         assertThat(mapThumbnailUrl).isEqualTo(MAP_IMAGE_URL);
     }

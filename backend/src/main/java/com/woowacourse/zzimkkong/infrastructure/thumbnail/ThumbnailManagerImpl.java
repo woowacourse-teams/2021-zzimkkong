@@ -1,7 +1,6 @@
 package com.woowacourse.zzimkkong.infrastructure.thumbnail;
 
 import com.woowacourse.zzimkkong.domain.Map;
-import com.woowacourse.zzimkkong.exception.infrastructure.CannotDeleteConvertedFileException;
 import com.woowacourse.zzimkkong.exception.infrastructure.CannotGenerateInputStreamFromSvgDataException;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
@@ -26,13 +25,13 @@ public class ThumbnailManagerImpl implements ThumbnailManager {
         this.thumbnailsDirectoryName = thumbnailsDirectoryName;
     }
 
-    public String uploadMapThumbnailInMemory(final String svgData, final Map map) {
+    public String uploadMapThumbnail(final String svgData, final Map map) {
         try (final ByteArrayInputStream svgInputStream = new ByteArrayInputStream(svgData.getBytes());
              final ByteArrayOutputStream pngOutputStream = new ByteArrayOutputStream()) {
             final BufferedInputStream bufferedSvgInputStream = new BufferedInputStream(svgInputStream);
             final BufferedOutputStream bufferedPngOutputStream = new BufferedOutputStream(pngOutputStream);
 
-            final String fileName = makeThumbnailFileNameWithExtension(map);
+            final String fileName = makeThumbnailFileName(map);
             svgConverter.convertSvgToPng(bufferedSvgInputStream, bufferedPngOutputStream);
 
             return uploadFromByteArray(fileName, pngOutputStream.toByteArray());
@@ -42,10 +41,6 @@ public class ThumbnailManagerImpl implements ThumbnailManager {
     }
 
     private String makeThumbnailFileName(final Map map) {
-        return String.format(THUMBNAIL_FILE_FORMAT, map.getId().toString());
-    }
-
-    private String makeThumbnailFileNameWithExtension(final Map map) {
         return String.format(THUMBNAIL_FILE_FORMAT, map.getId().toString() + THUMBNAIL_EXTENSION);
     }
 
