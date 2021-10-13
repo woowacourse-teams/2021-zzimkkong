@@ -46,4 +46,17 @@ public class BatikConverter implements SvgConverter {
     public String getSaveDirectoryPath() {
         return saveDirectoryPath;
     }
+
+    @Override
+    public void convertSvgToPng(InputStream inputStream, OutputStream outputStream) {
+        try {
+            TranscoderInput transcoderInput = new TranscoderInput(inputStream);
+            TranscoderOutput transcoderOutput = new TranscoderOutput(outputStream);
+            PNGTranscoder pngTranscoder = new PNGTranscoder();
+
+            pngTranscoder.transcode(transcoderInput, transcoderOutput);
+        } catch (TranscoderException e) {
+            throw new SvgToPngConvertException(e);
+        }
+    }
 }
