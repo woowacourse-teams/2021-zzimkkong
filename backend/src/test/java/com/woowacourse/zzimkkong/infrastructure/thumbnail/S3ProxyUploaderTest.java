@@ -68,7 +68,6 @@ class S3ProxyUploaderTest {
 
         // when
         String uri = s3ProxyUploader.upload(testDirectoryName, fileName, fileInputStream);
-        System.out.println("uri = " + uri);
         Matcher matcher = URL_PATTERN.matcher(uri);
 
         // then
