@@ -2,6 +2,8 @@ import styled from 'styled-components';
 import PALETTE from 'constants/palette';
 import { Z_INDEX } from './../../constants/style';
 
+export const OPTION_HEIGHT = 32;
+
 export const OptionsContainer = styled.div`
   width: 100%;
   border: 1px solid ${({ theme }) => theme.gray[500]};

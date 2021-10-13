@@ -18,15 +18,15 @@ const TimePickerOptions = ({ time, step = 1, onChange }: Props): JSX.Element => 
     if (time === null) return;
 
     if (middayRef.current !== null) {
-      middayRef.current.scrollTo(0, time.midday === Midday.AM ? 0 : 32);
+      middayRef.current.scrollTo(0, time.midday === Midday.AM ? 0 : Styled.OPTION_HEIGHT);
     }
 
     if (hourRef.current !== null) {
-      hourRef.current.scrollTo(0, (time.hour - 1) * 32);
+      hourRef.current.scrollTo(0, (time.hour - 1) * Styled.OPTION_HEIGHT);
     }
 
     if (minuteRef.current !== null) {
-      minuteRef.current.scrollTo(0, (time.minute / step) * 32);
+      minuteRef.current.scrollTo(0, (time.minute / step) * Styled.OPTION_HEIGHT);
     }
   }, [step, middayRef, hourRef, minuteRef, time]);
 
