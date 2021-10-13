@@ -38,7 +38,7 @@ export const MiddayOptionContainer = styled.div`
 `;
 
 export const OptionContainer = styled.div`
-  width: 33.33333%;
+  flex: 1;
   height: inherit;
   overflow-y: auto;
   text-align: center;
