@@ -55,9 +55,7 @@ const ReservationDrawer = ({
         {getReservations.isSuccess && reservations?.length === 0 && !isPastDate && (
           <Styled.Message>오늘의 첫 예약을 잡아보세요!</Styled.Message>
         )}
-        {getReservations.isSuccess && reservations?.length === 0 && isPastDate && (
-          <Styled.Message>과거 날짜엔 예약할 수 없습니다!</Styled.Message>
-        )}
+
         {getReservations.isSuccess && reservations.length > 0 && (
           <Styled.ReservationList role="list">
             {reservations.map((reservation: Reservation) => (
@@ -91,16 +89,15 @@ const ReservationDrawer = ({
         )}
       </Styled.ReservationContainer>
 
-      {!isPastDate && (
-        <Styled.ReservationButton
-          variant="primary"
-          size="large"
-          fullWidth
-          onClick={onClickReservation}
-        >
-          예약하기
-        </Styled.ReservationButton>
-      )}
+      <Styled.ReservationButton
+        variant="primary"
+        size="large"
+        fullWidth
+        onClick={onClickReservation}
+        disabled={isPastDate}
+      >
+        예약하기
+      </Styled.ReservationButton>
     </Drawer>
   );
 };

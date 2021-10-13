@@ -21,6 +21,11 @@ export const ReservationButton = styled(Button)`
   position: sticky;
   bottom: 0;
   left: 0;
+
+  &:disabled {
+    background-color: ${({ theme }) => theme.gray[700]};
+    color: ${({ theme }) => theme.black[500]};
+  }
 `;
 
 export const SpaceTitle = styled.h3`
