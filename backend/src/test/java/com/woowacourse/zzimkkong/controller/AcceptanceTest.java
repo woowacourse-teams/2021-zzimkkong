@@ -27,7 +27,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
-import java.io.File;
 import java.io.InputStream;
 
 import static com.woowacourse.zzimkkong.Constants.*;

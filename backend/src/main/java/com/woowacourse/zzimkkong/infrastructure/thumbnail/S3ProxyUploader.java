@@ -40,22 +40,6 @@ public class S3ProxyUploader implements StorageUploader {
     }
 
     @Override
-    public String upload(String directoryName, File uploadFile) {
-        try {
-            byte[] byteArrayOfFile = Files.readAllBytes(uploadFile.toPath());
-
-            MultipartBodyBuilder multipartBodyBuilder = new MultipartBodyBuilder();
-            multipartBodyBuilder.part("file", new ByteArrayResource(byteArrayOfFile))
-                    .header(HttpHeaders.CONTENT_DISPOSITION,
-                            String.format(CONTENT_DISPOSITION_HEADER_VALUE_FORMAT, uploadFile.getName()));
-
-            return requestMultipartUpload(directoryName, multipartBodyBuilder);
-        } catch (IOException exception) {
-            throw new S3UploadException(exception);
-        }
-    }
-
-    @Override
     public String upload(String directoryName, String uploadFileName, InputStream inputStream) {
         MultipartBodyBuilder multipartBodyBuilder = new MultipartBodyBuilder();
         multipartBodyBuilder.part("file", new InputStreamResource(inputStream))

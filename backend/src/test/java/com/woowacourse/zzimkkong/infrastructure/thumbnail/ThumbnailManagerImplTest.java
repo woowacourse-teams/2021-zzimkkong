@@ -14,7 +14,6 @@ import java.util.Random;
 import static com.woowacourse.zzimkkong.Constants.MAP_IMAGE_URL;
 import static com.woowacourse.zzimkkong.Constants.MAP_SVG;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.BDDMockito.given;
@@ -49,4 +48,6 @@ class ThumbnailManagerImplTest {
 
         assertThat(mapThumbnailUrl).isEqualTo(MAP_IMAGE_URL);
     }
+
+    // todo IOException 처리
 }
