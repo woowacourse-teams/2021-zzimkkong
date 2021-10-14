@@ -1,3 +1,5 @@
+import DATE from 'constants/date';
+
 // Note: YYYY-MM-DD 형식으로 변환함
 export const formatDate = (value: Date): string => {
   const year = value.getFullYear();
@@ -50,4 +52,8 @@ export const isPastTime = (time: Date): boolean => {
 
 export const isPastDay = (time: Date): boolean => {
   return time.getTime() < new Date().getTime() - 1000 * 60 * 60 * 24;
+};
+
+export const isPastDayThanReleaseDay = (time: Date): boolean => {
+  return time.getTime() < DATE.RELEASE_DATE.getTime() - 1000 * 60 * 60 * 24 * 7;
 };
