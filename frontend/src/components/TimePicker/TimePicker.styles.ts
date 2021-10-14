@@ -55,7 +55,11 @@ export const TimeButton = styled.button<TimeButtonProps>`
   cursor: pointer;
 
   ${({ selected, theme }) =>
-    selected ? `box-shadow: inset 0 -0.125rem ${theme.primary[400] as string};` : ''}
+    selected ? `box-shadow: inset 0 -3px ${theme.primary[400] as string};` : ''}
+
+  &:focus {
+    outline-color: ${({ theme }) => theme.primary[400]};
+  }
 `;
 
 export const OptionsContainer = styled.div`

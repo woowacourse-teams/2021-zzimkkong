@@ -2,8 +2,6 @@ import styled from 'styled-components';
 import PALETTE from 'constants/palette';
 import { Z_INDEX } from './../../constants/style';
 
-export const OPTION_HEIGHT = 32;
-
 export const OptionsContainer = styled.div`
   width: 100%;
   border: 1px solid ${({ theme }) => theme.gray[500]};
@@ -26,17 +24,6 @@ export const OptionsContainer = styled.div`
     top: calc(4rem + 0.5px);
     pointer-events: none;
   }
-`;
-
-export const MiddayOptionContainer = styled.div`
-  width: 33.33333%;
-  height: inherit;
-  overflow-y: auto;
-  text-align: center;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
 `;
 
 export const OptionContainer = styled.div`
@@ -85,6 +72,6 @@ export const Radio = styled.input`
   }
 
   &:focus + ${OptionText} {
-    border-bottom: 1px solid ${({ theme }) => theme.primary[400]};
+    box-shadow: inset 0 -0.125rem ${({ theme }) => theme.primary[400]};
   }
 `;
