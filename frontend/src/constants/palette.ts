@@ -95,6 +95,7 @@ const PALETTE = {
 
   OPACITY_GRAY: 'rgba(212, 212, 216, 0.3)',
   OPACITY_BLACK: {
+    50: 'rgba(0, 0, 0, 0.05)',
     100: 'rgba(0, 0, 0, 0.1)',
     200: 'rgba(0, 0, 0, 0.2)',
     300: 'rgba(0, 0, 0, 0.3)',
