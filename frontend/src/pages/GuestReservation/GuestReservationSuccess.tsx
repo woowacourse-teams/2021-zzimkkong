@@ -1,5 +1,4 @@
 import { Redirect, useLocation, useParams } from 'react-router';
-import { ReactComponent as Logo } from 'assets/svg/logo.svg';
 import AnimatedLogo from 'components/AnimatedLogo/AnimatedLogo';
 import Header from 'components/Header/Header';
 import Layout from 'components/Layout/Layout';

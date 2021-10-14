@@ -1,6 +1,5 @@
 import { ChangeEventHandler } from 'react';
 import { ReactComponent as CalendarIcon } from 'assets/svg/calendar.svg';
-import Button from 'components/Button/Button';
 import Input from 'components/Input/Input';
 import DATE from 'constants/date';
 import MESSAGE from 'constants/message';

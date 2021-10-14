@@ -16,7 +16,7 @@ import { GuestMapState } from 'pages/GuestMap/GuestMap';
 import { Reservation, ScrollPosition, Space } from 'types/common';
 import { GuestPageURLParams } from 'types/guest';
 import { ErrorResponse } from 'types/response';
-import { isFutureDayThanMaxDay, isPastDayThanMinDay } from 'utils/datetime';
+import { isFutureDayThanMaxDay, isPastDay, isPastDayThanMinDay } from 'utils/datetime';
 import * as Styled from './GuestReservation.styles';
 import { GuestReservationSuccessState } from './GuestReservationSuccess';
 import GuestReservationForm from './units/GuestReservationForm';
@@ -45,11 +45,14 @@ const GuestReservation = (): JSX.Element => {
   const [date, , setDate] = useInput(selectedDate);
 
   const isEditMode = !!reservation;
+  const isPastDate = isPastDay(new Date(date));
+  const isPastDateThanMinDay = isPastDayThanMinDay(new Date(date));
+  const isFutureDateThanMaxDay = isFutureDayThanMaxDay(new Date(date));
 
   const getReservations = useGuestReservations(
     { mapId, spaceId: space.id, date },
     {
-      // enabled: isPastDayThanReleaseDay(new Date(date)),
+      enabled: !isPastDateThanMinDay && !!date,
     }
   );
   const reservations = getReservations.data?.data?.reservations ?? [];
@@ -118,14 +121,13 @@ const GuestReservation = (): JSX.Element => {
     const {
       target: { value },
     } = event;
-    const targetDate = new Date(value);
 
-    if (isPastDayThanMinDay(targetDate)) {
+    if (isPastDateThanMinDay) {
       setDate(DATE.MIN_DATE_STRING);
       return;
     }
 
-    if (isFutureDayThanMaxDay(targetDate)) {
+    if (isFutureDateThanMaxDay) {
       setDate(DATE.MAX_DATE_STRING);
       return;
     }
@@ -183,8 +185,14 @@ const GuestReservation = (): JSX.Element => {
           {getReservations.isLoading && !getReservations.isLoadingError && (
             <Styled.Message>{MESSAGE.RESERVATION.PENDING}</Styled.Message>
           )}
-          {getReservations.isSuccess && reservations.length === 0 && (
+          {getReservations.isSuccess && reservations.length === 0 && !isPastDate && (
             <Styled.Message>{MESSAGE.RESERVATION.SUGGESTION}</Styled.Message>
+          )}
+          {getReservations.isSuccess && reservations.length === 0 && isPastDate && (
+            <Styled.Message>{MESSAGE.RESERVATION.NOT_EXIST}</Styled.Message>
+          )}
+          {(isPastDateThanMinDay || isFutureDateThanMaxDay) && (
+            <Styled.Message>{MESSAGE.RESERVATION.NOT_EXIST}</Styled.Message>
           )}
           {getReservations.isSuccess && reservations.length > 0 && (
             <Styled.ReservationList role="list">
