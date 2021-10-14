@@ -4,6 +4,7 @@ import {
   formatTimePrettier,
   formatTimeWithSecond,
   isPastDay,
+  isPastDayThanReleaseDay,
   isPastTime,
 } from 'utils/datetime';
 
@@ -61,6 +62,24 @@ describe('datetime 관련 util 함수 테스트', () => {
     test('Date가 현재 날짜보다 이후 날짜이면 false를 반환한다.', () => {
       expect(isPastDay(new Date('2030-11-17T00:00:00.000Z'))).toBe(false);
       expect(isPastDay(new Date('Wed Oct 13 2030 18:48:47 GMT+0900 (한국 표준시)'))).toBe(false);
+    });
+  });
+
+  describe('isPastDayThanReleaseDay Function Test', () => {
+    test('Date가 릴리즈 날짜보다 이전 날짜이면 true를 반환한다.', () => {
+      expect(isPastDayThanReleaseDay(new Date('2020-11-17T00:00:00.000Z'))).toBe(true);
+      expect(
+        isPastDayThanReleaseDay(new Date('Wed Oct 13 2020 18:48:47 GMT+0900 (한국 표준시)'))
+      ).toBe(true);
+      expect(isPastDayThanReleaseDay(new Date('0000-01-01'))).toBe(true);
+    });
+
+    test('Date가 릴리즈 날짜보다 이후 날짜이면 false를 반환한다.', () => {
+      expect(isPastDayThanReleaseDay(new Date('2030-11-17T00:00:00.000Z'))).toBe(false);
+      expect(
+        isPastDayThanReleaseDay(new Date('Wed Oct 13 2030 18:48:47 GMT+0900 (한국 표준시)'))
+      ).toBe(false);
+      expect(isPastDayThanReleaseDay(new Date('9999-01-01'))).toBe(false);
     });
   });
 });
