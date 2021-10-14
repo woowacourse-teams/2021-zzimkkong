@@ -10,7 +10,7 @@ import TIME from 'constants/time';
 import useInputs from 'hooks/useInputs';
 import useScrollToTop from 'hooks/useScrollToTop';
 import { Reservation, Space } from 'types/common';
-import { formatDate, formatTime, formatTimePrettier } from 'utils/datetime';
+import { formatDate, formatTime, formatTimePrettier, isPastDay } from 'utils/datetime';
 import { EditReservationParams } from '../GuestReservation';
 import * as Styled from './GuestReservationForm.styles';
 
@@ -180,9 +180,14 @@ const GuestReservationForm = ({
         </Styled.InputWrapper>
       </Styled.Section>
       <Styled.ButtonWrapper>
-        <Button fullWidth variant="primary" size="large">
+        <Styled.ReservationButton
+          fullWidth
+          variant="primary"
+          size="large"
+          disabled={isPastDay(new Date(date))}
+        >
           {isEditMode ? MESSAGE.RESERVATION.EDIT : MESSAGE.RESERVATION.CREATE}
-        </Button>
+        </Styled.ReservationButton>
       </Styled.ButtonWrapper>
     </Styled.ReservationForm>
   );
