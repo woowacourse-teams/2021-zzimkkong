@@ -16,7 +16,7 @@ import { GuestMapState } from 'pages/GuestMap/GuestMap';
 import { Reservation, ScrollPosition, Space } from 'types/common';
 import { GuestPageURLParams } from 'types/guest';
 import { ErrorResponse } from 'types/response';
-import { isFutureDayThanMaxDay, isPastDayThanReleaseDay } from 'utils/datetime';
+import { isFutureDayThanMaxDay, isPastDayThanMinDay } from 'utils/datetime';
 import * as Styled from './GuestReservation.styles';
 import { GuestReservationSuccessState } from './GuestReservationSuccess';
 import GuestReservationForm from './units/GuestReservationForm';
@@ -46,7 +46,12 @@ const GuestReservation = (): JSX.Element => {
 
   const isEditMode = !!reservation;
 
-  const getReservations = useGuestReservations({ mapId, spaceId: space.id, date });
+  const getReservations = useGuestReservations(
+    { mapId, spaceId: space.id, date },
+    {
+      // enabled: isPastDayThanReleaseDay(new Date(date)),
+    }
+  );
   const reservations = getReservations.data?.data?.reservations ?? [];
 
   const addReservation = useMutation(postGuestReservation, {
@@ -115,8 +120,8 @@ const GuestReservation = (): JSX.Element => {
     } = event;
     const targetDate = new Date(value);
 
-    if (isPastDayThanReleaseDay(targetDate)) {
-      setDate(DATE.RELEASE_DATE_STRING);
+    if (isPastDayThanMinDay(targetDate)) {
+      setDate(DATE.MIN_DATE_STRING);
       return;
     }
 

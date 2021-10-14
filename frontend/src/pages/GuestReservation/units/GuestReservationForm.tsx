@@ -129,7 +129,7 @@ const GuestReservationForm = ({
             label="날짜"
             icon={<CalendarIcon />}
             value={date}
-            min={formatDate(now)}
+            min={DATE.MIN_DATE_STRING}
             max={DATE.MAX_DATE_STRING}
             onChange={onChangeDate}
             required

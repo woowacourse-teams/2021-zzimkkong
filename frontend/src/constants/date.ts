@@ -1,8 +1,8 @@
 const DATE = {
-  RELEASE_DATE: new Date('2021-07-01'),
-  RELEASE_DATE_STRING: '2021-07-01',
-  MAX_DATE: new Date('9999-12-31'),
-  MAX_DATE_STRING: '9999-12-31',
+  MIN_DATE: new Date('2000-01-01'),
+  MIN_DATE_STRING: '2000-01-01',
+  MAX_DATE: new Date('2100-12-31'),
+  MAX_DATE_STRING: '2100-12-31',
 };
 
 export default DATE;
