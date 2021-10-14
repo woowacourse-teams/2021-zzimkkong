@@ -48,6 +48,4 @@ class ThumbnailManagerImplTest {
 
         assertThat(mapThumbnailUrl).isEqualTo(MAP_IMAGE_URL);
     }
-
-    // todo IOException 처리
 }
