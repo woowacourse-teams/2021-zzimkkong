@@ -57,3 +57,7 @@ export const isPastDay = (time: Date): boolean => {
 export const isPastDayThanReleaseDay = (time: Date): boolean => {
   return time.getTime() < DATE.RELEASE_DATE.getTime() - 1000 * 60 * 60 * 24 * 7;
 };
+
+export const isFutureDayThanMaxDay = (time: Date): boolean => {
+  return time.getTime() > DATE.MAX_DATE.getTime();
+};
