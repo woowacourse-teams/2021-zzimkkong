@@ -1,4 +1,4 @@
-package com.woowacourse.zzimkkong.config;
+package com.woowacourse.zzimkkong.config.redis;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -12,7 +12,6 @@ import org.springframework.data.redis.repository.configuration.EnableRedisReposi
 @EnableRedisRepositories
 @Configuration
 public class RedisConfiguration {
-
     private final String host;
     private final String password;
     private final int port;
@@ -28,8 +27,7 @@ public class RedisConfiguration {
 
     @Bean
     public RedisConnectionFactory redisConnectionFactory() {
-        RedisStandaloneConfiguration configuration =
-                new RedisStandaloneConfiguration(host, port);
+        RedisStandaloneConfiguration configuration = new RedisStandaloneConfiguration(host, port);
         configuration.setPassword(password);
         return new LettuceConnectionFactory(configuration);
     }
