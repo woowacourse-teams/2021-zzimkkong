@@ -2,6 +2,7 @@ import { ChangeEventHandler } from 'react';
 import { ReactComponent as CalendarIcon } from 'assets/svg/calendar.svg';
 import Button from 'components/Button/Button';
 import Input from 'components/Input/Input';
+import DATE from 'constants/date';
 import MESSAGE from 'constants/message';
 import REGEXP from 'constants/regexp';
 import RESERVATION from 'constants/reservation';
@@ -129,6 +130,7 @@ const GuestReservationForm = ({
             icon={<CalendarIcon />}
             value={date}
             min={formatDate(now)}
+            max={DATE.MAX_DATE_STRING}
             onChange={onChangeDate}
             required
           />

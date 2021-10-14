@@ -7,6 +7,7 @@ import Header from 'components/Header/Header';
 import Layout from 'components/Layout/Layout';
 import PageHeader from 'components/PageHeader/PageHeader';
 import ReservationListItem from 'components/ReservationListItem/ReservationListItem';
+import DATE from 'constants/date';
 import MESSAGE from 'constants/message';
 import { HREF } from 'constants/path';
 import useGuestReservations from 'hooks/query/useGuestReservations';
@@ -15,6 +16,7 @@ import { GuestMapState } from 'pages/GuestMap/GuestMap';
 import { Reservation, ScrollPosition, Space } from 'types/common';
 import { GuestPageURLParams } from 'types/guest';
 import { ErrorResponse } from 'types/response';
+import { isFutureDayThanMaxDay, isPastDayThanReleaseDay } from 'utils/datetime';
 import * as Styled from './GuestReservation.styles';
 import { GuestReservationSuccessState } from './GuestReservationSuccess';
 import GuestReservationForm from './units/GuestReservationForm';
@@ -40,7 +42,7 @@ const GuestReservation = (): JSX.Element => {
 
   if (!mapId || !space) history.replace(HREF.GUEST_MAP(sharingMapId));
 
-  const [date, onChangeDate] = useInput(selectedDate);
+  const [date, , setDate] = useInput(selectedDate);
 
   const isEditMode = !!reservation;
 
@@ -107,6 +109,25 @@ const GuestReservation = (): JSX.Element => {
     });
   };
 
+  const handleChangeDate = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const {
+      target: { value },
+    } = event;
+    const targetDate = new Date(value);
+
+    if (isPastDayThanReleaseDay(targetDate)) {
+      setDate(DATE.RELEASE_DATE_STRING);
+      return;
+    }
+
+    if (isFutureDayThanMaxDay(targetDate)) {
+      setDate(DATE.MAX_DATE_STRING);
+      return;
+    }
+
+    setDate(value);
+  };
+
   const handleSubmit = (
     event: React.FormEvent<HTMLFormElement>,
     { reservation, reservationId }: EditReservationParams
@@ -146,7 +167,7 @@ const GuestReservation = (): JSX.Element => {
           space={space}
           reservation={reservation}
           date={date}
-          onChangeDate={onChangeDate}
+          onChangeDate={handleChangeDate}
           onSubmit={handleSubmit}
         />
         <Styled.Section>
