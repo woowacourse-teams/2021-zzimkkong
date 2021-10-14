@@ -13,27 +13,30 @@ const TimePickerOptions = ({ time, step = 1, onChange }: Props): JSX.Element => 
   const middayRef = useRef<HTMLDivElement>(null);
   const hourRef = useRef<HTMLDivElement>(null);
   const minuteRef = useRef<HTMLDivElement>(null);
+  const optionRef = useRef<HTMLLabelElement>(null);
 
   useEffect(() => {
-    if (time === null) return;
+    if (time === null || optionRef.current === null) return;
+
+    const optionHeight = optionRef.current.offsetHeight;
 
     if (middayRef.current !== null) {
-      middayRef.current.scrollTo(0, time.midday === Midday.AM ? 0 : Styled.OPTION_HEIGHT);
+      middayRef.current.scrollTo(0, time.midday === Midday.AM ? 0 : optionHeight);
     }
 
     if (hourRef.current !== null) {
-      hourRef.current.scrollTo(0, (time.hour - 1) * Styled.OPTION_HEIGHT);
+      hourRef.current.scrollTo(0, (time.hour - 1) * optionHeight);
     }
 
     if (minuteRef.current !== null) {
-      minuteRef.current.scrollTo(0, (time.minute / step) * Styled.OPTION_HEIGHT);
+      minuteRef.current.scrollTo(0, (time.minute / step) * optionHeight);
     }
   }, [step, middayRef, hourRef, minuteRef, time]);
 
   return (
     <Styled.OptionsContainer>
       <Styled.OptionContainer ref={middayRef}>
-        <Styled.Option>
+        <Styled.Option ref={optionRef}>
           <Styled.Radio
             type="radio"
             name="midday"
