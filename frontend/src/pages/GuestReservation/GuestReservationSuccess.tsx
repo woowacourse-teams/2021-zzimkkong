@@ -1,5 +1,4 @@
 import { Redirect, useLocation, useParams } from 'react-router';
-import { ReactComponent as Logo } from 'assets/svg/logo.svg';
 import AnimatedLogo from 'components/AnimatedLogo/AnimatedLogo';
 import Header from 'components/Header/Header';
 import Layout from 'components/Layout/Layout';
@@ -28,9 +27,12 @@ const GuestReservationSuccess = (): JSX.Element => {
 
   const { space, reservation, targetDate } = location.state;
 
-  const reservationDate = formatDateWithDay(new Date(reservation.startDateTime));
-  const reservationStartTime = formatTime(new Date(reservation.startDateTime));
-  const reservationEndTime = formatTime(new Date(reservation.endDateTime));
+  const startDateTimeObject = new Date(reservation.startDateTime.toISOString().slice(0, -1));
+  const endDateTimeObject = new Date(reservation.endDateTime.toISOString().slice(0, -1));
+
+  const reservationDate = formatDateWithDay(startDateTimeObject);
+  const reservationStartTime = formatTime(startDateTimeObject);
+  const reservationEndTime = formatTime(endDateTimeObject);
 
   return (
     <>
