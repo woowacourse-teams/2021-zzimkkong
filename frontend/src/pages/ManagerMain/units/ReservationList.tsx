@@ -86,7 +86,7 @@ const ReservationList = ({
         </Styled.SpacesOrderButton>
         <Styled.SpaceList>
           {sortedReservations &&
-            sortedReservations.map(({ spaceId, spaceName, spaceColor, reservations }, index) => (
+            sortedReservations.map(({ spaceId, spaceName, spaceColor, reservations }) => (
               <Panel key={`space-${spaceId}`} role="listitem">
                 <Panel.Header dotColor={spaceColor}>
                   <Styled.PanelHeadWrapper>
