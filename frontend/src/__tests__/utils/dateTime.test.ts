@@ -1,8 +1,10 @@
+import DATE from 'constants/date';
 import {
   formatDate,
   formatDateWithDay,
   formatTimePrettier,
   formatTimeWithSecond,
+  isFutureDayThanMaxDay,
   isPastDay,
   isPastDayThanReleaseDay,
   isPastTime,
@@ -80,6 +82,23 @@ describe('datetime 관련 util 함수 테스트', () => {
         isPastDayThanReleaseDay(new Date('Wed Oct 13 2030 18:48:47 GMT+0900 (한국 표준시)'))
       ).toBe(false);
       expect(isPastDayThanReleaseDay(new Date('9999-01-01'))).toBe(false);
+    });
+  });
+
+  describe('isFutureDayThanMaxDay Function Test', () => {
+    test('Date가 MAX_DATE(9999-12-31)보다 이후 날짜이면 true를 반환한다.', () => {
+      expect(isFutureDayThanMaxDay(new Date(DATE.MAX_DATE.getTime() + 8.64e8))).toBe(true);
+      expect(
+        isFutureDayThanMaxDay(new Date(new Date(DATE.MAX_DATE_STRING).getTime() + 8.64e7))
+      ).toBe(true);
+    });
+
+    test('Date가 MAX_DATE(9999-12-31)보다 이전 날짜이면 false를 반환한다.', () => {
+      expect(isFutureDayThanMaxDay(new Date('2030-11-17T00:00:00.000Z'))).toBe(false);
+      expect(
+        isFutureDayThanMaxDay(new Date('Wed Oct 13 2030 18:48:47 GMT+0900 (한국 표준시)'))
+      ).toBe(false);
+      expect(isFutureDayThanMaxDay(new Date('9999-01-01'))).toBe(false);
     });
   });
 });
