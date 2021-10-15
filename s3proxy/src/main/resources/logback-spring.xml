@@ -47,7 +47,7 @@
         <include resource="appenders/file-appender-error.xml"/>
         <include resource="appenders/file-appender-warn.xml"/>
 
-        <root level="WARN">
+        <root level="INFO">
             <appender-ref ref="CONSOLE_APPENDER"/>
             <appender-ref ref="KAFKA_APPENDER_PROD"/>
 
