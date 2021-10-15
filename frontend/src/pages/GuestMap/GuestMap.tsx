@@ -164,7 +164,7 @@ const GuestMap = (): JSX.Element => {
 
   useEffect(() => {
     if (scrollPosition) {
-      mapRef?.current?.scrollTo(scrollPosition.x ?? 0, scrollPosition.y ?? 0);
+      mapRef.current?.scrollTo(scrollPosition.x ?? 0, scrollPosition.y ?? 0);
     }
   }, [scrollPosition]);
 

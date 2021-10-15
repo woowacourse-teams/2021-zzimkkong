@@ -45,6 +45,8 @@ dependencies {
     testImplementation 'io.rest-assured:rest-assured'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testImplementation 'io.projectreactor:reactor-test'
+
+    implementation 'javax.xml.bind:jaxb-api:2.3.1'
 }
 
 test {

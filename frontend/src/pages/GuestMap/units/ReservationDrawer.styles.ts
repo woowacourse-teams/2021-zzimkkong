@@ -21,6 +21,12 @@ export const ReservationButton = styled(Button)`
   position: sticky;
   bottom: 0;
   left: 0;
+
+  &:disabled {
+    background-color: ${({ theme }) => theme.gray[400]};
+    color: ${({ theme }) => theme.gray[300]};
+    cursor: not-allowed;
+  }
 `;
 
 export const SpaceTitle = styled.h3`
@@ -30,6 +36,13 @@ export const SpaceTitle = styled.h3`
   text-align: center;
   padding: 2rem;
   background-color: ${({ theme }) => theme.white};
+`;
+
+export const PastDateMessage = styled.p`
+  margin-top: 0.5rem;
+  font-size: 1rem;
+  color: ${({ theme }) => theme.gray[400]};
+  text-align: center;
 `;
 
 export const ColorDot = styled(ColorDotComponent)`

@@ -39,10 +39,6 @@ const ManagerLogin = (): JSX.Element => {
 
   const { isError: tokenValidation } = useMutation(postTokenValidation);
 
-  if (!tokenValidation) {
-    setAccessToken('');
-  }
-
   const login = useMutation(postLogin, {
     onSuccess: (response: AxiosResponse<LoginSuccess>) => {
       const { accessToken } = response.data;
@@ -70,6 +66,12 @@ const ManagerLogin = (): JSX.Element => {
 
     login.mutate({ email, password });
   };
+
+  useEffect(() => {
+    if (!tokenValidation) {
+      setAccessToken('');
+    }
+  }, [setAccessToken, tokenValidation]);
 
   return (
     <>

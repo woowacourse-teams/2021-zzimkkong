@@ -43,3 +43,11 @@ export const formatTimePrettier = (minutes: number): string => {
 
   return `${hour ? `${hour}시간` : ''}${minute ? ' ' : ''}${minute ? `${minute}분` : ''}`;
 };
+
+export const isPastTime = (time: Date): boolean => {
+  return time.getTime() < new Date().getTime();
+};
+
+export const isPastDay = (time: Date): boolean => {
+  return time.getTime() < new Date().getTime() - 1000 * 60 * 60 * 24;
+};
