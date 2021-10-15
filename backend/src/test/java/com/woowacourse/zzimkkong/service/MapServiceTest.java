@@ -8,10 +8,10 @@ import com.woowacourse.zzimkkong.dto.map.MapCreateResponse;
 import com.woowacourse.zzimkkong.dto.map.MapCreateUpdateRequest;
 import com.woowacourse.zzimkkong.dto.map.MapFindAllResponse;
 import com.woowacourse.zzimkkong.dto.map.MapFindResponse;
+import com.woowacourse.zzimkkong.dto.member.LoginEmailDto;
 import com.woowacourse.zzimkkong.exception.authorization.NoAuthorityOnMapException;
 import com.woowacourse.zzimkkong.exception.map.InvalidAccessLinkException;
 import com.woowacourse.zzimkkong.exception.space.ReservationExistOnSpaceException;
-import com.woowacourse.zzimkkong.dto.member.LoginEmailDto;
 import com.woowacourse.zzimkkong.infrastructure.sharingid.SharingIdGenerator;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -19,6 +19,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.io.File;
+import java.io.InputStream;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
@@ -101,7 +102,7 @@ class MapServiceTest extends ServiceTest {
                 .willReturn(Optional.of(pobi));
         given(maps.save(any(Map.class)))
                 .willReturn(luther);
-        given(storageUploader.upload(anyString(), any(File.class)))
+        given(storageUploader.upload(anyString(), anyString(), any(InputStream.class)))
                 .willReturn(MAP_IMAGE_URL);
 
         //then
@@ -156,7 +157,7 @@ class MapServiceTest extends ServiceTest {
                 .willReturn(Optional.of(pobi));
         given(maps.findById(anyLong()))
                 .willReturn(Optional.of(luther));
-        given(storageUploader.upload(anyString(), any(File.class)))
+        given(storageUploader.upload(anyString(), anyString(), any(InputStream.class)))
                 .willReturn(MAP_IMAGE_URL);
 
         //when, then
