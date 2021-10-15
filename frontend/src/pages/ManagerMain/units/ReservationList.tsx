@@ -1,5 +1,5 @@
 import { AxiosError } from 'axios';
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { ReactComponent as DeleteIcon } from 'assets/svg/delete.svg';
 import { ReactComponent as EditIcon } from 'assets/svg/edit.svg';
 import Button from 'components/Button/Button';
@@ -81,9 +81,11 @@ const ReservationList = ({
         ))}
 
       <Styled.ReservationsContainer>
-        <Styled.SpacesOrderButton variant="text" onClick={handleClickSpacesOrder}>
-          {spacesOrder === 'ascending' ? '오름차순 △' : '내림차순 ▽'}
-        </Styled.SpacesOrderButton>
+        {selectedMapId && !!reservations.length && (
+          <Styled.SpacesOrderButton variant="text" onClick={handleClickSpacesOrder}>
+            {spacesOrder === 'ascending' ? '오름차순 △' : '내림차순 ▽'}
+          </Styled.SpacesOrderButton>
+        )}
         <Styled.SpaceList>
           {sortedReservations &&
             sortedReservations.map(({ spaceId, spaceName, spaceColor, reservations }) => (
