@@ -15,7 +15,8 @@ export const InputWrapper = styled.div`
   gap: 1rem;
   margin: 1.625rem 0;
 
-  label {
+  & > label,
+  & > div {
     flex: 1;
   }
 `;

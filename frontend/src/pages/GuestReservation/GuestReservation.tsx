@@ -164,50 +164,57 @@ const GuestReservation = (): JSX.Element => {
     <>
       <Header />
       <Layout>
-        <Styled.PageHeader title="공간 이름" data-testid="spaceName">
-          <Styled.ColorDot color={space.color} size="medium" />
-          {space.name}
-        </Styled.PageHeader>
-        <GuestReservationForm
-          isEditMode={isEditMode}
-          space={space}
-          reservation={reservation}
-          date={date}
-          onChangeDate={handleChangeDate}
-          onSubmit={handleSubmit}
-        />
-        <Styled.Section>
-          <PageHeader title={`${date}${date && '의'} 예약 목록`} />
-          {getReservations.isLoadingError && (
-            <Styled.Message>{MESSAGE.RESERVATION.ERROR}</Styled.Message>
-          )}
-          {getReservations.isLoading && !getReservations.isLoadingError && (
-            <Styled.Message>{MESSAGE.RESERVATION.PENDING}</Styled.Message>
-          )}
-          {getReservations.isSuccess &&
-            reservations.length === 0 &&
-            !isPastDate(new Date(date)) && (
-              <Styled.Message>{MESSAGE.RESERVATION.SUGGESTION}</Styled.Message>
+        <Styled.Container>
+          <Styled.PageHeader title="공간 이름" data-testid="spaceName">
+            <Styled.ColorDot color={space.color} size="medium" />
+            {space.name}
+          </Styled.PageHeader>
+          <GuestReservationForm
+            isEditMode={isEditMode}
+            space={space}
+            reservation={reservation}
+            date={date}
+            onChangeDate={handleChangeDate}
+            onSubmit={handleSubmit}
+          />
+          <Styled.Section>
+            <PageHeader title={`${date}${date && '의'} 예약 목록`} />
+            {getReservations.isLoadingError && (
+              <Styled.Message>{MESSAGE.RESERVATION.ERROR}</Styled.Message>
             )}
-          {getReservations.isSuccess && reservations.length === 0 && isPastDate(new Date(date)) && (
-            <Styled.Message>{MESSAGE.RESERVATION.NOT_EXIST}</Styled.Message>
-          )}
-          {(isPastDate(new Date(date), DATE.MIN_DATE) ||
-            isFutureDate(new Date(date), DATE.MAX_DATE)) && (
-            <Styled.Message>{MESSAGE.RESERVATION.NOT_EXIST}</Styled.Message>
-          )}
-          {getReservations.isSuccess && reservations.length > 0 && (
-            <Styled.ReservationList role="list">
-              {reservations?.map((reservation) => (
-                <ReservationListItem
-                  key={reservation.id}
-                  reservation={reservation}
-                  status={getReservationStatus(reservation.startDateTime, reservation.endDateTime)}
-                />
-              ))}
-            </Styled.ReservationList>
-          )}
-        </Styled.Section>
+            {getReservations.isLoading && !getReservations.isLoadingError && (
+              <Styled.Message>{MESSAGE.RESERVATION.PENDING}</Styled.Message>
+            )}
+            {getReservations.isSuccess &&
+              reservations.length === 0 &&
+              !isPastDate(new Date(date)) && (
+                <Styled.Message>{MESSAGE.RESERVATION.SUGGESTION}</Styled.Message>
+              )}
+            {getReservations.isSuccess &&
+              reservations.length === 0 &&
+              isPastDate(new Date(date)) && (
+                <Styled.Message>{MESSAGE.RESERVATION.NOT_EXIST}</Styled.Message>
+              )}
+            {(isPastDate(new Date(date), DATE.MIN_DATE) ||
+              isFutureDate(new Date(date), DATE.MAX_DATE)) && (
+              <Styled.Message>{MESSAGE.RESERVATION.NOT_EXIST}</Styled.Message>
+            )}
+            {getReservations.isSuccess && reservations.length > 0 && (
+              <Styled.ReservationList role="list">
+                {reservations?.map((reservation) => (
+                  <ReservationListItem
+                    key={reservation.id}
+                    reservation={reservation}
+                    status={getReservationStatus(
+                      reservation.startDateTime,
+                      reservation.endDateTime
+                    )}
+                  />
+                ))}
+              </Styled.ReservationList>
+            )}
+          </Styled.Section>
+        </Styled.Container>
       </Layout>
     </>
   );
