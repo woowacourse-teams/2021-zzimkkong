@@ -12,7 +12,7 @@ export const OptionsContainer = styled.div`
   height: 10rem;
   overflow: hidden;
   position: relative;
-  z-index: ${Z_INDEX.TIME_PICKER_OPTIONS};
+  z-index: ${Z_INDEX.TIME_PICKER};
   background-color: ${({ theme }) => theme.white};
 
   &::before {
