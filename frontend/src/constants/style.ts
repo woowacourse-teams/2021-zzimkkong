@@ -9,3 +9,5 @@ export const Z_INDEX = {
   SELECT_LIST_BOX: 49,
   SPACE_ADD_BUTTON: 48,
 };
+
+export const FORM_MAX_WIDTH = '660px';

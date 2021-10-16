@@ -5,8 +5,8 @@ import { Midday, Range, Time } from 'types/time';
 type SelectedTime = keyof Range | null;
 
 interface Props {
-  defaultStartTime?: Date;
-  defaultEndTime?: Date;
+  initialStartTime?: Date;
+  initialEndTime?: Date;
   step?: Step;
 }
 
@@ -25,8 +25,8 @@ const generateDateToTime = (time: Date, step: Props['step'] = 1): Time => {
 };
 
 const useTimePicker = ({
-  defaultStartTime,
-  defaultEndTime,
+  initialStartTime,
+  initialEndTime,
   step = 1,
 }: Props): {
   range: Range;
@@ -37,8 +37,8 @@ const useTimePicker = ({
 } => {
   const [selectedTime, setSelectedTime] = useState<SelectedTime>(null);
   const [range, setRange] = useState<Range>({
-    start: defaultStartTime ? generateDateToTime(defaultStartTime, step) : null,
-    end: defaultEndTime ? generateDateToTime(defaultEndTime, step) : null,
+    start: initialStartTime ? generateDateToTime(initialStartTime, step) : null,
+    end: initialEndTime ? generateDateToTime(initialEndTime, step) : null,
   });
 
   const setInitialTime = (key: keyof Range) => {
