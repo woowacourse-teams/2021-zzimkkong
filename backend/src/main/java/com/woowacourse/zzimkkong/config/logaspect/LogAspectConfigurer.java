@@ -1,8 +1,6 @@
 package com.woowacourse.zzimkkong.config.logaspect;
 
 import com.woowacourse.zzimkkong.exception.config.logaspect.BeanFactoryInjectionFaultException;
-import com.woowacourse.zzimkkong.exception.config.logaspect.BeanToReplaceDoesNotExistsException;
-import com.woowacourse.zzimkkong.exception.config.logaspect.NoPriorityOnBeanToReplaceException;
 import org.springframework.beans.factory.BeanFactoryUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.BeanDefinition;
@@ -11,7 +9,6 @@ import org.springframework.beans.factory.support.BeanDefinitionRegistry;
 
 import javax.annotation.PostConstruct;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 public abstract class LogAspectConfigurer {
@@ -34,16 +31,21 @@ public abstract class LogAspectConfigurer {
 
         final List<LogProxyClassEntry> beanClassesForReplacingByProxy = logProxyBeanRegistry.getLogProxyClassEntries();
         for (LogProxyClassEntry logProxyClassEntry : beanClassesForReplacingByProxy) {
-            replaceByProxy(logProxyClassEntry);
+            replaceByProxy(logProxyClassEntry.getProxyClass(), logProxyClassEntry.getLogGroup());
         }
     }
 
     abstract protected void registerProxyBeans(LogProxyBeanRegistry logProxyBeanRegistry);
 
-    private void replaceByProxy(LogProxyClassEntry logProxyClassEntry) {
-        final Class<?> proxyClass = logProxyClassEntry.getProxyClass();
-        String beanName = getBeanName(proxyClass);
+    private void replaceByProxy(Class<?> proxyClass, String logGroupName) {
+        String[] beanNames = beanFactory.getBeanNamesForType(proxyClass);
 
+        for (String beanName : beanNames) {
+            replaceByProxyByBeamName(beanName, proxyClass, logGroupName);
+        }
+    }
+
+    private void replaceByProxyByBeamName(String beanName, Class<?> proxyClass, String logGroupName) {
         final Object target = beanFactory.getBean(beanName);
         final BeanDefinition targetBeanDefinition = beanFactory.getBeanDefinition(beanName);
 
@@ -51,26 +53,8 @@ public abstract class LogAspectConfigurer {
         beanDefinitionRegistry.removeBeanDefinition(transformedBeanName);
         beanDefinitionRegistry.registerBeanDefinition(transformedBeanName, targetBeanDefinition);
 
-        final Object logProxy = LogAspect.createLogProxy(target, proxyClass, logProxyClassEntry.getLogGroup());
+        final Object logProxy = LogAspect.createLogProxy(target, proxyClass, logGroupName);
         beanFactory.registerSingleton(transformedBeanName, logProxy);
-    }
-
-    private String getBeanName(Class<?> clazz) {
-        String[] beanNames = beanFactory.getBeanNamesForType(clazz);
-        if (beanNames.length == 0) {
-            throw new BeanToReplaceDoesNotExistsException(clazz);
-        }
-        if (beanNames.length == 1) {
-            return beanNames[0];
-        }
-        return getPrimaryBeanName(beanNames);
-    }
-
-    private String getPrimaryBeanName(String[] beanNames) {
-        return Arrays.stream(beanNames)
-                .filter(beanName -> beanFactory.getBeanDefinition(beanName).isPrimary())
-                .findAny()
-                .orElseThrow(); // todo 다수의 빈을 찾으면 모두 프록시로 변경
     }
 
     public final static class LogProxyBeanRegistry {
