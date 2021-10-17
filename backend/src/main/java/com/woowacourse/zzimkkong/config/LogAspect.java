@@ -18,10 +18,9 @@ import static net.logstash.logback.argument.StructuredArguments.value;
 @Component
 @Aspect
 public class LogAspect {
-    @Around("@target(com.woowacourse.zzimkkong.config.logaspect.LogMethodExecutionTime) " +
-            "&& execution(* com.woowacourse..*(..))")
+    @Around("@within(com.woowacourse.zzimkkong.config.logaspect.LogMethodExecutionTime)" +
+            "$$ execution(public *.*(..))")
     public Object logExecutionTime(ProceedingJoinPoint joinPoint) throws Throwable {
-
         long startTime = System.currentTimeMillis();
         Object result = joinPoint.proceed();
         long endTime = System.currentTimeMillis();
@@ -57,10 +56,11 @@ public class LogAspect {
 
     public static <T> T createLogProxy(Object target, Class<T> requiredType, String logGroup) {
         final LogProxyHandler logProxyHandler = new LogProxyHandler(target, requiredType, logGroup);
-        return requiredType.cast(Proxy.newProxyInstance(
-                requiredType.getClassLoader(),
-                new Class[]{requiredType},
-                logProxyHandler));
+        return requiredType.cast(
+                Proxy.newProxyInstance(
+                        requiredType.getClassLoader(),
+                        new Class[]{requiredType},
+                        logProxyHandler));
     }
 
     private static class LogProxyHandler implements InvocationHandler {
