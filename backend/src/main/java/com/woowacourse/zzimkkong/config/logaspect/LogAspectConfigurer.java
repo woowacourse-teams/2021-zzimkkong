@@ -35,7 +35,7 @@ public abstract class LogAspectConfigurer {
         }
     }
 
-    abstract protected void registerProxyBeans(LogProxyBeanRegistry logProxyBeanRegistry);
+    abstract protected void registerProxyBeans(final LogProxyBeanRegistry logProxyBeanRegistry);
 
     private void replaceByProxy(Class<?> proxyClass, String logGroupName) {
         String[] beanNames = beanFactory.getBeanNamesForType(proxyClass);
