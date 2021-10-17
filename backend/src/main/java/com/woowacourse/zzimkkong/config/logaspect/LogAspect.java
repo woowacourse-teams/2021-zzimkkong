@@ -1,6 +1,5 @@
-package com.woowacourse.zzimkkong.config;
+package com.woowacourse.zzimkkong.config.logaspect;
 
-import com.woowacourse.zzimkkong.config.logaspect.LogMethodExecutionTime;
 import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
@@ -54,7 +53,7 @@ public class LogAspect {
                 value("group", logGroup));
     }
 
-    public static <T> T createLogProxy(Object target, Class<T> requiredType, String logGroup) {
+    static <T> T createLogProxy(Object target, Class<T> requiredType, String logGroup) {
         final LogProxyHandler logProxyHandler = new LogProxyHandler(target, requiredType, logGroup);
         return requiredType.cast(
                 Proxy.newProxyInstance(

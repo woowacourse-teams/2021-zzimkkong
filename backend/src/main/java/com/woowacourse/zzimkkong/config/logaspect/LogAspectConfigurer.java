@@ -1,25 +1,23 @@
-package com.woowacourse.zzimkkong.config;
+package com.woowacourse.zzimkkong.config.logaspect;
 
-import com.woowacourse.zzimkkong.repository.*;
 import org.springframework.beans.factory.BeanFactoryUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;
 import org.springframework.beans.factory.support.BeanDefinitionRegistry;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
 
 import javax.annotation.PostConstruct;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-@Configuration
-public class LogProxyConfig {
-    private static final String GROUP_NAME_OF_REPOSITORY = "repository";
+public abstract class LogAspectConfigurer {
+    private ConfigurableListableBeanFactory beanFactory;
+    private BeanDefinitionRegistry beanDefinitionRegistry;
+    private final LogProxyBeanRegistry logProxyBeanRegistry = new LogProxyBeanRegistry();
 
-    private final ConfigurableListableBeanFactory beanFactory;
-    private final BeanDefinitionRegistry beanDefinitionRegistry;
-
-    public LogProxyConfig(ConfigurableListableBeanFactory beanFactory) {
+    @Autowired
+    public final void setBeanFactory(ConfigurableListableBeanFactory beanFactory) {
         this.beanFactory = beanFactory;
         if (!(this.beanFactory instanceof BeanDefinitionRegistry)) {
             throw new IllegalArgumentException(); // todo 커스텀 예외
@@ -27,23 +25,17 @@ public class LogProxyConfig {
         this.beanDefinitionRegistry = (BeanDefinitionRegistry) beanFactory;
     }
 
-    @Bean
     @PostConstruct
-    void init() {
-        final List<LogProxyClassEntry> beanClassesForReplacingByProxy = getBeanClassesForReplacingByProxy();
+    protected final void init() {
+        registerProxyBeans(logProxyBeanRegistry);
+
+        final List<LogProxyClassEntry> beanClassesForReplacingByProxy = logProxyBeanRegistry.getLogProxyClassEntries();
         for (LogProxyClassEntry logProxyClassEntry : beanClassesForReplacingByProxy) {
             replaceByProxy(logProxyClassEntry);
         }
     }
 
-    protected List<LogProxyClassEntry> getBeanClassesForReplacingByProxy() {
-        return List.of(
-                new LogProxyClassEntry(MemberRepository.class, GROUP_NAME_OF_REPOSITORY),
-                new LogProxyClassEntry(MapRepository.class, GROUP_NAME_OF_REPOSITORY),
-                new LogProxyClassEntry(SpaceRepository.class, GROUP_NAME_OF_REPOSITORY),
-                new LogProxyClassEntry(ReservationRepository.class, GROUP_NAME_OF_REPOSITORY),
-                new LogProxyClassEntry(PresetRepository.class, GROUP_NAME_OF_REPOSITORY));
-    }
+    abstract protected void registerProxyBeans(LogProxyBeanRegistry logProxyBeanRegistry);
 
     private void replaceByProxy(LogProxyClassEntry logProxyClassEntry) {
         final Class<?> proxyClass = logProxyClassEntry.getProxyClass();
@@ -78,7 +70,22 @@ public class LogProxyConfig {
                 .orElseThrow(); // todo 커스텀 예외
     }
 
-    public static class LogProxyClassEntry {
+    public final static class LogProxyBeanRegistry {
+        private final List<LogProxyClassEntry> logProxyClassEntries = new ArrayList<>();
+
+        private LogProxyBeanRegistry() {
+        }
+
+        public void add(Class<?> clazz, String logGroup) {
+            this.logProxyClassEntries.add(new LogProxyClassEntry(clazz, logGroup));
+        }
+
+        public List<LogProxyClassEntry> getLogProxyClassEntries() {
+            return logProxyClassEntries;
+        }
+    }
+
+    private static class LogProxyClassEntry {
         Class<?> clazz;
         String logGroup;
 
