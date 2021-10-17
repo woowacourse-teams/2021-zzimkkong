@@ -1,5 +1,8 @@
 package com.woowacourse.zzimkkong.config.logaspect;
 
+import com.woowacourse.zzimkkong.exception.config.logaspect.BeanFactoryInjectionFaultException;
+import com.woowacourse.zzimkkong.exception.config.logaspect.BeanToReplaceDoesNotExistsException;
+import com.woowacourse.zzimkkong.exception.config.logaspect.NoPriorityOnBeanToReplaceException;
 import org.springframework.beans.factory.BeanFactoryUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.BeanDefinition;
@@ -20,7 +23,7 @@ public abstract class LogAspectConfigurer {
     public final void setBeanFactory(ConfigurableListableBeanFactory beanFactory) {
         this.beanFactory = beanFactory;
         if (!(this.beanFactory instanceof BeanDefinitionRegistry)) {
-            throw new IllegalArgumentException(); // todo 커스텀 예외
+            throw new BeanFactoryInjectionFaultException();
         }
         this.beanDefinitionRegistry = (BeanDefinitionRegistry) beanFactory;
     }
@@ -52,10 +55,10 @@ public abstract class LogAspectConfigurer {
         beanFactory.registerSingleton(transformedBeanName, logProxy);
     }
 
-    private String getBeanName(Class<?> aClass) {
-        String[] beanNames = beanFactory.getBeanNamesForType(aClass);
+    private String getBeanName(Class<?> clazz) {
+        String[] beanNames = beanFactory.getBeanNamesForType(clazz);
         if (beanNames.length == 0) {
-            throw new IllegalArgumentException();   // todo 커스텀 예외
+            throw new BeanToReplaceDoesNotExistsException(clazz);
         }
         if (beanNames.length == 1) {
             return beanNames[0];
@@ -67,7 +70,7 @@ public abstract class LogAspectConfigurer {
         return Arrays.stream(beanNames)
                 .filter(beanName -> beanFactory.getBeanDefinition(beanName).isPrimary())
                 .findAny()
-                .orElseThrow(); // todo 커스텀 예외
+                .orElseThrow(); // todo 다수의 빈을 찾으면 모두 프록시로 변경
     }
 
     public final static class LogProxyBeanRegistry {
