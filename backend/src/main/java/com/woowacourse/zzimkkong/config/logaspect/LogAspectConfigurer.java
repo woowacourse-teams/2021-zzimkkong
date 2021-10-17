@@ -1,6 +1,6 @@
 package com.woowacourse.zzimkkong.config.logaspect;
 
-import com.woowacourse.zzimkkong.exception.config.logaspect.BeanFactoryInjectionFaultException;
+import com.woowacourse.zzimkkong.exception.config.logaspect.InvalidModifiableBeanFactoryException;
 import org.springframework.beans.factory.BeanFactoryUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.BeanDefinition;
@@ -20,7 +20,7 @@ public abstract class LogAspectConfigurer {
     public final void setBeanFactory(ConfigurableListableBeanFactory beanFactory) {
         this.beanFactory = beanFactory;
         if (!(this.beanFactory instanceof BeanDefinitionRegistry)) {
-            throw new BeanFactoryInjectionFaultException();
+            throw new InvalidModifiableBeanFactoryException();
         }
         this.beanDefinitionRegistry = (BeanDefinitionRegistry) beanFactory;
     }
