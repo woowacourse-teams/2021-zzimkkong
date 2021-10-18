@@ -76,7 +76,7 @@ class MapRepositoryTest extends RepositoryTest {
 
         // when
         PageRequest pageRequest = PageRequest.of(0, 20, Sort.unsorted());
-        Page<Map> actual = maps.findAll(pageRequest);
+        Page<Map> actual = maps.findAllByFetch(pageRequest);
 
         // then
         assertThat(actual.getSize()).isEqualTo(20);
