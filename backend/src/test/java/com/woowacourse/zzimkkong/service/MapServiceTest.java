@@ -188,7 +188,7 @@ class MapServiceTest extends ServiceTest {
         //given
         given(members.findByEmail(anyString()))
                 .willReturn(Optional.of(pobi));
-        given(maps.findById(anyLong()))
+        given(maps.findByIdFetch(anyLong()))
                 .willReturn(Optional.of(luther));
         given(reservations.existsBySpaceIdAndEndTimeAfter(anyLong(), any(LocalDateTime.class)))
                 .willReturn(false);
@@ -203,7 +203,7 @@ class MapServiceTest extends ServiceTest {
         //given
         given(members.findByEmail(anyString()))
                 .willReturn(Optional.of(pobi));
-        given(maps.findById(anyLong()))
+        given(maps.findByIdFetch(anyLong()))
                 .willReturn(Optional.of(luther));
         given(reservations.existsBySpaceIdAndEndTimeAfter(anyLong(), any(LocalDateTime.class)))
                 .willReturn(true);

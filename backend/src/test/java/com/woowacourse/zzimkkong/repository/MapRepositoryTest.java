@@ -137,8 +137,21 @@ class MapRepositoryTest extends RepositoryTest {
 
         // when
         Map actual = maps.findByIdFetch(savedMap.getId())
-                .orElseThrow();
-        System.out.println("actual = " + actual);
+                .orElseThrow(NoSuchMapException::new);
+
+        // then
+        assertThat(actual).isEqualTo(savedMap);
+    }
+
+    @Test
+    @DisplayName("공간이 없어도 Fetch Join을 통해 Map을 찾아올 수 있다.")
+    void findByIdFetchWithoutSpaces() {
+        // given
+        Map savedMap = maps.save(luther);
+
+        // when
+        Map actual = maps.findByIdFetch(savedMap.getId())
+                .orElseThrow(NoSuchMapException::new);
 
         // then
         assertThat(actual).isEqualTo(savedMap);

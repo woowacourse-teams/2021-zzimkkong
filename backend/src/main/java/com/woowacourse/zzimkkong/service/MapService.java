@@ -107,7 +107,7 @@ public class MapService {
     }
 
     public void deleteMap(final Long mapId, final LoginEmailDto loginEmailDto) {
-        Map map = maps.findById(mapId)
+        Map map = maps.findByIdFetch(mapId)
                 .orElseThrow(NoSuchMapException::new);
         Member manager = members.findByEmail(loginEmailDto.getEmail())
                 .orElseThrow(NoSuchMemberException::new);
