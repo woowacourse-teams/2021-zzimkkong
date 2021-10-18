@@ -19,7 +19,7 @@ public abstract class LogAspectConfigurer {
     @Autowired
     public final void setBeanFactory(ConfigurableListableBeanFactory beanFactory) {
         this.beanFactory = beanFactory;
-        if (!(this.beanFactory instanceof BeanDefinitionRegistry)) {
+        if (!(beanFactory instanceof BeanDefinitionRegistry)) {
             throw new InvalidModifiableBeanFactoryException();
         }
         this.beanDefinitionRegistry = (BeanDefinitionRegistry) beanFactory;
