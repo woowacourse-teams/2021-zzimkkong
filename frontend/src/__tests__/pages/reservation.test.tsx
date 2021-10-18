@@ -7,7 +7,7 @@ import { render, screen, waitFor, within } from 'test-utils';
 import { formatDate } from 'utils/datetime';
 
 describe('예약 페이지', () => {
-  const date = '2021-07-01';
+  const date = '2031-07-01';
   const nowDate = new Date();
   const spaceId = 1;
   const reservationId = 2;
@@ -44,7 +44,7 @@ describe('예약 페이지', () => {
     const targetDate = formatDate(nowDate);
 
     const $targetSpace = await screen.findByTestId(spaceId);
-    const $targetDateInput = screen.getByDisplayValue('2021-07-01');
+    const $targetDateInput = screen.getByDisplayValue(date);
 
     userEvent.type($targetDateInput, targetDate);
     userEvent.click($targetSpace);

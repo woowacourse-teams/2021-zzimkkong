@@ -51,6 +51,8 @@ dependencies {
 
     // Kafka Appender
     implementation 'com.github.danielwegener:logback-kafka-appender:0.2.0-RC2'
+
+    implementation 'javax.xml.bind:jaxb-api:2.3.1'
 }
 
 test {

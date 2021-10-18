@@ -27,7 +27,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
-import java.io.File;
+import java.io.InputStream;
 
 import static com.woowacourse.zzimkkong.Constants.*;
 import static com.woowacourse.zzimkkong.DocumentUtils.setRequestSpecification;
@@ -111,7 +111,7 @@ class AcceptanceTest {
         saveMember(memberSaveRequest);
         accessToken = getToken();
 
-        given(storageUploader.upload(anyString(), any(File.class)))
+        given(storageUploader.upload(anyString(), anyString(), any(InputStream.class)))
                 .willReturn(MAP_IMAGE_URL);
     }
 

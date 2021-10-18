@@ -16,6 +16,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.io.File;
+import java.io.InputStream;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
@@ -154,7 +155,7 @@ class SpaceServiceTest extends ServiceTest {
                 .willReturn(Optional.of(luther));
         given(spaces.save(any(Space.class)))
                 .willReturn(newSpace);
-        given(storageUploader.upload(anyString(), any(File.class)))
+        given(storageUploader.upload(anyString(), anyString(), any(InputStream.class)))
                 .willReturn(MAP_IMAGE_URL);
 
         // when
@@ -299,7 +300,7 @@ class SpaceServiceTest extends ServiceTest {
                 .willReturn(Optional.of(luther));
         given(spaces.findById(anyLong()))
                 .willReturn(Optional.of(fe));
-        given(storageUploader.upload(anyString(), any(File.class)))
+        given(storageUploader.upload(anyString(), anyString(), any(InputStream.class)))
                 .willReturn(MAP_IMAGE_URL);
 
         // then
