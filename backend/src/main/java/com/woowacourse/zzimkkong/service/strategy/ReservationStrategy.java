@@ -9,4 +9,6 @@ public interface ReservationStrategy {
     void validateManagerOfMap(final Map map, final MemberRepository members, final String loginEmail);
 
     void checkCorrectPassword(final Reservation reservation, final String password);
+
+    boolean isManager();
 }

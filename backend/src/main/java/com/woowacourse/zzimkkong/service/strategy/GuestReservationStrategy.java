@@ -17,4 +17,9 @@ public class GuestReservationStrategy implements ReservationStrategy {
             throw new ReservationPasswordException();
         }
     }
+
+    @Override
+    public boolean isManager() {
+        return false;
+    }
 }
