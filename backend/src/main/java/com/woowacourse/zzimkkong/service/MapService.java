@@ -127,7 +127,7 @@ public class MapService {
         }
     }
 
-    public void validateManagerOfMap(final Map map, final String email) {
+    private void validateManagerOfMap(final Map map, final String email) {
         if (!map.isOwnedBy(email)) {
             throw new NoAuthorityOnMapException();
         }

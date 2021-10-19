@@ -17,6 +17,6 @@ public interface MapRepository extends JpaRepository<Map, Long> {
             countQuery = "select count(m) from Map m")
     Page<Map> findAllByFetch(Pageable pageable);
 
-    @Query("select distinct m from Map m left outer join fetch m.spaces")
+    @Query("select distinct m from Map m inner join fetch m.member left outer join fetch m.spaces")
     Optional<Map> findByIdFetch(Long id);
 }
