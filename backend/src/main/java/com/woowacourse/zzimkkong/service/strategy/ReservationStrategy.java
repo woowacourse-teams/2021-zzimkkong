@@ -6,6 +6,7 @@ import com.woowacourse.zzimkkong.dto.slack.SlackResponse;
 import com.woowacourse.zzimkkong.repository.MemberRepository;
 
 public interface ReservationStrategy {
+    // todo members 불필요
     void validateManagerOfMap(final Map map, final MemberRepository members, final String loginEmail);
 
     void checkCorrectPassword(final Reservation reservation, final String password);

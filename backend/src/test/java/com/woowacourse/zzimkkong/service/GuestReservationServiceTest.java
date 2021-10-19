@@ -136,7 +136,7 @@ class GuestReservationServiceTest extends ServiceTest {
     @DisplayName("예약 생성 요청 시, mapId와 요청이 들어온다면 예약을 생성한다.")
     void save() {
         //given
-        given(maps.findById(anyLong()))
+        given(maps.findByIdFetch(anyLong()))
                 .willReturn(Optional.of(luther));
         given(reservations.save(any(Reservation.class)))
                 .willReturn(reservation);
@@ -159,7 +159,7 @@ class GuestReservationServiceTest extends ServiceTest {
     @DisplayName("예약 생성 요청 시, mapId에 따른 map이 존재하지 않는다면 예외가 발생한다.")
     void saveNotExistMapException() {
         //given, when
-        given(maps.findById(anyLong()))
+        given(maps.findByIdFetch(anyLong()))
                 .willReturn(Optional.empty());
 
         // when
@@ -179,7 +179,7 @@ class GuestReservationServiceTest extends ServiceTest {
     @DisplayName("예약 생성 요청 시, spaceId에 따른 space가 존재하지 않는다면 예외가 발생한다.")
     void saveNotExistSpaceException() {
         //given
-        given(maps.findById(anyLong()))
+        given(maps.findByIdFetch(anyLong()))
                 .willReturn(Optional.of(luther));
 
         // when
@@ -199,7 +199,7 @@ class GuestReservationServiceTest extends ServiceTest {
     @DisplayName("예약 생성 요청 시, 시작 시간이 현재 시간보다 빠르다면 예외가 발생한다.")
     void saveStartTimeBeforeNow() {
         //given
-        given(maps.findById(anyLong()))
+        given(maps.findByIdFetch(anyLong()))
                 .willReturn(Optional.of(luther));
 
         // when
@@ -225,7 +225,7 @@ class GuestReservationServiceTest extends ServiceTest {
     @DisplayName("예약 생성 요청 시, 종료 시간이 현재 시간보다 빠르다면 예외가 발생한다.")
     void saveEndTimeBeforeNow() {
         //given
-        given(maps.findById(anyLong()))
+        given(maps.findByIdFetch(anyLong()))
                 .willReturn(Optional.of(luther));
 
         // when
@@ -251,7 +251,7 @@ class GuestReservationServiceTest extends ServiceTest {
     @DisplayName("예약 생성 요청 시, 시작 시간과 종료 시간이 같다면 예외가 발생한다.")
     void saveStartTimeEqualsEndTime() {
         //given
-        given(maps.findById(anyLong()))
+        given(maps.findByIdFetch(anyLong()))
                 .willReturn(Optional.of(luther));
 
         //when
@@ -277,7 +277,7 @@ class GuestReservationServiceTest extends ServiceTest {
     @DisplayName("예약 생성 요청 시, 시작 시간과 종료 시간의 날짜가 다르다면 예외가 발생한다.")
     void saveStartTimeDateNotEqualsEndTimeDate() {
         //given
-        given(maps.findById(anyLong()))
+        given(maps.findByIdFetch(anyLong()))
                 .willReturn(Optional.of(luther));
 
         //when
@@ -304,7 +304,7 @@ class GuestReservationServiceTest extends ServiceTest {
     @DisplayName("예약 생성 요청 시, 공간의 예약가능 시간이 아니라면 예외가 발생한다.")
     void saveInvalidTimeSetting(int startTime, int endTime) {
         //given
-        given(maps.findById(anyLong()))
+        given(maps.findByIdFetch(anyLong()))
                 .willReturn(Optional.of(luther));
 
         //when
@@ -332,7 +332,7 @@ class GuestReservationServiceTest extends ServiceTest {
     @DisplayName("예약 생성 요청 시, 이미 겹치는 시간이 존재하면 예외가 발생한다.")
     void saveAvailabilityException(int startMinute, int endMinute) {
         //given, when
-        given(maps.findById(anyLong()))
+        given(maps.findByIdFetch(anyLong()))
                 .willReturn(Optional.of(luther));
         given(reservations.findAllBySpaceIdInAndDate(
                 anyList(),
@@ -378,7 +378,7 @@ class GuestReservationServiceTest extends ServiceTest {
                 .setting(setting)
                 .build();
 
-        given(maps.findById(anyLong()))
+        given(maps.findByIdFetch(anyLong()))
                 .willReturn(Optional.of(luther));
         Long closedSpaceId = closedSpace.getId();
 
@@ -418,7 +418,7 @@ class GuestReservationServiceTest extends ServiceTest {
                 .setting(setting)
                 .build();
 
-        given(maps.findById(anyLong()))
+        given(maps.findByIdFetch(anyLong()))
                 .willReturn(Optional.of(luther));
         Long invalidDayOfWeekSpaceId = invalidDayOfWeekSpace.getId();
 
@@ -439,7 +439,7 @@ class GuestReservationServiceTest extends ServiceTest {
     @DisplayName("예약 생성 요청 시, 경계값이 일치한다면 생성된다.")
     void saveSameThresholdTime(int duration) {
         //given, when
-        given(maps.findById(anyLong()))
+        given(maps.findByIdFetch(anyLong()))
                 .willReturn(Optional.of(luther));
         given(reservations.findAllBySpaceIdInAndDate(
                 anyList(),
@@ -473,7 +473,7 @@ class GuestReservationServiceTest extends ServiceTest {
     @DisplayName("예약 생성/수정 요청 시, space setting의 reservationTimeUnit이 일치하지 않으면 예외가 발생한다.")
     void saveReservationTimeUnitException(int additionalStartMinute, int additionalEndMinute) {
         //given
-        given(maps.findById(anyLong()))
+        given(maps.findByIdFetch(anyLong()))
                 .willReturn(Optional.of(luther));
         given(reservations.findById(anyLong()))
                 .willReturn(Optional.of(reservation));
@@ -514,7 +514,7 @@ class GuestReservationServiceTest extends ServiceTest {
     @DisplayName("예약 생성/수정 요청 시, space setting의 minimum, maximum 시간이 옳지 않으면 예외가 발생한다.")
     void saveReservationMinimumMaximumTimeUnitException(int duration) {
         //given
-        given(maps.findById(anyLong()))
+        given(maps.findByIdFetch(anyLong()))
                 .willReturn(Optional.of(luther));
         given(reservations.findById(anyLong()))
                 .willReturn(Optional.of(reservation));
@@ -565,7 +565,7 @@ class GuestReservationServiceTest extends ServiceTest {
                         reservationCreateUpdateWithPasswordRequest.getEndDateTime().plusMinutes(duration),
                         be));
 
-        given(maps.findById(anyLong()))
+        given(maps.findByIdFetch(anyLong()))
                 .willReturn(Optional.of(luther));
         given(reservations.findAllBySpaceIdInAndDate(
                 anyList(),
@@ -590,7 +590,7 @@ class GuestReservationServiceTest extends ServiceTest {
     @DisplayName("특정 공간 예약 조회 요청 시, 해당하는 맵이 없으면 오류가 발생한다.")
     void findReservationsNotExistMap() {
         //given
-        given(maps.findById(anyLong()))
+        given(maps.findByIdFetch(anyLong()))
                 .willReturn(Optional.empty());
 
         //when
@@ -610,7 +610,7 @@ class GuestReservationServiceTest extends ServiceTest {
     @DisplayName("특정 공간 예약 조회 요청 시, 해당하는 공간이 없으면 오류가 발생한다.")
     void findReservationsNotExistSpace() {
         //given
-        given(maps.findById(anyLong()))
+        given(maps.findByIdFetch(anyLong()))
                 .willReturn(Optional.of(luther));
 
         //when
@@ -630,7 +630,7 @@ class GuestReservationServiceTest extends ServiceTest {
     @DisplayName("전체 예약이나 특정 공간 예약 조회 요청 시, 해당하는 예약이 없으면 빈 정보가 조회된다.")
     void findEmptyReservations() {
         //given, when
-        given(maps.findById(anyLong()))
+        given(maps.findByIdFetch(anyLong()))
                 .willReturn(Optional.of(luther));
         given(maps.existsById(anyLong()))
                 .willReturn(true);
@@ -687,7 +687,7 @@ class GuestReservationServiceTest extends ServiceTest {
                         fe));
         List<Space> findSpaces = List.of(be, fe);
 
-        given(maps.findById(anyLong()))
+        given(maps.findByIdFetch(anyLong()))
                 .willReturn(Optional.of(luther));
         given(reservations.findAllBySpaceIdInAndDate(
                 anyList(),
@@ -709,7 +709,7 @@ class GuestReservationServiceTest extends ServiceTest {
     @DisplayName("예약 수정 요청 시, 비밀번호가 일치하는지 확인하고 해당 예약을 반환한다.")
     void findReservation() {
         //given
-        given(maps.findById(anyLong()))
+        given(maps.findByIdFetch(anyLong()))
                 .willReturn(Optional.of(luther));
         given(reservations.findById(anyLong()))
                 .willReturn(Optional.of(reservation));
@@ -734,7 +734,7 @@ class GuestReservationServiceTest extends ServiceTest {
     @DisplayName("예약 수정 요청 시, 해당 예약이 존재하지 않으면 에러가 발생한다.")
     void findInvalidReservationException() {
         //given
-        given(maps.findById(anyLong()))
+        given(maps.findByIdFetch(anyLong()))
                 .willReturn(Optional.of(luther));
         given(reservations.findById(anyLong()))
                 .willReturn(Optional.empty());
@@ -759,7 +759,7 @@ class GuestReservationServiceTest extends ServiceTest {
     @DisplayName("예약 수정 요청 시, 비밀번호가 일치하지 않으면 에러가 발생한다.")
     void findWrongPasswordException() {
         //given
-        given(maps.findById(anyLong()))
+        given(maps.findByIdFetch(anyLong()))
                 .willReturn(Optional.of(luther));
         given(reservations.findById(anyLong()))
                 .willReturn(Optional.of(reservation));
@@ -784,7 +784,7 @@ class GuestReservationServiceTest extends ServiceTest {
     @DisplayName("예약 수정 요청 시, 올바른 요청이 들어오면 예약이 수정된다.")
     void update() {
         //given
-        given(maps.findById(anyLong()))
+        given(maps.findByIdFetch(anyLong()))
                 .willReturn(Optional.of(luther));
         given(reservations.findById(anyLong()))
                 .willReturn(Optional.of(reservation));
@@ -816,7 +816,7 @@ class GuestReservationServiceTest extends ServiceTest {
     @DisplayName("예약 수정 요청 시, 끝 시간 입력이 옳지 않으면 에러가 발생한다.")
     void updateInvalidEndTimeException(int endTime) {
         //given
-        given(maps.findById(anyLong()))
+        given(maps.findByIdFetch(anyLong()))
                 .willReturn(Optional.of(luther));
 
         //when
@@ -845,7 +845,7 @@ class GuestReservationServiceTest extends ServiceTest {
     @DisplayName("예약 수정 요청 시, 시작 시간과 끝 시간이 같은 날짜가 아니면 에러가 발생한다.")
     void updateInvalidDateException() {
         //given
-        given(maps.findById(anyLong()))
+        given(maps.findByIdFetch(anyLong()))
                 .willReturn(Optional.of(luther));
 
         //when
@@ -874,7 +874,7 @@ class GuestReservationServiceTest extends ServiceTest {
     @DisplayName("예약 수정 요청 시, 비밀번호가 일치하지 않으면 에러가 발생한다.")
     void updateIncorrectPasswordException() {
         //given
-        given(maps.findById(anyLong()))
+        given(maps.findByIdFetch(anyLong()))
                 .willReturn(Optional.of(luther));
         given(reservations.findById(anyLong()))
                 .willReturn(Optional.of(reservation));
@@ -906,7 +906,7 @@ class GuestReservationServiceTest extends ServiceTest {
     @DisplayName("예약 수정 요청 시, 해당 시간에 예약이 존재하면 에러가 발생한다.")
     void updateImpossibleTimeException(int startTime, int endTime) {
         //given
-        given(maps.findById(anyLong()))
+        given(maps.findByIdFetch(anyLong()))
                 .willReturn(Optional.of(luther));
         given(reservations.findById(anyLong()))
                 .willReturn(Optional.of(reservation));
@@ -942,7 +942,7 @@ class GuestReservationServiceTest extends ServiceTest {
     @DisplayName("예약 수정 요청 시, 공간의 예약가능 시간이 아니라면 에러가 발생한다.")
     void updateInvalidTimeSetting(int startTime, int endTime) {
         //given
-        given(maps.findById(anyLong()))
+        given(maps.findByIdFetch(anyLong()))
                 .willReturn(Optional.of(luther));
         given(reservations.findById(anyLong()))
                 .willReturn(Optional.of(reservation));
@@ -992,7 +992,7 @@ class GuestReservationServiceTest extends ServiceTest {
                 .setting(setting)
                 .build();
 
-        given(maps.findById(anyLong()))
+        given(maps.findByIdFetch(anyLong()))
                 .willReturn(Optional.of(luther));
         given(reservations.findById(anyLong()))
                 .willReturn(Optional.of(reservation));
@@ -1036,7 +1036,7 @@ class GuestReservationServiceTest extends ServiceTest {
                 .setting(setting)
                 .build();
 
-        given(maps.findById(anyLong()))
+        given(maps.findByIdFetch(anyLong()))
                 .willReturn(Optional.of(luther));
         given(reservations.findById(anyLong()))
                 .willReturn(Optional.of(reservation));
@@ -1060,7 +1060,7 @@ class GuestReservationServiceTest extends ServiceTest {
     @DisplayName("예약 삭제 요청이 옳다면 삭제한다.")
     void deleteReservation() {
         //given
-        given(maps.findById(anyLong()))
+        given(maps.findByIdFetch(anyLong()))
                 .willReturn(Optional.of(luther));
         given(reservations.findById(anyLong()))
                 .willReturn(Optional.of(makeReservation(
@@ -1087,7 +1087,7 @@ class GuestReservationServiceTest extends ServiceTest {
     @DisplayName("예약 삭제 요청 시, 예약이 존재하지 않는다면 오류가 발생한다.")
     void deleteReservationException() {
         //given
-        given(maps.findById(anyLong()))
+        given(maps.findByIdFetch(anyLong()))
                 .willReturn(Optional.of(luther));
         given(reservations.findById(anyLong()))
                 .willReturn(Optional.empty());
@@ -1111,7 +1111,7 @@ class GuestReservationServiceTest extends ServiceTest {
     @DisplayName("예약 삭제 요청 시, 비밀번호가 일치하지 않는다면 오류가 발생한다.")
     void deleteReservationPasswordException() {
         //given, when
-        given(maps.findById(anyLong()))
+        given(maps.findByIdFetch(anyLong()))
                 .willReturn(Optional.of(luther));
         given(reservations.findById(anyLong()))
                 .willReturn(Optional.of(makeReservation(
