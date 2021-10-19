@@ -13,6 +13,9 @@ public interface MemberRepository extends JpaRepository<Member, Long> {
 
     Optional<Member> findByEmail(String email);
 
+    @Query("select distinct m from Member m left outer join fetch m.maps where m.email = :email")
+    Optional<Member> findByEmailWithFetchMaps(String email);
+
     Page<Member> findAll(Pageable pageable);
 
     @Query("select distinct m from Member m left outer join fetch m.presets where m.email = :email")

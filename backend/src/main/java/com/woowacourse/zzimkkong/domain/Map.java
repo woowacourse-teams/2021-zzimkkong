@@ -60,6 +60,10 @@ public class Map {
         return !this.member.equals(manager);
     }
 
+    public boolean isOwnedBy(final String email) {
+        return member.isSameEmail(email);
+    }
+
     public Boolean doesNotHaveSpaceId(final Long spaceId) {
         return spaces.stream()
                 .noneMatch(space -> space.hasSameId(spaceId));

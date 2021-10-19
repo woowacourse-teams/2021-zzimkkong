@@ -4,12 +4,13 @@ import com.woowacourse.zzimkkong.domain.Map;
 import com.woowacourse.zzimkkong.domain.Member;
 import com.woowacourse.zzimkkong.domain.Setting;
 import com.woowacourse.zzimkkong.domain.Space;
+import com.woowacourse.zzimkkong.dto.member.LoginEmailDto;
 import com.woowacourse.zzimkkong.dto.space.*;
+import com.woowacourse.zzimkkong.exception.authorization.NoAuthorityOnMapException;
 import com.woowacourse.zzimkkong.exception.map.NoSuchMapException;
 import com.woowacourse.zzimkkong.exception.member.NoSuchMemberException;
 import com.woowacourse.zzimkkong.exception.space.NoSuchSpaceException;
 import com.woowacourse.zzimkkong.exception.space.ReservationExistOnSpaceException;
-import com.woowacourse.zzimkkong.dto.member.LoginEmailDto;
 import com.woowacourse.zzimkkong.infrastructure.thumbnail.ThumbnailManager;
 import com.woowacourse.zzimkkong.repository.MapRepository;
 import com.woowacourse.zzimkkong.repository.MemberRepository;
@@ -20,8 +21,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.List;
-
-import static com.woowacourse.zzimkkong.service.MapService.validateManagerOfMap;
 
 @Service
 @Transactional
@@ -174,6 +173,12 @@ public class SpaceService {
     private void validateReservationExistence(final Long spaceId) {
         if (reservations.existsBySpaceIdAndEndTimeAfter(spaceId, LocalDateTime.now())) {
             throw new ReservationExistOnSpaceException();
+        }
+    }
+
+    public void validateManagerOfMap(final Map map, final Member manager) {
+        if (map.isNotOwnedBy(manager)) {
+            throw new NoAuthorityOnMapException();
         }
     }
 }

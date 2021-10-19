@@ -113,9 +113,7 @@ class MapServiceTest extends ServiceTest {
     @Test
     @DisplayName("맵 조회 요청 시, mapId에 해당하는 맵을 조회한다.")
     void find() {
-        //given
-        given(members.findByEmail(anyString()))
-                .willReturn(Optional.of(pobi));
+        // given
         given(maps.findById(anyLong()))
                 .willReturn(Optional.of(luther));
 
@@ -133,10 +131,8 @@ class MapServiceTest extends ServiceTest {
     void findAll() {
         //given
         List<Map> expectedMaps = List.of(luther, smallHouse);
-        given(members.findByEmail(anyString()))
+        given(members.findByEmailWithFetchMaps(anyString()))
                 .willReturn(Optional.of(pobi));
-        given(maps.findAllByMember(any(Member.class)))
-                .willReturn(expectedMaps);
 
         //when
         MapFindAllResponse mapFindAllResponse = mapService.findAllMaps(pobiEmail);
@@ -153,8 +149,6 @@ class MapServiceTest extends ServiceTest {
     void update() {
         //given
         MapCreateUpdateRequest mapCreateUpdateRequest = new MapCreateUpdateRequest("이름을 바꿔요", luther.getMapDrawing(), MAP_SVG);
-        given(members.findByEmail(anyString()))
-                .willReturn(Optional.of(pobi));
         given(maps.findById(anyLong()))
                 .willReturn(Optional.of(luther));
         given(storageUploader.upload(anyString(), anyString(), any(InputStream.class)))
@@ -169,11 +163,8 @@ class MapServiceTest extends ServiceTest {
     void updateManagerException() {
         //given
         LoginEmailDto anotherEmail = LoginEmailDto.from(NEW_EMAIL);
-        Member anotherMember = new Member(NEW_EMAIL, PW, ORGANIZATION);
         MapCreateUpdateRequest mapCreateUpdateRequest = new MapCreateUpdateRequest("이름을 바꿔요", luther.getMapDrawing(), MAP_SVG);
 
-        given(members.findByEmail(anyString()))
-                .willReturn(Optional.of(anotherMember));
         given(maps.findById(anyLong()))
                 .willReturn(Optional.of(luther));
 
@@ -186,8 +177,6 @@ class MapServiceTest extends ServiceTest {
     @DisplayName("맵 삭제 요청 시, 이후에 존재하는 예약이 없다면 삭제한다.")
     void delete() {
         //given
-        given(members.findByEmail(anyString()))
-                .willReturn(Optional.of(pobi));
         given(maps.findByIdFetch(anyLong()))
                 .willReturn(Optional.of(luther));
         given(reservations.existsBySpaceIdAndEndTimeAfter(anyLong(), any(LocalDateTime.class)))
