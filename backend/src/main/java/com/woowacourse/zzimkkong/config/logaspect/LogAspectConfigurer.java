@@ -14,7 +14,7 @@ import java.util.List;
 public abstract class LogAspectConfigurer {
     private ConfigurableListableBeanFactory beanFactory;
     private BeanDefinitionRegistry beanDefinitionRegistry;
-    private final LogProxyBeanRegistry logProxyBeanRegistry = new LogProxyBeanRegistry();
+    private final LogProxyRegistrationEntries logProxyRegistrationEntries = new LogProxyRegistrationEntries();
 
     @Autowired
     public final void setBeanFactory(ConfigurableListableBeanFactory beanFactory) {
@@ -27,25 +27,25 @@ public abstract class LogAspectConfigurer {
 
     @PostConstruct
     protected final void init() {
-        registerProxyBeans(logProxyBeanRegistry);
+        registerProxyBeans(logProxyRegistrationEntries);
 
-        final List<LogProxyClassEntry> beanClassesForReplacingByProxy = logProxyBeanRegistry.getLogProxyClassEntries();
-        for (LogProxyClassEntry logProxyClassEntry : beanClassesForReplacingByProxy) {
-            replaceByProxy(logProxyClassEntry.getProxyClass(), logProxyClassEntry.getLogGroup());
+        final List<LogProxyRegistrationEntry> beanClassesForReplacingByProxy = logProxyRegistrationEntries.getLogProxyRegistrationEntry();
+        for (LogProxyRegistrationEntry logProxyRegistrationEntry : beanClassesForReplacingByProxy) {
+            replaceByProxy(logProxyRegistrationEntry.getBeanClass(), logProxyRegistrationEntry.getLogGroup());
         }
     }
 
-    abstract protected void registerProxyBeans(final LogProxyBeanRegistry logProxyBeanRegistry);
+    abstract protected void registerProxyBeans(final LogProxyRegistrationEntries logProxyRegistrationEntries);
 
-    private void replaceByProxy(Class<?> proxyClass, String logGroupName) {
-        String[] beanNames = beanFactory.getBeanNamesForType(proxyClass);
+    private void replaceByProxy(Class<?> beanClass, String logGroupName) {
+        String[] beanNames = beanFactory.getBeanNamesForType(beanClass);
 
         for (String beanName : beanNames) {
-            replaceByProxyByBeamName(beanName, proxyClass, logGroupName);
+            replaceByProxy(beanName, beanClass, logGroupName);
         }
     }
 
-    private void replaceByProxyByBeamName(String beanName, Class<?> proxyClass, String logGroupName) {
+    private void replaceByProxy(String beanName, Class<?> proxyClass, String logGroupName) {
         final Object target = beanFactory.getBean(beanName);
         final BeanDefinition targetBeanDefinition = beanFactory.getBeanDefinition(beanName);
 
@@ -57,32 +57,32 @@ public abstract class LogAspectConfigurer {
         beanFactory.registerSingleton(transformedBeanName, logProxy);
     }
 
-    public final static class LogProxyBeanRegistry {
-        private final List<LogProxyClassEntry> logProxyClassEntries = new ArrayList<>();
+    public final static class LogProxyRegistrationEntries {
+        private final List<LogProxyRegistrationEntry> logProxyRegistrationEntry = new ArrayList<>();
 
-        private LogProxyBeanRegistry() {
+        private LogProxyRegistrationEntries() {
         }
 
         public void add(Class<?> clazz, String logGroup) {
-            this.logProxyClassEntries.add(new LogProxyClassEntry(clazz, logGroup));
+            this.logProxyRegistrationEntry.add(new LogProxyRegistrationEntry(clazz, logGroup));
         }
 
-        public List<LogProxyClassEntry> getLogProxyClassEntries() {
-            return logProxyClassEntries;
+        public List<LogProxyRegistrationEntry> getLogProxyRegistrationEntry() {
+            return logProxyRegistrationEntry;
         }
     }
 
-    private static class LogProxyClassEntry {
-        Class<?> clazz;
+    private static class LogProxyRegistrationEntry {
+        Class<?> beanClass;
         String logGroup;
 
-        public LogProxyClassEntry(Class<?> clazz, String logGroup) {
-            this.clazz = clazz;
+        public LogProxyRegistrationEntry(Class<?> beanClass, String logGroup) {
+            this.beanClass = beanClass;
             this.logGroup = logGroup;
         }
 
-        public Class<?> getProxyClass() {
-            return clazz;
+        public Class<?> getBeanClass() {
+            return beanClass;
         }
 
         public String getLogGroup() {
