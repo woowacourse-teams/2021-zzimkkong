@@ -1,0 +1,10 @@
+<included>
+    <include resource="appenders/file-appender-error.xml"/>
+    <appender name="ASYNC_FILE_APPENDER_ERROR" class="ch.qos.logback.classic.AsyncAppender">
+        <appender-ref ref="FILE_APPENDER_ERROR" />
+        <queueSize>1024</queueSize>
+        <discardingThreshold>0</discardingThreshold>
+        <includeCallerData>false</includeCallerData>
+        <neverBlock>false</neverBlock>
+    </appender>
+</included>
