@@ -47,7 +47,10 @@ export const TimeContainer = styled.div<TimeContainerProps>`
 export const TimeButton = styled.button<TimeButtonProps>`
   padding: 0 0.5rem;
   display: flex;
+  justify-content: center;
   align-items: center;
+  white-space: nowrap;
+  min-width: 30%;
   height: inherit;
   border: 0;
   background-color: transparent;

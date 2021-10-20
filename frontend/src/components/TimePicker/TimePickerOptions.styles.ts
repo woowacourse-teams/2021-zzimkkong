@@ -65,6 +65,8 @@ export const OptionText = styled.span`
 `;
 
 export const Radio = styled.input`
+  -moz-appearance: none;
+  -webkit-appearance: none;
   appearance: none;
 
   &:checked + ${OptionText} {
