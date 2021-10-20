@@ -22,14 +22,15 @@ class MapTest {
         assertThat(luther.getSpaces().size()).isEqualTo(1);
     }
 
-    @Test
-    @DisplayName("맵의 관리자가 아니면 true, 맞으면 false")
-    void isNotOwnedBy() {
+    @ParameterizedTest
+    @CsvSource({"pobi@email.com,true", "sakjung@email.com,false"})
+    @DisplayName("맵의 관리자가 맞으면 true, 아니면 false")
+    void isOwnedBy(String email, boolean expected) {
         Member pobi = new Member(EMAIL, PW, ORGANIZATION);
         Map luther = new Map(LUTHER_NAME, MAP_DRAWING_DATA, MAP_IMAGE_URL, pobi);
 
-        boolean result = luther.isNotOwnedBy(new Member("삭정이", "test1234", "잠실"));
-        assertThat(result).isTrue();
+        boolean result = luther.isOwnedBy(email);
+        assertThat(result).isEqualTo(expected);
     }
 
     @ParameterizedTest

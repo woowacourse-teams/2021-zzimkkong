@@ -56,10 +56,6 @@ public class Map {
         this.mapDrawing = mapDrawing;
     }
 
-    public boolean isNotOwnedBy(final Member manager) {
-        return !this.member.equals(manager);
-    }
-
     public boolean isOwnedBy(final String email) {
         return member.isSameEmail(email);
     }

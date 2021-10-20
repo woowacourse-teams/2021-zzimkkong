@@ -2,6 +2,8 @@ package com.woowacourse.zzimkkong.domain;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
 
 import java.util.Optional;
 
@@ -28,5 +30,18 @@ class MemberTest {
         //then
         assertThat(member.findPresetById(1L))
                 .isEqualTo(Optional.of(preset));
+    }
+
+    @ParameterizedTest
+    @CsvSource(value = {"pobi@email.com, true", "wrongemail@woowa.com, false"}, delimiter = ',')
+    void isSameEmail(String email, boolean expected) {
+        // given
+        Member member = new Member(1L, EMAIL, PW, ORGANIZATION);
+
+        // when
+        boolean actual = member.isSameEmail(email);
+
+        // then
+        assertThat(actual).isEqualTo(expected);
     }
 }
