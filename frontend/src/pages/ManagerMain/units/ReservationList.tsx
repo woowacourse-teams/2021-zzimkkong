@@ -81,7 +81,7 @@ const ReservationList = ({
         ))}
 
       <Styled.ReservationsContainer>
-        {selectedMapId && !!reservations.length && (
+        {selectedMapId && reservations.length > 0 && (
           <Styled.SpacesOrderButton variant="text" onClick={handleClickSpacesOrder}>
             {spacesOrder === 'ascending' ? '오름차순 △' : '내림차순 ▽'}
           </Styled.SpacesOrderButton>
