@@ -11,10 +11,10 @@ import com.woowacourse.zzimkkong.exception.space.NoSuchSpaceException;
 import com.woowacourse.zzimkkong.repository.MapRepository;
 import com.woowacourse.zzimkkong.repository.MemberRepository;
 import com.woowacourse.zzimkkong.repository.ReservationRepository;
-import com.woowacourse.zzimkkong.service.strategy.ReservationStrategy;
 import com.woowacourse.zzimkkong.service.strategy.ExcludeReservationCreateStrategy;
 import com.woowacourse.zzimkkong.service.strategy.ExcludeReservationStrategy;
 import com.woowacourse.zzimkkong.service.strategy.ExcludeReservationUpdateStrategy;
+import com.woowacourse.zzimkkong.service.strategy.ReservationStrategy;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -56,7 +56,7 @@ public class ReservationService {
         Space space = map.findSpaceById(spaceId)
                 .orElseThrow(NoSuchSpaceException::new);
 
-        validateTime(reservationCreateDto);
+        validateTime(reservationCreateDto, reservationStrategy.isManager());
 
         validateAvailability(space, reservationCreateDto, new ExcludeReservationCreateStrategy());
 
@@ -150,7 +150,7 @@ public class ReservationService {
         Space space = map.findSpaceById(spaceId)
                 .orElseThrow(NoSuchSpaceException::new);
 
-        validateTime(reservationUpdateDto);
+        validateTime(reservationUpdateDto, reservationStrategy.isManager());
 
         Long reservationId = reservationUpdateDto.getReservationId();
         String password = reservationUpdateDto.getPassword();
@@ -194,18 +194,17 @@ public class ReservationService {
                 .findById(reservationId)
                 .orElseThrow(NoSuchReservationException::new);
         reservationStrategy.checkCorrectPassword(reservation, password);
+        validatePastTimeAndManager(reservation.getStartTime(), reservationStrategy.isManager());
 
         reservations.delete(reservation);
         return SlackResponse.from(reservation);
     }
 
-    private void validateTime(final ReservationCreateDto reservationCreateDto) {
+    private void validateTime(final ReservationCreateDto reservationCreateDto, final boolean managerFlag) {
         LocalDateTime startDateTime = reservationCreateDto.getStartDateTime().withSecond(0).withNano(0);
         LocalDateTime endDateTime = reservationCreateDto.getEndDateTime().withSecond(0).withNano(0);
 
-        if (startDateTime.isBefore(LocalDateTime.now())) {
-            throw new ImpossibleStartTimeException();
-        }
+        validatePastTimeAndManager(startDateTime, managerFlag);
 
         if (endDateTime.isBefore(startDateTime) || startDateTime.equals(endDateTime)) {
             throw new ImpossibleEndTimeException();
@@ -213,6 +212,12 @@ public class ReservationService {
 
         if (!startDateTime.toLocalDate().isEqual(endDateTime.toLocalDate())) {
             throw new NonMatchingStartAndEndDateException();
+        }
+    }
+
+    private void validatePastTimeAndManager(LocalDateTime startDateTime, boolean managerFlag) {
+        if (startDateTime.isBefore(LocalDateTime.now()) && !managerFlag) {
+            throw new ImpossibleStartTimeException();
         }
     }
 

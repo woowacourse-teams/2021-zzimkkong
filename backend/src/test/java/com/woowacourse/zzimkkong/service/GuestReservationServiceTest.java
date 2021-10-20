@@ -551,6 +551,46 @@ class GuestReservationServiceTest extends ServiceTest {
     }
 
     @Test
+    @DisplayName("예약 생성/수정 요청 시, 과거의 예약인 경우 에러가 발생한다.")
+    void pastReservationSaveUpdateException() {
+        //given
+        given(maps.findByIdFetch(anyLong()))
+                .willReturn(Optional.of(luther));
+        given(reservations.findById(anyLong()))
+                .willReturn(Optional.of(reservation));
+
+        //when
+        ReservationCreateUpdateWithPasswordRequest reservationCreateUpdateWithPasswordRequest = new ReservationCreateUpdateWithPasswordRequest(
+                THE_DAY_AFTER_TOMORROW.atTime(10, 0).minusDays(5),
+                THE_DAY_AFTER_TOMORROW.atTime(10, 0).minusDays(5).plusMinutes(60),
+                RESERVATION_PW,
+                USER_NAME,
+                DESCRIPTION);
+        Long reservationId = reservation.getId();
+
+        ReservationCreateDto reservationCreateDto = ReservationCreateDto.of(
+                lutherId,
+                beId,
+                reservationCreateUpdateWithPasswordRequest);
+        ReservationUpdateDto reservationUpdateDto = ReservationUpdateDto.of(
+                lutherId,
+                beId,
+                reservationId,
+                reservationCreateUpdateWithPasswordRequest);
+
+        //then
+        assertThatThrownBy(() -> reservationService.saveReservation(
+                reservationCreateDto,
+                guestReservationStrategy))
+                .isInstanceOf(ImpossibleStartTimeException.class);
+
+        assertThatThrownBy(() -> reservationService.updateReservation(
+                reservationUpdateDto,
+                guestReservationStrategy))
+                .isInstanceOf(ImpossibleStartTimeException.class);
+    }
+
+    @Test
     @DisplayName("특정 공간 예약 조회 요청 시, 올바르게 입력하면 해당 날짜, 공간에 대한 예약 정보가 조회된다.")
     void findReservations() {
         //given, when
@@ -1135,6 +1175,36 @@ class GuestReservationServiceTest extends ServiceTest {
                 reservationAuthenticationDto,
                 guestReservationStrategy))
                 .isInstanceOf(ReservationPasswordException.class);
+    }
+
+    @Test
+    @DisplayName("예약 삭제 요청 시, 과거의 예약이면 오류가 발생한다.")
+    void deletePastReservationException() {
+        //given, when
+        given(maps.findByIdFetch(anyLong()))
+                .willReturn(Optional.of(luther));
+        given(reservations.findById(anyLong()))
+                .willReturn(Optional.of(makeReservation(
+                        reservationCreateUpdateWithPasswordRequest.getStartDateTime().minusDays(5),
+                        reservationCreateUpdateWithPasswordRequest.getEndDateTime().minusDays(5),
+                        be)));
+
+        ReservationPasswordAuthenticationRequest reservationPasswordAuthenticationRequest
+                = new ReservationPasswordAuthenticationRequest(reservationCreateUpdateWithPasswordRequest.getPassword());
+        Long reservationId = reservation.getId();
+
+        //when
+        ReservationAuthenticationDto reservationAuthenticationDto = ReservationAuthenticationDto.of(
+                lutherId,
+                beId,
+                reservationId,
+                reservationPasswordAuthenticationRequest);
+
+        //then
+        assertThatThrownBy(() -> reservationService.deleteReservation(
+                reservationAuthenticationDto,
+                guestReservationStrategy))
+                .isInstanceOf(ImpossibleStartTimeException.class);
     }
 
     private Reservation makeReservation(final LocalDateTime startTime, final LocalDateTime endTime, final Space space) {
