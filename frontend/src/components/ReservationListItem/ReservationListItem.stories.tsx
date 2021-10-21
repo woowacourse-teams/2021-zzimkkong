@@ -42,3 +42,27 @@ Control.args = {
     </>
   ),
 };
+
+export const StatusUsing = Template.bind({});
+StatusUsing.args = {
+  reservation: {
+    id: 1,
+    name: '체프',
+    description: '맛있는 커피를 내리는 법',
+    startDateTime: '2021-07-09T20:00:00',
+    endDateTime: '2021-07-09T21:00:00',
+  },
+  status: 'using',
+};
+
+export const StatusDone = Template.bind({});
+StatusDone.args = {
+  reservation: {
+    id: 1,
+    name: '체프',
+    description: '맛있는 커피를 내리는 법',
+    startDateTime: '2021-07-09T20:00:00',
+    endDateTime: '2021-07-09T21:00:00',
+  },
+  status: 'done',
+};
