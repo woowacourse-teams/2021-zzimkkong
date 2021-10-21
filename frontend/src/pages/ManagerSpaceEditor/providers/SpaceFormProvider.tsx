@@ -1,4 +1,11 @@
-import React, { createContext, Dispatch, ReactNode, SetStateAction, useState } from 'react';
+import React, {
+  createContext,
+  Dispatch,
+  ReactNode,
+  SetStateAction,
+  useEffect,
+  useState,
+} from 'react';
 import useInputs from 'hooks/useInputs';
 import { Area, ManagerSpace, ManagerSpaceAPI } from 'types/common';
 import { WithOptional } from 'types/util';
@@ -112,6 +119,17 @@ const SpaceFormProvider = ({ children }: Props): JSX.Element => {
     setSelectedPresetId(null);
     setValues({ ...initialSpaceFormValue, enabledDayOfWeek: initialEnabledDayOfWeek, area: null });
   };
+
+  useEffect(() => {
+    if (spaceFormValue.reservationTimeUnit < spaceFormValue.reservationMinimumTimeUnit) return;
+
+    if (spaceFormValue.reservationTimeUnit > spaceFormValue.reservationMinimumTimeUnit) {
+      setSpaceFormValues({
+        ...spaceFormValue,
+        reservationMinimumTimeUnit: spaceFormValue.reservationTimeUnit,
+      });
+    }
+  }, [setSpaceFormValues, spaceFormValue]);
 
   return (
     <SpaceFormContext.Provider
