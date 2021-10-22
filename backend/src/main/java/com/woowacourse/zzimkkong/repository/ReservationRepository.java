@@ -16,7 +16,10 @@ public interface ReservationRepository extends JpaRepository<Reservation, Long>,
 
     Boolean existsBySpaceIdAndEndTimeAfter(Long spaceId, LocalDateTime now);
 
-    @Query(value = "select r from Reservation r inner join fetch r.space",
+    @Query(value = "select r from Reservation r inner join fetch r.space s " +
+            "inner join fetch s.map m " +
+            "inner join fetch m.member " +
+            "order by r.id",
             countQuery = "select count(r) from Reservation r")
     Page<Reservation> findAllByFetch(Pageable pageable);
 }

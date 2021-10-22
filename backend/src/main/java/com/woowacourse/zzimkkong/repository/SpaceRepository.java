@@ -7,7 +7,9 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
 public interface SpaceRepository extends JpaRepository<Space, Long> {
-    @Query(value = "select s from Space s inner join fetch s.map",
+    @Query(value = "select s from Space s inner join fetch s.map m " +
+            "inner join fetch m.member " +
+            "order by s.id",
             countQuery = "select count(s) from Space s")
     Page<Space> findAllByFetch(Pageable pageable);
 }
