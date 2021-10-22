@@ -1,5 +1,6 @@
 package com.woowacourse.zzimkkong.service;
 
+import com.woowacourse.zzimkkong.config.logaspect.LogMethodExecutionTime;
 import com.woowacourse.zzimkkong.domain.SlackUrl;
 import com.woowacourse.zzimkkong.dto.slack.Attachments;
 import com.woowacourse.zzimkkong.dto.slack.SlackResponse;
@@ -10,13 +11,16 @@ import org.springframework.web.reactive.function.client.WebClient;
 
 @Service
 @Transactional(readOnly = true)
+@LogMethodExecutionTime(group = "service")
 public class SlackService {
     private final SlackUrl slackUrl;
     private final WebClient slackWebClient;
 
-    public SlackService(final SlackUrl slackUrl) {
+    public SlackService(final SlackUrl slackUrl, final WebClient webClient) {
         this.slackUrl = slackUrl;
-        this.slackWebClient = WebClient.create(this.slackUrl.getUrl());
+        this.slackWebClient = webClient.mutate()
+                .baseUrl(this.slackUrl.getUrl())
+                .build();
     }
 
     public void sendCreateMessage(SlackResponse slackResponse) {
