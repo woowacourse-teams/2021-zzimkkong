@@ -35,7 +35,7 @@ public class Reservation {
     @Column(nullable = false, length = 100)
     private String description;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "space_id", foreignKey = @ForeignKey(name = "fk_reservation_space"), nullable = false)
     private Space space;
 
