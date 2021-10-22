@@ -17,6 +17,7 @@ import com.woowacourse.zzimkkong.infrastructure.thumbnail.ThumbnailManager;
 import com.woowacourse.zzimkkong.repository.MapRepository;
 import com.woowacourse.zzimkkong.repository.MemberRepository;
 import com.woowacourse.zzimkkong.repository.ReservationRepository;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -83,6 +84,9 @@ public class MapService {
                 .collect(collectingAndThen(toList(), mapFindResponses -> MapFindAllResponse.of(mapFindResponses, manager)));
     }
 
+    @Cacheable(key = "#sharingMapId",
+            value = "map",
+            unless = "#result == null || #result.empty")
     @Transactional(readOnly = true)
     public MapFindResponse findMapBySharingId(final String sharingMapId) {
         Long mapId = sharingIdGenerator.parseIdFrom(sharingMapId);
