@@ -60,7 +60,7 @@ public class Map {
         return member.isSameEmail(email);
     }
 
-    public Boolean doesNotHaveSpaceId(final Long spaceId) {
+    public boolean doesNotHaveSpaceId(final Long spaceId) {
         return spaces.stream()
                 .noneMatch(space -> space.hasSameId(spaceId));
     }

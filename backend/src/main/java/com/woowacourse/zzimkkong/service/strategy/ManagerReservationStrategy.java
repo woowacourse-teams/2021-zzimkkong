@@ -9,7 +9,7 @@ import com.woowacourse.zzimkkong.repository.MemberRepository;
 
 public class ManagerReservationStrategy implements ReservationStrategy {
     @Override
-    public void validateManagerOfMap(final Map map, final MemberRepository members, final String loginEmail) {
+    public void validateManagerOfMap(final Map map, final String loginEmail) {
         Member manager = map.getMember();
         if (!manager.isSameEmail(loginEmail)) {
             throw new NoAuthorityOnMapException();
