@@ -3,9 +3,7 @@ package com.woowacourse.zzimkkong.infrastructure.thumbnail;
 import com.woowacourse.zzimkkong.config.logaspect.LogMethodExecutionTime;
 import com.woowacourse.zzimkkong.exception.infrastructure.S3ProxyRespondedFailException;
 import com.woowacourse.zzimkkong.exception.infrastructure.S3UploadException;
-import com.woowacourse.zzimkkong.infrastructure.thumbnail.StorageUploader;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.core.io.ByteArrayResource;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
@@ -17,10 +15,7 @@ import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
 
-import java.io.File;
-import java.io.IOException;
 import java.io.InputStream;
-import java.nio.file.Files;
 import java.util.Objects;
 
 @Component
@@ -33,8 +28,9 @@ public class S3ProxyUploader implements StorageUploader {
     private final WebClient proxyServerClient;
 
     public S3ProxyUploader(
-            @Value("${s3proxy.server-uri}") final String serverUri) {
-        this.proxyServerClient = WebClient.builder()
+            @Value("${s3proxy.server-uri}") final String serverUri,
+            final WebClient webClient) {
+        this.proxyServerClient = webClient.mutate()
                 .baseUrl(serverUri)
                 .build();
     }
