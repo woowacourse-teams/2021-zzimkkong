@@ -14,12 +14,13 @@ import java.io.OutputStream;
 @Component
 @LogMethodExecutionTime(group = "infrastructure")
 public class BatikConverter implements SvgConverter {
+    private final PNGTranscoder pngTranscoder = new PNGTranscoder();
+
     @Override
     public void convertSvgToPng(InputStream inputStream, OutputStream outputStream) {
         try {
             TranscoderInput transcoderInput = new TranscoderInput(inputStream);
             TranscoderOutput transcoderOutput = new TranscoderOutput(outputStream);
-            PNGTranscoder pngTranscoder = new PNGTranscoder();
 
             pngTranscoder.transcode(transcoderInput, transcoderOutput);
         } catch (TranscoderException e) {
