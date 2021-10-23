@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.ActiveProfiles;
+import org.springframework.web.reactive.function.client.WebClient;
 
 import java.io.IOException;
 
@@ -54,7 +55,8 @@ class GoogleRequesterTest {
                     "secretId",
                     "redirectUri",
                     String.format("http://%s:%s", mockGoogleServer.getHostName(), mockGoogleServer.getPort()),
-                    String.format("http://%s:%s", mockGoogleServer.getHostName(), mockGoogleServer.getPort())
+                    String.format("http://%s:%s", mockGoogleServer.getHostName(), mockGoogleServer.getPort()),
+                    WebClient.create()
             );
 
             // when
@@ -76,7 +78,8 @@ class GoogleRequesterTest {
                 "secretId",
                 "redirectUri",
                 "baseLoginUri",
-                "baseUserUri"
+                "baseUserUri",
+                WebClient.create()
         );
 
         assertThat(googleRequester.supports(OauthProvider.GOOGLE)).isTrue();
@@ -116,7 +119,8 @@ class GoogleRequesterTest {
                     "secretId",
                     this.redirectUri,
                     String.format("http://%s:%s", mockGoogleServer.getHostName(), mockGoogleServer.getPort()),
-                    String.format("http://%s:%s", mockGoogleServer.getHostName(), mockGoogleServer.getPort())
+                    String.format("http://%s:%s", mockGoogleServer.getHostName(), mockGoogleServer.getPort()),
+                    WebClient.create()
             );
 
             // when, then
