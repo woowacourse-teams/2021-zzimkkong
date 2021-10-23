@@ -67,7 +67,7 @@ public abstract class LogAspectConfigurer {
             this.logProxyRegistrationEntries.add(new LogProxyRegistrationEntry(clazz, logGroup));
         }
 
-        public List<LogProxyRegistrationEntry> getLogProxyRegistrationEntries() {
+        private List<LogProxyRegistrationEntry> getLogProxyRegistrationEntries() {
             return logProxyRegistrationEntries;
         }
     }
@@ -76,16 +76,16 @@ public abstract class LogAspectConfigurer {
         Class<?> beanClass;
         String logGroup;
 
-        public LogProxyRegistrationEntry(Class<?> beanClass, String logGroup) {
+        private LogProxyRegistrationEntry(Class<?> beanClass, String logGroup) {
             this.beanClass = beanClass;
             this.logGroup = logGroup;
         }
 
-        public Class<?> getBeanClass() {
+        private Class<?> getBeanClass() {
             return beanClass;
         }
 
-        public String getLogGroup() {
+        private String getLogGroup() {
             return logGroup;
         }
     }
