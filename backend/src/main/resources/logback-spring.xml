@@ -16,11 +16,9 @@
     <!--    Profiles    -->
     <springProfile name="local">
         <include resource="appenders/console-appender.xml"/>
-        <include resource="appenders/async-file-appender-info.xml"/>
 
         <root level="INFO">
             <appender-ref ref="CONSOLE_APPENDER"/>
-            <appender-ref ref="ASYNC_FILE_APPENDER_INFO"/>
         </root>
     </springProfile>
 
