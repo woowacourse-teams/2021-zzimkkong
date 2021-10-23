@@ -5,6 +5,7 @@ import com.woowacourse.zzimkkong.exception.infrastructure.S3ProxyRespondedFailEx
 import com.woowacourse.zzimkkong.exception.infrastructure.S3UploadException;
 import com.woowacourse.zzimkkong.infrastructure.thumbnail.StorageUploader;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.PropertySource;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.http.HttpHeaders;
@@ -23,7 +24,6 @@ import java.io.InputStream;
 import java.nio.file.Files;
 import java.util.Objects;
 
-@Component
 @LogMethodExecutionTime(group = "infrastructure")
 public class S3ProxyUploader implements StorageUploader {
     private static final String PATH_DELIMITER = "/";
@@ -31,12 +31,15 @@ public class S3ProxyUploader implements StorageUploader {
     private static final String CONTENT_DISPOSITION_HEADER_VALUE_FORMAT = "form-data; name=file; filename=%s";
 
     private final WebClient proxyServerClient;
+    private final String secretKey;
 
     public S3ProxyUploader(
-            @Value("${s3proxy.server-uri}") final String serverUri) {
+            final String serverUri,
+            final String secretKey) {
         this.proxyServerClient = WebClient.builder()
                 .baseUrl(serverUri)
                 .build();
+        this.secretKey = secretKey;
     }
 
     @Override
@@ -54,6 +57,7 @@ public class S3ProxyUploader implements StorageUploader {
                 .method(HttpMethod.POST)
                 .uri(String.join(PATH_DELIMITER, API_PATH, directoryName))
                 .header(HttpHeaders.CONTENT_TYPE, MediaType.MULTIPART_FORM_DATA_VALUE)
+                .header(HttpHeaders.AUTHORIZATION, secretKey)
                 .body(BodyInserters.fromMultipartData(multipartBodyBuilder.build()))
                 .exchangeToMono(clientResponse -> {
                     if (clientResponse.statusCode().equals(HttpStatus.CREATED)) {
