@@ -11,7 +11,6 @@ import org.springframework.web.reactive.function.client.WebClient;
 
 @Service
 @Transactional(readOnly = true)
-@LogMethodExecutionTime(group = "service")
 public class SlackService {
     private final SlackUrl slackUrl;
     private final WebClient slackWebClient;
