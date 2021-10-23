@@ -29,7 +29,7 @@ public abstract class LogAspectConfigurer {
     protected final void init() {
         registerProxyBeans(logProxyRegistrationEntries);
 
-        final List<LogProxyRegistrationEntry> beanClassesForReplacingByProxy = logProxyRegistrationEntries.getLogProxyRegistrationEntry();
+        final List<LogProxyRegistrationEntry> beanClassesForReplacingByProxy = logProxyRegistrationEntries.getLogProxyRegistrationEntries();
         for (LogProxyRegistrationEntry logProxyRegistrationEntry : beanClassesForReplacingByProxy) {
             replaceByProxy(logProxyRegistrationEntry.getBeanClass(), logProxyRegistrationEntry.getLogGroup());
         }
@@ -58,17 +58,17 @@ public abstract class LogAspectConfigurer {
     }
 
     public final static class LogProxyRegistrationEntries {
-        private final List<LogProxyRegistrationEntry> logProxyRegistrationEntry = new ArrayList<>();
+        private final List<LogProxyRegistrationEntry> logProxyRegistrationEntries = new ArrayList<>();
 
         private LogProxyRegistrationEntries() {
         }
 
         public void add(Class<?> clazz, String logGroup) {
-            this.logProxyRegistrationEntry.add(new LogProxyRegistrationEntry(clazz, logGroup));
+            this.logProxyRegistrationEntries.add(new LogProxyRegistrationEntry(clazz, logGroup));
         }
 
-        public List<LogProxyRegistrationEntry> getLogProxyRegistrationEntry() {
-            return logProxyRegistrationEntry;
+        public List<LogProxyRegistrationEntry> getLogProxyRegistrationEntries() {
+            return logProxyRegistrationEntries;
         }
     }
 
