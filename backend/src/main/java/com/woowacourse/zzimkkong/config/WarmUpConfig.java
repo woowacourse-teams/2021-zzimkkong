@@ -6,8 +6,13 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
+import org.springframework.core.io.InputStreamResource;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
+import org.springframework.http.client.MultipartBodyBuilder;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
+import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
 
@@ -58,19 +63,30 @@ public class WarmUpConfig {
 
     private void initWebClient() {
         webClient
-                .get()
+                .post()
                 .uri(slackUrl.getUrl())
+                .contentType(MediaType.APPLICATION_JSON)
+                .bodyValue("let's warm up")
                 .retrieve()
                 .bodyToMono(String.class)
                 .onErrorResume(e -> Mono.just("warm up finisehd"))
                 .subscribe();
 
-        webClient
-                .get()
-                .uri(s3ProxyServerUri)
-                .retrieve()
-                .bodyToMono(String.class)
-                .onErrorResume(e -> Mono.just("warm up finished"))
-                .block();
+        try (final BufferedInputStream bufferedPngInputStream = new BufferedInputStream(new ByteArrayInputStream("warmUp".getBytes()))) {
+            MultipartBodyBuilder multipartBodyBuilder = new MultipartBodyBuilder();
+            multipartBodyBuilder.part("file", new InputStreamResource(bufferedPngInputStream))
+                    .header(HttpHeaders.CONTENT_DISPOSITION, "form-data; name=file; filename=warmFile");
+
+            webClient
+                    .post()
+                    .uri(s3ProxyServerUri + "/api/storage/warmup")
+                    .header(HttpHeaders.CONTENT_TYPE, MediaType.MULTIPART_FORM_DATA_VALUE)
+                    .body(BodyInserters.fromMultipartData(multipartBodyBuilder.build()))
+                    .retrieve()
+                    .bodyToMono(String.class)
+                    .onErrorResume(e -> Mono.just("warm up finished"))
+                    .block();
+        } catch (IOException ignored) {
+        }
     }
 }
