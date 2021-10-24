@@ -13,17 +13,17 @@
     <property name="FILE_PATH"
               value="${user.home}/logs"/>
 
+    <!--    Console     -->
+    <include resource="appenders/async-console-appender.xml"/>
+
     <!--    Profiles    -->
     <springProfile name="local">
-        <include resource="appenders/console-appender.xml"/>
-
         <root level="INFO">
-            <appender-ref ref="CONSOLE_APPENDER"/>
+            <appender-ref ref="ASYNC_CONSOLE_APPENDER"/>
         </root>
     </springProfile>
 
     <springProfile name="dev">
-        <include resource="appenders/console-appender.xml"/>
         <include resource="infra-appender/kafka-appender-dev.xml"/>
         <include resource="appenders/slack-appender.xml"/>
 
@@ -32,7 +32,7 @@
         <include resource="appenders/async-file-appender-warn.xml"/>
 
         <root level="INFO">
-            <appender-ref ref="CONSOLE_APPENDER"/>
+            <appender-ref ref="ASYNC_CONSOLE_APPENDER"/>
             <appender-ref ref="KAFKA_APPENDER_DEV"/>
             <appender-ref ref="ASYNC_SLACK_DEV"/>
 
@@ -43,7 +43,6 @@
     </springProfile>
 
     <springProfile name="prod">
-        <include resource="appenders/console-appender.xml"/>
         <include resource="infra-appender/kafka-appender-prod.xml"/>
         <include resource="appenders/slack-appender.xml"/>
 
@@ -51,7 +50,7 @@
         <include resource="appenders/async-file-appender-warn.xml"/>
 
         <root level="INFO">
-            <appender-ref ref="CONSOLE_APPENDER"/>
+            <appender-ref ref="ASYNC_CONSOLE_APPENDER"/>
             <appender-ref ref="KAFKA_APPENDER_PROD"/>
             <appender-ref ref="ASYNC_SLACK_PROD"/>
 
