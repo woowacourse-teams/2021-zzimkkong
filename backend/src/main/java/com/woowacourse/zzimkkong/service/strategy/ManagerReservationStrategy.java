@@ -4,8 +4,6 @@ import com.woowacourse.zzimkkong.domain.Map;
 import com.woowacourse.zzimkkong.domain.Member;
 import com.woowacourse.zzimkkong.domain.Reservation;
 import com.woowacourse.zzimkkong.exception.authorization.NoAuthorityOnMapException;
-import com.woowacourse.zzimkkong.exception.member.NoSuchMemberException;
-import com.woowacourse.zzimkkong.repository.MemberRepository;
 
 public class ManagerReservationStrategy implements ReservationStrategy {
     @Override

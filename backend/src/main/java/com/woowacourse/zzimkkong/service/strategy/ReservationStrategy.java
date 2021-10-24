@@ -2,8 +2,6 @@ package com.woowacourse.zzimkkong.service.strategy;
 
 import com.woowacourse.zzimkkong.domain.Map;
 import com.woowacourse.zzimkkong.domain.Reservation;
-import com.woowacourse.zzimkkong.dto.slack.SlackResponse;
-import com.woowacourse.zzimkkong.repository.MemberRepository;
 
 public interface ReservationStrategy {
     void validateManagerOfMap(final Map map, final String loginEmail);
