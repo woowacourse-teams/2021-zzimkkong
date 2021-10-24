@@ -33,6 +33,7 @@ class MemberTest {
     }
 
     @ParameterizedTest
+    @DisplayName("멤버 객체는 이메일을 입력받아 자신의 이메일 정보와 비교할 수 있다.")
     @CsvSource(value = {"pobi@email.com, true", "wrongemail@woowa.com, false"}, delimiter = ',')
     void isSameEmail(String email, boolean expected) {
         // given
