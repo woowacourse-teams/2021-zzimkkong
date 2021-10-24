@@ -54,7 +54,7 @@ const GuestMap = (): JSX.Element => {
     { sharingMapId },
     {
       onError: () => {
-        history.push(PATH.NOT_FOUND[1]);
+        history.replace(PATH.NOT_FOUND);
       },
       onSuccess: (response) => {
         const mapData = response.data;
