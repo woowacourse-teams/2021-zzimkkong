@@ -1,18 +1,13 @@
 import { ReactNode } from 'react';
-import { Reservation } from 'types/common';
+import { Reservation, ReservationStatus } from 'types/common';
 import { formatTime } from 'utils/datetime';
 import * as Styled from './ReservationListItem.styles';
 
 export interface Props {
   reservation: Reservation;
   control?: ReactNode;
-  status?: 'using' | 'done';
+  status?: ReservationStatus;
 }
-
-const statusText = {
-  using: '사용 중',
-  done: '사용 완료',
-};
 
 const ReservationListItem = ({ reservation, control, status, ...props }: Props): JSX.Element => {
   const { name, description, startDateTime, endDateTime } = reservation;
@@ -23,7 +18,7 @@ const ReservationListItem = ({ reservation, control, status, ...props }: Props):
   return (
     <Styled.Item role="listitem" {...props}>
       <Styled.InfoWrapper status={status}>
-        {status && <Styled.StatusBadge status={status}>{statusText[status]}</Styled.StatusBadge>}
+        {status && <Styled.StatusBadge status={status}>{status}</Styled.StatusBadge>}
         <Styled.Info>
           <Styled.Name>
             <span>{name}</span>

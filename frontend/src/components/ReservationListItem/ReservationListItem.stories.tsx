@@ -2,6 +2,7 @@ import { Story } from '@storybook/react';
 import { ReactComponent as DeleteIcon } from 'assets/svg/delete.svg';
 import { ReactComponent as EditIcon } from 'assets/svg/edit.svg';
 import IconButton from 'components/IconButton/IconButton';
+import { ReservationStatus } from 'types/common';
 import ReservationListItem, { Props } from './ReservationListItem';
 
 export default {
@@ -52,7 +53,7 @@ StatusUsing.args = {
     startDateTime: '2021-07-09T20:00:00',
     endDateTime: '2021-07-09T21:00:00',
   },
-  status: 'using',
+  status: ReservationStatus.using,
 };
 
 export const StatusDone = Template.bind({});
@@ -64,5 +65,5 @@ StatusDone.args = {
     startDateTime: '2021-07-09T20:00:00',
     endDateTime: '2021-07-09T21:00:00',
   },
-  status: 'done',
+  status: ReservationStatus.done,
 };

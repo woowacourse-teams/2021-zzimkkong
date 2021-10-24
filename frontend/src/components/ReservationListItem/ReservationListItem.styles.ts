@@ -1,7 +1,8 @@
 import styled, { css } from 'styled-components';
+import { ReservationStatus } from 'types/common';
 
 interface StatusProps {
-  status?: 'using' | 'done';
+  status?: ReservationStatus;
 }
 
 export const Item = styled.div`
@@ -16,8 +17,8 @@ export const Item = styled.div`
 `;
 
 const infoStyles = {
-  using: null,
-  done: css`
+  [ReservationStatus.using]: null,
+  [ReservationStatus.done]: css`
     color: ${({ theme }) => theme.gray[400]};
   `,
 };
@@ -53,11 +54,11 @@ export const Time = styled.p`
 `;
 
 const badgeStyles = {
-  using: css`
+  [ReservationStatus.using]: css`
     border-color: ${({ theme }) => theme.primary[500]};
     color: ${({ theme }) => theme.primary[500]};
   `,
-  done: css`
+  [ReservationStatus.done]: css`
     border-color: ${({ theme }) => theme.gray[400]};
     color: ${({ theme }) => theme.gray[400]};
   `,
