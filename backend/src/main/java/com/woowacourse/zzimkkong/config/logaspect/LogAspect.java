@@ -35,18 +35,19 @@ public class LogAspect {
         long endTime = System.currentTimeMillis();
         long timeTaken = endTime - startTime;
 
+        MethodSignature methodSignature = (MethodSignature) joinPoint.getSignature();
+        final Class<?> declaringType = methodSignature.getDeclaringType();
+        final Method method = methodSignature.getMethod();
+
         String logGroup = getLogGroupFromAnnotation(joinPoint);
 
-        MethodSignature methodSignature = (MethodSignature) joinPoint.getSignature();
-
-        logExecutionInfo(methodSignature, timeTaken, logGroup);
+        logExecutionInfo(declaringType, method, timeTaken, logGroup);
 
         return result;
     }
 
     @Around("execution(public * org.springframework.data.repository.Repository+.*(..))")
     public Object logExecutionTimeOfRepository(ProceedingJoinPoint joinPoint) throws Throwable {
-
         long startTime = System.currentTimeMillis();
         Object result = joinPoint.proceed();
         long endTime = System.currentTimeMillis();
@@ -57,7 +58,6 @@ public class LogAspect {
         Class<?> declaringType = methodSignature.getDeclaringType();
 
         Object target = joinPoint.getTarget();
-
         Class<?> typeToLog = repositoryClasses.stream()
                 .filter(repositoryClass -> repositoryClass.isInstance(target))
                 .findAny()
@@ -71,13 +71,6 @@ public class LogAspect {
     private String getLogGroupFromAnnotation(ProceedingJoinPoint joinPoint) {
         Class<?> targetClass = joinPoint.getTarget().getClass();
         return targetClass.getAnnotation(LogMethodExecutionTime.class).group();
-    }
-
-    private static void logExecutionInfo(MethodSignature methodSignature, long timeTaken, String logGroup) {
-        final Class<?> declaringType = methodSignature.getDeclaringType();
-        final Method method = methodSignature.getMethod();
-
-        logExecutionInfo(declaringType, method, timeTaken, logGroup);
     }
 
     private static void logExecutionInfo(Class<?> type, Method method, long timeTaken, String logGroup) {
