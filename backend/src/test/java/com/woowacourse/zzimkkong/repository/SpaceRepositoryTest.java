@@ -88,7 +88,7 @@ class SpaceRepositoryTest extends RepositoryTest {
 
         // when
         PageRequest pageRequest = PageRequest.of(0, 20, Sort.unsorted());
-        Page<Space> actual = spaces.findAll(pageRequest);
+        Page<Space> actual = spaces.findAllByFetch(pageRequest);
 
         // then
         assertThat(actual.getSize()).isEqualTo(20);

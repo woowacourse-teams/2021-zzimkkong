@@ -45,7 +45,7 @@ public class Space {
     @Embedded
     private Setting setting;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "map_id", foreignKey = @ForeignKey(name = "fk_space_map"), nullable = false)
     private Map map;
 

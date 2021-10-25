@@ -227,7 +227,7 @@ class ReservationRepositoryTest extends RepositoryTest {
     void findAllByPaging() {
         // given, when
         PageRequest pageRequest = PageRequest.of(0, 20, Sort.unsorted());
-        Page<Reservation> actual = reservations.findAll(pageRequest);
+        Page<Reservation> actual = reservations.findAllByFetch(pageRequest);
 
         // then
         assertThat(actual.getSize()).isEqualTo(20);
