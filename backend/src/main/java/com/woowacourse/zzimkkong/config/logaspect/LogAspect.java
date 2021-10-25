@@ -30,24 +30,34 @@ public class LogAspect {
     @Around("@within(com.woowacourse.zzimkkong.config.logaspect.LogMethodExecutionTime)" +
             "&& execution(public * *.*(..))")
     public Object logExecutionTimeOfClassWithAnnotation(ProceedingJoinPoint joinPoint) throws Throwable {
-        long startTime = System.currentTimeMillis();
-        Object result = joinPoint.proceed();
-        long endTime = System.currentTimeMillis();
-        long timeTaken = endTime - startTime;
-
         MethodSignature methodSignature = (MethodSignature) joinPoint.getSignature();
-        final Class<?> declaringType = methodSignature.getDeclaringType();
-        final Method method = methodSignature.getMethod();
 
         String logGroup = getLogGroupFromAnnotation(joinPoint);
 
-        logExecutionInfo(declaringType, method, timeTaken, logGroup);
+        return proceedWithExecutionTime(joinPoint, methodSignature.getDeclaringType(), logGroup);
+    }
 
-        return result;
+    private String getLogGroupFromAnnotation(ProceedingJoinPoint joinPoint) {
+        Class<?> targetClass = joinPoint.getTarget().getClass();
+        return targetClass.getAnnotation(LogMethodExecutionTime.class).group();
     }
 
     @Around("execution(public * org.springframework.data.repository.Repository+.*(..))")
     public Object logExecutionTimeOfRepository(ProceedingJoinPoint joinPoint) throws Throwable {
+        Object target = joinPoint.getTarget();
+
+        MethodSignature methodSignature = (MethodSignature) joinPoint.getSignature();
+        Class<?> declaringType = methodSignature.getDeclaringType();
+        
+        Class<?> typeToLog = repositoryClasses.stream()
+                .filter(repositoryClass -> repositoryClass.isInstance(target))
+                .findAny()
+                .orElse(declaringType);
+
+        return proceedWithExecutionTime(joinPoint, typeToLog, GROUP_NAME_OF_REPOSITORY);
+    }
+
+    private static Object proceedWithExecutionTime(ProceedingJoinPoint joinPoint, Class<?> typeToLog, String logGroup) throws Throwable {
         long startTime = System.currentTimeMillis();
         Object result = joinPoint.proceed();
         long endTime = System.currentTimeMillis();
@@ -55,22 +65,10 @@ public class LogAspect {
 
         MethodSignature methodSignature = (MethodSignature) joinPoint.getSignature();
         Method method = methodSignature.getMethod();
-        Class<?> declaringType = methodSignature.getDeclaringType();
 
-        Object target = joinPoint.getTarget();
-        Class<?> typeToLog = repositoryClasses.stream()
-                .filter(repositoryClass -> repositoryClass.isInstance(target))
-                .findAny()
-                .orElse(declaringType);
-
-        logExecutionInfo(typeToLog, method, timeTaken, GROUP_NAME_OF_REPOSITORY);
+        logExecutionInfo(typeToLog, method, timeTaken, logGroup);
 
         return result;
-    }
-
-    private String getLogGroupFromAnnotation(ProceedingJoinPoint joinPoint) {
-        Class<?> targetClass = joinPoint.getTarget().getClass();
-        return targetClass.getAnnotation(LogMethodExecutionTime.class).group();
     }
 
     private static void logExecutionInfo(Class<?> type, Method method, long timeTaken, String logGroup) {
