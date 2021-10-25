@@ -1,5 +1,27 @@
 <included>
-    <include resource="appenders/file-appender-trace.xml"/>
+    <appender name="FILE_APPENDER_TRACE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+
+        <file>${FILE_PATH}/${DATE_FORMAT}/trace/trace.log</file>
+
+        <filter class="ch.qos.logback.classic.filter.LevelFilter">
+            <level>TRACE</level>
+            <onMatch>ACCEPT</onMatch>
+            <onMismatch>DENY</onMismatch>
+        </filter>
+
+        <encoder>
+            <pattern>${FILE_LOG_PATTERN}</pattern>
+        </encoder>
+
+        <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+            <fileNamePattern>${FILE_PATH}/%d{yyyy-MM-dd}/trace/trace_%i.log</fileNamePattern>
+            <maxFileSize>100MB</maxFileSize>
+            <maxHistory>100</maxHistory>
+            <totalSizeCap>10GB</totalSizeCap>
+        </rollingPolicy>
+
+    </appender>
+
     <appender name="ASYNC_FILE_APPENDER_TRACE" class="ch.qos.logback.classic.AsyncAppender">
         <appender-ref ref="FILE_APPENDER_TRACE" />
         <queueSize>1024</queueSize>
