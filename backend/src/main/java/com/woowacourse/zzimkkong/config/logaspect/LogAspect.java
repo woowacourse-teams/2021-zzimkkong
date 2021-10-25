@@ -18,7 +18,7 @@ import static net.logstash.logback.argument.StructuredArguments.value;
 @Aspect
 public class LogAspect {
     @Around("@within(com.woowacourse.zzimkkong.config.logaspect.LogMethodExecutionTime)" +
-            "$$ execution(public *.*(..))")
+            "&& execution(public * *.*(..))")
     public Object logExecutionTime(ProceedingJoinPoint joinPoint) throws Throwable {
         long startTime = System.currentTimeMillis();
         Object result = joinPoint.proceed();
