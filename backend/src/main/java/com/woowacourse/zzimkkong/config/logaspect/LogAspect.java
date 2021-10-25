@@ -1,5 +1,6 @@
 package com.woowacourse.zzimkkong.config.logaspect;
 
+import com.woowacourse.zzimkkong.repository.*;
 import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
@@ -7,9 +8,8 @@ import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.reflect.MethodSignature;
 import org.springframework.stereotype.Component;
 
-import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
-import java.lang.reflect.Proxy;
+import java.util.List;
 
 import static net.logstash.logback.argument.StructuredArguments.value;
 
@@ -17,9 +17,19 @@ import static net.logstash.logback.argument.StructuredArguments.value;
 @Component
 @Aspect
 public class LogAspect {
+    private static final String GROUP_NAME_OF_REPOSITORY = "repository";
+
+    private final List<Class<?>> repositoryClasses = List.of(
+            MemberRepository.class,
+            PresetRepository.class,
+            MapRepository.class,
+            SpaceRepository.class,
+            ReservationRepository.class
+    );
+
     @Around("@within(com.woowacourse.zzimkkong.config.logaspect.LogMethodExecutionTime)" +
             "&& execution(public * *.*(..))")
-    public Object logExecutionTime(ProceedingJoinPoint joinPoint) throws Throwable {
+    public Object logExecutionTimeOfClassWithAnnotation(ProceedingJoinPoint joinPoint) throws Throwable {
         long startTime = System.currentTimeMillis();
         Object result = joinPoint.proceed();
         long endTime = System.currentTimeMillis();
@@ -30,6 +40,30 @@ public class LogAspect {
         MethodSignature methodSignature = (MethodSignature) joinPoint.getSignature();
 
         logExecutionInfo(methodSignature, timeTaken, logGroup);
+
+        return result;
+    }
+
+    @Around("execution(public * org.springframework.data.repository.Repository+.*(..))")
+    public Object logExecutionTimeOfRepository(ProceedingJoinPoint joinPoint) throws Throwable {
+
+        long startTime = System.currentTimeMillis();
+        Object result = joinPoint.proceed();
+        long endTime = System.currentTimeMillis();
+        long timeTaken = endTime - startTime;
+
+        MethodSignature methodSignature = (MethodSignature) joinPoint.getSignature();
+        Method method = methodSignature.getMethod();
+        Class<?> declaringType = methodSignature.getDeclaringType();
+
+        Object target = joinPoint.getTarget();
+
+        Class<?> typeToLog = repositoryClasses.stream()
+                .filter(repositoryClass -> repositoryClass.isInstance(target))
+                .findAny()
+                .orElse(declaringType);
+
+        logExecutionInfo(typeToLog, method, timeTaken, GROUP_NAME_OF_REPOSITORY);
 
         return result;
     }
@@ -46,43 +80,10 @@ public class LogAspect {
         logExecutionInfo(declaringType, method, timeTaken, logGroup);
     }
 
-    private static void logExecutionInfo(Class<?> declaringType, Method method, long timeTaken, String logGroup) {
+    private static void logExecutionInfo(Class<?> type, Method method, long timeTaken, String logGroup) {
         log.info("{} took {} ms. (info group by '{}')",
-                value("method", declaringType.getName() + "." + method.getName() + "()"),
+                value("method", type.getName() + "." + method.getName() + "()"),
                 value("execution_time", timeTaken),
                 value("group", logGroup));
-    }
-
-    static <T> T createLogProxy(Object target, Class<T> requiredType, String logGroup) {
-        final LogProxyHandler logProxyHandler = new LogProxyHandler(target, requiredType, logGroup);
-        return requiredType.cast(
-                Proxy.newProxyInstance(
-                        requiredType.getClassLoader(),
-                        new Class[]{requiredType},
-                        logProxyHandler));
-    }
-
-    private static class LogProxyHandler implements InvocationHandler {
-        private final Object target;
-        private final Class<?> declaringType;
-        private final String logGroup;
-
-        public LogProxyHandler(Object target, Class<?> declaringType, String logGroup) {
-            this.target = target;
-            this.declaringType = declaringType;
-            this.logGroup = logGroup;
-        }
-
-        @Override
-        public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
-            long startTime = System.currentTimeMillis();
-            final Object invokeResult = method.invoke(target, args);
-            long endTime = System.currentTimeMillis();
-            long timeTaken = endTime - startTime;
-
-            logExecutionInfo(declaringType, method, timeTaken, logGroup);
-
-            return invokeResult;
-        }
     }
 }
