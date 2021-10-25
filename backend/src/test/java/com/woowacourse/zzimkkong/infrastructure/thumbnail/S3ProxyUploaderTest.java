@@ -89,7 +89,7 @@ class S3ProxyUploaderTest {
 
             String hostName = mockGithubServer.getHostName();
             int port = mockGithubServer.getPort();
-            S3ProxyUploader s3ProxyUploader = new S3ProxyUploader("http://" + hostName + ":" + port);
+            S3ProxyUploader s3ProxyUploader = new S3ProxyUploader("http://" + hostName + ":" + port, "secretKey");
 
             String filePath = getClass().getClassLoader().getResource("luther.png").getFile();
             testFile = new File(filePath);

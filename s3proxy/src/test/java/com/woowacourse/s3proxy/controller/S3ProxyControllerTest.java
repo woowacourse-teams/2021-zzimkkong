@@ -7,7 +7,10 @@ import io.restassured.response.Response;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.context.annotation.PropertySource;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.web.multipart.MultipartFile;
@@ -25,9 +28,13 @@ import static org.springframework.restdocs.request.RequestDocumentation.paramete
 import static org.springframework.restdocs.request.RequestDocumentation.pathParameters;
 import static org.springframework.restdocs.restassured3.RestAssuredRestDocumentation.document;
 
+@PropertySource("classpath:config/s3proxy.properties")
 class S3ProxyControllerTest extends AcceptanceTest {
     @MockBean
     S3Uploader s3Uploader;
+
+    @Value("${s3proxy.secret-key.prod}")
+    private String secretKey;
 
     @BeforeEach
     void setUp() {
@@ -72,6 +79,7 @@ class S3ProxyControllerTest extends AcceptanceTest {
                         pathParameters(parameterWithName("directory").description("저장하고자 하는 스토리지 내의 디렉토리 이름"))))
                 .contentType(MediaType.MULTIPART_FORM_DATA_VALUE)
                 .multiPart("file", file)
+                .header(HttpHeaders.AUTHORIZATION, secretKey)
                 .pathParam("directory", directory)
                 .when().post("/api/storage/{directory}")
                 .then().log().all().extract();
@@ -85,6 +93,7 @@ class S3ProxyControllerTest extends AcceptanceTest {
                                 parameterWithName("directory").description("저장하고자 하는 스토리지 내의 디렉토리 이름"),
                                 parameterWithName("filename").description("삭제하고자 하는 파일의 이름(확장자 포함)"))))
                 .when()
+                .header(HttpHeaders.AUTHORIZATION, secretKey)
                 .pathParam("directory", directory)
                 .pathParam("filename", fileName)
                 .delete("/api/storage/{directory}/{filename}")
