@@ -50,12 +50,8 @@ export const isPastTime = (time: Date): boolean => {
   return time.getTime() < new Date().getTime();
 };
 
-export const isPastDay = (time: Date): boolean => {
-  return time.getTime() < new Date().getTime() - 1000 * 60 * 60 * 24;
-};
-
-export const isPastDayThanMinDay = (time: Date, minDay: Date = DATE.MIN_DATE): boolean => {
-  return time.getTime() < minDay.getTime();
+export const isPastDate = (time: Date, baseDate: Date = new Date()): boolean => {
+  return time.getTime() < baseDate.getTime() - 1000 * 60 * 60 * 24;
 };
 
 export const isFutureDate = (time: Date, baseDate: Date = new Date()): boolean => {

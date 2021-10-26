@@ -20,7 +20,7 @@ import useInput from 'hooks/useInput';
 import { ManagerMainState } from 'pages/ManagerMain/ManagerMain';
 import { ManagerSpaceAPI, Reservation } from 'types/common';
 import { ErrorResponse } from 'types/response';
-import { isFutureDate, isPastDay, isPastDayThanMinDay } from 'utils/datetime';
+import { isFutureDate, isPastDate } from 'utils/datetime';
 import * as Styled from './ManagerReservation.styles';
 import ManagerReservationForm from './units/ManagerReservationForm';
 
@@ -45,13 +45,11 @@ const ManagerReservation = (): JSX.Element => {
   const [date, , setDate] = useInput(selectedDate);
 
   const isEditMode = !!reservation;
-  const isPastDate = isPastDay(new Date(date));
-  const isPastDateThanMinDay = isPastDayThanMinDay(new Date(date));
 
   const getReservations = useManagerSpaceReservations(
     { mapId, spaceId: space.id, date },
     {
-      enabled: !isPastDateThanMinDay && !!date,
+      enabled: !isPastDate(new Date(date), DATE.MIN_DATE) && !!date,
     }
   );
   const reservations = getReservations.data?.data?.reservations ?? [];
@@ -113,7 +111,7 @@ const ManagerReservation = (): JSX.Element => {
       target: { value },
     } = event;
 
-    if (isPastDateThanMinDay) {
+    if (isPastDate(new Date(date), DATE.MIN_DATE)) {
       setDate(DATE.MIN_DATE_STRING);
       return;
     }
@@ -168,10 +166,11 @@ const ManagerReservation = (): JSX.Element => {
           {getReservations.isSuccess && reservations.length === 0 && (
             <Styled.Message>{MESSAGE.RESERVATION.SUGGESTION}</Styled.Message>
           )}
-          {getReservations.isSuccess && reservations.length === 0 && isPastDate && (
+          {getReservations.isSuccess && reservations.length === 0 && isPastDate(new Date(date)) && (
             <Styled.Message>{MESSAGE.RESERVATION.NOT_EXIST}</Styled.Message>
           )}
-          {(isPastDateThanMinDay || isFutureDate(new Date(date), DATE.MAX_DATE)) && (
+          {(isPastDate(new Date(date), DATE.MIN_DATE) ||
+            isFutureDate(new Date(date), DATE.MAX_DATE)) && (
             <Styled.Message>{MESSAGE.RESERVATION.NOT_EXIST}</Styled.Message>
           )}
           {getReservations.isSuccess && reservations.length > 0 && (
