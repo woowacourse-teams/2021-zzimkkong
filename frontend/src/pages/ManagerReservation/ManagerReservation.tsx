@@ -163,9 +163,11 @@ const ManagerReservation = (): JSX.Element => {
           {getReservations.isLoading && !getReservations.isLoadingError && (
             <Styled.Message>{MESSAGE.RESERVATION.PENDING}</Styled.Message>
           )}
-          {getReservations.isSuccess && reservations.length === 0 && (
-            <Styled.Message>{MESSAGE.RESERVATION.SUGGESTION}</Styled.Message>
-          )}
+          {getReservations.isSuccess &&
+            reservations.length === 0 &&
+            !isPastDate(new Date(date)) && (
+              <Styled.Message>{MESSAGE.RESERVATION.SUGGESTION}</Styled.Message>
+            )}
           {getReservations.isSuccess && reservations.length === 0 && isPastDate(new Date(date)) && (
             <Styled.Message>{MESSAGE.RESERVATION.NOT_EXIST}</Styled.Message>
           )}
