@@ -15,6 +15,7 @@ import { GuestMapState } from 'pages/GuestMap/GuestMap';
 import { Reservation, ScrollPosition, Space } from 'types/common';
 import { GuestPageURLParams } from 'types/guest';
 import { ErrorResponse } from 'types/response';
+import { getReservationStatus } from 'utils/reservation';
 import * as Styled from './GuestReservation.styles';
 import { GuestReservationSuccessState } from './GuestReservationSuccess';
 import GuestReservationForm from './units/GuestReservationForm';
@@ -164,7 +165,11 @@ const GuestReservation = (): JSX.Element => {
           {getReservations.isSuccess && reservations.length > 0 && (
             <Styled.ReservationList role="list">
               {reservations?.map((reservation) => (
-                <ReservationListItem key={reservation.id} reservation={reservation} />
+                <ReservationListItem
+                  key={reservation.id}
+                  reservation={reservation}
+                  status={getReservationStatus(reservation.startDateTime, reservation.endDateTime)}
+                />
               ))}
             </Styled.ReservationList>
           )}
