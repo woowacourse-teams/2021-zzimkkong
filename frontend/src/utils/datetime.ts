@@ -58,6 +58,6 @@ export const isPastDayThanMinDay = (time: Date, minDay: Date = DATE.MIN_DATE): b
   return time.getTime() < minDay.getTime();
 };
 
-export const isFutureDayThanMaxDay = (time: Date, maxDay: Date = DATE.MAX_DATE): boolean => {
-  return time.getTime() > maxDay.getTime();
+export const isFutureDate = (time: Date, baseDate: Date = new Date()): boolean => {
+  return time.getTime() > baseDate.getTime() + 1000 * 60 * 60 * 24;
 };

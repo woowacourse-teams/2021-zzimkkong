@@ -20,7 +20,7 @@ import useInput from 'hooks/useInput';
 import { ManagerMainState } from 'pages/ManagerMain/ManagerMain';
 import { ManagerSpaceAPI, Reservation } from 'types/common';
 import { ErrorResponse } from 'types/response';
-import { isFutureDayThanMaxDay, isPastDay, isPastDayThanMinDay } from 'utils/datetime';
+import { isFutureDate, isPastDay, isPastDayThanMinDay } from 'utils/datetime';
 import * as Styled from './ManagerReservation.styles';
 import ManagerReservationForm from './units/ManagerReservationForm';
 
@@ -47,7 +47,6 @@ const ManagerReservation = (): JSX.Element => {
   const isEditMode = !!reservation;
   const isPastDate = isPastDay(new Date(date));
   const isPastDateThanMinDay = isPastDayThanMinDay(new Date(date));
-  const isFutureDateThanMaxDay = isFutureDayThanMaxDay(new Date(date));
 
   const getReservations = useManagerSpaceReservations(
     { mapId, spaceId: space.id, date },
@@ -119,7 +118,7 @@ const ManagerReservation = (): JSX.Element => {
       return;
     }
 
-    if (isFutureDateThanMaxDay) {
+    if (isFutureDate(new Date(date), DATE.MAX_DATE)) {
       setDate(DATE.MAX_DATE_STRING);
       return;
     }
@@ -172,7 +171,7 @@ const ManagerReservation = (): JSX.Element => {
           {getReservations.isSuccess && reservations.length === 0 && isPastDate && (
             <Styled.Message>{MESSAGE.RESERVATION.NOT_EXIST}</Styled.Message>
           )}
-          {(isPastDateThanMinDay || isFutureDateThanMaxDay) && (
+          {(isPastDateThanMinDay || isFutureDate(new Date(date), DATE.MAX_DATE)) && (
             <Styled.Message>{MESSAGE.RESERVATION.NOT_EXIST}</Styled.Message>
           )}
           {getReservations.isSuccess && reservations.length > 0 && (

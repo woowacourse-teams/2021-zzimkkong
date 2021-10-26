@@ -4,7 +4,7 @@ import {
   formatDateWithDay,
   formatTimePrettier,
   formatTimeWithSecond,
-  isFutureDayThanMaxDay,
+  isFutureDate,
   isPastDay,
   isPastDayThanMinDay,
   isPastTime,
@@ -79,15 +79,15 @@ describe('datetime 관련 util 함수 테스트', () => {
     });
   });
 
-  describe('isFutureDayThanMaxDay Function Test', () => {
+  describe('isFutureDate Function Test', () => {
     test('Date가 MAX_DATE(2100-12-31)보다 이후 날짜이면 true를 반환한다.', () => {
-      expect(isFutureDayThanMaxDay(new Date(DATE.MAX_DATE.getTime() + 8.64e8))).toBe(true);
-      expect(isFutureDayThanMaxDay(new Date('9999-12-30'))).toBe(true);
+      expect(isFutureDate(new Date(DATE.MAX_DATE.getTime() + 8.64e8), DATE.MAX_DATE)).toBe(true);
+      expect(isFutureDate(new Date('9999-12-30'), DATE.MAX_DATE)).toBe(true);
     });
 
     test('Date가 MAX_DATE(2100-12-31)보다 이전 날짜이면 false를 반환한다.', () => {
-      expect(isFutureDayThanMaxDay(new Date(DATE.MAX_DATE.getTime() - 8.64e8))).toBe(false);
-      expect(isFutureDayThanMaxDay(new Date('0001-01-01'))).toBe(false);
+      expect(isFutureDate(new Date(DATE.MAX_DATE.getTime() - 8.64e8), DATE.MAX_DATE)).toBe(false);
+      expect(isFutureDate(new Date('0001-01-01'), DATE.MAX_DATE)).toBe(false);
     });
   });
 });
