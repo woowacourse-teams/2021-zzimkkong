@@ -65,18 +65,28 @@ describe('datetime 관련 util 함수 테스트', () => {
       expect(isPastDate(new Date('Wed Oct 13 2030 18:48:47 GMT+0900 (한국 표준시)'))).toBe(false);
     });
 
-    test('Date가 MIN_DAY(2000-01-01)보다 이전 날짜이면 true를 반환한다.', () => {
+    test('Date가 MIN_DATE(2000-01-01)보다 이전 날짜이면 true를 반환한다.', () => {
       expect(isPastDate(new Date(DATE.MIN_DATE.getTime() - 8.64e8), DATE.MIN_DATE)).toBe(true);
       expect(isPastDate(new Date('0001-01-01'), DATE.MIN_DATE)).toBe(true);
     });
 
-    test('Date가 MIN_DAY(2000-01-01)보다 이후 날짜이면 false를 반환한다.', () => {
-      expect(isPastDate(new Date(DATE.MIN_DATE.getTime() + 8.64e8))).toBe(false);
+    test('Date가 MIN_DATE(2000-01-01)보다 이후 날짜이면 false를 반환한다.', () => {
+      expect(isPastDate(new Date(DATE.MIN_DATE.getTime() + 8.64e8), DATE.MIN_DATE)).toBe(false);
       expect(isPastDate(new Date('9999-12-30'))).toBe(false);
     });
   });
 
   describe('isFutureDate Function Test', () => {
+    test('Date가 현재 날짜보다 이후 날짜이면 true를 반환한다.', () => {
+      expect(isFutureDate(new Date('2120-11-17T00:00:00.000Z'))).toBe(true);
+      expect(isFutureDate(new Date('Wed Oct 13 2120 18:48:47 GMT+0900 (한국 표준시)'))).toBe(true);
+    });
+
+    test('Date가 현재 날짜보다 이전 날짜이면 false를 반환한다.', () => {
+      expect(isFutureDate(new Date('2000-11-17T00:00:00.000Z'))).toBe(false);
+      expect(isFutureDate(new Date('Wed Oct 13 2000 18:48:47 GMT+0900 (한국 표준시)'))).toBe(false);
+    });
+
     test('Date가 MAX_DATE(2100-12-31)보다 이후 날짜이면 true를 반환한다.', () => {
       expect(isFutureDate(new Date(DATE.MAX_DATE.getTime() + 8.64e8), DATE.MAX_DATE)).toBe(true);
       expect(isFutureDate(new Date('9999-12-30'), DATE.MAX_DATE)).toBe(true);
