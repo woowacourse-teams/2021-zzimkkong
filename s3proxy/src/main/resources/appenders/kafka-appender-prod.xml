@@ -1,0 +1,11 @@
+<included>
+    <appender name="KAFKA_APPENDER_DEV" class="com.github.danielwegener.logback.kafka.KafkaAppender">
+        <encoder class="net.logstash.logback.encoder.LogstashEncoder"/>
+
+        <topic>logstash-s3proxy</topic>
+        <keyingStrategy class="com.github.danielwegener.logback.kafka.keying.NoKeyKeyingStrategy" />
+        <deliveryStrategy class="com.github.danielwegener.logback.kafka.delivery.AsynchronousDeliveryStrategy" />
+
+        <producerConfig>bootstrap.servers=192.168.2.242:8080,192.168.2.150:8080,192.168.2.152:8080</producerConfig>
+    </appender>
+</included>

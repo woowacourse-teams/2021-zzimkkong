@@ -17,6 +17,7 @@ import { Reservation, ScrollPosition, Space } from 'types/common';
 import { GuestPageURLParams } from 'types/guest';
 import { ErrorResponse } from 'types/response';
 import { isFutureDate, isPastDate } from 'utils/datetime';
+import { getReservationStatus } from 'utils/reservation';
 import * as Styled from './GuestReservation.styles';
 import { GuestReservationSuccessState } from './GuestReservationSuccess';
 import GuestReservationForm from './units/GuestReservationForm';
@@ -38,10 +39,11 @@ const GuestReservation = (): JSX.Element => {
   const history = useHistory<GuestReservationSuccessState | GuestMapState>();
   const { sharingMapId } = useParams<GuestPageURLParams>();
 
+  if (!location.state?.mapId || !location.state?.space) {
+    history.replace(HREF.GUEST_MAP(sharingMapId));
+  }
+
   const { mapId, space, selectedDate, scrollPosition, reservation } = location.state;
-
-  if (!mapId || !space) history.replace(HREF.GUEST_MAP(sharingMapId));
-
   const [date, , setDate] = useInput(selectedDate);
 
   const isEditMode = !!reservation;
@@ -197,7 +199,11 @@ const GuestReservation = (): JSX.Element => {
           {getReservations.isSuccess && reservations.length > 0 && (
             <Styled.ReservationList role="list">
               {reservations?.map((reservation) => (
-                <ReservationListItem key={reservation.id} reservation={reservation} />
+                <ReservationListItem
+                  key={reservation.id}
+                  reservation={reservation}
+                  status={getReservationStatus(reservation.startDateTime, reservation.endDateTime)}
+                />
               ))}
             </Styled.ReservationList>
           )}

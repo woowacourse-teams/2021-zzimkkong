@@ -5,7 +5,8 @@ import IconButton from 'components/IconButton/IconButton';
 import ReservationListItem from 'components/ReservationListItem/ReservationListItem';
 import useGuestReservations from 'hooks/query/useGuestReservations';
 import { Reservation, Space } from 'types/common';
-import { formatDate, isPastDate, isPastTime } from 'utils/datetime';
+import { formatDate, isPastDay, isPastTime } from 'utils/datetime';
+import { getReservationStatus } from 'utils/reservation';
 import * as Styled from './ReservationDrawer.styles';
 
 interface Props {
@@ -63,33 +64,36 @@ const ReservationDrawer = ({
 
         {getReservations.isSuccess && reservations.length > 0 && (
           <Styled.ReservationList role="list">
-            {reservations.map((reservation: Reservation) => (
-              <ReservationListItem
-                key={reservation.id}
-                data-testid={`reservation-${reservation.id}`}
-                reservation={reservation}
-                control={
-                  !isPastTime(new Date(reservation.endDateTime)) && (
-                    <Styled.IconButtonWrapper>
-                      <IconButton
-                        size="small"
-                        onClick={() => onEdit(reservation)}
-                        aria-label="수정"
-                      >
-                        <EditIcon width="100%" height="100%" />
-                      </IconButton>
-                      <IconButton
-                        size="small"
-                        onClick={() => onDelete(reservation)}
-                        aria-label="삭제"
-                      >
-                        <DeleteIcon width="100%" height="100%" />
-                      </IconButton>
-                    </Styled.IconButtonWrapper>
-                  )
-                }
-              />
-            ))}
+            {reservations.map((reservation: Reservation) => {
+              return (
+                <ReservationListItem
+                  key={reservation.id}
+                  data-testid={`reservation-${reservation.id}`}
+                  reservation={reservation}
+                  status={getReservationStatus(reservation.startDateTime, reservation.endDateTime)}
+                  control={
+                    !isPastTime(new Date(reservation.endDateTime)) && (
+                      <Styled.IconButtonWrapper>
+                        <IconButton
+                          size="small"
+                          onClick={() => onEdit(reservation)}
+                          aria-label="수정"
+                        >
+                          <EditIcon width="100%" height="100%" />
+                        </IconButton>
+                        <IconButton
+                          size="small"
+                          onClick={() => onDelete(reservation)}
+                          aria-label="삭제"
+                        >
+                          <DeleteIcon width="100%" height="100%" />
+                        </IconButton>
+                      </Styled.IconButtonWrapper>
+                    )
+                  }
+                />
+              );
+            })}
           </Styled.ReservationList>
         )}
       </Styled.ReservationContainer>

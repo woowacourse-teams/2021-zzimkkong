@@ -21,6 +21,7 @@ import { ManagerMainState } from 'pages/ManagerMain/ManagerMain';
 import { ManagerSpaceAPI, Reservation } from 'types/common';
 import { ErrorResponse } from 'types/response';
 import { isFutureDate, isPastDate } from 'utils/datetime';
+import { getReservationStatus } from 'utils/reservation';
 import * as Styled from './ManagerReservation.styles';
 import ManagerReservationForm from './units/ManagerReservationForm';
 
@@ -178,7 +179,11 @@ const ManagerReservation = (): JSX.Element => {
           {getReservations.isSuccess && reservations.length > 0 && (
             <Styled.ReservationList role="list">
               {reservations?.map((reservation) => (
-                <ReservationListItem key={reservation.id} reservation={reservation} />
+                <ReservationListItem
+                  key={reservation.id}
+                  reservation={reservation}
+                  status={getReservationStatus(reservation.startDateTime, reservation.endDateTime)}
+                />
               ))}
             </Styled.ReservationList>
           )}

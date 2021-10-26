@@ -54,7 +54,7 @@ const GuestMap = (): JSX.Element => {
     { sharingMapId },
     {
       onError: () => {
-        history.push(PATH.NOT_FOUND[1]);
+        history.replace(PATH.NOT_FOUND);
       },
       onSuccess: (response) => {
         const mapData = response.data;
@@ -164,7 +164,7 @@ const GuestMap = (): JSX.Element => {
 
   useEffect(() => {
     if (scrollPosition) {
-      mapRef?.current?.scrollTo(scrollPosition.x ?? 0, scrollPosition.y ?? 0);
+      mapRef.current?.scrollTo(scrollPosition.x ?? 0, scrollPosition.y ?? 0);
     }
   }, [scrollPosition]);
 
