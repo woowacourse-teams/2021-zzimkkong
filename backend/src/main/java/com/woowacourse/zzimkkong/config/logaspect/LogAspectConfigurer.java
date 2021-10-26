@@ -1,7 +1,6 @@
 package com.woowacourse.zzimkkong.config.logaspect;
 
 import com.woowacourse.zzimkkong.exception.config.logaspect.InvalidModifiableBeanFactoryException;
-import org.springframework.beans.factory.BeanFactoryUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;
@@ -14,7 +13,7 @@ import java.util.List;
 public abstract class LogAspectConfigurer {
     private ConfigurableListableBeanFactory beanFactory;
     private BeanDefinitionRegistry beanDefinitionRegistry;
-    private final LogProxyRegistrationEntries logProxyRegistrationEntries = new LogProxyRegistrationEntries();
+    private final LogRegistry logRegistry = new LogRegistry();
 
     @Autowired
     public final void setBeanFactory(ConfigurableListableBeanFactory beanFactory) {
@@ -27,62 +26,62 @@ public abstract class LogAspectConfigurer {
 
     @PostConstruct
     protected final void init() {
-        registerProxyBeans(logProxyRegistrationEntries);
+        registerBeans(logRegistry);
 
-        final List<LogProxyRegistrationEntry> beanClassesForReplacingByProxy = logProxyRegistrationEntries.getLogProxyRegistrationEntries();
-        for (LogProxyRegistrationEntry logProxyRegistrationEntry : beanClassesForReplacingByProxy) {
-            replaceByProxy(logProxyRegistrationEntry.getBeanClass(), logProxyRegistrationEntry.getLogGroup());
+        final List<LogTargetEntry> logTargetEntries = logRegistry.getLogTargetEntries();
+
+        for (LogTargetEntry logTargetEntry : logTargetEntries) {
+            replaceByProxy(logTargetEntry.getTargetClass(), logTargetEntry.getLogGroup());
         }
     }
 
-    abstract protected void registerProxyBeans(final LogProxyRegistrationEntries logProxyRegistrationEntries);
+    abstract protected void registerBeans(final LogRegistry logRegistry);
 
-    private void replaceByProxy(Class<?> beanClass, String logGroupName) {
-        String[] beanNames = beanFactory.getBeanNamesForType(beanClass);
+    private void replaceByProxy(Class<?> targetClass, String logGroupName) {
+        String[] beanNames = beanFactory.getBeanNamesForType(targetClass);
 
         for (String beanName : beanNames) {
-            replaceByProxy(beanName, beanClass, logGroupName);
+            replaceByProxy(beanName, targetClass, logGroupName);
         }
     }
 
-    private void replaceByProxy(String beanName, Class<?> proxyClass, String logGroupName) {
+    private void replaceByProxy(String beanName, Class<?> targetClass, String logGroupName) {
         final Object target = beanFactory.getBean(beanName);
         final BeanDefinition targetBeanDefinition = beanFactory.getBeanDefinition(beanName);
 
-        final String transformedBeanName = BeanFactoryUtils.transformedBeanName(beanName);
-        beanDefinitionRegistry.removeBeanDefinition(transformedBeanName);
-        beanDefinitionRegistry.registerBeanDefinition(transformedBeanName, targetBeanDefinition);
+        beanDefinitionRegistry.removeBeanDefinition(beanName);
+        beanDefinitionRegistry.registerBeanDefinition(beanName, targetBeanDefinition);
 
-        final Object logProxy = LogAspect.createLogProxy(target, proxyClass, logGroupName);
-        beanFactory.registerSingleton(transformedBeanName, logProxy);
+        final Object logProxy = LogAspect.createLogProxy(target, targetClass, logGroupName);
+        beanFactory.registerSingleton(beanName, logProxy);
     }
 
-    public final static class LogProxyRegistrationEntries {
-        private final List<LogProxyRegistrationEntry> logProxyRegistrationEntries = new ArrayList<>();
+    public final static class LogRegistry {
+        private final List<LogTargetEntry> entries = new ArrayList<>();
 
-        private LogProxyRegistrationEntries() {
+        private LogRegistry() {
         }
 
         public void add(Class<?> clazz, String logGroup) {
-            this.logProxyRegistrationEntries.add(new LogProxyRegistrationEntry(clazz, logGroup));
+            this.entries.add(new LogTargetEntry(clazz, logGroup));
         }
 
-        private List<LogProxyRegistrationEntry> getLogProxyRegistrationEntries() {
-            return logProxyRegistrationEntries;
+        private List<LogTargetEntry> getLogTargetEntries() {
+            return entries;
         }
     }
 
-    private static class LogProxyRegistrationEntry {
-        Class<?> beanClass;
+    private static class LogTargetEntry {
+        Class<?> targetClass;
         String logGroup;
 
-        private LogProxyRegistrationEntry(Class<?> beanClass, String logGroup) {
-            this.beanClass = beanClass;
+        private LogTargetEntry(Class<?> targetClass, String logGroup) {
+            this.targetClass = targetClass;
             this.logGroup = logGroup;
         }
 
-        private Class<?> getBeanClass() {
-            return beanClass;
+        private Class<?> getTargetClass() {
+            return targetClass;
         }
 
         private String getLogGroup() {
