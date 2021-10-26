@@ -5,7 +5,7 @@ import IconButton from 'components/IconButton/IconButton';
 import ReservationListItem from 'components/ReservationListItem/ReservationListItem';
 import useGuestReservations from 'hooks/query/useGuestReservations';
 import { Reservation, Space } from 'types/common';
-import { formatDate, isPastDay, isPastTime } from 'utils/datetime';
+import { formatDate, isPastDate, isPastTime } from 'utils/datetime';
 import { getReservationStatus } from 'utils/reservation';
 import * as Styled from './ReservationDrawer.styles';
 
