@@ -1,7 +1,7 @@
 import { ChangeEventHandler } from 'react';
 import { ReactComponent as CalendarIcon } from 'assets/svg/calendar.svg';
-import Button from 'components/Button/Button';
 import Input from 'components/Input/Input';
+import DATE from 'constants/date';
 import MESSAGE from 'constants/message';
 import REGEXP from 'constants/regexp';
 import RESERVATION from 'constants/reservation';
@@ -9,7 +9,7 @@ import TIME from 'constants/time';
 import useInputs from 'hooks/useInputs';
 import useScrollToTop from 'hooks/useScrollToTop';
 import { Reservation, Space } from 'types/common';
-import { formatDate, formatTime, formatTimePrettier } from 'utils/datetime';
+import { formatDate, formatTime, formatTimePrettier, isPastDate } from 'utils/datetime';
 import { EditReservationParams } from '../GuestReservation';
 import * as Styled from './GuestReservationForm.styles';
 
@@ -128,7 +128,8 @@ const GuestReservationForm = ({
             label="날짜"
             icon={<CalendarIcon />}
             value={date}
-            min={formatDate(now)}
+            min={DATE.MIN_DATE_STRING}
+            max={DATE.MAX_DATE_STRING}
             onChange={onChangeDate}
             required
           />
@@ -178,9 +179,14 @@ const GuestReservationForm = ({
         </Styled.InputWrapper>
       </Styled.Section>
       <Styled.ButtonWrapper>
-        <Button fullWidth variant="primary" size="large">
+        <Styled.ReservationButton
+          fullWidth
+          variant="primary"
+          size="large"
+          disabled={isPastDate(new Date(date))}
+        >
           {isEditMode ? MESSAGE.RESERVATION.EDIT : MESSAGE.RESERVATION.CREATE}
-        </Button>
+        </Styled.ReservationButton>
       </Styled.ButtonWrapper>
     </Styled.ReservationForm>
   );

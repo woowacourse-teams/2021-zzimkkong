@@ -12,6 +12,7 @@ import Header from 'components/Header/Header';
 import Layout from 'components/Layout/Layout';
 import PageHeader from 'components/PageHeader/PageHeader';
 import ReservationListItem from 'components/ReservationListItem/ReservationListItem';
+import DATE from 'constants/date';
 import MESSAGE from 'constants/message';
 import PATH from 'constants/path';
 import useManagerSpaceReservations from 'hooks/query/useManagerSpaceReservations';
@@ -19,6 +20,7 @@ import useInput from 'hooks/useInput';
 import { ManagerMainState } from 'pages/ManagerMain/ManagerMain';
 import { ManagerSpaceAPI, Reservation } from 'types/common';
 import { ErrorResponse } from 'types/response';
+import { isFutureDate, isPastDate } from 'utils/datetime';
 import { getReservationStatus } from 'utils/reservation';
 import * as Styled from './ManagerReservation.styles';
 import ManagerReservationForm from './units/ManagerReservationForm';
@@ -41,11 +43,16 @@ const ManagerReservation = (): JSX.Element => {
 
   if (!mapId || !space) history.replace(PATH.MANAGER_MAIN);
 
-  const [date, onChangeDate] = useInput(selectedDate);
+  const [date, , setDate] = useInput(selectedDate);
 
   const isEditMode = !!reservation;
 
-  const getReservations = useManagerSpaceReservations({ mapId, spaceId: space.id, date });
+  const getReservations = useManagerSpaceReservations(
+    { mapId, spaceId: space.id, date },
+    {
+      enabled: !isPastDate(new Date(date), DATE.MIN_DATE) && !!date,
+    }
+  );
   const reservations = getReservations.data?.data?.reservations ?? [];
 
   const addReservation = useMutation(postManagerReservation, {
@@ -100,6 +107,24 @@ const ManagerReservation = (): JSX.Element => {
     });
   };
 
+  const handleChangeDate = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const {
+      target: { value },
+    } = event;
+
+    if (isPastDate(new Date(date), DATE.MIN_DATE)) {
+      setDate(DATE.MIN_DATE_STRING);
+      return;
+    }
+
+    if (isFutureDate(new Date(date), DATE.MAX_DATE)) {
+      setDate(DATE.MAX_DATE_STRING);
+      return;
+    }
+
+    setDate(value);
+  };
+
   useEffect(() => {
     return history.listen((location) => {
       if (
@@ -127,7 +152,7 @@ const ManagerReservation = (): JSX.Element => {
           space={space}
           reservation={reservation}
           date={date}
-          onChangeDate={onChangeDate}
+          onChangeDate={handleChangeDate}
           onCreateReservation={createReservation}
           onEditReservation={editReservation}
         />
@@ -139,8 +164,17 @@ const ManagerReservation = (): JSX.Element => {
           {getReservations.isLoading && !getReservations.isLoadingError && (
             <Styled.Message>{MESSAGE.RESERVATION.PENDING}</Styled.Message>
           )}
-          {getReservations.isSuccess && reservations.length === 0 && (
-            <Styled.Message>{MESSAGE.RESERVATION.SUGGESTION}</Styled.Message>
+          {getReservations.isSuccess &&
+            reservations.length === 0 &&
+            !isPastDate(new Date(date)) && (
+              <Styled.Message>{MESSAGE.RESERVATION.SUGGESTION}</Styled.Message>
+            )}
+          {getReservations.isSuccess && reservations.length === 0 && isPastDate(new Date(date)) && (
+            <Styled.Message>{MESSAGE.RESERVATION.NOT_EXIST}</Styled.Message>
+          )}
+          {(isPastDate(new Date(date), DATE.MIN_DATE) ||
+            isFutureDate(new Date(date), DATE.MAX_DATE)) && (
+            <Styled.Message>{MESSAGE.RESERVATION.NOT_EXIST}</Styled.Message>
           )}
           {getReservations.isSuccess && reservations.length > 0 && (
             <Styled.ReservationList role="list">

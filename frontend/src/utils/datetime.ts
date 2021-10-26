@@ -1,3 +1,5 @@
+import DATE from 'constants/date';
+
 // Note: YYYY-MM-DD 형식으로 변환함
 export const formatDate = (value: Date): string => {
   const year = value.getFullYear();
@@ -44,10 +46,14 @@ export const formatTimePrettier = (minutes: number): string => {
   return `${hour ? `${hour}시간` : ''}${minute ? ' ' : ''}${minute ? `${minute}분` : ''}`;
 };
 
-export const isPastTime = (time: Date): boolean => {
-  return time.getTime() < new Date().getTime();
+export const isPastTime = (time: Date, baseDate: Date = new Date()): boolean => {
+  return time.getTime() < baseDate.getTime();
 };
 
-export const isPastDay = (time: Date): boolean => {
-  return time.getTime() < new Date().getTime() - 1000 * 60 * 60 * 24;
+export const isPastDate = (time: Date, baseDate: Date = new Date()): boolean => {
+  return time.getTime() < baseDate.getTime() - 1000 * 60 * 60 * 24;
+};
+
+export const isFutureDate = (time: Date, baseDate: Date = new Date()): boolean => {
+  return time.getTime() > baseDate.getTime() + 1000 * 60 * 60 * 24;
 };
