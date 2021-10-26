@@ -19,7 +19,7 @@ public class ThumbnailManagerImpl implements ThumbnailManager {
     public ThumbnailManagerImpl(
             final SvgConverter svgConverter,
             final StorageUploader storageUploader,
-            @Value("${s3proxy.thumbnails-directory}") final String thumbnailsDirectoryName) {
+            @Value("${storage.thumbnails-directory}") final String thumbnailsDirectoryName) {
         this.svgConverter = svgConverter;
         this.storageUploader = storageUploader;
         this.thumbnailsDirectoryName = thumbnailsDirectoryName;

@@ -91,7 +91,7 @@ class PresetServiceTest extends ServiceTest {
         Preset secondPreset = new Preset(2L, PRESET_NAME2, setting, pobi);
 
         List<Preset> expectedPresets = List.of(firstPreset, secondPreset);
-        given(members.findByEmail(anyString()))
+        given(members.findByEmailWithFetchPresets(anyString()))
                 .willReturn(Optional.of(pobi));
 
         //when
@@ -107,7 +107,7 @@ class PresetServiceTest extends ServiceTest {
     void delete() {
         //given
         Preset savedPreset = new Preset(1L, PRESET_NAME1, setting, pobi);
-        given(members.findByEmail(anyString()))
+        given(members.findByEmailWithFetchPresets(anyString()))
                 .willReturn(Optional.of(pobi));
 
         //when, then
@@ -122,7 +122,7 @@ class PresetServiceTest extends ServiceTest {
         LoginEmailDto anotherEmail = LoginEmailDto.from(NEW_EMAIL);
         Member anotherMember = new Member(NEW_EMAIL, PW, ORGANIZATION);
 
-        given(members.findByEmail(anyString()))
+        given(members.findByEmailWithFetchPresets(anyString()))
                 .willReturn(Optional.of(anotherMember));
         Long savedPresetId = savedPreset.getId();
 
@@ -134,7 +134,7 @@ class PresetServiceTest extends ServiceTest {
     @DisplayName("프리셋 삭제 요청 시, 프리셋이 존재하지 않으면 예외가 발생한다.")
     void deleteInvalidPresetException() {
         //given, when
-        given(members.findByEmail(anyString()))
+        given(members.findByEmailWithFetchPresets(anyString()))
                 .willReturn(Optional.of(pobi));
 
         //then

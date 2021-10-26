@@ -1,4 +1,5 @@
 import styled from 'styled-components';
+import Button from 'components/Button/Button';
 
 export const ReservationForm = styled.form`
   margin: 1.5rem 0 0;
@@ -33,4 +34,12 @@ export const TimeFormMessage = styled.p`
   font-size: 0.75rem;
   height: 1em;
   color: ${({ theme }) => theme.gray[500]};
+`;
+
+export const ReservationButton = styled(Button)`
+  &:disabled {
+    background-color: ${({ theme }) => theme.gray[400]};
+    color: ${({ theme }) => theme.gray[300]};
+    cursor: not-allowed;
+  }
 `;

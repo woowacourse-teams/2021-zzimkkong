@@ -76,19 +76,20 @@ public class AdminService {
     }
 
     public MapsResponse findMaps(Pageable pageable) {
-        Page<MapFindResponse> allMaps = maps.findAll(pageable)
+        Page<MapFindResponse> allMaps = maps
+                .findAllByFetch(pageable)
                 .map(map -> MapFindResponse.ofAdmin(map, sharingIdGenerator.from(map)));
 
         return MapsResponse.of(allMaps.getContent(), PageInfo.from(allMaps));
     }
 
     public SpacesResponse findSpaces(Pageable pageable) {
-        Page<Space> allSpaces = spaces.findAll(pageable);
+        Page<Space> allSpaces = spaces.findAllByFetch(pageable);
         return SpacesResponse.from(allSpaces);
     }
 
     public ReservationsResponse findReservations(Pageable pageable) {
-        Page<Reservation> allReservations = reservations.findAll(pageable);
+        Page<Reservation> allReservations = reservations.findAllByFetch(pageable);
         return ReservationsResponse.from(allReservations);
     }
 }
