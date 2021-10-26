@@ -16,19 +16,19 @@ const TimePickerOptions = ({ time, step = 1, onChange }: Props): JSX.Element => 
   const optionRef = useRef<HTMLLabelElement>(null);
 
   useEffect(() => {
-    if (time === null || optionRef.current === null) return;
+    if (!time || !optionRef.current) return;
 
     const optionHeight = optionRef.current.offsetHeight;
 
-    if (middayRef.current !== null) {
+    if (middayRef.current) {
       middayRef.current.scrollTo(0, time.midday === Midday.AM ? 0 : optionHeight);
     }
 
-    if (hourRef.current !== null) {
+    if (hourRef.current) {
       hourRef.current.scrollTo(0, (time.hour - 1) * optionHeight);
     }
 
-    if (minuteRef.current !== null) {
+    if (minuteRef.current) {
       minuteRef.current.scrollTo(0, (time.minute / step) * optionHeight);
     }
   }, [step, middayRef, hourRef, minuteRef, time]);
