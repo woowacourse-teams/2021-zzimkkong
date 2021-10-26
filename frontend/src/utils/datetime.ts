@@ -54,10 +54,10 @@ export const isPastDay = (time: Date): boolean => {
   return time.getTime() < new Date().getTime() - 1000 * 60 * 60 * 24;
 };
 
-export const isPastDayThanMinDay = (time: Date): boolean => {
-  return time.getTime() < DATE.MIN_DATE.getTime();
+export const isPastDayThanMinDay = (time: Date, minDay: Date = DATE.MIN_DATE): boolean => {
+  return time.getTime() < minDay.getTime();
 };
 
-export const isFutureDayThanMaxDay = (time: Date): boolean => {
-  return time.getTime() > DATE.MAX_DATE.getTime();
+export const isFutureDayThanMaxDay = (time: Date, maxDay: Date = DATE.MAX_DATE): boolean => {
+  return time.getTime() > maxDay.getTime();
 };
