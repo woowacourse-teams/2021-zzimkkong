@@ -7,6 +7,7 @@ import com.woowacourse.zzimkkong.exception.authorization.NoAuthorityOnMapExcepti
 import com.woowacourse.zzimkkong.exception.map.NoSuchMapException;
 import com.woowacourse.zzimkkong.exception.reservation.*;
 import com.woowacourse.zzimkkong.exception.space.NoSuchSpaceException;
+import com.woowacourse.zzimkkong.dto.member.LoginEmailDto;
 import com.woowacourse.zzimkkong.service.strategy.ManagerReservationStrategy;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -149,9 +150,7 @@ class ManagerReservationServiceTest extends ServiceTest {
     @DisplayName("예약 생성 요청 시, mapId와 요청이 들어온다면 예약을 생성한다.")
     void save() {
         //given
-        given(members.findByEmail(anyString()))
-                .willReturn(Optional.of(pobi));
-        given(maps.findById(anyLong()))
+        given(maps.findByIdFetch(anyLong()))
                 .willReturn(Optional.of(luther));
         given(reservations.save(any(Reservation.class)))
                 .willReturn(reservation);
@@ -185,9 +184,7 @@ class ManagerReservationServiceTest extends ServiceTest {
                 .password(BE_AM_TEN_ELEVEN_PW)
                 .space(be)
                 .build();
-        given(members.findByEmail(anyString()))
-                .willReturn(Optional.of(pobi));
-        given(maps.findById(anyLong()))
+        given(maps.findByIdFetch(anyLong()))
                 .willReturn(Optional.of(luther));
         given(reservations.save(any(Reservation.class)))
                 .willReturn(pastReservation);
@@ -217,9 +214,7 @@ class ManagerReservationServiceTest extends ServiceTest {
     @DisplayName("예약 생성 요청 시, mapId에 따른 map이 존재하지 않는다면 예외가 발생한다.")
     void saveNotExistMapException() {
         //given
-        given(members.findByEmail(anyString()))
-                .willReturn(Optional.of(pobi));
-        given(maps.findById(anyLong()))
+        given(maps.findByIdFetch(anyLong()))
                 .willReturn(Optional.empty());
 
         //when
@@ -240,9 +235,7 @@ class ManagerReservationServiceTest extends ServiceTest {
     @DisplayName("예약 생성 요청 시, map에 대한 권한이 없다면 예외가 발생한다.")
     void saveNoAuthorityOnMapException() {
         //given
-        given(members.findByEmail(anyString()))
-                .willReturn(Optional.of(sakjung));
-        given(maps.findById(anyLong()))
+        given(maps.findByIdFetch(anyLong()))
                 .willReturn(Optional.of(luther));
 
         //when
@@ -263,9 +256,7 @@ class ManagerReservationServiceTest extends ServiceTest {
     @DisplayName("예약 생성 요청 시, spaceId에 따른 space가 존재하지 않는다면 예외가 발생한다.")
     void saveNotExistSpaceException() {
         //given
-        given(members.findByEmail(anyString()))
-                .willReturn(Optional.of(pobi));
-        given(maps.findById(anyLong()))
+        given(maps.findByIdFetch(anyLong()))
                 .willReturn(Optional.of(luther));
 
         //when
@@ -286,9 +277,7 @@ class ManagerReservationServiceTest extends ServiceTest {
     @DisplayName("예약 생성 요청 시, 종료 시간이 현재 시간보다 빠르다면 예외가 발생한다.")
     void saveEndTimeBeforeNow() {
         //given
-        given(members.findByEmail(anyString()))
-                .willReturn(Optional.of(pobi));
-        given(maps.findById(anyLong()))
+        given(maps.findByIdFetch(anyLong()))
                 .willReturn(Optional.of(luther));
 
         reservationCreateUpdateWithPasswordRequest = new ReservationCreateUpdateWithPasswordRequest(
@@ -316,9 +305,7 @@ class ManagerReservationServiceTest extends ServiceTest {
     @DisplayName("예약 생성 요청 시, 시작 시간과 종료 시간이 같다면 예외가 발생한다.")
     void saveStartTimeEqualsEndTime() {
         //given
-        given(members.findByEmail(anyString()))
-                .willReturn(Optional.of(pobi));
-        given(maps.findById(anyLong()))
+        given(maps.findByIdFetch(anyLong()))
                 .willReturn(Optional.of(luther));
 
         reservationCreateUpdateWithPasswordRequest = new ReservationCreateUpdateWithPasswordRequest(
@@ -346,9 +333,7 @@ class ManagerReservationServiceTest extends ServiceTest {
     @DisplayName("예약 생성 요청 시, 시작 시간과 종료 시간의 날짜가 다르다면 예외가 발생한다.")
     void saveStartTimeDateNotEqualsEndTimeDate() {
         //given
-        given(members.findByEmail(anyString()))
-                .willReturn(Optional.of(pobi));
-        given(maps.findById(anyLong()))
+        given(maps.findByIdFetch(anyLong()))
                 .willReturn(Optional.of(luther));
 
         reservationCreateUpdateWithPasswordRequest = new ReservationCreateUpdateWithPasswordRequest(
@@ -377,9 +362,7 @@ class ManagerReservationServiceTest extends ServiceTest {
     @DisplayName("예약 생성 요청 시, 공간의 예약가능 시간이 아니라면 예외가 발생한다.")
     void saveInvalidTimeSetting(int startTime, int endTime) {
         //given
-        given(members.findByEmail(anyString()))
-                .willReturn(Optional.of(pobi));
-        given(maps.findById(anyLong()))
+        given(maps.findByIdFetch(anyLong()))
                 .willReturn(Optional.of(luther));
 
         reservationCreateUpdateWithPasswordRequest = new ReservationCreateUpdateWithPasswordRequest(
@@ -408,9 +391,7 @@ class ManagerReservationServiceTest extends ServiceTest {
     @DisplayName("예약 생성 요청 시, 이미 겹치는 시간이 존재하면 예외가 발생한다.")
     void saveAvailabilityException(int startMinute, int endMinute) {
         //given, when
-        given(members.findByEmail(anyString()))
-                .willReturn(Optional.of(pobi));
-        given(maps.findById(anyLong()))
+        given(maps.findByIdFetch(anyLong()))
                 .willReturn(Optional.of(luther));
         given(reservations.findAllBySpaceIdInAndDate(
                 anyList(),
@@ -458,9 +439,7 @@ class ManagerReservationServiceTest extends ServiceTest {
                 .setting(setting)
                 .build();
 
-        given(members.findByEmail(anyString()))
-                .willReturn(Optional.of(pobi));
-        given(maps.findById(anyLong()))
+        given(maps.findByIdFetch(anyLong()))
                 .willReturn(Optional.of(luther));
         Long closedSpaceId = closedSpace.getId();
 
@@ -502,9 +481,7 @@ class ManagerReservationServiceTest extends ServiceTest {
                 .setting(setting)
                 .build();
 
-        given(members.findByEmail(anyString()))
-                .willReturn(Optional.of(pobi));
-        given(maps.findById(anyLong()))
+        given(maps.findByIdFetch(anyLong()))
                 .willReturn(Optional.of(luther));
         Long invalidDayOfWeekSpaceId = invalidDayOfWeekSpace.getId();
 
@@ -526,9 +503,7 @@ class ManagerReservationServiceTest extends ServiceTest {
     @DisplayName("예약 생성 요청 시, 경계값이 일치한다면 생성된다.")
     void saveSameThresholdTime(int duration) {
         //given, when
-        given(members.findByEmail(anyString()))
-                .willReturn(Optional.of(pobi));
-        given(maps.findById(anyLong()))
+        given(maps.findByIdFetch(anyLong()))
                 .willReturn(Optional.of(luther));
         given(reservations.findAllBySpaceIdInAndDate(
                 anyList(),
@@ -563,9 +538,7 @@ class ManagerReservationServiceTest extends ServiceTest {
     @DisplayName("예약 생성/수정 요청 시, space setting의 reservationTimeUnit이 일치하지 않으면 예외가 발생한다.")
     void saveReservationTimeUnitException(int additionalStartMinute, int additionalEndMinute) {
         //given
-        given(members.findByEmail(anyString()))
-                .willReturn(Optional.of(pobi));
-        given(maps.findById(anyLong()))
+        given(maps.findByIdFetch(anyLong()))
                 .willReturn(Optional.of(luther));
         given(reservations.findById(anyLong()))
                 .willReturn(Optional.of(reservation));
@@ -615,9 +588,8 @@ class ManagerReservationServiceTest extends ServiceTest {
     @DisplayName("예약 생성/수정 요청 시, space setting의 minimum, maximum 시간이 옳지 않으면 예외가 발생한다.")
     void saveReservationMinimumMaximumTimeUnitException(int duration) {
         //given
-        given(members.findByEmail(anyString()))
-                .willReturn(Optional.of(pobi));
-        given(maps.findById(anyLong()))
+
+        given(maps.findByIdFetch(anyLong()))
                 .willReturn(Optional.of(luther));
         given(reservations.findById(anyLong()))
                 .willReturn(Optional.of(reservation));
@@ -676,9 +648,8 @@ class ManagerReservationServiceTest extends ServiceTest {
                         reservationCreateUpdateWithPasswordRequest.getStartDateTime().plusMinutes(duration),
                         reservationCreateUpdateWithPasswordRequest.getEndDateTime().plusMinutes(duration),
                         be));
-        given(members.findByEmail(anyString()))
-                .willReturn(Optional.of(pobi));
-        given(maps.findById(anyLong()))
+
+        given(maps.findByIdFetch(anyLong()))
                 .willReturn(Optional.of(luther));
         given(reservations.findAllBySpaceIdInAndDate(
                 anyList(),
@@ -704,9 +675,8 @@ class ManagerReservationServiceTest extends ServiceTest {
     @DisplayName("특정 공간 예약 조회 요청 시, 해당하는 맵이 없으면 오류가 발생한다.")
     void findReservationsNotExistMap() {
         //given
-        given(members.findByEmail(anyString()))
-                .willReturn(Optional.of(pobi));
-        given(maps.findById(anyLong()))
+
+        given(maps.findByIdFetch(anyLong()))
                 .willReturn(Optional.empty());
 
         //when
@@ -725,9 +695,8 @@ class ManagerReservationServiceTest extends ServiceTest {
     @DisplayName("특정 공간 예약 조회 요청 시, 해당하는 공간이 없으면 오류가 발생한다.")
     void findReservationsNotExistSpace() {
         //given
-        given(members.findByEmail(anyString()))
-                .willReturn(Optional.of(pobi));
-        given(maps.findById(anyLong()))
+
+        given(maps.findByIdFetch(anyLong()))
                 .willReturn(Optional.of(luther));
 
         //when
@@ -748,9 +717,8 @@ class ManagerReservationServiceTest extends ServiceTest {
     @DisplayName("특정 공간 예약 조회 요청 시, 해당하는 공간이 없으면 오류가 발생한다.")
     void findReservationsWithInvalidSpace() {
         //given
-        given(members.findByEmail(anyString()))
-                .willReturn(Optional.of(pobi));
-        given(maps.findById(anyLong()))
+
+        given(maps.findByIdFetch(anyLong()))
                 .willReturn(Optional.of(luther));
         given(maps.existsById(anyLong()))
                 .willReturn(true);
@@ -774,9 +742,8 @@ class ManagerReservationServiceTest extends ServiceTest {
     @DisplayName("전체 예약이나 특정 공간 예약 조회 요청 시, 해당하는 예약이 없으면 빈 정보가 조회된다.")
     void findEmptyReservations() {
         //given
-        given(members.findByEmail(anyString()))
-                .willReturn(Optional.of(pobi));
-        given(maps.findById(anyLong()))
+
+        given(maps.findByIdFetch(anyLong()))
                 .willReturn(Optional.of(luther));
         given(maps.existsById(anyLong()))
                 .willReturn(true);
@@ -834,9 +801,8 @@ class ManagerReservationServiceTest extends ServiceTest {
         List<Space> findSpaces = List.of(be, fe);
 
         //when
-        given(members.findByEmail(anyString()))
-                .willReturn(Optional.of(pobi));
-        given(maps.findById(anyLong()))
+
+        given(maps.findByIdFetch(anyLong()))
                 .willReturn(Optional.of(luther));
         given(reservations.findAllBySpaceIdInAndDate(
                 anyList(),
@@ -863,7 +829,7 @@ class ManagerReservationServiceTest extends ServiceTest {
         //given
         given(members.findByEmail(anyString()))
                 .willReturn(Optional.of(sakjung));
-        given(maps.findById(anyLong()))
+        given(maps.findByIdFetch(anyLong()))
                 .willReturn(Optional.of(luther));
         given(reservations.findAllBySpaceIdInAndDate(
                 anyList(),
@@ -889,7 +855,7 @@ class ManagerReservationServiceTest extends ServiceTest {
         //given, when
         given(members.findByEmail(anyString()))
                 .willReturn(Optional.of(sakjung));
-        given(maps.findById(anyLong()))
+        given(maps.findByIdFetch(anyLong()))
                 .willReturn(Optional.of(luther));
         given(reservations.findAllBySpaceIdInAndDate(
                 anyList(),
@@ -913,9 +879,8 @@ class ManagerReservationServiceTest extends ServiceTest {
     @DisplayName("예약 수정을 위한 예약 조회 요청 시, 해당 예약을 반환한다.")
     void findReservation() {
         //given
-        given(members.findByEmail(anyString()))
-                .willReturn(Optional.of(pobi));
-        given(maps.findById(anyLong()))
+
+        given(maps.findByIdFetch(anyLong()))
                 .willReturn(Optional.of(luther));
         given(reservations.findById(anyLong()))
                 .willReturn(Optional.of(reservation));
@@ -943,7 +908,7 @@ class ManagerReservationServiceTest extends ServiceTest {
         //given
         given(members.findByEmail(anyString()))
                 .willReturn(Optional.of(sakjung));
-        given(maps.findById(anyLong()))
+        given(maps.findByIdFetch(anyLong()))
                 .willReturn(Optional.of(luther));
         Long reservationId = reservation.getId();
 
@@ -965,9 +930,8 @@ class ManagerReservationServiceTest extends ServiceTest {
     @DisplayName("예약 수정 요청 시, 해당 예약이 존재하지 않으면 에러가 발생한다.")
     void findInvalidReservationException() {
         //given
-        given(members.findByEmail(anyString()))
-                .willReturn(Optional.of(pobi));
-        given(maps.findById(anyLong()))
+
+        given(maps.findByIdFetch(anyLong()))
                 .willReturn(Optional.of(luther));
         given(reservations.findById(anyLong()))
                 .willReturn(Optional.empty());
@@ -992,9 +956,8 @@ class ManagerReservationServiceTest extends ServiceTest {
     @DisplayName("예약 수정 요청 시, 올바른 요청이 들어오면 예약이 수정된다. 과거의 예약도 가능하다.")
     void update(int beforeDay) {
         //given
-        given(members.findByEmail(anyString()))
-                .willReturn(Optional.of(pobi));
-        given(maps.findById(anyLong()))
+
+        given(maps.findByIdFetch(anyLong()))
                 .willReturn(Optional.of(luther));
         given(reservations.findById(anyLong()))
                 .willReturn(Optional.of(reservation));
@@ -1028,7 +991,7 @@ class ManagerReservationServiceTest extends ServiceTest {
         //given
         given(members.findByEmail(anyString()))
                 .willReturn(Optional.of(sakjung));
-        given(maps.findById(anyLong()))
+        given(maps.findByIdFetch(anyLong()))
                 .willReturn(Optional.of(luther));
 
         //when
@@ -1058,9 +1021,8 @@ class ManagerReservationServiceTest extends ServiceTest {
     @DisplayName("예약 수정 요청 시, 끝 시간 입력이 옳지 않으면 에러가 발생한다.")
     void updateInvalidEndTimeException(int endTime) {
         //given
-        given(members.findByEmail(anyString()))
-                .willReturn(Optional.of(pobi));
-        given(maps.findById(anyLong()))
+
+        given(maps.findByIdFetch(anyLong()))
                 .willReturn(Optional.of(luther));
 
         //when
@@ -1089,9 +1051,8 @@ class ManagerReservationServiceTest extends ServiceTest {
     @DisplayName("예약 수정 요청 시, 시작 시간과 끝 시간이 같은 날짜가 아니면 에러가 발생한다.")
     void updateInvalidDateException() {
         //given
-        given(members.findByEmail(anyString()))
-                .willReturn(Optional.of(pobi));
-        given(maps.findById(anyLong()))
+
+        given(maps.findByIdFetch(anyLong()))
                 .willReturn(Optional.of(luther));
 
         //when
@@ -1121,9 +1082,8 @@ class ManagerReservationServiceTest extends ServiceTest {
     @DisplayName("예약 수정 요청 시, 해당 시간에 예약이 존재하면 에러가 발생한다.")
     void updateImpossibleTimeException(int startTime, int endTime) {
         //given
-        given(members.findByEmail(anyString()))
-                .willReturn(Optional.of(pobi));
-        given(maps.findById(anyLong()))
+
+        given(maps.findByIdFetch(anyLong()))
                 .willReturn(Optional.of(luther));
         given(reservations.findById(anyLong()))
                 .willReturn(Optional.of(reservation));
@@ -1159,9 +1119,8 @@ class ManagerReservationServiceTest extends ServiceTest {
     @DisplayName("예약 수정 요청 시, 공간의 예약가능 시간이 아니라면 에러가 발생한다.")
     void updateInvalidTimeSetting(int startTime, int endTime) {
         //given
-        given(members.findByEmail(anyString()))
-                .willReturn(Optional.of(pobi));
-        given(maps.findById(anyLong()))
+
+        given(maps.findByIdFetch(anyLong()))
                 .willReturn(Optional.of(luther));
         given(reservations.findById(anyLong()))
                 .willReturn(Optional.of(reservation));
@@ -1212,9 +1171,8 @@ class ManagerReservationServiceTest extends ServiceTest {
                 .setting(setting)
                 .build();
 
-        given(members.findByEmail(anyString()))
-                .willReturn(Optional.of(pobi));
-        given(maps.findById(anyLong()))
+
+        given(maps.findByIdFetch(anyLong()))
                 .willReturn(Optional.of(luther));
         given(reservations.findById(anyLong()))
                 .willReturn(Optional.of(reservation));
@@ -1259,9 +1217,8 @@ class ManagerReservationServiceTest extends ServiceTest {
                 .setting(setting)
                 .build();
 
-        given(members.findByEmail(anyString()))
-                .willReturn(Optional.of(pobi));
-        given(maps.findById(anyLong()))
+
+        given(maps.findByIdFetch(anyLong()))
                 .willReturn(Optional.of(luther));
         given(reservations.findById(anyLong()))
                 .willReturn(Optional.of(reservation));
@@ -1292,9 +1249,8 @@ class ManagerReservationServiceTest extends ServiceTest {
                 THE_DAY_AFTER_TOMORROW.atTime(12, 0).minusDays(beforeDay),
                 be);
 
-        given(members.findByEmail(anyString()))
-                .willReturn(Optional.of(pobi));
-        given(maps.findById(anyLong()))
+
+        given(maps.findByIdFetch(anyLong()))
                 .willReturn(Optional.of(luther));
         given(reservations.findById(anyLong()))
                 .willReturn(Optional.of(reservationToDelete));
@@ -1320,7 +1276,7 @@ class ManagerReservationServiceTest extends ServiceTest {
         //given
         given(members.findByEmail(anyString()))
                 .willReturn(Optional.of(sakjung));
-        given(maps.findById(anyLong()))
+        given(maps.findByIdFetch(anyLong()))
                 .willReturn(Optional.of(luther));
         Long reservationId = reservation.getId();
 
@@ -1342,9 +1298,8 @@ class ManagerReservationServiceTest extends ServiceTest {
     @DisplayName("예약 삭제 요청 시, 예약이 존재하지 않는다면 오류가 발생한다.")
     void deleteReservationException() {
         //given
-        given(members.findByEmail(anyString()))
-                .willReturn(Optional.of(pobi));
-        given(maps.findById(anyLong()))
+
+        given(maps.findByIdFetch(anyLong()))
                 .willReturn(Optional.of(luther));
         given(reservations.findById(anyLong()))
                 .willReturn(Optional.empty());

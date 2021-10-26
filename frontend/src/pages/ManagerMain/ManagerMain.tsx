@@ -85,7 +85,9 @@ const ManagerMain = (): JSX.Element => {
   });
 
   const handleDeleteMap = (mapId: number) => {
-    removeMap.mutate({ mapId });
+    if (window.confirm(MESSAGE.MANAGER_MAIN.MAP_DELETE_CONFIRM)) {
+      removeMap.mutate({ mapId });
+    }
   };
 
   const getSelectedSharingMapId = () => {

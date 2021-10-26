@@ -32,7 +32,7 @@ public class Map {
     @JoinColumn(name = "member_id", foreignKey = @ForeignKey(name = "fk_map_member"), nullable = false)
     private Member member;
 
-    @OneToMany(mappedBy = "map", cascade = CascadeType.REMOVE, fetch = FetchType.EAGER, orphanRemoval = true)
+    @OneToMany(mappedBy = "map", cascade = CascadeType.REMOVE, fetch = FetchType.LAZY, orphanRemoval = true)
     private List<Space> spaces = new ArrayList<>();
 
     public Map(final String name, final String mapDrawing, final String mapImageUrl, final Member member) {
@@ -56,11 +56,11 @@ public class Map {
         this.mapDrawing = mapDrawing;
     }
 
-    public boolean isNotOwnedBy(final Member manager) {
-        return !this.member.equals(manager);
+    public boolean isOwnedBy(final String email) {
+        return member.isSameEmail(email);
     }
 
-    public Boolean doesNotHaveSpaceId(final Long spaceId) {
+    public boolean doesNotHaveSpaceId(final Long spaceId) {
         return spaces.stream()
                 .noneMatch(space -> space.hasSameId(spaceId));
     }

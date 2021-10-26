@@ -1,18 +1,16 @@
 package com.woowacourse.zzimkkong.service;
 
 import com.woowacourse.zzimkkong.domain.Map;
-import com.woowacourse.zzimkkong.domain.Member;
 import com.woowacourse.zzimkkong.domain.Setting;
 import com.woowacourse.zzimkkong.domain.Space;
+import com.woowacourse.zzimkkong.dto.member.LoginEmailDto;
 import com.woowacourse.zzimkkong.dto.space.*;
+import com.woowacourse.zzimkkong.exception.authorization.NoAuthorityOnMapException;
 import com.woowacourse.zzimkkong.exception.map.NoSuchMapException;
-import com.woowacourse.zzimkkong.exception.member.NoSuchMemberException;
 import com.woowacourse.zzimkkong.exception.space.NoSuchSpaceException;
 import com.woowacourse.zzimkkong.exception.space.ReservationExistOnSpaceException;
-import com.woowacourse.zzimkkong.dto.member.LoginEmailDto;
 import com.woowacourse.zzimkkong.infrastructure.thumbnail.ThumbnailManager;
 import com.woowacourse.zzimkkong.repository.MapRepository;
-import com.woowacourse.zzimkkong.repository.MemberRepository;
 import com.woowacourse.zzimkkong.repository.ReservationRepository;
 import com.woowacourse.zzimkkong.repository.SpaceRepository;
 import org.springframework.stereotype.Service;
@@ -21,24 +19,19 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDateTime;
 import java.util.List;
 
-import static com.woowacourse.zzimkkong.service.MapService.validateManagerOfMap;
-
 @Service
 @Transactional
 public class SpaceService {
-    private final MemberRepository members;
     private final MapRepository maps;
     private final SpaceRepository spaces;
     private final ReservationRepository reservations;
     private final ThumbnailManager thumbnailManager;
 
     public SpaceService(
-            final MemberRepository members,
             final MapRepository maps,
             final SpaceRepository spaces,
             final ReservationRepository reservations,
             final ThumbnailManager thumbnailManager) {
-        this.members = members;
         this.maps = maps;
         this.spaces = spaces;
         this.reservations = reservations;
@@ -51,9 +44,7 @@ public class SpaceService {
             final LoginEmailDto loginEmailDto) {
         Map map = maps.findById(mapId)
                 .orElseThrow(NoSuchMapException::new);
-        Member manager = members.findByEmail(loginEmailDto.getEmail())
-                .orElseThrow(NoSuchMemberException::new);
-        validateManagerOfMap(map, manager);
+        validateManagerOfMap(map, loginEmailDto.getEmail());
 
         Setting setting = getSetting(spaceCreateUpdateRequest);
         Space space = Space.builder()
@@ -75,11 +66,9 @@ public class SpaceService {
             final Long mapId,
             final Long spaceId,
             final LoginEmailDto loginEmailDto) {
-        Map map = maps.findById(mapId)
+        Map map = maps.findByIdFetch(mapId)
                 .orElseThrow(NoSuchMapException::new);
-        Member manager = members.findByEmail(loginEmailDto.getEmail())
-                .orElseThrow(NoSuchMemberException::new);
-        validateManagerOfMap(map, manager);
+        validateManagerOfMap(map, loginEmailDto.getEmail());
 
         Space space = map.findSpaceById(spaceId)
                 .orElseThrow(NoSuchSpaceException::new);
@@ -90,11 +79,9 @@ public class SpaceService {
     public SpaceFindAllResponse findAllSpace(
             final Long mapId,
             final LoginEmailDto loginEmailDto) {
-        Map map = maps.findById(mapId)
+        Map map = maps.findByIdFetch(mapId)
                 .orElseThrow(NoSuchMapException::new);
-        Member manager = members.findByEmail(loginEmailDto.getEmail())
-                .orElseThrow(NoSuchMemberException::new);
-        validateManagerOfMap(map, manager);
+        validateManagerOfMap(map, loginEmailDto.getEmail());
 
         List<Space> findAllSpaces = map.getSpaces();
         return SpaceFindAllResponse.from(findAllSpaces);
@@ -103,7 +90,7 @@ public class SpaceService {
     @Transactional(readOnly = true)
     public SpaceFindAllResponse findAllSpace(
             final Long mapId) {
-        Map map = maps.findById(mapId)
+        Map map = maps.findByIdFetch(mapId)
                 .orElseThrow(NoSuchMapException::new);
 
         List<Space> findAllSpaces = map.getSpaces();
@@ -115,11 +102,9 @@ public class SpaceService {
             final Long spaceId,
             final SpaceCreateUpdateRequest spaceCreateUpdateRequest,
             final LoginEmailDto loginEmailDto) {
-        Map map = maps.findById(mapId)
+        Map map = maps.findByIdFetch(mapId)
                 .orElseThrow(NoSuchMapException::new);
-        Member manager = members.findByEmail(loginEmailDto.getEmail())
-                .orElseThrow(NoSuchMemberException::new);
-        validateManagerOfMap(map, manager);
+        validateManagerOfMap(map, loginEmailDto.getEmail());
 
         Space space = map.findSpaceById(spaceId)
                 .orElseThrow(NoSuchSpaceException::new);
@@ -142,11 +127,9 @@ public class SpaceService {
             final Long spaceId,
             final SpaceDeleteRequest spaceDeleteRequest,
             final LoginEmailDto loginEmailDto) {
-        Map map = maps.findById(mapId)
+        Map map = maps.findByIdFetch(mapId)
                 .orElseThrow(NoSuchMapException::new);
-        Member manager = members.findByEmail(loginEmailDto.getEmail())
-                .orElseThrow(NoSuchMemberException::new);
-        validateManagerOfMap(map, manager);
+        validateManagerOfMap(map, loginEmailDto.getEmail());
 
         Space space = map.findSpaceById(spaceId)
                 .orElseThrow(NoSuchSpaceException::new);
@@ -174,6 +157,12 @@ public class SpaceService {
     private void validateReservationExistence(final Long spaceId) {
         if (reservations.existsBySpaceIdAndEndTimeAfter(spaceId, LocalDateTime.now())) {
             throw new ReservationExistOnSpaceException();
+        }
+    }
+
+    private void validateManagerOfMap(final Map map, final String email) {
+        if (!map.isOwnedBy(email)) {
+            throw new NoAuthorityOnMapException();
         }
     }
 }

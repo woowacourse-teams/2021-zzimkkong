@@ -9,6 +9,11 @@ export enum Order {
   Descending = 'descending',
 }
 
+export enum ReservationStatus {
+  using = '사용 중',
+  done = '사용 완료',
+}
+
 export interface Coordinate {
   x: number;
   y: number;
