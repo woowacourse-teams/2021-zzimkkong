@@ -12,8 +12,11 @@ import org.springframework.web.reactive.function.client.WebClient;
 @Configuration
 @PropertySource("classpath:config/oauth.properties")
 public class OauthGithubConfig {
-    @Autowired
     private WebClient webClient;
+
+    public OauthGithubConfig(final WebClient webClient) {
+        this.webClient = webClient;
+    }
 
     @Bean(name = "githubRequester")
     @Profile({"prod"})

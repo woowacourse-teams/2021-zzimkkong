@@ -51,14 +51,14 @@ public class PresetService {
 
     @Transactional(readOnly = true)
     public PresetFindAllResponse findAllPresets(final LoginEmailDto loginEmailDto) {
-        Member manager = members.findByEmail(loginEmailDto.getEmail())
+        Member manager = members.findByEmailWithFetchPresets(loginEmailDto.getEmail())
                 .orElseThrow(NoSuchMemberException::new);
         List<Preset> findPresets = manager.getPresets();
         return PresetFindAllResponse.from(findPresets);
     }
 
     public void deletePreset(final Long presetId, final LoginEmailDto loginEmailDto) {
-        Member manager = members.findByEmail(loginEmailDto.getEmail())
+        Member manager = members.findByEmailWithFetchPresets(loginEmailDto.getEmail())
                 .orElseThrow(NoSuchMemberException::new);
         Preset preset = manager.findPresetById(presetId)
                 .orElseThrow(NoSuchPresetException::new);

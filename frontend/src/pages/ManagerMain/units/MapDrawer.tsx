@@ -1,5 +1,4 @@
 import { ReactComponent as DeleteIcon } from 'assets/svg/delete.svg';
-import { ReactComponent as EditIcon } from 'assets/svg/edit.svg';
 import Drawer from 'components/Drawer/Drawer';
 import IconButton from 'components/IconButton/IconButton';
 import MapListItem from 'components/MapListItem/MapListItem';
@@ -41,14 +40,9 @@ const MapDrawer = ({
               title={mapName}
               selected={mapId === selectedMapId}
               control={
-                <>
-                  <IconButton size="small">
-                    <EditIcon width="100%" height="100%" />
-                  </IconButton>
-                  <IconButton size="small" onClick={() => onDeleteMap(mapId)}>
-                    <DeleteIcon width="100%" height="100%" />
-                  </IconButton>
-                </>
+                <IconButton size="small" onClick={() => onDeleteMap(mapId)}>
+                  <DeleteIcon width="100%" height="100%" />
+                </IconButton>
               }
             />
           </Styled.SpaceWrapper>

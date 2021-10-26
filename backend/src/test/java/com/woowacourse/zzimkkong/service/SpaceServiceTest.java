@@ -149,8 +149,6 @@ class SpaceServiceTest extends ServiceTest {
                 .setting(setting)
                 .build();
 
-        given(members.findByEmail(anyString()))
-                .willReturn(Optional.of(pobi));
         given(maps.findById(anyLong()))
                 .willReturn(Optional.of(luther));
         given(spaces.save(any(Space.class)))
@@ -181,8 +179,6 @@ class SpaceServiceTest extends ServiceTest {
     @DisplayName("공간 생성 요청 시, 맵에 대한 권한이 없다면 예외가 발생한다.")
     void saveNoAuthorityOnMapException() {
         // given
-        given(members.findByEmail(anyString()))
-                .willReturn(Optional.of(sakjung));
         given(maps.findById(anyLong()))
                 .willReturn(Optional.of(luther));
         given(spaces.save(any(Space.class)))
@@ -197,12 +193,8 @@ class SpaceServiceTest extends ServiceTest {
     @DisplayName("공간 조회 시, spaceId를 가진 공간이 있다면 조회한다.")
     void find() {
         // given
-        given(members.findByEmail(anyString()))
-                .willReturn(Optional.of(pobi));
-        given(maps.findById(anyLong()))
+        given(maps.findByIdFetch(anyLong()))
                 .willReturn(Optional.of(luther));
-        given(spaces.findById(anyLong()))
-                .willReturn(Optional.of(be));
 
         // when
         SpaceFindDetailResponse actual = spaceService.findSpace(luther.getId(), be.getId(), pobiEmail);
@@ -216,9 +208,7 @@ class SpaceServiceTest extends ServiceTest {
     @DisplayName("공간 조회 시, spaceId에 맞는 공간이 없다면 예외를 발생시킨다.")
     void findFail() {
         // given
-        given(members.findByEmail(anyString()))
-                .willReturn(Optional.of(pobi));
-        given(maps.findById(anyLong()))
+        given(maps.findByIdFetch(anyLong()))
                 .willReturn(Optional.of(luther));
 
         // when, then
@@ -230,9 +220,7 @@ class SpaceServiceTest extends ServiceTest {
     @DisplayName("공간 조회 시, 공간 관리자가 아니라면 예외를 발생시킨다.")
     void findNoAuthorityOnMap() {
         // given
-        given(members.findByEmail(anyString()))
-                .willReturn(Optional.of(sakjung));
-        given(maps.findById(anyLong()))
+        given(maps.findByIdFetch(anyLong()))
                 .willReturn(Optional.of(luther));
         given(spaces.findById(anyLong()))
                 .willReturn(Optional.of(be));
@@ -246,9 +234,7 @@ class SpaceServiceTest extends ServiceTest {
     @DisplayName("전체 공간을 조회한다.")
     void findAll() {
         // given
-        given(members.findByEmail(anyString()))
-                .willReturn(Optional.of(pobi));
-        given(maps.findById(anyLong()))
+        given(maps.findByIdFetch(anyLong()))
                 .willReturn(Optional.of(luther));
 
         // when
@@ -263,9 +249,7 @@ class SpaceServiceTest extends ServiceTest {
     @DisplayName("공간 전체 조회시, 공간 관리자가 아니라면 예외를 발생시킨다.")
     void findAllNoAuthorityOnMap() {
         // given
-        given(members.findByEmail(anyString()))
-                .willReturn(Optional.of(sakjung));
-        given(maps.findById(anyLong()))
+        given(maps.findByIdFetch(anyLong()))
                 .willReturn(Optional.of(luther));
 
         // when, then
@@ -277,9 +261,7 @@ class SpaceServiceTest extends ServiceTest {
     @DisplayName("예약자 전체 공간을 조회한다.")
     void findAllGuest() {
         // given
-        given(members.findByEmail(anyString()))
-                .willReturn(Optional.of(pobi));
-        given(maps.findById(anyLong()))
+        given(maps.findByIdFetch(anyLong()))
                 .willReturn(Optional.of(luther));
 
         // when
@@ -294,12 +276,8 @@ class SpaceServiceTest extends ServiceTest {
     @DisplayName("공간을 수정한다.")
     void update() {
         // given, when
-        given(members.findByEmail(anyString()))
-                .willReturn(Optional.of(pobi));
-        given(maps.findById(anyLong()))
+        given(maps.findByIdFetch(anyLong()))
                 .willReturn(Optional.of(luther));
-        given(spaces.findById(anyLong()))
-                .willReturn(Optional.of(fe));
         given(storageUploader.upload(anyString(), anyString(), any(InputStream.class)))
                 .willReturn(MAP_IMAGE_URL);
 
@@ -318,12 +296,8 @@ class SpaceServiceTest extends ServiceTest {
     @DisplayName("공간 수정 요청 시, 해당 공간에 대한 권한이 없으면 수정할 수 없다.")
     void updateNoAuthorityException() {
         // given, when
-        given(members.findByEmail(anyString()))
-                .willReturn(Optional.of(sakjung));
-        given(maps.findById(anyLong()))
+        given(maps.findByIdFetch(anyLong()))
                 .willReturn(Optional.of(luther));
-        given(spaces.findById(anyLong()))
-                .willReturn(Optional.of(be));
 
         // then
         assertThatThrownBy(() -> spaceService.updateSpace(
@@ -338,12 +312,8 @@ class SpaceServiceTest extends ServiceTest {
     @DisplayName("공간 삭제 요청이 옳다면 삭제한다.")
     void deleteReservation() {
         //given
-        given(members.findByEmail(anyString()))
-                .willReturn(Optional.of(pobi));
-        given(maps.findById(anyLong()))
+        given(maps.findByIdFetch(anyLong()))
                 .willReturn(Optional.of(luther));
-        given(spaces.findById(anyLong()))
-                .willReturn(Optional.of(be));
         given(reservations.existsBySpaceIdAndEndTimeAfter(anyLong(), any(LocalDateTime.class)))
                 .willReturn(false);
         SpaceDeleteRequest spaceDeleteRequest = new SpaceDeleteRequest(MAP_SVG);
@@ -356,9 +326,7 @@ class SpaceServiceTest extends ServiceTest {
     @DisplayName("공간 삭제 요청 시, 해당 맵의 관리자가 아니라면 오류가 발생한다.")
     void deleteNoAuthorityException() {
         //given
-        given(members.findByEmail(anyString()))
-                .willReturn(Optional.of(sakjung));
-        given(maps.findById(anyLong()))
+        given(maps.findByIdFetch(anyLong()))
                 .willReturn(Optional.of(luther));
         SpaceDeleteRequest spaceDeleteRequest = new SpaceDeleteRequest(MAP_SVG);
 
@@ -371,12 +339,8 @@ class SpaceServiceTest extends ServiceTest {
     @DisplayName("공간 삭제 요청 시, 공간이 존재하지 않는다면 오류가 발생한다.")
     void deleteNoSuchSpaceException() {
         //given
-        given(members.findByEmail(anyString()))
-                .willReturn(Optional.of(pobi));
-        given(maps.findById(anyLong()))
+        given(maps.findByIdFetch(anyLong()))
                 .willReturn(Optional.of(luther));
-        given(spaces.findById(anyLong()))
-                .willReturn(Optional.empty());
         SpaceDeleteRequest spaceDeleteRequest = new SpaceDeleteRequest(MAP_SVG);
 
         //then
@@ -388,12 +352,8 @@ class SpaceServiceTest extends ServiceTest {
     @DisplayName("공간 삭제 요청 시, 해당 공간에 예약이 존재한다면 오류가 발생한다.")
     void deleteReservationExistException() {
         //given
-        given(members.findByEmail(anyString()))
-                .willReturn(Optional.of(pobi));
-        given(maps.findById(anyLong()))
+        given(maps.findByIdFetch(anyLong()))
                 .willReturn(Optional.of(luther));
-        given(spaces.findById(anyLong()))
-                .willReturn(Optional.of(be));
         given(reservations.existsBySpaceIdAndEndTimeAfter(anyLong(), any(LocalDateTime.class)))
                 .willReturn(true);
         SpaceDeleteRequest spaceDeleteRequest = new SpaceDeleteRequest(MAP_SVG);

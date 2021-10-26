@@ -36,10 +36,11 @@ const GuestReservation = (): JSX.Element => {
   const history = useHistory<GuestReservationSuccessState | GuestMapState>();
   const { sharingMapId } = useParams<GuestPageURLParams>();
 
+  if (!location.state?.mapId || !location.state?.space) {
+    history.replace(HREF.GUEST_MAP(sharingMapId));
+  }
+
   const { mapId, space, selectedDate, scrollPosition, reservation } = location.state;
-
-  if (!mapId || !space) history.replace(HREF.GUEST_MAP(sharingMapId));
-
   const [date, onChangeDate] = useInput(selectedDate);
 
   const isEditMode = !!reservation;

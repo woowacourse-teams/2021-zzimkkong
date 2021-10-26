@@ -10,7 +10,6 @@ import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.client.MultipartBodyBuilder;
-import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
@@ -18,7 +17,6 @@ import reactor.core.publisher.Mono;
 import java.io.InputStream;
 import java.util.Objects;
 
-@Component
 @LogMethodExecutionTime(group = "infrastructure")
 public class S3ProxyUploader implements StorageUploader {
     private static final String PATH_DELIMITER = "/";
@@ -26,13 +24,16 @@ public class S3ProxyUploader implements StorageUploader {
     private static final String CONTENT_DISPOSITION_HEADER_VALUE_FORMAT = "form-data; name=file; filename=%s";
 
     private final WebClient proxyServerClient;
+    private final String secretKey;
 
     public S3ProxyUploader(
             @Value("${s3proxy.server-uri}") final String serverUri,
+            final String secretKey,
             final WebClient webClient) {
         this.proxyServerClient = webClient.mutate()
                 .baseUrl(serverUri)
                 .build();
+        this.secretKey = secretKey;
     }
 
     @Override
@@ -50,6 +51,7 @@ public class S3ProxyUploader implements StorageUploader {
                 .method(HttpMethod.POST)
                 .uri(String.join(PATH_DELIMITER, API_PATH, directoryName))
                 .header(HttpHeaders.CONTENT_TYPE, MediaType.MULTIPART_FORM_DATA_VALUE)
+                .header(HttpHeaders.AUTHORIZATION, secretKey)
                 .body(BodyInserters.fromMultipartData(multipartBodyBuilder.build()))
                 .exchangeToMono(clientResponse -> {
                     if (clientResponse.statusCode().equals(HttpStatus.CREATED)) {
