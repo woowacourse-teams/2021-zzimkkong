@@ -24,7 +24,7 @@
 
     <springProfile name="dev">
         <include resource="appenders/console-appender.xml"/>
-        <include resource="appender/kafka-appender-dev.xml"/>
+        <include resource="appenders/kafka-appender-dev.xml"/>
 
         <include resource="appenders/file-appender-error.xml"/>
         <include resource="appenders/file-appender-warn.xml"/>
@@ -42,7 +42,7 @@
 
     <springProfile name="prod">
         <include resource="appenders/console-appender.xml"/>
-        <include resource="appender/kafka-appender-prod.xml"/>
+        <include resource="appenders/kafka-appender-prod.xml"/>
 
         <include resource="appenders/file-appender-error.xml"/>
         <include resource="appenders/file-appender-warn.xml"/>
