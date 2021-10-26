@@ -46,8 +46,8 @@ export const formatTimePrettier = (minutes: number): string => {
   return `${hour ? `${hour}시간` : ''}${minute ? ' ' : ''}${minute ? `${minute}분` : ''}`;
 };
 
-export const isPastTime = (time: Date): boolean => {
-  return time.getTime() < new Date().getTime();
+export const isPastTime = (time: Date, baseDate: Date = new Date()): boolean => {
+  return time.getTime() < baseDate.getTime();
 };
 
 export const isPastDate = (time: Date, baseDate: Date = new Date()): boolean => {
