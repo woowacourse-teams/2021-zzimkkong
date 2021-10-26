@@ -1,19 +1,21 @@
 package com.woowacourse.zzimkkong.config;
 
 import com.woowacourse.zzimkkong.config.logaspect.LogAspectConfigurer;
-import com.woowacourse.zzimkkong.repository.*;
+import org.reflections.Reflections;
 import org.springframework.context.annotation.Configuration;
+
+import java.util.Set;
 
 @Configuration
 public class LogAspectConfig extends LogAspectConfigurer {
-    private static final String LOG_GROUP_NAME_OF_REPOSITORY = "repository";
-
     @Override
     protected void registerBeans(LogRegistry logRegistry) {
-        logRegistry.add(MemberRepository.class, LOG_GROUP_NAME_OF_REPOSITORY);
-        logRegistry.add(MapRepository.class, LOG_GROUP_NAME_OF_REPOSITORY);
-        logRegistry.add(SpaceRepository.class, LOG_GROUP_NAME_OF_REPOSITORY);
-        logRegistry.add(ReservationRepository.class, LOG_GROUP_NAME_OF_REPOSITORY);
-        logRegistry.add(PresetRepository.class, LOG_GROUP_NAME_OF_REPOSITORY);
+        Reflections reflections = new Reflections("com.woowacourse.zzimkkong");
+        Set<Class<?>> typesAnnotatedWith = reflections.getTypesAnnotatedWith(com.woowacourse.zzimkkong.config.logaspect.LogRegistry.class);
+
+        for (Class<?> clazz : typesAnnotatedWith) {
+            String logGroup = clazz.getAnnotation(com.woowacourse.zzimkkong.config.logaspect.LogRegistry.class).group();
+            logRegistry.add(clazz, logGroup);
+        }
     }
 }
