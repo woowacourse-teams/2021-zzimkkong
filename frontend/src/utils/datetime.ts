@@ -1,8 +1,4 @@
-<<<<<<< HEAD
-import DATE from 'constants/date';
-=======
 import { Midday, Time } from 'types/time';
->>>>>>> 1cd7bdf8 (feat: 공간관리자 예약페이지 TimePicker 적용)
 
 // Note: YYYY-MM-DD 형식으로 변환함
 export const formatDate = (value: Date): string => {
