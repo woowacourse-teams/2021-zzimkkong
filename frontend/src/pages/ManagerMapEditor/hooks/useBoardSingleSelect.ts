@@ -8,6 +8,7 @@ interface Props {
   setSelectedMapElements: React.Dispatch<React.SetStateAction<MapElement[]>>;
 }
 
+// Note: 요소를 단일 선택하여 GripPoint를 보여주는 기능 로직이 구현된 커스텀 훅. 현재 미사용 중.
 const useBoardSingleSelect = ({
   nextGripPointId,
   setGripPoints,

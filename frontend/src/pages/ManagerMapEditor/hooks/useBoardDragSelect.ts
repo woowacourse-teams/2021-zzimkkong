@@ -6,7 +6,6 @@ interface Props {
   boardRef: React.RefObject<SVGSVGElement>;
   selectRectRef: React.RefObject<SVGRectElement>;
   selectedMapElementsState: [MapElement[], React.Dispatch<React.SetStateAction<MapElement[]>>];
-  selectSingleMapElement: (mapElement: MapElement) => void;
   deselectMapElements: () => void;
 }
 
@@ -15,7 +14,6 @@ const useBoardDragSelect = ({
   boardRef,
   selectRectRef,
   selectedMapElementsState,
-  selectSingleMapElement,
   deselectMapElements,
 }: Props): {
   dragSelectRect: typeof dragSelectRect;
@@ -71,13 +69,7 @@ const useBoardDragSelect = ({
     });
 
     const selections = getSelections();
-
-    if (selections.length === 1) {
-      const [mapElement] = selections;
-      selectSingleMapElement(mapElement);
-
-      return;
-    }
+    if (!selections.length) return;
 
     setSelectedMapElements(selections);
   };
@@ -125,7 +117,7 @@ const useBoardDragSelect = ({
     const positionOffset = 2;
     const marginOffset = positionOffset * 2;
 
-    if (!bBox?.width || !bBox?.height) {
+    if (!bBox || !selectedMapElements.length) {
       setSelectedGroupBBox(null);
 
       return;
@@ -140,13 +132,11 @@ const useBoardDragSelect = ({
     };
 
     setSelectedGroupBBox(newBBox);
-  }, []);
+  }, [selectedMapElements]);
 
   useEffect(() => {
-    if (selectedMapElements.length === 1) return;
-
     setGroupBBox();
-  }, [setGroupBBox, selectedMapElements]);
+  }, [setGroupBBox]);
 
   return {
     dragSelectRect,

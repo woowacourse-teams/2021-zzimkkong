@@ -78,7 +78,6 @@ const MapEditor = ({
   const { pressedKey } = useBindKeyPress();
   const isPressSpacebar = pressedKey === KEY.SPACE;
   const isBoardDraggable = isPressSpacebar || mode === MapEditorMode.Move;
-  const isMapElementClickable = mode === MapEditorMode.Select && !isBoardDraggable;
   const isMapElementEventAvailable =
     [MapEditorMode.Select, MapEditorMode.Eraser].includes(mode) && !isBoardDraggable;
 
@@ -90,12 +89,10 @@ const MapEditor = ({
   const { onWheel } = useBoardZoom([boardStatus, setBoardStatus]);
   const {
     dragSelectRect,
-    gripPoints,
     selectedMapElements,
     selectedGroupBBox,
     selectRectRef,
     selectedMapElementsGroupRef,
-    selectMapElement,
     deselectMapElements,
     setSelectedMapElements,
     onSelectDragStart,
@@ -351,10 +348,8 @@ const MapEditor = ({
                   strokeWidth={EDITOR.STROKE_WIDTH}
                   strokeLinecap="round"
                   visibility={isSelected ? 'hidden' : 'visible'}
-                  cursor={isMapElementClickable ? 'pointer' : 'default'}
                   pointerEvents={isMapElementEventAvailable ? 'auto' : 'none'}
                   opacity={isDeleting ? EDITOR.OPACITY_DELETING : EDITOR.OPACITY}
-                  onClickCapture={() => selectMapElement(element)}
                   onMouseOverCapture={onMouseOverMapElement}
                   ref={(el) => (element.ref.current = el)}
                 />
@@ -375,10 +370,8 @@ const MapEditor = ({
                   strokeWidth={EDITOR.STROKE_WIDTH}
                   strokeLinecap="round"
                   visibility={isSelected ? 'hidden' : 'visible'}
-                  cursor={isMapElementClickable ? 'pointer' : 'default'}
                   pointerEvents={isMapElementEventAvailable ? 'auto' : 'none'}
                   opacity={isDeleting ? EDITOR.OPACITY_DELETING : EDITOR.OPACITY}
-                  onClickCapture={() => selectMapElement(element)}
                   onMouseOverCapture={onMouseOverMapElement}
                   ref={(el) => (element.ref.current = el)}
                 />
@@ -403,8 +396,6 @@ const MapEditor = ({
                     stroke={element.stroke}
                     strokeWidth={EDITOR.STROKE_WIDTH}
                     strokeLinecap="round"
-                    cursor={isMapElementClickable ? 'pointer' : 'default'}
-                    onClickCapture={() => selectMapElement(element)}
                     onMouseOverCapture={onMouseOverMapElement}
                   />
                 );
@@ -423,8 +414,6 @@ const MapEditor = ({
                     fill="none"
                     strokeWidth={EDITOR.STROKE_WIDTH}
                     strokeLinecap="round"
-                    cursor={isMapElementClickable ? 'pointer' : 'default'}
-                    onClickCapture={() => selectMapElement(element)}
                     onMouseOverCapture={onMouseOverMapElement}
                   />
                 );
@@ -446,11 +435,6 @@ const MapEditor = ({
               onMouseDown={handleMouseDownSelectedGroup}
             />
           )}
-
-          {mode === MapEditorMode.Select &&
-            gripPoints.map(({ x, y }, index) => (
-              <Styled.GripPoint key={index} cx={x} cy={y} r={4} />
-            ))}
         </Board>
       </Styled.Board>
       <Styled.Toolbar>

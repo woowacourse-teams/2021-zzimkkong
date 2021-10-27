@@ -1,7 +1,6 @@
 import React, { Dispatch, SetStateAction, useRef, useState } from 'react';
-import { GripPoint, MapElement } from 'types/common';
+import { MapElement } from 'types/common';
 import useBoardDragSelect from './useBoardDragSelect';
-import useBoardSingleSelect from './useBoardSingleSelect';
 
 interface Props {
   mapElements: MapElement[];
@@ -13,12 +12,10 @@ const useBoardSelect = ({
   boardRef,
 }: Props): {
   dragSelectRect: typeof dragSelectRect;
-  gripPoints: GripPoint[];
   selectedMapElements: MapElement[];
   selectedGroupBBox: DOMRect | null;
   selectRectRef: React.RefObject<SVGRectElement>;
   selectedMapElementsGroupRef: React.RefObject<SVGGElement>;
-  selectMapElement: (mapElement: MapElement) => void;
   deselectMapElements: () => void;
   setSelectedMapElements: Dispatch<SetStateAction<MapElement[]>>;
   onSelectDragStart: (event: React.MouseEvent<SVGSVGElement>) => void;
@@ -27,20 +24,11 @@ const useBoardSelect = ({
 } => {
   const selectRectRef = useRef<SVGRectElement>(null);
 
-  const [gripPoints, setGripPoints] = useState<GripPoint[]>([]);
   const [selectedMapElements, setSelectedMapElements] = useState<MapElement[]>([]);
-  const nextGripPointId = Math.max(...gripPoints.map(({ id }) => id), 1) + 1;
 
   const deselectMapElements = () => {
     setSelectedMapElements([]);
-    setGripPoints([]);
   };
-
-  const { selectMapElement } = useBoardSingleSelect({
-    nextGripPointId,
-    setGripPoints,
-    setSelectedMapElements,
-  });
 
   const {
     dragSelectRect,
@@ -54,19 +42,16 @@ const useBoardSelect = ({
     boardRef,
     selectRectRef,
     selectedMapElementsState: [selectedMapElements, setSelectedMapElements],
-    selectSingleMapElement: selectMapElement,
     deselectMapElements,
   });
 
   return {
     dragSelectRect,
-    gripPoints,
     selectedMapElements,
     selectedGroupBBox,
     selectRectRef,
     selectedMapElementsGroupRef,
     deselectMapElements,
-    selectMapElement,
     setSelectedMapElements,
     onSelectDragStart,
     onSelectDrag,
