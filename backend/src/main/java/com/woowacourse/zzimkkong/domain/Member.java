@@ -12,7 +12,7 @@ import java.util.Optional;
 @Getter
 @NoArgsConstructor
 @Entity
-@Table(indexes = @Index(name = "i_email", columnList = "email", unique = true))
+@Table(indexes = @Index(name = "email", columnList = "email", unique = true))
 public class Member {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
