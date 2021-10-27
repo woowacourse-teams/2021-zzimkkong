@@ -3,12 +3,12 @@ import { Suspense } from 'react';
 import { QueryClient, QueryClientProvider } from 'react-query';
 import { ReactQueryDevtools } from 'react-query/devtools';
 import { Route, Router, Switch } from 'react-router-dom';
-import { RecoilRoot } from 'recoil';
 import { ThemeProvider } from 'styled-components';
 import PrivateRoute from 'PrivateRoute';
 import Header from 'components/Header/Header';
 import PATH from 'constants/path';
 import { PRIVATE_ROUTES, PUBLIC_ROUTES } from 'constants/routes';
+import AccessTokenProvider from 'providers/AccessTokenProvider';
 import { GlobalStyle, theme } from './App.styles';
 import NotFound from './pages/NotFound/NotFound';
 
@@ -18,7 +18,7 @@ export const queryClient = new QueryClient();
 const App = (): JSX.Element => {
   return (
     <QueryClientProvider client={queryClient}>
-      <RecoilRoot>
+      <AccessTokenProvider>
         <ThemeProvider theme={theme}>
           <GlobalStyle />
           <Router history={history}>
@@ -40,7 +40,7 @@ const App = (): JSX.Element => {
             </Suspense>
           </Router>
         </ThemeProvider>
-      </RecoilRoot>
+      </AccessTokenProvider>
       <ReactQueryDevtools initialIsOpen={false} />
     </QueryClientProvider>
   );

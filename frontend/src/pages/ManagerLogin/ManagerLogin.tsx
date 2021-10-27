@@ -1,19 +1,16 @@
 import { AxiosError, AxiosResponse } from 'axios';
-import { useEffect, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import { useMutation } from 'react-query';
 import { useHistory } from 'react-router';
 import { Link } from 'react-router-dom';
-import { useSetRecoilState } from 'recoil';
 import { postLogin, postTokenValidation } from 'api/login';
 import Header from 'components/Header/Header';
 import Layout from 'components/Layout/Layout';
 import SocialLoginButton from 'components/SocialAuthButton/SocialLoginButton';
 import MESSAGE from 'constants/message';
 import PATH from 'constants/path';
-import { LOCAL_STORAGE_KEY } from 'constants/storage';
-import accessTokenState from 'state/accessTokenState';
+import { AccessTokenContext } from 'providers/AccessTokenProvider';
 import { ErrorResponse, LoginSuccess } from 'types/response';
-import { setLocalStorageItem } from 'utils/localStorage';
 import * as Styled from './ManagerLogin.styles';
 import LoginForm from './units/LoginForm';
 
@@ -30,20 +27,23 @@ export interface LoginParams {
 const ManagerLogin = (): JSX.Element => {
   const history = useHistory();
 
-  const setAccessToken = useSetRecoilState(accessTokenState);
+  const { setAccessToken, resetAccessToken } = useContext(AccessTokenContext);
 
   const [errorMessage, setErrorMessage] = useState<ErrorMessage>({
     email: '',
     password: '',
   });
 
-  const { isError: tokenValidation } = useMutation(postTokenValidation);
+  const validateToken = useMutation(postTokenValidation, {
+    onError: () => {
+      resetAccessToken();
+    },
+  });
 
   const login = useMutation(postLogin, {
     onSuccess: (response: AxiosResponse<LoginSuccess>) => {
       const { accessToken } = response.data;
 
-      setLocalStorageItem({ key: LOCAL_STORAGE_KEY.ACCESS_TOKEN, item: accessToken });
       setAccessToken(accessToken);
 
       history.push(PATH.MANAGER_MAIN);
@@ -68,10 +68,8 @@ const ManagerLogin = (): JSX.Element => {
   };
 
   useEffect(() => {
-    if (!tokenValidation) {
-      setAccessToken('');
-    }
-  }, [setAccessToken, tokenValidation]);
+    validateToken.mutate();
+  }, []);
 
   return (
     <>
