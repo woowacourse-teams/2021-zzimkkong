@@ -5,12 +5,16 @@ import { Midday, Range, Time } from 'types/time';
 type SelectedTime = keyof Range | null;
 
 interface Props {
-  defaultStartTime?: Date;
-  defaultEndTime?: Date;
+  initialStartTime?: Date;
+  initialEndTime?: Date;
   step?: Step;
 }
 
-const generateTo12Hour = (hour: number) => (hour > 12 ? hour % 12 : hour);
+const generateTo12Hour = (hour: number) => {
+  const result = hour > 12 ? hour % 12 : hour;
+
+  return result === 0 ? 12 : result;
+};
 
 const generateDateToTime = (time: Date, step: Props['step'] = 1): Time => {
   const minute = Math.ceil(time.getMinutes() / step) * step;
@@ -25,8 +29,8 @@ const generateDateToTime = (time: Date, step: Props['step'] = 1): Time => {
 };
 
 const useTimePicker = ({
-  defaultStartTime,
-  defaultEndTime,
+  initialStartTime,
+  initialEndTime,
   step = 1,
 }: Props): {
   range: Range;
@@ -37,8 +41,8 @@ const useTimePicker = ({
 } => {
   const [selectedTime, setSelectedTime] = useState<SelectedTime>(null);
   const [range, setRange] = useState<Range>({
-    start: defaultStartTime ? generateDateToTime(defaultStartTime, step) : null,
-    end: defaultEndTime ? generateDateToTime(defaultEndTime, step) : null,
+    start: initialStartTime ? generateDateToTime(initialStartTime, step) : null,
+    end: initialEndTime ? generateDateToTime(initialEndTime, step) : null,
   });
 
   const setInitialTime = (key: keyof Range) => {
@@ -53,16 +57,17 @@ const useTimePicker = ({
 
     if (key === 'end' && range.start !== null) {
       const startTime = range.start;
+      const endMidday =
+        startTime.hour !== 11
+          ? startTime.midday
+          : startTime.midday === Midday.AM
+          ? Midday.PM
+          : Midday.AM;
 
       setRange((prev) => ({
         ...prev,
         end: {
-          midday:
-            startTime.hour < 11
-              ? startTime.midday
-              : startTime.midday === Midday.AM
-              ? Midday.PM
-              : Midday.AM,
+          midday: endMidday,
           hour: generateTo12Hour(startTime.hour + 1),
           minute: startTime.minute,
         },

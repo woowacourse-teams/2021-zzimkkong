@@ -1,4 +1,4 @@
-import DATE from 'constants/date';
+import { Midday, Time } from 'types/time';
 
 // Note: YYYY-MM-DD 형식으로 변환함
 export const formatDate = (value: Date): string => {
@@ -22,11 +22,18 @@ export const formatDateWithDay = (value: Date): string => {
 };
 
 // Note: HH:MM 형태로 변환함
-export const formatTime = (time: Date): string => {
-  const hour = time.getHours();
-  const minute = time.getMinutes();
+export const formatTime = (time: Date | Time): string => {
+  if (time instanceof Date) {
+    const hour = time.getHours();
+    const minute = time.getMinutes();
 
-  return `${hour < 10 ? `0${hour}` : `${hour}`}:${minute < 10 ? `0${minute}` : `${minute}`}`;
+    return `${hour < 10 ? `0${hour}` : `${hour}`}:${minute < 10 ? `0${minute}` : `${minute}`}`;
+  }
+
+  const hour = time.midday === Midday.AM ? `${time.hour}`.padStart(2, '0') : `${time.hour + 12}`;
+  const minute = `${time.minute}`.padStart(2, '0');
+
+  return `${hour}:${minute}`;
 };
 
 // Note: HH:MM:SS 형태로 변환함

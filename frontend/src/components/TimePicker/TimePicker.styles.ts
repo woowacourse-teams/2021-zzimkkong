@@ -39,6 +39,7 @@ export const TimeContainer = styled.div<TimeContainerProps>`
   border-radius: ${({ isOptionOpen }) => (isOptionOpen ? '0.125rem 0.125rem 0 0' : '0.125rem')};
   position: relative;
   box-sizing: content-box;
+  z-index: ${Z_INDEX.TIME_PICKER};
 
   ${({ labelText }) => (labelText ? labelTextCSS(labelText) : '')}
 `;
@@ -46,7 +47,10 @@ export const TimeContainer = styled.div<TimeContainerProps>`
 export const TimeButton = styled.button<TimeButtonProps>`
   padding: 0 0.5rem;
   display: flex;
+  justify-content: center;
   align-items: center;
+  white-space: nowrap;
+  min-width: 30%;
   height: inherit;
   border: 0;
   background-color: transparent;
@@ -65,7 +69,6 @@ export const TimeButton = styled.button<TimeButtonProps>`
 export const OptionsContainer = styled.div`
   width: 100%;
   position: absolute;
-  top: 3rem;
   user-select: none;
 `;
 
