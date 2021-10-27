@@ -26,11 +26,12 @@ public class GithubRequester implements OauthAPIRequester {
             final String clientId,
             final String secretId,
             final String githubOauthUrl,
-            final String githubOpenApiUrl) {
+            final String githubOpenApiUrl,
+            final WebClient webClient) {
         this.clientId = clientId;
         this.secretId = secretId;
-        this.githubOauthLoginClient = githubOauthLoginClient(githubOauthUrl);
-        this.githubOpenApiClient = githubOpenApiClient(githubOpenApiUrl);
+        this.githubOauthLoginClient = githubOauthLoginClient(webClient, githubOauthUrl);
+        this.githubOpenApiClient = githubOpenApiClient(webClient, githubOpenApiUrl);
     }
 
     @Override
@@ -82,15 +83,15 @@ public class GithubRequester implements OauthAPIRequester {
         return GithubUserInfo.from(responseBody);
     }
 
-    private WebClient githubOauthLoginClient(String githubOauthUrl) {
-        return WebClient.builder()
+    private WebClient githubOauthLoginClient(final WebClient webClient, final String githubOauthUrl) {
+        return webClient.mutate()
                 .baseUrl(githubOauthUrl)
                 .defaultHeader(HttpHeaders.ACCEPT, MediaType.APPLICATION_JSON_VALUE)
                 .build();
     }
 
-    private WebClient githubOpenApiClient(String githubOpenApiUrl) {
-        return WebClient.builder()
+    private WebClient githubOpenApiClient(final WebClient webClient, String githubOpenApiUrl) {
+        return webClient.mutate()
                 .baseUrl(githubOpenApiUrl)
                 .defaultHeader(HttpHeaders.ACCEPT, MediaType.APPLICATION_JSON_VALUE)
                 .build();

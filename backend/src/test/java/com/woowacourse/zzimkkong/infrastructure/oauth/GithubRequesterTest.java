@@ -10,6 +10,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.ActiveProfiles;
+import org.springframework.web.reactive.function.client.WebClient;
 
 import java.io.IOException;
 
@@ -74,7 +75,8 @@ class GithubRequesterTest {
                     "clientId",
                     "secretId",
                     String.format("http://%s:%s", mockGithubServer.getHostName(), mockGithubServer.getPort()),
-                    String.format("http://%s:%s", mockGithubServer.getHostName(), mockGithubServer.getPort())
+                    String.format("http://%s:%s", mockGithubServer.getHostName(), mockGithubServer.getPort()),
+                    WebClient.create()
             );
 
             // when
@@ -108,7 +110,8 @@ class GithubRequesterTest {
                     "clientId",
                     "secretId",
                     String.format("http://%s:%s", mockGithubServer.getHostName(), mockGithubServer.getPort()),
-                    String.format("http://%s:%s", mockGithubServer.getHostName(), mockGithubServer.getPort())
+                    String.format("http://%s:%s", mockGithubServer.getHostName(), mockGithubServer.getPort()),
+                    WebClient.create()
             );
 
             // when, then

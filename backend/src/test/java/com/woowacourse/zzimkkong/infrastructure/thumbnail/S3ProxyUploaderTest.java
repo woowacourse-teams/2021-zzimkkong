@@ -13,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpStatus;
 import org.springframework.test.context.ActiveProfiles;
+import org.springframework.web.reactive.function.client.WebClient;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -89,7 +90,8 @@ class S3ProxyUploaderTest {
 
             String hostName = mockGithubServer.getHostName();
             int port = mockGithubServer.getPort();
-            S3ProxyUploader s3ProxyUploader = new S3ProxyUploader("http://" + hostName + ":" + port, "secretKey");
+
+            S3ProxyUploader s3ProxyUploader = new S3ProxyUploader("http://" + hostName + ":" + port,  "secretKey", WebClient.create());
 
             String filePath = getClass().getClassLoader().getResource("luther.png").getFile();
             testFile = new File(filePath);

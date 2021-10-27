@@ -1,48 +1,49 @@
 package com.woowacourse.zzimkkong.service;
 
+import com.woowacourse.zzimkkong.config.logaspect.LogMethodExecutionTime;
 import com.woowacourse.zzimkkong.domain.SlackUrl;
 import com.woowacourse.zzimkkong.dto.slack.Attachments;
 import com.woowacourse.zzimkkong.dto.slack.SlackResponse;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.client.RestTemplate;
+import org.springframework.web.reactive.function.client.WebClient;
 
 @Service
 @Transactional(readOnly = true)
 public class SlackService {
     private final SlackUrl slackUrl;
-    private final RestTemplate restTemplate;
-    private final HttpHeaders headers;
+    private final WebClient slackWebClient;
 
-    public SlackService(final SlackUrl slackUrl) {
+    public SlackService(final SlackUrl slackUrl, final WebClient webClient) {
         this.slackUrl = slackUrl;
-        restTemplate = new RestTemplate();
-        headers = new HttpHeaders();
-        headers.setContentType(MediaType.APPLICATION_JSON);
+        this.slackWebClient = webClient.mutate()
+                .baseUrl(this.slackUrl.getUrl())
+                .build();
     }
 
     public void sendCreateMessage(SlackResponse slackResponse) {
         Attachments attachments = Attachments.createMessageFrom(slackResponse);
-        HttpEntity<String> requestEntity = new HttpEntity<>(attachments.toString(), headers);
-
-        restTemplate.exchange(slackUrl.getUrl(), HttpMethod.POST, requestEntity, String.class);
+        send(attachments);
     }
 
     public void sendUpdateMessage(SlackResponse slackResponse) {
         Attachments attachments = Attachments.updateMessageFrom(slackResponse);
-        HttpEntity<String> requestEntity = new HttpEntity<>(attachments.toString(), headers);
-
-        restTemplate.exchange(slackUrl.getUrl(), HttpMethod.POST, requestEntity, String.class);
+        send(attachments);
     }
 
     public void sendDeleteMessage(SlackResponse slackResponse) {
         Attachments attachments = Attachments.deleteMessageFrom(slackResponse);
-        HttpEntity<String> requestEntity = new HttpEntity<>(attachments.toString(), headers);
+        send(attachments);
+    }
 
-        restTemplate.exchange(slackUrl.getUrl(), HttpMethod.POST, requestEntity, String.class);
+    private void send(final Attachments attachments) {
+        slackWebClient.post()
+                .contentType(MediaType.APPLICATION_JSON)
+                .bodyValue(attachments.toString())
+                .retrieve()
+                .bodyToMono(String.class)
+                .then()
+                .subscribe();
     }
 }
