@@ -73,7 +73,7 @@ export const OptionsContainer = styled.div`
 `;
 
 export const Dimmer = styled.div`
-  width: 100vh;
+  width: 100vw;
   height: 100vh;
   position: fixed;
   top: 0;
