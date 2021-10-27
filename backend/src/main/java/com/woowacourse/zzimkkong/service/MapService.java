@@ -87,7 +87,7 @@ public class MapService {
 
     @Cacheable(key = "#sharingMapId",
             value = "map",
-            unless = "#result == null || #result.empty")
+            unless = "#result == null")
     @Transactional(readOnly = true)
     public MapFindResponse findMapBySharingId(final String sharingMapId) {
         Long mapId = sharingIdGenerator.parseIdFrom(sharingMapId);
