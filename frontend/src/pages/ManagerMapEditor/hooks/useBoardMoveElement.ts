@@ -1,6 +1,7 @@
 import { Dispatch, SetStateAction, useState } from 'react';
 import { Coordinate, MapElement } from 'types/common';
 import { MapElementType } from 'types/editor';
+import { isNullish } from 'utils/type';
 
 interface Props {
   coordinate: Coordinate;
@@ -61,7 +62,7 @@ const useBoardMoveElement = ({
         }
 
         if (element.type === MapElementType.Rect) {
-          if (element.x === undefined || element.y === undefined) {
+          if (isNullish(element.x) || isNullish(element.y)) {
             return element;
           }
 
@@ -96,7 +97,7 @@ const useBoardMoveElement = ({
         }
 
         if (element.type === MapElementType.Rect) {
-          if (element.x === undefined || element.y === undefined) {
+          if (isNullish(element.x) || isNullish(element.y)) {
             return element;
           }
 
