@@ -20,6 +20,7 @@ import { MapElementType, MapEditorMode, DrawingAreaShape } from 'types/editor';
 import { getPolygonCenterPoint } from 'utils/editor';
 import useBoardEraserTool from '../hooks/useBoardEraserTool';
 import useBoardLineTool from '../hooks/useBoardLineTool';
+import useBoardMoveElement from '../hooks/useBoardMoveElement';
 import useBoardRectTool from '../hooks/useBoardRectTool';
 import useBoardSelect from '../hooks/useBoardSelect';
 import * as Styled from './MapEditor.styles';
@@ -61,7 +62,7 @@ interface Props {
   ];
 }
 
-const MapCreateEditor = ({
+const MapEditor = ({
   spaces,
   mapElementsState: [mapElements, setMapElements],
   boardState: [{ width, height }, onChangeBoard],
@@ -77,7 +78,6 @@ const MapCreateEditor = ({
   const { pressedKey } = useBindKeyPress();
   const isPressSpacebar = pressedKey === KEY.SPACE;
   const isBoardDraggable = isPressSpacebar || mode === MapEditorMode.Move;
-  const isMapElementClickable = mode === MapEditorMode.Select && !isBoardDraggable;
   const isMapElementEventAvailable =
     [MapEditorMode.Select, MapEditorMode.Eraser].includes(mode) && !isBoardDraggable;
 
@@ -89,13 +89,12 @@ const MapCreateEditor = ({
   const { onWheel } = useBoardZoom([boardStatus, setBoardStatus]);
   const {
     dragSelectRect,
-    gripPoints,
     selectedMapElements,
     selectedGroupBBox,
     selectRectRef,
     selectedMapElementsGroupRef,
-    selectMapElement,
     deselectMapElements,
+    setSelectedMapElements,
     onSelectDragStart,
     onSelectDrag,
     onSelectDragEnd,
@@ -119,6 +118,13 @@ const MapCreateEditor = ({
   const { erasingMapElementIds, eraseStart, eraseEnd, onMouseOverMapElement } = useBoardEraserTool({
     mapElements: [mapElements, setMapElements],
   });
+  const { isElementMoving, offset, onMoveStartElement, onMoveElement, onMoveEndElement } =
+    useBoardMoveElement({
+      coordinate: stickyDotCoordinate,
+      selectedMapElements,
+      setMapElements,
+      setSelectedMapElements,
+    });
 
   const toggleColorPicker = () => setColorPickerOpen((prevState) => !prevState);
 
@@ -139,25 +145,38 @@ const MapCreateEditor = ({
   const handleMouseUp = () => {
     if (isBoardDraggable || isMoving) return;
 
-    if (mode === MapEditorMode.Select) onSelectDragEnd();
-    else if (mode === MapEditorMode.Line) drawLineEnd();
+    if (mode === MapEditorMode.Line) drawLineEnd();
     else if (mode === MapEditorMode.Rect) drawRectEnd();
     else if (mode === MapEditorMode.Eraser) eraseEnd();
   };
 
   const handleDragStartBoard = (event: React.MouseEvent<SVGSVGElement>) => {
+    if (isElementMoving) return;
+
     if (isBoardDraggable) onDragStart(event);
     else if (mode === MapEditorMode.Select) onSelectDragStart(event);
   };
 
   const handleDragBoard = (event: React.MouseEvent<SVGSVGElement>) => {
+    onMouseMove(event);
+
     if (isBoardDraggable) onDrag(event);
+    else if (isElementMoving) onMoveElement();
     else if (mode === MapEditorMode.Select) onSelectDrag(event);
   };
 
   const handleDragEndBoard = () => {
     if (isBoardDraggable) onDragEnd();
+    else if (isElementMoving) onMoveEndElement();
     else if (mode === MapEditorMode.Select) onSelectDragEnd();
+  };
+
+  const handleMouseDownSelectedGroup = (event: React.MouseEvent<SVGGElement>) => {
+    event.stopPropagation();
+
+    if (!selectedMapElements.length) return;
+
+    onMoveStartElement();
   };
 
   const deleteMapElement = useCallback(() => {
@@ -207,7 +226,6 @@ const MapCreateEditor = ({
           movable={isBoardDraggable}
           isMoving={isMoving}
           ref={boardRef}
-          onMouseMove={onMouseMove}
           onMouseDown={handleMouseDown}
           onMouseUp={handleMouseUp}
           onWheel={onWheel}
@@ -241,9 +259,9 @@ const MapCreateEditor = ({
           )}
 
           {spaces.map(({ id, color, area, name }) => (
-            <>
+            <React.Fragment key={id}>
               {area.shape === DrawingAreaShape.Rect && (
-                <g key={id} pointerEvents="none">
+                <g pointerEvents="none">
                   <rect
                     x={area.x}
                     y={area.y}
@@ -267,7 +285,7 @@ const MapCreateEditor = ({
               )}
 
               {area.shape === DrawingAreaShape.Polygon && (
-                <g key={id} pointerEvents="none">
+                <g pointerEvents="none">
                   <polygon
                     points={area.points.map(({ x, y }) => `${x},${y}`).join(' ')}
                     fill={color}
@@ -286,7 +304,7 @@ const MapCreateEditor = ({
                   </text>
                 </g>
               )}
-            </>
+            </React.Fragment>
           ))}
 
           {drawingStatus.start && mode === MapEditorMode.Line && (
@@ -329,10 +347,8 @@ const MapCreateEditor = ({
                   strokeWidth={EDITOR.STROKE_WIDTH}
                   strokeLinecap="round"
                   visibility={isSelected ? 'hidden' : 'visible'}
-                  cursor={isMapElementClickable ? 'pointer' : 'default'}
                   pointerEvents={isMapElementEventAvailable ? 'auto' : 'none'}
                   opacity={isDeleting ? EDITOR.OPACITY_DELETING : EDITOR.OPACITY}
-                  onClickCapture={() => selectMapElement(element)}
                   onMouseOverCapture={onMouseOverMapElement}
                   ref={(el) => (element.ref.current = el)}
                 />
@@ -353,10 +369,8 @@ const MapCreateEditor = ({
                   strokeWidth={EDITOR.STROKE_WIDTH}
                   strokeLinecap="round"
                   visibility={isSelected ? 'hidden' : 'visible'}
-                  cursor={isMapElementClickable ? 'pointer' : 'default'}
                   pointerEvents={isMapElementEventAvailable ? 'auto' : 'none'}
                   opacity={isDeleting ? EDITOR.OPACITY_DELETING : EDITOR.OPACITY}
-                  onClickCapture={() => selectMapElement(element)}
                   onMouseOverCapture={onMouseOverMapElement}
                   ref={(el) => (element.ref.current = el)}
                 />
@@ -366,7 +380,11 @@ const MapCreateEditor = ({
             return null;
           })}
 
-          <g pointerEvents="none" ref={selectedMapElementsGroupRef}>
+          <g
+            pointerEvents="none"
+            ref={selectedMapElementsGroupRef}
+            transform={`matrix(1, 0, 0, 1, ${offset.x}, ${offset.y})`}
+          >
             {selectedMapElements.map((element) => {
               if (element.type === MapElementType.Polyline) {
                 return (
@@ -377,8 +395,6 @@ const MapCreateEditor = ({
                     stroke={element.stroke}
                     strokeWidth={EDITOR.STROKE_WIDTH}
                     strokeLinecap="round"
-                    cursor={isMapElementClickable ? 'pointer' : 'default'}
-                    onClickCapture={() => selectMapElement(element)}
                     onMouseOverCapture={onMouseOverMapElement}
                   />
                 );
@@ -397,8 +413,6 @@ const MapCreateEditor = ({
                     fill="none"
                     strokeWidth={EDITOR.STROKE_WIDTH}
                     strokeLinecap="round"
-                    cursor={isMapElementClickable ? 'pointer' : 'default'}
-                    onClickCapture={() => selectMapElement(element)}
                     onMouseOverCapture={onMouseOverMapElement}
                   />
                 );
@@ -416,14 +430,10 @@ const MapCreateEditor = ({
               height={selectedGroupBBox.height}
               stroke={theme.primary[500]}
               strokeWidth={EDITOR.SELECTED_GROUP_BBOX_STROKE_WIDTH}
-              fill="none"
+              fill="transparent"
+              onMouseDown={handleMouseDownSelectedGroup}
             />
           )}
-
-          {mode === MapEditorMode.Select &&
-            gripPoints.map(({ x, y }, index) => (
-              <Styled.GripPoint key={index} cx={x} cy={y} r={4} />
-            ))}
         </Board>
       </Styled.Board>
       <Styled.Toolbar>
@@ -446,4 +456,4 @@ const MapCreateEditor = ({
   );
 };
 
-export default MapCreateEditor;
+export default MapEditor;

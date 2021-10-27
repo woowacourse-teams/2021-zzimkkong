@@ -2,22 +2,22 @@ import { render, RenderOptions, RenderResult } from '@testing-library/react';
 import React, { Suspense } from 'react';
 import { QueryClient, QueryClientProvider } from 'react-query';
 import { BrowserRouter as Router } from 'react-router-dom';
-import { RecoilRoot } from 'recoil';
 import { ThemeProvider } from 'styled-components';
+import AccessTokenProvider from 'providers/AccessTokenProvider';
 import { GlobalStyle, theme } from './App.styles';
 
 const queryClient = new QueryClient();
 
 const AllTheProviders: React.FC = ({ children }): JSX.Element => (
   <QueryClientProvider client={queryClient}>
-    <RecoilRoot>
+    <AccessTokenProvider>
       <ThemeProvider theme={theme}>
         <Suspense fallback={<div></div>}>
           <GlobalStyle />
           <Router>{children}</Router>
         </Suspense>
       </ThemeProvider>
-    </RecoilRoot>
+    </AccessTokenProvider>
   </QueryClientProvider>
 );
 

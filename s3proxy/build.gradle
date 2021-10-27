@@ -45,6 +45,14 @@ dependencies {
     testImplementation 'io.rest-assured:rest-assured'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testImplementation 'io.projectreactor:reactor-test'
+
+    // Logstash
+    implementation 'net.logstash.logback:logstash-logback-encoder:6.6'
+
+    // Kafka Appender
+    implementation 'com.github.danielwegener:logback-kafka-appender:0.2.0-RC2'
+
+    implementation 'javax.xml.bind:jaxb-api:2.3.1'
 }
 
 test {

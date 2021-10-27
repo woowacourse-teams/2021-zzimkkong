@@ -12,6 +12,7 @@ import java.util.Optional;
 @Getter
 @NoArgsConstructor
 @Entity
+@Table(indexes = @Index(name = "email", columnList = "email", unique = true))
 public class Member {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -85,5 +86,9 @@ public class Member {
 
     public void update(final String organization) {
         this.organization = organization;
+    }
+
+    public boolean isSameEmail(String email) {
+        return this.email.equals(email);
     }
 }

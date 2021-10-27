@@ -86,7 +86,7 @@ class AdminServiceTest extends ServiceTest {
         //given
         Map luther = new Map(LUTHER_NAME, MAP_DRAWING_DATA, MAP_IMAGE_URL, pobi);
         PageRequest pageRequest = PageRequest.of(0, 20, Sort.unsorted());
-        given(maps.findAll(any(Pageable.class)))
+        given(maps.findAllByFetch(any(Pageable.class)))
                 .willReturn(new PageImpl<>(List.of(luther), pageRequest, 1));
         given(sharingIdGenerator.from(any(Map.class)))
                 .willReturn("someId");
@@ -127,7 +127,7 @@ class AdminServiceTest extends ServiceTest {
                 .build();
 
         PageRequest pageRequest = PageRequest.of(0, 20, Sort.unsorted());
-        given(spaces.findAll(any(Pageable.class)))
+        given(spaces.findAllByFetch(any(Pageable.class)))
                 .willReturn(new PageImpl<>(List.of(be), pageRequest, 1));
 
         //when
@@ -178,7 +178,7 @@ class AdminServiceTest extends ServiceTest {
                 .build();
 
         PageRequest pageRequest = PageRequest.of(0, 20, Sort.unsorted());
-        given(reservations.findAll(any(Pageable.class)))
+        given(reservations.findAllByFetch(any(Pageable.class)))
                 .willReturn(new PageImpl<>(List.of(beAmZeroOne), pageRequest, 1));
 
         //when

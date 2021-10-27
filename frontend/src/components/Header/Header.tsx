@@ -1,10 +1,9 @@
+import { useContext } from 'react';
 import { useHistory, useParams } from 'react-router-dom';
-import { useRecoilState } from 'recoil';
 import { queryClient } from 'App';
 import { ReactComponent as LogoIcon } from 'assets/svg/logo.svg';
 import PATH, { HREF } from 'constants/path';
-import { LOCAL_STORAGE_KEY } from 'constants/storage';
-import accessTokenState from 'state/accessTokenState';
+import { AccessTokenContext } from 'providers/AccessTokenProvider';
 import { MapItem } from 'types/common';
 import * as Styled from './Header.styles';
 
@@ -13,9 +12,8 @@ interface Params {
 }
 
 const Header = (): JSX.Element => {
-  const [accessToken, setAccessToken] = useRecoilState(accessTokenState);
-
   const history = useHistory();
+  const { accessToken, resetAccessToken } = useContext(AccessTokenContext);
 
   const params = useParams<Params>();
   const sharingMapId = params?.sharingMapId;
@@ -29,9 +27,8 @@ const Header = (): JSX.Element => {
   };
 
   const handleLogout = () => {
-    setAccessToken('');
+    resetAccessToken();
     queryClient.clear();
-    localStorage.removeItem(LOCAL_STORAGE_KEY.ACCESS_TOKEN);
 
     history.push(PATH.MANAGER_LOGIN);
   };

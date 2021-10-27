@@ -1,4 +1,4 @@
-import React, { forwardRef, PropsWithChildren, useLayoutEffect, useRef } from 'react';
+import React, { ReactNode, forwardRef, PropsWithChildren, useLayoutEffect, useRef } from 'react';
 import PALETTE from 'constants/palette';
 import { EditorBoard } from 'types/common';
 import * as Styled from './Board.styles';
@@ -17,7 +17,7 @@ interface Props {
   onDragEnd?: (event: React.MouseEvent<SVGSVGElement>) => void;
   onMouseOut?: (event: React.MouseEvent<SVGSVGElement>) => void;
   onWheel?: (event: React.WheelEvent<SVGSVGElement>) => void;
-  rootSvgChildren?: React.ReactNode;
+  rootSvgChildren?: ReactNode;
 }
 
 const Board = forwardRef<SVGSVGElement, PropsWithChildren<Props>>(

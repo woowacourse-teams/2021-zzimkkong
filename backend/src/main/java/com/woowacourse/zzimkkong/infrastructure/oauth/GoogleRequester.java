@@ -27,18 +27,23 @@ public class GoogleRequester implements OauthAPIRequester {
     private final String redirectUri;
     private final String baseLoginUri;
     private final String baseUserUri;
+    private final WebClient googleOauthLoginClient;
+    private final WebClient googleUserClient;
 
     public GoogleRequester(
             @Value("${google.client-id}") final String clientId,
             @Value("${google.secret-id}") final String secretId,
             @Value("${google.uri.redirect}") final String redirectUri,
             @Value("${google.uri.oauth-login}") final String baseLoginUri,
-            @Value("${google.uri.user-info}") final String baseUserUri) {
+            @Value("${google.uri.user-info}") final String baseUserUri,
+            final WebClient webClient) {
         this.clientId = clientId;
         this.secretId = secretId;
         this.redirectUri = redirectUri;
         this.baseLoginUri = baseLoginUri;
         this.baseUserUri = baseUserUri;
+        this.googleOauthLoginClient = googleOauthLoginClient(webClient);
+        this.googleUserClient = googleUserClient(webClient);
     }
 
     @Override
@@ -53,7 +58,7 @@ public class GoogleRequester implements OauthAPIRequester {
     }
 
     private String getToken(final String code) {
-        Map<String, Object> responseBody = googleOauthLoginClient()
+        Map<String, Object> responseBody = googleOauthLoginClient
                 .post()
                 .uri(uriBuilder -> uriBuilder
                         .queryParam("code", code)
@@ -82,7 +87,7 @@ public class GoogleRequester implements OauthAPIRequester {
     }
 
     private GoogleUserInfo getUserInfo(final String token) {
-        Map<String, Object> responseBody = googleUserClient()
+        Map<String, Object> responseBody = googleUserClient
                 .get()
                 .headers(httpHeaders -> httpHeaders.setBearerAuth(token))
                 .retrieve()
@@ -94,15 +99,15 @@ public class GoogleRequester implements OauthAPIRequester {
         return GoogleUserInfo.from(responseBody);
     }
 
-    private WebClient googleOauthLoginClient() {
-        return WebClient.builder()
+    private WebClient googleOauthLoginClient(final WebClient webClient) {
+        return webClient.mutate()
                 .baseUrl(baseLoginUri)
                 .defaultHeader(HttpHeaders.ACCEPT, MediaType.APPLICATION_JSON_VALUE)
                 .build();
     }
 
-    private WebClient googleUserClient() {
-        return WebClient.builder()
+    private WebClient googleUserClient(final WebClient webClient) {
+        return webClient.mutate()
                 .baseUrl(baseUserUri)
                 .defaultHeader(HttpHeaders.ACCEPT, MediaType.APPLICATION_JSON_VALUE)
                 .build();

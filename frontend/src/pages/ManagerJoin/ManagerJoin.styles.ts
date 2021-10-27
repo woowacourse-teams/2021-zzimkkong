@@ -1,8 +1,9 @@
 import styled from 'styled-components';
+import { FORM_MAX_WIDTH } from 'constants/style';
 
 export const Container = styled.div`
   width: 100%;
-  max-width: 660px;
+  max-width: ${FORM_MAX_WIDTH};
   margin: 0 auto;
 `;
 

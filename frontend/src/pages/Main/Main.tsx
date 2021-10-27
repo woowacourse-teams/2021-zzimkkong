@@ -1,4 +1,4 @@
-import { useRecoilValue } from 'recoil';
+import { useContext } from 'react';
 import githubLogo from 'assets/images/github-logo.png';
 import mapEditor from 'assets/images/map-editor.png';
 import reservationPage from 'assets/images/reservation-page.png';
@@ -8,12 +8,12 @@ import { ReactComponent as LogoIcon } from 'assets/svg/logo.svg';
 import Header from 'components/Header/Header';
 import Layout from 'components/Layout/Layout';
 import PATH from 'constants/path';
-import accessTokenState from 'state/accessTokenState';
+import { AccessTokenContext } from 'providers/AccessTokenProvider';
 import * as Styled from './Main.styles';
 import { teamMembers } from './data';
 
 const Main = (): JSX.Element => {
-  const accessToken = useRecoilValue(accessTokenState);
+  const { accessToken } = useContext(AccessTokenContext);
 
   return (
     <>

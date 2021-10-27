@@ -8,13 +8,13 @@ import com.woowacourse.zzimkkong.dto.slack.SlackResponse;
 import com.woowacourse.zzimkkong.exception.map.NoSuchMapException;
 import com.woowacourse.zzimkkong.exception.reservation.*;
 import com.woowacourse.zzimkkong.exception.space.NoSuchSpaceException;
+import com.woowacourse.zzimkkong.infrastructure.sharingid.SharingIdGenerator;
 import com.woowacourse.zzimkkong.repository.MapRepository;
-import com.woowacourse.zzimkkong.repository.MemberRepository;
 import com.woowacourse.zzimkkong.repository.ReservationRepository;
-import com.woowacourse.zzimkkong.service.strategy.ReservationStrategy;
 import com.woowacourse.zzimkkong.service.strategy.ExcludeReservationCreateStrategy;
 import com.woowacourse.zzimkkong.service.strategy.ExcludeReservationStrategy;
 import com.woowacourse.zzimkkong.service.strategy.ExcludeReservationUpdateStrategy;
+import com.woowacourse.zzimkkong.service.strategy.ReservationStrategy;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -29,17 +29,17 @@ import java.util.stream.Collectors;
 @Service
 @Transactional
 public class ReservationService {
-    private final MemberRepository members;
     private final MapRepository maps;
     private final ReservationRepository reservations;
+    private final SharingIdGenerator sharingIdGenerator;
 
     public ReservationService(
-            final MemberRepository members,
             final MapRepository maps,
-            final ReservationRepository reservations) {
-        this.members = members;
+            final ReservationRepository reservations,
+            final SharingIdGenerator sharingIdGenerator) {
         this.maps = maps;
         this.reservations = reservations;
+        this.sharingIdGenerator = sharingIdGenerator;
     }
 
     public ReservationCreateResponse saveReservation(
@@ -48,15 +48,15 @@ public class ReservationService {
         Long mapId = reservationCreateDto.getMapId();
         String loginEmail = reservationCreateDto.getLoginEmail();
 
-        Map map = maps.findById(mapId)
+        Map map = maps.findByIdFetch(mapId)
                 .orElseThrow(NoSuchMapException::new);
-        reservationStrategy.validateManagerOfMap(map, members, loginEmail);
+        reservationStrategy.validateManagerOfMap(map, loginEmail);
 
         Long spaceId = reservationCreateDto.getSpaceId();
         Space space = map.findSpaceById(spaceId)
                 .orElseThrow(NoSuchSpaceException::new);
 
-        validateTime(reservationCreateDto);
+        validateTime(reservationCreateDto, reservationStrategy.isManager());
 
         validateAvailability(space, reservationCreateDto, new ExcludeReservationCreateStrategy());
 
@@ -70,8 +70,8 @@ public class ReservationService {
                         .description(reservationCreateDto.getDescription())
                         .space(space)
                         .build());
-
-        return ReservationCreateResponse.from(reservation);
+        String sharingMapId = sharingIdGenerator.from(map);
+        return ReservationCreateResponse.of(reservation, sharingMapId);
     }
 
     @Transactional(readOnly = true)
@@ -81,9 +81,9 @@ public class ReservationService {
         Long mapId = reservationFindAllDto.getMapId();
         String loginEmail = reservationFindAllDto.getLoginEmail();
 
-        Map map = maps.findById(mapId)
+        Map map = maps.findByIdFetch(mapId)
                 .orElseThrow(NoSuchMapException::new);
-        reservationStrategy.validateManagerOfMap(map, members, loginEmail);
+        reservationStrategy.validateManagerOfMap(map, loginEmail);
 
         List<Space> findSpaces = map.getSpaces();
         LocalDate date = reservationFindAllDto.getDate();
@@ -99,9 +99,9 @@ public class ReservationService {
         Long mapId = reservationFindDto.getMapId();
         String loginEmail = reservationFindDto.getLoginEmail();
 
-        Map map = maps.findById(mapId)
+        Map map = maps.findByIdFetch(mapId)
                 .orElseThrow(NoSuchMapException::new);
-        reservationStrategy.validateManagerOfMap(map, members, loginEmail);
+        reservationStrategy.validateManagerOfMap(map, loginEmail);
 
         Long spaceId = reservationFindDto.getSpaceId();
         LocalDate date = reservationFindDto.getDate();
@@ -119,9 +119,9 @@ public class ReservationService {
         Long mapId = reservationAuthenticationDto.getMapId();
         String loginEmail = reservationAuthenticationDto.getLoginEmail();
 
-        Map map = maps.findById(mapId)
+        Map map = maps.findByIdFetch(mapId)
                 .orElseThrow(NoSuchMapException::new);
-        reservationStrategy.validateManagerOfMap(map, members, loginEmail);
+        reservationStrategy.validateManagerOfMap(map, loginEmail);
 
         Long spaceId = reservationAuthenticationDto.getSpaceId();
         validateSpaceExistence(map, spaceId);
@@ -142,15 +142,15 @@ public class ReservationService {
         Long mapId = reservationUpdateDto.getMapId();
         String loginEmail = reservationUpdateDto.getLoginEmail();
 
-        Map map = maps.findById(mapId)
+        Map map = maps.findByIdFetch(mapId)
                 .orElseThrow(NoSuchMapException::new);
-        reservationStrategy.validateManagerOfMap(map, members, loginEmail);
+        reservationStrategy.validateManagerOfMap(map, loginEmail);
 
         Long spaceId = reservationUpdateDto.getSpaceId();
         Space space = map.findSpaceById(spaceId)
                 .orElseThrow(NoSuchSpaceException::new);
 
-        validateTime(reservationUpdateDto);
+        validateTime(reservationUpdateDto, reservationStrategy.isManager());
 
         Long reservationId = reservationUpdateDto.getReservationId();
         String password = reservationUpdateDto.getPassword();
@@ -172,7 +172,8 @@ public class ReservationService {
 
         reservation.update(updateReservation, space);
 
-        return SlackResponse.from(reservation);
+        String sharingMapId = sharingIdGenerator.from(map);
+        return SlackResponse.of(reservation, sharingMapId);
     }
 
     public SlackResponse deleteReservation(
@@ -181,9 +182,9 @@ public class ReservationService {
         Long mapId = reservationAuthenticationDto.getMapId();
         String loginEmail = reservationAuthenticationDto.getLoginEmail();
 
-        Map map = maps.findById(mapId)
+        Map map = maps.findByIdFetch(mapId)
                 .orElseThrow(NoSuchMapException::new);
-        reservationStrategy.validateManagerOfMap(map, members, loginEmail);
+        reservationStrategy.validateManagerOfMap(map, loginEmail);
 
         Long spaceId = reservationAuthenticationDto.getSpaceId();
         validateSpaceExistence(map, spaceId);
@@ -194,18 +195,19 @@ public class ReservationService {
                 .findById(reservationId)
                 .orElseThrow(NoSuchReservationException::new);
         reservationStrategy.checkCorrectPassword(reservation, password);
+        validatePastTimeAndManager(reservation.getStartTime(), reservationStrategy.isManager());
 
         reservations.delete(reservation);
-        return SlackResponse.from(reservation);
+
+        String sharingMapId = sharingIdGenerator.from(map);
+        return SlackResponse.of(reservation, sharingMapId);
     }
 
-    private void validateTime(final ReservationCreateDto reservationCreateDto) {
+    private void validateTime(final ReservationCreateDto reservationCreateDto, final boolean managerFlag) {
         LocalDateTime startDateTime = reservationCreateDto.getStartDateTime().withSecond(0).withNano(0);
         LocalDateTime endDateTime = reservationCreateDto.getEndDateTime().withSecond(0).withNano(0);
 
-        if (startDateTime.isBefore(LocalDateTime.now())) {
-            throw new ImpossibleStartTimeException();
-        }
+        validatePastTimeAndManager(startDateTime, managerFlag);
 
         if (endDateTime.isBefore(startDateTime) || startDateTime.equals(endDateTime)) {
             throw new ImpossibleEndTimeException();
@@ -213,6 +215,12 @@ public class ReservationService {
 
         if (!startDateTime.toLocalDate().isEqual(endDateTime.toLocalDate())) {
             throw new NonMatchingStartAndEndDateException();
+        }
+    }
+
+    private void validatePastTimeAndManager(LocalDateTime startDateTime, boolean managerFlag) {
+        if (startDateTime.isBefore(LocalDateTime.now()) && !managerFlag) {
+            throw new ImpossibleStartTimeException();
         }
     }
 

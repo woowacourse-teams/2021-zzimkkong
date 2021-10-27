@@ -34,7 +34,7 @@ export const initialSpaceFormValue: Omit<SpaceFormValue, 'enabledDayOfWeek' | 'a
   availableEndTime: formatTimeWithSecond(new Date(`${today}T23:00:00`)),
   reservationTimeUnit: '10',
   reservationMinimumTimeUnit: '10',
-  reservationMaximumTimeUnit: '1440',
+  reservationMaximumTimeUnit: '120',
 };
 
 export const initialEnabledDayOfWeek: SpaceFormValue['enabledDayOfWeek'] = {

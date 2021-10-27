@@ -1,7 +1,6 @@
-import React, { useRef, useState } from 'react';
-import { GripPoint, MapElement } from 'types/common';
-import useBoardDragSelect from './useBoardDragSelect';
-import useBoardSingleSelect from './useBoardSingleSelect';
+import React, { Dispatch, SetStateAction, useCallback, useEffect, useRef, useState } from 'react';
+import { EDITOR } from 'constants/editor';
+import { Coordinate, MapElement } from 'types/common';
 
 interface Props {
   mapElements: MapElement[];
@@ -13,59 +12,142 @@ const useBoardSelect = ({
   boardRef,
 }: Props): {
   dragSelectRect: typeof dragSelectRect;
-  gripPoints: GripPoint[];
   selectedMapElements: MapElement[];
   selectedGroupBBox: DOMRect | null;
   selectRectRef: React.RefObject<SVGRectElement>;
   selectedMapElementsGroupRef: React.RefObject<SVGGElement>;
-  selectMapElement: (mapElement: MapElement) => void;
   deselectMapElements: () => void;
+  setSelectedMapElements: Dispatch<SetStateAction<MapElement[]>>;
   onSelectDragStart: (event: React.MouseEvent<SVGSVGElement>) => void;
   onSelectDrag: (event: React.MouseEvent<SVGSVGElement>) => void;
   onSelectDragEnd: () => void;
 } => {
   const selectRectRef = useRef<SVGRectElement>(null);
+  const selectedMapElementsGroupRef = useRef<SVGGElement>(null);
 
-  const [gripPoints, setGripPoints] = useState<GripPoint[]>([]);
   const [selectedMapElements, setSelectedMapElements] = useState<MapElement[]>([]);
-  const nextGripPointId = Math.max(...gripPoints.map(({ id }) => id), 1) + 1;
 
   const deselectMapElements = () => {
     setSelectedMapElements([]);
-    setGripPoints([]);
   };
 
-  const { selectMapElement } = useBoardSingleSelect({
-    nextGripPointId,
-    setGripPoints,
-    setSelectedMapElements,
+  const [isSelectDragging, setSelectDragging] = useState(false);
+  const [startCoordinate, setStartCoordinate] = useState<Coordinate>({ x: 0, y: 0 });
+  const [dragSelectRect, setDragSelectRect] = useState({
+    x: 0,
+    y: 0,
+    width: 0,
+    height: 0,
   });
+  const [selectedGroupBBox, setSelectedGroupBBox] = useState<DOMRect | null>(null);
 
-  const {
-    dragSelectRect,
-    selectedGroupBBox,
-    selectedMapElementsGroupRef,
-    onSelectDragStart,
-    onSelectDrag,
-    onSelectDragEnd,
-  } = useBoardDragSelect({
-    mapElements,
-    boardRef,
-    selectRectRef,
-    selectedMapElementsState: [selectedMapElements, setSelectedMapElements],
-    selectSingleMapElement: selectMapElement,
-    deselectMapElements,
-  });
+  const getSelections = () => {
+    if (!selectRectRef.current) return [];
+
+    const selections: MapElement[] = [];
+    const selectRectBBox = selectRectRef.current.getBBox();
+
+    mapElements.forEach((element) => {
+      if (element.ref.current) {
+        const hasEnclosure = boardRef.current?.checkEnclosure(element.ref?.current, selectRectBBox);
+
+        if (hasEnclosure) {
+          selections.push(element);
+        }
+      }
+    });
+
+    return selections;
+  };
+
+  const selectDragEnd = () => {
+    deselectMapElements();
+
+    setSelectDragging(false);
+    setStartCoordinate({ x: 0, y: 0 });
+    setDragSelectRect({
+      x: 0,
+      y: 0,
+      width: 0,
+      height: 0,
+    });
+
+    const selections = getSelections();
+    if (!selections.length) return;
+
+    setSelectedMapElements(selections);
+  };
+
+  const onSelectDragStart = (event: React.MouseEvent<SVGSVGElement>) => {
+    const { offsetX, offsetY } = event.nativeEvent;
+
+    if (isSelectDragging) {
+      selectDragEnd();
+
+      return;
+    }
+
+    setSelectDragging(true);
+    setStartCoordinate({ x: offsetX, y: offsetY });
+    setDragSelectRect({
+      x: offsetX,
+      y: offsetY,
+      width: 0,
+      height: 0,
+    });
+  };
+
+  const onSelectDrag = (event: React.MouseEvent<SVGSVGElement>) => {
+    if (!isSelectDragging) return;
+
+    const { offsetX, offsetY } = event.nativeEvent;
+
+    setDragSelectRect({
+      x: Math.min(startCoordinate.x, offsetX),
+      y: Math.min(startCoordinate.y, offsetY),
+      width: Math.abs(startCoordinate.x - offsetX),
+      height: Math.abs(startCoordinate.y - offsetY),
+    });
+  };
+
+  const onSelectDragEnd = () => {
+    if (!isSelectDragging) return;
+
+    selectDragEnd();
+  };
+
+  const setGroupBBox = useCallback(() => {
+    const bBox = selectedMapElementsGroupRef.current?.getBBox() ?? null;
+
+    if (!bBox || !selectedMapElements.length) {
+      setSelectedGroupBBox(null);
+
+      return;
+    }
+
+    const newBBox = {
+      ...bBox,
+      x: bBox.x - EDITOR.SELECTED_GROUP_BBOX_POSITION_OFFSET,
+      y: bBox.y - EDITOR.SELECTED_GROUP_BBOX_POSITION_OFFSET,
+      width: bBox.width + EDITOR.SELECTED_GROUP_BBOX_MARGIN_OFFSET,
+      height: bBox.height + EDITOR.SELECTED_GROUP_BBOX_MARGIN_OFFSET,
+    };
+
+    setSelectedGroupBBox(newBBox);
+  }, [selectedMapElements]);
+
+  useEffect(() => {
+    setGroupBBox();
+  }, [setGroupBBox]);
 
   return {
     dragSelectRect,
-    gripPoints,
     selectedMapElements,
     selectedGroupBBox,
     selectRectRef,
     selectedMapElementsGroupRef,
     deselectMapElements,
-    selectMapElement,
+    setSelectedMapElements,
     onSelectDragStart,
     onSelectDrag,
     onSelectDragEnd,
