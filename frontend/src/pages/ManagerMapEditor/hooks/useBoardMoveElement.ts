@@ -22,12 +22,14 @@ const useBoardMoveElement = ({
   onMoveElement: () => void;
   onMoveEndElement: () => void;
 } => {
-  const [offset, setOffset] = useState<Coordinate>({ x: 0, y: 0 });
+  const initialOffset = { x: 0, y: 0 };
+
+  const [offset, setOffset] = useState<Coordinate>(initialOffset);
   const [initialCoordinate, setInitialCoordinate] = useState<Coordinate | null>(null);
   const isElementMoving = initialCoordinate !== null;
 
   const onMoveStartElement = () => {
-    setOffset({ x: 0, y: 0 });
+    setOffset(initialOffset);
     setInitialCoordinate(coordinate);
   };
 
@@ -41,7 +43,7 @@ const useBoardMoveElement = ({
   };
 
   const onMoveEndElement = () => {
-    setOffset({ x: 0, y: 0 });
+    setOffset(initialOffset);
     setInitialCoordinate(null);
 
     setSelectedMapElements((prevElements) =>
