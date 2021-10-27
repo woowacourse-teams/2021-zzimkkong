@@ -1,4 +1,5 @@
 import React, { Dispatch, SetStateAction, useCallback, useEffect, useRef, useState } from 'react';
+import { EDITOR } from 'constants/editor';
 import { Coordinate, MapElement } from 'types/common';
 
 interface Props {
@@ -117,8 +118,6 @@ const useBoardSelect = ({
 
   const setGroupBBox = useCallback(() => {
     const bBox = selectedMapElementsGroupRef.current?.getBBox() ?? null;
-    const positionOffset = 2;
-    const marginOffset = positionOffset * 2;
 
     if (!bBox || !selectedMapElements.length) {
       setSelectedGroupBBox(null);
@@ -128,10 +127,10 @@ const useBoardSelect = ({
 
     const newBBox = {
       ...bBox,
-      x: bBox.x - positionOffset,
-      y: bBox.y - positionOffset,
-      width: bBox.width + marginOffset,
-      height: bBox.height + marginOffset,
+      x: bBox.x - EDITOR.SELECTED_GROUP_BBOX_POSITION_OFFSET,
+      y: bBox.y - EDITOR.SELECTED_GROUP_BBOX_POSITION_OFFSET,
+      width: bBox.width + EDITOR.SELECTED_GROUP_BBOX_MARGIN_OFFSET,
+      height: bBox.height + EDITOR.SELECTED_GROUP_BBOX_MARGIN_OFFSET,
     };
 
     setSelectedGroupBBox(newBBox);
