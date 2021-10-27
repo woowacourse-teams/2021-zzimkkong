@@ -96,11 +96,34 @@ const SpaceFormProvider = ({ children }: Props): JSX.Element => {
     };
   };
 
+  const onChangeReservationTimeUnit = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const isValidMinimumTimeUnit =
+      Number(event.target.value) <= Number(spaceFormValue.reservationMinimumTimeUnit);
+
+    if (!isValidMinimumTimeUnit) {
+      setSpaceFormValues({
+        ...spaceFormValue,
+        reservationTimeUnit: event.target.value,
+        reservationMinimumTimeUnit: event.target.value,
+      });
+
+      return;
+    }
+
+    onChangeSpaceFormValues(event);
+  };
+
   const onChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     if (selectedPresetId !== null) setSelectedPresetId(null);
 
     if (weekdays.includes(event.target.name)) {
       onChangeEnabledDayOfWeek(event);
+
+      return;
+    }
+
+    if (event.target.name === 'reservationTimeUnit') {
+      onChangeReservationTimeUnit(event);
 
       return;
     }
