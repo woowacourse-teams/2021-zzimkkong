@@ -43,3 +43,7 @@ export const setLocalStorageItem = ({ key, item }: { key: string; item: unknown 
 
   localStorage.setItem(key, data);
 };
+
+export const removeLocalStorageItem = ({ key }: { key: string }): void => {
+  localStorage.removeItem(key);
+};
