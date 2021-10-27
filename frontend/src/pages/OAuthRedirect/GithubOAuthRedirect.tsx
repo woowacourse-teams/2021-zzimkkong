@@ -1,18 +1,16 @@
 import { AxiosError, AxiosResponse } from 'axios';
+import { useContext } from 'react';
 import { useHistory } from 'react-router';
-import { useSetRecoilState } from 'recoil';
 import MESSAGE from 'constants/message';
 import PATH from 'constants/path';
-import { LOCAL_STORAGE_KEY } from 'constants/storage';
 import useGithubLogin from 'hooks/query/useGithubLogin';
 import useQueryString from 'hooks/useQueryString';
-import accessTokenState from 'state/accessTokenState';
+import { AccessTokenContext } from 'providers/AccessTokenProvider';
 import { LoginSuccess, SocialLoginFailure } from 'types/response';
-import { setLocalStorageItem } from 'utils/localStorage';
 
 const GithubOAuthRedirect = (): JSX.Element => {
   const history = useHistory();
-  const setAccessToken = useSetRecoilState(accessTokenState);
+  const { setAccessToken } = useContext(AccessTokenContext);
 
   const query = useQueryString();
   const code = query.get('code') ?? '';
@@ -24,7 +22,6 @@ const GithubOAuthRedirect = (): JSX.Element => {
         const { accessToken } = response.data;
 
         setAccessToken(accessToken);
-        setLocalStorageItem({ key: LOCAL_STORAGE_KEY.ACCESS_TOKEN, item: accessToken });
 
         history.replace(PATH.MANAGER_MAIN);
       },

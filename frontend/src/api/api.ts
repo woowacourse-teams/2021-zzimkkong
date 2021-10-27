@@ -4,7 +4,7 @@ import { BASE_URL } from 'constants/api';
 import PATH from 'constants/path';
 import { LOCAL_STORAGE_KEY } from 'constants/storage';
 import { ErrorResponse } from 'types/response';
-import { getLocalStorageItem } from 'utils/localStorage';
+import { getLocalStorageItem, removeLocalStorageItem } from 'utils/localStorage';
 
 const api = axios.create({
   baseURL: process.env.DEPLOY_ENV !== 'production' ? BASE_URL.DEV : BASE_URL.PROD,
@@ -42,7 +42,7 @@ api.interceptors.response.use(
 
   (error: AxiosError<ErrorResponse>) => {
     if (error?.response?.status === 401) {
-      localStorage.removeItem(LOCAL_STORAGE_KEY.ACCESS_TOKEN);
+      removeLocalStorageItem({ key: LOCAL_STORAGE_KEY.ACCESS_TOKEN });
 
       history.push(PATH.MANAGER_LOGIN);
     }
