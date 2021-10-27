@@ -12,7 +12,8 @@ export const OptionsContainer = styled.div`
   height: 10rem;
   overflow: hidden;
   position: relative;
-  z-index: ${Z_INDEX.TIME_PICKER_OPTIONS};
+  z-index: ${Z_INDEX.TIME_PICKER};
+  background-color: ${({ theme }) => theme.white};
 
   &::before {
     content: '';
@@ -64,7 +65,13 @@ export const OptionText = styled.span`
 `;
 
 export const Radio = styled.input`
+  -webkit-border-radius: 0;
+  -webkit-appearance: none;
+  -moz-appearance: none;
   appearance: none;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
 
   &:checked + ${OptionText} {
     color: ${({ theme }) => theme.gray[600]};

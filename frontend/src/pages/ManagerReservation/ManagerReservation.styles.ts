@@ -1,9 +1,15 @@
 import styled from 'styled-components';
 import ColorDotComponent from 'components/ColorDot/ColorDot';
+import { FORM_MAX_WIDTH } from 'constants/style';
 
 interface Props {
   isEditMode: boolean;
 }
+
+export const Container = styled.div`
+  max-width: ${FORM_MAX_WIDTH};
+  margin: 0 auto;
+`;
 
 export const Section = styled.section<Props>`
   margin-top: ${({ isEditMode }) => (isEditMode ? '3rem' : '1.5rem')};

@@ -1,7 +1,7 @@
 import styled from 'styled-components';
 
 export const ReservationForm = styled.form`
-  margin: 1.5rem 0 0;
+  margin-top: 1.5rem;
 `;
 
 export const Section = styled.section`
@@ -14,7 +14,8 @@ export const InputWrapper = styled.div`
   gap: 1rem;
   margin: 1.625rem 0;
 
-  label {
+  & > label,
+  & > div {
     flex: 1;
   }
 `;

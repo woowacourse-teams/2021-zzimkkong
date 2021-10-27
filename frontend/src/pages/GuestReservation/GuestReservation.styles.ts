@@ -1,5 +1,11 @@
 import styled from 'styled-components';
 import ColorDotComponent from 'components/ColorDot/ColorDot';
+import { FORM_MAX_WIDTH } from 'constants/style';
+
+export const Container = styled.div`
+  max-width: ${FORM_MAX_WIDTH};
+  margin: 0 auto;
+`;
 
 export const Section = styled.section`
   margin: 1.5rem 0 4.5rem;

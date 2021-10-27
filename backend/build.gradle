@@ -77,6 +77,9 @@ dependencies {
 
     // Kafka Appender
     implementation 'com.github.danielwegener:logback-kafka-appender:0.2.0-RC2'
+
+    // Reflections
+    implementation 'org.reflections:reflections:0.9.11'
 }
 
 test {
@@ -122,7 +125,7 @@ jacocoTestCoverageVerification {
             excludes = ["**.exception.**", "**.ControllerAdvice", "**.*ErrorResponse", "**.ValidatorMessage",
                         "**.ZzimkkongApplication", "**.DataLoader", "**.config.**",
                         "**.LoginInterceptor", "**.AuthenticationPrincipalArgumentResolver",
-                        "**.slack.**", "**.Slack*", "**.AdminPageController", "**.Warmer"]
+                        "**.slack.**", "**.Slack*", "**.AdminPageController", "**.Warmer*"]
 
             limit {
                 counter = 'BRANCH'

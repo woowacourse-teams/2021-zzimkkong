@@ -1,15 +1,16 @@
-import { ChangeEventHandler } from 'react';
+import React, { ChangeEventHandler } from 'react';
 import { ReactComponent as CalendarIcon } from 'assets/svg/calendar.svg';
-import Button from 'components/Button/Button';
 import Input from 'components/Input/Input';
+import TimePicker, { Step } from 'components/TimePicker/TimePicker';
+import DATE from 'constants/date';
 import MESSAGE from 'constants/message';
 import REGEXP from 'constants/regexp';
 import RESERVATION from 'constants/reservation';
-import TIME from 'constants/time';
 import useInputs from 'hooks/useInputs';
 import useScrollToTop from 'hooks/useScrollToTop';
+import useTimePicker from 'hooks/useTimePicker';
 import { Reservation, Space } from 'types/common';
-import { formatDate, formatTime, formatTimePrettier } from 'utils/datetime';
+import { formatDate, formatTime, formatTimePrettier, isPastDate } from 'utils/datetime';
 import { EditReservationParams } from '../GuestReservation';
 import * as Styled from './GuestReservationForm.styles';
 
@@ -28,8 +29,6 @@ interface Props {
 interface Form {
   name: string;
   description: string;
-  startTime: string;
-  endTime: string;
   password: string;
 }
 
@@ -45,60 +44,44 @@ const GuestReservationForm = ({
 
   const { availableStartTime, availableEndTime, reservationTimeUnit, reservationMaximumTimeUnit } =
     space.settings;
+  const { range, selectedTime, onClick, onChange, onCloseOptions } = useTimePicker({
+    step: reservationTimeUnit as Step,
+    initialStartTime: !!reservation ? new Date(reservation.startDateTime) : undefined,
+    initialEndTime: !!reservation ? new Date(reservation.endDateTime) : undefined,
+  });
 
-  const now = new Date();
   const todayDate = formatDate(new Date());
-
-  const getInitialStartTime = () => {
-    if (isEditMode && reservation) {
-      return formatTime(new Date(reservation.startDateTime));
-    }
-
-    return formatTime(now);
-  };
-
-  const getInitialEndTime = () => {
-    if (isEditMode && reservation) {
-      return formatTime(new Date(reservation.endDateTime));
-    }
-
-    return formatTime(
-      new Date(new Date().getTime() + TIME.MILLISECONDS_PER_MINUTE * reservationTimeUnit)
-    );
-  };
-
-  const initialStartTime = getInitialStartTime();
-  const initialEndTime = getInitialEndTime();
 
   const availableStartTimeText = formatTime(new Date(`${todayDate}T${availableStartTime}`));
   const availableEndTimeText = formatTime(new Date(`${todayDate}T${availableEndTime}`));
 
-  const [{ name, description, startTime, endTime, password }, onChangeForm] = useInputs<Form>({
+  const [{ name, description, password }, onChangeForm] = useInputs<Form>({
     name: reservation?.name ?? '',
     description: reservation?.description ?? '',
-    startTime: initialStartTime,
-    endTime: initialEndTime,
     password: '',
   });
 
-  const startDateTime = new Date(`${date}T${startTime}Z`);
-  const endDateTime = new Date(`${date}T${endTime}Z`);
+  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
 
+    if (range.start === null || range.end === null) return;
+
+    const startDateTime = new Date(`${date}T${formatTime(range.start)}Z`);
+    const endDateTime = new Date(`${date}T${formatTime(range.end)}Z`);
+
+    onSubmit(event, {
+      reservation: {
+        startDateTime,
+        endDateTime,
+        password,
+        name,
+        description,
+      },
+      reservationId: reservation?.id,
+    });
+  };
   return (
-    <Styled.ReservationForm
-      onSubmit={(event) =>
-        onSubmit(event, {
-          reservation: {
-            startDateTime,
-            endDateTime,
-            password,
-            name,
-            description,
-          },
-          reservationId: reservation?.id,
-        })
-      }
-    >
+    <Styled.ReservationForm onSubmit={handleSubmit}>
       <Styled.Section>
         <Styled.InputWrapper>
           <Input
@@ -128,33 +111,21 @@ const GuestReservationForm = ({
             label="날짜"
             icon={<CalendarIcon />}
             value={date}
-            min={formatDate(now)}
+            min={DATE.MIN_DATE_STRING}
+            max={DATE.MAX_DATE_STRING}
             onChange={onChangeDate}
             required
           />
         </Styled.InputWrapper>
         <Styled.InputWrapper>
-          <Input
-            type="time"
-            label="시작 시간"
-            name="startTime"
-            step={TIME.SECONDS_PER_MINUTE * reservationTimeUnit}
-            min={availableStartTime}
-            max={availableEndTime}
-            value={startTime}
-            onChange={onChangeForm}
-            required
-          />
-          <Input
-            type="time"
-            label="종료 시간"
-            name="endTime"
-            step={TIME.SECONDS_PER_MINUTE * reservationTimeUnit}
-            min={startTime}
-            max={availableEndTime}
-            value={endTime}
-            onChange={onChangeForm}
-            required
+          <TimePicker
+            label="예약시간"
+            range={range}
+            step={reservationTimeUnit as Step}
+            selectedTime={selectedTime}
+            onClick={onClick}
+            onChange={onChange}
+            onCloseOptions={onCloseOptions}
           />
           <Styled.TimeFormMessage>
             예약 가능 시간 : {availableStartTimeText} ~ {availableEndTimeText} (최대{' '}
@@ -178,9 +149,14 @@ const GuestReservationForm = ({
         </Styled.InputWrapper>
       </Styled.Section>
       <Styled.ButtonWrapper>
-        <Button fullWidth variant="primary" size="large">
+        <Styled.ReservationButton
+          fullWidth
+          variant="primary"
+          size="large"
+          disabled={isPastDate(new Date(date))}
+        >
           {isEditMode ? MESSAGE.RESERVATION.EDIT : MESSAGE.RESERVATION.CREATE}
-        </Button>
+        </Styled.ReservationButton>
       </Styled.ButtonWrapper>
     </Styled.ReservationForm>
   );

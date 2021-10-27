@@ -12,6 +12,7 @@ import useManagerMapReservations from 'hooks/query/useManagerMapReservations';
 import { Order, Reservation } from 'types/common';
 import { ErrorResponse } from 'types/response';
 import { formatDate } from 'utils/datetime';
+import { getReservationStatus } from 'utils/reservation';
 import { sortReservations } from 'utils/sort';
 import { isNullish } from 'utils/type';
 import * as Styled from './ReservationList.styles';
@@ -111,6 +112,10 @@ const ReservationList = ({
                         <ReservationListItem
                           key={`reservation-${reservation.id}`}
                           reservation={reservation}
+                          status={getReservationStatus(
+                            reservation.startDateTime,
+                            reservation.endDateTime
+                          )}
                           control={
                             <Styled.IconButtonWrapper>
                               <IconButton

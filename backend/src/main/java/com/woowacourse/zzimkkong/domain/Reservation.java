@@ -12,6 +12,7 @@ import java.time.LocalDateTime;
 @Builder
 @NoArgsConstructor
 @Entity
+@Table(indexes = @Index(name = "i_spaceid_date", columnList = "space_id, date"))
 public class Reservation {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

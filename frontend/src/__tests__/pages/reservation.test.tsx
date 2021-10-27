@@ -59,16 +59,17 @@ describe('예약 페이지', () => {
 
     const $nameInput = await screen.findByRole('textbox', { name: /이름/i });
     const $descriptionInput = screen.getByRole('textbox', { name: /사용 목적/i });
-    const $startTimeInput = screen.getByLabelText(/시작 시간/i);
-    const $endTimeInput = screen.getByLabelText(/종료 시간/i);
+    const $startTimeButton = screen.getByRole('button', { name: /시작시간/i });
+    const $endTimeButton = screen.getByRole('button', { name: /종료시간/i });
     const $passwordInput = screen.getByLabelText(/비밀번호숫자 4자리를 입력해주세요\./i);
     const $submitButton = screen.getByRole('button', { name: /예약하기/i });
 
     userEvent.type($nameInput, '유조');
     userEvent.type($descriptionInput, '찜꽁 회의');
-    userEvent.type($startTimeInput, '15:30');
-    userEvent.type($endTimeInput, '16:30');
     userEvent.type($passwordInput, '1117');
+    userEvent.click($startTimeButton);
+    userEvent.click($endTimeButton);
+    userEvent.click($endTimeButton);
     userEvent.click($submitButton);
 
     const $link = await screen.findByRole('link', { name: /맵으로 돌아가기/i });
