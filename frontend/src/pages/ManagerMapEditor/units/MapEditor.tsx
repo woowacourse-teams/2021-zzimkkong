@@ -154,6 +154,8 @@ const MapEditor = ({
   };
 
   const handleDragStartBoard = (event: React.MouseEvent<SVGSVGElement>) => {
+    if (isElementMoving) return;
+
     if (isBoardDraggable) onDragStart(event);
     else if (mode === MapEditorMode.Select) onSelectDragStart(event);
   };
