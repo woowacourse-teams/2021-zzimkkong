@@ -1,45 +1,39 @@
-package com.woowacourse.zzimkkong.config;
+package com.woowacourse.zzimkkong.infrastructure.warmup;
 
 import com.woowacourse.zzimkkong.domain.SlackUrl;
 import com.woowacourse.zzimkkong.infrastructure.thumbnail.BatikConverter;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Profile;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.client.MultipartBodyBuilder;
-import org.springframework.scheduling.annotation.EnableScheduling;
-import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
 
 import java.io.*;
 
-@EnableScheduling
-@Configuration
 @Slf4j
-@Profile("!test")
-public class WarmUpConfig {
-    private final String s3ProxyServerUri;
+public class Warmer {
     private final BatikConverter batikConverter;
     private final SlackUrl slackUrl;
     private final WebClient webClient;
+    private final String s3ProxyServerUri;
+    private final String s3ProxyServerSecretKey;
 
-    public WarmUpConfig(
-            @Value("${s3proxy.server-uri}") final String s3ProxyServerUri,
+    public Warmer(
             final BatikConverter batikConverter,
             final SlackUrl slackUrl,
-            final WebClient webClient) {
-        this.s3ProxyServerUri = s3ProxyServerUri;
+            final WebClient webClient,
+            final String s3ProxyServerUri,
+            final String s3ProxyServerSecretKey) {
         this.batikConverter = batikConverter;
         this.slackUrl = slackUrl;
         this.webClient = webClient;
+        this.s3ProxyServerUri = s3ProxyServerUri;
+        this.s3ProxyServerSecretKey = s3ProxyServerSecretKey;
     }
 
-    @Scheduled(fixedDelay = 60 * 60 * 1000)
     public void warmUp() {
         log.info("warm up을 시작합니다");
 
@@ -81,6 +75,7 @@ public class WarmUpConfig {
                     .post()
                     .uri(s3ProxyServerUri + "/api/storage/warmup")
                     .header(HttpHeaders.CONTENT_TYPE, MediaType.MULTIPART_FORM_DATA_VALUE)
+                    .header(HttpHeaders.AUTHORIZATION, s3ProxyServerSecretKey)
                     .body(BodyInserters.fromMultipartData(multipartBodyBuilder.build()))
                     .retrieve()
                     .bodyToMono(String.class)
