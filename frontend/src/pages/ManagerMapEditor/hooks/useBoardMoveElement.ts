@@ -24,24 +24,25 @@ const useBoardMoveElement = ({
 } => {
   const [isElementMoving, setElementMoving] = useState(false);
   const [offset, setOffset] = useState<Coordinate>({ x: 0, y: 0 });
-  const [moveStartCoordinate, setMoveStartCoordinate] = useState<Coordinate>({ x: 0, y: 0 });
+  const [initialCoordinate, setInitialCoordinate] = useState<Coordinate>({ x: 0, y: 0 });
 
   const onMoveStartElement = () => {
     setElementMoving(true);
     setOffset({ x: 0, y: 0 });
-    setMoveStartCoordinate(coordinate);
+    setInitialCoordinate(coordinate);
   };
 
   const onMoveElement = () => {
     if (!isElementMoving) return;
 
     setOffset({
-      x: coordinate.x - moveStartCoordinate.x,
-      y: coordinate.y - moveStartCoordinate.y,
+      x: coordinate.x - initialCoordinate.x,
+      y: coordinate.y - initialCoordinate.y,
     });
   };
 
   const onMoveEndElement = () => {
+    setElementMoving(false);
     setOffset({ x: 0, y: 0 });
 
     setSelectedMapElements((prevElements) =>
@@ -109,7 +110,6 @@ const useBoardMoveElement = ({
         return element;
       })
     );
-    setElementMoving(false);
   };
 
   return {
