@@ -8,6 +8,7 @@ import com.woowacourse.zzimkkong.dto.slack.SlackResponse;
 import com.woowacourse.zzimkkong.exception.map.NoSuchMapException;
 import com.woowacourse.zzimkkong.exception.reservation.*;
 import com.woowacourse.zzimkkong.exception.space.NoSuchSpaceException;
+import com.woowacourse.zzimkkong.infrastructure.sharingid.SharingIdGenerator;
 import com.woowacourse.zzimkkong.repository.MapRepository;
 import com.woowacourse.zzimkkong.repository.ReservationRepository;
 import com.woowacourse.zzimkkong.service.strategy.ExcludeReservationCreateStrategy;
@@ -30,12 +31,15 @@ import java.util.stream.Collectors;
 public class ReservationService {
     private final MapRepository maps;
     private final ReservationRepository reservations;
+    private final SharingIdGenerator sharingIdGenerator;
 
     public ReservationService(
             final MapRepository maps,
-            final ReservationRepository reservations) {
+            final ReservationRepository reservations,
+            final SharingIdGenerator sharingIdGenerator) {
         this.maps = maps;
         this.reservations = reservations;
+        this.sharingIdGenerator = sharingIdGenerator;
     }
 
     public ReservationCreateResponse saveReservation(
@@ -66,8 +70,8 @@ public class ReservationService {
                         .description(reservationCreateDto.getDescription())
                         .space(space)
                         .build());
-
-        return ReservationCreateResponse.from(reservation);
+        String sharingMapId = sharingIdGenerator.from(map);
+        return ReservationCreateResponse.of(reservation, sharingMapId);
     }
 
     @Transactional(readOnly = true)
@@ -168,7 +172,8 @@ public class ReservationService {
 
         reservation.update(updateReservation, space);
 
-        return SlackResponse.from(reservation);
+        String sharingMapId = sharingIdGenerator.from(map);
+        return SlackResponse.of(reservation, sharingMapId);
     }
 
     public SlackResponse deleteReservation(
@@ -193,7 +198,9 @@ public class ReservationService {
         validatePastTimeAndManager(reservation.getStartTime(), reservationStrategy.isManager());
 
         reservations.delete(reservation);
-        return SlackResponse.from(reservation);
+
+        String sharingMapId = sharingIdGenerator.from(map);
+        return SlackResponse.of(reservation, sharingMapId);
     }
 
     private void validateTime(final ReservationCreateDto reservationCreateDto, final boolean managerFlag) {

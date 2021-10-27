@@ -11,7 +11,7 @@ import java.util.List;
 public class Attachments {
     private static final String COLOR = "#FF7515";
     private static final String TITLE_LINK_MESSAGE = "예약링크 바로가기";
-    private static final String TITLE_LINK = "https://zzimkkong.com";
+    private static final String GUEST_URI = "/guest/";
 
     private List<Attachment> messageBody;
 
@@ -19,35 +19,38 @@ public class Attachments {
         this.messageBody = messageBody;
     }
 
-    public static Attachments createMessageFrom(final SlackResponse slackResponse) {
+    public static Attachments createMessageOf(final SlackResponse slackResponse,
+                                              final String titleLink) {
         Attachment attachment = Attachment.of(
                 "🎉 예약 생성 알림 🎉",
                 COLOR,
                 "🎉 예약이 생성되었습니다.",
                 TITLE_LINK_MESSAGE,
-                TITLE_LINK,
+                titleLink + GUEST_URI + slackResponse.getSharingMapId(),
                 slackResponse);
         return Attachments.from(attachment);
     }
 
-    public static Attachments updateMessageFrom(final SlackResponse slackResponse) {
+    public static Attachments updateMessageOf(final SlackResponse slackResponse,
+                                              final String titleLink) {
         Attachment attachment = Attachment.of(
                 "✏️ 예약 수정 알림 ✏️",
                 COLOR,
                 "✏️ 예약이 수정되었습니다.",
                 TITLE_LINK_MESSAGE,
-                TITLE_LINK,
+                titleLink + GUEST_URI + slackResponse.getSharingMapId(),
                 slackResponse);
         return Attachments.from(attachment);
     }
 
-    public static Attachments deleteMessageFrom(final SlackResponse slackResponse) {
+    public static Attachments deleteMessageOf(final SlackResponse slackResponse,
+                                              final String titleLink) {
         Attachment attachment = Attachment.of(
                 "🗑 예약 삭제 알림 🗑",
                 COLOR,
                 "🗑 예약이 삭제되었습니다.",
                 TITLE_LINK_MESSAGE,
-                TITLE_LINK,
+                titleLink + GUEST_URI + slackResponse.getSharingMapId(),
                 slackResponse);
         return Attachments.from(attachment);
     }
