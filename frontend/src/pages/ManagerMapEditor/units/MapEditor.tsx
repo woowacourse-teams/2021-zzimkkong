@@ -226,7 +226,6 @@ const MapEditor = ({
           movable={isBoardDraggable}
           isMoving={isMoving}
           ref={boardRef}
-          // onMouseMove={onMouseMove}
           onMouseDown={handleMouseDown}
           onMouseUp={handleMouseUp}
           onWheel={onWheel}
