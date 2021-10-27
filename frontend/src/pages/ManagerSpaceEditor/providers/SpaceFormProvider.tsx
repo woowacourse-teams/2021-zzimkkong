@@ -1,11 +1,4 @@
-import React, {
-  createContext,
-  Dispatch,
-  ReactNode,
-  SetStateAction,
-  useEffect,
-  useState,
-} from 'react';
+import React, { createContext, Dispatch, ReactNode, SetStateAction, useState } from 'react';
 import useInputs from 'hooks/useInputs';
 import { Area, ManagerSpace, ManagerSpaceAPI } from 'types/common';
 import { WithOptional } from 'types/util';
@@ -103,11 +96,34 @@ const SpaceFormProvider = ({ children }: Props): JSX.Element => {
     };
   };
 
+  const onChangeReservationTimeUnit = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const isValidMinimumTimeUnit =
+      Number(event.target.value) <= Number(spaceFormValue.reservationMinimumTimeUnit);
+
+    if (!isValidMinimumTimeUnit) {
+      setSpaceFormValues({
+        ...spaceFormValue,
+        reservationTimeUnit: event.target.value,
+        reservationMinimumTimeUnit: event.target.value,
+      });
+
+      return;
+    }
+
+    onChangeSpaceFormValues(event);
+  };
+
   const onChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     if (selectedPresetId !== null) setSelectedPresetId(null);
 
     if (weekdays.includes(event.target.name)) {
       onChangeEnabledDayOfWeek(event);
+
+      return;
+    }
+
+    if (event.target.name === 'reservationTimeUnit') {
+      onChangeReservationTimeUnit(event);
 
       return;
     }
@@ -119,17 +135,6 @@ const SpaceFormProvider = ({ children }: Props): JSX.Element => {
     setSelectedPresetId(null);
     setValues({ ...initialSpaceFormValue, enabledDayOfWeek: initialEnabledDayOfWeek, area: null });
   };
-
-  useEffect(() => {
-    if (spaceFormValue.reservationTimeUnit < spaceFormValue.reservationMinimumTimeUnit) return;
-
-    if (spaceFormValue.reservationTimeUnit > spaceFormValue.reservationMinimumTimeUnit) {
-      setSpaceFormValues({
-        ...spaceFormValue,
-        reservationMinimumTimeUnit: spaceFormValue.reservationTimeUnit,
-      });
-    }
-  }, [setSpaceFormValues, spaceFormValue]);
 
   return (
     <SpaceFormContext.Provider
