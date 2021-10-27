@@ -88,11 +88,3 @@ export const SizeInput = styled(Input)`
     color: ${({ theme }) => theme.black[400]};
   }
 `;
-
-// Note: 맵 요소 단일 선택 시 보여질 circle 요소. 현재 미사용 중.
-export const GripPoint = styled.circle`
-  fill: ${({ theme }) => theme.white};
-  stroke: ${({ theme }) => theme.black[100]};
-  stroke-width: 2px;
-  cursor: pointer;
-`;
