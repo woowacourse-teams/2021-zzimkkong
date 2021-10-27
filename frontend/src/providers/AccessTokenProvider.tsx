@@ -29,15 +29,11 @@ const AccessTokenProvider = ({ children }: Props): JSX.Element => {
   );
 
   const setAccessToken = (accessToken: string) => {
-    console.log('call setAccessToken', accessToken);
-
     setToken(accessToken);
     setLocalStorageItem({ key: LOCAL_STORAGE_KEY.ACCESS_TOKEN, item: accessToken });
   };
 
   const resetAccessToken = () => {
-    console.log('call resetAccessToken');
-
     setToken(null);
     removeLocalStorageItem({ key: LOCAL_STORAGE_KEY.ACCESS_TOKEN });
   };
