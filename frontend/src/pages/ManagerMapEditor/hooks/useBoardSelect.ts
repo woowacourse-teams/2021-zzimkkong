@@ -1,4 +1,4 @@
-import React, { useRef, useState } from 'react';
+import React, { Dispatch, SetStateAction, useRef, useState } from 'react';
 import { GripPoint, MapElement } from 'types/common';
 import useBoardDragSelect from './useBoardDragSelect';
 import useBoardSingleSelect from './useBoardSingleSelect';
@@ -20,6 +20,7 @@ const useBoardSelect = ({
   selectedMapElementsGroupRef: React.RefObject<SVGGElement>;
   selectMapElement: (mapElement: MapElement) => void;
   deselectMapElements: () => void;
+  setSelectedMapElements: Dispatch<SetStateAction<MapElement[]>>;
   onSelectDragStart: (event: React.MouseEvent<SVGSVGElement>) => void;
   onSelectDrag: (event: React.MouseEvent<SVGSVGElement>) => void;
   onSelectDragEnd: () => void;
@@ -66,6 +67,7 @@ const useBoardSelect = ({
     selectedMapElementsGroupRef,
     deselectMapElements,
     selectMapElement,
+    setSelectedMapElements,
     onSelectDragStart,
     onSelectDrag,
     onSelectDragEnd,

@@ -59,6 +59,8 @@ const useBoardDragSelect = ({
   };
 
   const selectDragEnd = () => {
+    deselectMapElements();
+
     setSelectDragging(false);
     setStartCoordinate({ x: 0, y: 0 });
     setDragSelectRect({
@@ -88,8 +90,6 @@ const useBoardDragSelect = ({
 
       return;
     }
-
-    deselectMapElements();
 
     setSelectDragging(true);
     setStartCoordinate({ x: offsetX, y: offsetY });
