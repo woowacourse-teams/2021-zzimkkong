@@ -10,6 +10,8 @@ interface Props {
   setSelectedMapElements: Dispatch<SetStateAction<MapElement[]>>;
 }
 
+const initialOffset = { x: 0, y: 0 };
+
 const useBoardMoveElement = ({
   coordinate,
   selectedMapElements,
@@ -22,8 +24,6 @@ const useBoardMoveElement = ({
   onMoveElement: () => void;
   onMoveEndElement: () => void;
 } => {
-  const initialOffset = { x: 0, y: 0 };
-
   const [offset, setOffset] = useState<Coordinate>(initialOffset);
   const [initialCoordinate, setInitialCoordinate] = useState<Coordinate | null>(null);
   const isElementMoving = initialCoordinate !== null;
