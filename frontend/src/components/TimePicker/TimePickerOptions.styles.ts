@@ -69,9 +69,9 @@ export const Radio = styled.input`
   -webkit-appearance: none;
   -moz-appearance: none;
   appearance: none;
-  width: 1px;
-  height: 1px;
-  overflow: hidden;
+  opacity: 0;
+  width: 0;
+  height: 0;
 
   &:checked + ${OptionText} {
     color: ${({ theme }) => theme.gray[600]};
