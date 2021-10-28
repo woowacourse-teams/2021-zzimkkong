@@ -7,7 +7,7 @@ const MobileRedirect = (): JSX.Element => {
     <Styled.Container>
       <Styled.Image src={NotFoundImage} alt="Not Found" />
       <Styled.PageHeader>에디터는 PC에서만 이용 가능합니다.</Styled.PageHeader>
-      <Styled.HomeLink to={PATH.MAIN}>홈으로 이동하기</Styled.HomeLink>
+      <Styled.HomeLink to={PATH.MANAGER_MAIN}>이전 페이지로 이동하기</Styled.HomeLink>
     </Styled.Container>
   );
 };
