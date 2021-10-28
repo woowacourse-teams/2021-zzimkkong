@@ -1,9 +1,11 @@
 import React, { ReactNode } from 'react';
-import GuestReservationSuccess from 'pages/GuestReservation/GuestReservationSuccess';
 import PATH from './path';
 
 const GuestMap = React.lazy(() => import('pages/GuestMap/GuestMap'));
 const GuestReservation = React.lazy(() => import('pages/GuestReservation/GuestReservation'));
+const GuestReservationSuccess = React.lazy(
+  () => import('pages/GuestReservation/GuestReservationSuccess')
+);
 const Main = React.lazy(() => import('pages/Main/Main'));
 const ManagerJoin = React.lazy(() => import('pages/ManagerJoin/ManagerJoin'));
 const ManagerSocialJoin = React.lazy(() => import('pages/ManagerSocialJoin/ManagerSocialJoin'));

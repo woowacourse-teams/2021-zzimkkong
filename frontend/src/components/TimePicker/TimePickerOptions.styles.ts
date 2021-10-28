@@ -1,6 +1,5 @@
 import styled from 'styled-components';
 import PALETTE from 'constants/palette';
-import { Z_INDEX } from './../../constants/style';
 
 export const OptionsContainer = styled.div`
   width: 100%;
@@ -12,7 +11,6 @@ export const OptionsContainer = styled.div`
   height: 10rem;
   overflow: hidden;
   position: relative;
-  z-index: ${Z_INDEX.TIME_PICKER};
   background-color: ${({ theme }) => theme.white};
 
   &::before {
@@ -69,9 +67,9 @@ export const Radio = styled.input`
   -webkit-appearance: none;
   -moz-appearance: none;
   appearance: none;
-  width: 1px;
-  height: 1px;
-  overflow: hidden;
+  opacity: 0;
+  width: 0;
+  height: 0;
 
   &:checked + ${OptionText} {
     color: ${({ theme }) => theme.gray[600]};

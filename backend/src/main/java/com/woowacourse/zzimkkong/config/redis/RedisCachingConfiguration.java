@@ -31,7 +31,7 @@ public class RedisCachingConfiguration {
                 .serializeKeysWith(RedisSerializationContext.SerializationPair.fromSerializer(new StringRedisSerializer()))
                 .serializeValuesWith(RedisSerializationContext.SerializationPair.fromSerializer(
                         new Jackson2JsonRedisSerializer<>(MapFindResponse.class)))
-                .entryTtl(Duration.ofMinutes(30));
+                .entryTtl(Duration.ofDays(1));
 
         return RedisCacheManager.RedisCacheManagerBuilder
                 .fromConnectionFactory(redisConnectionFactory)

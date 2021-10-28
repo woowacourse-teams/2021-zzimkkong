@@ -1,4 +1,5 @@
 import styled from 'styled-components';
+import { Z_INDEX } from 'constants/style';
 
 export const ReservationForm = styled.form`
   margin-top: 1.5rem;
@@ -25,6 +26,7 @@ export const ButtonWrapper = styled.div`
   bottom: 0;
   left: 0;
   width: 100vw;
+  z-index: ${Z_INDEX.RESERVATION_BUTTON};
 `;
 
 export const TimeFormMessage = styled.p`
