@@ -14,6 +14,7 @@ import Layout from 'components/Layout/Layout';
 import PageHeader from 'components/PageHeader/PageHeader';
 import MESSAGE from 'constants/message';
 import PATH, { HREF } from 'constants/path';
+import useManagerMapReservations from 'hooks/query/useManagerMapReservations';
 import useManagerMaps from 'hooks/query/useManagerMaps';
 import useManagerSpaces from 'hooks/query/useManagerSpaces';
 import { Reservation } from 'types/common';
@@ -62,8 +63,23 @@ const ManagerMain = (): JSX.Element => {
     }
   );
 
+  const getReservations = useManagerMapReservations(
+    {
+      mapId: selectedMapId as number,
+      date: formatDate(date),
+    },
+    {
+      enabled: !isNullish(selectedMapId),
+      onError: (error: AxiosError<ErrorResponse>) => {
+        alert(error.response?.data?.message ?? MESSAGE.MANAGER_MAIN.UNEXPECTED_GET_DATA_ERROR);
+      },
+    }
+  );
+  const reservations = useMemo(() => getReservations.data?.data?.data ?? [], [getReservations]);
+
   const removeReservation = useMutation(deleteManagerReservation, {
     onSuccess: () => {
+      getReservations.refetch();
       alert(MESSAGE.MANAGER_MAIN.RESERVATION_DELETE);
     },
 
@@ -234,8 +250,9 @@ const ManagerMain = (): JSX.Element => {
         </Styled.DateInputWrapper>
 
         <ReservationList
+          reservations={reservations}
           selectedMapId={selectedMapId as number}
-          date={date}
+          isLoading={getReservations.isLoading}
           onCreateReservation={handleCreateReservation}
           onEditReservation={handleEditReservation}
           onDeleteReservation={handleDeleteReservation}
