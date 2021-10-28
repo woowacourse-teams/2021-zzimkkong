@@ -28,7 +28,7 @@ const labelTextCSS = (labelText: string) => css`
 
 export const Container = styled.div`
   position: relative;
-  z-index: ${Z_INDEX.TIME_PICKER};
+  z-index: ${Z_INDEX.TIME_PICKER_CONTAINER};
 `;
 
 export const TimeContainer = styled.div<TimeContainerProps>`
@@ -70,6 +70,7 @@ export const OptionsContainer = styled.div`
   width: 100%;
   position: absolute;
   user-select: none;
+  z-index: ${Z_INDEX.TIME_PICKER_OPTIONS_CONTAINER};
 `;
 
 export const Dimmer = styled.div`
