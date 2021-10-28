@@ -17,6 +17,7 @@ import com.woowacourse.zzimkkong.infrastructure.thumbnail.ThumbnailManager;
 import com.woowacourse.zzimkkong.repository.MapRepository;
 import com.woowacourse.zzimkkong.repository.MemberRepository;
 import com.woowacourse.zzimkkong.repository.ReservationRepository;
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -96,6 +97,8 @@ public class MapService {
         return MapFindResponse.of(map, sharingIdGenerator.from(map));
     }
 
+    @CacheEvict(value = "map",
+            allEntries = true)
     public void updateMap(final Long mapId,
                           final MapCreateUpdateRequest mapCreateUpdateRequest,
                           final LoginEmailDto loginEmailDto) {
