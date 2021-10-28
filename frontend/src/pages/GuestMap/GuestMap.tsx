@@ -14,6 +14,7 @@ import MESSAGE from 'constants/message';
 import PALETTE from 'constants/palette';
 import PATH, { HREF } from 'constants/path';
 import useGuestMap from 'hooks/query/useGuestMap';
+import useGuestReservations from 'hooks/query/useGuestReservations';
 import useGuestSpaces from 'hooks/query/useGuestSpaces';
 import useInput from 'hooks/useInput';
 import { Area, MapDrawing, MapItem, Reservation, ScrollPosition, Space } from 'types/common';
@@ -22,6 +23,7 @@ import { GuestPageURLParams } from 'types/guest';
 import { ErrorResponse } from 'types/response';
 import { formatDate } from 'utils/datetime';
 import { getPolygonCenterPoint } from 'utils/editor';
+import { isNullish } from 'utils/type';
 import * as Styled from './GuestMap.styles';
 import ReservationDrawer from './units/ReservationDrawer';
 
@@ -74,6 +76,8 @@ const GuestMap = (): JSX.Element => {
 
   const [spaceList, setSpaceList] = useState<Space[]>([]);
   const [selectedSpaceId, setSelectedSpaceId] = useState<Space['id'] | null>(spaceId ?? null);
+  const [date, setDate] = useState(targetDate ? new Date(targetDate) : new Date());
+
   const spaces = useMemo(() => {
     const result: { [key: string]: Space } = {};
     spaceList.forEach((item) => (result[item.id] = item));
@@ -97,10 +101,22 @@ const GuestMap = (): JSX.Element => {
     }
   );
 
-  const [date, setDate] = useState(targetDate ? new Date(targetDate) : new Date());
+  const getReservations = useGuestReservations(
+    {
+      mapId: map?.mapId as number,
+      spaceId: selectedSpaceId as number,
+      date: formatDate(date),
+    },
+    {
+      enabled: !isNullish(selectedSpaceId),
+    }
+  );
+
+  const reservations = getReservations.data?.data?.reservations ?? [];
 
   const removeReservation = useMutation(deleteGuestReservation, {
     onSuccess: () => {
+      getReservations.refetch();
       window.alert(MESSAGE.RESERVATION.DELETE_SUCCESS);
       setPasswordInputModalOpen(false);
     },
@@ -266,10 +282,12 @@ const GuestMap = (): JSX.Element => {
 
       {selectedSpaceId && map?.mapId && detailOpen && (
         <ReservationDrawer
-          mapId={map.mapId}
+          reservations={reservations}
           space={spaces[selectedSpaceId]}
           date={date}
           open={detailOpen}
+          isSuccess={getReservations.isSuccess}
+          isLoadingError={getReservations.isLoadingError}
           onClose={() => setDetailOpen(false)}
           onClickReservation={handleReservation}
           onEdit={handleEdit}
