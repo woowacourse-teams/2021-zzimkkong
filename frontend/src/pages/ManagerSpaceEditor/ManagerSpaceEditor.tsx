@@ -10,6 +10,7 @@ import {
   putManagerSpace,
   PutManagerSpaceParams,
 } from 'api/managerSpace';
+import EditorOverlay from 'components/EditorOverlay/EditorOverlay';
 import Header from 'components/Header/Header';
 import Layout from 'components/Layout/Layout';
 import { BOARD } from 'constants/editor';
@@ -132,53 +133,59 @@ const ManagerSpaceEditor = (): JSX.Element => {
   return (
     <>
       <Header />
+
       <Layout>
-        <Styled.Page>
-          <EditorHeader mapName={mapName} />
+        <Styled.Desktop>
+          <Styled.Page>
+            <EditorHeader mapName={mapName} />
 
-          <Styled.EditorMain>
-            <SpaceFormProvider>
-              <Styled.EditorContainer>
-                {isDrawingMode && <ShapeSelectToolbar mode={mode} setMode={setMode} />}
+            <Styled.EditorMain>
+              <SpaceFormProvider>
+                <Styled.EditorContainer>
+                  {isDrawingMode && <ShapeSelectToolbar mode={mode} setMode={setMode} />}
 
-                <Editor
-                  modeState={[mode, setMode]}
-                  boardState={[board, setBoard]}
-                  selectedSpaceIdState={[selectedSpaceId, setSelectedSpaceId]}
-                  mapElements={mapElements}
-                  spaces={spaces}
-                />
-              </Styled.EditorContainer>
-
-              <Styled.FormContainer disabled={isDrawingMode}>
-                <SpaceSelect
-                  spaces={spaces}
-                  selectedSpaceIdState={[selectedSpaceId, setSelectedSpaceId]}
-                  disabled={isDrawingMode}
-                >
-                  <Styled.AddButtonWrapper>
-                    <SpaceAddButton onClick={handleAddSpace} />
-                  </Styled.AddButtonWrapper>
-                </SpaceSelect>
-
-                {mode === Mode.Form || isDrawingMode ? (
-                  <Form
+                  <Editor
                     modeState={[mode, setMode]}
-                    mapData={{ width: board.width, height: board.height, mapElements }}
+                    boardState={[board, setBoard]}
+                    selectedSpaceIdState={[selectedSpaceId, setSelectedSpaceId]}
+                    mapElements={mapElements}
                     spaces={spaces}
-                    selectedSpaceId={selectedSpaceId}
-                    disabled={isDrawingMode}
-                    onCreateSpace={handleCreateSpace}
-                    onUpdateSpace={handleUpdateSpace}
-                    onDeleteSpace={handleDeleteSpace}
                   />
-                ) : (
-                  <Styled.NoSpaceMessage>공간을 선택해주세요</Styled.NoSpaceMessage>
-                )}
-              </Styled.FormContainer>
-            </SpaceFormProvider>
-          </Styled.EditorMain>
-        </Styled.Page>
+                </Styled.EditorContainer>
+
+                <Styled.FormContainer disabled={isDrawingMode}>
+                  <SpaceSelect
+                    spaces={spaces}
+                    selectedSpaceIdState={[selectedSpaceId, setSelectedSpaceId]}
+                    disabled={isDrawingMode}
+                  >
+                    <Styled.AddButtonWrapper>
+                      <SpaceAddButton onClick={handleAddSpace} />
+                    </Styled.AddButtonWrapper>
+                  </SpaceSelect>
+
+                  {mode === Mode.Form || isDrawingMode ? (
+                    <Form
+                      modeState={[mode, setMode]}
+                      mapData={{ width: board.width, height: board.height, mapElements }}
+                      spaces={spaces}
+                      selectedSpaceId={selectedSpaceId}
+                      disabled={isDrawingMode}
+                      onCreateSpace={handleCreateSpace}
+                      onUpdateSpace={handleUpdateSpace}
+                      onDeleteSpace={handleDeleteSpace}
+                    />
+                  ) : (
+                    <Styled.NoSpaceMessage>공간을 선택해주세요</Styled.NoSpaceMessage>
+                  )}
+                </Styled.FormContainer>
+              </SpaceFormProvider>
+            </Styled.EditorMain>
+          </Styled.Page>
+        </Styled.Desktop>
+        <Styled.Mobile>
+          <EditorOverlay />
+        </Styled.Mobile>
       </Layout>
     </>
   );

@@ -4,6 +4,7 @@ import { useMutation } from 'react-query';
 import { useHistory, useParams } from 'react-router';
 import { postMap, putMap } from 'api/managerMap';
 import Button from 'components/Button/Button';
+import EditorOverlay from 'components/EditorOverlay/EditorOverlay';
 import Header from 'components/Header/Header';
 import Layout from 'components/Layout/Layout';
 import { BOARD } from 'constants/editor';
@@ -151,30 +152,35 @@ const ManagerMapEditor = (): JSX.Element => {
       <Styled.MapCreateGlobalStyle />
       <Header />
       <Layout>
-        <Styled.Container>
-          <Styled.Form onSubmit={handleSubmit}>
-            <Styled.FormHeader>
-              <Styled.MapNameInput
-                name="name"
-                value={name}
-                onChange={onChangeBoard}
-                placeholder="맵 이름을 입력해주세요"
-                required
+        <Styled.Desktop>
+          <Styled.Container>
+            <Styled.Form onSubmit={handleSubmit}>
+              <Styled.FormHeader>
+                <Styled.MapNameInput
+                  name="name"
+                  value={name}
+                  onChange={onChangeBoard}
+                  placeholder="맵 이름을 입력해주세요"
+                  required
+                />
+                <Styled.FormControl>
+                  <Button type="button" variant="text" onClick={handleCancel}>
+                    취소
+                  </Button>
+                  <Button variant="primary">{isEdit ? '수정' : '완료'}</Button>
+                </Styled.FormControl>
+              </Styled.FormHeader>
+              <MapEditor
+                spaces={spaces}
+                mapElementsState={[mapElements, setMapElements]}
+                boardState={[{ width, height }, onChangeBoard]}
               />
-              <Styled.FormControl>
-                <Button type="button" variant="text" onClick={handleCancel}>
-                  취소
-                </Button>
-                <Button variant="primary">{isEdit ? '수정' : '완료'}</Button>
-              </Styled.FormControl>
-            </Styled.FormHeader>
-            <MapEditor
-              spaces={spaces}
-              mapElementsState={[mapElements, setMapElements]}
-              boardState={[{ width, height }, onChangeBoard]}
-            />
-          </Styled.Form>
-        </Styled.Container>
+            </Styled.Form>
+          </Styled.Container>
+        </Styled.Desktop>
+        <Styled.Mobile>
+          <EditorOverlay />
+        </Styled.Mobile>
       </Layout>
     </>
   );
