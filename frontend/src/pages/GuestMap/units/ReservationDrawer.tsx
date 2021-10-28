@@ -10,7 +10,6 @@ import * as Styled from './ReservationDrawer.styles';
 
 interface Props {
   reservations: Reservation[];
-  mapId: number;
   space: Space;
   date: Date;
   open: boolean;
@@ -24,7 +23,6 @@ interface Props {
 
 const ReservationDrawer = ({
   reservations,
-  mapId,
   space,
   date,
   open,

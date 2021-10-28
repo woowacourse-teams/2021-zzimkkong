@@ -283,7 +283,6 @@ const GuestMap = (): JSX.Element => {
       {selectedSpaceId && map?.mapId && detailOpen && (
         <ReservationDrawer
           reservations={reservations}
-          mapId={map.mapId}
           space={spaces[selectedSpaceId]}
           date={date}
           open={detailOpen}
