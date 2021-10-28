@@ -1,4 +1,4 @@
-import NotFoundImage from 'assets/images/notFound.png';
+import GaryLogoImage from 'assets/images/gray-logo.png';
 import Header from 'components/Header/Header';
 import Layout from 'components/Layout/Layout';
 import PATH from 'constants/path';
@@ -10,7 +10,7 @@ const Main = (): JSX.Element => {
       <Header />
       <Layout>
         <Styled.Container>
-          <Styled.Image src={NotFoundImage} alt="Not Found" />
+          <Styled.Image src={GaryLogoImage} alt="Not Found" />
           <Styled.PageHeader>해당 페이지를 찾지 못했습니다.</Styled.PageHeader>
           <Styled.HomeLink to={PATH.MAIN}>홈으로 이동하기</Styled.HomeLink>
         </Styled.Container>

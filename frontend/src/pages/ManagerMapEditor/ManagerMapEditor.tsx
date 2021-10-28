@@ -4,7 +4,7 @@ import { useMutation } from 'react-query';
 import { useHistory, useParams } from 'react-router';
 import { postMap, putMap } from 'api/managerMap';
 import Button from 'components/Button/Button';
-import EditorMobileView from 'components/EditorMobileView/EditorMobileView';
+import EditorOverlay from 'components/EditorOverlay/EditorOverlay';
 import Header from 'components/Header/Header';
 import Layout from 'components/Layout/Layout';
 import { BOARD } from 'constants/editor';
@@ -179,7 +179,7 @@ const ManagerMapEditor = (): JSX.Element => {
           </Styled.Container>
         </Styled.Desktop>
         <Styled.Mobile>
-          <EditorMobileView />
+          <EditorOverlay />
         </Styled.Mobile>
       </Layout>
     </>

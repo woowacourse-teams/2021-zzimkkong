@@ -10,7 +10,7 @@ import {
   putManagerSpace,
   PutManagerSpaceParams,
 } from 'api/managerSpace';
-import EditorMobileView from 'components/EditorMobileView/EditorMobileView';
+import EditorOverlay from 'components/EditorOverlay/EditorOverlay';
 import Header from 'components/Header/Header';
 import Layout from 'components/Layout/Layout';
 import { BOARD } from 'constants/editor';
@@ -184,7 +184,7 @@ const ManagerSpaceEditor = (): JSX.Element => {
           </Styled.Page>
         </Styled.Desktop>
         <Styled.Mobile>
-          <EditorMobileView />
+          <EditorOverlay />
         </Styled.Mobile>
       </Layout>
     </>
