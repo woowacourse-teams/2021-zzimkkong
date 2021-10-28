@@ -36,11 +36,10 @@ export const ButtonWrapper = styled.div`
   bottom: 0;
   left: 0;
   width: 100vw;
+  z-index: ${Z_INDEX.RESERVATION_BUTTON};
 `;
 
 export const ReservationButton = styled(Button)`
-  z-index: ${Z_INDEX.RESERVATION_BUTTON};
-
   &:disabled {
     background-color: ${({ theme }) => theme.gray[400]};
     color: ${({ theme }) => theme.gray[300]};

@@ -1,6 +1,5 @@
 import styled from 'styled-components';
 import PALETTE from 'constants/palette';
-import { Z_INDEX } from './../../constants/style';
 
 export const OptionsContainer = styled.div`
   width: 100%;
@@ -12,7 +11,6 @@ export const OptionsContainer = styled.div`
   height: 10rem;
   overflow: hidden;
   position: relative;
-  z-index: ${Z_INDEX.TIME_PICKER};
   background-color: ${({ theme }) => theme.white};
 
   &::before {
