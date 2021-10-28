@@ -28,6 +28,7 @@ const labelTextCSS = (labelText: string) => css`
 
 export const Container = styled.div`
   position: relative;
+  z-index: ${Z_INDEX.TIME_PICKER};
 `;
 
 export const TimeContainer = styled.div<TimeContainerProps>`
@@ -39,7 +40,6 @@ export const TimeContainer = styled.div<TimeContainerProps>`
   border-radius: ${({ isOptionOpen }) => (isOptionOpen ? '0.125rem 0.125rem 0 0' : '0.125rem')};
   position: relative;
   box-sizing: content-box;
-  z-index: ${Z_INDEX.TIME_PICKER};
 
   ${({ labelText }) => (labelText ? labelTextCSS(labelText) : '')}
 `;

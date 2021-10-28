@@ -26,10 +26,7 @@ export const ButtonWrapper = styled.div`
   bottom: 0;
   left: 0;
   width: 100vw;
-
-  & > button {
-    z-index: ${Z_INDEX.RESERVATION_BUTTON};
-  }
+  z-index: ${Z_INDEX.RESERVATION_BUTTON};
 `;
 
 export const TimeFormMessage = styled.p`
