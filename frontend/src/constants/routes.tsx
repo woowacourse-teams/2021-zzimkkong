@@ -1,9 +1,11 @@
 import React, { ReactNode } from 'react';
-import GuestReservationSuccess from 'pages/GuestReservation/GuestReservationSuccess';
 import PATH from './path';
 
 const GuestMap = React.lazy(() => import('pages/GuestMap/GuestMap'));
 const GuestReservation = React.lazy(() => import('pages/GuestReservation/GuestReservation'));
+const GuestReservationSuccess = React.lazy(
+  () => import('pages/GuestReservation/GuestReservationSuccess')
+);
 const Main = React.lazy(() => import('pages/Main/Main'));
 const ManagerJoin = React.lazy(() => import('pages/ManagerJoin/ManagerJoin'));
 const ManagerSocialJoin = React.lazy(() => import('pages/ManagerSocialJoin/ManagerSocialJoin'));
@@ -14,6 +16,7 @@ const ManagerReservation = React.lazy(() => import('pages/ManagerReservation/Man
 const ManagerSpaceEditor = React.lazy(() => import('pages/ManagerSpaceEditor/ManagerSpaceEditor'));
 const GithubOAuthRedirect = React.lazy(() => import('pages/OAuthRedirect/GithubOAuthRedirect'));
 const GoogleOAuthRedirect = React.lazy(() => import('pages/OAuthRedirect/GoogleOAuthRedirect'));
+const MobileRedirect = React.lazy(() => import('pages/MobileRedirect/MobileRedirect'));
 
 interface Route {
   path: string;
@@ -64,6 +67,10 @@ export const PUBLIC_ROUTES: Route[] = [
   {
     path: PATH.GUEST_RESERVATION_SUCCESS,
     component: <GuestReservationSuccess />,
+  },
+  {
+    path: PATH.MOBILE_REDIRECT,
+    component: <MobileRedirect />,
   },
 ];
 
