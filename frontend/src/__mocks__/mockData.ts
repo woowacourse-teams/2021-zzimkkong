@@ -44,8 +44,8 @@ export const spaces: Spaces = {
       description: 'testMap',
       area: '{"shape":"rect","x":210,"y":90,"width":440,"height":140}',
       settings: {
-        availableStartTime: '07:00:00',
-        availableEndTime: '23:00:00',
+        availableStartTime: '00:00:00',
+        availableEndTime: '24:00:00',
         reservationTimeUnit: 10,
         reservationMinimumTimeUnit: 10,
         reservationMaximumTimeUnit: 1440,
