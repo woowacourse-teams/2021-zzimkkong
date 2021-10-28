@@ -4,9 +4,9 @@ import { useMutation } from 'react-query';
 import { useHistory, useParams } from 'react-router';
 import { postMap, putMap } from 'api/managerMap';
 import Button from 'components/Button/Button';
+import EditorMobileView from 'components/EditorMobileView/EditorMobileView';
 import Header from 'components/Header/Header';
 import Layout from 'components/Layout/Layout';
-import MobileRedirect from 'components/MobileRedirect/MobileRedirect';
 import { BOARD } from 'constants/editor';
 import MESSAGE from 'constants/message';
 import PATH, { HREF } from 'constants/path';
@@ -179,7 +179,7 @@ const ManagerMapEditor = (): JSX.Element => {
           </Styled.Container>
         </Styled.Desktop>
         <Styled.Mobile>
-          <MobileRedirect />
+          <EditorMobileView />
         </Styled.Mobile>
       </Layout>
     </>

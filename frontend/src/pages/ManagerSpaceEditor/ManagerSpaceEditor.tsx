@@ -10,9 +10,9 @@ import {
   putManagerSpace,
   PutManagerSpaceParams,
 } from 'api/managerSpace';
+import EditorMobileView from 'components/EditorMobileView/EditorMobileView';
 import Header from 'components/Header/Header';
 import Layout from 'components/Layout/Layout';
-import MobileRedirect from 'components/MobileRedirect/MobileRedirect';
 import { BOARD } from 'constants/editor';
 import MESSAGE from 'constants/message';
 import useBoardStatus from 'hooks/board/useBoardStatus';
@@ -184,7 +184,7 @@ const ManagerSpaceEditor = (): JSX.Element => {
           </Styled.Page>
         </Styled.Desktop>
         <Styled.Mobile>
-          <MobileRedirect />
+          <EditorMobileView />
         </Styled.Mobile>
       </Layout>
     </>

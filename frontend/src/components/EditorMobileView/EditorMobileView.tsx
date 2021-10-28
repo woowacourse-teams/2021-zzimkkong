@@ -1,8 +1,8 @@
 import NotFoundImage from 'assets/images/notFound.png';
 import PATH from 'constants/path';
-import * as Styled from './MobileRedirect.styles';
+import * as Styled from './EditorMobileView.styles';
 
-const MobileRedirect = (): JSX.Element => {
+const EditorMobileView = (): JSX.Element => {
   return (
     <Styled.Container>
       <Styled.Image src={NotFoundImage} alt="Not Found" />
@@ -12,4 +12,4 @@ const MobileRedirect = (): JSX.Element => {
   );
 };
 
-export default MobileRedirect;
+export default EditorMobileView;
