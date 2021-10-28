@@ -15,6 +15,7 @@ import useBoardCoordinate from 'hooks/board/useBoardCoordinate';
 import useBoardMove from 'hooks/board/useBoardMove';
 import useBoardStatus from 'hooks/board/useBoardStatus';
 import useBoardZoom from 'hooks/board/useBoardZoom';
+import useMobileRedirect from 'hooks/useMobileRedirect';
 import { Color, DrawingStatus, ManagerSpace, MapElement } from 'types/common';
 import { MapElementType, MapEditorMode, DrawingAreaShape } from 'types/editor';
 import { getPolygonCenterPoint } from 'utils/editor';
@@ -67,6 +68,8 @@ const MapEditor = ({
   mapElementsState: [mapElements, setMapElements],
   boardState: [{ width, height }, onChangeBoard],
 }: Props): JSX.Element => {
+  useMobileRedirect();
+
   const boardRef = useRef<SVGSVGElement>(null);
 
   const [mode, setMode] = useState(MapEditorMode.Select);

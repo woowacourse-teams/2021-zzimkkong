@@ -18,6 +18,7 @@ import useBoardStatus from 'hooks/board/useBoardStatus';
 import useManagerMap from 'hooks/query/useManagerMap';
 import useManagerSpaces from 'hooks/query/useManagerSpaces';
 import useListenManagerMainState from 'hooks/useListenManagerMainState';
+import useMobileRedirect from 'hooks/useMobileRedirect';
 import { Area, ManagerSpace, MapDrawing } from 'types/common';
 import { SpaceEditorMode as Mode } from 'types/editor';
 import { ErrorResponse } from 'types/response';
@@ -36,6 +37,8 @@ interface CreateResponseHeaders {
 }
 
 const ManagerSpaceEditor = (): JSX.Element => {
+  useMobileRedirect();
+
   const { mapId } = useParams<{ mapId: string }>();
   useListenManagerMainState({ mapId: Number(mapId) });
   const map = useManagerMap({ mapId: Number(mapId) });
