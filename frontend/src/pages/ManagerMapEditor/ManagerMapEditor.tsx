@@ -13,6 +13,7 @@ import useManagerMap from 'hooks/query/useManagerMap';
 import useManagerSpaces from 'hooks/query/useManagerSpaces';
 import useInputs from 'hooks/useInputs';
 import useListenManagerMainState from 'hooks/useListenManagerMainState';
+import MobileRedirect from 'pages/MobileRedirect/MobileRedirect';
 import { Area, ManagerSpace, MapDrawing, MapElement } from 'types/common';
 import { ErrorResponse } from 'types/response';
 import { createMapImageSvg } from 'utils/map';
@@ -151,30 +152,35 @@ const ManagerMapEditor = (): JSX.Element => {
       <Styled.MapCreateGlobalStyle />
       <Header />
       <Layout>
-        <Styled.Container>
-          <Styled.Form onSubmit={handleSubmit}>
-            <Styled.FormHeader>
-              <Styled.MapNameInput
-                name="name"
-                value={name}
-                onChange={onChangeBoard}
-                placeholder="맵 이름을 입력해주세요"
-                required
+        <Styled.Desktop>
+          <Styled.Container>
+            <Styled.Form onSubmit={handleSubmit}>
+              <Styled.FormHeader>
+                <Styled.MapNameInput
+                  name="name"
+                  value={name}
+                  onChange={onChangeBoard}
+                  placeholder="맵 이름을 입력해주세요"
+                  required
+                />
+                <Styled.FormControl>
+                  <Button type="button" variant="text" onClick={handleCancel}>
+                    취소
+                  </Button>
+                  <Button variant="primary">{isEdit ? '수정' : '완료'}</Button>
+                </Styled.FormControl>
+              </Styled.FormHeader>
+              <MapEditor
+                spaces={spaces}
+                mapElementsState={[mapElements, setMapElements]}
+                boardState={[{ width, height }, onChangeBoard]}
               />
-              <Styled.FormControl>
-                <Button type="button" variant="text" onClick={handleCancel}>
-                  취소
-                </Button>
-                <Button variant="primary">{isEdit ? '수정' : '완료'}</Button>
-              </Styled.FormControl>
-            </Styled.FormHeader>
-            <MapEditor
-              spaces={spaces}
-              mapElementsState={[mapElements, setMapElements]}
-              boardState={[{ width, height }, onChangeBoard]}
-            />
-          </Styled.Form>
-        </Styled.Container>
+            </Styled.Form>
+          </Styled.Container>
+        </Styled.Desktop>
+        <Styled.Mobile>
+          <MobileRedirect />
+        </Styled.Mobile>
       </Layout>
     </>
   );

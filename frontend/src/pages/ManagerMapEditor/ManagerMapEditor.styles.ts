@@ -6,6 +6,18 @@ export const MapCreateGlobalStyle = createGlobalStyle`
   }
 `;
 
+export const Desktop = styled.div`
+  @media screen and (max-width: 752px) {
+    display: none;
+  }
+`;
+
+export const Mobile = styled.div`
+  @media screen and (min-width: 752px) {
+    display: none;
+  }
+`;
+
 export const Container = styled.div`
   padding: 2rem 0;
   display: flex;
