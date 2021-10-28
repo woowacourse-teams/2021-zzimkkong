@@ -18,7 +18,7 @@ import useBoardStatus from 'hooks/board/useBoardStatus';
 import useManagerMap from 'hooks/query/useManagerMap';
 import useManagerSpaces from 'hooks/query/useManagerSpaces';
 import useListenManagerMainState from 'hooks/useListenManagerMainState';
-import useMobileRedirect from 'hooks/useMobileRedirect';
+import MobileRedirect from 'pages/MobileRedirect/MobileRedirect';
 import { Area, ManagerSpace, MapDrawing } from 'types/common';
 import { SpaceEditorMode as Mode } from 'types/editor';
 import { ErrorResponse } from 'types/response';
@@ -37,8 +37,6 @@ interface CreateResponseHeaders {
 }
 
 const ManagerSpaceEditor = (): JSX.Element => {
-  useMobileRedirect();
-
   const { mapId } = useParams<{ mapId: string }>();
   useListenManagerMainState({ mapId: Number(mapId) });
   const map = useManagerMap({ mapId: Number(mapId) });
@@ -135,53 +133,59 @@ const ManagerSpaceEditor = (): JSX.Element => {
   return (
     <>
       <Header />
+
       <Layout>
-        <Styled.Page>
-          <EditorHeader mapName={mapName} />
+        <Styled.Desktop>
+          <Styled.Page>
+            <EditorHeader mapName={mapName} />
 
-          <Styled.EditorMain>
-            <SpaceFormProvider>
-              <Styled.EditorContainer>
-                {isDrawingMode && <ShapeSelectToolbar mode={mode} setMode={setMode} />}
+            <Styled.EditorMain>
+              <SpaceFormProvider>
+                <Styled.EditorContainer>
+                  {isDrawingMode && <ShapeSelectToolbar mode={mode} setMode={setMode} />}
 
-                <Editor
-                  modeState={[mode, setMode]}
-                  boardState={[board, setBoard]}
-                  selectedSpaceIdState={[selectedSpaceId, setSelectedSpaceId]}
-                  mapElements={mapElements}
-                  spaces={spaces}
-                />
-              </Styled.EditorContainer>
-
-              <Styled.FormContainer disabled={isDrawingMode}>
-                <SpaceSelect
-                  spaces={spaces}
-                  selectedSpaceIdState={[selectedSpaceId, setSelectedSpaceId]}
-                  disabled={isDrawingMode}
-                >
-                  <Styled.AddButtonWrapper>
-                    <SpaceAddButton onClick={handleAddSpace} />
-                  </Styled.AddButtonWrapper>
-                </SpaceSelect>
-
-                {mode === Mode.Form || isDrawingMode ? (
-                  <Form
+                  <Editor
                     modeState={[mode, setMode]}
-                    mapData={{ width: board.width, height: board.height, mapElements }}
+                    boardState={[board, setBoard]}
+                    selectedSpaceIdState={[selectedSpaceId, setSelectedSpaceId]}
+                    mapElements={mapElements}
                     spaces={spaces}
-                    selectedSpaceId={selectedSpaceId}
-                    disabled={isDrawingMode}
-                    onCreateSpace={handleCreateSpace}
-                    onUpdateSpace={handleUpdateSpace}
-                    onDeleteSpace={handleDeleteSpace}
                   />
-                ) : (
-                  <Styled.NoSpaceMessage>공간을 선택해주세요</Styled.NoSpaceMessage>
-                )}
-              </Styled.FormContainer>
-            </SpaceFormProvider>
-          </Styled.EditorMain>
-        </Styled.Page>
+                </Styled.EditorContainer>
+
+                <Styled.FormContainer disabled={isDrawingMode}>
+                  <SpaceSelect
+                    spaces={spaces}
+                    selectedSpaceIdState={[selectedSpaceId, setSelectedSpaceId]}
+                    disabled={isDrawingMode}
+                  >
+                    <Styled.AddButtonWrapper>
+                      <SpaceAddButton onClick={handleAddSpace} />
+                    </Styled.AddButtonWrapper>
+                  </SpaceSelect>
+
+                  {mode === Mode.Form || isDrawingMode ? (
+                    <Form
+                      modeState={[mode, setMode]}
+                      mapData={{ width: board.width, height: board.height, mapElements }}
+                      spaces={spaces}
+                      selectedSpaceId={selectedSpaceId}
+                      disabled={isDrawingMode}
+                      onCreateSpace={handleCreateSpace}
+                      onUpdateSpace={handleUpdateSpace}
+                      onDeleteSpace={handleDeleteSpace}
+                    />
+                  ) : (
+                    <Styled.NoSpaceMessage>공간을 선택해주세요</Styled.NoSpaceMessage>
+                  )}
+                </Styled.FormContainer>
+              </SpaceFormProvider>
+            </Styled.EditorMain>
+          </Styled.Page>
+        </Styled.Desktop>
+        <Styled.Mobile>
+          <MobileRedirect />
+        </Styled.Mobile>
       </Layout>
     </>
   );
