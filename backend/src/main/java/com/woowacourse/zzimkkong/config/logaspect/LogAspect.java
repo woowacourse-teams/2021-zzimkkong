@@ -46,30 +46,30 @@ public class LogAspect {
         logExecutionInfo(declaringType, method, timeTaken, logGroup);
     }
 
-    private static void logExecutionInfo(Class<?> declaringType, Method method, long timeTaken, String logGroup) {
+    private static void logExecutionInfo(Class<?> typeToLog, Method method, long timeTaken, String logGroup) {
         log.info("{} took {} ms. (info group by '{}')",
-                value("method", declaringType.getName() + "." + method.getName() + "()"),
+                value("method", typeToLog.getName() + "." + method.getName() + "()"),
                 value("execution_time", timeTaken),
                 value("group", logGroup));
     }
 
-    static <T> T createLogProxy(Object target, Class<T> requiredType, String logGroup) {
-        final LogProxyHandler logProxyHandler = new LogProxyHandler(target, requiredType, logGroup);
-        return requiredType.cast(
+    static <T> T createLogProxy(Object target, Class<T> typeToLog, String logGroup) {
+        final LogProxyHandler logProxyHandler = new LogProxyHandler(target, typeToLog, logGroup);
+        return typeToLog.cast(
                 Proxy.newProxyInstance(
-                        requiredType.getClassLoader(),
-                        new Class[]{requiredType},
+                        typeToLog.getClassLoader(),
+                        new Class[]{typeToLog},
                         logProxyHandler));
     }
 
     private static class LogProxyHandler implements InvocationHandler {
         private final Object target;
-        private final Class<?> declaringType;
+        private final Class<?> typeToLog;
         private final String logGroup;
 
-        public LogProxyHandler(Object target, Class<?> declaringType, String logGroup) {
+        private LogProxyHandler(Object target, Class<?> typeToLog, String logGroup) {
             this.target = target;
-            this.declaringType = declaringType;
+            this.typeToLog = typeToLog;
             this.logGroup = logGroup;
         }
 
@@ -80,7 +80,7 @@ public class LogAspect {
             long endTime = System.currentTimeMillis();
             long timeTaken = endTime - startTime;
 
-            logExecutionInfo(declaringType, method, timeTaken, logGroup);
+            logExecutionInfo(typeToLog, method, timeTaken, logGroup);
 
             return invokeResult;
         }

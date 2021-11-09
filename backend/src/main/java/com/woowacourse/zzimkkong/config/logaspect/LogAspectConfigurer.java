@@ -13,7 +13,7 @@ import java.util.List;
 public abstract class LogAspectConfigurer {
     private ConfigurableListableBeanFactory beanFactory;
     private BeanDefinitionRegistry beanDefinitionRegistry;
-    private final LogRegistry logRegistry = new LogRegistry();
+    private final LogEntries logEntries = new LogEntries();
 
     @Autowired
     public final void setBeanFactory(ConfigurableListableBeanFactory beanFactory) {
@@ -26,16 +26,16 @@ public abstract class LogAspectConfigurer {
 
     @PostConstruct
     protected final void init() {
-        registerBeans(logRegistry);
+        registerBeans(logEntries);
 
-        final List<LogTargetEntry> logTargetEntries = logRegistry.getLogTargetEntries();
+        final List<LogEntry> logTargetEntries = logEntries.getLogTargetEntries();
 
-        for (LogTargetEntry logTargetEntry : logTargetEntries) {
-            replaceByProxy(logTargetEntry.getTargetClass(), logTargetEntry.getLogGroup());
+        for (LogEntry logEntry : logTargetEntries) {
+            replaceByProxy(logEntry.getTargetClass(), logEntry.getLogGroup());
         }
     }
 
-    abstract protected void registerBeans(final LogRegistry logRegistry);
+    abstract protected void registerBeans(final LogEntries logEntries);
 
     private void replaceByProxy(Class<?> targetClass, String logGroupName) {
         String[] beanNames = beanFactory.getBeanNamesForType(targetClass);
@@ -56,26 +56,26 @@ public abstract class LogAspectConfigurer {
         beanFactory.registerSingleton(beanName, logProxy);
     }
 
-    public final static class LogRegistry {
-        private final List<LogTargetEntry> entries = new ArrayList<>();
+    public final static class LogEntries {
+        private final List<LogEntry> entries = new ArrayList<>();
 
-        private LogRegistry() {
+        private LogEntries() {
         }
 
         public void add(Class<?> clazz, String logGroup) {
-            this.entries.add(new LogTargetEntry(clazz, logGroup));
+            this.entries.add(new LogEntry(clazz, logGroup));
         }
 
-        private List<LogTargetEntry> getLogTargetEntries() {
+        private List<LogEntry> getLogTargetEntries() {
             return entries;
         }
     }
 
-    private static class LogTargetEntry {
+    private static class LogEntry {
         Class<?> targetClass;
         String logGroup;
 
-        private LogTargetEntry(Class<?> targetClass, String logGroup) {
+        private LogEntry(Class<?> targetClass, String logGroup) {
             this.targetClass = targetClass;
             this.logGroup = logGroup;
         }
