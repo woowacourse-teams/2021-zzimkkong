@@ -12,7 +12,7 @@ import java.util.Set;
 public class LogProxyPostProcessor implements BeanPostProcessor {
     private final Set<Class<?>> typesAnnotatedWith;
 
-    public LogProxyPostProcessor() {
+    protected LogProxyPostProcessor() {
         Reflections reflections = new Reflections("com.woowacourse.zzimkkong");
         typesAnnotatedWith = Collections.unmodifiableSet(reflections.getTypesAnnotatedWith(FindInstanceAndCreateLogProxy.class));
     }
