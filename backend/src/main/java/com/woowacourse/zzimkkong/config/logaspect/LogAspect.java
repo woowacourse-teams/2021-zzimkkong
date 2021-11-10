@@ -1,13 +1,15 @@
 package com.woowacourse.zzimkkong.config.logaspect;
 
 import lombok.extern.slf4j.Slf4j;
+import org.aopalliance.intercept.MethodInterceptor;
+import org.aopalliance.intercept.MethodInvocation;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.reflect.MethodSignature;
+import org.springframework.aop.framework.ProxyFactory;
 import org.springframework.stereotype.Component;
 
-import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
 
@@ -54,35 +56,34 @@ public class LogAspect {
     }
 
     static <T> T createLogProxy(Object target, Class<T> typeToLog, String logGroup) {
-        final LogProxyHandler logProxyHandler = new LogProxyHandler(target, typeToLog, logGroup);
-        return typeToLog.cast(
-                Proxy.newProxyInstance(
-                        typeToLog.getClassLoader(),
-                        new Class[]{typeToLog},
-                        logProxyHandler));
+        ExecutionTimeLogAdvice advice = new ExecutionTimeLogAdvice(typeToLog, logGroup);
+
+        ProxyFactory proxyFactory = new ProxyFactory(target);
+        proxyFactory.addAdvice(advice);
+        
+        return typeToLog.cast(proxyFactory.getProxy());
     }
 
-    private static class LogProxyHandler implements InvocationHandler {
-        private final Object target;
+    private static class ExecutionTimeLogAdvice implements MethodInterceptor {
         private final Class<?> typeToLog;
         private final String logGroup;
 
-        private LogProxyHandler(Object target, Class<?> typeToLog, String logGroup) {
-            this.target = target;
+        private ExecutionTimeLogAdvice(Class<?> typeToLog, String logGroup) {
             this.typeToLog = typeToLog;
             this.logGroup = logGroup;
         }
 
         @Override
-        public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
+        public Object invoke(MethodInvocation invocation) throws Throwable {
             long startTime = System.currentTimeMillis();
-            final Object invokeResult = method.invoke(target, args);
+            final Object result = invocation.proceed();
             long endTime = System.currentTimeMillis();
             long timeTaken = endTime - startTime;
 
+            Method method = invocation.getMethod();
             logExecutionInfo(typeToLog, method, timeTaken, logGroup);
 
-            return invokeResult;
+            return result;
         }
     }
 }
