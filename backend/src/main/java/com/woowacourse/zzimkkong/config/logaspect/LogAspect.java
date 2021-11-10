@@ -7,11 +7,16 @@ import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.reflect.MethodSignature;
+import org.reflections.Reflections;
 import org.springframework.aop.aspectj.AspectJExpressionPointcutAdvisor;
 import org.springframework.aop.framework.ProxyFactory;
+import org.springframework.beans.BeansException;
+import org.springframework.beans.factory.config.BeanPostProcessor;
 import org.springframework.stereotype.Component;
 
 import java.lang.reflect.Method;
+import java.util.Collections;
+import java.util.Set;
 
 import static net.logstash.logback.argument.StructuredArguments.value;
 
@@ -19,6 +24,7 @@ import static net.logstash.logback.argument.StructuredArguments.value;
 @Component
 @Aspect
 public class LogAspect {
+
     @Around("@target(com.woowacourse.zzimkkong.config.logaspect.LogMethodExecutionTime)" +
             "&& execution(public * com.woowacourse.zzimkkong..*(..))")
     public Object logExecutionTime(ProceedingJoinPoint joinPoint) throws Throwable {
@@ -56,10 +62,10 @@ public class LogAspect {
     }
 
     static Object createLogProxy(Object target, Class<?> typeToLog, String logGroup) {
-        ExecutionTimeLogAdvice advice = new ExecutionTimeLogAdvice(typeToLog, logGroup);
-
         AspectJExpressionPointcutAdvisor advisor = new AspectJExpressionPointcutAdvisor();
         advisor.setExpression("execution(public * com.woowacourse.zzimkkong..*(..))");
+
+        ExecutionTimeLogAdvice advice = new ExecutionTimeLogAdvice(typeToLog, logGroup);
         advisor.setAdvice(advice);
 
         ProxyFactory proxyFactory = new ProxyFactory(target);
@@ -89,6 +95,31 @@ public class LogAspect {
             logExecutionInfo(typeToLog, method, timeTaken, logGroup);
 
             return result;
+        }
+    }
+
+    @Component
+    private static class LogProxyPostProcessor implements BeanPostProcessor {
+        private final Set<Class<?>> typesAnnotatedWith;
+
+        protected LogProxyPostProcessor() {
+            Reflections reflections = new Reflections("com.woowacourse.zzimkkong");
+            typesAnnotatedWith = Collections.unmodifiableSet(reflections.getTypesAnnotatedWith(FindInstanceAndCreateLogProxy.class));
+        }
+
+        @Override
+        public Object postProcessAfterInitialization(Object bean, String beanName) throws BeansException {
+            return typesAnnotatedWith.stream()
+                    .filter(typeToLog -> typeToLog.isAssignableFrom(bean.getClass()))
+                    .findAny()
+                    .map(typeToLog -> createLogProxy(bean, typeToLog))
+                    .orElse(bean);
+        }
+
+        private Object createLogProxy(Object bean, Class<?> typeToLog) {
+            FindInstanceAndCreateLogProxy annotation = typeToLog.getAnnotation(FindInstanceAndCreateLogProxy.class);
+            String groupName = annotation.group();
+            return LogAspect.createLogProxy(bean, typeToLog, groupName);
         }
     }
 }
