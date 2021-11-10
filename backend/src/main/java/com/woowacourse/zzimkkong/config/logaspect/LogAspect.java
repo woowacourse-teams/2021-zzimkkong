@@ -59,8 +59,9 @@ public class LogAspect {
 
         ProxyFactory proxyFactory = new ProxyFactory(target);
         proxyFactory.addAdvice(advice);
+        proxyFactory.setProxyTargetClass(true);
 
-        return typeToLog.cast(proxyFactory.getProxy());
+        return proxyFactory.getProxy();
     }
 
     private static class ExecutionTimeLogAdvice implements MethodInterceptor {
