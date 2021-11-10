@@ -11,7 +11,6 @@ import org.springframework.aop.framework.ProxyFactory;
 import org.springframework.stereotype.Component;
 
 import java.lang.reflect.Method;
-import java.lang.reflect.Proxy;
 
 import static net.logstash.logback.argument.StructuredArguments.value;
 
@@ -55,12 +54,12 @@ public class LogAspect {
                 value("group", logGroup));
     }
 
-    static <T> T createLogProxy(Object target, Class<T> typeToLog, String logGroup) {
+    static Object createLogProxy(Object target, Class<?> typeToLog, String logGroup) {
         ExecutionTimeLogAdvice advice = new ExecutionTimeLogAdvice(typeToLog, logGroup);
 
         ProxyFactory proxyFactory = new ProxyFactory(target);
         proxyFactory.addAdvice(advice);
-        
+
         return typeToLog.cast(proxyFactory.getProxy());
     }
 

@@ -1,6 +1,6 @@
 package com.woowacourse.zzimkkong.repository;
 
-import com.woowacourse.zzimkkong.config.logaspect.LogRegistry;
+import com.woowacourse.zzimkkong.config.logaspect.FindInstanceAndCreateLogProxy;
 import com.woowacourse.zzimkkong.domain.Map;
 import com.woowacourse.zzimkkong.domain.Member;
 import org.springframework.data.domain.Page;
@@ -12,7 +12,7 @@ import org.springframework.data.repository.query.Param;
 import java.util.List;
 import java.util.Optional;
 
-@LogRegistry(group = "repository")
+@FindInstanceAndCreateLogProxy(group = "repository")
 public interface MapRepository extends JpaRepository<Map, Long> {
     List<Map> findAllByMember(final Member member);
 

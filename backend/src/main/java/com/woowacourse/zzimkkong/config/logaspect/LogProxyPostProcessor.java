@@ -14,21 +14,20 @@ public class LogProxyPostProcessor implements BeanPostProcessor {
 
     public LogProxyPostProcessor() {
         Reflections reflections = new Reflections("com.woowacourse.zzimkkong");
-        typesAnnotatedWith = Collections.unmodifiableSet(reflections.getTypesAnnotatedWith(LogRegistry.class));
+        typesAnnotatedWith = Collections.unmodifiableSet(reflections.getTypesAnnotatedWith(FindInstanceAndCreateLogProxy.class));
     }
 
     @Override
     public Object postProcessAfterInitialization(Object bean, String beanName) throws BeansException {
-        for (Class<?> typeToLog : typesAnnotatedWith) {
-            if (typeToLog.isAssignableFrom(bean.getClass())) {
-                return createProxy(bean, typeToLog);
-            }
-        }
-        return bean;
+        return typesAnnotatedWith.stream()
+                .filter(typeToLog -> typeToLog.isAssignableFrom(bean.getClass()))
+                .findAny()
+                .map(typeToLog -> createProxy(bean, typeToLog))
+                .orElse(bean);
     }
 
     private Object createProxy(Object bean, Class<?> typeToLog) {
-        LogRegistry annotation = typeToLog.getAnnotation(LogRegistry.class);
+        FindInstanceAndCreateLogProxy annotation = typeToLog.getAnnotation(FindInstanceAndCreateLogProxy.class);
         String groupName = annotation.group();
         return LogAspect.createLogProxy(bean, typeToLog, groupName);
     }
