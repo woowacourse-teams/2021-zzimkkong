@@ -7,6 +7,7 @@ import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.reflect.MethodSignature;
+import org.springframework.aop.aspectj.AspectJExpressionPointcutAdvisor;
 import org.springframework.aop.framework.ProxyFactory;
 import org.springframework.stereotype.Component;
 
@@ -57,8 +58,12 @@ public class LogAspect {
     static Object createLogProxy(Object target, Class<?> typeToLog, String logGroup) {
         ExecutionTimeLogAdvice advice = new ExecutionTimeLogAdvice(typeToLog, logGroup);
 
+        AspectJExpressionPointcutAdvisor advisor = new AspectJExpressionPointcutAdvisor();
+        advisor.setExpression("execution(public * com.woowacourse.zzimkkong..*(..))");
+        advisor.setAdvice(advice);
+
         ProxyFactory proxyFactory = new ProxyFactory(target);
-        proxyFactory.addAdvice(advice);
+        proxyFactory.addAdvisor(advisor);
         proxyFactory.setProxyTargetClass(true);
 
         return proxyFactory.getProxy();
