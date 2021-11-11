@@ -1,12 +1,16 @@
 package com.woowacourse.zzimkkong.config.logaspect;
 
+import com.woowacourse.zzimkkong.infrastructure.transaction.TransactionThreadLocal;
 import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.ProceedingJoinPoint;
+import org.aspectj.lang.annotation.After;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
+import org.aspectj.lang.annotation.Pointcut;
 import org.aspectj.lang.reflect.MethodSignature;
 import org.springframework.aop.aspectj.AspectJExpressionPointcutAdvisor;
 import org.springframework.aop.framework.ProxyFactory;
+import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 
 import java.lang.reflect.Method;
@@ -16,10 +20,16 @@ import static net.logstash.logback.argument.StructuredArguments.value;
 @Slf4j
 @Component
 @Aspect
+@Order(2)
 public class LogAspect {
+    private final TransactionThreadLocal transactionThreadLocal;
+
+    public LogAspect(TransactionThreadLocal transactionThreadLocal) {
+        this.transactionThreadLocal = transactionThreadLocal;
+    }
 
     @Around("@target(com.woowacourse.zzimkkong.config.logaspect.LogMethodExecutionTime)" +
-            "&& execution(public * com.woowacourse.zzimkkong..*(..))")
+            "&& allZzimkkongPublicMethod()")
     public Object logExecutionTime(ProceedingJoinPoint joinPoint) throws Throwable {
         long startTime = System.currentTimeMillis();
         Object result = joinPoint.proceed();
@@ -43,10 +53,13 @@ public class LogAspect {
     }
 
     void logExecutionInfo(Class<?> typeToLog, Method method, long timeTaken, String logGroup) {
-        log.info("{} took {} ms. (info group by '{}')",
+        String transactionId = transactionThreadLocal.getTransactionId();
+
+        log.info("{} took {} ms. (info group: '{}', transactionId: {})",
                 value("method", typeToLog.getName() + "." + method.getName() + "()"),
                 value("execution_time", timeTaken),
-                value("group", logGroup));
+                value("group", logGroup),
+                value("transaction", transactionId));
     }
 
     Object createLogProxy(Object target, Class<?> typeToLog, String logGroup) {
@@ -67,4 +80,7 @@ public class LogAspect {
         Class<?> targetClass = joinPoint.getTarget().getClass();
         return targetClass.getAnnotation(LogMethodExecutionTime.class).group();
     }
+
+    @Pointcut("execution(public * com.woowacourse.zzimkkong..*(..))")
+    private void allZzimkkongPublicMethod() {}
 }
