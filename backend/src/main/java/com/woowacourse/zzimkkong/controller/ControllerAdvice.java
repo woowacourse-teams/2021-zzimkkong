@@ -62,7 +62,7 @@ public class ControllerAdvice {
 
     @ExceptionHandler(ZzimkkongException.class)
     public ResponseEntity<ErrorResponse> zzimkkongExceptionHandler(final ZzimkkongException exception) {
-        logWarn(exception.getMessage(), exception);
+        logInfo(exception.getMessage());
         return ResponseEntity
                 .status(exception.getStatus())
                 .body(ErrorResponse.from(exception));
