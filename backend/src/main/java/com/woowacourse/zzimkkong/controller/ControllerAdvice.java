@@ -8,8 +8,8 @@ import com.woowacourse.zzimkkong.exception.InputFieldException;
 import com.woowacourse.zzimkkong.exception.ZzimkkongException;
 import com.woowacourse.zzimkkong.exception.infrastructure.InfrastructureMalfunctionException;
 import com.woowacourse.zzimkkong.exception.member.NoSuchOAuthMemberException;
-import com.woowacourse.zzimkkong.infrastructure.transaction.TransactionThreadLocal;
 import lombok.extern.slf4j.Slf4j;
+import org.slf4j.MDC;
 import org.springframework.dao.DataAccessException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
@@ -28,13 +28,8 @@ import static net.logstash.logback.argument.StructuredArguments.value;
 @Slf4j
 @RestControllerAdvice
 public class ControllerAdvice {
-    private static final String MESSAGE_FORMAT = "{} (transactionId: {})";
-
-    private final TransactionThreadLocal transactionThreadLocal;
-
-    public ControllerAdvice(TransactionThreadLocal transactionThreadLocal) {
-        this.transactionThreadLocal = transactionThreadLocal;
-    }
+    private static final String MESSAGE_FORMAT = "{} (traceId: {})";
+    private static final String TRACE_ID_KEY = "traceId";
 
     @ExceptionHandler(NoSuchOAuthMemberException.class)
     public ResponseEntity<OAuthLoginFailErrorResponse> oAuthLoginFailHandler(final NoSuchOAuthMemberException exception) {
@@ -101,7 +96,7 @@ public class ControllerAdvice {
     private void logInfo(String message) {
         log.info(MESSAGE_FORMAT,
                 message,
-                value("transaction", transactionThreadLocal.getTransactionId()));
+                value("traceId", getTraceId()));
     }
 
     private void logWarn(String message, Exception exception) {
@@ -113,8 +108,12 @@ public class ControllerAdvice {
 
         log.warn(MESSAGE_FORMAT,
                 message,
-                value("transaction", transactionThreadLocal.getTransactionId()),
+                value("traceId", getTraceId()),
                 value("stack_trace", stackTrace));
+    }
+
+    private Object getTraceId() {
+        return MDC.get(TRACE_ID_KEY);
     }
 
 }

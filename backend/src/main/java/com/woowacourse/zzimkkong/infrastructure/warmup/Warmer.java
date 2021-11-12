@@ -2,8 +2,8 @@ package com.woowacourse.zzimkkong.infrastructure.warmup;
 
 import com.woowacourse.zzimkkong.domain.SlackUrl;
 import com.woowacourse.zzimkkong.infrastructure.thumbnail.BatikConverter;
-import com.woowacourse.zzimkkong.infrastructure.transaction.TransactionThreadLocal;
 import lombok.extern.slf4j.Slf4j;
+import org.slf4j.MDC;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
@@ -21,21 +21,18 @@ public class Warmer {
     private final WebClient webClient;
     private final String s3ProxyServerUri;
     private final String s3ProxyServerSecretKey;
-    private final TransactionThreadLocal transactionThreadLocal;
 
     public Warmer(
             final BatikConverter batikConverter,
             final SlackUrl slackUrl,
             final WebClient webClient,
             final String s3ProxyServerUri,
-            final String s3ProxyServerSecretKey,
-            final TransactionThreadLocal transactionThreadLocal) {
+            final String s3ProxyServerSecretKey) {
         this.batikConverter = batikConverter;
         this.slackUrl = slackUrl;
         this.webClient = webClient;
         this.s3ProxyServerUri = s3ProxyServerUri;
         this.s3ProxyServerSecretKey = s3ProxyServerSecretKey;
-        this.transactionThreadLocal = transactionThreadLocal;
     }
 
     public void warmUp() {
@@ -43,7 +40,6 @@ public class Warmer {
 
         initSvgConverter();
         initWebClient();
-        transactionThreadLocal.clearAll();
 
         log.info("warm up이 완료 되었습니다.");
     }
