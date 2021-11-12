@@ -96,7 +96,7 @@ public class ControllerAdvice {
     private void logInfo(String message) {
         log.info(MESSAGE_FORMAT,
                 message,
-                value("traceId", getTraceId()));
+                value(TRACE_ID_KEY, getTraceId()));
     }
 
     private void logWarn(String message, Exception exception) {
@@ -108,7 +108,7 @@ public class ControllerAdvice {
 
         log.warn(MESSAGE_FORMAT,
                 message,
-                value("traceId", getTraceId()),
+                value(TRACE_ID_KEY, getTraceId()),
                 value("stack_trace", stackTrace));
     }
 
