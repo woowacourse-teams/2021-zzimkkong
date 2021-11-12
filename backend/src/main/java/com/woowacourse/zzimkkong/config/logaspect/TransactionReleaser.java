@@ -13,7 +13,7 @@ import org.springframework.stereotype.Component;
 public class TransactionReleaser {
     private final TransactionThreadLocal transactionThreadLocal;
 
-    public TransactionReleaser(TransactionThreadLocal transactionThreadLocal) {
+    public TransactionReleaser(final TransactionThreadLocal transactionThreadLocal) {
         this.transactionThreadLocal = transactionThreadLocal;
     }
 

@@ -24,7 +24,7 @@ import static net.logstash.logback.argument.StructuredArguments.value;
 public class LogAspect {
     private final TransactionThreadLocal transactionThreadLocal;
 
-    public LogAspect(TransactionThreadLocal transactionThreadLocal) {
+    public LogAspect(final TransactionThreadLocal transactionThreadLocal) {
         this.transactionThreadLocal = transactionThreadLocal;
     }
 
