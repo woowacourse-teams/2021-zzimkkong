@@ -75,5 +75,6 @@ public class LogAspect {
     }
 
     @Pointcut(ALL_ZZIMKKONG_PUBLIC_METHOD_POINTCUT_EXPRESSION)
-    private void allZzimkkongPublicMethod() {}
+    private void allZzimkkongPublicMethod() {
+    }
 }
