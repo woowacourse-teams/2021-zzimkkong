@@ -18,7 +18,10 @@ public class WarmerConfig {
     private final SlackUrl slackUrl;
     private final WebClient webClient;
 
-    public WarmerConfig(final BatikConverter batikConverter, final SlackUrl slackUrl, final WebClient webClient) {
+    public WarmerConfig(
+            final BatikConverter batikConverter,
+            final SlackUrl slackUrl,
+            final WebClient webClient) {
         this.batikConverter = batikConverter;
         this.slackUrl = slackUrl;
         this.webClient = webClient;

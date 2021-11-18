@@ -3,6 +3,7 @@ package com.woowacourse.zzimkkong.infrastructure.warmup;
 import com.woowacourse.zzimkkong.domain.SlackUrl;
 import com.woowacourse.zzimkkong.infrastructure.thumbnail.BatikConverter;
 import lombok.extern.slf4j.Slf4j;
+import org.slf4j.MDC;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;

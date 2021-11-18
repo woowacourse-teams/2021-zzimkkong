@@ -13,7 +13,7 @@ public class LogProxyPostProcessor implements BeanPostProcessor {
     private final LogAspect logAspect;
     private final Set<Class<?>> typesAnnotatedWith;
 
-    protected LogProxyPostProcessor(LogAspect logAspect) {
+    protected LogProxyPostProcessor(final LogAspect logAspect) {
         this.logAspect = logAspect;
 
         Reflections reflections = new Reflections("com.woowacourse.zzimkkong");

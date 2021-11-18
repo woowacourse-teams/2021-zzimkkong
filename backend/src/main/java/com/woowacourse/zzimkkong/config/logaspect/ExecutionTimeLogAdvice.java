@@ -10,7 +10,7 @@ public class ExecutionTimeLogAdvice implements MethodInterceptor {
     private final Class<?> typeToLog;
     private final String logGroup;
 
-    protected ExecutionTimeLogAdvice(LogAspect logAspect, Class<?> typeToLog, String logGroup) {
+    protected ExecutionTimeLogAdvice(final LogAspect logAspect, final Class<?> typeToLog, final String logGroup) {
         this.logAspect = logAspect;
         this.typeToLog = typeToLog;
         this.logGroup = logGroup;
