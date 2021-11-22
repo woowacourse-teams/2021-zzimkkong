@@ -4,7 +4,7 @@ import com.woowacourse.zzimkkong.config.logaspect.LogMethodExecutionTime;
 import com.woowacourse.zzimkkong.dto.reservation.*;
 import com.woowacourse.zzimkkong.dto.slack.SlackResponse;
 import com.woowacourse.zzimkkong.service.ReservationService;
-import com.woowacourse.zzimkkong.service.SlackService;
+import com.woowacourse.zzimkkong.service.slack.SlackService;
 import com.woowacourse.zzimkkong.service.strategy.GuestReservationStrategy;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
