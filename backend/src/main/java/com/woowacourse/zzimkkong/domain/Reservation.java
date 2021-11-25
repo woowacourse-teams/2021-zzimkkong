@@ -64,26 +64,15 @@ public class Reservation {
     }
 
     public boolean hasConflictWith(final LocalDateTime startDateTime, final LocalDateTime endDateTime) {
-        boolean contains = contains(startDateTime, endDateTime);
-        boolean intersects = intersects(startDateTime, endDateTime);
-        boolean equals = equals(startDateTime, endDateTime);
-
-        return contains || intersects || equals;
+        return !(isEarlier(endDateTime) || isLater(startDateTime));
     }
 
-    private boolean contains(final LocalDateTime startDateTime, final LocalDateTime endDateTime) {
-        return (startDateTime.isAfter(startTime) && endDateTime.isBefore(endTime))
-                || (startDateTime.isEqual(startTime) && endDateTime.isBefore(endTime))
-                || (startDateTime.isAfter(startTime) && endDateTime.isEqual(endTime));
+    private boolean isEarlier(final LocalDateTime endDateTime) {
+        return endDateTime.equals(this.startTime) || endDateTime.isBefore(this.startTime);
     }
 
-    private boolean intersects(final LocalDateTime startDateTime, final LocalDateTime endDateTime) {
-        return (startDateTime.isBefore(startTime) && endDateTime.isAfter(startTime))
-                || (endDateTime.isAfter(endTime) && startDateTime.isBefore(endTime));
-    }
-
-    private boolean equals(final LocalDateTime startDateTime, final LocalDateTime endDateTime) {
-        return startDateTime.isEqual(startTime) && endDateTime.isEqual(endTime);
+    private boolean isLater(final LocalDateTime startDateTime) {
+        return startDateTime.equals(this.endTime) || startDateTime.isAfter(this.endTime);
     }
 
     public void update(final Reservation updateReservation, final Space space) {
