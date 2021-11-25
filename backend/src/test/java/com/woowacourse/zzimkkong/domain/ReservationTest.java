@@ -19,13 +19,9 @@ class ReservationTest {
     @BeforeEach
     void setUp() {
         reservation = Reservation.builder()
-                .description("description")
-                .userName("userName")
-                .date(THE_DAY_AFTER_TOMORROW)
                 .startTime(THE_DAY_AFTER_TOMORROW.atTime(8, 0))
                 .endTime(THE_DAY_AFTER_TOMORROW.atTime(9, 0))
                 .password("1234")
-                .space(null)
                 .build();
     }
 
