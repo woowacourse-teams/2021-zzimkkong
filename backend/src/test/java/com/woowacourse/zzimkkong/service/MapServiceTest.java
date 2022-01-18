@@ -1,5 +1,6 @@
 package com.woowacourse.zzimkkong.service;
 
+import com.woowacourse.zzimkkong.Constants;
 import com.woowacourse.zzimkkong.domain.Map;
 import com.woowacourse.zzimkkong.domain.Member;
 import com.woowacourse.zzimkkong.domain.Setting;
@@ -18,8 +19,6 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import java.io.File;
-import java.io.InputStream;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
@@ -46,8 +45,8 @@ class MapServiceTest extends ServiceTest {
     void setUp() {
         pobi = new Member(EMAIL, PW, ORGANIZATION);
         pobiEmail = LoginEmailDto.from(EMAIL);
-        luther = new Map(1L, LUTHER_NAME, MAP_DRAWING_DATA, MAP_IMAGE_URL, pobi);
-        smallHouse = new Map(2L, SMALL_HOUSE_NAME, MAP_DRAWING_DATA, MAP_IMAGE_URL, pobi);
+        luther = new Map(1L, LUTHER_NAME, MAP_DRAWING_DATA, Constants.MAP_SVG, pobi);
+        smallHouse = new Map(2L, SMALL_HOUSE_NAME, MAP_DRAWING_DATA, Constants.MAP_SVG, pobi);
         lutherId = luther.getId();
 
         Setting beSetting = Setting.builder()

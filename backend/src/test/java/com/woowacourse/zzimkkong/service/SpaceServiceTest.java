@@ -1,5 +1,6 @@
 package com.woowacourse.zzimkkong.service;
 
+import com.woowacourse.zzimkkong.Constants;
 import com.woowacourse.zzimkkong.domain.Map;
 import com.woowacourse.zzimkkong.domain.Member;
 import com.woowacourse.zzimkkong.domain.Setting;
@@ -15,8 +16,6 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import java.io.File;
-import java.io.InputStream;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
@@ -79,7 +78,7 @@ class SpaceServiceTest extends ServiceTest {
         sakjung = new Member(NEW_EMAIL, PW, ORGANIZATION);
         pobiEmail = LoginEmailDto.from(EMAIL);
         sakjungEmail = LoginEmailDto.from(NEW_EMAIL);
-        luther = new Map(1L, LUTHER_NAME, MAP_DRAWING_DATA, MAP_IMAGE_URL, pobi);
+        luther = new Map(1L, LUTHER_NAME, MAP_DRAWING_DATA, Constants.MAP_SVG, pobi);
 
         Setting beSetting = Setting.builder()
                 .availableStartTime(BE_AVAILABLE_START_TIME)

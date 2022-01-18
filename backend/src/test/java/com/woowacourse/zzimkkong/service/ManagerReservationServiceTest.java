@@ -1,5 +1,6 @@
 package com.woowacourse.zzimkkong.service;
 
+import com.woowacourse.zzimkkong.Constants;
 import com.woowacourse.zzimkkong.domain.*;
 import com.woowacourse.zzimkkong.dto.member.LoginEmailDto;
 import com.woowacourse.zzimkkong.dto.reservation.*;
@@ -7,7 +8,6 @@ import com.woowacourse.zzimkkong.exception.authorization.NoAuthorityOnMapExcepti
 import com.woowacourse.zzimkkong.exception.map.NoSuchMapException;
 import com.woowacourse.zzimkkong.exception.reservation.*;
 import com.woowacourse.zzimkkong.exception.space.NoSuchSpaceException;
-import com.woowacourse.zzimkkong.dto.member.LoginEmailDto;
 import com.woowacourse.zzimkkong.service.strategy.ManagerReservationStrategy;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -74,7 +74,7 @@ class ManagerReservationServiceTest extends ServiceTest {
         sakjung = new Member(NEW_EMAIL, PW, ORGANIZATION);
         pobiEmail = LoginEmailDto.from(EMAIL);
         sakjungEmail = LoginEmailDto.from(NEW_EMAIL);
-        luther = new Map(1L, LUTHER_NAME, MAP_DRAWING_DATA, MAP_IMAGE_URL, pobi);
+        luther = new Map(1L, LUTHER_NAME, MAP_DRAWING_DATA, Constants.MAP_SVG, pobi);
 
         Setting beSetting = Setting.builder()
                 .availableStartTime(BE_AVAILABLE_START_TIME)

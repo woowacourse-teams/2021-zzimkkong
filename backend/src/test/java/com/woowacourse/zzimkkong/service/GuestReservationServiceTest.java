@@ -1,5 +1,6 @@
 package com.woowacourse.zzimkkong.service;
 
+import com.woowacourse.zzimkkong.Constants;
 import com.woowacourse.zzimkkong.domain.*;
 import com.woowacourse.zzimkkong.dto.reservation.*;
 import com.woowacourse.zzimkkong.exception.map.NoSuchMapException;
@@ -60,7 +61,7 @@ class GuestReservationServiceTest extends ServiceTest {
     @BeforeEach
     void setUp() {
         Member pobi = new Member(EMAIL, PW, ORGANIZATION);
-        luther = new Map(1L, LUTHER_NAME, MAP_DRAWING_DATA, MAP_IMAGE_URL, pobi);
+        luther = new Map(1L, LUTHER_NAME, MAP_DRAWING_DATA, Constants.MAP_SVG, pobi);
         
         Setting beSetting = Setting.builder()
                 .availableStartTime(BE_AVAILABLE_START_TIME)

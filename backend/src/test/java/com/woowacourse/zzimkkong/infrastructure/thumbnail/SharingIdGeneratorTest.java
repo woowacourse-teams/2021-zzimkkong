@@ -1,5 +1,6 @@
 package com.woowacourse.zzimkkong.infrastructure.thumbnail;
 
+import com.woowacourse.zzimkkong.Constants;
 import com.woowacourse.zzimkkong.domain.Map;
 import com.woowacourse.zzimkkong.domain.Member;
 import com.woowacourse.zzimkkong.exception.map.InvalidAccessLinkException;
@@ -34,7 +35,7 @@ class SharingIdGeneratorTest {
         luther = new Map(1L,
                 LUTHER_NAME,
                 MAP_DRAWING_DATA,
-                MAP_IMAGE_URL,
+                Constants.MAP_SVG,
                 pobi);
     }
 

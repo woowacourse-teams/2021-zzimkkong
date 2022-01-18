@@ -1,5 +1,6 @@
 package com.woowacourse.zzimkkong.service;
 
+import com.woowacourse.zzimkkong.Constants;
 import com.woowacourse.zzimkkong.domain.*;
 import com.woowacourse.zzimkkong.dto.admin.*;
 import com.woowacourse.zzimkkong.dto.map.MapFindResponse;
@@ -84,7 +85,7 @@ class AdminServiceTest extends ServiceTest {
     @DisplayName("모든 맵을 페이지네이션을 이용해 조회한다.")
     void findMaps() {
         //given
-        Map luther = new Map(LUTHER_NAME, MAP_DRAWING_DATA, MAP_IMAGE_URL, pobi);
+        Map luther = new Map(LUTHER_NAME, MAP_DRAWING_DATA, Constants.MAP_SVG, pobi);
         PageRequest pageRequest = PageRequest.of(0, 20, Sort.unsorted());
         given(maps.findAllByFetch(any(Pageable.class)))
                 .willReturn(new PageImpl<>(List.of(luther), pageRequest, 1));
@@ -106,7 +107,7 @@ class AdminServiceTest extends ServiceTest {
     @DisplayName("모든 공간을 페이지네이션을 이용해 조회한다.")
     void findSpaces() {
         //given
-        Map luther = new Map(LUTHER_NAME, MAP_DRAWING_DATA, MAP_IMAGE_URL, pobi);
+        Map luther = new Map(LUTHER_NAME, MAP_DRAWING_DATA, Constants.MAP_SVG, pobi);
         Setting beSetting = Setting.builder()
                 .availableStartTime(BE_AVAILABLE_START_TIME)
                 .availableEndTime(BE_AVAILABLE_END_TIME)
@@ -147,7 +148,7 @@ class AdminServiceTest extends ServiceTest {
     @DisplayName("모든 예약을 페이지네이션을 이용해 조회한다.")
     void findReservations() {
         //given
-        Map luther = new Map(1L, LUTHER_NAME, MAP_DRAWING_DATA, MAP_IMAGE_URL, pobi);
+        Map luther = new Map(1L, LUTHER_NAME, MAP_DRAWING_DATA, Constants.MAP_SVG, pobi);
         Setting beSetting = Setting.builder()
                 .availableStartTime(BE_AVAILABLE_START_TIME)
                 .availableEndTime(BE_AVAILABLE_END_TIME)
