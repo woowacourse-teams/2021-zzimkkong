@@ -1,9 +1,7 @@
 package com.woowacourse.zzimkkong.infrastructure.warmup;
 
 import com.woowacourse.zzimkkong.domain.SlackUrl;
-import com.woowacourse.zzimkkong.infrastructure.thumbnail.BatikConverter;
 import lombok.extern.slf4j.Slf4j;
-import org.slf4j.MDC;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
@@ -16,19 +14,16 @@ import java.io.*;
 
 @Slf4j
 public class Warmer {
-    private final BatikConverter batikConverter;
     private final SlackUrl slackUrl;
     private final WebClient webClient;
     private final String s3ProxyServerUri;
     private final String s3ProxyServerSecretKey;
 
     public Warmer(
-            final BatikConverter batikConverter,
             final SlackUrl slackUrl,
             final WebClient webClient,
             final String s3ProxyServerUri,
             final String s3ProxyServerSecretKey) {
-        this.batikConverter = batikConverter;
         this.slackUrl = slackUrl;
         this.webClient = webClient;
         this.s3ProxyServerUri = s3ProxyServerUri;
@@ -51,7 +46,6 @@ public class Warmer {
              final ByteArrayOutputStream pngOutputStream = new ByteArrayOutputStream()) {
             final BufferedInputStream bufferedSvgInputStream = new BufferedInputStream(svgInputStream);
             final BufferedOutputStream bufferedPngOutputStream = new BufferedOutputStream(pngOutputStream);
-            batikConverter.convertSvgToPng(bufferedSvgInputStream, bufferedPngOutputStream);
         } catch (IOException ignored) {
         }
     }

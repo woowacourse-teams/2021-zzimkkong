@@ -102,8 +102,6 @@ class MapServiceTest extends ServiceTest {
                 .willReturn(Optional.of(pobi));
         given(maps.save(any(Map.class)))
                 .willReturn(luther);
-        given(storageUploader.upload(anyString(), anyString(), any(InputStream.class)))
-                .willReturn(MAP_IMAGE_URL);
 
         //then
         MapCreateResponse mapCreateResponse = mapService.saveMap(mapCreateUpdateRequest, pobiEmail);
@@ -151,8 +149,6 @@ class MapServiceTest extends ServiceTest {
         MapCreateUpdateRequest mapCreateUpdateRequest = new MapCreateUpdateRequest("이름을 바꿔요", luther.getMapDrawing(), MAP_SVG);
         given(maps.findById(anyLong()))
                 .willReturn(Optional.of(luther));
-        given(storageUploader.upload(anyString(), anyString(), any(InputStream.class)))
-                .willReturn(MAP_IMAGE_URL);
 
         //when, then
         assertDoesNotThrow(() -> mapService.updateMap(luther.getId(), mapCreateUpdateRequest, pobiEmail));

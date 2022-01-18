@@ -153,8 +153,6 @@ class SpaceServiceTest extends ServiceTest {
                 .willReturn(Optional.of(luther));
         given(spaces.save(any(Space.class)))
                 .willReturn(newSpace);
-        given(storageUploader.upload(anyString(), anyString(), any(InputStream.class)))
-                .willReturn(MAP_IMAGE_URL);
 
         // when
         SpaceCreateResponse spaceCreateResponse = spaceService.saveSpace(luther.getId(), spaceCreateUpdateRequest, pobiEmail);
@@ -278,8 +276,6 @@ class SpaceServiceTest extends ServiceTest {
         // given, when
         given(maps.findByIdFetch(anyLong()))
                 .willReturn(Optional.of(luther));
-        given(storageUploader.upload(anyString(), anyString(), any(InputStream.class)))
-                .willReturn(MAP_IMAGE_URL);
 
         // then
         assertDoesNotThrow(() -> spaceService.updateSpace(

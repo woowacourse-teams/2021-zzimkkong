@@ -9,7 +9,6 @@ import com.woowacourse.zzimkkong.dto.space.SettingsRequest;
 import com.woowacourse.zzimkkong.dto.space.SpaceCreateUpdateRequest;
 import com.woowacourse.zzimkkong.infrastructure.oauth.GithubRequester;
 import com.woowacourse.zzimkkong.infrastructure.oauth.GoogleRequester;
-import com.woowacourse.zzimkkong.infrastructure.thumbnail.StorageUploader;
 import io.restassured.RestAssured;
 import io.restassured.builder.RequestSpecBuilder;
 import io.restassured.specification.RequestSpecification;
@@ -88,9 +87,6 @@ class AcceptanceTest {
     @Autowired
     private DatabaseCleaner databaseCleaner;
 
-    @MockBean
-    private StorageUploader storageUploader;
-
     @Autowired
     protected PasswordEncoder passwordEncoder;
 
@@ -110,9 +106,6 @@ class AcceptanceTest {
 
         saveMember(memberSaveRequest);
         accessToken = getToken();
-
-        given(storageUploader.upload(anyString(), anyString(), any(InputStream.class)))
-                .willReturn(MAP_IMAGE_URL);
     }
 
     @AfterEach
