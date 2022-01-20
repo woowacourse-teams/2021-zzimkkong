@@ -73,8 +73,8 @@ class MapControllerTest extends AcceptanceTest {
 
         String lutherId = createdMapApi.split("/")[4];
         String smallHouseId = smallHouseCreatedMapApi.header("location").split("/")[4];
-        Map lutherWithId = new Map(Long.parseLong(lutherId), luther.getName(), luther.getMapDrawing(), luther.getMapImageUrl(), luther.getMember());
-        Map smallHouseWithId = new Map(Long.parseLong(smallHouseId), smallHouse.getName(), smallHouse.getMapDrawing(), smallHouse.getMapImageUrl(), smallHouse.getMember());
+        Map lutherWithId = new Map(Long.parseLong(lutherId), luther.getName(), luther.getMapDrawing(), luther.getThumbnail(), luther.getMember());
+        Map smallHouseWithId = new Map(Long.parseLong(smallHouseId), smallHouse.getName(), smallHouse.getMapDrawing(), smallHouse.getThumbnail(), smallHouse.getMember());
         Iterator<Map> expectedMapIterator = List.of(lutherWithId, smallHouseWithId).iterator();
 
         // when
