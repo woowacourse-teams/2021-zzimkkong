@@ -17,11 +17,11 @@ public class MapCreateUpdateRequest {
     private String mapDrawing;
 
     @NotBlank(message = EMPTY_MESSAGE)
-    private String mapImageSvg;
+    private String thumbnail;
 
-    public MapCreateUpdateRequest(final String mapName, final String mapDrawing, final String mapImageSvg) {
+    public MapCreateUpdateRequest(final String mapName, final String mapDrawing, final String thumbnail) {
         this.mapName = mapName;
         this.mapDrawing = mapDrawing;
-        this.mapImageSvg = mapImageSvg;
+        this.thumbnail = thumbnail;
     }
 }

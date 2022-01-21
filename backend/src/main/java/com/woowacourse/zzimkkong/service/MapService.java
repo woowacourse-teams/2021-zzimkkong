@@ -50,7 +50,7 @@ public class MapService {
         Map saveMap = maps.save(new Map(
                 mapCreateUpdateRequest.getMapName(),
                 mapCreateUpdateRequest.getMapDrawing(),
-                mapCreateUpdateRequest.getMapImageSvg(),
+                mapCreateUpdateRequest.getThumbnail(),
                 manager));
 
         return MapCreateResponse.from(saveMap);
