@@ -1,9 +1,7 @@
 package com.woowacourse.zzimkkong.infrastructure.warmup;
 
-import com.woowacourse.zzimkkong.domain.SlackUrl;
 import com.woowacourse.zzimkkong.infrastructure.thumbnail.BatikConverter;
 import lombok.extern.slf4j.Slf4j;
-import org.slf4j.MDC;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
@@ -17,19 +15,16 @@ import java.io.*;
 @Slf4j
 public class Warmer {
     private final BatikConverter batikConverter;
-    private final SlackUrl slackUrl;
     private final WebClient webClient;
     private final String s3ProxyServerUri;
     private final String s3ProxyServerSecretKey;
 
     public Warmer(
             final BatikConverter batikConverter,
-            final SlackUrl slackUrl,
             final WebClient webClient,
             final String s3ProxyServerUri,
             final String s3ProxyServerSecretKey) {
         this.batikConverter = batikConverter;
-        this.slackUrl = slackUrl;
         this.webClient = webClient;
         this.s3ProxyServerUri = s3ProxyServerUri;
         this.s3ProxyServerSecretKey = s3ProxyServerSecretKey;
@@ -59,7 +54,7 @@ public class Warmer {
     private void initWebClient() {
         webClient
                 .post()
-                .uri(slackUrl.getUrl())
+                .uri("")
                 .contentType(MediaType.APPLICATION_JSON)
                 .bodyValue("let's warm up")
                 .retrieve()
