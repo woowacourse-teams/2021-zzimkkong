@@ -2,32 +2,24 @@ package com.woowacourse.zzimkkong.infrastructure.warmup;
 
 import com.woowacourse.zzimkkong.domain.SlackUrl;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.core.io.InputStreamResource;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
-import org.springframework.http.client.MultipartBodyBuilder;
-import org.springframework.web.reactive.function.BodyInserters;
+import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
 
 import java.io.*;
 
 @Slf4j
+@Component
 public class Warmer {
     private final SlackUrl slackUrl;
     private final WebClient webClient;
-    private final String s3ProxyServerUri;
-    private final String s3ProxyServerSecretKey;
 
     public Warmer(
             final SlackUrl slackUrl,
-            final WebClient webClient,
-            final String s3ProxyServerUri,
-            final String s3ProxyServerSecretKey) {
+            final WebClient webClient) {
         this.slackUrl = slackUrl;
         this.webClient = webClient;
-        this.s3ProxyServerUri = s3ProxyServerUri;
-        this.s3ProxyServerSecretKey = s3ProxyServerSecretKey;
     }
 
     public void warmUp() {
@@ -60,23 +52,5 @@ public class Warmer {
                 .bodyToMono(String.class)
                 .onErrorResume(e -> Mono.just("warm up finisehd"))
                 .subscribe();
-
-        try (final BufferedInputStream bufferedPngInputStream = new BufferedInputStream(new ByteArrayInputStream("warmUp".getBytes()))) {
-            MultipartBodyBuilder multipartBodyBuilder = new MultipartBodyBuilder();
-            multipartBodyBuilder.part("file", new InputStreamResource(bufferedPngInputStream))
-                    .header(HttpHeaders.CONTENT_DISPOSITION, "form-data; name=file; filename=warmFile");
-
-            webClient
-                    .post()
-                    .uri(s3ProxyServerUri + "/api/storage/warmup")
-                    .header(HttpHeaders.CONTENT_TYPE, MediaType.MULTIPART_FORM_DATA_VALUE)
-                    .header(HttpHeaders.AUTHORIZATION, s3ProxyServerSecretKey)
-                    .body(BodyInserters.fromMultipartData(multipartBodyBuilder.build()))
-                    .retrieve()
-                    .bodyToMono(String.class)
-                    .onErrorResume(e -> Mono.just("warm up finished"))
-                    .block();
-        } catch (IOException ignored) {
-        }
     }
 }
