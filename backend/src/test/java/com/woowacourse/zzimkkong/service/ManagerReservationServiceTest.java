@@ -1,6 +1,5 @@
 package com.woowacourse.zzimkkong.service;
 
-import com.woowacourse.zzimkkong.Constants;
 import com.woowacourse.zzimkkong.domain.*;
 import com.woowacourse.zzimkkong.dto.member.LoginEmailDto;
 import com.woowacourse.zzimkkong.dto.reservation.*;
@@ -74,7 +73,7 @@ class ManagerReservationServiceTest extends ServiceTest {
         sakjung = new Member(NEW_EMAIL, PW, ORGANIZATION);
         pobiEmail = LoginEmailDto.from(EMAIL);
         sakjungEmail = LoginEmailDto.from(NEW_EMAIL);
-        luther = new Map(1L, LUTHER_NAME, MAP_DRAWING_DATA, Constants.MAP_SVG, pobi);
+        luther = new Map(1L, LUTHER_NAME, MAP_DRAWING_DATA, MAP_SVG, pobi);
 
         Setting beSetting = Setting.builder()
                 .availableStartTime(BE_AVAILABLE_START_TIME)

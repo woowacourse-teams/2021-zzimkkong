@@ -63,7 +63,7 @@ class GuestReservationControllerTest extends AcceptanceTest {
                 SALLY_DESCRIPTION);
 
         Member pobi = new Member(EMAIL, passwordEncoder.encode(PW), ORGANIZATION);
-        Map luther = new Map(LUTHER_NAME, MAP_DRAWING_DATA, Constants.MAP_SVG, pobi);
+        Map luther = new Map(LUTHER_NAME, MAP_DRAWING_DATA, MAP_SVG, pobi);
 
         Setting beSetting = Setting.builder()
                 .availableStartTime(BE_AVAILABLE_START_TIME)

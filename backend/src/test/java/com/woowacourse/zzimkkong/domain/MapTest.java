@@ -14,7 +14,7 @@ class MapTest {
     @DisplayName("Space가 생성되면 Map에 Space를 추가한다")
     void addSpace() {
         Member pobi = new Member(EMAIL, PW, ORGANIZATION);
-        Map luther = new Map(LUTHER_NAME, MAP_DRAWING_DATA, Constants.MAP_SVG, pobi);
+        Map luther = new Map(LUTHER_NAME, MAP_DRAWING_DATA, MAP_SVG, pobi);
 
         assertThat(luther.getSpaces().size()).isZero();
         Space.builder()
@@ -28,7 +28,7 @@ class MapTest {
     @DisplayName("맵의 관리자가 맞으면 true, 아니면 false")
     void isOwnedBy(String email, boolean expected) {
         Member pobi = new Member(EMAIL, PW, ORGANIZATION);
-        Map luther = new Map(LUTHER_NAME, MAP_DRAWING_DATA, Constants.MAP_SVG, pobi);
+        Map luther = new Map(LUTHER_NAME, MAP_DRAWING_DATA, MAP_SVG, pobi);
 
         boolean result = luther.isOwnedBy(email);
         assertThat(result).isEqualTo(expected);
@@ -40,12 +40,12 @@ class MapTest {
     void addMap(boolean nullable) {
         Map luther;
         if (nullable) {
-            luther = new Map(LUTHER_NAME, MAP_DRAWING_DATA, Constants.MAP_SVG, null);
+            luther = new Map(LUTHER_NAME, MAP_DRAWING_DATA, MAP_SVG, null);
             assertThat(luther.getMember()).isNull();
             return;
         }
         Member pobi = new Member(EMAIL, PW, ORGANIZATION);
-        luther = new Map(LUTHER_NAME, MAP_DRAWING_DATA, Constants.MAP_SVG, pobi);
+        luther = new Map(LUTHER_NAME, MAP_DRAWING_DATA, MAP_SVG, pobi);
 
         assertThat(pobi.getMaps()).contains(luther);
     }

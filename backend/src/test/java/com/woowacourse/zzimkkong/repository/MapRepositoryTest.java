@@ -26,8 +26,8 @@ class MapRepositoryTest extends RepositoryTest {
     @BeforeEach
     void setUp() {
         pobi = new Member(EMAIL, PW, ORGANIZATION);
-        luther = new Map(LUTHER_NAME, MAP_DRAWING_DATA, Constants.MAP_SVG, pobi);
-        smallHouse = new Map(SMALL_HOUSE_NAME, MAP_DRAWING_DATA, Constants.MAP_SVG, pobi);
+        luther = new Map(LUTHER_NAME, MAP_DRAWING_DATA, MAP_SVG, pobi);
+        smallHouse = new Map(SMALL_HOUSE_NAME, MAP_DRAWING_DATA, MAP_SVG, pobi);
 
         members.save(pobi);
     }

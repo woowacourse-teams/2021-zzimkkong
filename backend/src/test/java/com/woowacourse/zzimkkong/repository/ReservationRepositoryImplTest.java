@@ -21,7 +21,7 @@ class ReservationRepositoryImplTest extends RepositoryTest {
         Member sakjung = new Member(NEW_EMAIL, PW, ORGANIZATION);
         Member savedMember = members.save(sakjung);
 
-        Map luther = new Map(LUTHER_NAME, MAP_DRAWING_DATA, Constants.MAP_SVG, savedMember);
+        Map luther = new Map(LUTHER_NAME, MAP_DRAWING_DATA, MAP_SVG, savedMember);
         maps.save(luther);
 
         Setting beSetting = Setting.builder()

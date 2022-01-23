@@ -19,7 +19,7 @@ class SpaceTest {
     @Test
     void update() {
         Member member = new Member(EMAIL, PW, ORGANIZATION);
-        Map map = new Map(LUTHER_NAME, MAP_DRAWING_DATA, Constants.MAP_SVG, member);
+        Map map = new Map(LUTHER_NAME, MAP_DRAWING_DATA, MAP_SVG, member);
 
         Setting setting = Setting.builder()
                 .availableStartTime(LocalTime.of(10, 0))

@@ -1,6 +1,5 @@
 package com.woowacourse.zzimkkong.controller;
 
-import com.woowacourse.zzimkkong.Constants;
 import com.woowacourse.zzimkkong.domain.Map;
 import com.woowacourse.zzimkkong.domain.Member;
 import com.woowacourse.zzimkkong.domain.Setting;
@@ -42,7 +41,7 @@ class ManagerSpaceControllerTest extends AcceptanceTest {
         Long feSpaceId = Long.valueOf(saveFe1SpaceResponse.header("location").split("/")[6]);
 
         Member pobi = new Member(EMAIL, passwordEncoder.encode(PW), ORGANIZATION);
-        Map luther = new Map(LUTHER_NAME, MAP_DRAWING_DATA, Constants.MAP_SVG, pobi);
+        Map luther = new Map(LUTHER_NAME, MAP_DRAWING_DATA, MAP_SVG, pobi);
         Setting beSetting = Setting.builder()
                 .availableStartTime(BE_AVAILABLE_START_TIME)
                 .availableEndTime(BE_AVAILABLE_END_TIME)

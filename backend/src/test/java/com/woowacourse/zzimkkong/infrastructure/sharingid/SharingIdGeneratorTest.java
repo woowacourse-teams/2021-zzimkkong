@@ -1,11 +1,8 @@
 package com.woowacourse.zzimkkong.infrastructure.sharingid;
 
-import com.woowacourse.zzimkkong.Constants;
 import com.woowacourse.zzimkkong.domain.Map;
 import com.woowacourse.zzimkkong.domain.Member;
 import com.woowacourse.zzimkkong.exception.map.InvalidAccessLinkException;
-import com.woowacourse.zzimkkong.infrastructure.sharingid.SharingIdGenerator;
-import com.woowacourse.zzimkkong.infrastructure.sharingid.Transcoder;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -35,7 +32,7 @@ class SharingIdGeneratorTest {
         luther = new Map(1L,
                 LUTHER_NAME,
                 MAP_DRAWING_DATA,
-                Constants.MAP_SVG,
+                MAP_SVG,
                 pobi);
     }
 

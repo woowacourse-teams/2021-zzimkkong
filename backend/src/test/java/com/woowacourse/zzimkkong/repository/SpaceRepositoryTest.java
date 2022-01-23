@@ -25,7 +25,7 @@ class SpaceRepositoryTest extends RepositoryTest {
     @BeforeEach
     void setUp() {
         Member pobi = new Member(EMAIL, PW, ORGANIZATION);
-        luther = new Map(LUTHER_NAME, MAP_DRAWING_DATA, Constants.MAP_SVG, pobi);
+        luther = new Map(LUTHER_NAME, MAP_DRAWING_DATA, MAP_SVG, pobi);
 
         Setting beSetting = Setting.builder()
                 .availableStartTime(BE_AVAILABLE_START_TIME)
