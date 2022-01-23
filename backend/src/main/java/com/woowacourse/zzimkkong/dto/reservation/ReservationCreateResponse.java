@@ -16,8 +16,8 @@ public class ReservationCreateResponse {
         this.slackResponse = slackResponse;
     }
 
-    public static ReservationCreateResponse of(final Reservation reservation, final String sharingMapId) {
-        SlackResponse slackResponse = SlackResponse.of(reservation, sharingMapId);
+    public static ReservationCreateResponse of(final Reservation reservation, final String sharingMapId, final String slackUrl) {
+        SlackResponse slackResponse = SlackResponse.of(reservation, sharingMapId, slackUrl);
         return new ReservationCreateResponse(reservation.getId(), slackResponse);
     }
 }
