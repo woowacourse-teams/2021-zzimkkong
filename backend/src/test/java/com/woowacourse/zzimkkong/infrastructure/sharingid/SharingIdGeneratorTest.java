@@ -1,4 +1,4 @@
-package com.woowacourse.zzimkkong.infrastructure.thumbnail;
+package com.woowacourse.zzimkkong.infrastructure.sharingid;
 
 import com.woowacourse.zzimkkong.Constants;
 import com.woowacourse.zzimkkong.domain.Map;
