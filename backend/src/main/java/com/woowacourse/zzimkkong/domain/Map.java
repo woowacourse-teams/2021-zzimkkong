@@ -71,8 +71,8 @@ public class Map {
                 .findFirst();
     }
 
-    public void updateImageUrl(final String mapImageUrl) {
-        this.thumbnail = mapImageUrl;
+    public void updateThumbnail(final String thumbnail) {
+        this.thumbnail = thumbnail;
     }
 
     public void addSpace(final Space space) {
