@@ -2,11 +2,7 @@ package com.woowacourse.zzimkkong.controller;
 
 import com.woowacourse.zzimkkong.domain.LoginEmail;
 import com.woowacourse.zzimkkong.config.logaspect.LogMethodExecutionTime;
-import com.woowacourse.zzimkkong.domain.Member;
-import com.woowacourse.zzimkkong.dto.map.MapCreateResponse;
-import com.woowacourse.zzimkkong.dto.map.MapCreateUpdateRequest;
-import com.woowacourse.zzimkkong.dto.map.MapFindAllResponse;
-import com.woowacourse.zzimkkong.dto.map.MapFindResponse;
+import com.woowacourse.zzimkkong.dto.map.*;
 import com.woowacourse.zzimkkong.dto.member.LoginEmailDto;
 import com.woowacourse.zzimkkong.service.MapService;
 import org.springframework.http.ResponseEntity;
@@ -57,6 +53,23 @@ public class MapController {
     public ResponseEntity<Void> delete(@PathVariable final Long mapId, @LoginEmail final LoginEmailDto loginEmailDto) {
         mapService.deleteMap(mapId, loginEmailDto);
         return ResponseEntity.noContent().build();
+    }
+
+    @PostMapping("/{mapId}/slack")
+    public ResponseEntity<Void> createSlackUrl(
+            @PathVariable final Long mapId,
+            @RequestBody final SlackCreateRequest slackCreateRequest,
+            @LoginEmail final LoginEmailDto loginEmailDto) {
+        mapService.saveSlackUrl(mapId, slackCreateRequest, loginEmailDto);
+        return ResponseEntity.ok().build();
+    }
+
+    @GetMapping("/{mapId}/slack")
+    public ResponseEntity<SlackFindResponse> findSlackUrl(
+            @PathVariable final Long mapId,
+            @LoginEmail final LoginEmailDto loginEmailDto) {
+        SlackFindResponse slackFindResponse = mapService.findSlackUrl(mapId, loginEmailDto);
+        return ResponseEntity.ok().body(slackFindResponse);
     }
 }
 

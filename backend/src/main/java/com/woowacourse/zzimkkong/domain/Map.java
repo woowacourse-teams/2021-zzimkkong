@@ -28,6 +28,9 @@ public class Map {
     @Lob
     private String thumbnail;
 
+    @Lob
+    private String slackUrl;
+
     @ManyToOne
     @JoinColumn(name = "member_id", foreignKey = @ForeignKey(name = "fk_map_member"), nullable = false)
     private Member member;
@@ -73,6 +76,10 @@ public class Map {
 
     public void updateThumbnail(final String thumbnail) {
         this.thumbnail = thumbnail;
+    }
+
+    public void updateSlackUrl(final String slackUrl) {
+        this.slackUrl = slackUrl;
     }
 
     public void addSpace(final Space space) {

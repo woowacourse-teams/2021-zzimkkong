@@ -12,7 +12,7 @@ import com.woowacourse.zzimkkong.dto.reservation.ReservationResponse;
 import com.woowacourse.zzimkkong.dto.space.SpaceFindDetailWithIdResponse;
 import com.woowacourse.zzimkkong.infrastructure.auth.AuthorizationExtractor;
 import com.woowacourse.zzimkkong.service.AdminService;
-import com.woowacourse.zzimkkong.service.slack.SlackService;
+import com.woowacourse.zzimkkong.service.SlackService;
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;

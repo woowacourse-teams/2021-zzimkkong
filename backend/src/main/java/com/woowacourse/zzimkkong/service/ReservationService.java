@@ -71,7 +71,7 @@ public class ReservationService {
                         .space(space)
                         .build());
         String sharingMapId = sharingIdGenerator.from(map);
-        return ReservationCreateResponse.of(reservation, sharingMapId);
+        return ReservationCreateResponse.of(reservation, sharingMapId, map.getSlackUrl());
     }
 
     @Transactional(readOnly = true)
@@ -173,7 +173,7 @@ public class ReservationService {
         reservation.update(updateReservation, space);
 
         String sharingMapId = sharingIdGenerator.from(map);
-        return SlackResponse.of(reservation, sharingMapId);
+        return SlackResponse.of(reservation, sharingMapId, map.getSlackUrl());
     }
 
     public SlackResponse deleteReservation(
@@ -200,7 +200,7 @@ public class ReservationService {
         reservations.delete(reservation);
 
         String sharingMapId = sharingIdGenerator.from(map);
-        return SlackResponse.of(reservation, sharingMapId);
+        return SlackResponse.of(reservation, sharingMapId, map.getSlackUrl());
     }
 
     private void validateTime(final ReservationCreateDto reservationCreateDto, final boolean managerFlag) {

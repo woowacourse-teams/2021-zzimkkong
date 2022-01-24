@@ -3,10 +3,7 @@ package com.woowacourse.zzimkkong.service;
 import com.woowacourse.zzimkkong.domain.Map;
 import com.woowacourse.zzimkkong.domain.Member;
 import com.woowacourse.zzimkkong.domain.Space;
-import com.woowacourse.zzimkkong.dto.map.MapCreateResponse;
-import com.woowacourse.zzimkkong.dto.map.MapCreateUpdateRequest;
-import com.woowacourse.zzimkkong.dto.map.MapFindAllResponse;
-import com.woowacourse.zzimkkong.dto.map.MapFindResponse;
+import com.woowacourse.zzimkkong.dto.map.*;
 import com.woowacourse.zzimkkong.dto.member.LoginEmailDto;
 import com.woowacourse.zzimkkong.exception.authorization.NoAuthorityOnMapException;
 import com.woowacourse.zzimkkong.exception.map.NoSuchMapException;
@@ -105,6 +102,23 @@ public class MapService {
         validateExistReservations(map);
 
         maps.delete(map);
+    }
+
+    public void saveSlackUrl(final Long mapId,
+                             final SlackCreateRequest slackCreateRequest,
+                             final LoginEmailDto loginEmailDto) {
+        Map map = maps.findById(mapId)
+                .orElseThrow(NoSuchMapException::new);
+        validateManagerOfMap(map, loginEmailDto.getEmail());
+        map.updateSlackUrl(slackCreateRequest.getSlackUrl());
+    }
+
+    @Transactional(readOnly = true)
+    public SlackFindResponse findSlackUrl(final Long mapId, final LoginEmailDto loginEmailDto) {
+        Map map = maps.findById(mapId)
+                .orElseThrow(NoSuchMapException::new);
+        validateManagerOfMap(map, loginEmailDto.getEmail());
+        return SlackFindResponse.from(map);
     }
 
     private void validateExistReservations(final Map map) {
