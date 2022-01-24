@@ -1,5 +1,6 @@
 package com.woowacourse.zzimkkong.repository;
 
+import com.woowacourse.zzimkkong.Constants;
 import com.woowacourse.zzimkkong.domain.*;
 import org.assertj.core.api.AssertionsForClassTypes;
 import org.junit.jupiter.api.DisplayName;
@@ -20,7 +21,7 @@ class ReservationRepositoryImplTest extends RepositoryTest {
         Member sakjung = new Member(NEW_EMAIL, PW, ORGANIZATION);
         Member savedMember = members.save(sakjung);
 
-        Map luther = new Map(LUTHER_NAME, MAP_DRAWING_DATA, MAP_IMAGE_URL, savedMember);
+        Map luther = new Map(LUTHER_NAME, MAP_DRAWING_DATA, MAP_SVG, savedMember);
         maps.save(luther);
 
         Setting beSetting = Setting.builder()

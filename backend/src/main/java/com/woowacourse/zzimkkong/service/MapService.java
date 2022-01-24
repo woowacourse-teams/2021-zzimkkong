@@ -7,13 +7,12 @@ import com.woowacourse.zzimkkong.dto.map.MapCreateResponse;
 import com.woowacourse.zzimkkong.dto.map.MapCreateUpdateRequest;
 import com.woowacourse.zzimkkong.dto.map.MapFindAllResponse;
 import com.woowacourse.zzimkkong.dto.map.MapFindResponse;
+import com.woowacourse.zzimkkong.dto.member.LoginEmailDto;
 import com.woowacourse.zzimkkong.exception.authorization.NoAuthorityOnMapException;
 import com.woowacourse.zzimkkong.exception.map.NoSuchMapException;
 import com.woowacourse.zzimkkong.exception.member.NoSuchMemberException;
 import com.woowacourse.zzimkkong.exception.space.ReservationExistOnSpaceException;
-import com.woowacourse.zzimkkong.dto.member.LoginEmailDto;
 import com.woowacourse.zzimkkong.infrastructure.sharingid.SharingIdGenerator;
-import com.woowacourse.zzimkkong.infrastructure.thumbnail.ThumbnailManager;
 import com.woowacourse.zzimkkong.repository.MapRepository;
 import com.woowacourse.zzimkkong.repository.MemberRepository;
 import com.woowacourse.zzimkkong.repository.ReservationRepository;
@@ -32,19 +31,16 @@ public class MapService {
     private final MemberRepository members;
     private final MapRepository maps;
     private final ReservationRepository reservations;
-    private final ThumbnailManager thumbnailManager;
     private final SharingIdGenerator sharingIdGenerator;
 
     public MapService(
             final MemberRepository members,
             final MapRepository maps,
             final ReservationRepository reservations,
-            final ThumbnailManager thumbnailManager,
             final SharingIdGenerator sharingIdGenerator) {
         this.members = members;
         this.maps = maps;
         this.reservations = reservations;
-        this.thumbnailManager = thumbnailManager;
         this.sharingIdGenerator = sharingIdGenerator;
     }
 
@@ -54,11 +50,8 @@ public class MapService {
         Map saveMap = maps.save(new Map(
                 mapCreateUpdateRequest.getMapName(),
                 mapCreateUpdateRequest.getMapDrawing(),
-                mapCreateUpdateRequest.getMapImageSvg().substring(0, 10),
+                mapCreateUpdateRequest.getThumbnail(),
                 manager));
-
-        final String thumbnailUrl = thumbnailManager.uploadMapThumbnail(mapCreateUpdateRequest.getMapImageSvg(), saveMap);
-        saveMap.updateImageUrl(thumbnailUrl);
 
         return MapCreateResponse.from(saveMap);
     }
@@ -99,7 +92,6 @@ public class MapService {
                 .orElseThrow(NoSuchMapException::new);
         validateManagerOfMap(map, loginEmailDto.getEmail());
 
-        thumbnailManager.uploadMapThumbnail(mapCreateUpdateRequest.getMapImageSvg(), map);
         map.update(
                 mapCreateUpdateRequest.getMapName(),
                 mapCreateUpdateRequest.getMapDrawing());
@@ -113,7 +105,6 @@ public class MapService {
         validateExistReservations(map);
 
         maps.delete(map);
-        thumbnailManager.deleteThumbnail(map);
     }
 
     private void validateExistReservations(final Map map) {

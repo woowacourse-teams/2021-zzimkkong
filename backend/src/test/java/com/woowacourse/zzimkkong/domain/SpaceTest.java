@@ -1,5 +1,6 @@
 package com.woowacourse.zzimkkong.domain;
 
+import com.woowacourse.zzimkkong.Constants;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -18,7 +19,7 @@ class SpaceTest {
     @Test
     void update() {
         Member member = new Member(EMAIL, PW, ORGANIZATION);
-        Map map = new Map(LUTHER_NAME, MAP_DRAWING_DATA, MAP_IMAGE_URL, member);
+        Map map = new Map(LUTHER_NAME, MAP_DRAWING_DATA, MAP_SVG, member);
 
         Setting setting = Setting.builder()
                 .availableStartTime(LocalTime.of(10, 0))

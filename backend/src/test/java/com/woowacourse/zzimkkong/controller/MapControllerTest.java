@@ -1,5 +1,6 @@
 package com.woowacourse.zzimkkong.controller;
 
+import com.woowacourse.zzimkkong.Constants;
 import com.woowacourse.zzimkkong.domain.Map;
 import com.woowacourse.zzimkkong.domain.Member;
 import com.woowacourse.zzimkkong.dto.map.MapCreateUpdateRequest;
@@ -43,8 +44,8 @@ class MapControllerTest extends AcceptanceTest {
 
         // For Test Comparison
         pobi = new Member(EMAIL, passwordEncoder.encode(PW), ORGANIZATION);
-        luther = new Map(LUTHER_NAME, MAP_DRAWING_DATA, MAP_IMAGE_URL, pobi);
-        smallHouse = new Map(SMALL_HOUSE_NAME, MAP_DRAWING_DATA, MAP_IMAGE_URL, pobi);
+        luther = new Map(LUTHER_NAME, MAP_DRAWING_DATA, MAP_SVG, pobi);
+        smallHouse = new Map(SMALL_HOUSE_NAME, MAP_DRAWING_DATA, MAP_SVG, pobi);
     }
 
     @Test
@@ -72,8 +73,8 @@ class MapControllerTest extends AcceptanceTest {
 
         String lutherId = createdMapApi.split("/")[4];
         String smallHouseId = smallHouseCreatedMapApi.header("location").split("/")[4];
-        Map lutherWithId = new Map(Long.parseLong(lutherId), luther.getName(), luther.getMapDrawing(), luther.getMapImageUrl(), luther.getMember());
-        Map smallHouseWithId = new Map(Long.parseLong(smallHouseId), smallHouse.getName(), smallHouse.getMapDrawing(), smallHouse.getMapImageUrl(), smallHouse.getMember());
+        Map lutherWithId = new Map(Long.parseLong(lutherId), luther.getName(), luther.getMapDrawing(), luther.getThumbnail(), luther.getMember());
+        Map smallHouseWithId = new Map(Long.parseLong(smallHouseId), smallHouse.getName(), smallHouse.getMapDrawing(), smallHouse.getThumbnail(), smallHouse.getMember());
         Iterator<Map> expectedMapIterator = List.of(lutherWithId, smallHouseWithId).iterator();
 
         // when

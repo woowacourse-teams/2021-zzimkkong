@@ -26,7 +26,7 @@ public class Map {
 
     @Column(nullable = false)
     @Lob
-    private String mapImageUrl;
+    private String thumbnail;
 
     @ManyToOne
     @JoinColumn(name = "member_id", foreignKey = @ForeignKey(name = "fk_map_member"), nullable = false)
@@ -35,10 +35,10 @@ public class Map {
     @OneToMany(mappedBy = "map", cascade = CascadeType.REMOVE, fetch = FetchType.LAZY, orphanRemoval = true)
     private List<Space> spaces = new ArrayList<>();
 
-    public Map(final String name, final String mapDrawing, final String mapImageUrl, final Member member) {
+    public Map(final String name, final String mapDrawing, final String thumbnail, final Member member) {
         this.name = name;
         this.mapDrawing = mapDrawing;
-        this.mapImageUrl = mapImageUrl;
+        this.thumbnail = thumbnail;
         this.member = member;
 
         if (member != null) {
@@ -46,8 +46,8 @@ public class Map {
         }
     }
 
-    public Map(final Long id, final String name, final String mapDrawing, final String mapImageUrl, final Member member) {
-        this(name, mapDrawing, mapImageUrl, member);
+    public Map(final Long id, final String name, final String mapDrawing, final String thumbnail, final Member member) {
+        this(name, mapDrawing, thumbnail, member);
         this.id = id;
     }
 
@@ -71,8 +71,8 @@ public class Map {
                 .findFirst();
     }
 
-    public void updateImageUrl(final String mapImageUrl) {
-        this.mapImageUrl = mapImageUrl;
+    public void updateThumbnail(final String thumbnail) {
+        this.thumbnail = thumbnail;
     }
 
     public void addSpace(final Space space) {
