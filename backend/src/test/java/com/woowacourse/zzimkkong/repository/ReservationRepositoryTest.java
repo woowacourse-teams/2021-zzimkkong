@@ -32,7 +32,7 @@ class ReservationRepositoryTest extends RepositoryTest {
     @BeforeEach
     void setUp() {
         pobi = new Member(EMAIL, PW, ORGANIZATION);
-        Map luther = new Map(LUTHER_NAME, MAP_DRAWING_DATA, MAP_IMAGE_URL, pobi);
+        Map luther = new Map(LUTHER_NAME, MAP_DRAWING_DATA, MAP_SVG, pobi);
 
         Setting beSetting = Setting.builder()
                 .availableStartTime(BE_AVAILABLE_START_TIME)

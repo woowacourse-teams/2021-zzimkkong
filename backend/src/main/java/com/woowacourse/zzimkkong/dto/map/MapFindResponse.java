@@ -10,32 +10,32 @@ public class MapFindResponse {
     private Long mapId;
     private String mapName;
     private String mapDrawing;
-    private String mapImageUrl;
+    private String thumbnail;
     private String sharingMapId;
     private String managerEmail;
 
     private MapFindResponse(final Long mapId,
                             final String mapName,
                             final String mapDrawing,
-                            final String mapImageUrl,
+                            final String thumbnail,
                             final String sharingMapId) {
         this.mapId = mapId;
         this.mapName = mapName;
         this.mapDrawing = mapDrawing;
-        this.mapImageUrl = mapImageUrl;
+        this.thumbnail = thumbnail;
         this.sharingMapId = sharingMapId;
     }
 
     private MapFindResponse(final Long mapId,
                             final String mapName,
                             final String mapDrawing,
-                            final String mapImageUrl,
+                            final String thumbnail,
                             final String sharingMapId,
                             final String managerEmail) {
         this.mapId = mapId;
         this.mapName = mapName;
         this.mapDrawing = mapDrawing;
-        this.mapImageUrl = mapImageUrl;
+        this.thumbnail = thumbnail;
         this.sharingMapId = sharingMapId;
         this.managerEmail = managerEmail;
     }
@@ -46,7 +46,7 @@ public class MapFindResponse {
                 map.getId(),
                 map.getName(),
                 map.getMapDrawing(),
-                map.getMapImageUrl(),
+                map.getThumbnail(),
                 sharingMapId
         );
     }
@@ -57,7 +57,7 @@ public class MapFindResponse {
                 map.getId(),
                 map.getName(),
                 map.getMapDrawing(),
-                map.getMapImageUrl(),
+                map.getThumbnail(),
                 sharingMapId,
                 map.getMember().getEmail()
         );

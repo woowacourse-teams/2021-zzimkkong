@@ -4,19 +4,17 @@ import com.woowacourse.zzimkkong.domain.Map;
 import com.woowacourse.zzimkkong.domain.Member;
 import com.woowacourse.zzimkkong.domain.Setting;
 import com.woowacourse.zzimkkong.domain.Space;
+import com.woowacourse.zzimkkong.dto.member.LoginEmailDto;
 import com.woowacourse.zzimkkong.dto.space.*;
 import com.woowacourse.zzimkkong.exception.authorization.NoAuthorityOnMapException;
 import com.woowacourse.zzimkkong.exception.map.NoSuchMapException;
 import com.woowacourse.zzimkkong.exception.space.NoSuchSpaceException;
 import com.woowacourse.zzimkkong.exception.space.ReservationExistOnSpaceException;
-import com.woowacourse.zzimkkong.dto.member.LoginEmailDto;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import java.io.File;
-import java.io.InputStream;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
@@ -25,7 +23,8 @@ import static com.woowacourse.zzimkkong.Constants.*;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
-import static org.mockito.ArgumentMatchers.*;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.BDDMockito.given;
 
 class SpaceServiceTest extends ServiceTest {
@@ -79,7 +78,7 @@ class SpaceServiceTest extends ServiceTest {
         sakjung = new Member(NEW_EMAIL, PW, ORGANIZATION);
         pobiEmail = LoginEmailDto.from(EMAIL);
         sakjungEmail = LoginEmailDto.from(NEW_EMAIL);
-        luther = new Map(1L, LUTHER_NAME, MAP_DRAWING_DATA, MAP_IMAGE_URL, pobi);
+        luther = new Map(1L, LUTHER_NAME, MAP_DRAWING_DATA, MAP_SVG, pobi);
 
         Setting beSetting = Setting.builder()
                 .availableStartTime(BE_AVAILABLE_START_TIME)
@@ -153,8 +152,6 @@ class SpaceServiceTest extends ServiceTest {
                 .willReturn(Optional.of(luther));
         given(spaces.save(any(Space.class)))
                 .willReturn(newSpace);
-        given(storageUploader.upload(anyString(), anyString(), any(InputStream.class)))
-                .willReturn(MAP_IMAGE_URL);
 
         // when
         SpaceCreateResponse spaceCreateResponse = spaceService.saveSpace(luther.getId(), spaceCreateUpdateRequest, pobiEmail);
@@ -278,8 +275,6 @@ class SpaceServiceTest extends ServiceTest {
         // given, when
         given(maps.findByIdFetch(anyLong()))
                 .willReturn(Optional.of(luther));
-        given(storageUploader.upload(anyString(), anyString(), any(InputStream.class)))
-                .willReturn(MAP_IMAGE_URL);
 
         // then
         assertDoesNotThrow(() -> spaceService.updateSpace(

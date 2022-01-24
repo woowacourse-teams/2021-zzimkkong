@@ -1,5 +1,6 @@
 package com.woowacourse.zzimkkong.repository;
 
+import com.woowacourse.zzimkkong.Constants;
 import com.woowacourse.zzimkkong.domain.Map;
 import com.woowacourse.zzimkkong.domain.Member;
 import com.woowacourse.zzimkkong.domain.Setting;
@@ -24,7 +25,7 @@ class SpaceRepositoryTest extends RepositoryTest {
     @BeforeEach
     void setUp() {
         Member pobi = new Member(EMAIL, PW, ORGANIZATION);
-        luther = new Map(LUTHER_NAME, MAP_DRAWING_DATA, MAP_IMAGE_URL, pobi);
+        luther = new Map(LUTHER_NAME, MAP_DRAWING_DATA, MAP_SVG, pobi);
 
         Setting beSetting = Setting.builder()
                 .availableStartTime(BE_AVAILABLE_START_TIME)

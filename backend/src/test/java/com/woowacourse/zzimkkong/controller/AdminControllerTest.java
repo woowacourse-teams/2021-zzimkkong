@@ -1,5 +1,6 @@
 package com.woowacourse.zzimkkong.controller;
 
+import com.woowacourse.zzimkkong.Constants;
 import com.woowacourse.zzimkkong.domain.*;
 import com.woowacourse.zzimkkong.dto.admin.*;
 import com.woowacourse.zzimkkong.dto.map.MapFindResponse;
@@ -40,7 +41,7 @@ class AdminControllerTest extends AcceptanceTest {
     private SlackService slackService;
 
     private static final Member POBI = new Member(memberSaveRequest.getEmail(), memberSaveRequest.getPassword(), memberSaveRequest.getOrganization());
-    private static final Map LUTHER = new Map(LUTHER_NAME, MAP_DRAWING_DATA, MAP_IMAGE_URL, POBI);
+    private static final Map LUTHER = new Map(LUTHER_NAME, MAP_DRAWING_DATA, MAP_SVG, POBI);
     private static final Setting BE_SETTING = Setting.builder()
             .availableStartTime(BE_AVAILABLE_START_TIME)
             .availableEndTime(BE_AVAILABLE_END_TIME)
