@@ -92,6 +92,7 @@ public class MapService {
         map.update(
                 mapCreateUpdateRequest.getMapName(),
                 mapCreateUpdateRequest.getMapDrawing());
+        map.updateThumbnail(mapCreateUpdateRequest.getThumbnail());
     }
 
     public void deleteMap(final Long mapId, final LoginEmailDto loginEmailDto) {
