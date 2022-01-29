@@ -189,7 +189,7 @@ const ManagerMain = (): JSX.Element => {
   };
 
   const handleCreateReservation = (spaceId: number) => {
-    if (!selectedMapId) return;
+    if (selectedMapId === null) return;
 
     history.push({
       pathname: PATH.MANAGER_RESERVATION,
@@ -202,7 +202,7 @@ const ManagerMain = (): JSX.Element => {
   };
 
   const handleEditReservation = (reservation: Reservation, spaceId: number) => {
-    if (!selectedMapId) return;
+    if (selectedMapId === null) return;
 
     history.push({
       pathname: PATH.MANAGER_RESERVATION_EDIT,
@@ -216,7 +216,7 @@ const ManagerMain = (): JSX.Element => {
   };
 
   const handleDeleteReservation = (reservationId: number, spaceId: number) => {
-    if (!selectedMapId) return;
+    if (selectedMapId === null) return;
 
     if (!window.confirm(MESSAGE.MANAGER_MAIN.RESERVATION_DELETE_CONFIRM)) return;
 
@@ -230,7 +230,7 @@ const ManagerMain = (): JSX.Element => {
   const handleSubmitSlackUrl = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
-    if (!selectedMapId) return;
+    if (selectedMapId === null) return;
 
     createSlackWebhookUrl.mutate({
       mapId: selectedMapId,
@@ -344,9 +344,7 @@ const ManagerMain = (): JSX.Element => {
                 <Button variant="text" type="button" onClick={() => setSlackModalOpen(false)}>
                   취소
                 </Button>
-                <Button variant="text" type="submit">
-                  확인
-                </Button>
+                <Button variant="text">확인</Button>
               </Styled.SlackModalContainer>
             </form>
           </Modal.Inner>
