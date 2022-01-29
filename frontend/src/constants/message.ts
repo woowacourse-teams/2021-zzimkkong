@@ -39,6 +39,9 @@ const MESSAGE = {
     SELECT_MAP: '맵을 선택해주세요.',
     COPIED_SHARE_LINK: '맵의 공유링크가 클립보드에 복사되었습니다!',
     UNEXPECTED_COPY_SHARE_LINK: '공유링크를 복사하는 데 문제가 발생했습니다.',
+    SLACK_WEBHOOK_CREATE_SUCCESS: 'Slack 알림이 설정되었습니다.',
+    UNEXPECTED_SLACK_WEBHOOK_CREATE_ERROR:
+      'Slack 알림을 설정하는데 문제가 발생했습니다. 잠시 후에 다시 시도해주세요.',
   },
   MANAGER_SPACE: {
     GET_UNEXPECTED_ERROR:

@@ -1,6 +1,10 @@
 import { AxiosResponse } from 'axios';
 import { QueryFunction, QueryKey } from 'react-query';
-import { QueryManagerMapSuccess, QueryManagerMapsSuccess } from 'types/response';
+import {
+  QueryManagerMapSuccess,
+  QueryManagerMapsSuccess,
+  QuerySlackWebhookUrlSuccess,
+} from 'types/response';
 import api from './api';
 
 export interface QueryManagerMapParams {
@@ -22,6 +26,15 @@ interface PutMapParams {
 
 interface DeleteMapParams {
   mapId: number;
+}
+
+export interface QuerySlackWebhookURLParams {
+  mapId: number;
+}
+
+interface PostSlackWebhookURLParams {
+  mapId: number;
+  slackUrl: string;
 }
 
 export const queryManagerMaps: QueryFunction<AxiosResponse<QueryManagerMapsSuccess>> = () =>
@@ -54,3 +67,19 @@ export const putMap = ({
 
 export const deleteMap = ({ mapId }: DeleteMapParams): Promise<AxiosResponse<never>> =>
   api.delete(`/managers/maps/${mapId}`);
+
+export const querySlackWebhookUrl: QueryFunction<
+  AxiosResponse<QuerySlackWebhookUrlSuccess>,
+  [QueryKey, QuerySlackWebhookURLParams]
+> = ({ queryKey }) => {
+  const [, data] = queryKey;
+  const { mapId } = data;
+
+  return api.get(`/managers/maps/${mapId}/slack`);
+};
+
+export const postSlackWebhookUrl = ({
+  mapId,
+  slackUrl,
+}: PostSlackWebhookURLParams): Promise<AxiosResponse<never>> =>
+  api.post(`/managers/maps/${mapId}/slack`, { slackUrl });

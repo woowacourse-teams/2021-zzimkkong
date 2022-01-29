@@ -1,27 +1,33 @@
 import { AxiosError } from 'axios';
-import { useEffect, useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { useMutation } from 'react-query';
 import { useHistory, useLocation } from 'react-router-dom';
-import { deleteMap } from 'api/managerMap';
+import { deleteMap, postSlackWebhookUrl } from 'api/managerMap';
 import { deleteManagerReservation } from 'api/managerReservation';
 import { ReactComponent as MapEditorIcon } from 'assets/svg/map-editor.svg';
 import { ReactComponent as MenuIcon } from 'assets/svg/menu.svg';
+import { ReactComponent as SlackIcon } from 'assets/svg/slack.svg';
 import { ReactComponent as SpaceEditorIcon } from 'assets/svg/space-editor.svg';
+import Button from 'components/Button/Button';
 import DateInput from 'components/DateInput/DateInput';
 import Header from 'components/Header/Header';
 import IconButton from 'components/IconButton/IconButton';
+import Input from 'components/Input/Input';
 import Layout from 'components/Layout/Layout';
+import Modal from 'components/Modal/Modal';
 import PageHeader from 'components/PageHeader/PageHeader';
 import MESSAGE from 'constants/message';
 import PATH, { HREF } from 'constants/path';
 import useManagerMapReservations from 'hooks/query/useManagerMapReservations';
 import useManagerMaps from 'hooks/query/useManagerMaps';
 import useManagerSpaces from 'hooks/query/useManagerSpaces';
+import useInput from 'hooks/useInput';
 import { Reservation } from 'types/common';
 import { ErrorResponse, MapItemResponse } from 'types/response';
 import { formatDate } from 'utils/datetime';
 import { isNullish } from 'utils/type';
 import * as Styled from './ManagerMain.styles';
+import useSlackWebhookUrl from './hooks/useSlackWebhookUrl';
 import MapDrawer from './units/MapDrawer';
 import ReservationList from './units/ReservationList';
 
@@ -39,9 +45,12 @@ const ManagerMain = (): JSX.Element => {
 
   const [date, setDate] = useState(targetDate ?? new Date());
   const [open, setOpen] = useState(false);
+  const [slackModalOpen, setSlackModalOpen] = useState(false);
 
   const [selectedMapId, setSelectedMapId] = useState<number | null>(mapId ?? null);
   const [selectedMapName, setSelectedMapName] = useState('');
+
+  const [slackUrl, onChangeSlackUrl, setSlackUrl] = useInput();
 
   const onRequestError = (error: AxiosError<ErrorResponse>) => {
     alert(error.response?.data?.message ?? MESSAGE.MANAGER_MAIN.UNEXPECTED_GET_DATA_ERROR);
@@ -97,6 +106,30 @@ const ManagerMain = (): JSX.Element => {
 
     onError: (error: AxiosError<ErrorResponse>) => {
       alert(error.response?.data.message ?? MESSAGE.MANAGER_MAIN.UNEXPECTED_MAP_DELETE_ERROR);
+    },
+  });
+
+  const getSlackWebhookUrl = useSlackWebhookUrl(
+    { mapId: selectedMapId as number },
+    {
+      refetchOnWindowFocus: false,
+      onSuccess: (response) => {
+        if (!slackUrl) setSlackUrl(response.data.slackUrl);
+      },
+    }
+  );
+
+  const createSlackWebhookUrl = useMutation(postSlackWebhookUrl, {
+    onSuccess: () => {
+      alert(MESSAGE.MANAGER_MAIN.SLACK_WEBHOOK_CREATE_SUCCESS);
+      getSlackWebhookUrl.refetch();
+      setSlackModalOpen(false);
+    },
+
+    onError: (error: AxiosError<ErrorResponse>) => {
+      alert(
+        error.response?.data.message ?? MESSAGE.MANAGER_MAIN.UNEXPECTED_SLACK_WEBHOOK_CREATE_ERROR
+      );
     },
   });
 
@@ -156,7 +189,7 @@ const ManagerMain = (): JSX.Element => {
   };
 
   const handleCreateReservation = (spaceId: number) => {
-    if (!selectedMapId) return;
+    if (selectedMapId === null) return;
 
     history.push({
       pathname: PATH.MANAGER_RESERVATION,
@@ -169,7 +202,7 @@ const ManagerMain = (): JSX.Element => {
   };
 
   const handleEditReservation = (reservation: Reservation, spaceId: number) => {
-    if (!selectedMapId) return;
+    if (selectedMapId === null) return;
 
     history.push({
       pathname: PATH.MANAGER_RESERVATION_EDIT,
@@ -183,7 +216,7 @@ const ManagerMain = (): JSX.Element => {
   };
 
   const handleDeleteReservation = (reservationId: number, spaceId: number) => {
-    if (!selectedMapId) return;
+    if (selectedMapId === null) return;
 
     if (!window.confirm(MESSAGE.MANAGER_MAIN.RESERVATION_DELETE_CONFIRM)) return;
 
@@ -191,6 +224,17 @@ const ManagerMain = (): JSX.Element => {
       mapId: selectedMapId,
       spaceId,
       reservationId,
+    });
+  };
+
+  const handleSubmitSlackUrl = (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+
+    if (selectedMapId === null) return;
+
+    createSlackWebhookUrl.mutate({
+      mapId: selectedMapId,
+      slackUrl,
     });
   };
 
@@ -223,6 +267,14 @@ const ManagerMain = (): JSX.Element => {
           rightButtons={
             selectedMapId !== null && (
               <>
+                <Styled.RightIconButton
+                  text="알림 설정"
+                  size="small"
+                  onClick={() => setSlackModalOpen(true)}
+                >
+                  <SlackIcon width="100%" height="100%" />
+                </Styled.RightIconButton>
+                <Styled.VerticalBar />
                 <Styled.RightIconButton
                   text="맵 편집"
                   size="small"
@@ -269,6 +321,34 @@ const ManagerMain = (): JSX.Element => {
           onSelectMap={handleSelectMap}
           onDeleteMap={handleDeleteMap}
         />
+      )}
+
+      {slackModalOpen && (
+        <Modal
+          open={slackModalOpen}
+          isClosableDimmer={true}
+          onClose={() => setSlackModalOpen(false)}
+        >
+          <Modal.Header>알림을 받을 슬랙 웹훅 URL을 입력해주세요</Modal.Header>
+          <Modal.Inner>
+            <form onSubmit={handleSubmitSlackUrl}>
+              <Input
+                type="text"
+                label="웹훅 URL"
+                value={slackUrl}
+                onChange={onChangeSlackUrl}
+                autoFocus
+                required
+              />
+              <Styled.SlackModalContainer>
+                <Button variant="text" type="button" onClick={() => setSlackModalOpen(false)}>
+                  취소
+                </Button>
+                <Button variant="text">확인</Button>
+              </Styled.SlackModalContainer>
+            </form>
+          </Modal.Inner>
+        </Modal>
       )}
     </>
   );
