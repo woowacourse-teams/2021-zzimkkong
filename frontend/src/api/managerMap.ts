@@ -14,14 +14,14 @@ export interface QueryManagerMapParams {
 interface PostMapParams {
   mapName: string;
   mapDrawing: string;
-  mapImageSvg: string;
+  thumbnail: string;
 }
 
 interface PutMapParams {
   mapId: number;
   mapName: string;
   mapDrawing: string;
-  mapImageSvg: string;
+  thumbnail: string;
 }
 
 interface DeleteMapParams {
@@ -53,17 +53,17 @@ export const queryManagerMap: QueryFunction<
 export const postMap = ({
   mapName,
   mapDrawing,
-  mapImageSvg,
+  thumbnail,
 }: PostMapParams): Promise<AxiosResponse<never>> =>
-  api.post('/managers/maps', { mapName, mapDrawing, mapImageSvg });
+  api.post('/managers/maps', { mapName, mapDrawing, thumbnail });
 
 export const putMap = ({
   mapId,
   mapName,
   mapDrawing,
-  mapImageSvg,
+  thumbnail,
 }: PutMapParams): Promise<AxiosResponse<never>> =>
-  api.put(`/managers/maps/${mapId}`, { mapName, mapDrawing, mapImageSvg });
+  api.put(`/managers/maps/${mapId}`, { mapName, mapDrawing, thumbnail });
 
 export const deleteMap = ({ mapId }: DeleteMapParams): Promise<AxiosResponse<never>> =>
   api.delete(`/managers/maps/${mapId}`);
