@@ -30,11 +30,6 @@ export const ImageInner = styled.div`
   align-items: center;
 `;
 
-export const Image = styled.img`
-  max-width: 100%;
-  max-height: 100%;
-`;
-
 export const TitleWrapper = styled.div`
   display: flex;
   gap: 0.25rem;

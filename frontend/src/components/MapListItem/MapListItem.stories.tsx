@@ -10,10 +10,7 @@ export default {
 
 const Template: Story<Props> = (args) => <MapListItem {...args} />;
 
-const thumbnail = {
-  src: './images/luther.png',
-  alt: '루터회관 14F 공간',
-};
+const thumbnail = `<svg xmlns="http://www.w3.org/2000/svg" version="1.1" width="800px" height="600px" viewBox="0 0 800 600"> <rect x="260" y="180" width="130" height="210" stroke="#333333" fill="none" strokewidth="3"></rect> </svg>`;
 
 export const Default = Template.bind({});
 Default.args = {

@@ -40,7 +40,7 @@ export interface MapItem {
   mapId: number;
   mapName: string;
   mapDrawing: MapDrawing;
-  mapImageUrl: string;
+  thumbnail: string;
   sharingMapId: string;
 }
 
