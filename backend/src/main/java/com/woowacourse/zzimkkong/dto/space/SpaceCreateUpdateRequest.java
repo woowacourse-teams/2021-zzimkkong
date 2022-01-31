@@ -24,7 +24,7 @@ public class SpaceCreateUpdateRequest {
     private String area;
 
     @NotBlank(message = EMPTY_MESSAGE)
-    private String mapImageSvg;
+    private String thumbnail;
 
     @Valid
     private SettingsRequest settingsRequest;
@@ -35,12 +35,12 @@ public class SpaceCreateUpdateRequest {
             final String description,
             final String area,
             final SettingsRequest settingsRequest,
-            final String mapImageSvg) {
+            final String thumbnail) {
         this.name = name;
         this.color = color;
         this.description = description;
         this.area = area;
         this.settingsRequest = settingsRequest;
-        this.mapImageSvg = mapImageSvg;
+        this.thumbnail = thumbnail;
     }
 }
