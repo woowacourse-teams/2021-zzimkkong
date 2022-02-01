@@ -1,6 +1,5 @@
 package com.woowacourse.zzimkkong.domain;
 
-import com.woowacourse.zzimkkong.Constants;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -170,15 +169,14 @@ class SpaceTest {
                 .build();
         Space availableTimeSpace = Space.builder().setting(availableTimeSetting).build();
 
-        boolean actual = availableTimeSpace.isIncorrectMinimumMaximumTimeUnit(durationMinutes);
+        boolean actual = availableTimeSpace.isIncorrectMinimumTimeUnit(durationMinutes);
 
         assertThat(actual).isFalse();
     }
 
-    @ParameterizedTest
-    @ValueSource(ints = {9, 121})
-    @DisplayName("예약 시간의 단위가 최소시간단위보다 작거나 최대시간단위보다 크다면 true를 반환한다.")
-    void isCorrectMinimumMaximumTimeUnitFail(int durationMinutes) {
+    @Test
+    @DisplayName("예약 시간의 단위가 최소시간단위보다 작다면 true를 반환한다.")
+    void isCorrectMinimumTimeUnitFail() {
         Setting availableTimeSetting = Setting.builder()
                 .availableStartTime(FE_AVAILABLE_START_TIME)
                 .availableEndTime(FE_AVAILABLE_END_TIME)
@@ -190,7 +188,26 @@ class SpaceTest {
                 .build();
         Space availableTimeSpace = Space.builder().setting(availableTimeSetting).build();
 
-        boolean actual = availableTimeSpace.isIncorrectMinimumMaximumTimeUnit(durationMinutes);
+        boolean actual = availableTimeSpace.isIncorrectMinimumTimeUnit(9);
+
+        assertThat(actual).isTrue();
+    }
+
+    @Test
+    @DisplayName("예약 시간의 단위가 최대시간단위보다 크다면 true를 반환한다.")
+    void isCorrectMaximumTimeUnitFail() {
+        Setting availableTimeSetting = Setting.builder()
+                .availableStartTime(FE_AVAILABLE_START_TIME)
+                .availableEndTime(FE_AVAILABLE_END_TIME)
+                .reservationTimeUnit(FE_RESERVATION_TIME_UNIT)
+                .reservationMinimumTimeUnit(10)
+                .reservationMaximumTimeUnit(120)
+                .reservationEnable(FE_RESERVATION_ENABLE)
+                .enabledDayOfWeek(FE_ENABLED_DAY_OF_WEEK)
+                .build();
+        Space availableTimeSpace = Space.builder().setting(availableTimeSetting).build();
+
+        boolean actual = availableTimeSpace.isIncorrectMaximumTimeUnit(121);
 
         assertThat(actual).isTrue();
     }
