@@ -53,6 +53,8 @@ public class SpaceService {
                 .build();
         Space saveSpace = spaces.save(space);
 
+        map.updateThumbnail(spaceCreateUpdateRequest.getThumbnail());
+
         return SpaceCreateResponse.from(saveSpace);
     }
 
@@ -114,6 +116,8 @@ public class SpaceService {
                 .build();
 
         space.update(updateSpace);
+
+        map.updateThumbnail(spaceCreateUpdateRequest.getThumbnail());
     }
 
     public void deleteSpace(
@@ -131,6 +135,8 @@ public class SpaceService {
         validateReservationExistence(spaceId);
 
         spaces.delete(space);
+
+        map.updateThumbnail(spaceDeleteRequest.getThumbnail());
     }
 
     private Setting getSetting(final SpaceCreateUpdateRequest spaceCreateUpdateRequest) {
