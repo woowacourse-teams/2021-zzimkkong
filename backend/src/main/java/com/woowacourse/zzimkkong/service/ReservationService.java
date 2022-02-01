@@ -248,8 +248,12 @@ public class ReservationService {
             throw new InvalidTimeUnitException();
         }
 
-        if (space.isIncorrectMinimumMaximumTimeUnit(durationMinutes)) {
-            throw new InvalidDurationTimeException();
+        if (space.isIncorrectMinimumTimeUnit(durationMinutes)) {
+            throw new InvalidMinimumDurationTimeException();
+        }
+
+        if (space.isIncorrectMaximumTimeUnit(durationMinutes)) {
+            throw new InvalidMaximumDurationTimeException();
         }
 
         if (space.isNotBetweenAvailableTime(startDateTime, endDateTime)) {

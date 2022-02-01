@@ -96,8 +96,12 @@ public class Space {
         return setting.isNotDivisibleByTimeUnit(minute);
     }
 
-    public boolean isIncorrectMinimumMaximumTimeUnit(final int durationMinutes) {
-        return durationMinutes < getReservationMinimumTimeUnit() || durationMinutes > getReservationMaximumTimeUnit();
+    public boolean isIncorrectMinimumTimeUnit(final int durationMinutes) {
+        return durationMinutes < getReservationMinimumTimeUnit();
+    }
+
+    public boolean isIncorrectMaximumTimeUnit(final int durationMinutes) {
+        return durationMinutes > getReservationMaximumTimeUnit();
     }
 
     public boolean isUnableToReserve() {
