@@ -28,6 +28,10 @@ export const ImageInner = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
+
+  svg {
+    z-index: -1;
+  }
 `;
 
 export const TitleWrapper = styled.div`

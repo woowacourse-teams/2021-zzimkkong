@@ -19,7 +19,7 @@ const MapListItem = ({
   return (
     <Styled.Container role="listitem" selected={selected}>
       <Styled.ImageWrapper onClick={onClick}>
-        <Styled.ImageInner dangerouslySetInnerHTML={{ __html: thumbnail }} />
+        <Styled.ImageInner dangerouslySetInnerHTML={{ __html: `${thumbnail}` }} />
       </Styled.ImageWrapper>
       <Styled.TitleWrapper>
         <Styled.Title>{title}</Styled.Title>
