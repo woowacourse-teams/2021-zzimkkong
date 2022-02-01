@@ -67,13 +67,13 @@ const Form = ({
   const handleSubmit: FormEventHandler<HTMLFormElement> = (event) => {
     event.preventDefault();
 
-    const mapImageSvg = generateSvg({ ...mapData, spaces: getSpacesForSvg() });
+    const thumbnail = generateSvg({ ...mapData, spaces: getSpacesForSvg() });
     const valuesForRequest = getRequestValues();
 
     if (selectedSpaceId === null) {
       onCreateSpace({
         space: {
-          mapImageSvg,
+          thumbnail,
           ...valuesForRequest.space,
           settingsRequest: { ...valuesForRequest.space.settings },
         },
@@ -85,7 +85,7 @@ const Form = ({
     onUpdateSpace({
       spaceId: selectedSpaceId,
       space: {
-        mapImageSvg,
+        thumbnail,
         ...valuesForRequest.space,
         settingsRequest: { ...valuesForRequest.space.settings },
       },
@@ -97,11 +97,11 @@ const Form = ({
     if (!window.confirm(MESSAGE.MANAGER_SPACE.DELETE_SPACE_CONFIRM)) return;
 
     const filteredSpaces = spaces.filter(({ id }) => id !== selectedSpaceId);
-    const mapImageSvg = generateSvg({ ...mapData, spaces: filteredSpaces });
+    const thumbnail = generateSvg({ ...mapData, spaces: filteredSpaces });
 
     onDeleteSpace({
       spaceId: selectedSpaceId,
-      mapImageSvg,
+      thumbnail,
     });
 
     resetForm();
