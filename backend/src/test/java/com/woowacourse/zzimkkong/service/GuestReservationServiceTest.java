@@ -1,6 +1,5 @@
 package com.woowacourse.zzimkkong.service;
 
-import com.woowacourse.zzimkkong.Constants;
 import com.woowacourse.zzimkkong.domain.*;
 import com.woowacourse.zzimkkong.dto.reservation.*;
 import com.woowacourse.zzimkkong.exception.map.NoSuchMapException;
@@ -352,7 +351,7 @@ class GuestReservationServiceTest extends ServiceTest {
         assertThatThrownBy(() -> reservationService.saveReservation(
                 reservationCreateDto,
                 guestReservationStrategy))
-                .isInstanceOf(ImpossibleReservationTimeException.class);
+                .isInstanceOf(ReservationAlreadyExistsException.class);
     }
 
     @Test
@@ -1004,7 +1003,7 @@ class GuestReservationServiceTest extends ServiceTest {
         assertThatThrownBy(() -> reservationService.updateReservation(
                 reservationUpdateDto,
                 guestReservationStrategy))
-                .isInstanceOf(ImpossibleReservationTimeException.class);
+                .isInstanceOf(ReservationAlreadyExistsException.class);
     }
 
     @ParameterizedTest

@@ -411,7 +411,7 @@ class ManagerReservationServiceTest extends ServiceTest {
         assertThatThrownBy(() -> reservationService.saveReservation(
                 reservationCreateDto,
                 managerReservationStrategy))
-                .isInstanceOf(ImpossibleReservationTimeException.class);
+                .isInstanceOf(ReservationAlreadyExistsException.class);
     }
 
     @Test
@@ -1183,7 +1183,7 @@ class ManagerReservationServiceTest extends ServiceTest {
         assertThatThrownBy(() -> reservationService.updateReservation(
                 reservationUpdateDto,
                 managerReservationStrategy))
-                .isInstanceOf(ImpossibleReservationTimeException.class);
+                .isInstanceOf(ReservationAlreadyExistsException.class);
     }
 
     @ParameterizedTest

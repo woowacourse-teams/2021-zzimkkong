@@ -275,7 +275,7 @@ public class ReservationService {
             final List<Reservation> reservationsOnDate) {
         for (Reservation existingReservation : reservationsOnDate) {
             if (existingReservation.hasConflictWith(startDateTime, endDateTime)) {
-                throw new ImpossibleReservationTimeException();
+                throw new ReservationAlreadyExistsException();
             }
         }
     }
