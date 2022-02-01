@@ -11,9 +11,9 @@ import static com.woowacourse.zzimkkong.dto.ValidatorMessage.EMPTY_MESSAGE;
 @NoArgsConstructor
 public class SpaceDeleteRequest {
     @NotBlank(message = EMPTY_MESSAGE)
-    private String mapImageSvg;
+    private String thumbnail;
 
-    public SpaceDeleteRequest(final String mapImageSvg) {
-        this.mapImageSvg = mapImageSvg;
+    public SpaceDeleteRequest(final String thumbnail) {
+        this.thumbnail = thumbnail;
     }
 }
