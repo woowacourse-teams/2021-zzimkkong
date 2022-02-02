@@ -8,6 +8,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.reactive.function.client.WebClient;
 
+import java.util.Objects;
+
 @Service
 @Transactional(readOnly = true)
 public class SlackService {
@@ -36,15 +38,17 @@ public class SlackService {
     }
 
     private void send(final Attachments attachments, final String slackUrl) {
-        slackWebClient.mutate()
-                .baseUrl(slackUrl)
-                .build()
-                .post()
-                .contentType(MediaType.APPLICATION_JSON)
-                .bodyValue(attachments.toString())
-                .retrieve()
-                .bodyToMono(String.class)
-                .then()
-                .subscribe();
+        if (!Objects.isNull(slackUrl)) {
+            slackWebClient.mutate()
+                    .baseUrl(slackUrl)
+                    .build()
+                    .post()
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .bodyValue(attachments.toString())
+                    .retrieve()
+                    .bodyToMono(String.class)
+                    .then()
+                    .subscribe();
+        }
     }
 }

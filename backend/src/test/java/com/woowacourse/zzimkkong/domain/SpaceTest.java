@@ -1,6 +1,5 @@
 package com.woowacourse.zzimkkong.domain;
 
-import com.woowacourse.zzimkkong.Constants;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -155,10 +154,9 @@ class SpaceTest {
         assertThat(actual).isTrue();
     }
 
-    @ParameterizedTest
-    @ValueSource(ints = {10, 120})
-    @DisplayName("예약 시간의 단위가 최소최대 예약시간단위 내에 있다면 false를 반환한다.")
-    void isCorrectMinimumMaximumTimeUnit(int durationMinutes) {
+    @Test
+    @DisplayName("예약 시간의 단위가 최소/최대 예약시간단위 내에 있다면 false를 반환한다.")
+    void isCorrectMinimumMaximumTimeUnit() {
         Setting availableTimeSetting = Setting.builder()
                 .availableStartTime(FE_AVAILABLE_START_TIME)
                 .availableEndTime(FE_AVAILABLE_END_TIME)
@@ -170,15 +168,16 @@ class SpaceTest {
                 .build();
         Space availableTimeSpace = Space.builder().setting(availableTimeSetting).build();
 
-        boolean actual = availableTimeSpace.isIncorrectMinimumMaximumTimeUnit(durationMinutes);
+        boolean minActual = availableTimeSpace.isIncorrectMinimumTimeUnit(10);
+        boolean maxActual = availableTimeSpace.isIncorrectMinimumTimeUnit(120);
 
-        assertThat(actual).isFalse();
+        assertThat(minActual).isFalse();
+        assertThat(maxActual).isFalse();
     }
 
-    @ParameterizedTest
-    @ValueSource(ints = {9, 121})
-    @DisplayName("예약 시간의 단위가 최소시간단위보다 작거나 최대시간단위보다 크다면 true를 반환한다.")
-    void isCorrectMinimumMaximumTimeUnitFail(int durationMinutes) {
+    @Test
+    @DisplayName("예약 시간의 단위가 최소/최대 시간단위보다 작다면 true를 반환한다.")
+    void isCorrectMinimumMaximumTimeUnitFail() {
         Setting availableTimeSetting = Setting.builder()
                 .availableStartTime(FE_AVAILABLE_START_TIME)
                 .availableEndTime(FE_AVAILABLE_END_TIME)
@@ -190,9 +189,11 @@ class SpaceTest {
                 .build();
         Space availableTimeSpace = Space.builder().setting(availableTimeSetting).build();
 
-        boolean actual = availableTimeSpace.isIncorrectMinimumMaximumTimeUnit(durationMinutes);
+        boolean minActual = availableTimeSpace.isIncorrectMinimumTimeUnit(9);
+        boolean maxActual = availableTimeSpace.isIncorrectMaximumTimeUnit(121);
 
-        assertThat(actual).isTrue();
+        assertThat(minActual).isTrue();
+        assertThat(maxActual).isTrue();
     }
 
     @Test

@@ -1,6 +1,5 @@
 package com.woowacourse.zzimkkong.service;
 
-import com.woowacourse.zzimkkong.Constants;
 import com.woowacourse.zzimkkong.domain.*;
 import com.woowacourse.zzimkkong.dto.reservation.*;
 import com.woowacourse.zzimkkong.exception.map.NoSuchMapException;
@@ -352,7 +351,7 @@ class GuestReservationServiceTest extends ServiceTest {
         assertThatThrownBy(() -> reservationService.saveReservation(
                 reservationCreateDto,
                 guestReservationStrategy))
-                .isInstanceOf(ImpossibleReservationTimeException.class);
+                .isInstanceOf(ReservationAlreadyExistsException.class);
     }
 
     @Test
@@ -510,10 +509,9 @@ class GuestReservationServiceTest extends ServiceTest {
                 .isInstanceOf(InvalidTimeUnitException.class);
     }
 
-    @ParameterizedTest
-    @ValueSource(ints = {50, 130})
-    @DisplayName("예약 생성/수정 요청 시, space setting의 minimum, maximum 시간이 옳지 않으면 예외가 발생한다.")
-    void saveReservationMinimumMaximumTimeUnitException(int duration) {
+    @Test
+    @DisplayName("예약 생성/수정 요청 시, space setting의 minimum 시간이 옳지 않으면 예외가 발생한다.")
+    void saveReservationMinimumDurationTimeException() {
         //given
         given(maps.findByIdFetch(anyLong()))
                 .willReturn(Optional.of(luther));
@@ -523,7 +521,7 @@ class GuestReservationServiceTest extends ServiceTest {
         //when
         ReservationCreateUpdateWithPasswordRequest reservationCreateUpdateWithPasswordRequest = new ReservationCreateUpdateWithPasswordRequest(
                 THE_DAY_AFTER_TOMORROW.atTime(10, 0),
-                THE_DAY_AFTER_TOMORROW.atTime(10, 0).plusMinutes(duration),
+                THE_DAY_AFTER_TOMORROW.atTime(10, 0).plusMinutes(50),
                 RESERVATION_PW,
                 USER_NAME,
                 DESCRIPTION);
@@ -543,12 +541,42 @@ class GuestReservationServiceTest extends ServiceTest {
         assertThatThrownBy(() -> reservationService.saveReservation(
                 reservationCreateDto,
                 guestReservationStrategy))
-                .isInstanceOf(InvalidDurationTimeException.class);
+                .isInstanceOf(InvalidMinimumDurationTimeException.class);
+    }
 
-        assertThatThrownBy(() -> reservationService.updateReservation(
-                reservationUpdateDto,
+    @Test
+    @DisplayName("예약 생성/수정 요청 시, space setting의 maximum 시간이 옳지 않으면 예외가 발생한다.")
+    void saveReservationMaximumTimeUnitException() {
+        //given
+        given(maps.findByIdFetch(anyLong()))
+                .willReturn(Optional.of(luther));
+        given(reservations.findById(anyLong()))
+                .willReturn(Optional.of(reservation));
+
+        //when
+        ReservationCreateUpdateWithPasswordRequest reservationCreateUpdateWithPasswordRequest = new ReservationCreateUpdateWithPasswordRequest(
+                THE_DAY_AFTER_TOMORROW.atTime(10, 0),
+                THE_DAY_AFTER_TOMORROW.atTime(10, 0).plusMinutes(130),
+                RESERVATION_PW,
+                USER_NAME,
+                DESCRIPTION);
+        Long reservationId = reservation.getId();
+
+        ReservationCreateDto reservationCreateDto = ReservationCreateDto.of(
+                lutherId,
+                beId,
+                reservationCreateUpdateWithPasswordRequest);
+        ReservationUpdateDto reservationUpdateDto = ReservationUpdateDto.of(
+                lutherId,
+                beId,
+                reservationId,
+                reservationCreateUpdateWithPasswordRequest);
+
+        //then
+        assertThatThrownBy(() -> reservationService.saveReservation(
+                reservationCreateDto,
                 guestReservationStrategy))
-                .isInstanceOf(InvalidDurationTimeException.class);
+                .isInstanceOf(InvalidMaximumDurationTimeException.class);
     }
 
     @Test
@@ -975,7 +1003,7 @@ class GuestReservationServiceTest extends ServiceTest {
         assertThatThrownBy(() -> reservationService.updateReservation(
                 reservationUpdateDto,
                 guestReservationStrategy))
-                .isInstanceOf(ImpossibleReservationTimeException.class);
+                .isInstanceOf(ReservationAlreadyExistsException.class);
     }
 
     @ParameterizedTest
