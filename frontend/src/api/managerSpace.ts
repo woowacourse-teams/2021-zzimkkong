@@ -21,7 +21,7 @@ export interface PostManagerSpaceParams {
     description: string;
     area: string;
     settingsRequest: ReservationSettings;
-    mapImageSvg: string;
+    thumbnail: string;
   };
 }
 
@@ -32,7 +32,7 @@ export interface PutManagerSpaceParams extends PostManagerSpaceParams {
 export interface DeleteManagerSpaceParams {
   mapId: number;
   spaceId: number;
-  mapImageSvg: string;
+  thumbnail: string;
 }
 
 export const queryManagerSpaces: QueryFunction<
@@ -71,6 +71,6 @@ export const putManagerSpace = ({
 export const deleteManagerSpace = ({
   mapId,
   spaceId,
-  mapImageSvg,
+  thumbnail,
 }: DeleteManagerSpaceParams): Promise<AxiosResponse<never>> =>
-  api.delete(`/managers/maps/${mapId}/spaces/${spaceId}`, { data: { mapImageSvg } });
+  api.delete(`/managers/maps/${mapId}/spaces/${spaceId}`, { data: { thumbnail } });

@@ -32,11 +32,11 @@ const MapDrawer = ({
           <Drawer.HeaderText>{organization}</Drawer.HeaderText>
           <Drawer.CloseButton />
         </Drawer.Header>
-        {maps.map(({ mapId, mapName, mapImageUrl }) => (
+        {maps.map(({ mapId, mapName, thumbnail }) => (
           <Styled.SpaceWrapper key={`map-${mapId}`}>
             <MapListItem
               onClick={() => onSelectMap(mapId, mapName)}
-              thumbnail={{ src: mapImageUrl, alt: mapName }}
+              thumbnail={thumbnail}
               title={mapName}
               selected={mapId === selectedMapId}
               control={

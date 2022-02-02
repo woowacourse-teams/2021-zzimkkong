@@ -129,7 +129,7 @@ const ManagerMapEditor = (): JSX.Element => {
       mapElements: mapElements.map(({ ref, ...props }) => props),
     });
 
-    const mapImageSvg = createMapImageSvg({
+    const thumbnail = createMapImageSvg({
       mapElements,
       spaces,
       width,
@@ -137,12 +137,12 @@ const ManagerMapEditor = (): JSX.Element => {
     });
 
     if (isEdit) {
-      updateMap.mutate({ mapId: Number(mapId), mapName: name, mapDrawing, mapImageSvg });
+      updateMap.mutate({ mapId: Number(mapId), mapName: name, mapDrawing, thumbnail });
 
       return;
     }
 
-    createMap.mutate({ mapName: name, mapDrawing, mapImageSvg });
+    createMap.mutate({ mapName: name, mapDrawing, thumbnail });
   };
 
   useListenManagerMainState({ mapId: Number(mapId) }, { enabled: isEdit });
