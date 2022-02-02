@@ -13,21 +13,26 @@ import org.slf4j.MDC;
 import org.springframework.dao.DataAccessException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
+import org.springframework.security.web.firewall.RequestRejectedException;
+import org.springframework.security.web.firewall.RequestRejectedHandler;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.validation.ConstraintViolationException;
+import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 
-import static com.woowacourse.zzimkkong.dto.ValidatorMessage.FORMAT_MESSAGE;
-import static com.woowacourse.zzimkkong.dto.ValidatorMessage.SERVER_ERROR_MESSAGE;
+import static com.woowacourse.zzimkkong.dto.ValidatorMessage.*;
 import static net.logstash.logback.argument.StructuredArguments.value;
 
 @Slf4j
 @RestControllerAdvice
-public class ControllerAdvice {
+public class ControllerAdvice implements RequestRejectedHandler {
     private static final String MESSAGE_FORMAT = "{} (traceId: {})";
     private static final String TRACE_ID_KEY = "traceId";
 
@@ -116,4 +121,8 @@ public class ControllerAdvice {
         return MDC.get(TRACE_ID_KEY);
     }
 
+    @Override
+    public void handle(HttpServletRequest request, HttpServletResponse response, RequestRejectedException requestRejectedException) throws IOException, ServletException {
+        response.sendError(HttpServletResponse.SC_BAD_REQUEST);
+    }
 }
