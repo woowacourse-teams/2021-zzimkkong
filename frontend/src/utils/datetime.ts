@@ -30,7 +30,10 @@ export const formatTime = (time: Date | Time): string => {
     return `${hour < 10 ? `0${hour}` : `${hour}`}:${minute < 10 ? `0${minute}` : `${minute}`}`;
   }
 
-  const hour = time.midday === Midday.AM ? `${time.hour}`.padStart(2, '0') : `${time.hour + 12}`;
+  const hour =
+    time.midday === Midday.AM || time.hour === 12
+      ? `${time.hour}`.padStart(2, '0')
+      : `${time.hour + 12}`;
   const minute = `${time.minute}`.padStart(2, '0');
 
   return `${hour}:${minute}`;
