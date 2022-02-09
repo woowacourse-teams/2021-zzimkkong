@@ -1,5 +1,7 @@
 package com.woowacourse.zzimkkong.dto.reservation;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.woowacourse.zzimkkong.infrastructure.datetime.TimeZoneUtils;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -9,19 +11,20 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 import java.time.LocalDateTime;
+import java.time.ZonedDateTime;
 
 import static com.woowacourse.zzimkkong.dto.ValidatorMessage.*;
 
 @Getter
 @NoArgsConstructor
 public class ReservationCreateUpdateRequest {
-    @DateTimeFormat(pattern = DATETIME_FORMAT)
+    @JsonFormat(pattern = DATETIME_FORMAT)
     @NotNull(message = EMPTY_MESSAGE)
-    protected LocalDateTime startDateTime;
+    protected ZonedDateTime startDateTime;
 
-    @DateTimeFormat(pattern = DATETIME_FORMAT)
+    @JsonFormat(pattern = DATETIME_FORMAT)
     @NotNull(message = EMPTY_MESSAGE)
-    protected LocalDateTime endDateTime;
+    protected ZonedDateTime endDateTime;
 
     @NotBlank(message = EMPTY_MESSAGE)
     @Pattern(regexp = NAMING_FORMAT, message = NAME_MESSAGE)
@@ -30,19 +33,23 @@ public class ReservationCreateUpdateRequest {
     @NotBlank(message = EMPTY_MESSAGE)
     @Size(max = 100, message = DESCRIPTION_MESSAGE)
     protected String description;
-
-    public ReservationCreateUpdateRequest(
-            final LocalDateTime startDateTime,
-            final LocalDateTime endDateTime,
-            final String name,
-            final String description) {
-        this.startDateTime = startDateTime;
-        this.endDateTime = endDateTime;
+    
+    public ReservationCreateUpdateRequest(LocalDateTime startDateTime, LocalDateTime endDateTime, String name, String description) {
+        this.startDateTime = TimeZoneUtils.addTimeZone(startDateTime);
+        this.endDateTime = TimeZoneUtils.addTimeZone(endDateTime);
         this.name = name;
         this.description = description;
     }
-
+    
     public String getPassword() {
         return null;
+    }
+    
+    public LocalDateTime localStartDateTime() {
+        return startDateTime.toLocalDateTime();
+    }
+    
+    public LocalDateTime localEndDateTime() {
+        return endDateTime.toLocalDateTime();
     }
 }

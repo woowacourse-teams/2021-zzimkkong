@@ -1,6 +1,5 @@
 package com.woowacourse.zzimkkong.controller;
 
-import com.woowacourse.zzimkkong.Constants;
 import com.woowacourse.zzimkkong.domain.*;
 import com.woowacourse.zzimkkong.dto.reservation.*;
 import com.woowacourse.zzimkkong.service.SlackService;
@@ -107,8 +106,8 @@ class GuestReservationControllerTest extends AcceptanceTest {
         saveExampleReservations();
         savedReservationId = getReservationIdAfterSave(beReservationApi, reservationCreateUpdateWithPasswordRequest);
         savedReservation = Reservation.builder()
-                .startTime(reservationCreateUpdateWithPasswordRequest.getStartDateTime())
-                .endTime(reservationCreateUpdateWithPasswordRequest.getEndDateTime())
+                .startTime(reservationCreateUpdateWithPasswordRequest.localStartDateTime())
+                .endTime(reservationCreateUpdateWithPasswordRequest.localEndDateTime())
                 .password(reservationCreateUpdateWithPasswordRequest.getPassword())
                 .userName(reservationCreateUpdateWithPasswordRequest.getName())
                 .description(reservationCreateUpdateWithPasswordRequest.getDescription())
@@ -199,8 +198,8 @@ class GuestReservationControllerTest extends AcceptanceTest {
         ReservationResponse expectedResponse = ReservationResponse.from(
                 Reservation.builder()
                         .id(savedReservationId)
-                        .startTime(reservationCreateUpdateWithPasswordRequestSameSpace.getStartDateTime())
-                        .endTime(reservationCreateUpdateWithPasswordRequestSameSpace.getEndDateTime())
+                        .startTime(reservationCreateUpdateWithPasswordRequestSameSpace.localStartDateTime())
+                        .endTime(reservationCreateUpdateWithPasswordRequestSameSpace.localEndDateTime())
                         .description(reservationCreateUpdateWithPasswordRequestSameSpace.getDescription())
                         .userName(reservationCreateUpdateWithPasswordRequestSameSpace.getName())
                         .space(be)
@@ -235,8 +234,8 @@ class GuestReservationControllerTest extends AcceptanceTest {
         ReservationFindResponse expectedResponse = ReservationFindResponse.from(
                 Arrays.asList(
                         Reservation.builder()
-                                .startTime(reservationCreateUpdateWithPasswordRequestDifferentSpace.getStartDateTime())
-                                .endTime(reservationCreateUpdateWithPasswordRequestDifferentSpace.getEndDateTime())
+                                .startTime(reservationCreateUpdateWithPasswordRequestDifferentSpace.localStartDateTime())
+                                .endTime(reservationCreateUpdateWithPasswordRequestDifferentSpace.localEndDateTime())
                                 .description(reservationCreateUpdateWithPasswordRequestDifferentSpace.getDescription())
                                 .userName(reservationCreateUpdateWithPasswordRequestDifferentSpace.getName())
                                 .password(reservationCreateUpdateWithPasswordRequestDifferentSpace.getPassword())

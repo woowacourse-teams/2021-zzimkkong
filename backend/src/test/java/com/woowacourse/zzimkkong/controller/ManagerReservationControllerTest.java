@@ -104,8 +104,8 @@ class ManagerReservationControllerTest extends AcceptanceTest {
         saveExampleReservations();
         savedReservationId = getReservationIdAfterSave(beReservationApi, reservationCreateUpdateWithPasswordRequest);
         savedReservation = Reservation.builder()
-                .startTime(reservationCreateUpdateWithPasswordRequest.getStartDateTime())
-                .endTime(reservationCreateUpdateWithPasswordRequest.getEndDateTime())
+                .startTime(reservationCreateUpdateWithPasswordRequest.localStartDateTime())
+                .endTime(reservationCreateUpdateWithPasswordRequest.localEndDateTime())
                 .password(reservationCreateUpdateWithPasswordRequest.getPassword())
                 .userName(reservationCreateUpdateWithPasswordRequest.getName())
                 .description(reservationCreateUpdateWithPasswordRequest.getDescription())
@@ -211,8 +211,8 @@ class ManagerReservationControllerTest extends AcceptanceTest {
         ReservationResponse expectedResponse = ReservationResponse.from(
                 Reservation.builder()
                         .id(savedReservationId)
-                        .startTime(reservationCreateUpdateRequestSameSpace.getStartDateTime())
-                        .endTime(reservationCreateUpdateRequestSameSpace.getEndDateTime())
+                        .startTime(reservationCreateUpdateRequestSameSpace.localStartDateTime())
+                        .endTime(reservationCreateUpdateRequestSameSpace.localEndDateTime())
                         .description(reservationCreateUpdateRequestSameSpace.getDescription())
                         .userName(reservationCreateUpdateRequestSameSpace.getName())
                         .space(be)
@@ -250,8 +250,8 @@ class ManagerReservationControllerTest extends AcceptanceTest {
         ReservationFindResponse expectedResponse = ReservationFindResponse.from(
                 Arrays.asList(
                         Reservation.builder()
-                                .startTime(reservationCreateUpdateWithPasswordRequestDifferentSpace.getStartDateTime())
-                                .endTime(reservationCreateUpdateWithPasswordRequestDifferentSpace.getEndDateTime())
+                                .startTime(reservationCreateUpdateWithPasswordRequestDifferentSpace.localStartDateTime())
+                                .endTime(reservationCreateUpdateWithPasswordRequestDifferentSpace.localEndDateTime())
                                 .description(reservationCreateUpdateWithPasswordRequestDifferentSpace.getDescription())
                                 .userName(reservationCreateUpdateWithPasswordRequestDifferentSpace.getName())
                                 .password(reservationCreateUpdateWithPasswordRequestDifferentSpace.getPassword())

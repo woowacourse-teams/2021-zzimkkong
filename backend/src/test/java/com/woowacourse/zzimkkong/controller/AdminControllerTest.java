@@ -1,6 +1,5 @@
 package com.woowacourse.zzimkkong.controller;
 
-import com.woowacourse.zzimkkong.Constants;
 import com.woowacourse.zzimkkong.domain.*;
 import com.woowacourse.zzimkkong.dto.admin.*;
 import com.woowacourse.zzimkkong.dto.map.MapFindResponse;
@@ -160,8 +159,8 @@ class AdminControllerTest extends AcceptanceTest {
                 SALLY_DESCRIPTION);
         saveReservation(beReservationApi, newReservationCreateUpdateWithPasswordRequest);
         Reservation reservation = Reservation.builder()
-                .startTime(newReservationCreateUpdateWithPasswordRequest.getStartDateTime())
-                .endTime(newReservationCreateUpdateWithPasswordRequest.getEndDateTime())
+                .startTime(newReservationCreateUpdateWithPasswordRequest.localStartDateTime())
+                .endTime(newReservationCreateUpdateWithPasswordRequest.localEndDateTime())
                 .userName(newReservationCreateUpdateWithPasswordRequest.getName())
                 .password(newReservationCreateUpdateWithPasswordRequest.getPassword())
                 .description(newReservationCreateUpdateWithPasswordRequest.getDescription())

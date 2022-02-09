@@ -135,8 +135,8 @@ class ManagerReservationServiceTest extends ServiceTest {
                 .build();
 
         reservation = makeReservation(
-                reservationCreateUpdateWithPasswordRequest.getStartDateTime(),
-                reservationCreateUpdateWithPasswordRequest.getEndDateTime(),
+                reservationCreateUpdateWithPasswordRequest.localStartDateTime(),
+                reservationCreateUpdateWithPasswordRequest.localEndDateTime(),
                 be);
 
         lutherId = luther.getId();
@@ -396,8 +396,8 @@ class ManagerReservationServiceTest extends ServiceTest {
                 anyList(),
                 any(LocalDate.class)))
                 .willReturn(List.of(makeReservation(
-                        reservationCreateUpdateWithPasswordRequest.getStartDateTime().minusMinutes(startMinute),
-                        reservationCreateUpdateWithPasswordRequest.getEndDateTime().plusMinutes(endMinute),
+                        reservationCreateUpdateWithPasswordRequest.localStartDateTime().minusMinutes(startMinute),
+                        reservationCreateUpdateWithPasswordRequest.localEndDateTime().plusMinutes(endMinute),
                         be)));
 
         //when
@@ -509,12 +509,12 @@ class ManagerReservationServiceTest extends ServiceTest {
                 any(LocalDate.class)))
                 .willReturn(List.of(
                         makeReservation(
-                                reservationCreateUpdateWithPasswordRequest.getStartDateTime().minusMinutes(duration),
-                                reservationCreateUpdateWithPasswordRequest.getEndDateTime().minusMinutes(duration),
+                                reservationCreateUpdateWithPasswordRequest.localStartDateTime().minusMinutes(duration),
+                                reservationCreateUpdateWithPasswordRequest.localEndDateTime().minusMinutes(duration),
                                 be),
                         makeReservation(
-                                reservationCreateUpdateWithPasswordRequest.getStartDateTime().plusMinutes(duration),
-                                reservationCreateUpdateWithPasswordRequest.getEndDateTime().plusMinutes(duration),
+                                reservationCreateUpdateWithPasswordRequest.localStartDateTime().plusMinutes(duration),
+                                reservationCreateUpdateWithPasswordRequest.localEndDateTime().plusMinutes(duration),
                                 be)));
         given(reservations.save(any(Reservation.class)))
                 .willReturn(reservation);
@@ -713,12 +713,12 @@ class ManagerReservationServiceTest extends ServiceTest {
         int duration = 30;
         List<Reservation> foundReservations = Arrays.asList(
                 makeReservation(
-                        reservationCreateUpdateWithPasswordRequest.getStartDateTime().minusMinutes(duration),
-                        reservationCreateUpdateWithPasswordRequest.getEndDateTime().minusMinutes(duration),
+                        reservationCreateUpdateWithPasswordRequest.localStartDateTime().minusMinutes(duration),
+                        reservationCreateUpdateWithPasswordRequest.localEndDateTime().minusMinutes(duration),
                         be),
                 makeReservation(
-                        reservationCreateUpdateWithPasswordRequest.getStartDateTime().plusMinutes(duration),
-                        reservationCreateUpdateWithPasswordRequest.getEndDateTime().plusMinutes(duration),
+                        reservationCreateUpdateWithPasswordRequest.localStartDateTime().plusMinutes(duration),
+                        reservationCreateUpdateWithPasswordRequest.localEndDateTime().plusMinutes(duration),
                         be));
 
         given(maps.findByIdFetch(anyLong()))
@@ -855,20 +855,20 @@ class ManagerReservationServiceTest extends ServiceTest {
         int duration = 30;
         List<Reservation> foundReservations = List.of(
                 makeReservation(
-                        reservationCreateUpdateWithPasswordRequest.getStartDateTime().minusMinutes(duration),
-                        reservationCreateUpdateWithPasswordRequest.getEndDateTime().minusMinutes(duration),
+                        reservationCreateUpdateWithPasswordRequest.localStartDateTime().minusMinutes(duration),
+                        reservationCreateUpdateWithPasswordRequest.localEndDateTime().minusMinutes(duration),
                         be),
                 makeReservation(
-                        reservationCreateUpdateWithPasswordRequest.getStartDateTime().plusMinutes(duration),
-                        reservationCreateUpdateWithPasswordRequest.getEndDateTime().plusMinutes(duration),
+                        reservationCreateUpdateWithPasswordRequest.localStartDateTime().plusMinutes(duration),
+                        reservationCreateUpdateWithPasswordRequest.localEndDateTime().plusMinutes(duration),
                         be),
                 makeReservation(
-                        reservationCreateUpdateWithPasswordRequest.getStartDateTime().minusMinutes(duration),
-                        reservationCreateUpdateWithPasswordRequest.getEndDateTime().minusMinutes(duration),
+                        reservationCreateUpdateWithPasswordRequest.localStartDateTime().minusMinutes(duration),
+                        reservationCreateUpdateWithPasswordRequest.localEndDateTime().minusMinutes(duration),
                         fe),
                 makeReservation(
-                        reservationCreateUpdateWithPasswordRequest.getStartDateTime().plusMinutes(duration),
-                        reservationCreateUpdateWithPasswordRequest.getEndDateTime().plusMinutes(duration),
+                        reservationCreateUpdateWithPasswordRequest.localStartDateTime().plusMinutes(duration),
+                        reservationCreateUpdateWithPasswordRequest.localEndDateTime().plusMinutes(duration),
                         fe));
         List<Space> findSpaces = List.of(be, fe);
 

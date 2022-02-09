@@ -122,8 +122,8 @@ class GuestReservationServiceTest extends ServiceTest {
                 .build();
 
         reservation = makeReservation(
-                reservationCreateUpdateWithPasswordRequest.getStartDateTime(),
-                reservationCreateUpdateWithPasswordRequest.getEndDateTime(),
+                reservationCreateUpdateWithPasswordRequest.localStartDateTime(),
+                reservationCreateUpdateWithPasswordRequest.localEndDateTime(),
                 be);
 
         lutherId = luther.getId();
@@ -338,8 +338,8 @@ class GuestReservationServiceTest extends ServiceTest {
                 anyList(),
                 any(LocalDate.class)))
                 .willReturn(List.of(makeReservation(
-                        reservationCreateUpdateWithPasswordRequest.getStartDateTime().minusMinutes(startMinute),
-                        reservationCreateUpdateWithPasswordRequest.getEndDateTime().plusMinutes(endMinute),
+                        reservationCreateUpdateWithPasswordRequest.localStartDateTime().minusMinutes(startMinute),
+                        reservationCreateUpdateWithPasswordRequest.localEndDateTime().plusMinutes(endMinute),
                         be)));
 
         ReservationCreateDto reservationCreateDto = ReservationCreateDto.of(
@@ -446,12 +446,12 @@ class GuestReservationServiceTest extends ServiceTest {
                 any(LocalDate.class)))
                 .willReturn(List.of(
                         makeReservation(
-                                reservationCreateUpdateWithPasswordRequest.getStartDateTime().minusMinutes(duration),
-                                reservationCreateUpdateWithPasswordRequest.getEndDateTime().minusMinutes(duration),
+                                reservationCreateUpdateWithPasswordRequest.localStartDateTime().minusMinutes(duration),
+                                reservationCreateUpdateWithPasswordRequest.localEndDateTime().minusMinutes(duration),
                                 be),
                         makeReservation(
-                                reservationCreateUpdateWithPasswordRequest.getStartDateTime().plusMinutes(duration),
-                                reservationCreateUpdateWithPasswordRequest.getEndDateTime().plusMinutes(duration),
+                                reservationCreateUpdateWithPasswordRequest.localStartDateTime().plusMinutes(duration),
+                                reservationCreateUpdateWithPasswordRequest.localEndDateTime().plusMinutes(duration),
                                 be)));
         given(reservations.save(any(Reservation.class)))
                 .willReturn(reservation);
@@ -626,12 +626,12 @@ class GuestReservationServiceTest extends ServiceTest {
         int duration = 30;
         List<Reservation> foundReservations = Arrays.asList(
                 makeReservation(
-                        reservationCreateUpdateWithPasswordRequest.getStartDateTime().minusMinutes(duration),
-                        reservationCreateUpdateWithPasswordRequest.getEndDateTime().minusMinutes(duration),
+                        reservationCreateUpdateWithPasswordRequest.localStartDateTime().minusMinutes(duration),
+                        reservationCreateUpdateWithPasswordRequest.localEndDateTime().minusMinutes(duration),
                         be),
                 makeReservation(
-                        reservationCreateUpdateWithPasswordRequest.getStartDateTime().plusMinutes(duration),
-                        reservationCreateUpdateWithPasswordRequest.getEndDateTime().plusMinutes(duration),
+                        reservationCreateUpdateWithPasswordRequest.localStartDateTime().plusMinutes(duration),
+                        reservationCreateUpdateWithPasswordRequest.localEndDateTime().plusMinutes(duration),
                         be));
 
         given(maps.findByIdFetch(anyLong()))
@@ -739,20 +739,20 @@ class GuestReservationServiceTest extends ServiceTest {
         int duration = 30;
         List<Reservation> foundReservations = List.of(
                 makeReservation(
-                        reservationCreateUpdateWithPasswordRequest.getStartDateTime().minusMinutes(duration),
-                        reservationCreateUpdateWithPasswordRequest.getEndDateTime().minusMinutes(duration),
+                        reservationCreateUpdateWithPasswordRequest.localStartDateTime().minusMinutes(duration),
+                        reservationCreateUpdateWithPasswordRequest.localEndDateTime().minusMinutes(duration),
                         be),
                 makeReservation(
-                        reservationCreateUpdateWithPasswordRequest.getStartDateTime().plusMinutes(duration),
-                        reservationCreateUpdateWithPasswordRequest.getEndDateTime().plusMinutes(duration),
+                        reservationCreateUpdateWithPasswordRequest.localStartDateTime().plusMinutes(duration),
+                        reservationCreateUpdateWithPasswordRequest.localEndDateTime().plusMinutes(duration),
                         be),
                 makeReservation(
-                        reservationCreateUpdateWithPasswordRequest.getStartDateTime().minusMinutes(duration),
-                        reservationCreateUpdateWithPasswordRequest.getEndDateTime().minusMinutes(duration),
+                        reservationCreateUpdateWithPasswordRequest.localStartDateTime().minusMinutes(duration),
+                        reservationCreateUpdateWithPasswordRequest.localEndDateTime().minusMinutes(duration),
                         fe),
                 makeReservation(
-                        reservationCreateUpdateWithPasswordRequest.getStartDateTime().plusMinutes(duration),
-                        reservationCreateUpdateWithPasswordRequest.getEndDateTime().plusMinutes(duration),
+                        reservationCreateUpdateWithPasswordRequest.localStartDateTime().plusMinutes(duration),
+                        reservationCreateUpdateWithPasswordRequest.localEndDateTime().plusMinutes(duration),
                         fe));
         List<Space> findSpaces = List.of(be, fe);
 
@@ -1133,8 +1133,8 @@ class GuestReservationServiceTest extends ServiceTest {
                 .willReturn(Optional.of(luther));
         given(reservations.findById(anyLong()))
                 .willReturn(Optional.of(makeReservation(
-                        reservationCreateUpdateWithPasswordRequest.getStartDateTime(),
-                        reservationCreateUpdateWithPasswordRequest.getEndDateTime(),
+                        reservationCreateUpdateWithPasswordRequest.localStartDateTime(),
+                        reservationCreateUpdateWithPasswordRequest.localEndDateTime(),
                         be)));
         Long reservationId = reservation.getId();
 
@@ -1184,8 +1184,8 @@ class GuestReservationServiceTest extends ServiceTest {
                 .willReturn(Optional.of(luther));
         given(reservations.findById(anyLong()))
                 .willReturn(Optional.of(makeReservation(
-                        reservationCreateUpdateWithPasswordRequest.getStartDateTime(),
-                        reservationCreateUpdateWithPasswordRequest.getEndDateTime(),
+                        reservationCreateUpdateWithPasswordRequest.localStartDateTime(),
+                        reservationCreateUpdateWithPasswordRequest.localEndDateTime(),
                         be)));
 
         ReservationPasswordAuthenticationRequest reservationPasswordAuthenticationRequest
@@ -1214,8 +1214,8 @@ class GuestReservationServiceTest extends ServiceTest {
                 .willReturn(Optional.of(luther));
         given(reservations.findById(anyLong()))
                 .willReturn(Optional.of(makeReservation(
-                        reservationCreateUpdateWithPasswordRequest.getStartDateTime().minusDays(5),
-                        reservationCreateUpdateWithPasswordRequest.getEndDateTime().minusDays(5),
+                        reservationCreateUpdateWithPasswordRequest.localStartDateTime().minusDays(5),
+                        reservationCreateUpdateWithPasswordRequest.localEndDateTime().minusDays(5),
                         be)));
 
         ReservationPasswordAuthenticationRequest reservationPasswordAuthenticationRequest
