@@ -21,7 +21,7 @@ export const formatDateWithDay = (value: Date): string => {
   return `${year}/${month}/${date} (${DAY[day]})`;
 };
 
-// Note: HH:MM 형태로 변환함
+// Note: HH:MM (24시간 기준) 형태로 변환함
 export const formatTime = (time: Date | Time): string => {
   if (time instanceof Date) {
     const hour = time.getHours();
@@ -30,8 +30,13 @@ export const formatTime = (time: Date | Time): string => {
     return `${hour < 10 ? `0${hour}` : `${hour}`}:${minute < 10 ? `0${minute}` : `${minute}`}`;
   }
 
-  const hour = time.midday === Midday.AM ? `${time.hour}`.padStart(2, '0') : `${time.hour + 12}`;
   const minute = `${time.minute}`.padStart(2, '0');
+
+  if (time.hour === 12) {
+    return `${time.midday === Midday.AM ? '00' : '12'}:${minute}`;
+  }
+
+  const hour = time.midday === Midday.AM ? `${time.hour}`.padStart(2, '0') : `${time.hour + 12}`;
 
   return `${hour}:${minute}`;
 };
