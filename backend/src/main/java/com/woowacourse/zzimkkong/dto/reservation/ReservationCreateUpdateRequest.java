@@ -4,7 +4,6 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import com.woowacourse.zzimkkong.infrastructure.datetime.TimeZoneUtils;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
@@ -33,22 +32,22 @@ public class ReservationCreateUpdateRequest {
     @NotBlank(message = EMPTY_MESSAGE)
     @Size(max = 100, message = DESCRIPTION_MESSAGE)
     protected String description;
-    
+
     public ReservationCreateUpdateRequest(LocalDateTime startDateTime, LocalDateTime endDateTime, String name, String description) {
         this.startDateTime = TimeZoneUtils.addTimeZone(startDateTime);
         this.endDateTime = TimeZoneUtils.addTimeZone(endDateTime);
         this.name = name;
         this.description = description;
     }
-    
+
     public String getPassword() {
         return null;
     }
-    
+
     public LocalDateTime localStartDateTime() {
         return startDateTime.toLocalDateTime();
     }
-    
+
     public LocalDateTime localEndDateTime() {
         return endDateTime.toLocalDateTime();
     }

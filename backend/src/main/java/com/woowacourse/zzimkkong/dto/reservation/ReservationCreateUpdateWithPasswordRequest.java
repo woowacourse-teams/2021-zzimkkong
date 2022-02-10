@@ -12,17 +12,17 @@ import static com.woowacourse.zzimkkong.dto.ValidatorMessage.*;
 @Getter
 @NoArgsConstructor
 public class ReservationCreateUpdateWithPasswordRequest extends ReservationCreateUpdateRequest {
-	@NotBlank(message = EMPTY_MESSAGE)
-	@Pattern(regexp = RESERVATION_PW_FORMAT, message = RESERVATION_PW_MESSAGE)
-	private String password;
-	
-	public ReservationCreateUpdateWithPasswordRequest(
-			final LocalDateTime startDateTime,
-			final LocalDateTime endDateTime,
-			final String password,
-			final String name,
-			final String description) {
-		super(startDateTime, endDateTime, name, description);
-		this.password = password;
-	}
+    @NotBlank(message = EMPTY_MESSAGE)
+    @Pattern(regexp = RESERVATION_PW_FORMAT, message = RESERVATION_PW_MESSAGE)
+    private String password;
+
+    public ReservationCreateUpdateWithPasswordRequest(
+            final LocalDateTime startDateTime,
+            final LocalDateTime endDateTime,
+            final String password,
+            final String name,
+            final String description) {
+        super(startDateTime, endDateTime, name, description);
+        this.password = password;
+    }
 }

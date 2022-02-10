@@ -9,8 +9,8 @@ import static com.woowacourse.zzimkkong.infrastructure.datetime.TimeZoneUtils.DE
 
 @SpringBootApplication
 public class ZzimkkongApplication {
-	public static void main(String[] args) {
-		TimeZone.setDefault(DEFAULT_TIMEZONE);
-		SpringApplication.run(ZzimkkongApplication.class, args);
-	}
+    public static void main(String[] args) {
+        TimeZone.setDefault(DEFAULT_TIMEZONE);
+        SpringApplication.run(ZzimkkongApplication.class, args);
+    }
 }

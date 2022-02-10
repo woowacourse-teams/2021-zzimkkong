@@ -32,7 +32,7 @@ public class ReservationCreateDto {
         this.description = request.getDescription();
         this.loginEmail = loginEmailDto.getEmail();
     }
-    
+
     public static ReservationCreateDto of(
             final Long mapId,
             final Long spaceId,
