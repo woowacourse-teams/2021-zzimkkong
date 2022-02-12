@@ -10,7 +10,13 @@ import useInputs from 'hooks/useInputs';
 import useScrollToTop from 'hooks/useScrollToTop';
 import useTimePicker from 'hooks/useTimePicker';
 import { Reservation, Space } from 'types/common';
-import { formatDate, formatTime, formatTimePrettier, isPastDate } from 'utils/datetime';
+import {
+  formatDate,
+  formatTime,
+  formatTimePrettier,
+  formatTimeWithSecond,
+  isPastDate,
+} from 'utils/datetime';
 import { EditReservationParams } from '../GuestReservation';
 import * as Styled from './GuestReservationForm.styles';
 
@@ -66,8 +72,8 @@ const GuestReservationForm = ({
 
     if (range.start === null || range.end === null) return;
 
-    const startDateTime = new Date(`${date}T${formatTime(range.start)}Z`);
-    const endDateTime = new Date(`${date}T${formatTime(range.end)}Z`);
+    const startDateTime = `${date}T${formatTimeWithSecond(range.start)}${DATE.TIMEZONE_OFFSET}`;
+    const endDateTime = `${date}T${formatTimeWithSecond(range.end)}${DATE.TIMEZONE_OFFSET}`;
 
     onSubmit(event, {
       reservation: {

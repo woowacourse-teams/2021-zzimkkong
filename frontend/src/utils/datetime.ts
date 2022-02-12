@@ -41,11 +41,26 @@ export const formatTime = (time: Date | Time): string => {
   return `${hour}:${minute}`;
 };
 
-// Note: HH:MM:SS 형태로 변환함
-export const formatTimeWithSecond = (time: Date): string => {
-  const hour = `${time.getHours()}`.padStart(2, '0');
-  const minute = `${time.getMinutes()}`.padStart(2, '0');
-  const second = `${time.getSeconds()}`.padStart(2, '0');
+// Note: HH:MM:SS (24시간 기준) 형태로 변환함
+export const formatTimeWithSecond = (time: Date | Time): string => {
+  if (time instanceof Date) {
+    const hour = time.getHours();
+    const minute = time.getMinutes();
+    const second = `${time.getSeconds()}`.padStart(2, '0');
+
+    return `${hour < 10 ? `0${hour}` : `${hour}`}:${
+      minute < 10 ? `0${minute}` : `${minute}`
+    }:${second}`;
+  }
+
+  const minute = `${time.minute}`.padStart(2, '0');
+
+  if (time.hour === 12) {
+    return `${time.midday === Midday.AM ? '00' : '12'}:${minute}`;
+  }
+
+  const hour = time.midday === Midday.AM ? `${time.hour}`.padStart(2, '0') : `${time.hour + 12}`;
+  const second = '00';
 
   return `${hour}:${minute}:${second}`;
 };

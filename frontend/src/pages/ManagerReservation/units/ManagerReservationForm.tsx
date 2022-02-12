@@ -11,7 +11,7 @@ import useInputs from 'hooks/useInputs';
 import useScrollToTop from 'hooks/useScrollToTop';
 import useTimePicker from 'hooks/useTimePicker';
 import { ManagerSpaceAPI, Reservation } from 'types/common';
-import { formatDate, formatTime, formatTimePrettier } from 'utils/datetime';
+import { formatDate, formatTime, formatTimePrettier, formatTimeWithSecond } from 'utils/datetime';
 import { CreateReservationParams, EditReservationParams } from '../ManagerReservation';
 import * as Styled from './ManagerReservationForm.styles';
 
@@ -67,8 +67,8 @@ const ManagerReservationForm = ({
 
     if (range.start === null || range.end === null) return;
 
-    const startDateTime = new Date(`${date}T${formatTime(range.start)}Z`);
-    const endDateTime = new Date(`${date}T${formatTime(range.end)}Z`);
+    const startDateTime = `${date}T${formatTimeWithSecond(range.start)}${DATE.TIMEZONE_OFFSET}`;
+    const endDateTime = `${date}T${formatTimeWithSecond(range.end)}${DATE.TIMEZONE_OFFSET}`;
 
     if (!reservation) {
       onCreateReservation({

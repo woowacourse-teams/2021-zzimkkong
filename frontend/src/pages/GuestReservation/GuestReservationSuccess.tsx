@@ -14,8 +14,8 @@ export interface GuestReservationSuccessState {
   reservation: {
     name: string;
     description: string;
-    startDateTime: Date;
-    endDateTime: Date;
+    startDateTime: string;
+    endDateTime: string;
   };
 }
 
@@ -27,8 +27,8 @@ const GuestReservationSuccess = (): JSX.Element => {
 
   const { space, reservation, targetDate } = location.state;
 
-  const startDateTimeObject = new Date(reservation.startDateTime.toISOString().slice(0, -1));
-  const endDateTimeObject = new Date(reservation.endDateTime.toISOString().slice(0, -1));
+  const startDateTimeObject = new Date(reservation.startDateTime);
+  const endDateTimeObject = new Date(reservation.endDateTime);
 
   const reservationDate = formatDateWithDay(startDateTimeObject);
   const reservationStartTime = formatTime(startDateTimeObject);
