@@ -15,6 +15,8 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 import static com.woowacourse.zzimkkong.Constants.*;
+import static com.woowacourse.zzimkkong.infrastructure.datetime.TimeZoneUtils.ONE_DAY_OFFSET;
+import static com.woowacourse.zzimkkong.infrastructure.datetime.TimeZoneUtils.UTC;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 
@@ -78,9 +80,9 @@ class ReservationRepositoryTest extends RepositoryTest {
         spaces.save(fe);
 
         beAmZeroOne = Reservation.builder()
-                .date(BE_AM_TEN_ELEVEN_START_TIME.toLocalDate())
-                .startTime(BE_AM_TEN_ELEVEN_START_TIME)
-                .endTime(BE_AM_TEN_ELEVEN_END_TIME)
+                .date(BE_AM_TEN_ELEVEN_START_TIME_KST.toLocalDate())
+                .startTime(BE_AM_TEN_ELEVEN_START_TIME_KST.withZoneSameInstant(UTC.toZoneId()).toLocalDateTime())
+                .endTime(BE_AM_TEN_ELEVEN_END_TIME_KST.withZoneSameInstant(UTC.toZoneId()).toLocalDateTime())
                 .description(BE_AM_TEN_ELEVEN_DESCRIPTION)
                 .userName(BE_AM_TEN_ELEVEN_USERNAME)
                 .password(BE_AM_TEN_ELEVEN_PW)
@@ -88,9 +90,9 @@ class ReservationRepositoryTest extends RepositoryTest {
                 .build();
 
         bePmOneTwo = Reservation.builder()
-                .date(BE_PM_ONE_TWO_START_TIME.toLocalDate())
-                .startTime(BE_PM_ONE_TWO_START_TIME)
-                .endTime(BE_PM_ONE_TWO_END_TIME)
+                .date(BE_PM_ONE_TWO_START_TIME_KST.toLocalDate())
+                .startTime(BE_PM_ONE_TWO_START_TIME_KST.withZoneSameInstant(UTC.toZoneId()).toLocalDateTime())
+                .endTime(BE_PM_ONE_TWO_END_TIME_KST.withZoneSameInstant(UTC.toZoneId()).toLocalDateTime())
                 .description(BE_PM_ONE_TWO_DESCRIPTION)
                 .userName(BE_PM_ONE_TWO_USERNAME)
                 .password(BE_PM_ONE_TWO_PW)
@@ -98,9 +100,9 @@ class ReservationRepositoryTest extends RepositoryTest {
                 .build();
 
         beNextDayAmSixTwelve = Reservation.builder()
-                .date(BE_NEXT_DAY_PM_FOUR_TO_SIX_START_TIME.toLocalDate())
-                .startTime(BE_NEXT_DAY_PM_FOUR_TO_SIX_START_TIME)
-                .endTime(BE_NEXT_DAY_PM_FOUR_TO_SIX_END_TIME)
+                .date(BE_NEXT_DAY_PM_FOUR_TO_SIX_START_TIME_KST.toLocalDate())
+                .startTime(BE_NEXT_DAY_PM_FOUR_TO_SIX_START_TIME_KST.withZoneSameInstant(UTC.toZoneId()).toLocalDateTime())
+                .endTime(BE_NEXT_DAY_PM_FOUR_TO_SIX_END_TIME_KST.withZoneSameInstant(UTC.toZoneId()).toLocalDateTime())
                 .description(BE_NEXT_DAY_PM_FOUR_TO_SIX_DESCRIPTION)
                 .userName(BE_NEXT_DAY_PM_FOUR_TO_SIX_USERNAME)
                 .password(BE_NEXT_DAY_PM_FOUR_TO_SIX_PW)
@@ -108,9 +110,9 @@ class ReservationRepositoryTest extends RepositoryTest {
                 .build();
 
         fe1ZeroOne = Reservation.builder()
-                .date(FE1_AM_TEN_ELEVEN_START_TIME.toLocalDate())
-                .startTime(FE1_AM_TEN_ELEVEN_START_TIME)
-                .endTime(FE1_AM_TEN_ELEVEN_END_TIME)
+                .date(FE1_AM_TEN_ELEVEN_START_TIME_KST.toLocalDate())
+                .startTime(FE1_AM_TEN_ELEVEN_START_TIME_KST.withZoneSameInstant(UTC.toZoneId()).toLocalDateTime())
+                .endTime(FE1_AM_TEN_ELEVEN_END_TIME_KST.withZoneSameInstant(UTC.toZoneId()).toLocalDateTime())
                 .description(FE1_AM_TEN_ELEVEN_DESCRIPTION)
                 .userName(FE1_AM_TEN_ELEVEN_USERNAME)
                 .password(FE1_AM_TEN_ELEVEN_PW)
@@ -146,8 +148,8 @@ class ReservationRepositoryTest extends RepositoryTest {
     }
 
     @Test
-    @DisplayName("map id, space id, 특정 시간이 주어질 때, 해당 spaceId와 해당 시간에 속하는 예약들만 찾아온다")
-    void findAllBySpaceIdInAndDate() {
+    @DisplayName("map id, space id, 특정 날짜가 주어질 때, 해당 spaceId와 해당 날짜 전,훗날에 속하는 예약들을 찾아온다")
+    void findAllBySpaceIdInAndDateGreaterThanEqualAndDateLessThanEqual() {
         // given, when
         List<Reservation> foundReservations = getReservations(
                 List.of(be.getId(), fe.getId()),
@@ -155,43 +157,24 @@ class ReservationRepositoryTest extends RepositoryTest {
 
         // then
         assertThat(foundReservations).usingRecursiveComparison()
-                .isEqualTo(List.of(beAmZeroOne, bePmOneTwo, fe1ZeroOne));
+                .ignoringCollectionOrder()
+                .isEqualTo(List.of(beAmZeroOne, beNextDayAmSixTwelve, bePmOneTwo, fe1ZeroOne));
     }
 
     @Test
     @DisplayName("특정 날짜에 부합하는 예약이 없으면 빈 리스트를 반환한다")
-    void findAllBySpaceIdInAndDate_noMatchingTime() {
+    void findAllBySpaceIdInAndDateGreaterThanEqualAndDateLessThanEqual_noMatchingTimeAndSpace() {
         // given, when
-        List<Reservation> foundReservations = getReservations(
+        List<Reservation> foundReservationsBe = getReservations(
                 List.of(be.getId()),
-                THE_DAY_AFTER_TOMORROW.plusDays(2));
-
-        // then
-        assertThat(foundReservations).isEmpty();
-    }
-
-    @Test
-    @DisplayName("특정 공간에 부합하는 예약이 없으면 빈 리스트를 반환한다")
-    void findAllBySpaceIdInAndDate_noMatchingReservation() {
-        // given, when
-        List<Reservation> foundReservations = getReservations(
+                THE_DAY_AFTER_TOMORROW.plusDays(3));
+        List<Reservation> foundReservationsFe = getReservations(
                 List.of(fe.getId()),
-                THE_DAY_AFTER_TOMORROW.plusDays(1));
+                THE_DAY_AFTER_TOMORROW.minusDays(3));
 
         // then
-        assertThat(foundReservations).isEmpty();
-    }
-
-    @Test
-    @DisplayName("map id와 특정 날짜가 주어질 때, 해당 날짜에 속하는 해당 map의 모든 space들의 예약들을 찾아온다")
-    void findAllBySpaceIdInAndDate_allSpaces() {
-        // given, when
-        List<Reservation> foundReservations = getReservations(
-                List.of(be.getId(), fe.getId()),
-                THE_DAY_AFTER_TOMORROW);
-
-        // then
-        assertThat(foundReservations).containsExactlyInAnyOrderElementsOf(List.of(beAmZeroOne, bePmOneTwo, fe1ZeroOne));
+        assertThat(foundReservationsBe).isEmpty();
+        assertThat(foundReservationsFe).isEmpty();
     }
 
     @Test
@@ -216,7 +199,9 @@ class ReservationRepositoryTest extends RepositoryTest {
     @DisplayName("특정 시간 이후의 예약이 존재하는지 확인한다.")
     void existsBySpaceIdAndDateGreaterThanEqual(int minusMinute, boolean expected) {
         //given, when
-        Boolean actual = reservations.existsBySpaceIdAndEndTimeAfter(be.getId(), BE_NEXT_DAY_PM_FOUR_TO_SIX_END_TIME.minusMinutes(minusMinute));
+        Boolean actual = reservations.existsBySpaceIdAndEndTimeAfter(
+                be.getId(),
+                BE_NEXT_DAY_PM_FOUR_TO_SIX_END_TIME_KST.withZoneSameInstant(UTC.toZoneId()).toLocalDateTime().minusMinutes(minusMinute));
 
         //then
         assertThat(actual).isEqualTo(expected);
@@ -237,6 +222,9 @@ class ReservationRepositoryTest extends RepositoryTest {
     }
 
     private List<Reservation> getReservations(List<Long> spaceIds, LocalDate date) {
-        return reservations.findAllBySpaceIdInAndDate(spaceIds, date);
+        return reservations.findAllBySpaceIdInAndDateGreaterThanEqualAndDateLessThanEqual(
+                spaceIds,
+                date.minusDays(ONE_DAY_OFFSET),
+                date.plusDays(ONE_DAY_OFFSET));
     }
 }

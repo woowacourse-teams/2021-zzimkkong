@@ -14,6 +14,7 @@ import java.time.LocalDateTime;
 import java.time.ZonedDateTime;
 
 import static com.woowacourse.zzimkkong.dto.ValidatorMessage.DATETIME_FORMAT;
+import static com.woowacourse.zzimkkong.infrastructure.datetime.TimeZoneUtils.UTC;
 
 @Getter
 @NoArgsConstructor
@@ -40,8 +41,8 @@ public class ReservationResponse {
             final String name,
             final String description) {
         this.id = id;
-        this.startDateTime = TimeZoneUtils.addTimeZone(startDateTime);
-        this.endDateTime = TimeZoneUtils.addTimeZone(endDateTime);
+        this.startDateTime = startDateTime.atZone(UTC.toZoneId());
+        this.endDateTime = endDateTime.atZone(UTC.toZoneId());
         this.name = name;
         this.description = description;
     }

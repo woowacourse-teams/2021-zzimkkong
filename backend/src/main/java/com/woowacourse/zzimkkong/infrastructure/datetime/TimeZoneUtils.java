@@ -1,16 +1,16 @@
 package com.woowacourse.zzimkkong.infrastructure.datetime;
 
 import java.time.LocalDateTime;
-import java.time.ZonedDateTime;
 import java.util.TimeZone;
 
 public class TimeZoneUtils {
-	public static final TimeZone DEFAULT_TIMEZONE = TimeZone.getTimeZone("UTC");
-	
-	public static ZonedDateTime addTimeZone(LocalDateTime dateTime) {
-		if (dateTime == null) {
-			return null;
-		}
-		return ZonedDateTime.of(dateTime, DEFAULT_TIMEZONE.toZoneId());
-	}
+    public static final TimeZone UTC = TimeZone.getTimeZone("UTC");
+    public static final TimeZone KST = TimeZone.getTimeZone("Asia/Seoul");
+    public static final Long ONE_DAY_OFFSET = 1L;
+
+    public static LocalDateTime convert(LocalDateTime dateTime, TimeZone fromTimeZone, TimeZone toTimeZone) {
+        return dateTime.atZone(fromTimeZone.toZoneId())
+                .withZoneSameInstant(toTimeZone.toZoneId())
+                .toLocalDateTime();
+    }
 }

@@ -8,6 +8,7 @@ import com.woowacourse.zzimkkong.dto.slack.SlackResponse;
 import com.woowacourse.zzimkkong.exception.map.NoSuchMapException;
 import com.woowacourse.zzimkkong.exception.reservation.*;
 import com.woowacourse.zzimkkong.exception.space.NoSuchSpaceException;
+import com.woowacourse.zzimkkong.infrastructure.datetime.TimeZoneUtils;
 import com.woowacourse.zzimkkong.infrastructure.sharingid.SharingIdGenerator;
 import com.woowacourse.zzimkkong.repository.MapRepository;
 import com.woowacourse.zzimkkong.repository.ReservationRepository;
@@ -25,6 +26,8 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
+
+import static com.woowacourse.zzimkkong.infrastructure.datetime.TimeZoneUtils.*;
 
 @Service
 @Transactional
@@ -213,7 +216,9 @@ public class ReservationService {
             throw new ImpossibleEndTimeException();
         }
 
-        if (!startDateTime.toLocalDate().isEqual(endDateTime.toLocalDate())) {
+        LocalDate startDateKST = convert(startDateTime, UTC, KST).toLocalDate();
+        LocalDate endDateKST = convert(endDateTime, UTC, KST).toLocalDate();
+        if (!startDateKST.isEqual(endDateKST)) {
             throw new NonMatchingStartAndEndDateException();
         }
     }
@@ -242,9 +247,11 @@ public class ReservationService {
     }
 
     private void validateSpaceSetting(Space space, LocalDateTime startDateTime, LocalDateTime endDateTime) {
-        int durationMinutes = (int) ChronoUnit.MINUTES.between(startDateTime, endDateTime);
+        LocalDateTime startDateTimeKST = TimeZoneUtils.convert(startDateTime, UTC, KST);
+        LocalDateTime endDateTimeKST = TimeZoneUtils.convert(endDateTime, UTC, KST);
+        int durationMinutes = (int) ChronoUnit.MINUTES.between(startDateTimeKST, endDateTimeKST);
 
-        if (space.isNotDivisibleByTimeUnit(startDateTime.getMinute()) || space.isNotDivisibleByTimeUnit(durationMinutes)) {
+        if (space.isNotDivisibleByTimeUnit(startDateTimeKST.getMinute()) || space.isNotDivisibleByTimeUnit(durationMinutes)) {
             throw new InvalidTimeUnitException();
         }
 
@@ -256,7 +263,7 @@ public class ReservationService {
             throw new InvalidMaximumDurationTimeException();
         }
 
-        if (space.isNotBetweenAvailableTime(startDateTime, endDateTime)) {
+        if (space.isNotBetweenAvailableTime(startDateTimeKST, endDateTimeKST)) {
             throw new InvalidStartEndTimeException();
         }
 
@@ -264,7 +271,7 @@ public class ReservationService {
             throw new InvalidReservationEnableException();
         }
 
-        if (space.isClosedOn(startDateTime.getDayOfWeek())) {
+        if (space.isClosedOn(startDateTimeKST.getDayOfWeek())) {
             throw new InvalidDayOfWeekException();
         }
     }
@@ -285,7 +292,16 @@ public class ReservationService {
                 .map(Space::getId)
                 .collect(Collectors.toList());
 
-        return reservations.findAllBySpaceIdInAndDate(spaceIds, date);
+        List<Reservation> reservationsWithinDateRange = reservations.findAllBySpaceIdInAndDateGreaterThanEqualAndDateLessThanEqual(
+                spaceIds,
+                date.minusDays(ONE_DAY_OFFSET),
+                date.plusDays(ONE_DAY_OFFSET));
+
+        //TODO: Reservations, TimeZone Enum 만들기!
+        // Reservations를 만들어서 테스트를 쉽게 할까? time conflict validation 옮길 수 있음
+        return reservationsWithinDateRange.stream()
+                .filter(reservation -> reservation.isBookedOn(date, KST))
+                .collect(Collectors.toList());
     }
 
     private void validateSpaceExistence(final Map map, final Long spaceId) {

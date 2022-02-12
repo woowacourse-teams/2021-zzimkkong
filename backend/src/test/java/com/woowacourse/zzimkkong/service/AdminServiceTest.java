@@ -22,6 +22,7 @@ import org.springframework.data.domain.Sort;
 import java.util.List;
 
 import static com.woowacourse.zzimkkong.Constants.*;
+import static com.woowacourse.zzimkkong.infrastructure.datetime.TimeZoneUtils.UTC;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
@@ -168,9 +169,9 @@ class AdminServiceTest extends ServiceTest {
                 .build();
 
         Reservation beAmZeroOne = Reservation.builder()
-                .date(BE_AM_TEN_ELEVEN_START_TIME.toLocalDate())
-                .startTime(BE_AM_TEN_ELEVEN_START_TIME)
-                .endTime(BE_AM_TEN_ELEVEN_END_TIME)
+                .date(BE_AM_TEN_ELEVEN_START_TIME_KST.toLocalDate())
+                .startTime(BE_AM_TEN_ELEVEN_START_TIME_KST.withZoneSameInstant(UTC.toZoneId()).toLocalDateTime())
+                .endTime(BE_AM_TEN_ELEVEN_END_TIME_KST.withZoneSameInstant(UTC.toZoneId()).toLocalDateTime())
                 .description(BE_AM_TEN_ELEVEN_DESCRIPTION)
                 .userName(BE_AM_TEN_ELEVEN_USERNAME)
                 .password(BE_AM_TEN_ELEVEN_PW)

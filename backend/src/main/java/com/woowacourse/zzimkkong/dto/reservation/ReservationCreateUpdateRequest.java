@@ -11,8 +11,10 @@ import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 import java.time.LocalDateTime;
 import java.time.ZonedDateTime;
+import java.util.TimeZone;
 
 import static com.woowacourse.zzimkkong.dto.ValidatorMessage.*;
+import static com.woowacourse.zzimkkong.infrastructure.datetime.TimeZoneUtils.UTC;
 
 @Getter
 @NoArgsConstructor
@@ -33,9 +35,13 @@ public class ReservationCreateUpdateRequest {
     @Size(max = 100, message = DESCRIPTION_MESSAGE)
     protected String description;
 
-    public ReservationCreateUpdateRequest(LocalDateTime startDateTime, LocalDateTime endDateTime, String name, String description) {
-        this.startDateTime = TimeZoneUtils.addTimeZone(startDateTime);
-        this.endDateTime = TimeZoneUtils.addTimeZone(endDateTime);
+    public ReservationCreateUpdateRequest(ZonedDateTime startDateTime, ZonedDateTime endDateTime, String name, String description) {
+        if (startDateTime != null) {
+            this.startDateTime = startDateTime.withZoneSameInstant(UTC.toZoneId());
+        }
+        if (endDateTime != null) {
+            this.endDateTime = endDateTime.withZoneSameInstant(UTC.toZoneId());
+        }
         this.name = name;
         this.description = description;
     }

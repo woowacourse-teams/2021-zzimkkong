@@ -32,6 +32,7 @@ import static com.woowacourse.zzimkkong.DocumentUtils.getRequestSpecification;
 import static com.woowacourse.zzimkkong.controller.ManagerReservationControllerTest.saveReservation;
 import static com.woowacourse.zzimkkong.controller.ManagerSpaceControllerTest.saveSpace;
 import static com.woowacourse.zzimkkong.controller.MapControllerTest.saveMap;
+import static com.woowacourse.zzimkkong.infrastructure.datetime.TimeZoneUtils.KST;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
 
@@ -152,8 +153,8 @@ class AdminControllerTest extends AcceptanceTest {
         ExtractableResponse<Response> saveBeSpaceResponse = saveSpace(spaceApi, beSpaceCreateUpdateRequest);
         String beReservationApi = saveBeSpaceResponse.header("location") + "/reservations";
         ReservationCreateUpdateWithPasswordRequest newReservationCreateUpdateWithPasswordRequest = new ReservationCreateUpdateWithPasswordRequest(
-                THE_DAY_AFTER_TOMORROW.atTime(19, 0),
-                THE_DAY_AFTER_TOMORROW.atTime(20, 0),
+                THE_DAY_AFTER_TOMORROW.atTime(19, 0).atZone(KST.toZoneId()),
+                THE_DAY_AFTER_TOMORROW.atTime(20, 0).atZone(KST.toZoneId()),
                 SALLY_PW,
                 SALLY_NAME,
                 SALLY_DESCRIPTION);

@@ -1,6 +1,5 @@
 package com.woowacourse.zzimkkong.repository;
 
-import com.woowacourse.zzimkkong.Constants;
 import com.woowacourse.zzimkkong.domain.*;
 import org.assertj.core.api.AssertionsForClassTypes;
 import org.junit.jupiter.api.DisplayName;
@@ -11,6 +10,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 import static com.woowacourse.zzimkkong.Constants.*;
+import static com.woowacourse.zzimkkong.infrastructure.datetime.TimeZoneUtils.UTC;
 
 class ReservationRepositoryImplTest extends RepositoryTest {
     @ParameterizedTest
@@ -59,9 +59,9 @@ class ReservationRepositoryImplTest extends RepositoryTest {
 
         if (isReservationExists) {
             Reservation beAmZeroOne = Reservation.builder()
-                    .date(BE_AM_TEN_ELEVEN_START_TIME.toLocalDate())
-                    .startTime(BE_AM_TEN_ELEVEN_START_TIME)
-                    .endTime(BE_AM_TEN_ELEVEN_END_TIME)
+                    .date(BE_AM_TEN_ELEVEN_START_TIME_KST.toLocalDate())
+                    .startTime(BE_AM_TEN_ELEVEN_START_TIME_KST.withZoneSameInstant(UTC.toZoneId()).toLocalDateTime())
+                    .endTime(BE_AM_TEN_ELEVEN_END_TIME_KST.withZoneSameInstant(UTC.toZoneId()).toLocalDateTime())
                     .description(BE_AM_TEN_ELEVEN_DESCRIPTION)
                     .userName(BE_AM_TEN_ELEVEN_USERNAME)
                     .password(BE_AM_TEN_ELEVEN_PW)
