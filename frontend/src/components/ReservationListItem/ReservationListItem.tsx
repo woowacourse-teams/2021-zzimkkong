@@ -1,3 +1,4 @@
+import dayjs from 'dayjs';
 import { ReactNode } from 'react';
 import { Reservation, ReservationStatus } from 'types/common';
 import { formatTime } from 'utils/datetime';
@@ -12,8 +13,8 @@ export interface Props {
 const ReservationListItem = ({ reservation, control, status, ...props }: Props): JSX.Element => {
   const { name, description, startDateTime, endDateTime } = reservation;
 
-  const start = formatTime(new Date(startDateTime));
-  const end = formatTime(new Date(endDateTime));
+  const start = formatTime(dayjs(startDateTime).tz());
+  const end = formatTime(dayjs(endDateTime).tz());
 
   return (
     <Styled.Item role="listitem" {...props}>
