@@ -5,9 +5,7 @@ import lombok.NoArgsConstructor;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Pattern;
-import java.time.LocalDateTime;
 import java.time.ZonedDateTime;
-import java.util.TimeZone;
 
 import static com.woowacourse.zzimkkong.dto.ValidatorMessage.*;
 

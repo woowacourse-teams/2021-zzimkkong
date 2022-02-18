@@ -223,7 +223,7 @@ public class ReservationService {
         }
     }
 
-    private void validatePastTimeAndManager(LocalDateTime startDateTime, boolean managerFlag) {
+    private void validatePastTimeAndManager(final LocalDateTime startDateTime, final boolean managerFlag) {
         if (startDateTime.isBefore(LocalDateTime.now()) && !managerFlag) {
             throw new ImpossibleStartTimeException();
         }
@@ -246,7 +246,10 @@ public class ReservationService {
         validateTimeConflicts(startDateTime, endDateTime, reservationsOnDate);
     }
 
-    private void validateSpaceSetting(Space space, LocalDateTime startDateTime, LocalDateTime endDateTime) {
+    private void validateSpaceSetting(
+            final Space space,
+            final LocalDateTime startDateTime,
+            final LocalDateTime endDateTime) {
         LocalDateTime startDateTimeKST = TimeZoneUtils.convert(startDateTime, UTC, KST);
         LocalDateTime endDateTimeKST = TimeZoneUtils.convert(endDateTime, UTC, KST);
         int durationMinutes = (int) ChronoUnit.MINUTES.between(startDateTimeKST, endDateTimeKST);
@@ -297,8 +300,6 @@ public class ReservationService {
                 date.minusDays(ONE_DAY_OFFSET),
                 date.plusDays(ONE_DAY_OFFSET));
 
-        //TODO: Reservations, TimeZone Enum 만들기!
-        // Reservations를 만들어서 테스트를 쉽게 할까? time conflict validation 옮길 수 있음
         return reservationsWithinDateRange.stream()
                 .filter(reservation -> reservation.isBookedOn(date, KST))
                 .collect(Collectors.toList());
