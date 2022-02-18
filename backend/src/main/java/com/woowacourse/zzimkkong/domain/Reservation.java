@@ -92,7 +92,7 @@ public class Reservation {
         return !this.password.equals(password);
     }
 
-    public boolean isBookedOn(LocalDate date, TimeZone timeZone) {
+    public boolean isBookedOn(final LocalDate date, final TimeZone timeZone) {
         LocalDate convertedStartTimeDate = TimeZoneUtils.convert(startTime, UTC, timeZone).toLocalDate();
         LocalDate convertedEndTimeDate = TimeZoneUtils.convert(endTime, UTC, timeZone).toLocalDate();
         return date.equals(convertedStartTimeDate) && date.equals(convertedEndTimeDate);

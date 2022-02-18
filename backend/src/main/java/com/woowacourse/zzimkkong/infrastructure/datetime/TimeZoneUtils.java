@@ -8,7 +8,10 @@ public class TimeZoneUtils {
     public static final TimeZone KST = TimeZone.getTimeZone("Asia/Seoul");
     public static final Long ONE_DAY_OFFSET = 1L;
 
-    public static LocalDateTime convert(LocalDateTime dateTime, TimeZone fromTimeZone, TimeZone toTimeZone) {
+    public static LocalDateTime convert(
+            final LocalDateTime dateTime,
+            final TimeZone fromTimeZone,
+            final TimeZone toTimeZone) {
         return dateTime.atZone(fromTimeZone.toZoneId())
                 .withZoneSameInstant(toTimeZone.toZoneId())
                 .toLocalDateTime();
