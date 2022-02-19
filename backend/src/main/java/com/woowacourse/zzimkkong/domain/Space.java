@@ -84,6 +84,22 @@ public class Space {
         this.setting = updateSpace.setting;
     }
 
+    public boolean cannotAcceptDueToTimeUnit(final TimeSlot timeSlot) {
+        return setting.cannotDivideByTimeUnit(timeSlot);
+    }
+
+    public boolean cannotAcceptDueToMinimumTimeUnit(final TimeSlot timeSlot) {
+        return setting.hasLongerMinimumTimeUnitThan(timeSlot);
+    }
+
+    public boolean cannotAcceptDueToMaximumTimeUnit(final TimeSlot timeSlot) {
+        return setting.hasShorterMaximumTimeUnitThan(timeSlot);
+    }
+
+    public boolean cannotAcceptDueToAvailableTime(final TimeSlot timeSlot) {
+        return setting.hasAvailableTimeToCover(timeSlot);
+    }
+
     public boolean isNotBetweenAvailableTime(final LocalDateTime startDateTime, LocalDateTime endDateTime) {
         boolean isEqualOrAfterStartTime = startDateTime.toLocalTime().equals(getAvailableStartTime()) ||
                 startDateTime.toLocalTime().isAfter(getAvailableStartTime());
@@ -93,7 +109,7 @@ public class Space {
     }
 
     public boolean isNotDivisibleByTimeUnit(final int minute) {
-        return setting.isNotDivisibleByTimeUnit(minute);
+        return setting.cannotDivideByTimeUnit(minute);
     }
 
     public boolean isIncorrectMinimumTimeUnit(final int durationMinutes) {

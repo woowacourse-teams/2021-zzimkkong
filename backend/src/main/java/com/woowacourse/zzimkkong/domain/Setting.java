@@ -15,6 +15,7 @@ import java.time.temporal.ChronoUnit;
 @NoArgsConstructor
 @Embeddable
 public class Setting {
+    //FIXME: TimeSlot Embeddable
     @Column(nullable = false)
     private LocalTime availableStartTime;
 
@@ -79,11 +80,28 @@ public class Setting {
     }
 
     private boolean isNoneMatchingAvailableTimeAndTimeUnit() {
-        return isNotDivisibleByTimeUnit(availableStartTime.getMinute()) || isNotDivisibleByTimeUnit(availableEndTime.getMinute());
+        return cannotDivideByTimeUnit(availableStartTime.getMinute()) || cannotDivideByTimeUnit(availableEndTime.getMinute());
     }
 
-    public boolean isNotDivisibleByTimeUnit(final int minute) {
+    public boolean cannotDivideByTimeUnit(final int minute) {
         return minute % this.reservationTimeUnit != 0;
+    }
+
+    public boolean cannotDivideByTimeUnit(final TimeSlot timeSlot) {
+        return timeSlot.isNotDivisibleBy(Minute.from(reservationTimeUnit));
+    }
+
+    public boolean hasLongerMinimumTimeUnitThan(final TimeSlot timeSlot) {
+        return timeSlot.isDurationShorterThan(Minute.from(reservationMinimumTimeUnit));
+    }
+
+    public boolean hasShorterMaximumTimeUnitThan(final TimeSlot timeSlot) {
+        return timeSlot.isDurationLongerThan(Minute.from(reservationMaximumTimeUnit));
+    }
+
+    public boolean hasAvailableTimeToCover(final TimeSlot timeSlot) {
+        TimeSlot availableTimeSlot = TimeSlot.of(availableStartTime, availableEndTime);
+        return timeSlot.isNotWithin(availableTimeSlot);
     }
 
     private boolean isNotConsistentTimeUnit() {

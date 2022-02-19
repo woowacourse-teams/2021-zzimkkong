@@ -359,7 +359,7 @@ class ManagerReservationServiceTest extends ServiceTest {
         assertThatThrownBy(() -> reservationService.saveReservation(
                 reservationCreateDto,
                 managerReservationStrategy))
-                .isInstanceOf(NonMatchingStartAndEndDateException.class);
+                .isInstanceOf(NonMatchingStartEndDateException.class);
     }
 
     @ParameterizedTest
@@ -1160,7 +1160,7 @@ class ManagerReservationServiceTest extends ServiceTest {
         assertThatThrownBy(() -> reservationService.updateReservation(
                 reservationUpdateDto,
                 managerReservationStrategy))
-                .isInstanceOf(NonMatchingStartAndEndDateException.class);
+                .isInstanceOf(NonMatchingStartEndDateException.class);
     }
 
     @ParameterizedTest

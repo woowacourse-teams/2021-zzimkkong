@@ -67,16 +67,10 @@ public class Reservation {
         }
     }
 
-    public boolean hasConflictWith(final LocalDateTime startDateTime, final LocalDateTime endDateTime) {
-        return !(isEarlier(endDateTime) || isLater(startDateTime));
-    }
-
-    private boolean isEarlier(final LocalDateTime endDateTime) {
-        return endDateTime.equals(this.startTime) || endDateTime.isBefore(this.startTime);
-    }
-
-    private boolean isLater(final LocalDateTime startDateTime) {
-        return startDateTime.equals(this.endTime) || startDateTime.isAfter(this.endTime);
+    public boolean hasConflictWith(final ReservationTime thatReservationTime) {
+        //TODO: embeddable?
+        ReservationTime thisReservationTime = ReservationTime.of(this.startTime, this.endTime);
+        return thisReservationTime.hasConflictWith(thatReservationTime);
     }
 
     public void update(final Reservation updateReservation, final Space space) {

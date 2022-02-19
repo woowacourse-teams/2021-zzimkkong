@@ -33,7 +33,7 @@ class ReservationTest {
     void hasConflictWith(String startTime, String endTime, Boolean result) {
         LocalDateTime start = THE_DAY_AFTER_TOMORROW.atTime(LocalTime.parse(startTime, DateTimeFormatter.ofPattern("HH:mm")));
         LocalDateTime end = THE_DAY_AFTER_TOMORROW.atTime(LocalTime.parse(endTime, DateTimeFormatter.ofPattern("HH:mm")));
-        assertThat(reservation.hasConflictWith(start, end)).isEqualTo(result);
+        assertThat(reservation.hasConflictWith(ReservationTime.of(start, end))).isEqualTo(result);
     }
 
     @Test
