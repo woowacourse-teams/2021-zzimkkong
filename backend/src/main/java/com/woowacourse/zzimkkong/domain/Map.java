@@ -36,7 +36,7 @@ public class Map {
     private Member member;
 
     @OneToMany(mappedBy = "map", cascade = CascadeType.REMOVE, fetch = FetchType.LAZY, orphanRemoval = true)
-    private List<Space> spaces = new ArrayList<>();
+    private final List<Space> spaces = new ArrayList<>();
 
     public Map(final String name, final String mapDrawing, final String thumbnail, final Member member) {
         this.name = name;

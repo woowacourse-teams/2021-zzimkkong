@@ -1,9 +1,6 @@
 package com.woowacourse.zzimkkong.service;
 
-import com.woowacourse.zzimkkong.domain.Map;
-import com.woowacourse.zzimkkong.domain.Member;
-import com.woowacourse.zzimkkong.domain.Setting;
-import com.woowacourse.zzimkkong.domain.Space;
+import com.woowacourse.zzimkkong.domain.*;
 import com.woowacourse.zzimkkong.dto.member.LoginEmailDto;
 import com.woowacourse.zzimkkong.dto.space.*;
 import com.woowacourse.zzimkkong.exception.authorization.NoAuthorityOnMapException;
@@ -16,6 +13,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -34,9 +32,9 @@ class SpaceServiceTest extends ServiceTest {
     private final SettingsRequest settingsRequest = new SettingsRequest(
             BE_AVAILABLE_START_TIME,
             BE_AVAILABLE_END_TIME,
-            BE_RESERVATION_TIME_UNIT,
-            BE_RESERVATION_MINIMUM_TIME_UNIT,
-            BE_RESERVATION_MAXIMUM_TIME_UNIT,
+            BE_RESERVATION_TIME_UNIT.getMinute(),
+            BE_RESERVATION_MINIMUM_TIME_UNIT.getMinute(),
+            BE_RESERVATION_MAXIMUM_TIME_UNIT.getMinute(),
             BE_RESERVATION_ENABLE,
             EnabledDayOfWeekDto.from(BE_ENABLED_DAY_OF_WEEK)
     );
@@ -81,8 +79,9 @@ class SpaceServiceTest extends ServiceTest {
         luther = new Map(1L, LUTHER_NAME, MAP_DRAWING_DATA, MAP_SVG, pobi);
 
         Setting beSetting = Setting.builder()
-                .availableStartTime(BE_AVAILABLE_START_TIME)
-                .availableEndTime(BE_AVAILABLE_END_TIME)
+                .availableTimeSlot(TimeSlot.of(
+                        BE_AVAILABLE_START_TIME,
+                        BE_AVAILABLE_END_TIME))
                 .reservationTimeUnit(BE_RESERVATION_TIME_UNIT)
                 .reservationMinimumTimeUnit(BE_RESERVATION_MINIMUM_TIME_UNIT)
                 .reservationMaximumTimeUnit(BE_RESERVATION_MAXIMUM_TIME_UNIT)
@@ -100,8 +99,9 @@ class SpaceServiceTest extends ServiceTest {
                 .build();
 
         Setting feSetting = Setting.builder()
-                .availableStartTime(FE_AVAILABLE_START_TIME)
-                .availableEndTime(FE_AVAILABLE_END_TIME)
+                .availableTimeSlot(TimeSlot.of(
+                        FE_AVAILABLE_START_TIME,
+                        FE_AVAILABLE_END_TIME))
                 .reservationTimeUnit(FE_RESERVATION_TIME_UNIT)
                 .reservationMinimumTimeUnit(FE_RESERVATION_MINIMUM_TIME_UNIT)
                 .reservationMaximumTimeUnit(FE_RESERVATION_MAXIMUM_TIME_UNIT)
@@ -130,8 +130,9 @@ class SpaceServiceTest extends ServiceTest {
     void save() {
         // given
         Setting setting = Setting.builder()
-                .availableStartTime(BE_AVAILABLE_START_TIME)
-                .availableEndTime(BE_AVAILABLE_END_TIME)
+                .availableTimeSlot(TimeSlot.of(
+                        BE_AVAILABLE_START_TIME,
+                        BE_AVAILABLE_END_TIME))
                 .reservationTimeUnit(BE_RESERVATION_TIME_UNIT)
                 .reservationMinimumTimeUnit(BE_RESERVATION_MINIMUM_TIME_UNIT)
                 .reservationMaximumTimeUnit(BE_RESERVATION_MAXIMUM_TIME_UNIT)
@@ -283,7 +284,7 @@ class SpaceServiceTest extends ServiceTest {
                 updateSpaceCreateUpdateRequest,
                 pobiEmail));
 
-        assertThat(be.getReservationTimeUnit()).isEqualTo(settingsRequest.getReservationTimeUnit());
+        assertThat(be.getReservationTimeUnitAsInt()).isEqualTo(settingsRequest.getReservationTimeUnit());
         assertThat(be.getEnabledDayOfWeek()).isEqualTo(settingsRequest.enabledDayOfWeekAsString());
     }
 

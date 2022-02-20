@@ -109,8 +109,9 @@ class AdminServiceTest extends ServiceTest {
         //given
         Map luther = new Map(LUTHER_NAME, MAP_DRAWING_DATA, MAP_SVG, pobi);
         Setting beSetting = Setting.builder()
-                .availableStartTime(BE_AVAILABLE_START_TIME)
-                .availableEndTime(BE_AVAILABLE_END_TIME)
+                .availableTimeSlot(TimeSlot.of(
+                        BE_AVAILABLE_START_TIME,
+                        BE_AVAILABLE_END_TIME))
                 .reservationTimeUnit(BE_RESERVATION_TIME_UNIT)
                 .reservationMinimumTimeUnit(BE_RESERVATION_MINIMUM_TIME_UNIT)
                 .reservationMaximumTimeUnit(BE_RESERVATION_MAXIMUM_TIME_UNIT)
@@ -150,8 +151,9 @@ class AdminServiceTest extends ServiceTest {
         //given
         Map luther = new Map(1L, LUTHER_NAME, MAP_DRAWING_DATA, MAP_SVG, pobi);
         Setting beSetting = Setting.builder()
-                .availableStartTime(BE_AVAILABLE_START_TIME)
-                .availableEndTime(BE_AVAILABLE_END_TIME)
+                .availableTimeSlot(TimeSlot.of(
+                        BE_AVAILABLE_START_TIME,
+                        BE_AVAILABLE_END_TIME))
                 .reservationTimeUnit(BE_RESERVATION_TIME_UNIT)
                 .reservationMinimumTimeUnit(BE_RESERVATION_MINIMUM_TIME_UNIT)
                 .reservationMaximumTimeUnit(BE_RESERVATION_MAXIMUM_TIME_UNIT)

@@ -53,11 +53,13 @@ public class DataLoader implements CommandLineRunner {
         );
 
         Setting defaultSetting = Setting.builder()
-                .availableStartTime(LocalTime.of(9, 0))
-                .availableEndTime(LocalTime.of(22, 00))
-                .reservationTimeUnit(10)
-                .reservationMinimumTimeUnit(10)
-                .reservationMaximumTimeUnit(700)
+                .availableTimeSlot(
+                        TimeSlot.of(
+                                LocalTime.of(9, 0),
+                                LocalTime.of(22, 0)))
+                .reservationTimeUnit(Minute.from(10))
+                .reservationMinimumTimeUnit(Minute.from(10))
+                .reservationMaximumTimeUnit(Minute.from(700))
                 .reservationEnable(true)
                 .enabledDayOfWeek("monday,tuesday,wednesday,thursday,friday,saturday,sunday")
                 .build();
@@ -199,7 +201,7 @@ public class DataLoader implements CommandLineRunner {
         Reservation reservationBackEndTargetDate18To23 = Reservation.builder()
                 .date(targetDate)
                 .startTime(targetDate.atTime(18, 0, 0))
-                .endTime(targetDate.atTime(23, 59, 59))
+                .endTime(targetDate.atTime(23, 0, 0))
                 .date(targetDate)
                 .description("찜꽁 3차 회의")
                 .userName("찜꽁")

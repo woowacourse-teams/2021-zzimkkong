@@ -9,7 +9,6 @@ import org.hibernate.annotations.DynamicUpdate;
 
 import javax.persistence.*;
 import java.time.DayOfWeek;
-import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -43,6 +42,18 @@ public class Space {
     private String area;
 
     @Embedded
+    @AttributeOverrides({
+            @AttributeOverride(name = "availableTimeSlot.startTime",
+                    column = @Column(name = "available_start_time")),
+            @AttributeOverride(name = "availableTimeSlot.endTime",
+                    column = @Column(name = "available_end_time")),
+            @AttributeOverride(name = "reservationTimeUnit.minute",
+                    column = @Column(name = "reservation_time_unit")),
+            @AttributeOverride(name = "reservationMinimumTimeUnit.minute",
+                    column = @Column(name = "reservation_minimum_time_unit")),
+            @AttributeOverride(name = "reservationMaximumTimeUnit.minute",
+                    column = @Column(name = "reservation_maximum_time_unit"))
+    })
     private Setting setting;
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -97,27 +108,7 @@ public class Space {
     }
 
     public boolean cannotAcceptDueToAvailableTime(final TimeSlot timeSlot) {
-        return setting.hasAvailableTimeToCover(timeSlot);
-    }
-
-    public boolean isNotBetweenAvailableTime(final LocalDateTime startDateTime, LocalDateTime endDateTime) {
-        boolean isEqualOrAfterStartTime = startDateTime.toLocalTime().equals(getAvailableStartTime()) ||
-                startDateTime.toLocalTime().isAfter(getAvailableStartTime());
-        boolean isEqualOrBeforeEndTime = endDateTime.toLocalTime().equals(getAvailableEndTime()) ||
-                endDateTime.toLocalTime().isBefore(getAvailableEndTime());
-        return !(isEqualOrAfterStartTime && isEqualOrBeforeEndTime);
-    }
-
-    public boolean isNotDivisibleByTimeUnit(final int minute) {
-        return setting.cannotDivideByTimeUnit(minute);
-    }
-
-    public boolean isIncorrectMinimumTimeUnit(final int durationMinutes) {
-        return durationMinutes < getReservationMinimumTimeUnit();
-    }
-
-    public boolean isIncorrectMaximumTimeUnit(final int durationMinutes) {
-        return durationMinutes > getReservationMaximumTimeUnit();
+        return setting.hasNotEnoughAvailableTimeToCover(timeSlot);
     }
 
     public boolean isUnableToReserve() {
@@ -127,6 +118,42 @@ public class Space {
     public boolean isClosedOn(final DayOfWeek dayOfWeek) {
         return getEnabledDaysOfWeek().stream()
                 .noneMatch(enabledDayOfWeek -> enabledDayOfWeek.equals(dayOfWeek));
+    }
+
+    public void addReservation(final Reservation reservation) {
+        reservations.add(reservation);
+    }
+
+    public boolean hasSameId(final Long spaceId) {
+        return id.equals(spaceId);
+    }
+
+    public LocalTime getAvailableStartTime() {
+        return setting.getAvailableStartTime();
+    }
+
+    public LocalTime getAvailableEndTime() {
+        return setting.getAvailableEndTime();
+    }
+
+    public Integer getReservationTimeUnitAsInt() {
+        return setting.getReservationTimeUnitAsInt();
+    }
+
+    public Integer getReservationMinimumTimeUnitAsInt() {
+        return setting.getReservationMinimumTimeUnitAsInt();
+    }
+
+    public Integer getReservationMaximumTimeUnitAsInt() {
+        return setting.getReservationMaximumTimeUnitAsInt();
+    }
+
+    public Boolean getReservationEnable() {
+        return setting.getReservationEnable();
+    }
+
+    public String getEnabledDayOfWeek() {
+        return setting.getEnabledDayOfWeek();
     }
 
     private List<DayOfWeek> getEnabledDaysOfWeek() {
@@ -147,41 +174,5 @@ public class Space {
                 .filter(dayOfWeek -> dayOfWeek.name().equals(dayOfWeekName.toUpperCase()))
                 .findAny()
                 .orElseThrow(NoSuchDayOfWeekException::new);
-    }
-
-    public void addReservation(final Reservation reservation) {
-        reservations.add(reservation);
-    }
-
-    public boolean hasSameId(final Long spaceId) {
-        return id.equals(spaceId);
-    }
-
-    public LocalTime getAvailableEndTime() {
-        return setting.getAvailableEndTime();
-    }
-
-    public LocalTime getAvailableStartTime() {
-        return setting.getAvailableStartTime();
-    }
-
-    public Integer getReservationTimeUnit() {
-        return setting.getReservationTimeUnit();
-    }
-
-    public Integer getReservationMinimumTimeUnit() {
-        return setting.getReservationMinimumTimeUnit();
-    }
-
-    public Integer getReservationMaximumTimeUnit() {
-        return setting.getReservationMaximumTimeUnit();
-    }
-
-    public Boolean getReservationEnable() {
-        return setting.getReservationEnable();
-    }
-
-    public String getEnabledDayOfWeek() {
-        return setting.getEnabledDayOfWeek();
     }
 }

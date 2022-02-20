@@ -67,6 +67,11 @@ public class Reservation {
         }
     }
 
+    @PostLoad
+    private void init() {
+        // set things
+    }
+
     public boolean hasConflictWith(final ReservationTime thatReservationTime) {
         //TODO: embeddable?
         ReservationTime thisReservationTime = ReservationTime.of(this.startTime, this.endTime);

@@ -66,8 +66,9 @@ class ManagerReservationControllerTest extends AcceptanceTest {
         Map luther = new Map(LUTHER_NAME, MAP_DRAWING_DATA, MAP_SVG, pobi);
 
         Setting beSetting = Setting.builder()
-                .availableStartTime(BE_AVAILABLE_START_TIME)
-                .availableEndTime(BE_AVAILABLE_END_TIME)
+                .availableTimeSlot(TimeSlot.of(
+                        BE_AVAILABLE_START_TIME,
+                        BE_AVAILABLE_END_TIME))
                 .reservationTimeUnit(BE_RESERVATION_TIME_UNIT)
                 .reservationMinimumTimeUnit(BE_RESERVATION_MINIMUM_TIME_UNIT)
                 .reservationMaximumTimeUnit(BE_RESERVATION_MAXIMUM_TIME_UNIT)
@@ -85,8 +86,9 @@ class ManagerReservationControllerTest extends AcceptanceTest {
                 .build();
 
         Setting feSetting = Setting.builder()
-                .availableStartTime(FE_AVAILABLE_START_TIME)
-                .availableEndTime(FE_AVAILABLE_END_TIME)
+                .availableTimeSlot(TimeSlot.of(
+                        FE_AVAILABLE_START_TIME,
+                        FE_AVAILABLE_END_TIME))
                 .reservationTimeUnit(FE_RESERVATION_TIME_UNIT)
                 .reservationMinimumTimeUnit(FE_RESERVATION_MINIMUM_TIME_UNIT)
                 .reservationMaximumTimeUnit(FE_RESERVATION_MAXIMUM_TIME_UNIT)

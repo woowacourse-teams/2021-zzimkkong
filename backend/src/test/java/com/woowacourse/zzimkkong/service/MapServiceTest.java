@@ -1,10 +1,7 @@
 package com.woowacourse.zzimkkong.service;
 
 import com.woowacourse.zzimkkong.Constants;
-import com.woowacourse.zzimkkong.domain.Map;
-import com.woowacourse.zzimkkong.domain.Member;
-import com.woowacourse.zzimkkong.domain.Setting;
-import com.woowacourse.zzimkkong.domain.Space;
+import com.woowacourse.zzimkkong.domain.*;
 import com.woowacourse.zzimkkong.dto.map.MapCreateResponse;
 import com.woowacourse.zzimkkong.dto.map.MapCreateUpdateRequest;
 import com.woowacourse.zzimkkong.dto.map.MapFindAllResponse;
@@ -50,8 +47,9 @@ class MapServiceTest extends ServiceTest {
         lutherId = luther.getId();
 
         Setting beSetting = Setting.builder()
-                .availableStartTime(BE_AVAILABLE_START_TIME)
-                .availableEndTime(BE_AVAILABLE_END_TIME)
+                .availableTimeSlot(TimeSlot.of(
+                        BE_AVAILABLE_START_TIME,
+                        BE_AVAILABLE_END_TIME))
                 .reservationTimeUnit(BE_RESERVATION_TIME_UNIT)
                 .reservationMinimumTimeUnit(BE_RESERVATION_MINIMUM_TIME_UNIT)
                 .reservationMaximumTimeUnit(BE_RESERVATION_MAXIMUM_TIME_UNIT)
@@ -69,8 +67,9 @@ class MapServiceTest extends ServiceTest {
                 .build();
 
         Setting feSetting = Setting.builder()
-                .availableStartTime(FE_AVAILABLE_START_TIME)
-                .availableEndTime(FE_AVAILABLE_END_TIME)
+                .availableTimeSlot(TimeSlot.of(
+                        FE_AVAILABLE_START_TIME,
+                        FE_AVAILABLE_END_TIME))
                 .reservationTimeUnit(FE_RESERVATION_TIME_UNIT)
                 .reservationMinimumTimeUnit(FE_RESERVATION_MINIMUM_TIME_UNIT)
                 .reservationMaximumTimeUnit(FE_RESERVATION_MAXIMUM_TIME_UNIT)

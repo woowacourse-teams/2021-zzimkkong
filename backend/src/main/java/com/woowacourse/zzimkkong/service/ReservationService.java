@@ -65,8 +65,8 @@ public class ReservationService {
 
         Reservation reservation = reservations.save(
                 Reservation.builder()
-                        .startTime(reservationTime.getStartDateTime())
-                        .endTime(reservationTime.getEndDateTime())
+                        .startTime(reservationCreateDto.getStartDateTime())
+                        .endTime(reservationCreateDto.getEndDateTime())
                         .date(reservationCreateDto.getStartDateTime().toLocalDate())
                         .password(reservationCreateDto.getPassword())
                         .userName(reservationCreateDto.getName())
@@ -168,8 +168,8 @@ public class ReservationService {
         validateAvailability(space, reservationTime, new ExcludeReservationUpdateStrategy(reservation));
 
         Reservation updateReservation = Reservation.builder()
-                .startTime(reservationTime.getStartDateTime())
-                .endTime(reservationTime.getEndDateTime())
+                .startTime(reservationUpdateDto.getStartDateTime())
+                .endTime(reservationUpdateDto.getEndDateTime())
                 .date(reservationUpdateDto.getStartDateTime().toLocalDate())
                 .userName(reservationUpdateDto.getName())
                 .description(reservationUpdateDto.getDescription())

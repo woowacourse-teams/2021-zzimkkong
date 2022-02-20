@@ -1,8 +1,6 @@
 package com.woowacourse.zzimkkong.service;
 
-import com.woowacourse.zzimkkong.domain.Map;
-import com.woowacourse.zzimkkong.domain.Setting;
-import com.woowacourse.zzimkkong.domain.Space;
+import com.woowacourse.zzimkkong.domain.*;
 import com.woowacourse.zzimkkong.dto.member.LoginEmailDto;
 import com.woowacourse.zzimkkong.dto.space.*;
 import com.woowacourse.zzimkkong.exception.authorization.NoAuthorityOnMapException;
@@ -143,12 +141,14 @@ public class SpaceService {
         SettingsRequest settingsRequest = spaceCreateUpdateRequest.getSettingsRequest();
 
         return Setting.builder()
-                .availableStartTime(settingsRequest.getAvailableStartTime())
-                .availableEndTime(settingsRequest.getAvailableEndTime())
-                .reservationTimeUnit(settingsRequest.getReservationTimeUnit())
+                .availableTimeSlot(
+                        TimeSlot.of(
+                                settingsRequest.getAvailableStartTime(),
+                                settingsRequest.getAvailableEndTime()))
+                .reservationTimeUnit(Minute.from(settingsRequest.getReservationTimeUnit()))
+                .reservationMinimumTimeUnit(Minute.from(settingsRequest.getReservationMinimumTimeUnit()))
+                .reservationMaximumTimeUnit(Minute.from(settingsRequest.getReservationMaximumTimeUnit()))
                 .reservationEnable(settingsRequest.getReservationEnable())
-                .reservationMinimumTimeUnit(settingsRequest.getReservationMinimumTimeUnit())
-                .reservationMaximumTimeUnit(settingsRequest.getReservationMaximumTimeUnit())
                 .enabledDayOfWeek(settingsRequest.enabledDayOfWeekAsString())
                 .build();
     }

@@ -51,9 +51,9 @@ class AcceptanceTest {
     protected final SettingsRequest beSettingsRequest = new SettingsRequest(
             BE_AVAILABLE_START_TIME,
             BE_AVAILABLE_END_TIME,
-            BE_RESERVATION_TIME_UNIT,
-            BE_RESERVATION_MINIMUM_TIME_UNIT,
-            BE_RESERVATION_MAXIMUM_TIME_UNIT,
+            BE_RESERVATION_TIME_UNIT.getMinute(),
+            BE_RESERVATION_MINIMUM_TIME_UNIT.getMinute(),
+            BE_RESERVATION_MAXIMUM_TIME_UNIT.getMinute(),
             BE_RESERVATION_ENABLE,
             EnabledDayOfWeekDto.from(BE_ENABLED_DAY_OF_WEEK)
     );
@@ -68,9 +68,9 @@ class AcceptanceTest {
     protected final SettingsRequest feSettingsRequest = new SettingsRequest(
             FE_AVAILABLE_START_TIME,
             FE_AVAILABLE_END_TIME,
-            FE_RESERVATION_TIME_UNIT,
-            FE_RESERVATION_MINIMUM_TIME_UNIT,
-            FE_RESERVATION_MAXIMUM_TIME_UNIT,
+            FE_RESERVATION_TIME_UNIT.getMinute(),
+            FE_RESERVATION_MINIMUM_TIME_UNIT.getMinute(),
+            FE_RESERVATION_MAXIMUM_TIME_UNIT.getMinute(),
             FE_RESERVATION_ENABLE,
             EnabledDayOfWeekDto.from(FE_ENABLED_DAY_OF_WEEK)
     );

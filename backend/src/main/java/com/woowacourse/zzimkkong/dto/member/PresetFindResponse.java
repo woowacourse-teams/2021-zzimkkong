@@ -37,9 +37,9 @@ public class PresetFindResponse extends SettingResponse {
                 preset.getId(),
                 setting.getAvailableStartTime(),
                 setting.getAvailableEndTime(),
-                setting.getReservationTimeUnit(),
-                setting.getReservationMinimumTimeUnit(),
-                setting.getReservationMaximumTimeUnit(),
+                setting.getReservationTimeUnitAsInt(),
+                setting.getReservationMinimumTimeUnitAsInt(),
+                setting.getReservationMaximumTimeUnitAsInt(),
                 setting.getReservationEnable(),
                 EnabledDayOfWeekDto.from(setting.getEnabledDayOfWeek()),
                 preset.getName());

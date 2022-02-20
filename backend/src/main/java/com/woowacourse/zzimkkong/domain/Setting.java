@@ -1,35 +1,34 @@
 package com.woowacourse.zzimkkong.domain;
 
-import com.woowacourse.zzimkkong.exception.space.*;
+import com.woowacourse.zzimkkong.exception.space.InvalidMinimumMaximumTimeUnitException;
+import com.woowacourse.zzimkkong.exception.space.NotEnoughAvailableTimeException;
+import com.woowacourse.zzimkkong.exception.space.TimeUnitInconsistencyException;
+import com.woowacourse.zzimkkong.exception.space.TimeUnitMismatchException;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
+import javax.persistence.Embedded;
 import java.time.LocalTime;
-import java.time.temporal.ChronoUnit;
 
 @Getter
-@Builder
 @NoArgsConstructor
+@Builder
 @Embeddable
 public class Setting {
-    //FIXME: TimeSlot Embeddable
-    @Column(nullable = false)
-    private LocalTime availableStartTime;
+    @Embedded
+    private TimeSlot availableTimeSlot;
 
-    @Column(nullable = false)
-    private LocalTime availableEndTime;
+    @Embedded
+    private Minute reservationTimeUnit;
 
-    @Column(nullable = false)
-    private Integer reservationTimeUnit;
+    @Embedded
+    private Minute reservationMinimumTimeUnit;
 
-    @Column(nullable = false)
-    private Integer reservationMinimumTimeUnit;
-
-    @Column(nullable = false)
-    private Integer reservationMaximumTimeUnit;
+    @Embedded
+    private Minute reservationMaximumTimeUnit;
 
     @Column(nullable = false)
     private Boolean reservationEnable;
@@ -38,15 +37,13 @@ public class Setting {
     private String enabledDayOfWeek;
 
     protected Setting(
-            final LocalTime availableStartTime,
-            final LocalTime availableEndTime,
-            final Integer reservationTimeUnit,
-            final Integer reservationMinimumTimeUnit,
-            final Integer reservationMaximumTimeUnit,
+            final TimeSlot availableTimeSlot,
+            final Minute reservationTimeUnit,
+            final Minute reservationMinimumTimeUnit,
+            final Minute reservationMaximumTimeUnit,
             final Boolean reservationEnable,
             final String enabledDayOfWeek) {
-        this.availableStartTime = availableStartTime;
-        this.availableEndTime = availableEndTime;
+        this.availableTimeSlot = availableTimeSlot;
         this.reservationTimeUnit = reservationTimeUnit;
         this.reservationMinimumTimeUnit = reservationMinimumTimeUnit;
         this.reservationMaximumTimeUnit = reservationMaximumTimeUnit;
@@ -57,15 +54,11 @@ public class Setting {
     }
 
     private void validateSetting() {
-        if (availableStartTime.equals(availableEndTime) || availableStartTime.isAfter(availableEndTime)) {
-            throw new ImpossibleAvailableStartEndTimeException();
-        }
-
-        if (isNoneMatchingAvailableTimeAndTimeUnit()) {
+        if (availableTimeSlot.isNotDivisibleBy(reservationTimeUnit)) {
             throw new TimeUnitMismatchException();
         }
 
-        if (reservationMaximumTimeUnit < reservationMinimumTimeUnit) {
+        if (reservationMaximumTimeUnit.isShorterThan(reservationMinimumTimeUnit)) {
             throw new InvalidMinimumMaximumTimeUnitException();
         }
 
@@ -73,49 +66,49 @@ public class Setting {
             throw new TimeUnitInconsistencyException();
         }
 
-        int duration = (int) ChronoUnit.MINUTES.between(availableStartTime, availableEndTime);
-        if (duration < reservationMaximumTimeUnit) {
+        if (availableTimeSlot.isDurationShorterThan(reservationMaximumTimeUnit)) {
             throw new NotEnoughAvailableTimeException();
         }
     }
 
-    private boolean isNoneMatchingAvailableTimeAndTimeUnit() {
-        return cannotDivideByTimeUnit(availableStartTime.getMinute()) || cannotDivideByTimeUnit(availableEndTime.getMinute());
-    }
-
-    public boolean cannotDivideByTimeUnit(final int minute) {
-        return minute % this.reservationTimeUnit != 0;
-    }
-
     public boolean cannotDivideByTimeUnit(final TimeSlot timeSlot) {
-        return timeSlot.isNotDivisibleBy(Minute.from(reservationTimeUnit));
+        return timeSlot.isNotDivisibleBy(reservationTimeUnit);
     }
 
     public boolean hasLongerMinimumTimeUnitThan(final TimeSlot timeSlot) {
-        return timeSlot.isDurationShorterThan(Minute.from(reservationMinimumTimeUnit));
+        return timeSlot.isDurationShorterThan(reservationMinimumTimeUnit);
     }
 
     public boolean hasShorterMaximumTimeUnitThan(final TimeSlot timeSlot) {
-        return timeSlot.isDurationLongerThan(Minute.from(reservationMaximumTimeUnit));
+        return timeSlot.isDurationLongerThan(reservationMaximumTimeUnit);
     }
 
-    public boolean hasAvailableTimeToCover(final TimeSlot timeSlot) {
-        TimeSlot availableTimeSlot = TimeSlot.of(availableStartTime, availableEndTime);
+    public boolean hasNotEnoughAvailableTimeToCover(final TimeSlot timeSlot) {
         return timeSlot.isNotWithin(availableTimeSlot);
     }
 
+    public LocalTime getAvailableStartTime() {
+        return availableTimeSlot.getStartTime();
+    }
+
+    public LocalTime getAvailableEndTime() {
+        return availableTimeSlot.getEndTime();
+    }
+
+    public Integer getReservationTimeUnitAsInt() {
+        return reservationTimeUnit.getMinute();
+    }
+
+    public Integer getReservationMinimumTimeUnitAsInt() {
+        return reservationMinimumTimeUnit.getMinute();
+    }
+
+    public Integer getReservationMaximumTimeUnitAsInt() {
+        return reservationMaximumTimeUnit.getMinute();
+    }
+
     private boolean isNotConsistentTimeUnit() {
-        return !(isMinimumTimeUnitConsistentWithTimeUnit() && isMaximumTimeUnitConsistentWithTimeUnit());
-    }
-
-    private boolean isMinimumTimeUnitConsistentWithTimeUnit() {
-        int minimumTimeUnitQuotient = reservationMinimumTimeUnit / reservationTimeUnit;
-        int minimumTimeUnitRemainder = reservationMinimumTimeUnit % reservationTimeUnit;
-        return minimumTimeUnitRemainder == 0 && 1 <= minimumTimeUnitQuotient;
-    }
-
-    private boolean isMaximumTimeUnitConsistentWithTimeUnit() {
-        int maximumTimeUnitRemainder = reservationMaximumTimeUnit % reservationTimeUnit;
-        return maximumTimeUnitRemainder == 0;
+        return !(reservationMinimumTimeUnit.isDivisibleBy(reservationTimeUnit) &&
+                reservationMaximumTimeUnit.isDivisibleBy(reservationTimeUnit));
     }
 }

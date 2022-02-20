@@ -80,8 +80,9 @@ class ManagerReservationServiceTest extends ServiceTest {
         luther = new Map(1L, LUTHER_NAME, MAP_DRAWING_DATA, MAP_SVG, pobi);
 
         Setting beSetting = Setting.builder()
-                .availableStartTime(BE_AVAILABLE_START_TIME)
-                .availableEndTime(BE_AVAILABLE_END_TIME)
+                .availableTimeSlot(TimeSlot.of(
+                        BE_AVAILABLE_START_TIME,
+                        BE_AVAILABLE_END_TIME))
                 .reservationTimeUnit(BE_RESERVATION_TIME_UNIT)
                 .reservationMinimumTimeUnit(BE_RESERVATION_MINIMUM_TIME_UNIT)
                 .reservationMaximumTimeUnit(BE_RESERVATION_MAXIMUM_TIME_UNIT)
@@ -99,8 +100,9 @@ class ManagerReservationServiceTest extends ServiceTest {
                 .build();
 
         Setting feSetting = Setting.builder()
-                .availableStartTime(FE_AVAILABLE_START_TIME)
-                .availableEndTime(FE_AVAILABLE_END_TIME)
+                .availableTimeSlot(TimeSlot.of(
+                        FE_AVAILABLE_START_TIME,
+                        FE_AVAILABLE_END_TIME))
                 .reservationTimeUnit(FE_RESERVATION_TIME_UNIT)
                 .reservationMinimumTimeUnit(FE_RESERVATION_MINIMUM_TIME_UNIT)
                 .reservationMaximumTimeUnit(FE_RESERVATION_MAXIMUM_TIME_UNIT)
@@ -303,7 +305,7 @@ class ManagerReservationServiceTest extends ServiceTest {
         assertThatThrownBy(() -> reservationService.saveReservation(
                 reservationCreateDto,
                 managerReservationStrategy))
-                .isInstanceOf(ImpossibleEndTimeException.class);
+                .isInstanceOf(ImpossibleStartEndTimeException.class);
     }
 
     @Test
@@ -331,7 +333,7 @@ class ManagerReservationServiceTest extends ServiceTest {
         assertThatThrownBy(() -> reservationService.saveReservation(
                 reservationCreateDto,
                 managerReservationStrategy))
-                .isInstanceOf(ImpossibleEndTimeException.class);
+                .isInstanceOf(ImpossibleStartEndTimeException.class);
     }
 
     @Test
@@ -426,11 +428,12 @@ class ManagerReservationServiceTest extends ServiceTest {
     void saveReservationUnable() {
         // given, when
         Setting setting = Setting.builder()
-                .availableStartTime(LocalTime.of(0, 0))
-                .availableEndTime(LocalTime.of(18, 0))
-                .reservationTimeUnit(10)
-                .reservationMinimumTimeUnit(10)
-                .reservationMaximumTimeUnit(120)
+                .availableTimeSlot(TimeSlot.of(
+                        LocalTime.of(0, 0),
+                        LocalTime.of(18, 0)))
+                .reservationTimeUnit(Minute.from(10))
+                .reservationMinimumTimeUnit(Minute.from(10))
+                .reservationMaximumTimeUnit(Minute.from(120))
                 .reservationEnable(false)
                 .enabledDayOfWeek(null)
                 .build();
@@ -468,11 +471,12 @@ class ManagerReservationServiceTest extends ServiceTest {
     void saveIllegalDayOfWeek() {
         // given, when
         Setting setting = Setting.builder()
-                .availableStartTime(LocalTime.of(0, 0))
-                .availableEndTime(LocalTime.of(18, 0))
-                .reservationTimeUnit(10)
-                .reservationMinimumTimeUnit(10)
-                .reservationMaximumTimeUnit(120)
+                .availableTimeSlot(TimeSlot.of(
+                        LocalTime.of(0, 0),
+                        LocalTime.of(18, 0)))
+                .reservationTimeUnit(Minute.from(10))
+                .reservationMinimumTimeUnit(Minute.from(10))
+                .reservationMaximumTimeUnit(Minute.from(120))
                 .reservationEnable(true)
                 .enabledDayOfWeek(THE_DAY_AFTER_TOMORROW.plusDays(1L).getDayOfWeek().name())
                 .build();
@@ -542,7 +546,7 @@ class ManagerReservationServiceTest extends ServiceTest {
     }
 
     @ParameterizedTest
-    @CsvSource({"1,61", "10,55", "5,65", "20,89"})
+    @CsvSource({"5,60", "10,55", "5,65", "20,85"})
     @DisplayName("예약 생성/수정 요청 시, space setting의 reservationTimeUnit이 일치하지 않으면 예외가 발생한다.")
     void saveReservationTimeUnitException(int additionalStartMinute, int additionalEndMinute) {
         //given
@@ -1130,7 +1134,7 @@ class ManagerReservationServiceTest extends ServiceTest {
         assertThatThrownBy(() -> reservationService.updateReservation(
                 reservationUpdateDto,
                 managerReservationStrategy))
-                .isInstanceOf(ImpossibleEndTimeException.class);
+                .isInstanceOf(ImpossibleStartEndTimeException.class);
     }
 
     @Test
@@ -1241,11 +1245,12 @@ class ManagerReservationServiceTest extends ServiceTest {
     void updateReservationUnable() {
         // given, when
         Setting setting = Setting.builder()
-                .availableStartTime(LocalTime.of(0, 0))
-                .availableEndTime(LocalTime.of(18, 0))
-                .reservationTimeUnit(10)
-                .reservationMinimumTimeUnit(10)
-                .reservationMaximumTimeUnit(120)
+                .availableTimeSlot(TimeSlot.of(
+                        LocalTime.of(0, 0),
+                        LocalTime.of(18, 0)))
+                .reservationTimeUnit(Minute.from(10))
+                .reservationMinimumTimeUnit(Minute.from(10))
+                .reservationMaximumTimeUnit(Minute.from(120))
                 .reservationEnable(false)
                 .enabledDayOfWeek(null)
                 .build();
@@ -1287,11 +1292,12 @@ class ManagerReservationServiceTest extends ServiceTest {
     void updateIllegalDayOfWeek() {
         // given, when
         Setting setting = Setting.builder()
-                .availableStartTime(LocalTime.of(0, 0))
-                .availableEndTime(LocalTime.of(18, 0))
-                .reservationTimeUnit(10)
-                .reservationMinimumTimeUnit(10)
-                .reservationMaximumTimeUnit(120)
+                .availableTimeSlot(TimeSlot.of(
+                        LocalTime.of(0, 0),
+                        LocalTime.of(18, 0)))
+                .reservationTimeUnit(Minute.from(10))
+                .reservationMinimumTimeUnit(Minute.from(10))
+                .reservationMaximumTimeUnit(Minute.from(120))
                 .reservationEnable(true)
                 .enabledDayOfWeek(THE_DAY_AFTER_TOMORROW.plusDays(1L).getDayOfWeek().name())
                 .build();

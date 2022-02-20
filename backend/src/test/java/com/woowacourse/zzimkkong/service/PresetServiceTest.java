@@ -3,6 +3,7 @@ package com.woowacourse.zzimkkong.service;
 import com.woowacourse.zzimkkong.domain.Member;
 import com.woowacourse.zzimkkong.domain.Preset;
 import com.woowacourse.zzimkkong.domain.Setting;
+import com.woowacourse.zzimkkong.domain.TimeSlot;
 import com.woowacourse.zzimkkong.dto.member.PresetCreateRequest;
 import com.woowacourse.zzimkkong.dto.member.PresetCreateResponse;
 import com.woowacourse.zzimkkong.dto.member.PresetFindAllResponse;
@@ -38,16 +39,17 @@ class PresetServiceTest extends ServiceTest {
     private final SettingsRequest settingsRequest = new SettingsRequest(
             BE_AVAILABLE_START_TIME,
             BE_AVAILABLE_END_TIME,
-            BE_RESERVATION_TIME_UNIT,
-            BE_RESERVATION_MINIMUM_TIME_UNIT,
-            BE_RESERVATION_MAXIMUM_TIME_UNIT,
+            BE_RESERVATION_TIME_UNIT.getMinute(),
+            BE_RESERVATION_MINIMUM_TIME_UNIT.getMinute(),
+            BE_RESERVATION_MAXIMUM_TIME_UNIT.getMinute(),
             BE_RESERVATION_ENABLE,
             EnabledDayOfWeekDto.from(BE_ENABLED_DAY_OF_WEEK)
     );
 
     private final Setting setting = Setting.builder()
-            .availableStartTime(BE_AVAILABLE_START_TIME)
-            .availableEndTime(BE_AVAILABLE_END_TIME)
+            .availableTimeSlot(TimeSlot.of(
+                    BE_AVAILABLE_START_TIME,
+                    BE_AVAILABLE_END_TIME))
             .reservationTimeUnit(BE_RESERVATION_TIME_UNIT)
             .reservationMinimumTimeUnit(BE_RESERVATION_MINIMUM_TIME_UNIT)
             .reservationMaximumTimeUnit(BE_RESERVATION_MAXIMUM_TIME_UNIT)
