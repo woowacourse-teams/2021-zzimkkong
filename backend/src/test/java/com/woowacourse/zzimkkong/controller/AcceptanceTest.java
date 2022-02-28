@@ -35,7 +35,6 @@ import static com.woowacourse.zzimkkong.Constants.*;
 import static com.woowacourse.zzimkkong.DocumentUtils.setRequestSpecification;
 import static com.woowacourse.zzimkkong.controller.AuthControllerTest.getToken;
 import static com.woowacourse.zzimkkong.controller.MemberControllerTest.saveMember;
-import static com.woowacourse.zzimkkong.infrastructure.datetime.TimeZoneUtils.KST;
 import static org.mockito.ArgumentMatchers.any;
 import static org.springframework.restdocs.restassured3.RestAssuredRestDocumentation.documentationConfiguration;
 
@@ -113,11 +112,5 @@ class AcceptanceTest {
     @AfterEach
     void deleteAll() {
         databaseCleaner.execute();
-    }
-
-    protected List<Reservation> filterReservationsByKST(List<Reservation> reservations, LocalDate date) {
-        return reservations.stream()
-                .filter(reservation -> reservation.isBookedOn(date, KST))
-                .collect(Collectors.toList());
     }
 }

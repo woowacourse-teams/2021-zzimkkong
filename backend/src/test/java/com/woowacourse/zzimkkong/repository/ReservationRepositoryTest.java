@@ -82,9 +82,10 @@ class ReservationRepositoryTest extends RepositoryTest {
         spaces.save(fe);
 
         beAmZeroOne = Reservation.builder()
-                .date(BE_AM_TEN_ELEVEN_START_TIME_KST.toLocalDate())
-                .startTime(BE_AM_TEN_ELEVEN_START_TIME_KST.withZoneSameInstant(UTC.toZoneId()).toLocalDateTime())
-                .endTime(BE_AM_TEN_ELEVEN_END_TIME_KST.withZoneSameInstant(UTC.toZoneId()).toLocalDateTime())
+                .reservationTime(
+                        ReservationTime.of(
+                                BE_AM_TEN_ELEVEN_START_TIME_KST.withZoneSameInstant(UTC.toZoneId()).toLocalDateTime(),
+                                BE_AM_TEN_ELEVEN_END_TIME_KST.withZoneSameInstant(UTC.toZoneId()).toLocalDateTime()))
                 .description(BE_AM_TEN_ELEVEN_DESCRIPTION)
                 .userName(BE_AM_TEN_ELEVEN_USERNAME)
                 .password(BE_AM_TEN_ELEVEN_PW)
@@ -92,9 +93,10 @@ class ReservationRepositoryTest extends RepositoryTest {
                 .build();
 
         bePmOneTwo = Reservation.builder()
-                .date(BE_PM_ONE_TWO_START_TIME_KST.toLocalDate())
-                .startTime(BE_PM_ONE_TWO_START_TIME_KST.withZoneSameInstant(UTC.toZoneId()).toLocalDateTime())
-                .endTime(BE_PM_ONE_TWO_END_TIME_KST.withZoneSameInstant(UTC.toZoneId()).toLocalDateTime())
+                .reservationTime(
+                        ReservationTime.of(
+                                BE_PM_ONE_TWO_START_TIME_KST.withZoneSameInstant(UTC.toZoneId()).toLocalDateTime(),
+                                BE_PM_ONE_TWO_END_TIME_KST.withZoneSameInstant(UTC.toZoneId()).toLocalDateTime()))
                 .description(BE_PM_ONE_TWO_DESCRIPTION)
                 .userName(BE_PM_ONE_TWO_USERNAME)
                 .password(BE_PM_ONE_TWO_PW)
@@ -102,9 +104,10 @@ class ReservationRepositoryTest extends RepositoryTest {
                 .build();
 
         beNextDayAmSixTwelve = Reservation.builder()
-                .date(BE_NEXT_DAY_PM_FOUR_TO_SIX_START_TIME_KST.toLocalDate())
-                .startTime(BE_NEXT_DAY_PM_FOUR_TO_SIX_START_TIME_KST.withZoneSameInstant(UTC.toZoneId()).toLocalDateTime())
-                .endTime(BE_NEXT_DAY_PM_FOUR_TO_SIX_END_TIME_KST.withZoneSameInstant(UTC.toZoneId()).toLocalDateTime())
+                .reservationTime(
+                        ReservationTime.of(
+                                BE_NEXT_DAY_PM_FOUR_TO_SIX_START_TIME_KST.withZoneSameInstant(UTC.toZoneId()).toLocalDateTime(),
+                                BE_NEXT_DAY_PM_FOUR_TO_SIX_END_TIME_KST.withZoneSameInstant(UTC.toZoneId()).toLocalDateTime()))
                 .description(BE_NEXT_DAY_PM_FOUR_TO_SIX_DESCRIPTION)
                 .userName(BE_NEXT_DAY_PM_FOUR_TO_SIX_USERNAME)
                 .password(BE_NEXT_DAY_PM_FOUR_TO_SIX_PW)
@@ -112,9 +115,10 @@ class ReservationRepositoryTest extends RepositoryTest {
                 .build();
 
         fe1ZeroOne = Reservation.builder()
-                .date(FE1_AM_TEN_ELEVEN_START_TIME_KST.toLocalDate())
-                .startTime(FE1_AM_TEN_ELEVEN_START_TIME_KST.withZoneSameInstant(UTC.toZoneId()).toLocalDateTime())
-                .endTime(FE1_AM_TEN_ELEVEN_END_TIME_KST.withZoneSameInstant(UTC.toZoneId()).toLocalDateTime())
+                .reservationTime(
+                        ReservationTime.of(
+                                FE1_AM_TEN_ELEVEN_START_TIME_KST.withZoneSameInstant(UTC.toZoneId()).toLocalDateTime(),
+                                FE1_AM_TEN_ELEVEN_END_TIME_KST.withZoneSameInstant(UTC.toZoneId()).toLocalDateTime()))
                 .description(FE1_AM_TEN_ELEVEN_DESCRIPTION)
                 .userName(FE1_AM_TEN_ELEVEN_USERNAME)
                 .password(FE1_AM_TEN_ELEVEN_PW)
@@ -132,9 +136,10 @@ class ReservationRepositoryTest extends RepositoryTest {
     void save() {
         //given
         Reservation be_two_three = Reservation.builder()
-                .date(THE_DAY_AFTER_TOMORROW)
-                .startTime(THE_DAY_AFTER_TOMORROW.atTime(2, 0))
-                .endTime(THE_DAY_AFTER_TOMORROW.atTime(3, 0))
+                .reservationTime(
+                        ReservationTime.of(
+                                THE_DAY_AFTER_TOMORROW.atTime(2, 0),
+                                THE_DAY_AFTER_TOMORROW.atTime(3, 0)))
                 .description("찜꽁 4차 회의")
                 .userName("찜꽁")
                 .password("1234")
@@ -190,10 +195,10 @@ class ReservationRepositoryTest extends RepositoryTest {
     @DisplayName("해당 공간에 대한 예약 존재여부를 확인한다.")
     void existsBySpace() {
         // given, when, then
-        assertThat(reservations.existsBySpaceIdAndEndTimeAfter(fe.getId(), LocalDateTime.now())).isTrue();
+        assertThat(reservations.existsBySpaceIdAndReservationTimeEndTimeAfter(fe.getId(), LocalDateTime.now())).isTrue();
 
         reservations.delete(fe1ZeroOne);
-        assertThat(reservations.existsBySpaceIdAndEndTimeAfter(fe.getId(), LocalDateTime.now())).isFalse();
+        assertThat(reservations.existsBySpaceIdAndReservationTimeEndTimeAfter(fe.getId(), LocalDateTime.now())).isFalse();
     }
 
     @ParameterizedTest
@@ -201,7 +206,7 @@ class ReservationRepositoryTest extends RepositoryTest {
     @DisplayName("특정 시간 이후의 예약이 존재하는지 확인한다.")
     void existsBySpaceIdAndDateGreaterThanEqual(int minusMinute, boolean expected) {
         //given, when
-        Boolean actual = reservations.existsBySpaceIdAndEndTimeAfter(
+        Boolean actual = reservations.existsBySpaceIdAndReservationTimeEndTimeAfter(
                 be.getId(),
                 BE_NEXT_DAY_PM_FOUR_TO_SIX_END_TIME_KST.withZoneSameInstant(UTC.toZoneId()).toLocalDateTime().minusMinutes(minusMinute));
 
@@ -224,7 +229,7 @@ class ReservationRepositoryTest extends RepositoryTest {
     }
 
     private List<Reservation> getReservations(List<Long> spaceIds, LocalDate date) {
-        return reservations.findAllBySpaceIdInAndDateGreaterThanEqualAndDateLessThanEqual(
+        return reservations.findAllBySpaceIdInAndDateBetween(
                 spaceIds,
                 date.minusDays(ONE_DAY_OFFSET),
                 date.plusDays(ONE_DAY_OFFSET));

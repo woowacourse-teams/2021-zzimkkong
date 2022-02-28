@@ -154,7 +154,7 @@ public class SpaceService {
     }
 
     private void validateReservationExistence(final Long spaceId) {
-        if (reservations.existsBySpaceIdAndEndTimeAfter(spaceId, LocalDateTime.now())) {
+        if (reservations.existsBySpaceIdAndReservationTimeEndTimeAfter(spaceId, LocalDateTime.now())) {
             throw new ReservationExistOnSpaceException();
         }
     }

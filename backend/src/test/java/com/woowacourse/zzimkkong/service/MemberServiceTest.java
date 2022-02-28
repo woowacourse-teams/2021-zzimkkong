@@ -16,6 +16,7 @@ import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.mock.mockito.MockBean;
 
+import java.time.LocalDateTime;
 import java.util.Optional;
 
 import static com.woowacourse.zzimkkong.Constants.*;
@@ -146,7 +147,7 @@ class MemberServiceTest extends ServiceTest {
         Member pobi = new Member(EMAIL, PW, ORGANIZATION);
         given(members.findByEmail(anyString()))
                 .willReturn(Optional.of(pobi));
-        given(reservations.existsReservationsByMemberFromToday(any(Member.class)))
+        given(reservations.existsByMemberAndEndTimeAfter(any(Member.class), any(LocalDateTime.class)))
                 .willReturn(false);
 
         // when, then
@@ -161,7 +162,7 @@ class MemberServiceTest extends ServiceTest {
         Member pobi = new Member(EMAIL, PW, ORGANIZATION);
         given(members.findByEmail(anyString()))
                 .willReturn(Optional.of(pobi));
-        given(reservations.existsReservationsByMemberFromToday(any(Member.class)))
+        given(reservations.existsByMemberAndEndTimeAfter(any(Member.class), any(LocalDateTime.class)))
                 .willReturn(true);
 
         // when, then

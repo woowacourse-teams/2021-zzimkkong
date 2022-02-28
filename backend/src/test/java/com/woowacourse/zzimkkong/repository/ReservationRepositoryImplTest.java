@@ -6,9 +6,6 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-
 import static com.woowacourse.zzimkkong.Constants.*;
 import static com.woowacourse.zzimkkong.infrastructure.datetime.TimeZoneUtils.UTC;
 
@@ -47,9 +44,10 @@ class ReservationRepositoryImplTest extends RepositoryTest {
         spaces.save(be);
 
         Reservation beAmZeroOneYesterday = Reservation.builder()
-                .date(LocalDate.now().minusDays(1))
-                .startTime(LocalDateTime.now().minusDays(1))
-                .endTime(LocalDateTime.now().minusDays(1).plusHours(1))
+                .reservationTime(
+                        ReservationTime.of(
+                                THE_DAY_AFTER_TOMORROW.minusDays(1).atTime(0, 0),
+                                THE_DAY_AFTER_TOMORROW.minusDays(1).atTime(1, 0)))
                 .description(BE_AM_TEN_ELEVEN_DESCRIPTION)
                 .userName(BE_AM_TEN_ELEVEN_USERNAME)
                 .password(BE_AM_TEN_ELEVEN_PW)
@@ -60,9 +58,10 @@ class ReservationRepositoryImplTest extends RepositoryTest {
 
         if (isReservationExists) {
             Reservation beAmZeroOne = Reservation.builder()
-                    .date(BE_AM_TEN_ELEVEN_START_TIME_KST.toLocalDate())
-                    .startTime(BE_AM_TEN_ELEVEN_START_TIME_KST.withZoneSameInstant(UTC.toZoneId()).toLocalDateTime())
-                    .endTime(BE_AM_TEN_ELEVEN_END_TIME_KST.withZoneSameInstant(UTC.toZoneId()).toLocalDateTime())
+                    .reservationTime(
+                            ReservationTime.of(
+                                    BE_AM_TEN_ELEVEN_START_TIME_KST.withZoneSameInstant(UTC.toZoneId()).toLocalDateTime(),
+                                    BE_AM_TEN_ELEVEN_END_TIME_KST.withZoneSameInstant(UTC.toZoneId()).toLocalDateTime()))
                     .description(BE_AM_TEN_ELEVEN_DESCRIPTION)
                     .userName(BE_AM_TEN_ELEVEN_USERNAME)
                     .password(BE_AM_TEN_ELEVEN_PW)
@@ -73,7 +72,9 @@ class ReservationRepositoryImplTest extends RepositoryTest {
         }
 
         // when
-        Boolean hasAnyReservations = reservations.existsReservationsByMemberFromToday(savedMember);
+        Boolean hasAnyReservations = reservations.existsByMemberAndEndTimeAfter(
+                savedMember,
+                THE_DAY_AFTER_TOMORROW.atTime(0, 0));
 
         // then
         AssertionsForClassTypes.assertThat(hasAnyReservations).isEqualTo(isReservationExists);

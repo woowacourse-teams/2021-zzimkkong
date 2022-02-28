@@ -18,13 +18,10 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.DayOfWeek;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
-
-import static com.woowacourse.zzimkkong.infrastructure.datetime.TimeZoneUtils.*;
 
 @Service
 @Transactional
@@ -65,9 +62,7 @@ public class ReservationService {
 
         Reservation reservation = reservations.save(
                 Reservation.builder()
-                        .startTime(reservationCreateDto.getStartDateTime())
-                        .endTime(reservationCreateDto.getEndDateTime())
-                        .date(reservationCreateDto.getStartDateTime().toLocalDate())
+                        .reservationTime(reservationTime)
                         .password(reservationCreateDto.getPassword())
                         .userName(reservationCreateDto.getName())
                         .description(reservationCreateDto.getDescription())
@@ -168,9 +163,7 @@ public class ReservationService {
         validateAvailability(space, reservationTime, new ExcludeReservationUpdateStrategy(reservation));
 
         Reservation updateReservation = Reservation.builder()
-                .startTime(reservationUpdateDto.getStartDateTime())
-                .endTime(reservationUpdateDto.getEndDateTime())
-                .date(reservationUpdateDto.getStartDateTime().toLocalDate())
+                .reservationTime(reservationTime)
                 .userName(reservationUpdateDto.getName())
                 .description(reservationUpdateDto.getDescription())
                 .space(space)
@@ -201,18 +194,13 @@ public class ReservationService {
                 .findById(reservationId)
                 .orElseThrow(NoSuchReservationException::new);
         reservationStrategy.checkCorrectPassword(reservation, password);
-        validatePastTimeAndManager(reservation.getStartTime(), reservationStrategy.isManager());
+
+        ReservationTime.validatePastTime(reservation.getStartTime(), reservationStrategy.isManager());
 
         reservations.delete(reservation);
 
         String sharingMapId = sharingIdGenerator.from(map);
         return SlackResponse.of(reservation, sharingMapId, map.getSlackUrl());
-    }
-
-    private void validatePastTimeAndManager(final LocalDateTime startDateTime, final boolean managerFlag) {
-        if (startDateTime.isBefore(LocalDateTime.now()) && !managerFlag) {
-            throw new ImpossibleStartTimeException();
-        }
     }
 
     private void validateAvailability(
@@ -223,14 +211,14 @@ public class ReservationService {
 
         List<Reservation> reservationsOnDate = getReservations(
                 Collections.singletonList(space),
-                reservationTime.getDateKST());
+                reservationTime.getDate());
         excludeReservationStrategy.apply(space, reservationsOnDate);
 
         validateTimeConflicts(reservationTime, reservationsOnDate);
     }
 
     private void validateSpaceSetting(final Space space, final ReservationTime reservationTime) {
-        TimeSlot timeSlot = reservationTime.getTimeSlotKST();
+        TimeSlot timeSlot = reservationTime.asTimeSlotKST();
         DayOfWeek dayOfWeek = reservationTime.getDayOfWeekKST();
 
         if (space.cannotAcceptDueToTimeUnit(timeSlot)) {
@@ -269,19 +257,11 @@ public class ReservationService {
     }
 
     private List<Reservation> getReservations(final Collection<Space> findSpaces, final LocalDate date) {
-        //TODO: Reservations
         List<Long> spaceIds = findSpaces.stream()
                 .map(Space::getId)
                 .collect(Collectors.toList());
 
-        List<Reservation> reservationsWithinDateRange = reservations.findAllBySpaceIdInAndDateGreaterThanEqualAndDateLessThanEqual(
-                spaceIds,
-                date.minusDays(ONE_DAY_OFFSET),
-                date.plusDays(ONE_DAY_OFFSET));
-
-        return reservationsWithinDateRange.stream()
-                .filter(reservation -> reservation.isBookedOn(date, KST))
-                .collect(Collectors.toList());
+        return reservations.findAllBySpaceIdInAndReservationTimeDate(spaceIds, date);
     }
 
     private void validateSpaceExistence(final Map map, final Long spaceId) {

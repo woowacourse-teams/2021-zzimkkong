@@ -177,10 +177,10 @@ public class DataLoader implements CommandLineRunner {
         LocalDate targetDate = LocalDate.now().plusDays(1L);
 
         Reservation reservationBackEndTargetDate0To1 = Reservation.builder()
-                .date(targetDate)
-                .startTime(targetDate.atStartOfDay())
-                .endTime(targetDate.atTime(1, 0, 0))
-                .date(targetDate)
+                .reservationTime(
+                        ReservationTime.of(
+                                targetDate.atStartOfDay(),
+                                targetDate.atTime(1, 0, 0)))
                 .description("찜꽁 1차 회의")
                 .userName("찜꽁")
                 .password("1234")
@@ -188,10 +188,10 @@ public class DataLoader implements CommandLineRunner {
                 .build();
 
         Reservation reservationBackEndTargetDate13To14 = Reservation.builder()
-                .date(targetDate)
-                .startTime(targetDate.atTime(13, 0, 0))
-                .endTime(targetDate.atTime(14, 0, 0))
-                .date(targetDate)
+                .reservationTime(
+                        ReservationTime.of(
+                                targetDate.atTime(13, 0, 0),
+                                targetDate.atTime(14, 0, 0)))
                 .description("찜꽁 2차 회의")
                 .userName("찜꽁")
                 .password("1234")
@@ -199,10 +199,10 @@ public class DataLoader implements CommandLineRunner {
                 .build();
 
         Reservation reservationBackEndTargetDate18To23 = Reservation.builder()
-                .date(targetDate)
-                .startTime(targetDate.atTime(18, 0, 0))
-                .endTime(targetDate.atTime(23, 0, 0))
-                .date(targetDate)
+                .reservationTime(
+                        ReservationTime.of(
+                                targetDate.atTime(18, 0, 0),
+                                targetDate.atTime(23, 0, 0)))
                 .description("찜꽁 3차 회의")
                 .userName("찜꽁")
                 .password("6789")
@@ -210,10 +210,10 @@ public class DataLoader implements CommandLineRunner {
                 .build();
 
         Reservation reservationBackEndTheDayAfterTargetDate = Reservation.builder()
-                .date(targetDate)
-                .startTime(targetDate.plusDays(1L).atStartOfDay())
-                .endTime(targetDate.plusDays(1L).atTime(1, 0, 0))
-                .date(targetDate)
+                .reservationTime(
+                        ReservationTime.of(
+                                targetDate.plusDays(1L).atStartOfDay(),
+                                targetDate.plusDays(1L).atTime(1, 0, 0)))
                 .description("찜꽁 4차 회의")
                 .userName("찜꽁")
                 .password("1234")
@@ -221,10 +221,10 @@ public class DataLoader implements CommandLineRunner {
                 .build();
 
         Reservation reservationFrontEnd1TargetDate0to1 = Reservation.builder()
-                .date(targetDate)
-                .startTime(targetDate.atStartOfDay())
-                .endTime(targetDate.atTime(1, 0, 0))
-                .date(targetDate)
+                .reservationTime(
+                        ReservationTime.of(
+                                targetDate.atStartOfDay(),
+                                targetDate.atTime(1, 0, 0)))
                 .description("찜꽁 5차 회의")
                 .userName("찜꽁")
                 .password("1234")

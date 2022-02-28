@@ -171,9 +171,10 @@ class AdminServiceTest extends ServiceTest {
                 .build();
 
         Reservation beAmZeroOne = Reservation.builder()
-                .date(BE_AM_TEN_ELEVEN_START_TIME_KST.toLocalDate())
-                .startTime(BE_AM_TEN_ELEVEN_START_TIME_KST.withZoneSameInstant(UTC.toZoneId()).toLocalDateTime())
-                .endTime(BE_AM_TEN_ELEVEN_END_TIME_KST.withZoneSameInstant(UTC.toZoneId()).toLocalDateTime())
+                .reservationTime(
+                        ReservationTime.of(
+                                BE_AM_TEN_ELEVEN_START_TIME_KST.withZoneSameInstant(UTC.toZoneId()).toLocalDateTime(),
+                                BE_AM_TEN_ELEVEN_END_TIME_KST.withZoneSameInstant(UTC.toZoneId()).toLocalDateTime()))
                 .description(BE_AM_TEN_ELEVEN_DESCRIPTION)
                 .userName(BE_AM_TEN_ELEVEN_USERNAME)
                 .password(BE_AM_TEN_ELEVEN_PW)

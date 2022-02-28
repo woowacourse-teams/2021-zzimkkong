@@ -1,6 +1,5 @@
 package com.woowacourse.zzimkkong.service;
 
-import com.woowacourse.zzimkkong.Constants;
 import com.woowacourse.zzimkkong.domain.*;
 import com.woowacourse.zzimkkong.dto.map.MapCreateResponse;
 import com.woowacourse.zzimkkong.dto.map.MapCreateUpdateRequest;
@@ -173,7 +172,7 @@ class MapServiceTest extends ServiceTest {
         //given
         given(maps.findByIdFetch(anyLong()))
                 .willReturn(Optional.of(luther));
-        given(reservations.existsBySpaceIdAndEndTimeAfter(anyLong(), any(LocalDateTime.class)))
+        given(reservations.existsBySpaceIdAndReservationTimeEndTimeAfter(anyLong(), any(LocalDateTime.class)))
                 .willReturn(false);
 
         //when, then
@@ -188,7 +187,7 @@ class MapServiceTest extends ServiceTest {
                 .willReturn(Optional.of(pobi));
         given(maps.findByIdFetch(anyLong()))
                 .willReturn(Optional.of(luther));
-        given(reservations.existsBySpaceIdAndEndTimeAfter(anyLong(), any(LocalDateTime.class)))
+        given(reservations.existsBySpaceIdAndReservationTimeEndTimeAfter(anyLong(), any(LocalDateTime.class)))
                 .willReturn(true);
 
         //when, then

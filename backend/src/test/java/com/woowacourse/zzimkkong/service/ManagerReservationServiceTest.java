@@ -122,8 +122,10 @@ class ManagerReservationServiceTest extends ServiceTest {
 
         beAmZeroOne = Reservation.builder()
                 .id(1L)
-                .startTime(BE_AM_TEN_ELEVEN_START_TIME_KST.withZoneSameInstant(UTC.toZoneId()).toLocalDateTime())
-                .endTime(BE_AM_TEN_ELEVEN_END_TIME_KST.withZoneSameInstant(UTC.toZoneId()).toLocalDateTime())
+                .reservationTime(
+                        ReservationTime.of(
+                                BE_AM_TEN_ELEVEN_START_TIME_KST.withZoneSameInstant(UTC.toZoneId()).toLocalDateTime(),
+                                BE_AM_TEN_ELEVEN_END_TIME_KST.withZoneSameInstant(UTC.toZoneId()).toLocalDateTime()))
                 .description(BE_AM_TEN_ELEVEN_DESCRIPTION)
                 .userName(BE_AM_TEN_ELEVEN_USERNAME)
                 .password(BE_AM_TEN_ELEVEN_PW)
@@ -132,8 +134,10 @@ class ManagerReservationServiceTest extends ServiceTest {
 
         bePmOneTwo = Reservation.builder()
                 .id(2L)
-                .startTime(BE_PM_ONE_TWO_START_TIME_KST.withZoneSameInstant(UTC.toZoneId()).toLocalDateTime())
-                .endTime(BE_PM_ONE_TWO_END_TIME_KST.withZoneSameInstant(UTC.toZoneId()).toLocalDateTime())
+                .reservationTime(
+                        ReservationTime.of(
+                                BE_PM_ONE_TWO_START_TIME_KST.withZoneSameInstant(UTC.toZoneId()).toLocalDateTime(),
+                                BE_PM_ONE_TWO_END_TIME_KST.withZoneSameInstant(UTC.toZoneId()).toLocalDateTime()))
                 .description(BE_PM_ONE_TWO_DESCRIPTION)
                 .userName(BE_PM_ONE_TWO_USERNAME)
                 .password(BE_PM_ONE_TWO_PW)
@@ -182,8 +186,10 @@ class ManagerReservationServiceTest extends ServiceTest {
         //given
         Reservation pastReservation = Reservation.builder()
                 .id(1L)
-                .startTime(BE_AM_TEN_ELEVEN_START_TIME_KST.minusDays(5).withZoneSameInstant(UTC.toZoneId()).toLocalDateTime())
-                .endTime(BE_AM_TEN_ELEVEN_END_TIME_KST.minusDays(5).withZoneSameInstant(UTC.toZoneId()).toLocalDateTime())
+                .reservationTime(
+                        ReservationTime.of(
+                                BE_AM_TEN_ELEVEN_START_TIME_KST.minusDays(5).withZoneSameInstant(UTC.toZoneId()).toLocalDateTime(),
+                                BE_AM_TEN_ELEVEN_END_TIME_KST.minusDays(5).withZoneSameInstant(UTC.toZoneId()).toLocalDateTime()))
                 .description(BE_AM_TEN_ELEVEN_DESCRIPTION)
                 .userName(BE_AM_TEN_ELEVEN_USERNAME)
                 .password(BE_AM_TEN_ELEVEN_PW)
@@ -400,9 +406,8 @@ class ManagerReservationServiceTest extends ServiceTest {
         //given, when
         given(maps.findByIdFetch(anyLong()))
                 .willReturn(Optional.of(luther));
-        given(reservations.findAllBySpaceIdInAndDateGreaterThanEqualAndDateLessThanEqual(
+        given(reservations.findAllBySpaceIdInAndReservationTimeDate(
                 anyList(),
-                any(LocalDate.class),
                 any(LocalDate.class)))
                 .willReturn(List.of(makeReservation(
                         reservationCreateUpdateWithPasswordRequest.localStartDateTime().minusMinutes(startMinute),
@@ -515,7 +520,7 @@ class ManagerReservationServiceTest extends ServiceTest {
         //given, when
         given(maps.findByIdFetch(anyLong()))
                 .willReturn(Optional.of(luther));
-        given(reservations.findAllBySpaceIdInAndDateGreaterThanEqualAndDateLessThanEqual(
+        given(reservations.findAllBySpaceIdInAndDateBetween(
                 anyList(),
                 any(LocalDate.class),
                 any(LocalDate.class)))
@@ -736,9 +741,8 @@ class ManagerReservationServiceTest extends ServiceTest {
 
         given(maps.findByIdFetch(anyLong()))
                 .willReturn(Optional.of(luther));
-        given(reservations.findAllBySpaceIdInAndDateGreaterThanEqualAndDateLessThanEqual(
+        given(reservations.findAllBySpaceIdInAndReservationTimeDate(
                 anyList(),
-                any(LocalDate.class),
                 any(LocalDate.class)))
                 .willReturn(foundReservations);
 
@@ -833,7 +837,7 @@ class ManagerReservationServiceTest extends ServiceTest {
                 .willReturn(Optional.of(luther));
         given(maps.existsById(anyLong()))
                 .willReturn(true);
-        given(reservations.findAllBySpaceIdInAndDateGreaterThanEqualAndDateLessThanEqual(
+        given(reservations.findAllBySpaceIdInAndDateBetween(
                 anyList(),
                 any(LocalDate.class),
                 any(LocalDate.class)))
@@ -891,9 +895,8 @@ class ManagerReservationServiceTest extends ServiceTest {
 
         given(maps.findByIdFetch(anyLong()))
                 .willReturn(Optional.of(luther));
-        given(reservations.findAllBySpaceIdInAndDateGreaterThanEqualAndDateLessThanEqual(
+        given(reservations.findAllBySpaceIdInAndReservationTimeDate(
                 anyList(),
-                any(LocalDate.class),
                 any(LocalDate.class)))
                 .willReturn(foundReservations);
 
@@ -919,7 +922,7 @@ class ManagerReservationServiceTest extends ServiceTest {
                 .willReturn(Optional.of(sakjung));
         given(maps.findByIdFetch(anyLong()))
                 .willReturn(Optional.of(luther));
-        given(reservations.findAllBySpaceIdInAndDateGreaterThanEqualAndDateLessThanEqual(
+        given(reservations.findAllBySpaceIdInAndDateBetween(
                 anyList(),
                 any(LocalDate.class),
                 any(LocalDate.class)))
@@ -946,7 +949,7 @@ class ManagerReservationServiceTest extends ServiceTest {
                 .willReturn(Optional.of(sakjung));
         given(maps.findByIdFetch(anyLong()))
                 .willReturn(Optional.of(luther));
-        given(reservations.findAllBySpaceIdInAndDateGreaterThanEqualAndDateLessThanEqual(
+        given(reservations.findAllBySpaceIdInAndDateBetween(
                 anyList(),
                 any(LocalDate.class),
                 any(LocalDate.class)))
@@ -1177,9 +1180,8 @@ class ManagerReservationServiceTest extends ServiceTest {
                 .willReturn(Optional.of(luther));
         given(reservations.findById(anyLong()))
                 .willReturn(Optional.of(reservation));
-        given(reservations.findAllBySpaceIdInAndDateGreaterThanEqualAndDateLessThanEqual(
+        given(reservations.findAllBySpaceIdInAndReservationTimeDate(
                 anyList(),
-                any(LocalDate.class),
                 any(LocalDate.class)))
                 .willReturn(Arrays.asList(
                         beAmZeroOne,
@@ -1417,8 +1419,10 @@ class ManagerReservationServiceTest extends ServiceTest {
     private Reservation makeReservation(final LocalDateTime startTime, final LocalDateTime endTime, final Space space) {
         return Reservation.builder()
                 .id(3L)
-                .startTime(startTime)
-                .endTime(endTime)
+                .reservationTime(
+                        ReservationTime.of(
+                                startTime,
+                                endTime))
                 .password(reservationCreateUpdateWithPasswordRequest.getPassword())
                 .userName(reservationCreateUpdateWithPasswordRequest.getName())
                 .description(reservationCreateUpdateWithPasswordRequest.getDescription())

@@ -1,14 +1,13 @@
 package com.woowacourse.zzimkkong.domain;
 
-import com.woowacourse.zzimkkong.exception.reservation.ImpossibleStartTimeException;
 import com.woowacourse.zzimkkong.exception.reservation.NonMatchingStartEndDateException;
+import com.woowacourse.zzimkkong.exception.reservation.PastReservationTimeException;
 import com.woowacourse.zzimkkong.infrastructure.datetime.TimeZoneUtils;
-import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import javax.persistence.Column;
 import javax.persistence.Embeddable;
-import javax.persistence.Embedded;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -18,16 +17,30 @@ import static com.woowacourse.zzimkkong.infrastructure.datetime.TimeZoneUtils.UT
 
 @Getter
 @NoArgsConstructor
-@Builder
 @Embeddable
 public class ReservationTime {
+    /**
+     * The reservation date in KST
+     */
+    @Column(nullable = false)
     private LocalDate date;
-    @Embedded
-    private TimeSlot timeSlot;
 
-    protected ReservationTime(final LocalDate date, final TimeSlot timeSlot) {
+    /**
+     * The reservation start date time in UTC
+     */
+    @Column(nullable = false)
+    private LocalDateTime startTime;
+
+    /**
+     * The reservation end date time in UTC
+     */
+    @Column(nullable = false)
+    private LocalDateTime endTime;
+
+    private ReservationTime(final LocalDate date, final LocalDateTime startTime, final LocalDateTime endTime) {
         this.date = date;
-        this.timeSlot = timeSlot;
+        this.startTime = startTime;
+        this.endTime = endTime;
     }
 
     public static ReservationTime of(
@@ -38,16 +51,20 @@ public class ReservationTime {
         LocalDateTime reservationEndDateTime = endDateTime.withSecond(0).withNano(0);
         validateReservationTime(reservationStartDateTime, reservationEndDateTime, managerFlag);
 
-        LocalDate date = reservationStartDateTime.toLocalDate();
-        TimeSlot timeSlot = TimeSlot.of(reservationStartDateTime.toLocalTime(), reservationEndDateTime.toLocalTime());
-
-        return new ReservationTime(date, timeSlot);
+        LocalDate date = TimeZoneUtils.convert(reservationStartDateTime, UTC, KST).toLocalDate();
+        return new ReservationTime(date, reservationStartDateTime, reservationEndDateTime);
     }
 
     public static ReservationTime of(
             final LocalDateTime startDateTime,
             final LocalDateTime endDateTime) {
         return of(startDateTime, endDateTime, true);
+    }
+
+    public static void validatePastTime(final LocalDateTime startDateTime, final boolean managerFlag) {
+        if (!managerFlag && startDateTime.isBefore(LocalDateTime.now())) {
+            throw new PastReservationTimeException();
+        }
     }
 
     private static void validateReservationTime(
@@ -57,16 +74,9 @@ public class ReservationTime {
         LocalDateTime startDateTimeKST = TimeZoneUtils.convert(startDateTime, UTC, KST);
         LocalDateTime endDateTimeKST = TimeZoneUtils.convert(endDateTime, UTC, KST);
 
-        if (!managerFlag) {
-            validatePastTime(startDateTime);
-        }
+        validatePastTime(startDateTime, managerFlag);
         validateStartEndDate(startDateTimeKST, endDateTimeKST);
-    }
-
-    private static void validatePastTime(final LocalDateTime startDateTime) {
-        if (startDateTime.isBefore(LocalDateTime.now())) {
-            throw new ImpossibleStartTimeException();
-        }
+        TimeSlot.validateStartEndTime(startDateTimeKST.toLocalTime(), endDateTimeKST.toLocalTime());
     }
 
     private static void validateStartEndDate(final LocalDateTime startDateTime, final LocalDateTime endDateTime) {
@@ -79,38 +89,25 @@ public class ReservationTime {
     }
 
     public DayOfWeek getDayOfWeekKST() {
-        return getDateKST().getDayOfWeek();
+        return date.getDayOfWeek();
     }
 
-    public boolean hasConflictWith(final ReservationTime thatReservationTime) {
-        LocalDate thisDateKST = getDateKST();
-        TimeSlot thisTimeSlotKST = getTimeSlotKST();
-
-        LocalDate thatDateKST = thatReservationTime.getDateKST();
-        TimeSlot thatTimeSlotKST = thatReservationTime.getTimeSlotKST();
-
-        return thisDateKST.equals(thatDateKST) &&
-                thisTimeSlotKST.hasConflictWith(thatTimeSlotKST);
-    }
-
-    public LocalDate getDateKST() {
-        return getStartDateTimeKST().toLocalDate();
-    }
-
-    public TimeSlot getTimeSlotKST() {
-        LocalDateTime startDateTimeKST = getStartDateTimeKST();
-        LocalDateTime endDateTimeKST = getEndDateTimeKST();
+    public TimeSlot asTimeSlotKST() {
+        LocalDateTime startDateTimeKST = TimeZoneUtils.convert(startTime, UTC, KST);
+        LocalDateTime endDateTimeKST = TimeZoneUtils.convert(endTime, UTC, KST);
 
         return TimeSlot.of(startDateTimeKST.toLocalTime(), endDateTimeKST.toLocalTime());
     }
 
-    private LocalDateTime getStartDateTimeKST() {
-        LocalDateTime startDateTime = date.atTime(timeSlot.getStartTime());
-        return TimeZoneUtils.convert(startDateTime, UTC, KST);
+    public boolean hasConflictWith(final ReservationTime that) {
+        return !(this.isEarlierThan(that) || this.isLaterThan(that));
     }
 
-    private LocalDateTime getEndDateTimeKST() {
-        LocalDateTime endDateTime = date.atTime(timeSlot.getEndTime());
-        return TimeZoneUtils.convert(endDateTime, UTC, KST);
+    private boolean isEarlierThan(final ReservationTime that) {
+        return this.endTime.equals(that.startTime) || this.endTime.isBefore(that.startTime);
+    }
+
+    private boolean isLaterThan(final ReservationTime that) {
+        return this.startTime.equals(that.endTime) || this.startTime.isAfter(that.endTime);
     }
 }

@@ -13,30 +13,24 @@ import java.util.Optional;
 @NoArgsConstructor
 @Entity
 public class Map {
+    @OneToMany(mappedBy = "map", cascade = CascadeType.REMOVE, fetch = FetchType.LAZY, orphanRemoval = true)
+    private final List<Space> spaces = new ArrayList<>();
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
     @Column(nullable = false, length = 20)
     private String name;
-
     @Column(nullable = false)
     @Lob
     private String mapDrawing;
-
     @Column(nullable = false)
     @Lob
     private String thumbnail;
-
     @Lob
     private String slackUrl;
-
     @ManyToOne
     @JoinColumn(name = "member_id", foreignKey = @ForeignKey(name = "fk_map_member"), nullable = false)
     private Member member;
-
-    @OneToMany(mappedBy = "map", cascade = CascadeType.REMOVE, fetch = FetchType.LAZY, orphanRemoval = true)
-    private final List<Space> spaces = new ArrayList<>();
 
     public Map(final String name, final String mapDrawing, final String thumbnail, final Member member) {
         this.name = name;

@@ -2,7 +2,6 @@ package com.woowacourse.zzimkkong.domain;
 
 import com.woowacourse.zzimkkong.exception.reservation.IllegalMinuteValueException;
 import com.woowacourse.zzimkkong.exception.reservation.MinusMinuteValueException;
-import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -13,7 +12,6 @@ import java.util.Map;
 
 @Getter
 @NoArgsConstructor
-@Builder
 @Embeddable
 public class Minute {
     private static final Integer MINIMUM_TIME = 0;
@@ -30,7 +28,7 @@ public class Minute {
     @Column(nullable = false)
     private Integer minute;
 
-    protected Minute(final Integer minute) {
+    private Minute(final Integer minute) {
         this.minute = minute;
 
         if (this.minute < MINIMUM_TIME) {

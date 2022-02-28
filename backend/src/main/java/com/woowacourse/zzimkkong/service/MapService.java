@@ -126,7 +126,7 @@ public class MapService {
         List<Space> findSpaces = map.getSpaces();
 
         boolean isExistReservationInAnySpace = findSpaces.stream()
-                .anyMatch(space -> reservations.existsBySpaceIdAndEndTimeAfter(space.getId(), LocalDateTime.now()));
+                .anyMatch(space -> reservations.existsBySpaceIdAndReservationTimeEndTimeAfter(space.getId(), LocalDateTime.now()));
 
         if (isExistReservationInAnySpace) {
             throw new ReservationExistOnSpaceException();

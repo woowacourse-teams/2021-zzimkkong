@@ -33,6 +33,7 @@ import static com.woowacourse.zzimkkong.controller.ManagerReservationControllerT
 import static com.woowacourse.zzimkkong.controller.ManagerSpaceControllerTest.saveSpace;
 import static com.woowacourse.zzimkkong.controller.MapControllerTest.saveMap;
 import static com.woowacourse.zzimkkong.infrastructure.datetime.TimeZoneUtils.KST;
+import static com.woowacourse.zzimkkong.infrastructure.datetime.TimeZoneUtils.UTC;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
 
@@ -161,8 +162,10 @@ class AdminControllerTest extends AcceptanceTest {
                 SALLY_DESCRIPTION);
         saveReservation(beReservationApi, newReservationCreateUpdateWithPasswordRequest);
         Reservation reservation = Reservation.builder()
-                .startTime(newReservationCreateUpdateWithPasswordRequest.localStartDateTime())
-                .endTime(newReservationCreateUpdateWithPasswordRequest.localEndDateTime())
+                .reservationTime(
+                        ReservationTime.of(
+                                newReservationCreateUpdateWithPasswordRequest.localStartDateTime(),
+                                newReservationCreateUpdateWithPasswordRequest.localEndDateTime()))
                 .userName(newReservationCreateUpdateWithPasswordRequest.getName())
                 .password(newReservationCreateUpdateWithPasswordRequest.getPassword())
                 .description(newReservationCreateUpdateWithPasswordRequest.getDescription())

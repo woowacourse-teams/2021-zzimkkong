@@ -13,7 +13,6 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.time.LocalDateTime;
-import java.time.LocalTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -310,7 +309,7 @@ class SpaceServiceTest extends ServiceTest {
         //given
         given(maps.findByIdFetch(anyLong()))
                 .willReturn(Optional.of(luther));
-        given(reservations.existsBySpaceIdAndEndTimeAfter(anyLong(), any(LocalDateTime.class)))
+        given(reservations.existsBySpaceIdAndReservationTimeEndTimeAfter(anyLong(), any(LocalDateTime.class)))
                 .willReturn(false);
         SpaceDeleteRequest spaceDeleteRequest = new SpaceDeleteRequest(MAP_SVG);
 
@@ -350,7 +349,7 @@ class SpaceServiceTest extends ServiceTest {
         //given
         given(maps.findByIdFetch(anyLong()))
                 .willReturn(Optional.of(luther));
-        given(reservations.existsBySpaceIdAndEndTimeAfter(anyLong(), any(LocalDateTime.class)))
+        given(reservations.existsBySpaceIdAndReservationTimeEndTimeAfter(anyLong(), any(LocalDateTime.class)))
                 .willReturn(true);
         SpaceDeleteRequest spaceDeleteRequest = new SpaceDeleteRequest(MAP_SVG);
 
