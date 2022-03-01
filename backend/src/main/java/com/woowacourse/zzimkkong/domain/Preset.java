@@ -22,11 +22,11 @@ public class Preset {
                     column = @Column(name = "available_start_time")),
             @AttributeOverride(name = "availableTimeSlot.endTime",
                     column = @Column(name = "available_end_time")),
-            @AttributeOverride(name = "reservationTimeUnit.minute",
+            @AttributeOverride(name = "reservationTimeUnit.minutes",
                     column = @Column(name = "reservation_time_unit")),
-            @AttributeOverride(name = "reservationMinimumTimeUnit.minute",
+            @AttributeOverride(name = "reservationMinimumTimeUnit.minutes",
                     column = @Column(name = "reservation_minimum_time_unit")),
-            @AttributeOverride(name = "reservationMaximumTimeUnit.minute",
+            @AttributeOverride(name = "reservationMaximumTimeUnit.minutes",
                     column = @Column(name = "reservation_maximum_time_unit"))
     })
     private Setting setting;

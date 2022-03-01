@@ -1,5 +1,6 @@
 package com.woowacourse.zzimkkong.domain;
 
+import com.woowacourse.zzimkkong.exception.reservation.IllegalTimeUnitValueException;
 import com.woowacourse.zzimkkong.exception.reservation.ImpossibleStartEndTimeException;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -34,21 +35,26 @@ public class TimeSlot {
         if (endTime.isBefore(startTime) || startTime.equals(endTime)) {
             throw new ImpossibleStartEndTimeException();
         }
+
+        if (TimeUnit.cannotDivideByMinimumTimeUnit(startTime.getMinute())) {
+            throw new IllegalTimeUnitValueException(startTime.getMinute());
+        }
+
+        if (TimeUnit.cannotDivideByMinimumTimeUnit(endTime.getMinute())) {
+            throw new IllegalTimeUnitValueException(endTime.getMinute());
+        }
     }
 
-    public boolean isNotDivisibleBy(final Minute timeUnitMinute) {
-        Minute startMinute = Minute.from(startTime.getMinute());
-        Minute endMinute = Minute.from(endTime.getMinute());
-
-        return !(startMinute.isDivisibleBy(timeUnitMinute) && endMinute.isDivisibleBy(timeUnitMinute));
+    public boolean isNotDivisibleBy(final TimeUnit timeUnit) {
+        return !(timeUnit.canDivide(startTime) && timeUnit.canDivide(endTime));
     }
 
-    public boolean isDurationShorterThan(final Minute timeUnitMinute) {
-        return getDurationMinute().isShorterThan(timeUnitMinute);
+    public boolean isDurationShorterThan(final TimeUnit timeUnit) {
+        return getDurationMinute().isShorterThan(timeUnit);
     }
 
-    public boolean isDurationLongerThan(final Minute timeUnitMinute) {
-        return timeUnitMinute.isShorterThan(getDurationMinute());
+    public boolean isDurationLongerThan(final TimeUnit timeUnit) {
+        return timeUnit.isShorterThan(getDurationMinute());
     }
 
     public boolean isNotWithin(final TimeSlot that) {
@@ -57,8 +63,8 @@ public class TimeSlot {
         return !(isEqualOrAfterStartTime && isEqualOrBeforeEndTime);
     }
 
-    private Minute getDurationMinute() {
-        return Minute.from(ChronoUnit.MINUTES.between(startTime, endTime));
+    private TimeUnit getDurationMinute() {
+        return TimeUnit.from(ChronoUnit.MINUTES.between(startTime, endTime));
     }
 }
 

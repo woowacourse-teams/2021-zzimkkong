@@ -27,17 +27,6 @@ class ReservationTest {
                 .build();
     }
 
-    @ParameterizedTest
-    @CsvSource(value = {"08:01+08:59+true", "07:59+08:01+true", "08:59+09:01+true",
-            "07:59+09:01+true", "08:00+09:00+true", "07:59+08:00+false",
-            "09:00+09:01+false", "07:00+08:00+false", "09:00+10:00+false", "07:00+07:50+false"}, delimiter = '+')
-    @DisplayName("겹치는 시간 정보가 주어지면 true, 예약 가능한 시간대면 false")
-    void hasConflictWith(String startTime, String endTime, Boolean result) {
-        LocalDateTime start = THE_DAY_AFTER_TOMORROW.atTime(LocalTime.parse(startTime, DateTimeFormatter.ofPattern("HH:mm")));
-        LocalDateTime end = THE_DAY_AFTER_TOMORROW.atTime(LocalTime.parse(endTime, DateTimeFormatter.ofPattern("HH:mm")));
-        assertThat(reservation.hasConflictWith(ReservationTime.of(start, end))).isEqualTo(result);
-    }
-
     @Test
     @DisplayName("예약 비밀번호가 잘못되었으면 true, 정확하면 false")
     void isWrongPassword() {

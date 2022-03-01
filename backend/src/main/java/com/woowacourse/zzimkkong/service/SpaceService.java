@@ -145,9 +145,9 @@ public class SpaceService {
                         TimeSlot.of(
                                 settingsRequest.getAvailableStartTime(),
                                 settingsRequest.getAvailableEndTime()))
-                .reservationTimeUnit(Minute.from(settingsRequest.getReservationTimeUnit()))
-                .reservationMinimumTimeUnit(Minute.from(settingsRequest.getReservationMinimumTimeUnit()))
-                .reservationMaximumTimeUnit(Minute.from(settingsRequest.getReservationMaximumTimeUnit()))
+                .reservationTimeUnit(TimeUnit.from(settingsRequest.getReservationTimeUnit()))
+                .reservationMinimumTimeUnit(TimeUnit.from(settingsRequest.getReservationMinimumTimeUnit()))
+                .reservationMaximumTimeUnit(TimeUnit.from(settingsRequest.getReservationMaximumTimeUnit()))
                 .reservationEnable(settingsRequest.getReservationEnable())
                 .enabledDayOfWeek(settingsRequest.enabledDayOfWeekAsString())
                 .build();

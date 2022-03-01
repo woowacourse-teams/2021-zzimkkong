@@ -1,6 +1,5 @@
 package com.woowacourse.zzimkkong.domain;
 
-import com.woowacourse.zzimkkong.exception.reservation.ImpossibleStartEndTimeException;
 import com.woowacourse.zzimkkong.exception.space.*;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -37,8 +36,8 @@ class SettingTest {
                         FE_AVAILABLE_START_TIME,
                         FE_AVAILABLE_END_TIME))
                 .reservationTimeUnit(FE_RESERVATION_TIME_UNIT)
-                .reservationMinimumTimeUnit(Minute.from(20))
-                .reservationMaximumTimeUnit(Minute.from(10))
+                .reservationMinimumTimeUnit(TimeUnit.from(20))
+                .reservationMaximumTimeUnit(TimeUnit.from(10))
                 .reservationEnable(FE_RESERVATION_ENABLE)
                 .enabledDayOfWeek(FE_ENABLED_DAY_OF_WEEK);
         assertThatThrownBy(settingBuilder::build).isInstanceOf(InvalidMinimumMaximumTimeUnitException.class);
@@ -53,7 +52,7 @@ class SettingTest {
                         LocalTime.of(11, 0)))
                 .reservationTimeUnit(FE_RESERVATION_TIME_UNIT)
                 .reservationMinimumTimeUnit(FE_RESERVATION_MINIMUM_TIME_UNIT)
-                .reservationMaximumTimeUnit(Minute.from(70))
+                .reservationMaximumTimeUnit(TimeUnit.from(70))
                 .reservationEnable(FE_RESERVATION_ENABLE)
                 .enabledDayOfWeek(FE_ENABLED_DAY_OF_WEEK);
         assertThatThrownBy(settingBuilder::build).isInstanceOf(NotEnoughAvailableTimeException.class);
@@ -67,7 +66,7 @@ class SettingTest {
                 .availableTimeSlot(TimeSlot.of(
                         LocalTime.of(10, startMinute),
                         LocalTime.of(20, endMinute)))
-                .reservationTimeUnit(Minute.from(timeUnit))
+                .reservationTimeUnit(TimeUnit.from(timeUnit))
                 .reservationMinimumTimeUnit(FE_RESERVATION_MINIMUM_TIME_UNIT)
                 .reservationMaximumTimeUnit(FE_RESERVATION_MAXIMUM_TIME_UNIT)
                 .reservationEnable(FE_RESERVATION_ENABLE)
@@ -83,7 +82,7 @@ class SettingTest {
                 .availableTimeSlot(TimeSlot.of(
                         LocalTime.of(10, startMinute),
                         LocalTime.of(20, endMinute)))
-                .reservationTimeUnit(Minute.from(timeUnit))
+                .reservationTimeUnit(TimeUnit.from(timeUnit))
                 .reservationMinimumTimeUnit(FE_RESERVATION_MINIMUM_TIME_UNIT)
                 .reservationMaximumTimeUnit(FE_RESERVATION_MAXIMUM_TIME_UNIT)
                 .reservationEnable(FE_RESERVATION_ENABLE)
@@ -92,16 +91,16 @@ class SettingTest {
     }
 
     @ParameterizedTest
-    @CsvSource(value = {"0,5", "5,10", "15,20", "10,25", "15,30", "25,45"})
+    @CsvSource(value = {"5,10", "15,20", "10,25", "15,30", "25,45"})
     @DisplayName("setting 생성 시 최소,최대 예약 가능 시간의 단위가 예약 시간 단위와 일치하지 않으면 예외를 던진다")
     void timeUnitInconsistency_fail(int minimumMinute, int maximumMinute) {
         final Setting.SettingBuilder settingBuilder = Setting.builder()
                 .availableTimeSlot(TimeSlot.of(
                         FE_AVAILABLE_START_TIME,
                         FE_AVAILABLE_END_TIME))
-                .reservationTimeUnit(Minute.from(10))
-                .reservationMinimumTimeUnit(Minute.from(minimumMinute))
-                .reservationMaximumTimeUnit(Minute.from(maximumMinute))
+                .reservationTimeUnit(TimeUnit.from(10))
+                .reservationMinimumTimeUnit(TimeUnit.from(minimumMinute))
+                .reservationMaximumTimeUnit(TimeUnit.from(maximumMinute))
                 .reservationEnable(FE_RESERVATION_ENABLE)
                 .enabledDayOfWeek(FE_ENABLED_DAY_OF_WEEK);
         assertThatThrownBy(settingBuilder::build).isInstanceOf(TimeUnitInconsistencyException.class);

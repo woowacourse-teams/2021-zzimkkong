@@ -22,13 +22,13 @@ public class Setting {
     private TimeSlot availableTimeSlot;
 
     @Embedded
-    private Minute reservationTimeUnit;
+    private TimeUnit reservationTimeUnit;
 
     @Embedded
-    private Minute reservationMinimumTimeUnit;
+    private TimeUnit reservationMinimumTimeUnit;
 
     @Embedded
-    private Minute reservationMaximumTimeUnit;
+    private TimeUnit reservationMaximumTimeUnit;
 
     @Column(nullable = false)
     private Boolean reservationEnable;
@@ -38,9 +38,9 @@ public class Setting {
 
     protected Setting(
             final TimeSlot availableTimeSlot,
-            final Minute reservationTimeUnit,
-            final Minute reservationMinimumTimeUnit,
-            final Minute reservationMaximumTimeUnit,
+            final TimeUnit reservationTimeUnit,
+            final TimeUnit reservationMinimumTimeUnit,
+            final TimeUnit reservationMaximumTimeUnit,
             final Boolean reservationEnable,
             final String enabledDayOfWeek) {
         this.availableTimeSlot = availableTimeSlot;
@@ -96,15 +96,15 @@ public class Setting {
     }
 
     public Integer getReservationTimeUnitAsInt() {
-        return reservationTimeUnit.getMinute();
+        return reservationTimeUnit.getMinutes();
     }
 
     public Integer getReservationMinimumTimeUnitAsInt() {
-        return reservationMinimumTimeUnit.getMinute();
+        return reservationMinimumTimeUnit.getMinutes();
     }
 
     public Integer getReservationMaximumTimeUnitAsInt() {
-        return reservationMaximumTimeUnit.getMinute();
+        return reservationMaximumTimeUnit.getMinutes();
     }
 
     private boolean isNotConsistentTimeUnit() {

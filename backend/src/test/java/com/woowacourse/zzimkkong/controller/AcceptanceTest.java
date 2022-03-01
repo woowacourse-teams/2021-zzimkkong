@@ -1,7 +1,6 @@
 package com.woowacourse.zzimkkong.controller;
 
 import com.woowacourse.zzimkkong.DatabaseCleaner;
-import com.woowacourse.zzimkkong.domain.Reservation;
 import com.woowacourse.zzimkkong.dto.map.MapCreateUpdateRequest;
 import com.woowacourse.zzimkkong.dto.member.LoginRequest;
 import com.woowacourse.zzimkkong.dto.member.MemberSaveRequest;
@@ -27,10 +26,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
-import java.time.LocalDate;
-import java.util.List;
-import java.util.stream.Collectors;
-
 import static com.woowacourse.zzimkkong.Constants.*;
 import static com.woowacourse.zzimkkong.DocumentUtils.setRequestSpecification;
 import static com.woowacourse.zzimkkong.controller.AuthControllerTest.getToken;
@@ -50,9 +45,9 @@ class AcceptanceTest {
     protected final SettingsRequest beSettingsRequest = new SettingsRequest(
             BE_AVAILABLE_START_TIME,
             BE_AVAILABLE_END_TIME,
-            BE_RESERVATION_TIME_UNIT.getMinute(),
-            BE_RESERVATION_MINIMUM_TIME_UNIT.getMinute(),
-            BE_RESERVATION_MAXIMUM_TIME_UNIT.getMinute(),
+            BE_RESERVATION_TIME_UNIT.getMinutes(),
+            BE_RESERVATION_MINIMUM_TIME_UNIT.getMinutes(),
+            BE_RESERVATION_MAXIMUM_TIME_UNIT.getMinutes(),
             BE_RESERVATION_ENABLE,
             EnabledDayOfWeekDto.from(BE_ENABLED_DAY_OF_WEEK)
     );
@@ -67,9 +62,9 @@ class AcceptanceTest {
     protected final SettingsRequest feSettingsRequest = new SettingsRequest(
             FE_AVAILABLE_START_TIME,
             FE_AVAILABLE_END_TIME,
-            FE_RESERVATION_TIME_UNIT.getMinute(),
-            FE_RESERVATION_MINIMUM_TIME_UNIT.getMinute(),
-            FE_RESERVATION_MAXIMUM_TIME_UNIT.getMinute(),
+            FE_RESERVATION_TIME_UNIT.getMinutes(),
+            FE_RESERVATION_MINIMUM_TIME_UNIT.getMinutes(),
+            FE_RESERVATION_MAXIMUM_TIME_UNIT.getMinutes(),
             FE_RESERVATION_ENABLE,
             EnabledDayOfWeekDto.from(FE_ENABLED_DAY_OF_WEEK)
     );

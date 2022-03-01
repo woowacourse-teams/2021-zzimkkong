@@ -57,9 +57,9 @@ public class DataLoader implements CommandLineRunner {
                         TimeSlot.of(
                                 LocalTime.of(9, 0),
                                 LocalTime.of(22, 0)))
-                .reservationTimeUnit(Minute.from(10))
-                .reservationMinimumTimeUnit(Minute.from(10))
-                .reservationMaximumTimeUnit(Minute.from(700))
+                .reservationTimeUnit(TimeUnit.from(10))
+                .reservationMinimumTimeUnit(TimeUnit.from(10))
+                .reservationMaximumTimeUnit(TimeUnit.from(700))
                 .reservationEnable(true)
                 .enabledDayOfWeek("monday,tuesday,wednesday,thursday,friday,saturday,sunday")
                 .build();
