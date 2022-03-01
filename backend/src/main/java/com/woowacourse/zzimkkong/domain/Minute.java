@@ -1,7 +1,6 @@
 package com.woowacourse.zzimkkong.domain;
 
 import com.woowacourse.zzimkkong.exception.reservation.IllegalMinuteValueException;
-import com.woowacourse.zzimkkong.exception.reservation.MinusMinuteValueException;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -10,16 +9,18 @@ import javax.persistence.Embeddable;
 import java.util.HashMap;
 import java.util.Map;
 
+import static com.woowacourse.zzimkkong.exception.reservation.IllegalMinuteValueException.MESSAGE_FORMAT;
+
 @Getter
 @NoArgsConstructor
 @Embeddable
 public class Minute {
+    public static final Integer MINIMUM_TIME_UNIT = 5;
     private static final Integer MINIMUM_TIME = 0;
-    private static final Integer MINIMUM_TIME_UNIT = 5;
     private static final Map<Integer, Minute> cache = new HashMap<>();
 
     static {
-        for (int i = 0; i < 24; i++) {
+        for (int i = 1; i <= 24; i++) {
             Integer minutes = i * MINIMUM_TIME_UNIT;
             cache.put(minutes, new Minute(minutes));
         }
@@ -31,11 +32,8 @@ public class Minute {
     private Minute(final Integer minute) {
         this.minute = minute;
 
-        if (this.minute < MINIMUM_TIME) {
-            throw new MinusMinuteValueException();
-        }
-        if (this.minute % MINIMUM_TIME_UNIT != 0) {
-            throw new IllegalMinuteValueException();
+        if (this.minute <= MINIMUM_TIME || this.minute % MINIMUM_TIME_UNIT != 0) {
+            throw new IllegalMinuteValueException(this.minute);
         }
     }
 

@@ -4,9 +4,9 @@ import com.woowacourse.zzimkkong.exception.ZzimkkongException;
 import org.springframework.http.HttpStatus;
 
 public class IllegalMinuteValueException extends ZzimkkongException {
-    private static final String MESSAGE = "시간 단위 '분'은 5분 단위여야 합니다.";
+    public static final String MESSAGE_FORMAT = "'%d'분은 허용되지 않는 시간 단위 입니다";
 
-    public IllegalMinuteValueException() {
-        super(MESSAGE, HttpStatus.BAD_REQUEST);
+    public IllegalMinuteValueException(final int minutes) {
+        super(String.format(MESSAGE_FORMAT, minutes), HttpStatus.BAD_REQUEST);
     }
 }
