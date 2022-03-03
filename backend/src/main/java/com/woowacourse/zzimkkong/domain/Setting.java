@@ -5,6 +5,7 @@ import com.woowacourse.zzimkkong.exception.space.NotEnoughAvailableTimeException
 import com.woowacourse.zzimkkong.exception.space.TimeUnitInconsistencyException;
 import com.woowacourse.zzimkkong.exception.space.TimeUnitMismatchException;
 import lombok.Builder;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -16,6 +17,7 @@ import java.time.LocalTime;
 @Getter
 @NoArgsConstructor
 @Builder
+@EqualsAndHashCode
 @Embeddable
 public class Setting {
     @Embedded

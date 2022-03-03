@@ -1,6 +1,7 @@
 package com.woowacourse.zzimkkong.domain;
 
 import com.woowacourse.zzimkkong.exception.reservation.IllegalTimeUnitValueException;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -12,6 +13,7 @@ import java.util.Map;
 
 @Getter
 @NoArgsConstructor
+@EqualsAndHashCode
 @Embeddable
 public class TimeUnit {
     public static final Integer MINIMUM_TIME_UNIT = 5;

@@ -3,6 +3,7 @@ package com.woowacourse.zzimkkong.domain;
 import com.woowacourse.zzimkkong.exception.reservation.NonMatchingStartEndDateException;
 import com.woowacourse.zzimkkong.exception.reservation.PastReservationTimeException;
 import com.woowacourse.zzimkkong.infrastructure.datetime.TimeZoneUtils;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -17,6 +18,7 @@ import static com.woowacourse.zzimkkong.infrastructure.datetime.TimeZoneUtils.UT
 
 @Getter
 @NoArgsConstructor
+@EqualsAndHashCode
 @Embeddable
 public class ReservationTime {
     /**
@@ -46,10 +48,10 @@ public class ReservationTime {
     public static ReservationTime of(
             final LocalDateTime startDateTime,
             final LocalDateTime endDateTime,
-            final boolean managerFlag) {
+            final boolean manageable) {
         LocalDateTime reservationStartDateTime = startDateTime.withSecond(0).withNano(0);
         LocalDateTime reservationEndDateTime = endDateTime.withSecond(0).withNano(0);
-        validateReservationTime(reservationStartDateTime, reservationEndDateTime, managerFlag);
+        validateReservationTime(reservationStartDateTime, reservationEndDateTime, manageable);
 
         LocalDate date = TimeZoneUtils.convert(reservationStartDateTime, UTC, KST).toLocalDate();
         return new ReservationTime(date, reservationStartDateTime, reservationEndDateTime);
@@ -61,8 +63,8 @@ public class ReservationTime {
         return of(startDateTime, endDateTime, true);
     }
 
-    public static void validatePastTime(final LocalDateTime startDateTime, final boolean managerFlag) {
-        if (!managerFlag && startDateTime.isBefore(LocalDateTime.now())) {
+    public static void validatePastTime(final LocalDateTime startDateTime) {
+        if (startDateTime.isBefore(LocalDateTime.now())) {
             throw new PastReservationTimeException();
         }
     }
@@ -70,11 +72,13 @@ public class ReservationTime {
     private static void validateReservationTime(
             final LocalDateTime startDateTime,
             final LocalDateTime endDateTime,
-            final boolean managerFlag) {
+            final boolean manageable) {
         LocalDateTime startDateTimeKST = TimeZoneUtils.convert(startDateTime, UTC, KST);
         LocalDateTime endDateTimeKST = TimeZoneUtils.convert(endDateTime, UTC, KST);
 
-        validatePastTime(startDateTime, managerFlag);
+        if (!manageable) {
+            validatePastTime(startDateTime);
+        }
         validateStartEndDate(startDateTimeKST, endDateTimeKST);
         TimeSlot.validateStartEndTime(startDateTimeKST.toLocalTime(), endDateTimeKST.toLocalTime());
     }

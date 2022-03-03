@@ -2,6 +2,7 @@ package com.woowacourse.zzimkkong.domain;
 
 import com.woowacourse.zzimkkong.exception.reservation.IllegalTimeUnitValueException;
 import com.woowacourse.zzimkkong.exception.reservation.ImpossibleStartEndTimeException;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -12,6 +13,7 @@ import java.time.temporal.ChronoUnit;
 
 @Getter
 @NoArgsConstructor
+@EqualsAndHashCode
 @Embeddable
 public class TimeSlot {
     @Column(nullable = false)

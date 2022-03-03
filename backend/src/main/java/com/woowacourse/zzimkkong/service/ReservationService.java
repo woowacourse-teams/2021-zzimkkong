@@ -195,7 +195,9 @@ public class ReservationService {
                 .orElseThrow(NoSuchReservationException::new);
         reservationStrategy.checkCorrectPassword(reservation, password);
 
-        ReservationTime.validatePastTime(reservation.getStartTime(), reservationStrategy.isManager());
+        if (!reservationStrategy.isManager()) {
+            ReservationTime.validatePastTime(reservation.getStartTime());
+        }
 
         reservations.delete(reservation);
 
