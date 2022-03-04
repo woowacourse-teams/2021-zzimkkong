@@ -21,13 +21,15 @@ const generateDateToTime = (time: Date | Dayjs, step: Props['step'] = 1): Time =
   const minute = isDayjs(time)
     ? Math.ceil(time.minute() / step) * step
     : Math.ceil(time.getMinutes() / step) * step;
-  const hour = isDayjs(time)
-    ? minute < 60
-      ? time.hour()
-      : time.hour() + 1
-    : minute < 60
-    ? time.getHours()
-    : time.getHours() + 1;
+
+  const hour = (() => {
+    if (isDayjs(time)) {
+      return minute < 60 ? time.hour() : time.hour() + 1;
+    }
+
+    return minute < 60 ? time.getHours() : time.getHours() + 1;
+  })();
+
   const midday = hour < 12 ? Midday.AM : Midday.PM;
 
   return {
