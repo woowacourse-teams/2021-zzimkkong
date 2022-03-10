@@ -29,12 +29,13 @@
     "build:dev": "cross-env NODE_ENV=production DEPLOY_ENV=development webpack",
     "storybook": "start-storybook -s ./src/assets -p 6006",
     "build-storybook": "build-storybook -s ./src/assets",
-    "test": "TZ=UTC+9 jest --watch --passWithNoTests",
-    "test:ci": "TZ=UTC+9 jest --passWithNoTests",
+    "test": "TZ=Asia/Seoul jest --watch --passWithNoTests",
+    "test:ci": "TZ=Asia/Seoul jest --passWithNoTests",
     "prepare": "cd .. && husky install frontend/.husky && cd frontend"
   },
   "dependencies": {
     "axios": "^0.21.1",
+    "dayjs": "^1.10.7",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
     "react-query": "^3.18.1",

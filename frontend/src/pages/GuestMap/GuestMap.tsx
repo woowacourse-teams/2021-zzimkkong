@@ -1,4 +1,5 @@
 import { AxiosError } from 'axios';
+import dayjs, { Dayjs } from 'dayjs';
 import { FormEventHandler, useEffect, useMemo, useRef, useState } from 'react';
 import { useMutation } from 'react-query';
 import { useHistory, useLocation, useParams } from 'react-router-dom';
@@ -29,7 +30,7 @@ import ReservationDrawer from './units/ReservationDrawer';
 
 export interface GuestMapState {
   spaceId?: Space['id'];
-  targetDate?: Date;
+  targetDate?: Dayjs;
   scrollPosition?: ScrollPosition;
 }
 
@@ -76,7 +77,7 @@ const GuestMap = (): JSX.Element => {
 
   const [spaceList, setSpaceList] = useState<Space[]>([]);
   const [selectedSpaceId, setSelectedSpaceId] = useState<Space['id'] | null>(spaceId ?? null);
-  const [date, setDate] = useState(targetDate ? new Date(targetDate) : new Date());
+  const [date, setDate] = useState(targetDate ? dayjs(targetDate).tz() : dayjs().tz());
 
   const spaces = useMemo(() => {
     const result: { [key: string]: Space } = {};
@@ -186,7 +187,7 @@ const GuestMap = (): JSX.Element => {
 
   useEffect(() => {
     if (targetDate) {
-      setDate(new Date(targetDate));
+      setDate(dayjs(targetDate).tz());
     }
   }, [targetDate]);
 

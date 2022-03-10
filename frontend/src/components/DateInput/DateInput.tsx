@@ -1,24 +1,25 @@
+import dayjs, { Dayjs } from 'dayjs';
 import { ChangeEventHandler, Dispatch, InputHTMLAttributes, SetStateAction } from 'react';
 import IconButton from 'components/IconButton/IconButton';
 import { formatDate, formatDateWithDay } from 'utils/datetime';
 import * as Styled from './DateInput.styles';
 
 export interface Props extends Omit<InputHTMLAttributes<HTMLInputElement>, 'type' | 'value'> {
-  date: Date;
-  setDate: Dispatch<SetStateAction<Date>>;
+  date: Dayjs;
+  setDate: Dispatch<SetStateAction<Dayjs>>;
 }
 
 const DateInput = ({ date, setDate, ...props }: Props): JSX.Element => {
   const onChange: ChangeEventHandler<HTMLInputElement> = (event) => {
-    setDate(new Date(event.target.value));
+    setDate(dayjs(event.target.value).tz());
   };
 
   const onClickPrev = () => {
-    setDate(new Date(date.setDate(date.getDate() - 1)));
+    setDate(dayjs(date).subtract(1, 'day'));
   };
 
   const onClickNext = () => {
-    setDate(new Date(date.setDate(date.getDate() + 1)));
+    setDate(dayjs(date).add(1, 'day'));
   };
 
   return (

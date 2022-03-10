@@ -1,3 +1,4 @@
+import { Dayjs } from 'dayjs';
 import { ReactComponent as DeleteIcon } from 'assets/svg/delete.svg';
 import { ReactComponent as EditIcon } from 'assets/svg/edit.svg';
 import Drawer from 'components/Drawer/Drawer';
@@ -11,7 +12,7 @@ import * as Styled from './ReservationDrawer.styles';
 interface Props {
   reservations: Reservation[];
   space: Space;
-  date: Date;
+  date: Dayjs;
   open: boolean;
   isSuccess: boolean;
   isLoadingError: boolean;
