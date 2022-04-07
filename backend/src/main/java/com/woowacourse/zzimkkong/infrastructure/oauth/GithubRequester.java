@@ -49,6 +49,7 @@ public class GithubRequester implements OauthAPIRequester {
 
     private String getToken(final String code) {
         log.error("github client id: {}", clientId);
+        log.error("github secret id: {}", secretId);
         Map<String, Object> responseBody = githubOauthLoginClient
                 .post()
                 .uri(uriBuilder -> uriBuilder

@@ -6,6 +6,7 @@ import com.woowacourse.zzimkkong.domain.oauth.GoogleUserInfo;
 import com.woowacourse.zzimkkong.domain.oauth.OauthUserInfo;
 import com.woowacourse.zzimkkong.exception.infrastructure.oauth.ErrorResponseToGetAccessTokenException;
 import com.woowacourse.zzimkkong.exception.infrastructure.oauth.UnableToGetTokenResponseFromGoogleException;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.core.ParameterizedTypeReference;
@@ -18,6 +19,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.Collections;
 import java.util.Map;
 
+@Slf4j
 @Component
 @PropertySource("classpath:config/oauth.properties")
 @LogMethodExecutionTime(group = "infrastructure")
@@ -53,6 +55,10 @@ public class GoogleRequester implements OauthAPIRequester {
 
     @Override
     public OauthUserInfo getUserInfoByCode(final String code) {
+        log.error("google client id: {}", clientId);
+        log.error("google secret id: {}", secretId);
+        log.error("google redirect url: {}", redirectUri);
+
         String token = getToken(code);
         return getUserInfo(token);
     }
