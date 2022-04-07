@@ -6,6 +6,7 @@ import com.woowacourse.zzimkkong.domain.oauth.GithubUserInfo;
 import com.woowacourse.zzimkkong.domain.oauth.OauthUserInfo;
 import com.woowacourse.zzimkkong.exception.infrastructure.oauth.ErrorResponseToGetAccessTokenException;
 import com.woowacourse.zzimkkong.exception.infrastructure.oauth.UnableToGetTokenResponseFromGithubException;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpHeaders;
@@ -14,6 +15,7 @@ import org.springframework.web.reactive.function.client.WebClient;
 
 import java.util.Map;
 
+@Slf4j
 @PropertySource("classpath:config/oauth.properties")
 @LogMethodExecutionTime(group = "infrastructure")
 public class GithubRequester implements OauthAPIRequester {
@@ -46,6 +48,7 @@ public class GithubRequester implements OauthAPIRequester {
     }
 
     private String getToken(final String code) {
+        log.error("github client id: {}", clientId);
         Map<String, Object> responseBody = githubOauthLoginClient
                 .post()
                 .uri(uriBuilder -> uriBuilder
