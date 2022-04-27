@@ -10,9 +10,11 @@ import org.junit.jupiter.params.provider.NullSource;
 import org.junit.jupiter.params.provider.ValueSource;
 
 import java.time.LocalDateTime;
+import java.time.ZonedDateTime;
 import java.time.format.DateTimeParseException;
 
 import static com.woowacourse.zzimkkong.dto.ValidatorMessage.*;
+import static com.woowacourse.zzimkkong.infrastructure.datetime.TimeZoneUtils.KST;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
@@ -20,16 +22,16 @@ class ReservationCreateUpdateRequestTest extends RequestTest {
     @ParameterizedTest
     @NullSource
     @DisplayName("예약 생성에 빈 dateTime이 들어오면 처리한다.")
-    void blankDateTime(LocalDateTime dateTime) {
+    void blankDateTime(ZonedDateTime zonedDateTime) {
         ReservationCreateUpdateRequest startTime = new ReservationCreateUpdateRequest(
-                dateTime,
-                LocalDateTime.now(),
+                zonedDateTime,
+                LocalDateTime.now().atZone(KST.toZoneId()),
                 "name",
                 "description");
 
         ReservationCreateUpdateRequest endTime = new ReservationCreateUpdateRequest(
-                LocalDateTime.now(),
-                dateTime,
+                LocalDateTime.now().atZone(KST.toZoneId()),
+                zonedDateTime,
                 "name",
                 "description");
 
@@ -47,8 +49,8 @@ class ReservationCreateUpdateRequestTest extends RequestTest {
     @DisplayName("예약 생성에 빈 이름이 들어오면 처리한다.")
     void blankName(String data) {
         ReservationCreateUpdateRequest nameRequest = new ReservationCreateUpdateRequest(
-                LocalDateTime.now(),
-                LocalDateTime.now(),
+                LocalDateTime.now().atZone(KST.toZoneId()),
+                LocalDateTime.now().atZone(KST.toZoneId()),
                 data,
                 "description");
 
@@ -62,8 +64,8 @@ class ReservationCreateUpdateRequestTest extends RequestTest {
     @DisplayName("예약 생성의 이름에 옳지 않은 형식의 문자열이 들어오면 처리한다.")
     void invalidName(String name, boolean flag) {
         ReservationCreateUpdateRequest reservationCreateUpdateRequest = new ReservationCreateUpdateRequest(
-                LocalDateTime.now(),
-                LocalDateTime.now(),
+                LocalDateTime.now().atZone(KST.toZoneId()),
+                LocalDateTime.now().atZone(KST.toZoneId()),
                 name,
                 "description");
 
@@ -77,8 +79,8 @@ class ReservationCreateUpdateRequestTest extends RequestTest {
     @DisplayName("예약 생성에 빈 이름이 들어오면 처리한다.")
     void blankDescription(String description) {
         ReservationCreateUpdateRequest descriptionRequest = new ReservationCreateUpdateRequest(
-                LocalDateTime.now(),
-                LocalDateTime.now(),
+                LocalDateTime.now().atZone(KST.toZoneId()),
+                LocalDateTime.now().atZone(KST.toZoneId()),
                 "name",
                 description);
 
@@ -91,8 +93,8 @@ class ReservationCreateUpdateRequestTest extends RequestTest {
     @DisplayName("예약 생성의 이름에 옳지 않은 형식의 문자열이 들어오면 처리한다.")
     void invalidDescription() {
         ReservationCreateUpdateRequest reservationCreateUpdateRequest = new ReservationCreateUpdateRequest(
-                LocalDateTime.now(),
-                LocalDateTime.now(),
+                LocalDateTime.now().atZone(KST.toZoneId()),
+                LocalDateTime.now().atZone(KST.toZoneId()),
                 "name",
                 "iamtenwordiamtenwordiamtenwordiamtenwordiamtenwordiamtenwordiamtenwordiamtenwordiamtenwordiamtenword1");
 

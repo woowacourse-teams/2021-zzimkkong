@@ -1,0 +1,1 @@
+ALTER TABLE map ADD COLUMN slack_url longtext;

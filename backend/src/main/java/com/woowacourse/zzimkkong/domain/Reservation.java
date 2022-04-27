@@ -1,5 +1,6 @@
 package com.woowacourse.zzimkkong.domain;
 
+import com.woowacourse.zzimkkong.infrastructure.datetime.TimeZoneUtils;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -7,6 +8,9 @@ import lombok.NoArgsConstructor;
 import javax.persistence.*;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.TimeZone;
+
+import static com.woowacourse.zzimkkong.infrastructure.datetime.TimeZoneUtils.UTC;
 
 @Getter
 @Builder
@@ -64,26 +68,15 @@ public class Reservation {
     }
 
     public boolean hasConflictWith(final LocalDateTime startDateTime, final LocalDateTime endDateTime) {
-        boolean contains = contains(startDateTime, endDateTime);
-        boolean intersects = intersects(startDateTime, endDateTime);
-        boolean equals = equals(startDateTime, endDateTime);
-
-        return contains || intersects || equals;
+        return !(isEarlier(endDateTime) || isLater(startDateTime));
     }
 
-    private boolean contains(final LocalDateTime startDateTime, final LocalDateTime endDateTime) {
-        return (startDateTime.isAfter(startTime) && endDateTime.isBefore(endTime))
-                || (startDateTime.isEqual(startTime) && endDateTime.isBefore(endTime))
-                || (startDateTime.isAfter(startTime) && endDateTime.isEqual(endTime));
+    private boolean isEarlier(final LocalDateTime endDateTime) {
+        return endDateTime.equals(this.startTime) || endDateTime.isBefore(this.startTime);
     }
 
-    private boolean intersects(final LocalDateTime startDateTime, final LocalDateTime endDateTime) {
-        return (startDateTime.isBefore(startTime) && endDateTime.isAfter(startTime))
-                || (endDateTime.isAfter(endTime) && startDateTime.isBefore(endTime));
-    }
-
-    private boolean equals(final LocalDateTime startDateTime, final LocalDateTime endDateTime) {
-        return startDateTime.isEqual(startTime) && endDateTime.isEqual(endTime);
+    private boolean isLater(final LocalDateTime startDateTime) {
+        return startDateTime.equals(this.endTime) || startDateTime.isAfter(this.endTime);
     }
 
     public void update(final Reservation updateReservation, final Space space) {
@@ -97,5 +90,11 @@ public class Reservation {
 
     public boolean isWrongPassword(final String password) {
         return !this.password.equals(password);
+    }
+
+    public boolean isBookedOn(final LocalDate date, final TimeZone timeZone) {
+        LocalDate convertedStartTimeDate = TimeZoneUtils.convert(startTime, UTC, timeZone).toLocalDate();
+        LocalDate convertedEndTimeDate = TimeZoneUtils.convert(endTime, UTC, timeZone).toLocalDate();
+        return date.equals(convertedStartTimeDate) && date.equals(convertedEndTimeDate);
     }
 }

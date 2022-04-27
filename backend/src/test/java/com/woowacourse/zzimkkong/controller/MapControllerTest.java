@@ -1,10 +1,9 @@
 package com.woowacourse.zzimkkong.controller;
 
+import com.woowacourse.zzimkkong.Constants;
 import com.woowacourse.zzimkkong.domain.Map;
 import com.woowacourse.zzimkkong.domain.Member;
-import com.woowacourse.zzimkkong.dto.map.MapCreateUpdateRequest;
-import com.woowacourse.zzimkkong.dto.map.MapFindAllResponse;
-import com.woowacourse.zzimkkong.dto.map.MapFindResponse;
+import com.woowacourse.zzimkkong.dto.map.*;
 import com.woowacourse.zzimkkong.infrastructure.auth.AuthorizationExtractor;
 import com.woowacourse.zzimkkong.infrastructure.sharingid.SharingIdGenerator;
 import io.restassured.RestAssured;
@@ -43,8 +42,8 @@ class MapControllerTest extends AcceptanceTest {
 
         // For Test Comparison
         pobi = new Member(EMAIL, passwordEncoder.encode(PW), ORGANIZATION);
-        luther = new Map(LUTHER_NAME, MAP_DRAWING_DATA, MAP_IMAGE_URL, pobi);
-        smallHouse = new Map(SMALL_HOUSE_NAME, MAP_DRAWING_DATA, MAP_IMAGE_URL, pobi);
+        luther = new Map(LUTHER_NAME, MAP_DRAWING_DATA, MAP_SVG, pobi);
+        smallHouse = new Map(SMALL_HOUSE_NAME, MAP_DRAWING_DATA, MAP_SVG, pobi);
     }
 
     @Test
@@ -72,8 +71,8 @@ class MapControllerTest extends AcceptanceTest {
 
         String lutherId = createdMapApi.split("/")[4];
         String smallHouseId = smallHouseCreatedMapApi.header("location").split("/")[4];
-        Map lutherWithId = new Map(Long.parseLong(lutherId), luther.getName(), luther.getMapDrawing(), luther.getMapImageUrl(), luther.getMember());
-        Map smallHouseWithId = new Map(Long.parseLong(smallHouseId), smallHouse.getName(), smallHouse.getMapDrawing(), smallHouse.getMapImageUrl(), smallHouse.getMember());
+        Map lutherWithId = new Map(Long.parseLong(lutherId), luther.getName(), luther.getMapDrawing(), luther.getThumbnail(), luther.getMember());
+        Map smallHouseWithId = new Map(Long.parseLong(smallHouseId), smallHouse.getName(), smallHouse.getMapDrawing(), smallHouse.getThumbnail(), smallHouse.getMember());
         Iterator<Map> expectedMapIterator = List.of(lutherWithId, smallHouseWithId).iterator();
 
         // when
@@ -127,6 +126,30 @@ class MapControllerTest extends AcceptanceTest {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
     }
 
+    @Test
+    @DisplayName("맵에 슬랙url을 추가한다.")
+    void saveSlackUrl() {
+        // given, when
+        ExtractableResponse<Response> response = saveSlackUrl(createdMapApi + "/slack", new SlackCreateRequest("slack.url"));
+
+        // then
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
+    }
+
+    @Test
+    @DisplayName("해당 맵의 슬랙url을 조회한다.")
+    void findSlackUrl() {
+        // given, when
+        ExtractableResponse<Response> response = findSlackUrl(createdMapApi + "/slack");
+        SlackFindResponse actualResponse = response.as(SlackFindResponse.class);
+        SlackFindResponse expectedResponse = SlackFindResponse.from(luther);
+
+        // then
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
+        assertThat(actualResponse).usingRecursiveComparison()
+                .isEqualTo(expectedResponse);
+    }
+
     static ExtractableResponse<Response> saveMap(final String api, MapCreateUpdateRequest mapCreateUpdateRequest) {
         return RestAssured
                 .given(getRequestSpecification()).log().all()
@@ -136,6 +159,29 @@ class MapControllerTest extends AcceptanceTest {
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body(mapCreateUpdateRequest)
                 .when().post(api)
+                .then().log().all().extract();
+    }
+
+    private ExtractableResponse<Response> saveSlackUrl(final String api, SlackCreateRequest slackCreateRequest) {
+        return RestAssured
+                .given(getRequestSpecification()).log().all()
+                .accept("application/json")
+                .header("Authorization", AuthorizationExtractor.AUTHENTICATION_TYPE + " " + accessToken)
+                .filter(document("map/slackPost", getRequestPreprocessor(), getResponsePreprocessor()))
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .body(slackCreateRequest)
+                .when().post(api)
+                .then().log().all().extract();
+    }
+
+    private ExtractableResponse<Response> findSlackUrl(final String api) {
+        return RestAssured
+                .given(getRequestSpecification()).log().all()
+                .accept("application/json")
+                .header("Authorization", AuthorizationExtractor.AUTHENTICATION_TYPE + " " + accessToken)
+                .filter(document("map/slackGet", getRequestPreprocessor(), getResponsePreprocessor()))
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .when().get(api)
                 .then().log().all().extract();
     }
 

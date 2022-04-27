@@ -1,6 +1,7 @@
 package com.woowacourse.zzimkkong.controller;
 
 import com.woowacourse.zzimkkong.DatabaseCleaner;
+import com.woowacourse.zzimkkong.domain.Reservation;
 import com.woowacourse.zzimkkong.dto.map.MapCreateUpdateRequest;
 import com.woowacourse.zzimkkong.dto.member.LoginRequest;
 import com.woowacourse.zzimkkong.dto.member.MemberSaveRequest;
@@ -9,7 +10,6 @@ import com.woowacourse.zzimkkong.dto.space.SettingsRequest;
 import com.woowacourse.zzimkkong.dto.space.SpaceCreateUpdateRequest;
 import com.woowacourse.zzimkkong.infrastructure.oauth.GithubRequester;
 import com.woowacourse.zzimkkong.infrastructure.oauth.GoogleRequester;
-import com.woowacourse.zzimkkong.infrastructure.thumbnail.StorageUploader;
 import io.restassured.RestAssured;
 import io.restassured.builder.RequestSpecBuilder;
 import io.restassured.specification.RequestSpecification;
@@ -27,15 +27,16 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
-import java.io.InputStream;
+import java.time.LocalDate;
+import java.util.List;
+import java.util.stream.Collectors;
 
 import static com.woowacourse.zzimkkong.Constants.*;
 import static com.woowacourse.zzimkkong.DocumentUtils.setRequestSpecification;
 import static com.woowacourse.zzimkkong.controller.AuthControllerTest.getToken;
 import static com.woowacourse.zzimkkong.controller.MemberControllerTest.saveMember;
+import static com.woowacourse.zzimkkong.infrastructure.datetime.TimeZoneUtils.KST;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.BDDMockito.given;
 import static org.springframework.restdocs.restassured3.RestAssuredRestDocumentation.documentationConfiguration;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
@@ -88,9 +89,6 @@ class AcceptanceTest {
     @Autowired
     private DatabaseCleaner databaseCleaner;
 
-    @MockBean
-    private StorageUploader storageUploader;
-
     @Autowired
     protected PasswordEncoder passwordEncoder;
 
@@ -110,13 +108,16 @@ class AcceptanceTest {
 
         saveMember(memberSaveRequest);
         accessToken = getToken();
-
-        given(storageUploader.upload(anyString(), anyString(), any(InputStream.class)))
-                .willReturn(MAP_IMAGE_URL);
     }
 
     @AfterEach
     void deleteAll() {
         databaseCleaner.execute();
+    }
+
+    protected List<Reservation> filterReservationsByKST(List<Reservation> reservations, LocalDate date) {
+        return reservations.stream()
+                .filter(reservation -> reservation.isBookedOn(date, KST))
+                .collect(Collectors.toList());
     }
 }

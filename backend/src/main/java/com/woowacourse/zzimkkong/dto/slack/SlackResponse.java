@@ -1,6 +1,7 @@
 package com.woowacourse.zzimkkong.dto.slack;
 
 import com.woowacourse.zzimkkong.domain.Reservation;
+import com.woowacourse.zzimkkong.infrastructure.datetime.TimeZoneUtils;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -14,6 +15,7 @@ public class SlackResponse {
     private String reservationTime;
     private String description;
     private String sharingMapId;
+    private String slackUrl;
 
     private SlackResponse(
             final String spaceName,
@@ -21,22 +23,34 @@ public class SlackResponse {
             final LocalDateTime startTime,
             final LocalDateTime endTime,
             final String description,
-            final String sharingMapId) {
+            final String sharingMapId,
+            final String slackUrl) {
         this.spaceName = "회의실명 : " + spaceName;
         this.userName = "예약자명 : " + userName;
         this.reservationTime = "예약시간 : " + startTime + " ~ " + endTime;
         this.description = "예약내용 : " + description;
         this.sharingMapId = sharingMapId;
+        this.slackUrl = slackUrl;
     }
 
-    public static SlackResponse of(final Reservation reservation, final String sharingMapId) {
+    public static SlackResponse of(final Reservation reservation, final String sharingMapId, final String slackUrl) {
+        LocalDateTime reservationStartTimeKST = TimeZoneUtils.convert(
+                reservation.getStartTime(),
+                TimeZoneUtils.UTC,
+                TimeZoneUtils.KST);
+        LocalDateTime reservationEndTimeKST = TimeZoneUtils.convert(
+                reservation.getEndTime(),
+                TimeZoneUtils.UTC,
+                TimeZoneUtils.KST);
+
         return new SlackResponse(
                 reservation.getSpace().getName(),
                 reservation.getUserName(),
-                reservation.getStartTime(),
-                reservation.getEndTime(),
+                reservationStartTimeKST,
+                reservationEndTimeKST,
                 reservation.getDescription(),
-                sharingMapId);
+                sharingMapId,
+                slackUrl);
     }
 
     @Override

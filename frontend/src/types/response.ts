@@ -62,3 +62,7 @@ export interface QueryManagerSpacesSuccess {
 export interface QueryPresetsSuccess {
   presets: Preset[];
 }
+
+export interface QuerySlackWebhookUrlSuccess {
+  slackUrl: string;
+}

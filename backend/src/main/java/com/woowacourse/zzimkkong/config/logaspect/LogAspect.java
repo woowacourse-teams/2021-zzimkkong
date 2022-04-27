@@ -4,12 +4,14 @@ import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
+import org.aspectj.lang.annotation.Pointcut;
 import org.aspectj.lang.reflect.MethodSignature;
+import org.slf4j.MDC;
+import org.springframework.aop.aspectj.AspectJExpressionPointcutAdvisor;
+import org.springframework.aop.framework.ProxyFactory;
 import org.springframework.stereotype.Component;
 
-import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
-import java.lang.reflect.Proxy;
 
 import static net.logstash.logback.argument.StructuredArguments.value;
 
@@ -17,8 +19,10 @@ import static net.logstash.logback.argument.StructuredArguments.value;
 @Component
 @Aspect
 public class LogAspect {
-    @Around("@within(com.woowacourse.zzimkkong.config.logaspect.LogMethodExecutionTime)" +
-            "&& execution(public * *.*(..))")
+    public static final String ALL_ZZIMKKONG_PUBLIC_METHOD_POINTCUT_EXPRESSION = "execution(public * com.woowacourse.zzimkkong..*(..))";
+
+    @Around("@target(com.woowacourse.zzimkkong.config.logaspect.LogMethodExecutionTime)" +
+            "&& allZzimkkongPublicMethod()")
     public Object logExecutionTime(ProceedingJoinPoint joinPoint) throws Throwable {
         long startTime = System.currentTimeMillis();
         Object result = joinPoint.proceed();
@@ -34,55 +38,43 @@ public class LogAspect {
         return result;
     }
 
-    private String getLogGroupFromAnnotation(ProceedingJoinPoint joinPoint) {
-        Class<?> targetClass = joinPoint.getTarget().getClass();
-        return targetClass.getAnnotation(LogMethodExecutionTime.class).group();
-    }
-
-    private static void logExecutionInfo(MethodSignature methodSignature, long timeTaken, String logGroup) {
+    void logExecutionInfo(MethodSignature methodSignature, long timeTaken, String logGroup) {
         final Class<?> declaringType = methodSignature.getDeclaringType();
         final Method method = methodSignature.getMethod();
 
         logExecutionInfo(declaringType, method, timeTaken, logGroup);
     }
 
-    private static void logExecutionInfo(Class<?> declaringType, Method method, long timeTaken, String logGroup) {
-        log.info("{} took {} ms. (info group by '{}')",
-                value("method", declaringType.getName() + "." + method.getName() + "()"),
+    void logExecutionInfo(Class<?> typeToLog, Method method, long timeTaken, String logGroup) {
+        String traceId = MDC.get("traceId");
+
+        log.info("{} took {} ms. (info group: '{}', traceId: {})",
+                value("method", typeToLog.getName() + "." + method.getName() + "()"),
                 value("execution_time", timeTaken),
-                value("group", logGroup));
+                value("group", logGroup),
+                value("traceId", traceId));
     }
 
-    static <T> T createLogProxy(Object target, Class<T> requiredType, String logGroup) {
-        final LogProxyHandler logProxyHandler = new LogProxyHandler(target, requiredType, logGroup);
-        return requiredType.cast(
-                Proxy.newProxyInstance(
-                        requiredType.getClassLoader(),
-                        new Class[]{requiredType},
-                        logProxyHandler));
+    Object createLogProxy(Object target, Class<?> typeToLog, String logGroup) {
+        AspectJExpressionPointcutAdvisor advisor = new AspectJExpressionPointcutAdvisor();
+        advisor.setExpression(ALL_ZZIMKKONG_PUBLIC_METHOD_POINTCUT_EXPRESSION);
+
+        ExecutionTimeLogAdvice advice = new ExecutionTimeLogAdvice(this, typeToLog, logGroup);
+        advisor.setAdvice(advice);
+
+        ProxyFactory proxyFactory = new ProxyFactory(target);
+        proxyFactory.addAdvisor(advisor);
+        proxyFactory.setProxyTargetClass(true);
+
+        return proxyFactory.getProxy();
     }
 
-    private static class LogProxyHandler implements InvocationHandler {
-        private final Object target;
-        private final Class<?> declaringType;
-        private final String logGroup;
+    private String getLogGroupFromAnnotation(ProceedingJoinPoint joinPoint) {
+        Class<?> targetClass = joinPoint.getTarget().getClass();
+        return targetClass.getAnnotation(LogMethodExecutionTime.class).group();
+    }
 
-        public LogProxyHandler(Object target, Class<?> declaringType, String logGroup) {
-            this.target = target;
-            this.declaringType = declaringType;
-            this.logGroup = logGroup;
-        }
-
-        @Override
-        public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
-            long startTime = System.currentTimeMillis();
-            final Object invokeResult = method.invoke(target, args);
-            long endTime = System.currentTimeMillis();
-            long timeTaken = endTime - startTime;
-
-            logExecutionInfo(declaringType, method, timeTaken, logGroup);
-
-            return invokeResult;
-        }
+    @Pointcut(ALL_ZZIMKKONG_PUBLIC_METHOD_POINTCUT_EXPRESSION)
+    private void allZzimkkongPublicMethod() {
     }
 }

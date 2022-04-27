@@ -1,3 +1,4 @@
+import dayjs, { Dayjs, isDayjs } from 'dayjs';
 import { MouseEventHandler, useState } from 'react';
 import { Step } from 'components/TimePicker/TimePicker';
 import { Midday, Range, Time } from 'types/time';
@@ -16,9 +17,19 @@ const generateTo12Hour = (hour: number) => {
   return result === 0 ? 12 : result;
 };
 
-const generateDateToTime = (time: Date, step: Props['step'] = 1): Time => {
-  const minute = Math.ceil(time.getMinutes() / step) * step;
-  const hour = minute < 60 ? time.getHours() : time.getHours() + 1;
+const generateDateToTime = (time: Date | Dayjs, step: Props['step'] = 1): Time => {
+  const minute = isDayjs(time)
+    ? Math.ceil(time.minute() / step) * step
+    : Math.ceil(time.getMinutes() / step) * step;
+
+  const hour = (() => {
+    if (isDayjs(time)) {
+      return minute < 60 ? time.hour() : time.hour() + 1;
+    }
+
+    return minute < 60 ? time.getHours() : time.getHours() + 1;
+  })();
+
   const midday = hour < 12 ? Midday.AM : Midday.PM;
 
   return {
@@ -41,13 +52,13 @@ const useTimePicker = ({
 } => {
   const [selectedTime, setSelectedTime] = useState<SelectedTime>(null);
   const [range, setRange] = useState<Range>({
-    start: initialStartTime ? generateDateToTime(initialStartTime, step) : null,
-    end: initialEndTime ? generateDateToTime(initialEndTime, step) : null,
+    start: initialStartTime ? generateDateToTime(dayjs(initialStartTime).tz(), step) : null,
+    end: initialEndTime ? generateDateToTime(dayjs(initialEndTime).tz(), step) : null,
   });
 
   const setInitialTime = (key: keyof Range) => {
     if (key === 'start' || (key === 'end' && range.start === null)) {
-      const now = new Date();
+      const now = dayjs().tz();
 
       setRange((prev) => ({
         ...prev,

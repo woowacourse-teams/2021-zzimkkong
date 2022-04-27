@@ -28,3 +28,13 @@ export const VerticalBar = styled.div`
 export const DateInputWrapper = styled.div`
   margin: 1rem 0;
 `;
+
+export const ButtonText = styled.span`
+  margin-left: 0.25rem;
+`;
+
+export const SlackModalContainer = styled.div`
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 1.5rem;
+`;

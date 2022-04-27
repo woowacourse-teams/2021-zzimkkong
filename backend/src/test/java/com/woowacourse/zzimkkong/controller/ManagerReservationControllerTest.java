@@ -15,11 +15,14 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 
 import java.util.Arrays;
+import java.util.List;
 
 import static com.woowacourse.zzimkkong.Constants.*;
 import static com.woowacourse.zzimkkong.DocumentUtils.*;
 import static com.woowacourse.zzimkkong.controller.ManagerSpaceControllerTest.saveSpace;
 import static com.woowacourse.zzimkkong.controller.MapControllerTest.saveMap;
+import static com.woowacourse.zzimkkong.infrastructure.datetime.TimeZoneUtils.KST;
+import static com.woowacourse.zzimkkong.infrastructure.datetime.TimeZoneUtils.UTC;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.restdocs.restassured3.RestAssuredRestDocumentation.document;
 
@@ -53,14 +56,14 @@ class ManagerReservationControllerTest extends AcceptanceTest {
         fe1ReservationApi = saveFe1SpaceResponse.header("location") + "/reservations";
 
         ReservationCreateUpdateWithPasswordRequest reservationCreateUpdateWithPasswordRequest = new ReservationCreateUpdateWithPasswordRequest(
-                THE_DAY_AFTER_TOMORROW.atTime(15, 0),
-                THE_DAY_AFTER_TOMORROW.atTime(16, 0),
+                THE_DAY_AFTER_TOMORROW.atTime(15, 0).atZone(KST.toZoneId()),
+                THE_DAY_AFTER_TOMORROW.atTime(16, 0).atZone(KST.toZoneId()),
                 SALLY_PW,
                 SALLY_NAME,
                 SALLY_DESCRIPTION);
 
         Member pobi = new Member(EMAIL, passwordEncoder.encode(PW), ORGANIZATION);
-        Map luther = new Map(LUTHER_NAME, MAP_DRAWING_DATA, MAP_IMAGE_URL, pobi);
+        Map luther = new Map(LUTHER_NAME, MAP_DRAWING_DATA, MAP_SVG, pobi);
 
         Setting beSetting = Setting.builder()
                 .availableStartTime(BE_AVAILABLE_START_TIME)
@@ -104,8 +107,8 @@ class ManagerReservationControllerTest extends AcceptanceTest {
         saveExampleReservations();
         savedReservationId = getReservationIdAfterSave(beReservationApi, reservationCreateUpdateWithPasswordRequest);
         savedReservation = Reservation.builder()
-                .startTime(reservationCreateUpdateWithPasswordRequest.getStartDateTime())
-                .endTime(reservationCreateUpdateWithPasswordRequest.getEndDateTime())
+                .startTime(reservationCreateUpdateWithPasswordRequest.localStartDateTime())
+                .endTime(reservationCreateUpdateWithPasswordRequest.localEndDateTime())
                 .password(reservationCreateUpdateWithPasswordRequest.getPassword())
                 .userName(reservationCreateUpdateWithPasswordRequest.getName())
                 .description(reservationCreateUpdateWithPasswordRequest.getDescription())
@@ -118,8 +121,8 @@ class ManagerReservationControllerTest extends AcceptanceTest {
     void save() {
         //given
         ReservationCreateUpdateWithPasswordRequest newReservationCreateUpdateWithPasswordRequest = new ReservationCreateUpdateWithPasswordRequest(
-                THE_DAY_AFTER_TOMORROW.atTime(19, 0),
-                THE_DAY_AFTER_TOMORROW.atTime(20, 0),
+                THE_DAY_AFTER_TOMORROW.atTime(19, 0).atZone(KST.toZoneId()),
+                THE_DAY_AFTER_TOMORROW.atTime(20, 0).atZone(KST.toZoneId()),
                 SALLY_PW,
                 SALLY_NAME,
                 SALLY_DESCRIPTION);
@@ -138,10 +141,10 @@ class ManagerReservationControllerTest extends AcceptanceTest {
         ExtractableResponse<Response> response = findReservations(beReservationApi, THE_DAY_AFTER_TOMORROW.toString());
 
         ReservationFindResponse actualResponse = response.as(ReservationFindResponse.class);
-        ReservationFindResponse expectedResponse = ReservationFindResponse.from(
-                Arrays.asList(savedReservation,
-                        beAmZeroOne,
-                        bePmOneTwo));
+        List<Reservation> expectedFindReservations = filterReservationsByKST(
+                Arrays.asList(savedReservation, beAmZeroOne, bePmOneTwo),
+                THE_DAY_AFTER_TOMORROW);
+        ReservationFindResponse expectedResponse = ReservationFindResponse.from(expectedFindReservations);
 
         //then
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
@@ -159,12 +162,13 @@ class ManagerReservationControllerTest extends AcceptanceTest {
         ExtractableResponse<Response> response = findAllReservations(api, THE_DAY_AFTER_TOMORROW.toString());
 
         ReservationFindAllResponse actualResponse = response.as(ReservationFindAllResponse.class);
+
+        List<Reservation> expectedFindReservations = filterReservationsByKST(
+                Arrays.asList(savedReservation, beAmZeroOne, bePmOneTwo, fe1ZeroOne),
+                THE_DAY_AFTER_TOMORROW);
         ReservationFindAllResponse expectedResponse = ReservationFindAllResponse.of(
                 Arrays.asList(be, fe),
-                Arrays.asList(savedReservation,
-                        beAmZeroOne,
-                        bePmOneTwo,
-                        fe1ZeroOne));
+                expectedFindReservations);
 
         //then
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
@@ -196,8 +200,8 @@ class ManagerReservationControllerTest extends AcceptanceTest {
     void update_sameSpace() {
         //given
         ReservationCreateUpdateRequest reservationCreateUpdateRequestSameSpace = new ReservationCreateUpdateRequest(
-                THE_DAY_AFTER_TOMORROW.atTime(19, 0),
-                THE_DAY_AFTER_TOMORROW.atTime(20, 30),
+                THE_DAY_AFTER_TOMORROW.atTime(19, 0).atZone(KST.toZoneId()),
+                THE_DAY_AFTER_TOMORROW.atTime(20, 30).atZone(KST.toZoneId()),
                 "sally",
                 "회의입니다."
         );
@@ -211,8 +215,8 @@ class ManagerReservationControllerTest extends AcceptanceTest {
         ReservationResponse expectedResponse = ReservationResponse.from(
                 Reservation.builder()
                         .id(savedReservationId)
-                        .startTime(reservationCreateUpdateRequestSameSpace.getStartDateTime())
-                        .endTime(reservationCreateUpdateRequestSameSpace.getEndDateTime())
+                        .startTime(reservationCreateUpdateRequestSameSpace.localStartDateTime())
+                        .endTime(reservationCreateUpdateRequestSameSpace.localEndDateTime())
                         .description(reservationCreateUpdateRequestSameSpace.getDescription())
                         .userName(reservationCreateUpdateRequestSameSpace.getName())
                         .space(be)
@@ -231,8 +235,8 @@ class ManagerReservationControllerTest extends AcceptanceTest {
     void update_spaceUpdate() {
         //given
         ReservationCreateUpdateWithPasswordRequest reservationCreateUpdateWithPasswordRequestDifferentSpace = new ReservationCreateUpdateWithPasswordRequest(
-                THE_DAY_AFTER_TOMORROW.atTime(19, 30),
-                THE_DAY_AFTER_TOMORROW.atTime(20, 30),
+                THE_DAY_AFTER_TOMORROW.atTime(19, 30).atZone(KST.toZoneId()),
+                THE_DAY_AFTER_TOMORROW.atTime(20, 30).atZone(KST.toZoneId()),
                 SALLY_PW,
                 "sally",
                 "회의입니다."
@@ -247,19 +251,20 @@ class ManagerReservationControllerTest extends AcceptanceTest {
                 THE_DAY_AFTER_TOMORROW.toString());
 
         ReservationFindResponse actualResponse = findResponse.as(ReservationFindResponse.class);
-        ReservationFindResponse expectedResponse = ReservationFindResponse.from(
+
+        List<Reservation> expectedFindReservations = filterReservationsByKST(
                 Arrays.asList(
                         Reservation.builder()
-                                .startTime(reservationCreateUpdateWithPasswordRequestDifferentSpace.getStartDateTime())
-                                .endTime(reservationCreateUpdateWithPasswordRequestDifferentSpace.getEndDateTime())
+                                .startTime(reservationCreateUpdateWithPasswordRequestDifferentSpace.localStartDateTime())
+                                .endTime(reservationCreateUpdateWithPasswordRequestDifferentSpace.localEndDateTime())
                                 .description(reservationCreateUpdateWithPasswordRequestDifferentSpace.getDescription())
                                 .userName(reservationCreateUpdateWithPasswordRequestDifferentSpace.getName())
                                 .password(reservationCreateUpdateWithPasswordRequestDifferentSpace.getPassword())
                                 .space(fe)
                                 .build(),
-                        fe1ZeroOne
-                )
-        );
+                        fe1ZeroOne),
+                THE_DAY_AFTER_TOMORROW);
+        ReservationFindResponse expectedResponse = ReservationFindResponse.from(expectedFindReservations);
 
         //then
         assertThat(updateResponse.statusCode()).isEqualTo(HttpStatus.OK.value());
@@ -284,37 +289,37 @@ class ManagerReservationControllerTest extends AcceptanceTest {
 
     private void saveExampleReservations() {
         ReservationCreateUpdateWithPasswordRequest beAmZeroOneRequest = new ReservationCreateUpdateWithPasswordRequest(
-                BE_AM_TEN_ELEVEN_START_TIME,
-                BE_AM_TEN_ELEVEN_END_TIME,
+                BE_AM_TEN_ELEVEN_START_TIME_KST,
+                BE_AM_TEN_ELEVEN_END_TIME_KST,
                 BE_AM_TEN_ELEVEN_PW,
                 BE_AM_TEN_ELEVEN_USERNAME,
                 BE_AM_TEN_ELEVEN_DESCRIPTION);
 
         ReservationCreateUpdateWithPasswordRequest bePmOneTwoRequest = new ReservationCreateUpdateWithPasswordRequest(
-                BE_PM_ONE_TWO_START_TIME,
-                BE_PM_ONE_TWO_END_TIME,
+                BE_PM_ONE_TWO_START_TIME_KST,
+                BE_PM_ONE_TWO_END_TIME_KST,
                 BE_PM_ONE_TWO_PW,
                 BE_PM_ONE_TWO_USERNAME,
                 BE_PM_ONE_TWO_DESCRIPTION);
 
         ReservationCreateUpdateWithPasswordRequest beNextDayAmSixTwelveRequest = new ReservationCreateUpdateWithPasswordRequest(
-                BE_NEXT_DAY_PM_FOUR_TO_SIX_START_TIME,
-                BE_NEXT_DAY_PM_FOUR_TO_SIX_END_TIME,
+                BE_NEXT_DAY_PM_FOUR_TO_SIX_START_TIME_KST,
+                BE_NEXT_DAY_PM_FOUR_TO_SIX_END_TIME_KST,
                 BE_NEXT_DAY_PM_FOUR_TO_SIX_PW,
                 BE_NEXT_DAY_PM_FOUR_TO_SIX_USERNAME,
                 BE_NEXT_DAY_PM_FOUR_TO_SIX_DESCRIPTION);
 
         ReservationCreateUpdateWithPasswordRequest feZeroOneRequest = new ReservationCreateUpdateWithPasswordRequest(
-                FE1_AM_TEN_ELEVEN_START_TIME,
-                FE1_AM_TEN_ELEVEN_END_TIME,
+                FE1_AM_TEN_ELEVEN_START_TIME_KST,
+                FE1_AM_TEN_ELEVEN_END_TIME_KST,
                 FE1_AM_TEN_ELEVEN_PW,
                 FE1_AM_TEN_ELEVEN_USERNAME,
                 FE1_AM_TEN_ELEVEN_DESCRIPTION);
 
         beAmZeroOne = Reservation.builder()
                 .id(getReservationIdAfterSave(beReservationApi, beAmZeroOneRequest))
-                .startTime(BE_AM_TEN_ELEVEN_START_TIME)
-                .endTime(BE_AM_TEN_ELEVEN_END_TIME)
+                .startTime(BE_AM_TEN_ELEVEN_START_TIME_KST.withZoneSameInstant(UTC.toZoneId()).toLocalDateTime())
+                .endTime(BE_AM_TEN_ELEVEN_END_TIME_KST.withZoneSameInstant(UTC.toZoneId()).toLocalDateTime())
                 .description(BE_AM_TEN_ELEVEN_DESCRIPTION)
                 .userName(BE_AM_TEN_ELEVEN_USERNAME)
                 .password(BE_AM_TEN_ELEVEN_PW)
@@ -323,8 +328,8 @@ class ManagerReservationControllerTest extends AcceptanceTest {
 
         bePmOneTwo = Reservation.builder()
                 .id(getReservationIdAfterSave(beReservationApi, bePmOneTwoRequest))
-                .startTime(BE_PM_ONE_TWO_START_TIME)
-                .endTime(BE_PM_ONE_TWO_END_TIME)
+                .startTime(BE_PM_ONE_TWO_START_TIME_KST.withZoneSameInstant(UTC.toZoneId()).toLocalDateTime())
+                .endTime(BE_PM_ONE_TWO_END_TIME_KST.withZoneSameInstant(UTC.toZoneId()).toLocalDateTime())
                 .description(BE_PM_ONE_TWO_DESCRIPTION)
                 .userName(BE_PM_ONE_TWO_USERNAME)
                 .password(BE_PM_ONE_TWO_PW)
@@ -335,8 +340,8 @@ class ManagerReservationControllerTest extends AcceptanceTest {
 
         fe1ZeroOne = Reservation.builder()
                 .id(getReservationIdAfterSave(fe1ReservationApi, feZeroOneRequest))
-                .startTime(FE1_AM_TEN_ELEVEN_START_TIME)
-                .endTime(FE1_AM_TEN_ELEVEN_END_TIME)
+                .startTime(FE1_AM_TEN_ELEVEN_START_TIME_KST.withZoneSameInstant(UTC.toZoneId()).toLocalDateTime())
+                .endTime(FE1_AM_TEN_ELEVEN_END_TIME_KST.withZoneSameInstant(UTC.toZoneId()).toLocalDateTime())
                 .description(FE1_AM_TEN_ELEVEN_DESCRIPTION)
                 .userName(FE1_AM_TEN_ELEVEN_USERNAME)
                 .password(FE1_AM_TEN_ELEVEN_PW)

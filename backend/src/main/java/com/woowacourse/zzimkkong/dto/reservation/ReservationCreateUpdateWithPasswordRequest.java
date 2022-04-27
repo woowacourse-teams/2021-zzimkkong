@@ -5,7 +5,7 @@ import lombok.NoArgsConstructor;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Pattern;
-import java.time.LocalDateTime;
+import java.time.ZonedDateTime;
 
 import static com.woowacourse.zzimkkong.dto.ValidatorMessage.*;
 
@@ -17,8 +17,8 @@ public class ReservationCreateUpdateWithPasswordRequest extends ReservationCreat
     private String password;
 
     public ReservationCreateUpdateWithPasswordRequest(
-            final LocalDateTime startDateTime,
-            final LocalDateTime endDateTime,
+            final ZonedDateTime startDateTime,
+            final ZonedDateTime endDateTime,
             final String password,
             final String name,
             final String description) {

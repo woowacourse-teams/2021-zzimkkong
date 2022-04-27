@@ -8,6 +8,7 @@ import com.woowacourse.zzimkkong.dto.slack.SlackResponse;
 import com.woowacourse.zzimkkong.exception.map.NoSuchMapException;
 import com.woowacourse.zzimkkong.exception.reservation.*;
 import com.woowacourse.zzimkkong.exception.space.NoSuchSpaceException;
+import com.woowacourse.zzimkkong.infrastructure.datetime.TimeZoneUtils;
 import com.woowacourse.zzimkkong.infrastructure.sharingid.SharingIdGenerator;
 import com.woowacourse.zzimkkong.repository.MapRepository;
 import com.woowacourse.zzimkkong.repository.ReservationRepository;
@@ -24,7 +25,10 @@ import java.time.temporal.ChronoUnit;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
+import java.util.TimeZone;
 import java.util.stream.Collectors;
+
+import static com.woowacourse.zzimkkong.infrastructure.datetime.TimeZoneUtils.*;
 
 @Service
 @Transactional
@@ -60,18 +64,19 @@ public class ReservationService {
 
         validateAvailability(space, reservationCreateDto, new ExcludeReservationCreateStrategy());
 
+        LocalDate date = TimeZoneUtils.convert(reservationCreateDto.getStartDateTime(), UTC, KST).toLocalDate();
         Reservation reservation = reservations.save(
                 Reservation.builder()
                         .startTime(reservationCreateDto.getStartDateTime())
                         .endTime(reservationCreateDto.getEndDateTime())
-                        .date(reservationCreateDto.getStartDateTime().toLocalDate())
+                        .date(date)
                         .password(reservationCreateDto.getPassword())
                         .userName(reservationCreateDto.getName())
                         .description(reservationCreateDto.getDescription())
                         .space(space)
                         .build());
         String sharingMapId = sharingIdGenerator.from(map);
-        return ReservationCreateResponse.of(reservation, sharingMapId);
+        return ReservationCreateResponse.of(reservation, sharingMapId, map.getSlackUrl());
     }
 
     @Transactional(readOnly = true)
@@ -161,10 +166,11 @@ public class ReservationService {
 
         validateAvailability(space, reservationUpdateDto, new ExcludeReservationUpdateStrategy(reservation));
 
+        LocalDate date = TimeZoneUtils.convert(reservationUpdateDto.getStartDateTime(), UTC, KST).toLocalDate();
         Reservation updateReservation = Reservation.builder()
                 .startTime(reservationUpdateDto.getStartDateTime())
                 .endTime(reservationUpdateDto.getEndDateTime())
-                .date(reservationUpdateDto.getStartDateTime().toLocalDate())
+                .date(date)
                 .userName(reservationUpdateDto.getName())
                 .description(reservationUpdateDto.getDescription())
                 .space(space)
@@ -173,7 +179,7 @@ public class ReservationService {
         reservation.update(updateReservation, space);
 
         String sharingMapId = sharingIdGenerator.from(map);
-        return SlackResponse.of(reservation, sharingMapId);
+        return SlackResponse.of(reservation, sharingMapId, map.getSlackUrl());
     }
 
     public SlackResponse deleteReservation(
@@ -200,7 +206,7 @@ public class ReservationService {
         reservations.delete(reservation);
 
         String sharingMapId = sharingIdGenerator.from(map);
-        return SlackResponse.of(reservation, sharingMapId);
+        return SlackResponse.of(reservation, sharingMapId, map.getSlackUrl());
     }
 
     private void validateTime(final ReservationCreateDto reservationCreateDto, final boolean managerFlag) {
@@ -213,12 +219,14 @@ public class ReservationService {
             throw new ImpossibleEndTimeException();
         }
 
-        if (!startDateTime.toLocalDate().isEqual(endDateTime.toLocalDate())) {
+        LocalDate startDateKST = TimeZoneUtils.convert(startDateTime, UTC, KST).toLocalDate();
+        LocalDate endDateKST = TimeZoneUtils.convert(endDateTime, UTC, KST).toLocalDate();
+        if (!startDateKST.isEqual(endDateKST)) {
             throw new NonMatchingStartAndEndDateException();
         }
     }
 
-    private void validatePastTimeAndManager(LocalDateTime startDateTime, boolean managerFlag) {
+    private void validatePastTimeAndManager(final LocalDateTime startDateTime, final boolean managerFlag) {
         if (startDateTime.isBefore(LocalDateTime.now()) && !managerFlag) {
             throw new ImpossibleStartTimeException();
         }
@@ -241,18 +249,27 @@ public class ReservationService {
         validateTimeConflicts(startDateTime, endDateTime, reservationsOnDate);
     }
 
-    private void validateSpaceSetting(Space space, LocalDateTime startDateTime, LocalDateTime endDateTime) {
-        int durationMinutes = (int) ChronoUnit.MINUTES.between(startDateTime, endDateTime);
+    private void validateSpaceSetting(
+            final Space space,
+            final LocalDateTime startDateTime,
+            final LocalDateTime endDateTime) {
+        LocalDateTime startDateTimeKST = TimeZoneUtils.convert(startDateTime, UTC, KST);
+        LocalDateTime endDateTimeKST = TimeZoneUtils.convert(endDateTime, UTC, KST);
+        int durationMinutes = (int) ChronoUnit.MINUTES.between(startDateTimeKST, endDateTimeKST);
 
-        if (space.isNotDivisibleByTimeUnit(startDateTime.getMinute()) || space.isNotDivisibleByTimeUnit(durationMinutes)) {
+        if (space.isNotDivisibleByTimeUnit(startDateTimeKST.getMinute()) || space.isNotDivisibleByTimeUnit(durationMinutes)) {
             throw new InvalidTimeUnitException();
         }
 
-        if (space.isIncorrectMinimumMaximumTimeUnit(durationMinutes)) {
-            throw new InvalidDurationTimeException();
+        if (space.isIncorrectMinimumTimeUnit(durationMinutes)) {
+            throw new InvalidMinimumDurationTimeException();
         }
 
-        if (space.isNotBetweenAvailableTime(startDateTime, endDateTime)) {
+        if (space.isIncorrectMaximumTimeUnit(durationMinutes)) {
+            throw new InvalidMaximumDurationTimeException();
+        }
+
+        if (space.isNotBetweenAvailableTime(startDateTimeKST, endDateTimeKST)) {
             throw new InvalidStartEndTimeException();
         }
 
@@ -260,7 +277,7 @@ public class ReservationService {
             throw new InvalidReservationEnableException();
         }
 
-        if (space.isClosedOn(startDateTime.getDayOfWeek())) {
+        if (space.isClosedOn(startDateTimeKST.getDayOfWeek())) {
             throw new InvalidDayOfWeekException();
         }
     }
@@ -271,7 +288,7 @@ public class ReservationService {
             final List<Reservation> reservationsOnDate) {
         for (Reservation existingReservation : reservationsOnDate) {
             if (existingReservation.hasConflictWith(startDateTime, endDateTime)) {
-                throw new ImpossibleReservationTimeException();
+                throw new ReservationAlreadyExistsException();
             }
         }
     }
@@ -281,7 +298,14 @@ public class ReservationService {
                 .map(Space::getId)
                 .collect(Collectors.toList());
 
-        return reservations.findAllBySpaceIdInAndDate(spaceIds, date);
+        List<Reservation> reservationsWithinDateRange = reservations.findAllBySpaceIdInAndDateGreaterThanEqualAndDateLessThanEqual(
+                spaceIds,
+                date.minusDays(ONE_DAY_OFFSET),
+                date.plusDays(ONE_DAY_OFFSET));
+
+        return reservationsWithinDateRange.stream()
+                .filter(reservation -> reservation.isBookedOn(date, KST))
+                .collect(Collectors.toList());
     }
 
     private void validateSpaceExistence(final Map map, final Long spaceId) {

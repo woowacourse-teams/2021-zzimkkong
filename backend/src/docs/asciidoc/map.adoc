@@ -35,3 +35,15 @@ include::{snippets}/map/delete/http-response.adoc[]
 include::{snippets}/map/getBySharingId/http-request.adoc[]
 ==== Response
 include::{snippets}/map/getBySharingId/http-response.adoc[]
+
+=== 맵별 슬랙알림 url 등록
+==== Request
+include::{snippets}/map/slackPost/http-request.adoc[]
+==== Response
+include::{snippets}/map/slackPost/http-response.adoc[]
+
+=== 맵별 슬랙알림 url 조회
+==== Request
+include::{snippets}/map/slackGet/http-request.adoc[]
+==== Response
+include::{snippets}/map/slackGet/http-response.adoc[]

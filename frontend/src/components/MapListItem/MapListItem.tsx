@@ -1,12 +1,8 @@
-import { ReactNode, useState } from 'react';
-import MapDefault from 'assets/images/map-default.jpg';
+import { ReactNode } from 'react';
 import * as Styled from './MapListItem.styles';
 
 export interface Props {
-  thumbnail: {
-    src: string;
-    alt: string;
-  };
+  thumbnail: string;
   title: string;
   control?: ReactNode;
   selected?: boolean;
@@ -20,23 +16,10 @@ const MapListItem = ({
   selected = false,
   onClick = () => null,
 }: Props): JSX.Element => {
-  const [thumbnailSrc, setThumbnailSrc] = useState(thumbnail.src);
-
-  const onImgError = () => {
-    setThumbnailSrc(MapDefault);
-  };
-
   return (
     <Styled.Container role="listitem" selected={selected}>
       <Styled.ImageWrapper onClick={onClick}>
-        <Styled.ImageInner>
-          <Styled.Image
-            src={thumbnailSrc}
-            alt={thumbnail.alt}
-            onError={onImgError}
-            loading="lazy"
-          />
-        </Styled.ImageInner>
+        <Styled.ImageInner dangerouslySetInnerHTML={{ __html: `${thumbnail}` }} />
       </Styled.ImageWrapper>
       <Styled.TitleWrapper>
         <Styled.Title>{title}</Styled.Title>

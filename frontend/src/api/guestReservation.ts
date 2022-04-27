@@ -15,8 +15,8 @@ export interface QuerySpaceReservationsParams extends QueryMapReservationsParams
 
 export interface ReservationParams {
   reservation: {
-    startDateTime: Date;
-    endDateTime: Date;
+    startDateTime: string;
+    endDateTime: string;
     password: string;
     name: string;
     description: string;

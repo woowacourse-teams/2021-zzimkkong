@@ -1,6 +1,6 @@
 package com.woowacourse.zzimkkong.repository;
 
-import com.woowacourse.zzimkkong.config.logaspect.LogRegistry;
+import com.woowacourse.zzimkkong.config.logaspect.FindInstanceAndCreateLogProxy;
 import com.woowacourse.zzimkkong.domain.Reservation;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -12,9 +12,12 @@ import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.List;
 
-@LogRegistry(group = "repository")
+@FindInstanceAndCreateLogProxy(group = "repository")
 public interface ReservationRepository extends JpaRepository<Reservation, Long>, ReservationRepositoryCustom {
-    List<Reservation> findAllBySpaceIdInAndDate(final Collection<Long> spaceIds, final LocalDate date);
+    List<Reservation> findAllBySpaceIdInAndDateGreaterThanEqualAndDateLessThanEqual(
+            final Collection<Long> spaceIds,
+            final LocalDate lowerBoundDate,
+            final LocalDate upperBoundDate);
 
     Boolean existsBySpaceIdAndEndTimeAfter(Long spaceId, LocalDateTime now);
 
