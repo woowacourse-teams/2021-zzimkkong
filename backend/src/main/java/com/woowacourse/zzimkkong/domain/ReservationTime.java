@@ -22,7 +22,7 @@ import static com.woowacourse.zzimkkong.infrastructure.datetime.TimeZoneUtils.UT
 @Embeddable
 public class ReservationTime {
     /**
-     * The reservation date in KST
+     * The reservation date in KST (the time zone of the map)
      */
     @Column(nullable = false)
     private LocalDate date;
