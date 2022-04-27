@@ -64,11 +64,12 @@ public class ReservationService {
 
         validateAvailability(space, reservationCreateDto, new ExcludeReservationCreateStrategy());
 
+        LocalDate date = TimeZoneUtils.convert(reservationCreateDto.getStartDateTime(), UTC, KST).toLocalDate();
         Reservation reservation = reservations.save(
                 Reservation.builder()
                         .startTime(reservationCreateDto.getStartDateTime())
                         .endTime(reservationCreateDto.getEndDateTime())
-                        .date(reservationCreateDto.getStartDateTime().toLocalDate())
+                        .date(date)
                         .password(reservationCreateDto.getPassword())
                         .userName(reservationCreateDto.getName())
                         .description(reservationCreateDto.getDescription())
@@ -165,10 +166,11 @@ public class ReservationService {
 
         validateAvailability(space, reservationUpdateDto, new ExcludeReservationUpdateStrategy(reservation));
 
+        LocalDate date = TimeZoneUtils.convert(reservationUpdateDto.getStartDateTime(), UTC, KST).toLocalDate();
         Reservation updateReservation = Reservation.builder()
                 .startTime(reservationUpdateDto.getStartDateTime())
                 .endTime(reservationUpdateDto.getEndDateTime())
-                .date(reservationUpdateDto.getStartDateTime().toLocalDate())
+                .date(date)
                 .userName(reservationUpdateDto.getName())
                 .description(reservationUpdateDto.getDescription())
                 .space(space)
