@@ -6,12 +6,15 @@ import com.woowacourse.zzimkkong.domain.Map;
 import com.woowacourse.zzimkkong.domain.Member;
 import com.woowacourse.zzimkkong.domain.Reservation;
 import com.woowacourse.zzimkkong.domain.Space;
+import com.woowacourse.zzimkkong.infrastructure.datetime.TimeZoneUtils;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
+import java.time.ZonedDateTime;
 
 import static com.woowacourse.zzimkkong.dto.ValidatorMessage.DATETIME_FORMAT;
+import static com.woowacourse.zzimkkong.infrastructure.datetime.TimeZoneUtils.UTC;
 
 @Getter
 @NoArgsConstructor
@@ -19,9 +22,9 @@ public class ReservationResponse {
     @JsonProperty
     private Long id;
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = DATETIME_FORMAT)
-    private LocalDateTime startDateTime;
+    private ZonedDateTime startDateTime;
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = DATETIME_FORMAT)
-    private LocalDateTime endDateTime;
+    private ZonedDateTime endDateTime;
     @JsonProperty
     private String name;
     @JsonProperty
@@ -38,8 +41,8 @@ public class ReservationResponse {
             final String name,
             final String description) {
         this.id = id;
-        this.startDateTime = startDateTime;
-        this.endDateTime = endDateTime;
+        this.startDateTime = startDateTime.atZone(UTC.toZoneId());
+        this.endDateTime = endDateTime.atZone(UTC.toZoneId());
         this.name = name;
         this.description = description;
     }

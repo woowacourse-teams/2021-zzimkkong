@@ -7,6 +7,7 @@ import com.woowacourse.zzimkkong.exception.authorization.NoAuthorityOnMapExcepti
 import com.woowacourse.zzimkkong.exception.map.NoSuchMapException;
 import com.woowacourse.zzimkkong.exception.reservation.*;
 import com.woowacourse.zzimkkong.exception.space.NoSuchSpaceException;
+import com.woowacourse.zzimkkong.infrastructure.datetime.TimeZoneUtils;
 import com.woowacourse.zzimkkong.service.strategy.ManagerReservationStrategy;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -19,12 +20,15 @@ import org.springframework.beans.factory.annotation.Autowired;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.time.ZonedDateTime;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
 import static com.woowacourse.zzimkkong.Constants.*;
+import static com.woowacourse.zzimkkong.infrastructure.datetime.TimeZoneUtils.KST;
+import static com.woowacourse.zzimkkong.infrastructure.datetime.TimeZoneUtils.UTC;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
@@ -40,14 +44,14 @@ class ManagerReservationServiceTest extends ServiceTest {
     private final ManagerReservationStrategy managerReservationStrategy = new ManagerReservationStrategy();
 
     private ReservationCreateUpdateWithPasswordRequest reservationCreateUpdateWithPasswordRequest = new ReservationCreateUpdateWithPasswordRequest(
-            THE_DAY_AFTER_TOMORROW.atTime(13, 0),
-            THE_DAY_AFTER_TOMORROW.atTime(14, 0),
+            THE_DAY_AFTER_TOMORROW.atTime(11, 0).atZone(KST.toZoneId()),
+            THE_DAY_AFTER_TOMORROW.atTime(12, 0).atZone(KST.toZoneId()),
             RESERVATION_PW,
             USER_NAME,
             DESCRIPTION);
     private final ReservationCreateUpdateRequest reservationCreateUpdateRequest = new ReservationCreateUpdateRequest(
-            THE_DAY_AFTER_TOMORROW.atTime(13, 0),
-            THE_DAY_AFTER_TOMORROW.atTime(14, 0),
+            THE_DAY_AFTER_TOMORROW.atTime(11, 0).atZone(KST.toZoneId()),
+            THE_DAY_AFTER_TOMORROW.atTime(12, 0).atZone(KST.toZoneId()),
             CHANGED_NAME,
             CHANGED_DESCRIPTION);
 
@@ -116,8 +120,8 @@ class ManagerReservationServiceTest extends ServiceTest {
 
         beAmZeroOne = Reservation.builder()
                 .id(1L)
-                .startTime(BE_AM_TEN_ELEVEN_START_TIME)
-                .endTime(BE_AM_TEN_ELEVEN_END_TIME)
+                .startTime(BE_AM_TEN_ELEVEN_START_TIME_KST.withZoneSameInstant(UTC.toZoneId()).toLocalDateTime())
+                .endTime(BE_AM_TEN_ELEVEN_END_TIME_KST.withZoneSameInstant(UTC.toZoneId()).toLocalDateTime())
                 .description(BE_AM_TEN_ELEVEN_DESCRIPTION)
                 .userName(BE_AM_TEN_ELEVEN_USERNAME)
                 .password(BE_AM_TEN_ELEVEN_PW)
@@ -126,8 +130,8 @@ class ManagerReservationServiceTest extends ServiceTest {
 
         bePmOneTwo = Reservation.builder()
                 .id(2L)
-                .startTime(BE_PM_ONE_TWO_START_TIME)
-                .endTime(BE_PM_ONE_TWO_END_TIME)
+                .startTime(BE_PM_ONE_TWO_START_TIME_KST.withZoneSameInstant(UTC.toZoneId()).toLocalDateTime())
+                .endTime(BE_PM_ONE_TWO_END_TIME_KST.withZoneSameInstant(UTC.toZoneId()).toLocalDateTime())
                 .description(BE_PM_ONE_TWO_DESCRIPTION)
                 .userName(BE_PM_ONE_TWO_USERNAME)
                 .password(BE_PM_ONE_TWO_PW)
@@ -135,8 +139,8 @@ class ManagerReservationServiceTest extends ServiceTest {
                 .build();
 
         reservation = makeReservation(
-                reservationCreateUpdateWithPasswordRequest.getStartDateTime(),
-                reservationCreateUpdateWithPasswordRequest.getEndDateTime(),
+                reservationCreateUpdateWithPasswordRequest.localStartDateTime(),
+                reservationCreateUpdateWithPasswordRequest.localEndDateTime(),
                 be);
 
         lutherId = luther.getId();
@@ -176,8 +180,8 @@ class ManagerReservationServiceTest extends ServiceTest {
         //given
         Reservation pastReservation = Reservation.builder()
                 .id(1L)
-                .startTime(BE_AM_TEN_ELEVEN_START_TIME.minusDays(5))
-                .endTime(BE_AM_TEN_ELEVEN_END_TIME.minusDays(5))
+                .startTime(BE_AM_TEN_ELEVEN_START_TIME_KST.minusDays(5).withZoneSameInstant(UTC.toZoneId()).toLocalDateTime())
+                .endTime(BE_AM_TEN_ELEVEN_END_TIME_KST.minusDays(5).withZoneSameInstant(UTC.toZoneId()).toLocalDateTime())
                 .description(BE_AM_TEN_ELEVEN_DESCRIPTION)
                 .userName(BE_AM_TEN_ELEVEN_USERNAME)
                 .password(BE_AM_TEN_ELEVEN_PW)
@@ -189,9 +193,11 @@ class ManagerReservationServiceTest extends ServiceTest {
                 .willReturn(pastReservation);
 
         //when
+        ZonedDateTime pastReservationStartTimeKST = TimeZoneUtils.convert(pastReservation.getStartTime(), UTC, KST).atZone(KST.toZoneId());
+        ZonedDateTime pastReservationEndTimeKST = TimeZoneUtils.convert(pastReservation.getEndTime(), UTC, KST).atZone(KST.toZoneId());
         ReservationCreateUpdateWithPasswordRequest pastReservationCreateUpdateWithPasswordRequest = new ReservationCreateUpdateWithPasswordRequest(
-                pastReservation.getStartTime(),
-                pastReservation.getEndTime(),
+                pastReservationStartTimeKST,
+                pastReservationEndTimeKST,
                 pastReservation.getPassword(),
                 pastReservation.getUserName(),
                 pastReservation.getDescription());
@@ -280,8 +286,8 @@ class ManagerReservationServiceTest extends ServiceTest {
                 .willReturn(Optional.of(luther));
 
         reservationCreateUpdateWithPasswordRequest = new ReservationCreateUpdateWithPasswordRequest(
-                THE_DAY_AFTER_TOMORROW.atTime(14, 0),
-                THE_DAY_AFTER_TOMORROW.atTime(13, 0),
+                THE_DAY_AFTER_TOMORROW.atTime(14, 0).atZone(KST.toZoneId()),
+                THE_DAY_AFTER_TOMORROW.atTime(13, 0).atZone(KST.toZoneId()),
                 RESERVATION_PW,
                 USER_NAME,
                 DESCRIPTION);
@@ -308,8 +314,8 @@ class ManagerReservationServiceTest extends ServiceTest {
                 .willReturn(Optional.of(luther));
 
         reservationCreateUpdateWithPasswordRequest = new ReservationCreateUpdateWithPasswordRequest(
-                THE_DAY_AFTER_TOMORROW.atTime(10, 0),
-                THE_DAY_AFTER_TOMORROW.atTime(10, 0),
+                THE_DAY_AFTER_TOMORROW.atTime(10, 0).atZone(KST.toZoneId()),
+                THE_DAY_AFTER_TOMORROW.atTime(10, 0).atZone(KST.toZoneId()),
                 RESERVATION_PW,
                 USER_NAME,
                 DESCRIPTION);
@@ -336,8 +342,8 @@ class ManagerReservationServiceTest extends ServiceTest {
                 .willReturn(Optional.of(luther));
 
         reservationCreateUpdateWithPasswordRequest = new ReservationCreateUpdateWithPasswordRequest(
-                THE_DAY_AFTER_TOMORROW.atTime(10, 0),
-                THE_DAY_AFTER_TOMORROW.atTime(10, 0).plusDays(1),
+                THE_DAY_AFTER_TOMORROW.atTime(10, 0).atZone(KST.toZoneId()),
+                THE_DAY_AFTER_TOMORROW.atTime(10, 0).plusDays(1).atZone(KST.toZoneId()),
                 RESERVATION_PW,
                 USER_NAME,
                 DESCRIPTION);
@@ -365,8 +371,8 @@ class ManagerReservationServiceTest extends ServiceTest {
                 .willReturn(Optional.of(luther));
 
         reservationCreateUpdateWithPasswordRequest = new ReservationCreateUpdateWithPasswordRequest(
-                THE_DAY_AFTER_TOMORROW.atTime(startTime, 0),
-                THE_DAY_AFTER_TOMORROW.atTime(endTime, 30),
+                THE_DAY_AFTER_TOMORROW.atTime(startTime, 0).atZone(KST.toZoneId()),
+                THE_DAY_AFTER_TOMORROW.atTime(endTime, 30).atZone(KST.toZoneId()),
                 RESERVATION_PW,
                 USER_NAME,
                 DESCRIPTION);
@@ -392,12 +398,13 @@ class ManagerReservationServiceTest extends ServiceTest {
         //given, when
         given(maps.findByIdFetch(anyLong()))
                 .willReturn(Optional.of(luther));
-        given(reservations.findAllBySpaceIdInAndDate(
+        given(reservations.findAllBySpaceIdInAndDateGreaterThanEqualAndDateLessThanEqual(
                 anyList(),
+                any(LocalDate.class),
                 any(LocalDate.class)))
                 .willReturn(List.of(makeReservation(
-                        reservationCreateUpdateWithPasswordRequest.getStartDateTime().minusMinutes(startMinute),
-                        reservationCreateUpdateWithPasswordRequest.getEndDateTime().plusMinutes(endMinute),
+                        reservationCreateUpdateWithPasswordRequest.localStartDateTime().minusMinutes(startMinute),
+                        reservationCreateUpdateWithPasswordRequest.localEndDateTime().plusMinutes(endMinute),
                         be)));
 
         //when
@@ -504,18 +511,20 @@ class ManagerReservationServiceTest extends ServiceTest {
         //given, when
         given(maps.findByIdFetch(anyLong()))
                 .willReturn(Optional.of(luther));
-        given(reservations.findAllBySpaceIdInAndDate(
+        given(reservations.findAllBySpaceIdInAndDateGreaterThanEqualAndDateLessThanEqual(
                 anyList(),
+                any(LocalDate.class),
                 any(LocalDate.class)))
                 .willReturn(List.of(
                         makeReservation(
-                                reservationCreateUpdateWithPasswordRequest.getStartDateTime().minusMinutes(duration),
-                                reservationCreateUpdateWithPasswordRequest.getEndDateTime().minusMinutes(duration),
+                                reservationCreateUpdateWithPasswordRequest.localStartDateTime().minusMinutes(duration),
+                                reservationCreateUpdateWithPasswordRequest.localEndDateTime().minusMinutes(duration),
                                 be),
                         makeReservation(
-                                reservationCreateUpdateWithPasswordRequest.getStartDateTime().plusMinutes(duration),
-                                reservationCreateUpdateWithPasswordRequest.getEndDateTime().plusMinutes(duration),
+                                reservationCreateUpdateWithPasswordRequest.localStartDateTime().plusMinutes(duration),
+                                reservationCreateUpdateWithPasswordRequest.localEndDateTime().plusMinutes(duration),
                                 be)));
+
         given(reservations.save(any(Reservation.class)))
                 .willReturn(reservation);
 
@@ -545,14 +554,14 @@ class ManagerReservationServiceTest extends ServiceTest {
 
         //when
         ReservationCreateUpdateWithPasswordRequest reservationCreateUpdateWithPasswordRequest = new ReservationCreateUpdateWithPasswordRequest(
-                theDayAfterTomorrowTen.plusMinutes(additionalStartMinute),
-                theDayAfterTomorrowTen.plusMinutes(additionalEndMinute),
+                theDayAfterTomorrowTen.plusMinutes(additionalStartMinute).atZone(KST.toZoneId()),
+                theDayAfterTomorrowTen.plusMinutes(additionalEndMinute).atZone(KST.toZoneId()),
                 RESERVATION_PW,
                 USER_NAME,
                 DESCRIPTION);
         ReservationCreateUpdateRequest reservationCreateUpdateRequest = new ReservationCreateUpdateRequest(
-                theDayAfterTomorrowTen.plusMinutes(additionalStartMinute),
-                theDayAfterTomorrowTen.plusMinutes(additionalEndMinute),
+                theDayAfterTomorrowTen.plusMinutes(additionalStartMinute).atZone(KST.toZoneId()),
+                theDayAfterTomorrowTen.plusMinutes(additionalEndMinute).atZone(KST.toZoneId()),
                 USER_NAME,
                 DESCRIPTION);
 
@@ -593,8 +602,8 @@ class ManagerReservationServiceTest extends ServiceTest {
 
         //when
         ReservationCreateUpdateWithPasswordRequest reservationCreateUpdateWithPasswordRequest = new ReservationCreateUpdateWithPasswordRequest(
-                THE_DAY_AFTER_TOMORROW.atTime(10, 0),
-                THE_DAY_AFTER_TOMORROW.atTime(10, 0).plusMinutes(50),
+                THE_DAY_AFTER_TOMORROW.atTime(10, 0).atZone(KST.toZoneId()),
+                THE_DAY_AFTER_TOMORROW.atTime(10, 0).plusMinutes(50).atZone(KST.toZoneId()),
                 RESERVATION_PW,
                 USER_NAME,
                 DESCRIPTION);
@@ -623,8 +632,8 @@ class ManagerReservationServiceTest extends ServiceTest {
 
         //when
         ReservationCreateUpdateWithPasswordRequest reservationCreateUpdateWithPasswordRequest = new ReservationCreateUpdateWithPasswordRequest(
-                THE_DAY_AFTER_TOMORROW.atTime(10, 0),
-                THE_DAY_AFTER_TOMORROW.atTime(10, 0).plusMinutes(130),
+                THE_DAY_AFTER_TOMORROW.atTime(10, 0).atZone(KST.toZoneId()),
+                THE_DAY_AFTER_TOMORROW.atTime(10, 0).plusMinutes(130).atZone(KST.toZoneId()),
                 RESERVATION_PW,
                 USER_NAME,
                 DESCRIPTION);
@@ -653,8 +662,8 @@ class ManagerReservationServiceTest extends ServiceTest {
 
         //when
         ReservationCreateUpdateRequest reservationCreateUpdateRequest = new ReservationCreateUpdateRequest(
-                THE_DAY_AFTER_TOMORROW.atTime(10, 0),
-                THE_DAY_AFTER_TOMORROW.atTime(10, 0).plusMinutes(50),
+                THE_DAY_AFTER_TOMORROW.atTime(10, 0).atZone(KST.toZoneId()),
+                THE_DAY_AFTER_TOMORROW.atTime(10, 0).plusMinutes(50).atZone(KST.toZoneId()),
                 USER_NAME,
                 DESCRIPTION);
 
@@ -685,8 +694,8 @@ class ManagerReservationServiceTest extends ServiceTest {
 
         //when
         ReservationCreateUpdateRequest reservationCreateUpdateRequest = new ReservationCreateUpdateRequest(
-                THE_DAY_AFTER_TOMORROW.atTime(10, 0),
-                THE_DAY_AFTER_TOMORROW.atTime(10, 0).plusMinutes(130),
+                THE_DAY_AFTER_TOMORROW.atTime(10, 0).atZone(KST.toZoneId()),
+                THE_DAY_AFTER_TOMORROW.atTime(10, 0).plusMinutes(130).atZone(KST.toZoneId()),
                 USER_NAME,
                 DESCRIPTION);
 
@@ -713,18 +722,19 @@ class ManagerReservationServiceTest extends ServiceTest {
         int duration = 30;
         List<Reservation> foundReservations = Arrays.asList(
                 makeReservation(
-                        reservationCreateUpdateWithPasswordRequest.getStartDateTime().minusMinutes(duration),
-                        reservationCreateUpdateWithPasswordRequest.getEndDateTime().minusMinutes(duration),
+                        reservationCreateUpdateWithPasswordRequest.localStartDateTime().minusMinutes(duration),
+                        reservationCreateUpdateWithPasswordRequest.localEndDateTime().minusMinutes(duration),
                         be),
                 makeReservation(
-                        reservationCreateUpdateWithPasswordRequest.getStartDateTime().plusMinutes(duration),
-                        reservationCreateUpdateWithPasswordRequest.getEndDateTime().plusMinutes(duration),
+                        reservationCreateUpdateWithPasswordRequest.localStartDateTime().plusMinutes(duration),
+                        reservationCreateUpdateWithPasswordRequest.localEndDateTime().plusMinutes(duration),
                         be));
 
         given(maps.findByIdFetch(anyLong()))
                 .willReturn(Optional.of(luther));
-        given(reservations.findAllBySpaceIdInAndDate(
+        given(reservations.findAllBySpaceIdInAndDateGreaterThanEqualAndDateLessThanEqual(
                 anyList(),
+                any(LocalDate.class),
                 any(LocalDate.class)))
                 .willReturn(foundReservations);
 
@@ -819,8 +829,9 @@ class ManagerReservationServiceTest extends ServiceTest {
                 .willReturn(Optional.of(luther));
         given(maps.existsById(anyLong()))
                 .willReturn(true);
-        given(reservations.findAllBySpaceIdInAndDate(
+        given(reservations.findAllBySpaceIdInAndDateGreaterThanEqualAndDateLessThanEqual(
                 anyList(),
+                any(LocalDate.class),
                 any(LocalDate.class)))
                 .willReturn(Collections.emptyList());
 
@@ -855,20 +866,20 @@ class ManagerReservationServiceTest extends ServiceTest {
         int duration = 30;
         List<Reservation> foundReservations = List.of(
                 makeReservation(
-                        reservationCreateUpdateWithPasswordRequest.getStartDateTime().minusMinutes(duration),
-                        reservationCreateUpdateWithPasswordRequest.getEndDateTime().minusMinutes(duration),
+                        reservationCreateUpdateWithPasswordRequest.localStartDateTime().minusMinutes(duration),
+                        reservationCreateUpdateWithPasswordRequest.localEndDateTime().minusMinutes(duration),
                         be),
                 makeReservation(
-                        reservationCreateUpdateWithPasswordRequest.getStartDateTime().plusMinutes(duration),
-                        reservationCreateUpdateWithPasswordRequest.getEndDateTime().plusMinutes(duration),
+                        reservationCreateUpdateWithPasswordRequest.localStartDateTime().plusMinutes(duration),
+                        reservationCreateUpdateWithPasswordRequest.localEndDateTime().plusMinutes(duration),
                         be),
                 makeReservation(
-                        reservationCreateUpdateWithPasswordRequest.getStartDateTime().minusMinutes(duration),
-                        reservationCreateUpdateWithPasswordRequest.getEndDateTime().minusMinutes(duration),
+                        reservationCreateUpdateWithPasswordRequest.localStartDateTime().minusMinutes(duration),
+                        reservationCreateUpdateWithPasswordRequest.localEndDateTime().minusMinutes(duration),
                         fe),
                 makeReservation(
-                        reservationCreateUpdateWithPasswordRequest.getStartDateTime().plusMinutes(duration),
-                        reservationCreateUpdateWithPasswordRequest.getEndDateTime().plusMinutes(duration),
+                        reservationCreateUpdateWithPasswordRequest.localStartDateTime().plusMinutes(duration),
+                        reservationCreateUpdateWithPasswordRequest.localEndDateTime().plusMinutes(duration),
                         fe));
         List<Space> findSpaces = List.of(be, fe);
 
@@ -876,8 +887,9 @@ class ManagerReservationServiceTest extends ServiceTest {
 
         given(maps.findByIdFetch(anyLong()))
                 .willReturn(Optional.of(luther));
-        given(reservations.findAllBySpaceIdInAndDate(
+        given(reservations.findAllBySpaceIdInAndDateGreaterThanEqualAndDateLessThanEqual(
                 anyList(),
+                any(LocalDate.class),
                 any(LocalDate.class)))
                 .willReturn(foundReservations);
 
@@ -903,8 +915,9 @@ class ManagerReservationServiceTest extends ServiceTest {
                 .willReturn(Optional.of(sakjung));
         given(maps.findByIdFetch(anyLong()))
                 .willReturn(Optional.of(luther));
-        given(reservations.findAllBySpaceIdInAndDate(
+        given(reservations.findAllBySpaceIdInAndDateGreaterThanEqualAndDateLessThanEqual(
                 anyList(),
+                any(LocalDate.class),
                 any(LocalDate.class)))
                 .willReturn(List.of(beAmZeroOne, bePmOneTwo));
 
@@ -929,8 +942,9 @@ class ManagerReservationServiceTest extends ServiceTest {
                 .willReturn(Optional.of(sakjung));
         given(maps.findByIdFetch(anyLong()))
                 .willReturn(Optional.of(luther));
-        given(reservations.findAllBySpaceIdInAndDate(
+        given(reservations.findAllBySpaceIdInAndDateGreaterThanEqualAndDateLessThanEqual(
                 anyList(),
+                any(LocalDate.class),
                 any(LocalDate.class)))
                 .willReturn(List.of(beAmZeroOne, bePmOneTwo));
 
@@ -1036,8 +1050,8 @@ class ManagerReservationServiceTest extends ServiceTest {
 
         // when
         ReservationCreateUpdateRequest reservationCreateUpdateRequest = new ReservationCreateUpdateRequest(
-                THE_DAY_AFTER_TOMORROW.atTime(10, 0).minusDays(beforeDay),
-                THE_DAY_AFTER_TOMORROW.atTime(11, 0).minusDays(beforeDay),
+                THE_DAY_AFTER_TOMORROW.atTime(10, 0).minusDays(beforeDay).atZone(KST.toZoneId()),
+                THE_DAY_AFTER_TOMORROW.atTime(11, 0).minusDays(beforeDay).atZone(KST.toZoneId()),
                 CHANGED_NAME,
                 CHANGED_DESCRIPTION);
         Long reservationId = reservation.getId();
@@ -1068,8 +1082,8 @@ class ManagerReservationServiceTest extends ServiceTest {
 
         //when
         ReservationCreateUpdateRequest reservationCreateUpdateRequest = new ReservationCreateUpdateRequest(
-                THE_DAY_AFTER_TOMORROW.atTime(20, 0),
-                THE_DAY_AFTER_TOMORROW.atTime(21, 0),
+                THE_DAY_AFTER_TOMORROW.atTime(20, 0).atZone(KST.toZoneId()),
+                THE_DAY_AFTER_TOMORROW.atTime(21, 0).atZone(KST.toZoneId()),
                 CHANGED_NAME,
                 CHANGED_DESCRIPTION);
         Long reservationId = reservation.getId();
@@ -1099,8 +1113,8 @@ class ManagerReservationServiceTest extends ServiceTest {
 
         //when
         ReservationCreateUpdateRequest reservationCreateUpdateRequest = new ReservationCreateUpdateRequest(
-                THE_DAY_AFTER_TOMORROW.atTime(12, 0),
-                THE_DAY_AFTER_TOMORROW.atTime(12, 0).minusHours(endTime),
+                THE_DAY_AFTER_TOMORROW.atTime(12, 0).atZone(KST.toZoneId()),
+                THE_DAY_AFTER_TOMORROW.atTime(12, 0).minusHours(endTime).atZone(KST.toZoneId()),
                 CHANGED_NAME,
                 CHANGED_DESCRIPTION);
         Long reservationId = reservation.getId();
@@ -1129,8 +1143,8 @@ class ManagerReservationServiceTest extends ServiceTest {
 
         //when
         ReservationCreateUpdateRequest reservationCreateUpdateRequest = new ReservationCreateUpdateRequest(
-                THE_DAY_AFTER_TOMORROW.atTime(10, 0),
-                THE_DAY_AFTER_TOMORROW.atTime(10, 0).plusDays(1),
+                THE_DAY_AFTER_TOMORROW.atTime(10, 0).atZone(KST.toZoneId()),
+                THE_DAY_AFTER_TOMORROW.atTime(10, 0).plusDays(1).atZone(KST.toZoneId()),
                 CHANGED_NAME,
                 CHANGED_DESCRIPTION);
         Long reservationId = reservation.getId();
@@ -1159,15 +1173,18 @@ class ManagerReservationServiceTest extends ServiceTest {
                 .willReturn(Optional.of(luther));
         given(reservations.findById(anyLong()))
                 .willReturn(Optional.of(reservation));
-        given(reservations.findAllBySpaceIdInAndDate(anyList(), any()))
+        given(reservations.findAllBySpaceIdInAndDateGreaterThanEqualAndDateLessThanEqual(
+                anyList(),
+                any(LocalDate.class),
+                any(LocalDate.class)))
                 .willReturn(Arrays.asList(
                         beAmZeroOne,
                         bePmOneTwo));
 
         //when
         ReservationCreateUpdateRequest reservationCreateUpdateRequest = new ReservationCreateUpdateRequest(
-                bePmOneTwo.getStartTime().plusMinutes(startTime),
-                bePmOneTwo.getEndTime().plusMinutes(endTime),
+                TimeZoneUtils.convert(bePmOneTwo.getStartTime(), UTC, KST).plusMinutes(startTime).atZone(KST.toZoneId()),
+                TimeZoneUtils.convert(bePmOneTwo.getEndTime(), UTC, KST).plusMinutes(endTime).atZone(KST.toZoneId()),
                 reservation.getUserName(),
                 reservation.getDescription());
         Long reservationId = reservation.getId();
@@ -1199,8 +1216,8 @@ class ManagerReservationServiceTest extends ServiceTest {
 
         //when
         ReservationCreateUpdateRequest reservationCreateUpdateRequest = new ReservationCreateUpdateRequest(
-                THE_DAY_AFTER_TOMORROW.atTime(startTime, 0),
-                THE_DAY_AFTER_TOMORROW.atTime(endTime, 30),
+                THE_DAY_AFTER_TOMORROW.atTime(startTime, 0).atZone(KST.toZoneId()),
+                THE_DAY_AFTER_TOMORROW.atTime(endTime, 30).atZone(KST.toZoneId()),
                 CHANGED_NAME,
                 CHANGED_DESCRIPTION);
         Long reservationId = reservation.getId();

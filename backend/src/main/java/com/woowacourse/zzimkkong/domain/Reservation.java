@@ -1,5 +1,6 @@
 package com.woowacourse.zzimkkong.domain;
 
+import com.woowacourse.zzimkkong.infrastructure.datetime.TimeZoneUtils;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -7,6 +8,9 @@ import lombok.NoArgsConstructor;
 import javax.persistence.*;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.TimeZone;
+
+import static com.woowacourse.zzimkkong.infrastructure.datetime.TimeZoneUtils.UTC;
 
 @Getter
 @Builder
@@ -86,5 +90,11 @@ public class Reservation {
 
     public boolean isWrongPassword(final String password) {
         return !this.password.equals(password);
+    }
+
+    public boolean isBookedOn(final LocalDate date, final TimeZone timeZone) {
+        LocalDate convertedStartTimeDate = TimeZoneUtils.convert(startTime, UTC, timeZone).toLocalDate();
+        LocalDate convertedEndTimeDate = TimeZoneUtils.convert(endTime, UTC, timeZone).toLocalDate();
+        return date.equals(convertedStartTimeDate) && date.equals(convertedEndTimeDate);
     }
 }

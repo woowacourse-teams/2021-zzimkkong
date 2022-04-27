@@ -25,8 +25,8 @@ public class ReservationCreateDto {
             final LoginEmailDto loginEmailDto) {
         this.mapId = mapId;
         this.spaceId = spaceId;
-        this.startDateTime = request.getStartDateTime();
-        this.endDateTime = request.getEndDateTime();
+        this.startDateTime = request.localStartDateTime();
+        this.endDateTime = request.localEndDateTime();
         this.password = request.getPassword();
         this.name = request.getName();
         this.description = request.getDescription();

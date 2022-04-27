@@ -14,7 +14,10 @@ import java.util.List;
 
 @FindInstanceAndCreateLogProxy(group = "repository")
 public interface ReservationRepository extends JpaRepository<Reservation, Long>, ReservationRepositoryCustom {
-    List<Reservation> findAllBySpaceIdInAndDate(final Collection<Long> spaceIds, final LocalDate date);
+    List<Reservation> findAllBySpaceIdInAndDateGreaterThanEqualAndDateLessThanEqual(
+            final Collection<Long> spaceIds,
+            final LocalDate lowerBoundDate,
+            final LocalDate upperBoundDate);
 
     Boolean existsBySpaceIdAndEndTimeAfter(Long spaceId, LocalDateTime now);
 
