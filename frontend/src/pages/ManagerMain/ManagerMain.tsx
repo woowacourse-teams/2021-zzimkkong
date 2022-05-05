@@ -1,4 +1,5 @@
 import { AxiosError } from 'axios';
+import dayjs, { Dayjs } from 'dayjs';
 import React, { useEffect, useMemo, useState } from 'react';
 import { useMutation } from 'react-query';
 import { useHistory, useLocation } from 'react-router-dom';
@@ -33,7 +34,7 @@ import ReservationList from './units/ReservationList';
 
 export interface ManagerMainState {
   mapId?: number;
-  targetDate?: Date;
+  targetDate?: Dayjs;
 }
 
 const ManagerMain = (): JSX.Element => {
@@ -43,7 +44,7 @@ const ManagerMain = (): JSX.Element => {
   const mapId = location.state?.mapId;
   const targetDate = location.state?.targetDate;
 
-  const [date, setDate] = useState(targetDate ?? new Date());
+  const [date, setDate] = useState(targetDate ?? dayjs().tz());
   const [open, setOpen] = useState(false);
   const [slackModalOpen, setSlackModalOpen] = useState(false);
 

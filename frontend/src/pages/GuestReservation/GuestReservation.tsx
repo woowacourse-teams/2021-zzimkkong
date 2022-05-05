@@ -1,4 +1,5 @@
 import { AxiosError } from 'axios';
+import dayjs from 'dayjs';
 import React, { useEffect } from 'react';
 import { useMutation } from 'react-query';
 import { useHistory, useLocation, useParams } from 'react-router-dom';
@@ -51,7 +52,7 @@ const GuestReservation = (): JSX.Element => {
   const getReservations = useGuestReservations(
     { mapId, spaceId: space.id, date },
     {
-      enabled: !isPastDate(new Date(date), DATE.MIN_DATE) && !!date,
+      enabled: !isPastDate(dayjs(date).tz(), DATE.MIN_DATE) && !!date,
     }
   );
   const reservations = getReservations.data?.data?.reservations ?? [];
@@ -70,7 +71,7 @@ const GuestReservation = (): JSX.Element => {
             name,
             description,
           },
-          targetDate: new Date(date),
+          targetDate: dayjs(date).tz(),
         },
       });
     },
@@ -85,7 +86,7 @@ const GuestReservation = (): JSX.Element => {
         pathname: HREF.GUEST_MAP(sharingMapId),
         state: {
           spaceId: space.id,
-          targetDate: new Date(date),
+          targetDate: dayjs(date).tz(),
         },
       });
     },
@@ -121,12 +122,12 @@ const GuestReservation = (): JSX.Element => {
       target: { value },
     } = event;
 
-    if (isPastDate(new Date(date), DATE.MIN_DATE)) {
+    if (isPastDate(dayjs(date).tz(), DATE.MIN_DATE)) {
       setDate(DATE.MIN_DATE_STRING);
       return;
     }
 
-    if (isFutureDate(new Date(date), DATE.MAX_DATE)) {
+    if (isFutureDate(dayjs(date).tz(), DATE.MAX_DATE)) {
       setDate(DATE.MAX_DATE_STRING);
       return;
     }
@@ -153,7 +154,7 @@ const GuestReservation = (): JSX.Element => {
       ) {
         location.state = {
           spaceId: space.id,
-          targetDate: new Date(date),
+          targetDate: dayjs(date).tz(),
           scrollPosition,
         };
       }
@@ -187,16 +188,16 @@ const GuestReservation = (): JSX.Element => {
             )}
             {getReservations.isSuccess &&
               reservations.length === 0 &&
-              !isPastDate(new Date(date)) && (
+              !isPastDate(dayjs(date).tz()) && (
                 <Styled.Message>{MESSAGE.RESERVATION.SUGGESTION}</Styled.Message>
               )}
             {getReservations.isSuccess &&
               reservations.length === 0 &&
-              isPastDate(new Date(date)) && (
+              isPastDate(dayjs(date).tz()) && (
                 <Styled.Message>{MESSAGE.RESERVATION.NOT_EXIST}</Styled.Message>
               )}
-            {(isPastDate(new Date(date), DATE.MIN_DATE) ||
-              isFutureDate(new Date(date), DATE.MAX_DATE)) && (
+            {(isPastDate(dayjs(date).tz(), DATE.MIN_DATE) ||
+              isFutureDate(dayjs(date).tz(), DATE.MAX_DATE)) && (
               <Styled.Message>{MESSAGE.RESERVATION.NOT_EXIST}</Styled.Message>
             )}
             {getReservations.isSuccess && reservations.length > 0 && (

@@ -19,8 +19,8 @@ export interface PostReservationParams {
   mapId: number;
   spaceId: number;
   reservation: {
-    startDateTime: Date;
-    endDateTime: Date;
+    startDateTime: string;
+    endDateTime: string;
     name: string;
     description: string;
     password: string;
@@ -32,8 +32,8 @@ export interface PutReservationParams {
   spaceId: number;
   reservationId: number;
   reservation: {
-    startDateTime: Date;
-    endDateTime: Date;
+    startDateTime: string;
+    endDateTime: string;
     name: string;
     description: string;
   };

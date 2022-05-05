@@ -1,3 +1,6 @@
+import dayjs from 'dayjs';
+import timezone from 'dayjs/plugin/timezone';
+import utc from 'dayjs/plugin/utc';
 import { createBrowserHistory } from 'history';
 import { Suspense } from 'react';
 import { QueryClient, QueryClientProvider } from 'react-query';
@@ -11,6 +14,10 @@ import { PRIVATE_ROUTES, PUBLIC_ROUTES } from 'constants/routes';
 import AccessTokenProvider from 'providers/AccessTokenProvider';
 import { GlobalStyle, theme } from './App.styles';
 import NotFound from './pages/NotFound/NotFound';
+
+dayjs.extend(utc);
+dayjs.extend(timezone);
+dayjs.tz.setDefault('Asia/Seoul');
 
 export const history = createBrowserHistory();
 export const queryClient = new QueryClient();

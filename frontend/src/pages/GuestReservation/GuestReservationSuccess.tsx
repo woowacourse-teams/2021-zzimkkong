@@ -1,3 +1,4 @@
+import dayjs from 'dayjs';
 import { Redirect, useLocation, useParams } from 'react-router';
 import AnimatedLogo from 'components/AnimatedLogo/AnimatedLogo';
 import Header from 'components/Header/Header';
@@ -14,8 +15,8 @@ export interface GuestReservationSuccessState {
   reservation: {
     name: string;
     description: string;
-    startDateTime: Date;
-    endDateTime: Date;
+    startDateTime: string;
+    endDateTime: string;
   };
 }
 
@@ -27,8 +28,8 @@ const GuestReservationSuccess = (): JSX.Element => {
 
   const { space, reservation, targetDate } = location.state;
 
-  const startDateTimeObject = new Date(reservation.startDateTime.toISOString().slice(0, -1));
-  const endDateTimeObject = new Date(reservation.endDateTime.toISOString().slice(0, -1));
+  const startDateTimeObject = dayjs(reservation.startDateTime).tz();
+  const endDateTimeObject = dayjs(reservation.endDateTime).tz();
 
   const reservationDate = formatDateWithDay(startDateTimeObject);
   const reservationStartTime = formatTime(startDateTimeObject);
