@@ -37,6 +37,8 @@ export interface ManagerMainState {
   targetDate?: Dayjs;
 }
 
+type OpenableModal = 'slack' | 'notice';
+
 const ManagerMain = (): JSX.Element => {
   const history = useHistory();
   const location = useLocation<ManagerMainState>();
@@ -45,8 +47,8 @@ const ManagerMain = (): JSX.Element => {
   const targetDate = location.state?.targetDate;
 
   const [date, setDate] = useState(targetDate ?? dayjs().tz());
-  const [open, setOpen] = useState(false);
-  const [slackModalOpen, setSlackModalOpen] = useState(false);
+  const [mapDrawerOpen, setMapDrawerOpen] = useState(false);
+  const [openedModal, setOpenedModal] = useState<OpenableModal | null>(null);
 
   const [selectedMapId, setSelectedMapId] = useState<number | null>(mapId ?? null);
   const [selectedMapName, setSelectedMapName] = useState('');
@@ -124,7 +126,7 @@ const ManagerMain = (): JSX.Element => {
     onSuccess: () => {
       alert(MESSAGE.MANAGER_MAIN.SLACK_WEBHOOK_CREATE_SUCCESS);
       getSlackWebhookUrl.refetch();
-      setSlackModalOpen(false);
+      setOpenedModal('slack');
     },
 
     onError: (error: AxiosError<ErrorResponse>) => {
@@ -176,11 +178,15 @@ const ManagerMain = (): JSX.Element => {
   };
 
   const handleOpenDrawer = () => {
-    setOpen(true);
+    setMapDrawerOpen(true);
   };
 
   const handleCloseDrawer = () => {
-    setOpen(false);
+    setMapDrawerOpen(false);
+  };
+
+  const closeModal = () => {
+    setOpenedModal(null);
   };
 
   const handleSelectMap = (mapId: number, mapName: string) => {
@@ -271,7 +277,7 @@ const ManagerMain = (): JSX.Element => {
                 <Styled.RightIconButton
                   text="알림 설정"
                   size="small"
-                  onClick={() => setSlackModalOpen(true)}
+                  onClick={() => setOpenedModal('slack')}
                 >
                   <SlackIcon width="100%" height="100%" />
                 </Styled.RightIconButton>
@@ -317,19 +323,15 @@ const ManagerMain = (): JSX.Element => {
           selectedMapId={selectedMapId}
           organization={organization}
           maps={maps}
-          open={open}
+          open={mapDrawerOpen}
           onCloseDrawer={handleCloseDrawer}
           onSelectMap={handleSelectMap}
           onDeleteMap={handleDeleteMap}
         />
       )}
 
-      {slackModalOpen && (
-        <Modal
-          open={slackModalOpen}
-          isClosableDimmer={true}
-          onClose={() => setSlackModalOpen(false)}
-        >
+      {openedModal === 'slack' && (
+        <Modal open={openedModal === 'slack'} isClosableDimmer={true} onClose={closeModal}>
           <Modal.Header>알림을 받을 슬랙 웹훅 URL을 입력해주세요</Modal.Header>
           <Modal.Inner>
             <form onSubmit={handleSubmitSlackUrl}>
@@ -339,10 +341,9 @@ const ManagerMain = (): JSX.Element => {
                 value={slackUrl}
                 onChange={onChangeSlackUrl}
                 autoFocus
-                required
               />
               <Styled.SlackModalContainer>
-                <Button variant="text" type="button" onClick={() => setSlackModalOpen(false)}>
+                <Button variant="text" type="button" onClick={closeModal}>
                   취소
                 </Button>
                 <Button variant="text">확인</Button>
