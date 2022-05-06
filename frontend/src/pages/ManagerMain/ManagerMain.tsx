@@ -7,6 +7,7 @@ import { deleteMap, postSlackWebhookUrl } from 'api/managerMap';
 import { deleteManagerReservation } from 'api/managerReservation';
 import { ReactComponent as MapEditorIcon } from 'assets/svg/map-editor.svg';
 import { ReactComponent as MenuIcon } from 'assets/svg/menu.svg';
+import { ReactComponent as NoticeIcon } from 'assets/svg/notice.svg';
 import { ReactComponent as SlackIcon } from 'assets/svg/slack.svg';
 import { ReactComponent as SpaceEditorIcon } from 'assets/svg/space-editor.svg';
 import Button from 'components/Button/Button';
@@ -17,6 +18,7 @@ import Input from 'components/Input/Input';
 import Layout from 'components/Layout/Layout';
 import Modal from 'components/Modal/Modal';
 import PageHeader from 'components/PageHeader/PageHeader';
+import TextArea from 'components/TextArea/TextArea';
 import MESSAGE from 'constants/message';
 import PATH, { HREF } from 'constants/path';
 import useManagerMapReservations from 'hooks/query/useManagerMapReservations';
@@ -245,6 +247,12 @@ const ManagerMain = (): JSX.Element => {
     });
   };
 
+  const handleSubmitNotice = (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+
+    if (selectedMapId === null) return;
+  };
+
   useEffect(() => {
     const prevMapId = location.state?.mapId ?? null;
     const prevMapName = maps.find(({ mapId }) => mapId === prevMapId)?.mapName ?? '';
@@ -274,6 +282,13 @@ const ManagerMain = (): JSX.Element => {
           rightButtons={
             selectedMapId !== null && (
               <>
+                <Styled.RightIconButton
+                  text="공지사항"
+                  size="small"
+                  onClick={() => setOpenedModal('notice')}
+                >
+                  <NoticeIcon width="100%" height="100%" />
+                </Styled.RightIconButton>
                 <Styled.RightIconButton
                   text="알림 설정"
                   size="small"
@@ -342,12 +357,29 @@ const ManagerMain = (): JSX.Element => {
                 onChange={onChangeSlackUrl}
                 autoFocus
               />
-              <Styled.SlackModalContainer>
+              <Styled.ModalFooter>
                 <Button variant="text" type="button" onClick={closeModal}>
                   취소
                 </Button>
                 <Button variant="text">확인</Button>
-              </Styled.SlackModalContainer>
+              </Styled.ModalFooter>
+            </form>
+          </Modal.Inner>
+        </Modal>
+      )}
+
+      {openedModal === 'notice' && (
+        <Modal open={openedModal === 'notice'} isClosableDimmer={true} onClose={closeModal}>
+          <Modal.Header>공지사항을 입력해주세요</Modal.Header>
+          <Modal.Inner>
+            <form onSubmit={handleSubmitNotice}>
+              <TextArea label="공지사항" rows={4} maxLength={100} autoFocus />
+              <Styled.ModalFooter>
+                <Button variant="text" type="button" onClick={closeModal}>
+                  취소
+                </Button>
+                <Button variant="text">확인</Button>
+              </Styled.ModalFooter>
             </form>
           </Modal.Inner>
         </Modal>
