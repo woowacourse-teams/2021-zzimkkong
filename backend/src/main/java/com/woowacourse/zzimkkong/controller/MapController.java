@@ -55,6 +55,15 @@ public class MapController {
         return ResponseEntity.noContent().build();
     }
 
+    @PostMapping("/{mapId}/notice")
+    public ResponseEntity<Void> createNotice(
+            @PathVariable final Long mapId,
+            @RequestBody final NoticeCreateRequest noticeCreateRequest,
+            @LoginEmail final LoginEmailDto loginEmailDto) {
+        mapService.saveNotice(mapId, noticeCreateRequest, loginEmailDto);
+        return ResponseEntity.ok().build();
+    }
+
     @PostMapping("/{mapId}/slack")
     public ResponseEntity<Void> createSlackUrl(
             @PathVariable final Long mapId,
