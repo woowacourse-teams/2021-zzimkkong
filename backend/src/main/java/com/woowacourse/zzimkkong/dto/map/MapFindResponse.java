@@ -12,17 +12,23 @@ public class MapFindResponse {
     private String mapDrawing;
     private String thumbnail;
     private String sharingMapId;
+    private String slackUrl;
+    private String notice;
     private String managerEmail;
 
     private MapFindResponse(final Long mapId,
                             final String mapName,
                             final String mapDrawing,
                             final String thumbnail,
+                            final String slackUrl,
+                            final String notice,
                             final String sharingMapId) {
         this.mapId = mapId;
         this.mapName = mapName;
         this.mapDrawing = mapDrawing;
         this.thumbnail = thumbnail;
+        this.slackUrl = slackUrl;
+        this.notice = notice;
         this.sharingMapId = sharingMapId;
     }
 
@@ -30,12 +36,16 @@ public class MapFindResponse {
                             final String mapName,
                             final String mapDrawing,
                             final String thumbnail,
+                            final String slackUrl,
+                            final String notice,
                             final String sharingMapId,
                             final String managerEmail) {
         this.mapId = mapId;
         this.mapName = mapName;
         this.mapDrawing = mapDrawing;
         this.thumbnail = thumbnail;
+        this.slackUrl = slackUrl;
+        this.notice = notice;
         this.sharingMapId = sharingMapId;
         this.managerEmail = managerEmail;
     }
@@ -47,6 +57,8 @@ public class MapFindResponse {
                 map.getName(),
                 map.getMapDrawing(),
                 map.getThumbnail(),
+                map.getSlackUrl(),
+                map.getNotice(),
                 sharingMapId
         );
     }
@@ -58,6 +70,8 @@ public class MapFindResponse {
                 map.getName(),
                 map.getMapDrawing(),
                 map.getThumbnail(),
+                map.getSlackUrl(),
+                map.getNotice(),
                 sharingMapId,
                 map.getMember().getEmail()
         );
