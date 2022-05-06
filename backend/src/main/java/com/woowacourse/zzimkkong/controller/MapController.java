@@ -58,7 +58,7 @@ public class MapController {
     @PostMapping("/{mapId}/notice")
     public ResponseEntity<Void> createNotice(
             @PathVariable final Long mapId,
-            @RequestBody final NoticeCreateRequest noticeCreateRequest,
+            @Valid @RequestBody final NoticeCreateRequest noticeCreateRequest,
             @LoginEmail final LoginEmailDto loginEmailDto) {
         mapService.saveNotice(mapId, noticeCreateRequest, loginEmailDto);
         return ResponseEntity.ok().build();
