@@ -113,6 +113,7 @@ const ManagerMain = (): JSX.Element => {
   const getSlackWebhookUrl = useSlackWebhookUrl(
     { mapId: selectedMapId as number },
     {
+      enabled: !!selectedMapId,
       refetchOnWindowFocus: false,
       onSuccess: (response) => {
         if (!slackUrl) setSlackUrl(response.data.slackUrl);
