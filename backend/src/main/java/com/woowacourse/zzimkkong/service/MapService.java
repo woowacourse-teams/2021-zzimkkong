@@ -114,6 +114,15 @@ public class MapService {
         map.updateSlackUrl(slackCreateRequest.getSlackUrl());
     }
 
+    public void saveNotice(final Long mapId,
+                           final NoticeCreateRequest noticeCreateRequest,
+                           final LoginEmailDto loginEmailDto) {
+        Map map = maps.findById(mapId)
+                .orElseThrow(NoSuchMapException::new);
+        validateManagerOfMap(map, loginEmailDto.getEmail());
+        map.updateNotice(noticeCreateRequest.getNotice());
+    }
+
     @Transactional(readOnly = true)
     public SlackFindResponse findSlackUrl(final Long mapId, final LoginEmailDto loginEmailDto) {
         Map map = maps.findById(mapId)
