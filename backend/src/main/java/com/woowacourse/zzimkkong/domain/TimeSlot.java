@@ -18,6 +18,7 @@ import java.time.temporal.ChronoUnit;
 public class TimeSlot {
     @Column(nullable = false)
     private LocalTime startTime;
+
     @Column(nullable = false)
     private LocalTime endTime;
 

@@ -61,7 +61,7 @@ public class Reservation {
     }
 
     public void update(final Reservation updateReservation, final Space space) {
-        this.reservationTime = updateReservation.getReservationTime();
+        this.reservationTime = updateReservation.reservationTime;
         this.userName = updateReservation.userName;
         this.description = updateReservation.description;
         this.space = space;

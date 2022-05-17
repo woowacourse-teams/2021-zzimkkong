@@ -14,22 +14,28 @@ import java.util.Optional;
 @Entity
 @Table(indexes = @Index(name = "email", columnList = "email", unique = true))
 public class Member {
-    @OneToMany(mappedBy = "member", cascade = CascadeType.REMOVE, orphanRemoval = true)
-    private final List<Preset> presets = new ArrayList<>();
-    @OneToMany(mappedBy = "member", cascade = CascadeType.REMOVE, orphanRemoval = true)
-    private final List<Map> maps = new ArrayList<>();
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
     @Column(nullable = false, length = 50, unique = true)
     private String email;
+
     @Column(length = 128)
     private String password;
+
     @Column(nullable = false, length = 20)
     private String organization;
+
     @Column(length = 10)
     @Enumerated(EnumType.STRING)
     private OauthProvider oauthProvider;
+
+    @OneToMany(mappedBy = "member", cascade = CascadeType.REMOVE, orphanRemoval = true)
+    private final List<Preset> presets = new ArrayList<>();
+
+    @OneToMany(mappedBy = "member", cascade = CascadeType.REMOVE, orphanRemoval = true)
+    private final List<Map> maps = new ArrayList<>();
 
     public Member(
             final String email,

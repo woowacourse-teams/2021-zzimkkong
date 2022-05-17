@@ -32,7 +32,7 @@ class TimeSlotTest {
     }
 
     @ParameterizedTest
-    @DisplayName("startTime과 endTime 중 하나라도 TimeUnit으로 나누어 떨지지 않으면 true, 아니면 false")
+    @DisplayName("startTime과 endTime 중 하나라도 TimeUnit으로 나누어 떨어지지 않으면 true, 아니면 false")
     @MethodSource("provideTimeSlotArguments_isNotDivisible")
     void isNotDivisibleBy(
             final TimeSlot timeSlot,

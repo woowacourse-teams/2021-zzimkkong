@@ -12,13 +12,12 @@ import org.junit.jupiter.params.provider.MethodSource;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.LocalTime;
 import java.util.stream.Stream;
 
 import static com.woowacourse.zzimkkong.Constants.THE_DAY_AFTER_TOMORROW;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 
 class ReservationTimeTest {
     private final LocalDateTime fourPmUTC = THE_DAY_AFTER_TOMORROW.atTime(16, 0); // next day KST 01:00

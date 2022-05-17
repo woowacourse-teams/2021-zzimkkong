@@ -16,16 +16,21 @@ public class Map {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
     @Column(nullable = false, length = 20)
     private String name;
+
     @Column(nullable = false)
     @Lob
     private String mapDrawing;
+
     @Column(nullable = false)
     @Lob
     private String thumbnail;
+
     @Lob
     private String slackUrl;
+
     @Lob
     private String notice;
 

@@ -8,8 +8,8 @@ import lombok.NoArgsConstructor;
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
 import java.time.LocalTime;
-import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 @Getter
 @NoArgsConstructor
@@ -18,7 +18,7 @@ import java.util.Map;
 public class TimeUnit {
     public static final Integer MINIMUM_TIME_UNIT = 5;
     private static final Integer MINIMUM_TIME = 0;
-    private static final Map<Integer, TimeUnit> cache = new HashMap<>();
+    private static final Map<Integer, TimeUnit> cache = new ConcurrentHashMap<>();
 
     static {
         for (int i = 1; i <= 24; i++) {
