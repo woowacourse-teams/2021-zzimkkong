@@ -161,6 +161,7 @@ const ManagerMapEditor = (): JSX.Element => {
                   value={name}
                   onChange={onChangeBoard}
                   placeholder="맵 이름을 입력해주세요"
+                  maxLength={20}
                   required
                 />
                 <Styled.FormControl>

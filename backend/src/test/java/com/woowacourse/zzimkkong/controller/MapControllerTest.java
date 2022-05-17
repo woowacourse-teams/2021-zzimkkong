@@ -127,6 +127,16 @@ class MapControllerTest extends AcceptanceTest {
     }
 
     @Test
+    @DisplayName("맵에 공지사항을 추가한다.")
+    void saveNotice() {
+        // given, when
+        ExtractableResponse<Response> response = saveNotice(createdMapApi + "/notice", new NoticeCreateRequest("공지사항 입니다."));
+
+        // then
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
+    }
+
+    @Test
     @DisplayName("맵에 슬랙url을 추가한다.")
     void saveSlackUrl() {
         // given, when
@@ -158,6 +168,18 @@ class MapControllerTest extends AcceptanceTest {
                 .filter(document("map/post", getRequestPreprocessor(), getResponsePreprocessor()))
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body(mapCreateUpdateRequest)
+                .when().post(api)
+                .then().log().all().extract();
+    }
+
+    private ExtractableResponse<Response> saveNotice(final String api, NoticeCreateRequest noticeCreateRequest) {
+        return RestAssured
+                .given(getRequestSpecification()).log().all()
+                .accept("application/json")
+                .header("Authorization", AuthorizationExtractor.AUTHENTICATION_TYPE + " " + accessToken)
+                .filter(document("map/noticePost", getRequestPreprocessor(), getResponsePreprocessor()))
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .body(noticeCreateRequest)
                 .when().post(api)
                 .then().log().all().extract();
     }

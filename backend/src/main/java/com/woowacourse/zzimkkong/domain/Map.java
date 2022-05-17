@@ -13,8 +13,6 @@ import java.util.Optional;
 @NoArgsConstructor
 @Entity
 public class Map {
-    @OneToMany(mappedBy = "map", cascade = CascadeType.REMOVE, fetch = FetchType.LAZY, orphanRemoval = true)
-    private final List<Space> spaces = new ArrayList<>();
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -28,11 +26,20 @@ public class Map {
     private String thumbnail;
     @Lob
     private String slackUrl;
+    @Lob
+    private String notice;
+
     @ManyToOne
     @JoinColumn(name = "member_id", foreignKey = @ForeignKey(name = "fk_map_member"), nullable = false)
     private Member member;
 
-    public Map(final String name, final String mapDrawing, final String thumbnail, final Member member) {
+    @OneToMany(mappedBy = "map", cascade = CascadeType.REMOVE, fetch = FetchType.LAZY, orphanRemoval = true)
+    private List<Space> spaces = new ArrayList<>();
+
+    public Map(final String name,
+               final String mapDrawing,
+               final String thumbnail,
+               final Member member) {
         this.name = name;
         this.mapDrawing = mapDrawing;
         this.thumbnail = thumbnail;
@@ -43,7 +50,11 @@ public class Map {
         }
     }
 
-    public Map(final Long id, final String name, final String mapDrawing, final String thumbnail, final Member member) {
+    public Map(final Long id,
+               final String name,
+               final String mapDrawing,
+               final String thumbnail,
+               final Member member) {
         this(name, mapDrawing, thumbnail, member);
         this.id = id;
     }
@@ -74,6 +85,10 @@ public class Map {
 
     public void updateSlackUrl(final String slackUrl) {
         this.slackUrl = slackUrl;
+    }
+
+    public void updateNotice(final String notice) {
+        this.notice = notice;
     }
 
     public void addSpace(final Space space) {

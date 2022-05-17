@@ -144,6 +144,7 @@ const Form = ({
               name="name"
               onChange={onChange}
               ref={nameInputRef}
+              maxLength={20}
               required
             />
           </Styled.Row>
