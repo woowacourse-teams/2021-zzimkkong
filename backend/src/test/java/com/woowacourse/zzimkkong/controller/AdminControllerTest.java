@@ -33,6 +33,7 @@ import static com.woowacourse.zzimkkong.controller.ManagerReservationControllerT
 import static com.woowacourse.zzimkkong.controller.ManagerSpaceControllerTest.saveSpace;
 import static com.woowacourse.zzimkkong.controller.MapControllerTest.saveMap;
 import static com.woowacourse.zzimkkong.infrastructure.datetime.TimeZoneUtils.KST;
+import static com.woowacourse.zzimkkong.infrastructure.datetime.TimeZoneUtils.UTC;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
 
@@ -43,8 +44,9 @@ class AdminControllerTest extends AcceptanceTest {
     private static final Member POBI = new Member(memberSaveRequest.getEmail(), memberSaveRequest.getPassword(), memberSaveRequest.getOrganization());
     private static final Map LUTHER = new Map(LUTHER_NAME, MAP_DRAWING_DATA, MAP_SVG, POBI);
     private static final Setting BE_SETTING = Setting.builder()
-            .availableStartTime(BE_AVAILABLE_START_TIME)
-            .availableEndTime(BE_AVAILABLE_END_TIME)
+            .availableTimeSlot(TimeSlot.of(
+                    BE_AVAILABLE_START_TIME,
+                    BE_AVAILABLE_END_TIME))
             .reservationTimeUnit(BE_RESERVATION_TIME_UNIT)
             .reservationMinimumTimeUnit(BE_RESERVATION_MINIMUM_TIME_UNIT)
             .reservationMaximumTimeUnit(BE_RESERVATION_MAXIMUM_TIME_UNIT)
@@ -160,8 +162,10 @@ class AdminControllerTest extends AcceptanceTest {
                 SALLY_DESCRIPTION);
         saveReservation(beReservationApi, newReservationCreateUpdateWithPasswordRequest);
         Reservation reservation = Reservation.builder()
-                .startTime(newReservationCreateUpdateWithPasswordRequest.localStartDateTime())
-                .endTime(newReservationCreateUpdateWithPasswordRequest.localEndDateTime())
+                .reservationTime(
+                        ReservationTime.of(
+                                newReservationCreateUpdateWithPasswordRequest.localStartDateTime(),
+                                newReservationCreateUpdateWithPasswordRequest.localEndDateTime()))
                 .userName(newReservationCreateUpdateWithPasswordRequest.getName())
                 .password(newReservationCreateUpdateWithPasswordRequest.getPassword())
                 .description(newReservationCreateUpdateWithPasswordRequest.getDescription())

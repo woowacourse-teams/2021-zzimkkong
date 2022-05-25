@@ -53,11 +53,13 @@ public class DataLoader implements CommandLineRunner {
         );
 
         Setting defaultSetting = Setting.builder()
-                .availableStartTime(LocalTime.of(9, 0))
-                .availableEndTime(LocalTime.of(22, 00))
-                .reservationTimeUnit(10)
-                .reservationMinimumTimeUnit(10)
-                .reservationMaximumTimeUnit(700)
+                .availableTimeSlot(
+                        TimeSlot.of(
+                                LocalTime.of(9, 0),
+                                LocalTime.of(22, 0)))
+                .reservationTimeUnit(TimeUnit.from(10))
+                .reservationMinimumTimeUnit(TimeUnit.from(10))
+                .reservationMaximumTimeUnit(TimeUnit.from(700))
                 .reservationEnable(true)
                 .enabledDayOfWeek("monday,tuesday,wednesday,thursday,friday,saturday,sunday")
                 .build();
@@ -175,10 +177,10 @@ public class DataLoader implements CommandLineRunner {
         LocalDate targetDate = LocalDate.now().plusDays(1L);
 
         Reservation reservationBackEndTargetDate0To1 = Reservation.builder()
-                .date(targetDate)
-                .startTime(targetDate.atStartOfDay())
-                .endTime(targetDate.atTime(1, 0, 0))
-                .date(targetDate)
+                .reservationTime(
+                        ReservationTime.of(
+                                targetDate.atStartOfDay(),
+                                targetDate.atTime(1, 0, 0)))
                 .description("찜꽁 1차 회의")
                 .userName("찜꽁")
                 .password("1234")
@@ -186,10 +188,10 @@ public class DataLoader implements CommandLineRunner {
                 .build();
 
         Reservation reservationBackEndTargetDate13To14 = Reservation.builder()
-                .date(targetDate)
-                .startTime(targetDate.atTime(13, 0, 0))
-                .endTime(targetDate.atTime(14, 0, 0))
-                .date(targetDate)
+                .reservationTime(
+                        ReservationTime.of(
+                                targetDate.atTime(13, 0, 0),
+                                targetDate.atTime(14, 0, 0)))
                 .description("찜꽁 2차 회의")
                 .userName("찜꽁")
                 .password("1234")
@@ -197,10 +199,10 @@ public class DataLoader implements CommandLineRunner {
                 .build();
 
         Reservation reservationBackEndTargetDate18To23 = Reservation.builder()
-                .date(targetDate)
-                .startTime(targetDate.atTime(18, 0, 0))
-                .endTime(targetDate.atTime(23, 59, 59))
-                .date(targetDate)
+                .reservationTime(
+                        ReservationTime.of(
+                                targetDate.atTime(18, 0, 0),
+                                targetDate.atTime(23, 0, 0)))
                 .description("찜꽁 3차 회의")
                 .userName("찜꽁")
                 .password("6789")
@@ -208,10 +210,10 @@ public class DataLoader implements CommandLineRunner {
                 .build();
 
         Reservation reservationBackEndTheDayAfterTargetDate = Reservation.builder()
-                .date(targetDate)
-                .startTime(targetDate.plusDays(1L).atStartOfDay())
-                .endTime(targetDate.plusDays(1L).atTime(1, 0, 0))
-                .date(targetDate)
+                .reservationTime(
+                        ReservationTime.of(
+                                targetDate.plusDays(1L).atStartOfDay(),
+                                targetDate.plusDays(1L).atTime(1, 0, 0)))
                 .description("찜꽁 4차 회의")
                 .userName("찜꽁")
                 .password("1234")
@@ -219,10 +221,10 @@ public class DataLoader implements CommandLineRunner {
                 .build();
 
         Reservation reservationFrontEnd1TargetDate0to1 = Reservation.builder()
-                .date(targetDate)
-                .startTime(targetDate.atStartOfDay())
-                .endTime(targetDate.atTime(1, 0, 0))
-                .date(targetDate)
+                .reservationTime(
+                        ReservationTime.of(
+                                targetDate.atStartOfDay(),
+                                targetDate.atTime(1, 0, 0)))
                 .description("찜꽁 5차 회의")
                 .userName("찜꽁")
                 .password("1234")

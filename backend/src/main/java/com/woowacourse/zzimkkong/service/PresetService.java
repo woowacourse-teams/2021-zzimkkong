@@ -1,8 +1,6 @@
 package com.woowacourse.zzimkkong.service;
 
-import com.woowacourse.zzimkkong.domain.Member;
-import com.woowacourse.zzimkkong.domain.Preset;
-import com.woowacourse.zzimkkong.domain.Setting;
+import com.woowacourse.zzimkkong.domain.*;
 import com.woowacourse.zzimkkong.dto.member.PresetCreateResponse;
 import com.woowacourse.zzimkkong.dto.member.PresetFindAllResponse;
 import com.woowacourse.zzimkkong.dto.space.SettingsRequest;
@@ -33,11 +31,13 @@ public class PresetService {
     public PresetCreateResponse savePreset(final PresetCreateRequest presetCreateRequest, final LoginEmailDto loginEmailDto) {
         SettingsRequest settingsRequest = presetCreateRequest.getSettingsRequest();
         Setting setting = Setting.builder()
-                .availableStartTime(settingsRequest.getAvailableStartTime())
-                .availableEndTime(settingsRequest.getAvailableEndTime())
-                .reservationTimeUnit(settingsRequest.getReservationTimeUnit())
-                .reservationMinimumTimeUnit(settingsRequest.getReservationMinimumTimeUnit())
-                .reservationMaximumTimeUnit(settingsRequest.getReservationMaximumTimeUnit())
+                .availableTimeSlot(
+                        TimeSlot.of(
+                                settingsRequest.getAvailableStartTime(),
+                                settingsRequest.getAvailableEndTime()))
+                .reservationTimeUnit(TimeUnit.from(settingsRequest.getReservationTimeUnit()))
+                .reservationMinimumTimeUnit(TimeUnit.from(settingsRequest.getReservationMinimumTimeUnit()))
+                .reservationMaximumTimeUnit(TimeUnit.from(settingsRequest.getReservationMaximumTimeUnit()))
                 .reservationEnable(settingsRequest.getReservationEnable())
                 .enabledDayOfWeek(settingsRequest.enabledDayOfWeekAsString())
                 .build();

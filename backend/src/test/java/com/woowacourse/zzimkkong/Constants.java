@@ -1,5 +1,7 @@
 package com.woowacourse.zzimkkong;
 
+import com.woowacourse.zzimkkong.domain.TimeUnit;
+
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.ZonedDateTime;
@@ -32,17 +34,17 @@ public class Constants {
 
     public static final LocalTime BE_AVAILABLE_START_TIME = LocalTime.of(10, 0);
     public static final LocalTime BE_AVAILABLE_END_TIME = LocalTime.of(22, 0);
-    public static final Integer BE_RESERVATION_TIME_UNIT = 10;
-    public static final Integer BE_RESERVATION_MINIMUM_TIME_UNIT = 60;
-    public static final Integer BE_RESERVATION_MAXIMUM_TIME_UNIT = 120;
+    public static final TimeUnit BE_RESERVATION_TIME_UNIT = TimeUnit.from(10);
+    public static final TimeUnit BE_RESERVATION_MINIMUM_TIME_UNIT = TimeUnit.from(60);
+    public static final TimeUnit BE_RESERVATION_MAXIMUM_TIME_UNIT = TimeUnit.from(120);
     public static final Boolean BE_RESERVATION_ENABLE = true;
     public static final String BE_ENABLED_DAY_OF_WEEK = "monday,tuesday,wednesday,thursday,friday,saturday,sunday";
 
     public static final LocalTime FE_AVAILABLE_START_TIME = LocalTime.of(10, 0);
     public static final LocalTime FE_AVAILABLE_END_TIME = LocalTime.of(22, 0);
-    public static final Integer FE_RESERVATION_TIME_UNIT = 10;
-    public static final Integer FE_RESERVATION_MINIMUM_TIME_UNIT = 60;
-    public static final Integer FE_RESERVATION_MAXIMUM_TIME_UNIT = 120;
+    public static final TimeUnit FE_RESERVATION_TIME_UNIT = TimeUnit.from(10);
+    public static final TimeUnit FE_RESERVATION_MINIMUM_TIME_UNIT = TimeUnit.from(60);
+    public static final TimeUnit FE_RESERVATION_MAXIMUM_TIME_UNIT = TimeUnit.from(120);
     public static final Boolean FE_RESERVATION_ENABLE = true;
     public static final String FE_ENABLED_DAY_OF_WEEK = "monday,tuesday,wednesday,thursday,friday,saturday,sunday";
 

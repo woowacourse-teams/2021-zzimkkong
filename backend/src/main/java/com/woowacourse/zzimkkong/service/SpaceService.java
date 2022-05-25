@@ -1,8 +1,6 @@
 package com.woowacourse.zzimkkong.service;
 
-import com.woowacourse.zzimkkong.domain.Map;
-import com.woowacourse.zzimkkong.domain.Setting;
-import com.woowacourse.zzimkkong.domain.Space;
+import com.woowacourse.zzimkkong.domain.*;
 import com.woowacourse.zzimkkong.dto.member.LoginEmailDto;
 import com.woowacourse.zzimkkong.dto.space.*;
 import com.woowacourse.zzimkkong.exception.authorization.NoAuthorityOnMapException;
@@ -143,18 +141,20 @@ public class SpaceService {
         SettingsRequest settingsRequest = spaceCreateUpdateRequest.getSettingsRequest();
 
         return Setting.builder()
-                .availableStartTime(settingsRequest.getAvailableStartTime())
-                .availableEndTime(settingsRequest.getAvailableEndTime())
-                .reservationTimeUnit(settingsRequest.getReservationTimeUnit())
+                .availableTimeSlot(
+                        TimeSlot.of(
+                                settingsRequest.getAvailableStartTime(),
+                                settingsRequest.getAvailableEndTime()))
+                .reservationTimeUnit(TimeUnit.from(settingsRequest.getReservationTimeUnit()))
+                .reservationMinimumTimeUnit(TimeUnit.from(settingsRequest.getReservationMinimumTimeUnit()))
+                .reservationMaximumTimeUnit(TimeUnit.from(settingsRequest.getReservationMaximumTimeUnit()))
                 .reservationEnable(settingsRequest.getReservationEnable())
-                .reservationMinimumTimeUnit(settingsRequest.getReservationMinimumTimeUnit())
-                .reservationMaximumTimeUnit(settingsRequest.getReservationMaximumTimeUnit())
                 .enabledDayOfWeek(settingsRequest.enabledDayOfWeekAsString())
                 .build();
     }
 
     private void validateReservationExistence(final Long spaceId) {
-        if (reservations.existsBySpaceIdAndEndTimeAfter(spaceId, LocalDateTime.now())) {
+        if (reservations.existsBySpaceIdAndReservationTimeEndTimeAfter(spaceId, LocalDateTime.now())) {
             throw new ReservationExistOnSpaceException();
         }
     }

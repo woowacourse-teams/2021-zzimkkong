@@ -3,10 +3,10 @@ package com.woowacourse.zzimkkong.exception.reservation;
 import com.woowacourse.zzimkkong.exception.InputFieldException;
 import org.springframework.http.HttpStatus;
 
-public class ImpossibleStartTimeException extends InputFieldException {
-    private static final String MESSAGE = "시작 시간을 확인해주세요.";
+public class NonMatchingStartEndDateException extends InputFieldException {
+    private static final String MESSAGE = "시작 날짜와 종료 날짜는 같아야 합니다.";
 
-    public ImpossibleStartTimeException() {
+    public NonMatchingStartEndDateException() {
         super(MESSAGE, HttpStatus.BAD_REQUEST, START_DATE_TIME);
     }
 }

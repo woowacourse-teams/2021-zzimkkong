@@ -8,8 +8,9 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 class PresetTest {
     private final Setting setting = Setting.builder()
-            .availableStartTime(BE_AVAILABLE_START_TIME)
-            .availableEndTime(BE_AVAILABLE_END_TIME)
+            .availableTimeSlot(TimeSlot.of(
+                    BE_AVAILABLE_START_TIME,
+                    BE_AVAILABLE_END_TIME))
             .reservationTimeUnit(BE_RESERVATION_TIME_UNIT)
             .reservationMinimumTimeUnit(BE_RESERVATION_MINIMUM_TIME_UNIT)
             .reservationMaximumTimeUnit(BE_RESERVATION_MAXIMUM_TIME_UNIT)

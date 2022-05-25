@@ -49,9 +49,9 @@ public class SettingResponse {
         return new SettingResponse(
                 space.getAvailableStartTime(),
                 space.getAvailableEndTime(),
-                space.getReservationTimeUnit(),
-                space.getReservationMinimumTimeUnit(),
-                space.getReservationMaximumTimeUnit(),
+                space.getReservationTimeUnitAsInt(),
+                space.getReservationMinimumTimeUnitAsInt(),
+                space.getReservationMaximumTimeUnitAsInt(),
                 space.getReservationEnable(),
                 EnabledDayOfWeekDto.from(space.getEnabledDayOfWeek())
         );

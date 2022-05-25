@@ -1,14 +1,11 @@
 package com.woowacourse.zzimkkong.service;
 
-import com.woowacourse.zzimkkong.domain.Map;
-import com.woowacourse.zzimkkong.domain.Reservation;
-import com.woowacourse.zzimkkong.domain.Space;
+import com.woowacourse.zzimkkong.domain.*;
 import com.woowacourse.zzimkkong.dto.reservation.*;
 import com.woowacourse.zzimkkong.dto.slack.SlackResponse;
 import com.woowacourse.zzimkkong.exception.map.NoSuchMapException;
 import com.woowacourse.zzimkkong.exception.reservation.*;
 import com.woowacourse.zzimkkong.exception.space.NoSuchSpaceException;
-import com.woowacourse.zzimkkong.infrastructure.datetime.TimeZoneUtils;
 import com.woowacourse.zzimkkong.infrastructure.sharingid.SharingIdGenerator;
 import com.woowacourse.zzimkkong.repository.MapRepository;
 import com.woowacourse.zzimkkong.repository.ReservationRepository;
@@ -19,16 +16,12 @@ import com.woowacourse.zzimkkong.service.strategy.ReservationStrategy;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.DayOfWeek;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.temporal.ChronoUnit;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
-import java.util.TimeZone;
 import java.util.stream.Collectors;
-
-import static com.woowacourse.zzimkkong.infrastructure.datetime.TimeZoneUtils.*;
 
 @Service
 @Transactional
@@ -60,16 +53,16 @@ public class ReservationService {
         Space space = map.findSpaceById(spaceId)
                 .orElseThrow(NoSuchSpaceException::new);
 
-        validateTime(reservationCreateDto, reservationStrategy.isManager());
+        ReservationTime reservationTime = ReservationTime.of(
+                reservationCreateDto.getStartDateTime(),
+                reservationCreateDto.getEndDateTime(),
+                reservationStrategy.isManager());
 
-        validateAvailability(space, reservationCreateDto, new ExcludeReservationCreateStrategy());
+        validateAvailability(space, reservationTime, new ExcludeReservationCreateStrategy());
 
-        LocalDate date = TimeZoneUtils.convert(reservationCreateDto.getStartDateTime(), UTC, KST).toLocalDate();
         Reservation reservation = reservations.save(
                 Reservation.builder()
-                        .startTime(reservationCreateDto.getStartDateTime())
-                        .endTime(reservationCreateDto.getEndDateTime())
-                        .date(date)
+                        .reservationTime(reservationTime)
                         .password(reservationCreateDto.getPassword())
                         .userName(reservationCreateDto.getName())
                         .description(reservationCreateDto.getDescription())
@@ -155,7 +148,10 @@ public class ReservationService {
         Space space = map.findSpaceById(spaceId)
                 .orElseThrow(NoSuchSpaceException::new);
 
-        validateTime(reservationUpdateDto, reservationStrategy.isManager());
+        ReservationTime reservationTime = ReservationTime.of(
+                reservationUpdateDto.getStartDateTime(),
+                reservationUpdateDto.getEndDateTime(),
+                reservationStrategy.isManager());
 
         Long reservationId = reservationUpdateDto.getReservationId();
         String password = reservationUpdateDto.getPassword();
@@ -164,13 +160,10 @@ public class ReservationService {
                 .orElseThrow(NoSuchReservationException::new);
         reservationStrategy.checkCorrectPassword(reservation, password);
 
-        validateAvailability(space, reservationUpdateDto, new ExcludeReservationUpdateStrategy(reservation));
+        validateAvailability(space, reservationTime, new ExcludeReservationUpdateStrategy(reservation));
 
-        LocalDate date = TimeZoneUtils.convert(reservationUpdateDto.getStartDateTime(), UTC, KST).toLocalDate();
         Reservation updateReservation = Reservation.builder()
-                .startTime(reservationUpdateDto.getStartDateTime())
-                .endTime(reservationUpdateDto.getEndDateTime())
-                .date(date)
+                .reservationTime(reservationTime)
                 .userName(reservationUpdateDto.getName())
                 .description(reservationUpdateDto.getDescription())
                 .space(space)
@@ -201,7 +194,10 @@ public class ReservationService {
                 .findById(reservationId)
                 .orElseThrow(NoSuchReservationException::new);
         reservationStrategy.checkCorrectPassword(reservation, password);
-        validatePastTimeAndManager(reservation.getStartTime(), reservationStrategy.isManager());
+
+        if (!reservationStrategy.isManager()) {
+            ReservationTime.validatePastTime(reservation.getStartTime());
+        }
 
         reservations.delete(reservation);
 
@@ -209,67 +205,37 @@ public class ReservationService {
         return SlackResponse.of(reservation, sharingMapId, map.getSlackUrl());
     }
 
-    private void validateTime(final ReservationCreateDto reservationCreateDto, final boolean managerFlag) {
-        LocalDateTime startDateTime = reservationCreateDto.getStartDateTime().withSecond(0).withNano(0);
-        LocalDateTime endDateTime = reservationCreateDto.getEndDateTime().withSecond(0).withNano(0);
-
-        validatePastTimeAndManager(startDateTime, managerFlag);
-
-        if (endDateTime.isBefore(startDateTime) || startDateTime.equals(endDateTime)) {
-            throw new ImpossibleEndTimeException();
-        }
-
-        LocalDate startDateKST = TimeZoneUtils.convert(startDateTime, UTC, KST).toLocalDate();
-        LocalDate endDateKST = TimeZoneUtils.convert(endDateTime, UTC, KST).toLocalDate();
-        if (!startDateKST.isEqual(endDateKST)) {
-            throw new NonMatchingStartAndEndDateException();
-        }
-    }
-
-    private void validatePastTimeAndManager(final LocalDateTime startDateTime, final boolean managerFlag) {
-        if (startDateTime.isBefore(LocalDateTime.now()) && !managerFlag) {
-            throw new ImpossibleStartTimeException();
-        }
-    }
-
     private void validateAvailability(
             final Space space,
-            final ReservationCreateDto reservationCreateDto,
+            final ReservationTime reservationTime,
             final ExcludeReservationStrategy excludeReservationStrategy) {
-        LocalDateTime startDateTime = reservationCreateDto.getStartDateTime();
-        LocalDateTime endDateTime = reservationCreateDto.getEndDateTime();
-
-        validateSpaceSetting(space, startDateTime, endDateTime);
+        validateSpaceSetting(space, reservationTime);
 
         List<Reservation> reservationsOnDate = getReservations(
                 Collections.singletonList(space),
-                startDateTime.toLocalDate());
+                reservationTime.getDate());
         excludeReservationStrategy.apply(space, reservationsOnDate);
 
-        validateTimeConflicts(startDateTime, endDateTime, reservationsOnDate);
+        validateTimeConflicts(reservationTime, reservationsOnDate);
     }
 
-    private void validateSpaceSetting(
-            final Space space,
-            final LocalDateTime startDateTime,
-            final LocalDateTime endDateTime) {
-        LocalDateTime startDateTimeKST = TimeZoneUtils.convert(startDateTime, UTC, KST);
-        LocalDateTime endDateTimeKST = TimeZoneUtils.convert(endDateTime, UTC, KST);
-        int durationMinutes = (int) ChronoUnit.MINUTES.between(startDateTimeKST, endDateTimeKST);
+    private void validateSpaceSetting(final Space space, final ReservationTime reservationTime) {
+        TimeSlot timeSlot = reservationTime.asTimeSlotKST();
+        DayOfWeek dayOfWeek = reservationTime.getDayOfWeekKST();
 
-        if (space.isNotDivisibleByTimeUnit(startDateTimeKST.getMinute()) || space.isNotDivisibleByTimeUnit(durationMinutes)) {
+        if (space.cannotAcceptDueToTimeUnit(timeSlot)) {
             throw new InvalidTimeUnitException();
         }
 
-        if (space.isIncorrectMinimumTimeUnit(durationMinutes)) {
+        if (space.cannotAcceptDueToMinimumTimeUnit(timeSlot)) {
             throw new InvalidMinimumDurationTimeException();
         }
 
-        if (space.isIncorrectMaximumTimeUnit(durationMinutes)) {
+        if (space.cannotAcceptDueToMaximumTimeUnit(timeSlot)) {
             throw new InvalidMaximumDurationTimeException();
         }
 
-        if (space.isNotBetweenAvailableTime(startDateTimeKST, endDateTimeKST)) {
+        if (space.cannotAcceptDueToAvailableTime(timeSlot)) {
             throw new InvalidStartEndTimeException();
         }
 
@@ -277,17 +243,16 @@ public class ReservationService {
             throw new InvalidReservationEnableException();
         }
 
-        if (space.isClosedOn(startDateTimeKST.getDayOfWeek())) {
+        if (space.isClosedOn(dayOfWeek)) {
             throw new InvalidDayOfWeekException();
         }
     }
 
     private void validateTimeConflicts(
-            final LocalDateTime startDateTime,
-            final LocalDateTime endDateTime,
+            final ReservationTime reservationTime,
             final List<Reservation> reservationsOnDate) {
         for (Reservation existingReservation : reservationsOnDate) {
-            if (existingReservation.hasConflictWith(startDateTime, endDateTime)) {
+            if (existingReservation.hasConflictWith(reservationTime)) {
                 throw new ReservationAlreadyExistsException();
             }
         }
@@ -298,14 +263,7 @@ public class ReservationService {
                 .map(Space::getId)
                 .collect(Collectors.toList());
 
-        List<Reservation> reservationsWithinDateRange = reservations.findAllBySpaceIdInAndDateGreaterThanEqualAndDateLessThanEqual(
-                spaceIds,
-                date.minusDays(ONE_DAY_OFFSET),
-                date.plusDays(ONE_DAY_OFFSET));
-
-        return reservationsWithinDateRange.stream()
-                .filter(reservation -> reservation.isBookedOn(date, KST))
-                .collect(Collectors.toList());
+        return reservations.findAllBySpaceIdInAndReservationTimeDate(spaceIds, date);
     }
 
     private void validateSpaceExistence(final Map map, final Long spaceId) {

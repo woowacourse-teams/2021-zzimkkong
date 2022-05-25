@@ -66,8 +66,9 @@ class GuestReservationServiceTest extends ServiceTest {
         luther = new Map(1L, LUTHER_NAME, MAP_DRAWING_DATA, MAP_SVG, pobi);
         
         Setting beSetting = Setting.builder()
-                .availableStartTime(BE_AVAILABLE_START_TIME)
-                .availableEndTime(BE_AVAILABLE_END_TIME)
+                .availableTimeSlot(TimeSlot.of(
+                        BE_AVAILABLE_START_TIME,
+                        BE_AVAILABLE_END_TIME))
                 .reservationTimeUnit(BE_RESERVATION_TIME_UNIT)
                 .reservationMinimumTimeUnit(BE_RESERVATION_MINIMUM_TIME_UNIT)
                 .reservationMaximumTimeUnit(BE_RESERVATION_MAXIMUM_TIME_UNIT)
@@ -85,8 +86,9 @@ class GuestReservationServiceTest extends ServiceTest {
                 .build();
 
         Setting feSetting = Setting.builder()
-                .availableStartTime(FE_AVAILABLE_START_TIME)
-                .availableEndTime(FE_AVAILABLE_END_TIME)
+                .availableTimeSlot(TimeSlot.of(
+                        FE_AVAILABLE_START_TIME,
+                        FE_AVAILABLE_END_TIME))
                 .reservationTimeUnit(FE_RESERVATION_TIME_UNIT)
                 .reservationMinimumTimeUnit(FE_RESERVATION_MINIMUM_TIME_UNIT)
                 .reservationMaximumTimeUnit(FE_RESERVATION_MAXIMUM_TIME_UNIT)
@@ -106,8 +108,10 @@ class GuestReservationServiceTest extends ServiceTest {
 
         beAmZeroOne = Reservation.builder()
                 .id(1L)
-                .startTime(BE_AM_TEN_ELEVEN_START_TIME_KST.withZoneSameInstant(UTC.toZoneId()).toLocalDateTime())
-                .endTime(BE_AM_TEN_ELEVEN_END_TIME_KST.withZoneSameInstant(UTC.toZoneId()).toLocalDateTime())
+                .reservationTime(
+                        ReservationTime.of(
+                                BE_AM_TEN_ELEVEN_START_TIME_KST.withZoneSameInstant(UTC.toZoneId()).toLocalDateTime(),
+                                BE_AM_TEN_ELEVEN_END_TIME_KST.withZoneSameInstant(UTC.toZoneId()).toLocalDateTime()))
                 .description(BE_AM_TEN_ELEVEN_DESCRIPTION)
                 .userName(BE_AM_TEN_ELEVEN_USERNAME)
                 .password(BE_AM_TEN_ELEVEN_PW)
@@ -116,8 +120,10 @@ class GuestReservationServiceTest extends ServiceTest {
 
         bePmOneTwo = Reservation.builder()
                 .id(2L)
-                .startTime(BE_PM_ONE_TWO_START_TIME_KST.withZoneSameInstant(UTC.toZoneId()).toLocalDateTime())
-                .endTime(BE_PM_ONE_TWO_END_TIME_KST.withZoneSameInstant(UTC.toZoneId()).toLocalDateTime())
+                .reservationTime(
+                        ReservationTime.of(
+                                BE_PM_ONE_TWO_START_TIME_KST.withZoneSameInstant(UTC.toZoneId()).toLocalDateTime(),
+                                BE_PM_ONE_TWO_END_TIME_KST.withZoneSameInstant(UTC.toZoneId()).toLocalDateTime()))
                 .description(BE_PM_ONE_TWO_DESCRIPTION)
                 .userName(BE_PM_ONE_TWO_USERNAME)
                 .password(BE_PM_ONE_TWO_PW)
@@ -221,7 +227,7 @@ class GuestReservationServiceTest extends ServiceTest {
         assertThatThrownBy(() -> reservationService.saveReservation(
                 reservationCreateDto,
                 guestReservationStrategy))
-                .isInstanceOf(ImpossibleStartTimeException.class);
+                .isInstanceOf(PastReservationTimeException.class);
     }
 
     @Test
@@ -247,7 +253,7 @@ class GuestReservationServiceTest extends ServiceTest {
         assertThatThrownBy(() -> reservationService.saveReservation(
                 reservationCreateDto,
                 guestReservationStrategy))
-                .isInstanceOf(ImpossibleEndTimeException.class);
+                .isInstanceOf(ImpossibleStartEndTimeException.class);
     }
 
     @Test
@@ -273,7 +279,7 @@ class GuestReservationServiceTest extends ServiceTest {
         assertThatThrownBy(() -> reservationService.saveReservation(
                 reservationCreateDto,
                 guestReservationStrategy))
-                .isInstanceOf(ImpossibleEndTimeException.class);
+                .isInstanceOf(ImpossibleStartEndTimeException.class);
     }
 
     @Test
@@ -299,7 +305,7 @@ class GuestReservationServiceTest extends ServiceTest {
         assertThatThrownBy(() -> reservationService.saveReservation(
                 reservationCreateDto,
                 guestReservationStrategy))
-                .isInstanceOf(NonMatchingStartAndEndDateException.class);
+                .isInstanceOf(NonMatchingStartEndDateException.class);
     }
 
     @ParameterizedTest
@@ -337,9 +343,8 @@ class GuestReservationServiceTest extends ServiceTest {
         //given, when
         given(maps.findByIdFetch(anyLong()))
                 .willReturn(Optional.of(luther));
-        given(reservations.findAllBySpaceIdInAndDateGreaterThanEqualAndDateLessThanEqual(
+        given(reservations.findAllBySpaceIdInAndReservationTimeDate(
                 anyList(),
-                any(LocalDate.class),
                 any(LocalDate.class)))
                 .willReturn(List.of(makeReservation(
                         reservationCreateUpdateWithPasswordRequest.localStartDateTime().minusMinutes(startMinute),
@@ -363,11 +368,12 @@ class GuestReservationServiceTest extends ServiceTest {
     void saveReservationUnable() {
         // given, when
         Setting setting = Setting.builder()
-                .availableStartTime(LocalTime.of(0, 0))
-                .availableEndTime(LocalTime.of(18, 0))
-                .reservationTimeUnit(10)
-                .reservationMinimumTimeUnit(10)
-                .reservationMaximumTimeUnit(120)
+                .availableTimeSlot(TimeSlot.of(
+                        LocalTime.of(0, 0),
+                        LocalTime.of(18, 0)))
+                .reservationTimeUnit(TimeUnit.from(10))
+                .reservationMinimumTimeUnit(TimeUnit.from(10))
+                .reservationMaximumTimeUnit(TimeUnit.from(120))
                 .reservationEnable(false)
                 .enabledDayOfWeek(null)
                 .build();
@@ -403,11 +409,12 @@ class GuestReservationServiceTest extends ServiceTest {
     void saveIllegalDayOfWeek() {
         // given, when
         Setting setting = Setting.builder()
-                .availableStartTime(LocalTime.of(0, 0))
-                .availableEndTime(LocalTime.of(18, 0))
-                .reservationTimeUnit(10)
-                .reservationMinimumTimeUnit(10)
-                .reservationMaximumTimeUnit(120)
+                .availableTimeSlot(TimeSlot.of(
+                        LocalTime.of(0, 0),
+                        LocalTime.of(18, 0)))
+                .reservationTimeUnit(TimeUnit.from(10))
+                .reservationMinimumTimeUnit(TimeUnit.from(10))
+                .reservationMaximumTimeUnit(TimeUnit.from(120))
                 .reservationEnable(true)
                 .enabledDayOfWeek(THE_DAY_AFTER_TOMORROW.plusDays(1L).getDayOfWeek().name())
                 .build();
@@ -445,7 +452,7 @@ class GuestReservationServiceTest extends ServiceTest {
         //given, when
         given(maps.findByIdFetch(anyLong()))
                 .willReturn(Optional.of(luther));
-        given(reservations.findAllBySpaceIdInAndDateGreaterThanEqualAndDateLessThanEqual(
+        given(reservations.findAllBySpaceIdInAndDateBetween(
                 anyList(),
                 any(LocalDate.class),
                 any(LocalDate.class)))
@@ -475,7 +482,7 @@ class GuestReservationServiceTest extends ServiceTest {
     }
 
     @ParameterizedTest
-    @CsvSource({"1,61","10,55","5,65","20,89"})
+    @CsvSource({"5,60","10,55","5,65","20,85"})
     @DisplayName("예약 생성/수정 요청 시, space setting의 reservationTimeUnit이 일치하지 않으면 예외가 발생한다.")
     void saveReservationTimeUnitException(int additionalStartMinute, int additionalEndMinute) {
         //given
@@ -617,12 +624,12 @@ class GuestReservationServiceTest extends ServiceTest {
         assertThatThrownBy(() -> reservationService.saveReservation(
                 reservationCreateDto,
                 guestReservationStrategy))
-                .isInstanceOf(ImpossibleStartTimeException.class);
+                .isInstanceOf(PastReservationTimeException.class);
 
         assertThatThrownBy(() -> reservationService.updateReservation(
                 reservationUpdateDto,
                 guestReservationStrategy))
-                .isInstanceOf(ImpossibleStartTimeException.class);
+                .isInstanceOf(PastReservationTimeException.class);
     }
 
     @Test
@@ -642,9 +649,8 @@ class GuestReservationServiceTest extends ServiceTest {
 
         given(maps.findByIdFetch(anyLong()))
                 .willReturn(Optional.of(luther));
-        given(reservations.findAllBySpaceIdInAndDateGreaterThanEqualAndDateLessThanEqual(
+        given(reservations.findAllBySpaceIdInAndReservationTimeDate(
                 anyList(),
-                any(LocalDate.class),
                 any(LocalDate.class)))
                 .willReturn(foundReservations);
 
@@ -710,7 +716,7 @@ class GuestReservationServiceTest extends ServiceTest {
                 .willReturn(Optional.of(luther));
         given(maps.existsById(anyLong()))
                 .willReturn(true);
-        given(reservations.findAllBySpaceIdInAndDateGreaterThanEqualAndDateLessThanEqual(
+        given(reservations.findAllBySpaceIdInAndDateBetween(
                 anyList(),
                 any(LocalDate.class),
                 any(LocalDate.class)))
@@ -766,9 +772,8 @@ class GuestReservationServiceTest extends ServiceTest {
 
         given(maps.findByIdFetch(anyLong()))
                 .willReturn(Optional.of(luther));
-        given(reservations.findAllBySpaceIdInAndDateGreaterThanEqualAndDateLessThanEqual(
+        given(reservations.findAllBySpaceIdInAndReservationTimeDate(
                 anyList(),
-                any(LocalDate.class),
                 any(LocalDate.class)))
                 .willReturn(foundReservations);
 
@@ -916,7 +921,7 @@ class GuestReservationServiceTest extends ServiceTest {
         assertThatThrownBy(() -> reservationService.updateReservation(
                 reservationUpdateDto,
                 guestReservationStrategy))
-                .isInstanceOf(ImpossibleEndTimeException.class);
+                .isInstanceOf(ImpossibleStartEndTimeException.class);
     }
 
     @Test
@@ -945,7 +950,7 @@ class GuestReservationServiceTest extends ServiceTest {
         assertThatThrownBy(() -> reservationService.updateReservation(
                 reservationUpdateDto,
                 guestReservationStrategy))
-                .isInstanceOf(NonMatchingStartAndEndDateException.class);
+                .isInstanceOf(NonMatchingStartEndDateException.class);
     }
 
     @Test
@@ -988,9 +993,8 @@ class GuestReservationServiceTest extends ServiceTest {
                 .willReturn(Optional.of(luther));
         given(reservations.findById(anyLong()))
                 .willReturn(Optional.of(reservation));
-        given(reservations.findAllBySpaceIdInAndDateGreaterThanEqualAndDateLessThanEqual(
+        given(reservations.findAllBySpaceIdInAndReservationTimeDate(
                 anyList(),
-                any(LocalDate.class),
                 any(LocalDate.class)))
                 .willReturn(Arrays.asList(
                         beAmZeroOne,
@@ -1054,11 +1058,12 @@ class GuestReservationServiceTest extends ServiceTest {
     void updateReservationUnable() {
         // given, when
         Setting setting = Setting.builder()
-                .availableStartTime(LocalTime.of(0, 0))
-                .availableEndTime(LocalTime.of(18, 0))
-                .reservationTimeUnit(10)
-                .reservationMinimumTimeUnit(10)
-                .reservationMaximumTimeUnit(120)
+                .availableTimeSlot(TimeSlot.of(
+                        LocalTime.of(0, 0),
+                        LocalTime.of(18, 0)))
+                .reservationTimeUnit(TimeUnit.from(10))
+                .reservationMinimumTimeUnit(TimeUnit.from(10))
+                .reservationMaximumTimeUnit(TimeUnit.from(120))
                 .reservationEnable(false)
                 .enabledDayOfWeek(null)
                 .build();
@@ -1098,11 +1103,12 @@ class GuestReservationServiceTest extends ServiceTest {
     void updateIllegalDayOfWeek() {
         // given, when
         Setting setting = Setting.builder()
-                .availableStartTime(LocalTime.of(0, 0))
-                .availableEndTime(LocalTime.of(18, 0))
-                .reservationTimeUnit(10)
-                .reservationMinimumTimeUnit(10)
-                .reservationMaximumTimeUnit(120)
+                .availableTimeSlot(TimeSlot.of(
+                        LocalTime.of(0, 0),
+                        LocalTime.of(18, 0)))
+                .reservationTimeUnit(TimeUnit.from(10))
+                .reservationMinimumTimeUnit(TimeUnit.from(10))
+                .reservationMaximumTimeUnit(TimeUnit.from(120))
                 .reservationEnable(true)
                 .enabledDayOfWeek(THE_DAY_AFTER_TOMORROW.plusDays(1L).getDayOfWeek().name())
                 .build();
@@ -1245,14 +1251,16 @@ class GuestReservationServiceTest extends ServiceTest {
         assertThatThrownBy(() -> reservationService.deleteReservation(
                 reservationAuthenticationDto,
                 guestReservationStrategy))
-                .isInstanceOf(ImpossibleStartTimeException.class);
+                .isInstanceOf(PastReservationTimeException.class);
     }
 
     private Reservation makeReservation(final LocalDateTime startTime, final LocalDateTime endTime, final Space space) {
         return Reservation.builder()
                 .id(3L)
-                .startTime(startTime)
-                .endTime(endTime)
+                .reservationTime(
+                        ReservationTime.of(
+                                startTime,
+                                endTime))
                 .password(reservationCreateUpdateWithPasswordRequest.getPassword())
                 .userName(reservationCreateUpdateWithPasswordRequest.getName())
                 .description(reservationCreateUpdateWithPasswordRequest.getDescription())

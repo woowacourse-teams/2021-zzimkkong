@@ -32,10 +32,10 @@ public class Member {
     private OauthProvider oauthProvider;
 
     @OneToMany(mappedBy = "member", cascade = CascadeType.REMOVE, orphanRemoval = true)
-    private List<Preset> presets = new ArrayList<>();
+    private final List<Preset> presets = new ArrayList<>();
 
     @OneToMany(mappedBy = "member", cascade = CascadeType.REMOVE, orphanRemoval = true)
-    private List<Map> maps = new ArrayList<>();
+    private final List<Map> maps = new ArrayList<>();
 
     public Member(
             final String email,

@@ -17,6 +17,18 @@ public class Preset {
     private String name;
 
     @Embedded
+    @AttributeOverrides({
+            @AttributeOverride(name = "availableTimeSlot.startTime",
+                    column = @Column(name = "available_start_time")),
+            @AttributeOverride(name = "availableTimeSlot.endTime",
+                    column = @Column(name = "available_end_time")),
+            @AttributeOverride(name = "reservationTimeUnit.minutes",
+                    column = @Column(name = "reservation_time_unit")),
+            @AttributeOverride(name = "reservationMinimumTimeUnit.minutes",
+                    column = @Column(name = "reservation_minimum_time_unit")),
+            @AttributeOverride(name = "reservationMaximumTimeUnit.minutes",
+                    column = @Column(name = "reservation_maximum_time_unit"))
+    })
     private Setting setting;
 
     @ManyToOne(fetch = FetchType.LAZY)

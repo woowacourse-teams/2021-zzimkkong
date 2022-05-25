@@ -16,9 +16,9 @@ class PresetCreateRequestTest extends RequestTest {
     private final SettingsRequest settingsRequest = new SettingsRequest(
             BE_AVAILABLE_START_TIME,
             BE_AVAILABLE_END_TIME,
-            BE_RESERVATION_TIME_UNIT,
-            BE_RESERVATION_MINIMUM_TIME_UNIT,
-            BE_RESERVATION_MAXIMUM_TIME_UNIT,
+            BE_RESERVATION_TIME_UNIT.getMinutes(),
+            BE_RESERVATION_MINIMUM_TIME_UNIT.getMinutes(),
+            BE_RESERVATION_MAXIMUM_TIME_UNIT.getMinutes(),
             BE_RESERVATION_ENABLE,
             EnabledDayOfWeekDto.from(BE_ENABLED_DAY_OF_WEEK)
     );
