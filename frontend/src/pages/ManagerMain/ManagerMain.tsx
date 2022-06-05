@@ -3,7 +3,7 @@ import dayjs, { Dayjs } from 'dayjs';
 import React, { useEffect, useMemo, useState } from 'react';
 import { useMutation } from 'react-query';
 import { useHistory, useLocation } from 'react-router-dom';
-import { deleteMap, postSlackWebhookUrl } from 'api/managerMap';
+import { deleteMap, postNotice, postSlackWebhookUrl } from 'api/managerMap';
 import { deleteManagerReservation } from 'api/managerReservation';
 import { ReactComponent as MapEditorIcon } from 'assets/svg/map-editor.svg';
 import { ReactComponent as MenuIcon } from 'assets/svg/menu.svg';
@@ -56,6 +56,7 @@ const ManagerMain = (): JSX.Element => {
   const [selectedMapName, setSelectedMapName] = useState('');
 
   const [slackUrl, onChangeSlackUrl, setSlackUrl] = useInput();
+  const [noticeText, onChangeNoticeText, setNoticeText] = useInput();
 
   const onRequestError = (error: AxiosError<ErrorResponse>) => {
     alert(error.response?.data?.message ?? MESSAGE.MANAGER_MAIN.UNEXPECTED_GET_DATA_ERROR);
@@ -135,6 +136,16 @@ const ManagerMain = (): JSX.Element => {
       alert(
         error.response?.data.message ?? MESSAGE.MANAGER_MAIN.UNEXPECTED_SLACK_WEBHOOK_CREATE_ERROR
       );
+    },
+  });
+
+  const setMapNotice = useMutation(postNotice, {
+    onSuccess: () => {
+      alert(MESSAGE.MANAGER_MAIN.NOTICE_SET_SUCCESS);
+    },
+
+    onError: (error: AxiosError<ErrorResponse>) => {
+      alert(error.response?.data.message ?? MESSAGE.MANAGER_MAIN.UNEXPECTED_NOTICE_SET_ERROR);
     },
   });
 
@@ -251,6 +262,11 @@ const ManagerMain = (): JSX.Element => {
     event.preventDefault();
 
     if (selectedMapId === null) return;
+
+    setMapNotice.mutate({
+      mapId: selectedMapId,
+      notice: noticeText,
+    });
   };
 
   useEffect(() => {
@@ -260,13 +276,14 @@ const ManagerMain = (): JSX.Element => {
     if (isNullish(prevMapId)) {
       setSelectedMapId(maps.length ? maps[0].mapId : null);
       setSelectedMapName(maps.length ? maps[0].mapName : '');
+      setNoticeText(maps.length ? maps[0].notice ?? '' : '');
 
       return;
     }
 
     setSelectedMapId(prevMapId);
     setSelectedMapName(prevMapName);
-  }, [location.state?.mapId, maps]);
+  }, [location.state?.mapId, maps, setNoticeText]);
 
   return (
     <>
@@ -373,7 +390,14 @@ const ManagerMain = (): JSX.Element => {
           <Modal.Header>공지사항을 입력해주세요</Modal.Header>
           <Modal.Inner>
             <form onSubmit={handleSubmitNotice}>
-              <TextArea label="공지사항" rows={4} maxLength={100} autoFocus />
+              <TextArea
+                label="공지사항"
+                rows={4}
+                maxLength={100}
+                value={noticeText}
+                onChange={onChangeNoticeText}
+                autoFocus
+              />
               <Styled.ModalFooter>
                 <Button variant="text" type="button" onClick={closeModal}>
                   취소

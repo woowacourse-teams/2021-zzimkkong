@@ -42,6 +42,7 @@ export interface MapItem {
   mapDrawing: MapDrawing;
   thumbnail: string;
   sharingMapId: string;
+  notice: string | null;
 }
 
 interface SpaceSetting {
