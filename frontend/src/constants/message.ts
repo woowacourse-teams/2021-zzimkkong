@@ -42,6 +42,9 @@ const MESSAGE = {
     SLACK_WEBHOOK_CREATE_SUCCESS: 'Slack 알림이 설정되었습니다.',
     UNEXPECTED_SLACK_WEBHOOK_CREATE_ERROR:
       'Slack 알림을 설정하는데 문제가 발생했습니다. 잠시 후에 다시 시도해주세요.',
+    NOTICE_SET_SUCCESS: '공지사항을 설정했습니다.',
+    UNEXPECTED_NOTICE_SET_ERROR:
+      '공지사항을 설정하는데 문제가 발생했습니다. 잠시 후에 다시 시도해주세요.',
   },
   MANAGER_SPACE: {
     GET_UNEXPECTED_ERROR:

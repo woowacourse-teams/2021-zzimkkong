@@ -33,7 +33,7 @@ export const ButtonText = styled.span`
   margin-left: 0.25rem;
 `;
 
-export const SlackModalContainer = styled.div`
+export const ModalFooter = styled.div`
   display: flex;
   justify-content: flex-end;
   margin-top: 1.5rem;

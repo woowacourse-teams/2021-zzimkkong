@@ -3,12 +3,16 @@ import { ReactComponent as ArrowLeftIcon } from 'assets/svg/arrow-left.svg';
 import { ReactComponent as ArrowRightIcon } from 'assets/svg/arrow-right.svg';
 import { ReactComponent as CalendarIcon } from 'assets/svg/calendar.svg';
 
-export const Container = styled.div`
+interface ContainerProps {
+  hasBackground: boolean;
+}
+
+export const Container = styled.div<ContainerProps>`
   display: flex;
   justify-content: space-between;
   align-items: center;
   border-radius: 0.25rem;
-  background-color: ${({ theme }) => theme.gray[100]};
+  background-color: ${({ hasBackground, theme }) => (hasBackground ? theme.gray[100] : 'none')};
   padding: 0.75rem 0.25rem;
 `;
 

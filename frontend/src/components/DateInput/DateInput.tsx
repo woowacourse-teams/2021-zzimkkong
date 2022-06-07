@@ -6,10 +6,11 @@ import * as Styled from './DateInput.styles';
 
 export interface Props extends Omit<InputHTMLAttributes<HTMLInputElement>, 'type' | 'value'> {
   date: Dayjs;
+  hasBackground?: boolean;
   setDate: Dispatch<SetStateAction<Dayjs>>;
 }
 
-const DateInput = ({ date, setDate, ...props }: Props): JSX.Element => {
+const DateInput = ({ date, hasBackground = true, setDate, ...props }: Props): JSX.Element => {
   const onChange: ChangeEventHandler<HTMLInputElement> = (event) => {
     setDate(dayjs(event.target.value).tz());
   };
@@ -23,7 +24,7 @@ const DateInput = ({ date, setDate, ...props }: Props): JSX.Element => {
   };
 
   return (
-    <Styled.Container>
+    <Styled.Container hasBackground={hasBackground}>
       <IconButton onClick={onClickPrev}>
         <Styled.PrimaryArrowLeftIcon width="100%" height="100%" />
       </IconButton>

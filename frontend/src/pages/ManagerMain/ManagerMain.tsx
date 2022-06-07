@@ -3,10 +3,11 @@ import dayjs, { Dayjs } from 'dayjs';
 import React, { useEffect, useMemo, useState } from 'react';
 import { useMutation } from 'react-query';
 import { useHistory, useLocation } from 'react-router-dom';
-import { deleteMap, postSlackWebhookUrl } from 'api/managerMap';
+import { deleteMap, postNotice, postSlackWebhookUrl } from 'api/managerMap';
 import { deleteManagerReservation } from 'api/managerReservation';
 import { ReactComponent as MapEditorIcon } from 'assets/svg/map-editor.svg';
 import { ReactComponent as MenuIcon } from 'assets/svg/menu.svg';
+import { ReactComponent as NoticeIcon } from 'assets/svg/notice.svg';
 import { ReactComponent as SlackIcon } from 'assets/svg/slack.svg';
 import { ReactComponent as SpaceEditorIcon } from 'assets/svg/space-editor.svg';
 import Button from 'components/Button/Button';
@@ -17,6 +18,7 @@ import Input from 'components/Input/Input';
 import Layout from 'components/Layout/Layout';
 import Modal from 'components/Modal/Modal';
 import PageHeader from 'components/PageHeader/PageHeader';
+import TextArea from 'components/TextArea/TextArea';
 import MESSAGE from 'constants/message';
 import PATH, { HREF } from 'constants/path';
 import useManagerMapReservations from 'hooks/query/useManagerMapReservations';
@@ -37,6 +39,8 @@ export interface ManagerMainState {
   targetDate?: Dayjs;
 }
 
+type OpenableModal = 'slack' | 'notice';
+
 const ManagerMain = (): JSX.Element => {
   const history = useHistory();
   const location = useLocation<ManagerMainState>();
@@ -45,13 +49,14 @@ const ManagerMain = (): JSX.Element => {
   const targetDate = location.state?.targetDate;
 
   const [date, setDate] = useState(targetDate ?? dayjs().tz());
-  const [open, setOpen] = useState(false);
-  const [slackModalOpen, setSlackModalOpen] = useState(false);
+  const [mapDrawerOpen, setMapDrawerOpen] = useState(false);
+  const [openedModal, setOpenedModal] = useState<OpenableModal | null>(null);
 
   const [selectedMapId, setSelectedMapId] = useState<number | null>(mapId ?? null);
   const [selectedMapName, setSelectedMapName] = useState('');
 
   const [slackUrl, onChangeSlackUrl, setSlackUrl] = useInput();
+  const [noticeText, onChangeNoticeText, setNoticeText] = useInput();
 
   const onRequestError = (error: AxiosError<ErrorResponse>) => {
     alert(error.response?.data?.message ?? MESSAGE.MANAGER_MAIN.UNEXPECTED_GET_DATA_ERROR);
@@ -125,13 +130,23 @@ const ManagerMain = (): JSX.Element => {
     onSuccess: () => {
       alert(MESSAGE.MANAGER_MAIN.SLACK_WEBHOOK_CREATE_SUCCESS);
       getSlackWebhookUrl.refetch();
-      setSlackModalOpen(false);
+      setOpenedModal('slack');
     },
 
     onError: (error: AxiosError<ErrorResponse>) => {
       alert(
         error.response?.data.message ?? MESSAGE.MANAGER_MAIN.UNEXPECTED_SLACK_WEBHOOK_CREATE_ERROR
       );
+    },
+  });
+
+  const setMapNotice = useMutation(postNotice, {
+    onSuccess: () => {
+      alert(MESSAGE.MANAGER_MAIN.NOTICE_SET_SUCCESS);
+    },
+
+    onError: (error: AxiosError<ErrorResponse>) => {
+      alert(error.response?.data.message ?? MESSAGE.MANAGER_MAIN.UNEXPECTED_NOTICE_SET_ERROR);
     },
   });
 
@@ -177,11 +192,15 @@ const ManagerMain = (): JSX.Element => {
   };
 
   const handleOpenDrawer = () => {
-    setOpen(true);
+    setMapDrawerOpen(true);
   };
 
   const handleCloseDrawer = () => {
-    setOpen(false);
+    setMapDrawerOpen(false);
+  };
+
+  const closeModal = () => {
+    setOpenedModal(null);
   };
 
   const handleSelectMap = (mapId: number, mapName: string) => {
@@ -240,6 +259,17 @@ const ManagerMain = (): JSX.Element => {
     });
   };
 
+  const handleSubmitNotice = (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+
+    if (selectedMapId === null) return;
+
+    setMapNotice.mutate({
+      mapId: selectedMapId,
+      notice: noticeText,
+    });
+  };
+
   useEffect(() => {
     const prevMapId = location.state?.mapId ?? null;
     const prevMapName = maps.find(({ mapId }) => mapId === prevMapId)?.mapName ?? '';
@@ -247,13 +277,14 @@ const ManagerMain = (): JSX.Element => {
     if (isNullish(prevMapId)) {
       setSelectedMapId(maps.length ? maps[0].mapId : null);
       setSelectedMapName(maps.length ? maps[0].mapName : '');
+      setNoticeText(maps.length ? maps[0].notice ?? '' : '');
 
       return;
     }
 
     setSelectedMapId(prevMapId);
     setSelectedMapName(prevMapName);
-  }, [location.state?.mapId, maps]);
+  }, [location.state?.mapId, maps, setNoticeText]);
 
   return (
     <>
@@ -270,9 +301,16 @@ const ManagerMain = (): JSX.Element => {
             selectedMapId !== null && (
               <>
                 <Styled.RightIconButton
+                  text="공지사항"
+                  size="small"
+                  onClick={() => setOpenedModal('notice')}
+                >
+                  <NoticeIcon width="100%" height="100%" />
+                </Styled.RightIconButton>
+                <Styled.RightIconButton
                   text="알림 설정"
                   size="small"
-                  onClick={() => setSlackModalOpen(true)}
+                  onClick={() => setOpenedModal('slack')}
                 >
                   <SlackIcon width="100%" height="100%" />
                 </Styled.RightIconButton>
@@ -318,19 +356,15 @@ const ManagerMain = (): JSX.Element => {
           selectedMapId={selectedMapId}
           organization={organization}
           maps={maps}
-          open={open}
+          open={mapDrawerOpen}
           onCloseDrawer={handleCloseDrawer}
           onSelectMap={handleSelectMap}
           onDeleteMap={handleDeleteMap}
         />
       )}
 
-      {slackModalOpen && (
-        <Modal
-          open={slackModalOpen}
-          isClosableDimmer={true}
-          onClose={() => setSlackModalOpen(false)}
-        >
+      {openedModal === 'slack' && (
+        <Modal open={openedModal === 'slack'} isClosableDimmer={true} onClose={closeModal}>
           <Modal.Header>알림을 받을 슬랙 웹훅 URL을 입력해주세요</Modal.Header>
           <Modal.Inner>
             <form onSubmit={handleSubmitSlackUrl}>
@@ -340,14 +374,37 @@ const ManagerMain = (): JSX.Element => {
                 value={slackUrl}
                 onChange={onChangeSlackUrl}
                 autoFocus
-                required
               />
-              <Styled.SlackModalContainer>
-                <Button variant="text" type="button" onClick={() => setSlackModalOpen(false)}>
+              <Styled.ModalFooter>
+                <Button variant="text" type="button" onClick={closeModal}>
                   취소
                 </Button>
                 <Button variant="text">확인</Button>
-              </Styled.SlackModalContainer>
+              </Styled.ModalFooter>
+            </form>
+          </Modal.Inner>
+        </Modal>
+      )}
+
+      {openedModal === 'notice' && (
+        <Modal open={openedModal === 'notice'} isClosableDimmer={true} onClose={closeModal}>
+          <Modal.Header>공지사항을 입력해주세요</Modal.Header>
+          <Modal.Inner>
+            <form onSubmit={handleSubmitNotice}>
+              <TextArea
+                label="공지사항"
+                rows={4}
+                maxLength={100}
+                value={noticeText}
+                onChange={onChangeNoticeText}
+                autoFocus
+              />
+              <Styled.ModalFooter>
+                <Button variant="text" type="button" onClick={closeModal}>
+                  취소
+                </Button>
+                <Button variant="text">확인</Button>
+              </Styled.ModalFooter>
             </form>
           </Modal.Inner>
         </Modal>

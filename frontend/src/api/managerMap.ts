@@ -37,6 +37,11 @@ interface PostSlackWebhookURLParams {
   slackUrl: string;
 }
 
+interface PostNotice {
+  mapId: number;
+  notice: string;
+}
+
 export const queryManagerMaps: QueryFunction<AxiosResponse<QueryManagerMapsSuccess>> = () =>
   api.get('/managers/maps');
 
@@ -83,3 +88,6 @@ export const postSlackWebhookUrl = ({
   slackUrl,
 }: PostSlackWebhookURLParams): Promise<AxiosResponse<never>> =>
   api.post(`/managers/maps/${mapId}/slack`, { slackUrl });
+
+export const postNotice = ({ mapId, notice }: PostNotice): Promise<AxiosResponse<never>> =>
+  api.post(`/managers/maps/${mapId}/notice`, { notice });

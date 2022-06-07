@@ -2,10 +2,14 @@ import { useState, ChangeEventHandler, SetStateAction, Dispatch } from 'react';
 
 const useInput = (
   initialValue = ''
-): [typeof value, ChangeEventHandler<HTMLInputElement>, Dispatch<SetStateAction<typeof value>>] => {
+): [
+  typeof value,
+  ChangeEventHandler<HTMLInputElement | HTMLTextAreaElement>,
+  Dispatch<SetStateAction<typeof value>>
+] => {
   const [value, setValue] = useState(initialValue);
 
-  const onChange: ChangeEventHandler<HTMLInputElement> = (event) => {
+  const onChange: ChangeEventHandler<HTMLInputElement | HTMLTextAreaElement> = (event) => {
     setValue(event.target.value);
   };
 
