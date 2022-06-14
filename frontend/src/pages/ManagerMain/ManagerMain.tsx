@@ -128,9 +128,10 @@ const ManagerMain = (): JSX.Element => {
 
   const createSlackWebhookUrl = useMutation(postSlackWebhookUrl, {
     onSuccess: () => {
-      alert(MESSAGE.MANAGER_MAIN.SLACK_WEBHOOK_CREATE_SUCCESS);
       getSlackWebhookUrl.refetch();
-      setOpenedModal('slack');
+      alert(MESSAGE.MANAGER_MAIN.SLACK_WEBHOOK_CREATE_SUCCESS);
+
+      setOpenedModal(null);
     },
 
     onError: (error: AxiosError<ErrorResponse>) => {
@@ -143,6 +144,8 @@ const ManagerMain = (): JSX.Element => {
   const setMapNotice = useMutation(postNotice, {
     onSuccess: () => {
       alert(MESSAGE.MANAGER_MAIN.NOTICE_SET_SUCCESS);
+
+      setOpenedModal(null);
     },
 
     onError: (error: AxiosError<ErrorResponse>) => {
