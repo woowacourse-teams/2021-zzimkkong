@@ -4,7 +4,7 @@ import com.woowacourse.zzimkkong.dto.map.NoticeCreateRequest;
 import org.junit.jupiter.api.Test;
 import org.springframework.context.annotation.Description;
 
-import static com.woowacourse.zzimkkong.dto.ValidatorMessage.DESCRIPTION_MESSAGE;
+import static com.woowacourse.zzimkkong.dto.ValidatorMessage.NOTICE_MESSAGE;
 import static org.assertj.core.api.Assertions.assertThat;
 
 class NoticeCreateRequestTest extends RequestTest {
@@ -15,7 +15,7 @@ class NoticeCreateRequestTest extends RequestTest {
                 "iamtenwordiamtenwordiamtenwordiamtenwordiamtenwordiamtenwordiamtenwordiamtenwordiamtenwordiamtenword1");
 
         assertThat(getConstraintViolations(noticeCreateRequest).stream()
-                .anyMatch(violation -> violation.getMessage().equals(DESCRIPTION_MESSAGE)))
+                .anyMatch(violation -> violation.getMessage().equals(NOTICE_MESSAGE)))
                 .isTrue();
     }
 }
