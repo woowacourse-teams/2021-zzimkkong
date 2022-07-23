@@ -231,6 +231,7 @@ public class ReservationService {
         }
 
         // TODO: 추후 N부제 -> 예약 유도로 넘어갈 때 이부분이 제거되어야함 - 여러 조건에 걸치면 유도하는 식으로 로직이 변경되어야 하기 때문
+        // TODO: exception message test?
         if (relevantSettings.haveMultipleSettings()) {
             throw new MultipleSettingsException(relevantSettings);
         }

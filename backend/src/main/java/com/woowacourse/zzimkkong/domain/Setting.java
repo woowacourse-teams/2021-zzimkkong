@@ -72,10 +72,6 @@ public class Setting {
         this.enabledDayOfWeek = enabledDayOfWeek;
         this.space = space;
 
-        if (space != null) {
-            space.addSetting(this);
-        }
-
         validateSetting();
     }
 

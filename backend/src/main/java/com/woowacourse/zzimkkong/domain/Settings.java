@@ -1,6 +1,6 @@
 package com.woowacourse.zzimkkong.domain;
 
-import com.woowacourse.zzimkkong.dto.space.SpaceCreateUpdateRequest;
+import com.woowacourse.zzimkkong.dto.space.SettingRequest;
 import com.woowacourse.zzimkkong.exception.setting.SettingConflictException;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -45,9 +45,8 @@ public class Settings {
         }
     }
 
-    public static Settings of(final Space space, final SpaceCreateUpdateRequest spaceCreateUpdateRequest) {
-        List<Setting> settings = spaceCreateUpdateRequest.getSettings()
-                .stream()
+    public static Settings from(final List<SettingRequest> settingRequests) {
+        List<Setting> settings = settingRequests.stream()
                 .map(settingRequest -> Setting.builder()
                         .settingTimeSlot(
                                 TimeSlot.of(
@@ -57,7 +56,6 @@ public class Settings {
                         .reservationMinimumTimeUnit(TimeUnit.from(settingRequest.getReservationMinimumTimeUnit()))
                         .reservationMaximumTimeUnit(TimeUnit.from(settingRequest.getReservationMaximumTimeUnit()))
                         .enabledDayOfWeek(settingRequest.enabledDayOfWeekAsString())
-                        .space(space)
                         .build())
                 .collect(Collectors.toList());
 
@@ -77,7 +75,7 @@ public class Settings {
     }
 
     public boolean cannotAcceptDueToAvailableTime(final TimeSlot timeSlot) {
-        return getAvailableTimeSlots().stream().anyMatch(timeSlot::isNotWithin);
+        return getAvailableTimeSlots().stream().allMatch(timeSlot::isNotWithin);
     }
 
     public boolean isEmpty() {
@@ -125,18 +123,23 @@ public class Settings {
         List<TimeSlot> availableTimeSlots = new ArrayList<>();
         LocalTime candidateStartTime = settings.get(0).getSettingStartTime();
         LocalTime candidateEndTime = settings.get(0).getSettingEndTime();
+        TimeSlot candidateAvailableTimeSlot = TimeSlot.of(candidateStartTime, candidateEndTime);
+        boolean onExtension;
         for (int i = 1; i < settings.size(); i++) {
-            TimeSlot candidateAvailableTimeSlot = TimeSlot.of(candidateStartTime, candidateEndTime);
             TimeSlot currentAvailableTimeSlot = settings.get(i).getSettingTimeSlot();
 
             if (candidateAvailableTimeSlot.isExtendableWith(currentAvailableTimeSlot)) {
-                candidateEndTime = currentAvailableTimeSlot.getStartTime();
+                onExtension = true;
             } else {
                 availableTimeSlots.add(candidateAvailableTimeSlot);
-
-                candidateStartTime = currentAvailableTimeSlot.getStartTime();
-                candidateEndTime = currentAvailableTimeSlot.getEndTime();
+                onExtension = false;
             }
+
+            if (!onExtension) {
+                candidateStartTime = currentAvailableTimeSlot.getStartTime();
+            }
+            candidateEndTime = currentAvailableTimeSlot.getEndTime();
+            candidateAvailableTimeSlot = TimeSlot.of(candidateStartTime, candidateEndTime);
 
             if (i == settings.size() - 1) {
                 availableTimeSlots.add(TimeSlot.of(candidateStartTime, candidateEndTime));
@@ -144,6 +147,14 @@ public class Settings {
         }
 
         return availableTimeSlots;
+    }
+
+    public void addAll(final List<Setting> newSettings) {
+        settings.addAll(newSettings);
+    }
+
+    public void clear() {
+        settings.clear();
     }
 
     @Override
