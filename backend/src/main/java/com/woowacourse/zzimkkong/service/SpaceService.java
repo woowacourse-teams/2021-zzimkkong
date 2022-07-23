@@ -9,6 +9,7 @@ import com.woowacourse.zzimkkong.exception.space.NoSuchSpaceException;
 import com.woowacourse.zzimkkong.exception.space.ReservationExistOnSpaceException;
 import com.woowacourse.zzimkkong.repository.MapRepository;
 import com.woowacourse.zzimkkong.repository.ReservationRepository;
+import com.woowacourse.zzimkkong.repository.SettingRepository;
 import com.woowacourse.zzimkkong.repository.SpaceRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -22,14 +23,17 @@ public class SpaceService {
     private final MapRepository maps;
     private final SpaceRepository spaces;
     private final ReservationRepository reservations;
+    private final SettingRepository settings;
 
     public SpaceService(
             final MapRepository maps,
             final SpaceRepository spaces,
-            final ReservationRepository reservations) {
+            final ReservationRepository reservations,
+            final SettingRepository settings) {
         this.maps = maps;
         this.spaces = spaces;
         this.reservations = reservations;
+        this.settings = settings;
     }
 
     public SpaceCreateResponse saveSpace(
@@ -40,16 +44,18 @@ public class SpaceService {
                 .orElseThrow(NoSuchMapException::new);
         validateManagerOfMap(map, loginEmailDto.getEmail());
 
-        Setting setting = getSetting(spaceCreateUpdateRequest);
         Space space = Space.builder()
                 .name(spaceCreateUpdateRequest.getName())
                 .color(spaceCreateUpdateRequest.getColor())
                 .description(spaceCreateUpdateRequest.getDescription())
                 .area(spaceCreateUpdateRequest.getArea())
-                .setting(setting)
+                .reservationEnable(spaceCreateUpdateRequest.getReservationEnable())
                 .map(map)
                 .build();
         Space saveSpace = spaces.save(space);
+
+        Settings spaceSettings = Settings.of(saveSpace, spaceCreateUpdateRequest);
+        settings.saveAll(spaceSettings.getSettings());
 
         map.updateThumbnail(spaceCreateUpdateRequest.getThumbnail());
 
@@ -104,16 +110,21 @@ public class SpaceService {
         Space space = map.findSpaceById(spaceId)
                 .orElseThrow(NoSuchSpaceException::new);
 
-        Setting setting = getSetting(spaceCreateUpdateRequest);
         Space updateSpace = Space.builder()
                 .name(spaceCreateUpdateRequest.getName())
                 .color(spaceCreateUpdateRequest.getColor())
                 .description(spaceCreateUpdateRequest.getDescription())
                 .area(spaceCreateUpdateRequest.getArea())
-                .setting(setting)
+                .reservationEnable(spaceCreateUpdateRequest.getReservationEnable())
                 .build();
+        Settings updateSpaceSettings = Settings.of(updateSpace, spaceCreateUpdateRequest);
 
         space.update(updateSpace);
+
+        //TODO: 기존 settings delete 알아서 잘 되는지 테스트 해보기!
+        // delete 하나의 쿼리로 날라가는지 확인 할 것
+        // update 할 때, orphanRemove true에 의해서 delete 될 것임
+        settings.saveAll(updateSpaceSettings.getSettings());
 
         map.updateThumbnail(spaceCreateUpdateRequest.getThumbnail());
     }
@@ -135,22 +146,6 @@ public class SpaceService {
         spaces.delete(space);
 
         map.updateThumbnail(spaceDeleteRequest.getThumbnail());
-    }
-
-    private Setting getSetting(final SpaceCreateUpdateRequest spaceCreateUpdateRequest) {
-        SettingsRequest settingsRequest = spaceCreateUpdateRequest.getSettingsRequest();
-
-        return Setting.builder()
-                .availableTimeSlot(
-                        TimeSlot.of(
-                                settingsRequest.getAvailableStartTime(),
-                                settingsRequest.getAvailableEndTime()))
-                .reservationTimeUnit(TimeUnit.from(settingsRequest.getReservationTimeUnit()))
-                .reservationMinimumTimeUnit(TimeUnit.from(settingsRequest.getReservationMinimumTimeUnit()))
-                .reservationMaximumTimeUnit(TimeUnit.from(settingsRequest.getReservationMaximumTimeUnit()))
-                .reservationEnable(settingsRequest.getReservationEnable())
-                .enabledDayOfWeek(settingsRequest.enabledDayOfWeekAsString())
-                .build();
     }
 
     private void validateReservationExistence(final Long spaceId) {

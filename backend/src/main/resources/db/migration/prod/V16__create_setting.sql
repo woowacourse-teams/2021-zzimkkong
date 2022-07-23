@@ -38,6 +38,8 @@ SELECT id,
 FROM space;
 
 -- DROP Columns
+ALTER TABLE space DROP COLUMN available_start_time;
+ALTER TABLE space DROP COLUMN available_end_time;
 ALTER TABLE space DROP COLUMN enabled_day_of_week;
 ALTER TABLE space DROP COLUMN reservation_time_unit;
 ALTER TABLE space DROP COLUMN reservation_minimum_time_unit;

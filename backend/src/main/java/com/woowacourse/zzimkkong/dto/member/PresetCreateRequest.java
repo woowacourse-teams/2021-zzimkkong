@@ -1,6 +1,6 @@
 package com.woowacourse.zzimkkong.dto.member;
 
-import com.woowacourse.zzimkkong.dto.space.SettingsRequest;
+import com.woowacourse.zzimkkong.dto.space.SettingRequest;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -18,10 +18,10 @@ public class PresetCreateRequest {
     private String name;
 
     @Valid
-    private SettingsRequest settingsRequest;
+    private SettingRequest preset;
 
-    public PresetCreateRequest(final String name, final SettingsRequest settingsRequest) {
+    public PresetCreateRequest(final String name, final SettingRequest preset) {
         this.name = name;
-        this.settingsRequest = settingsRequest;
+        this.preset = preset;
     }
 }

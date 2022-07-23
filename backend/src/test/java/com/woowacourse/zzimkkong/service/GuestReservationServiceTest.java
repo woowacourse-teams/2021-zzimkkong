@@ -66,13 +66,12 @@ class GuestReservationServiceTest extends ServiceTest {
         luther = new Map(1L, LUTHER_NAME, MAP_DRAWING_DATA, MAP_SVG, pobi);
         
         Setting beSetting = Setting.builder()
-                .availableTimeSlot(TimeSlot.of(
+                .settingTimeSlot(TimeSlot.of(
                         BE_AVAILABLE_START_TIME,
                         BE_AVAILABLE_END_TIME))
                 .reservationTimeUnit(BE_RESERVATION_TIME_UNIT)
                 .reservationMinimumTimeUnit(BE_RESERVATION_MINIMUM_TIME_UNIT)
                 .reservationMaximumTimeUnit(BE_RESERVATION_MAXIMUM_TIME_UNIT)
-                .reservationEnable(BE_RESERVATION_ENABLE)
                 .enabledDayOfWeek(BE_ENABLED_DAY_OF_WEEK)
                 .build();
 
@@ -82,17 +81,17 @@ class GuestReservationServiceTest extends ServiceTest {
                 .map(luther)
                 .description(BE_DESCRIPTION)
                 .area(SPACE_DRAWING)
-                .setting(beSetting)
+                .reservationEnable(BE_RESERVATION_ENABLE)
+                .spaceSettings(new Settings(List.of(beSetting)))
                 .build();
 
         Setting feSetting = Setting.builder()
-                .availableTimeSlot(TimeSlot.of(
+                .settingTimeSlot(TimeSlot.of(
                         FE_AVAILABLE_START_TIME,
                         FE_AVAILABLE_END_TIME))
                 .reservationTimeUnit(FE_RESERVATION_TIME_UNIT)
                 .reservationMinimumTimeUnit(FE_RESERVATION_MINIMUM_TIME_UNIT)
                 .reservationMaximumTimeUnit(FE_RESERVATION_MAXIMUM_TIME_UNIT)
-                .reservationEnable(FE_RESERVATION_ENABLE)
                 .enabledDayOfWeek(FE_ENABLED_DAY_OF_WEEK)
                 .build();
 
@@ -103,7 +102,8 @@ class GuestReservationServiceTest extends ServiceTest {
                 .map(luther)
                 .description(FE_DESCRIPTION)
                 .area(SPACE_DRAWING)
-                .setting(feSetting)
+                .reservationEnable(FE_RESERVATION_ENABLE)
+                .spaceSettings(new Settings(List.of(feSetting)))
                 .build();
 
         beAmZeroOne = Reservation.builder()
@@ -368,13 +368,12 @@ class GuestReservationServiceTest extends ServiceTest {
     void saveReservationUnable() {
         // given, when
         Setting setting = Setting.builder()
-                .availableTimeSlot(TimeSlot.of(
+                .settingTimeSlot(TimeSlot.of(
                         LocalTime.of(0, 0),
                         LocalTime.of(18, 0)))
                 .reservationTimeUnit(TimeUnit.from(10))
                 .reservationMinimumTimeUnit(TimeUnit.from(10))
                 .reservationMaximumTimeUnit(TimeUnit.from(120))
-                .reservationEnable(false)
                 .enabledDayOfWeek(null)
                 .build();
 
@@ -385,7 +384,8 @@ class GuestReservationServiceTest extends ServiceTest {
                 .map(luther)
                 .description("시니컬하네")
                 .area(SPACE_DRAWING)
-                .setting(setting)
+                .reservationEnable(false)
+                .spaceSettings(new Settings(List.of(setting)))
                 .build();
 
         given(maps.findByIdFetch(anyLong()))
@@ -409,13 +409,12 @@ class GuestReservationServiceTest extends ServiceTest {
     void saveIllegalDayOfWeek() {
         // given, when
         Setting setting = Setting.builder()
-                .availableTimeSlot(TimeSlot.of(
+                .settingTimeSlot(TimeSlot.of(
                         LocalTime.of(0, 0),
                         LocalTime.of(18, 0)))
                 .reservationTimeUnit(TimeUnit.from(10))
                 .reservationMinimumTimeUnit(TimeUnit.from(10))
                 .reservationMaximumTimeUnit(TimeUnit.from(120))
-                .reservationEnable(true)
                 .enabledDayOfWeek(THE_DAY_AFTER_TOMORROW.plusDays(1L).getDayOfWeek().name())
                 .build();
 
@@ -426,7 +425,8 @@ class GuestReservationServiceTest extends ServiceTest {
                 .map(luther)
                 .description("시니컬하네")
                 .area(SPACE_DRAWING)
-                .setting(setting)
+                .reservationEnable(true)
+                .spaceSettings(new Settings(List.of(setting)))
                 .build();
 
         given(maps.findByIdFetch(anyLong()))
@@ -1058,13 +1058,12 @@ class GuestReservationServiceTest extends ServiceTest {
     void updateReservationUnable() {
         // given, when
         Setting setting = Setting.builder()
-                .availableTimeSlot(TimeSlot.of(
+                .settingTimeSlot(TimeSlot.of(
                         LocalTime.of(0, 0),
                         LocalTime.of(18, 0)))
                 .reservationTimeUnit(TimeUnit.from(10))
                 .reservationMinimumTimeUnit(TimeUnit.from(10))
                 .reservationMaximumTimeUnit(TimeUnit.from(120))
-                .reservationEnable(false)
                 .enabledDayOfWeek(null)
                 .build();
 
@@ -1075,7 +1074,8 @@ class GuestReservationServiceTest extends ServiceTest {
                 .map(luther)
                 .description("시니컬하네")
                 .area(SPACE_DRAWING)
-                .setting(setting)
+                .reservationEnable(false)
+                .spaceSettings(new Settings(List.of(setting)))
                 .build();
 
         given(maps.findByIdFetch(anyLong()))
@@ -1103,13 +1103,12 @@ class GuestReservationServiceTest extends ServiceTest {
     void updateIllegalDayOfWeek() {
         // given, when
         Setting setting = Setting.builder()
-                .availableTimeSlot(TimeSlot.of(
+                .settingTimeSlot(TimeSlot.of(
                         LocalTime.of(0, 0),
                         LocalTime.of(18, 0)))
                 .reservationTimeUnit(TimeUnit.from(10))
                 .reservationMinimumTimeUnit(TimeUnit.from(10))
                 .reservationMaximumTimeUnit(TimeUnit.from(120))
-                .reservationEnable(true)
                 .enabledDayOfWeek(THE_DAY_AFTER_TOMORROW.plusDays(1L).getDayOfWeek().name())
                 .build();
 
@@ -1120,7 +1119,8 @@ class GuestReservationServiceTest extends ServiceTest {
                 .map(luther)
                 .description("시니컬하네")
                 .area(SPACE_DRAWING)
-                .setting(setting)
+                .reservationEnable(true)
+                .spaceSettings(new Settings(List.of(setting)))
                 .build();
 
         given(maps.findByIdFetch(anyLong()))
