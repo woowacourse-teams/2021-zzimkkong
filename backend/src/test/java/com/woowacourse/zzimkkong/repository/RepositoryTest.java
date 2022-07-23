@@ -21,4 +21,7 @@ class RepositoryTest {
 
     @Autowired
     protected MapRepository maps;
+
+    @Autowired
+    protected SettingRepository settings;
 }

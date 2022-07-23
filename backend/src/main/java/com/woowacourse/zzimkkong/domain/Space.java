@@ -10,6 +10,7 @@ import javax.persistence.*;
 import java.time.DayOfWeek;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Getter
 @Builder
@@ -68,12 +69,14 @@ public class Space {
         this.description = description;
         this.area = area;
         this.reservationEnable = reservationEnable;
-        this.spaceSettings = spaceSettings;
+        this.spaceSettings = new Settings();
         this.map = map;
         this.reservations = reservations;
 
-        if (map != null) {
-            map.addSpace(this);
+        updateSpaceSettings(spaceSettings);
+
+        if (this.map != null) {
+            this.map.addSpace(this);
         }
     }
 
@@ -83,7 +86,24 @@ public class Space {
         this.description = updateSpace.description;
         this.area = updateSpace.area;
         this.reservationEnable = updateSpace.reservationEnable;
-        this.spaceSettings = updateSpace.spaceSettings;
+
+        updateSpaceSettings(updateSpace.getSpaceSettings());
+    }
+
+    private void updateSpaceSettings(final Settings settings) {
+        List<Setting> newSettings = settings.getSettings()
+                .stream()
+                .map(setting -> Setting.builder()
+                        .space(this)
+                        .settingTimeSlot(setting.getSettingTimeSlot())
+                        .reservationTimeUnit(setting.getReservationTimeUnit())
+                        .reservationMinimumTimeUnit(setting.getReservationMinimumTimeUnit())
+                        .reservationMaximumTimeUnit(setting.getReservationMaximumTimeUnit())
+                        .enabledDayOfWeek(setting.getEnabledDayOfWeek())
+                        .build())
+                .collect(Collectors.toList());
+        this.spaceSettings.clear();
+        this.spaceSettings.addAll(newSettings);
     }
 
     public boolean isUnableToReserve() {

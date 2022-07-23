@@ -4,10 +4,12 @@ import com.woowacourse.zzimkkong.domain.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 
+import javax.persistence.EntityManager;
 import java.util.List;
 
 import static com.woowacourse.zzimkkong.Constants.*;
@@ -17,13 +19,14 @@ class SpaceRepositoryTest extends RepositoryTest {
     private Map luther;
     private Space be;
     private Space fe;
+    private Setting beSetting;
 
     @BeforeEach
     void setUp() {
         Member pobi = new Member(EMAIL, PW, ORGANIZATION);
         luther = new Map(LUTHER_NAME, MAP_DRAWING_DATA, MAP_SVG, pobi);
 
-        Setting beSetting = Setting.builder()
+        beSetting = Setting.builder()
                 .settingTimeSlot(TimeSlot.of(
                         BE_AVAILABLE_START_TIME,
                         BE_AVAILABLE_END_TIME))

@@ -1,12 +1,10 @@
 package com.woowacourse.zzimkkong.dto.space;
 
-import com.woowacourse.zzimkkong.domain.Setting;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import javax.validation.Valid;
 import javax.validation.constraints.NotBlank;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 

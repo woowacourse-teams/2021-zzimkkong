@@ -44,18 +44,17 @@ public class SpaceService {
                 .orElseThrow(NoSuchMapException::new);
         validateManagerOfMap(map, loginEmailDto.getEmail());
 
+        Settings settings = Settings.from(spaceCreateUpdateRequest.getSettings());
         Space space = Space.builder()
                 .name(spaceCreateUpdateRequest.getName())
                 .color(spaceCreateUpdateRequest.getColor())
                 .description(spaceCreateUpdateRequest.getDescription())
                 .area(spaceCreateUpdateRequest.getArea())
                 .reservationEnable(spaceCreateUpdateRequest.getReservationEnable())
+                .spaceSettings(settings)
                 .map(map)
                 .build();
         Space saveSpace = spaces.save(space);
-
-        Settings spaceSettings = Settings.of(saveSpace, spaceCreateUpdateRequest);
-        settings.saveAll(spaceSettings.getSettings());
 
         map.updateThumbnail(spaceCreateUpdateRequest.getThumbnail());
 
@@ -110,21 +109,17 @@ public class SpaceService {
         Space space = map.findSpaceById(spaceId)
                 .orElseThrow(NoSuchSpaceException::new);
 
+        Settings updateSettings = Settings.from(spaceCreateUpdateRequest.getSettings());
         Space updateSpace = Space.builder()
                 .name(spaceCreateUpdateRequest.getName())
                 .color(spaceCreateUpdateRequest.getColor())
                 .description(spaceCreateUpdateRequest.getDescription())
                 .area(spaceCreateUpdateRequest.getArea())
                 .reservationEnable(spaceCreateUpdateRequest.getReservationEnable())
+                .spaceSettings(updateSettings)
                 .build();
-        Settings updateSpaceSettings = Settings.of(updateSpace, spaceCreateUpdateRequest);
 
         space.update(updateSpace);
-
-        //TODO: 기존 settings delete 알아서 잘 되는지 테스트 해보기!
-        // delete 하나의 쿼리로 날라가는지 확인 할 것
-        // update 할 때, orphanRemove true에 의해서 delete 될 것임
-        settings.saveAll(updateSpaceSettings.getSettings());
 
         map.updateThumbnail(spaceCreateUpdateRequest.getThumbnail());
     }
