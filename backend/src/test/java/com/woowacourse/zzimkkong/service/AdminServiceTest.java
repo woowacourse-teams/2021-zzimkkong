@@ -109,13 +109,12 @@ class AdminServiceTest extends ServiceTest {
         //given
         Map luther = new Map(LUTHER_NAME, MAP_DRAWING_DATA, MAP_SVG, pobi);
         Setting beSetting = Setting.builder()
-                .availableTimeSlot(TimeSlot.of(
+                .settingTimeSlot(TimeSlot.of(
                         BE_AVAILABLE_START_TIME,
                         BE_AVAILABLE_END_TIME))
                 .reservationTimeUnit(BE_RESERVATION_TIME_UNIT)
                 .reservationMinimumTimeUnit(BE_RESERVATION_MINIMUM_TIME_UNIT)
                 .reservationMaximumTimeUnit(BE_RESERVATION_MAXIMUM_TIME_UNIT)
-                .reservationEnable(BE_RESERVATION_ENABLE)
                 .enabledDayOfWeek(BE_ENABLED_DAY_OF_WEEK)
                 .build();
 
@@ -125,7 +124,8 @@ class AdminServiceTest extends ServiceTest {
                 .map(luther)
                 .description(BE_DESCRIPTION)
                 .area(SPACE_DRAWING)
-                .setting(beSetting)
+                .reservationEnable(BE_RESERVATION_ENABLE)
+                .spaceSettings(new Settings(List.of(beSetting)))
                 .build();
 
         PageRequest pageRequest = PageRequest.of(0, 20, Sort.unsorted());
@@ -151,13 +151,12 @@ class AdminServiceTest extends ServiceTest {
         //given
         Map luther = new Map(1L, LUTHER_NAME, MAP_DRAWING_DATA, MAP_SVG, pobi);
         Setting beSetting = Setting.builder()
-                .availableTimeSlot(TimeSlot.of(
+                .settingTimeSlot(TimeSlot.of(
                         BE_AVAILABLE_START_TIME,
                         BE_AVAILABLE_END_TIME))
                 .reservationTimeUnit(BE_RESERVATION_TIME_UNIT)
                 .reservationMinimumTimeUnit(BE_RESERVATION_MINIMUM_TIME_UNIT)
                 .reservationMaximumTimeUnit(BE_RESERVATION_MAXIMUM_TIME_UNIT)
-                .reservationEnable(BE_RESERVATION_ENABLE)
                 .enabledDayOfWeek(BE_ENABLED_DAY_OF_WEEK)
                 .build();
 
@@ -167,7 +166,8 @@ class AdminServiceTest extends ServiceTest {
                 .map(luther)
                 .description(BE_DESCRIPTION)
                 .area(SPACE_DRAWING)
-                .setting(beSetting)
+                .reservationEnable(BE_RESERVATION_ENABLE)
+                .spaceSettings(new Settings(List.of(beSetting)))
                 .build();
 
         Reservation beAmZeroOne = Reservation.builder()

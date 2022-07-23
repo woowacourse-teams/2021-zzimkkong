@@ -28,13 +28,12 @@ class SpaceServiceTest extends ServiceTest {
     @Autowired
     private SpaceService spaceService;
 
-    private final SettingsRequest settingsRequest = new SettingsRequest(
+    private final SettingRequest settingRequest = new SettingRequest(
             BE_AVAILABLE_START_TIME,
             BE_AVAILABLE_END_TIME,
             BE_RESERVATION_TIME_UNIT.getMinutes(),
             BE_RESERVATION_MINIMUM_TIME_UNIT.getMinutes(),
             BE_RESERVATION_MAXIMUM_TIME_UNIT.getMinutes(),
-            BE_RESERVATION_ENABLE,
             EnabledDayOfWeekDto.from(BE_ENABLED_DAY_OF_WEEK)
     );
 
@@ -43,8 +42,9 @@ class SpaceServiceTest extends ServiceTest {
             BE_COLOR,
             BE_DESCRIPTION,
             SPACE_DRAWING,
-            settingsRequest,
-            MAP_SVG
+            MAP_SVG,
+            BE_RESERVATION_ENABLE,
+            List.of(settingRequest)
     );
 
     private final SpaceCreateUpdateRequest updateSpaceCreateUpdateRequest = new SpaceCreateUpdateRequest(
@@ -52,8 +52,9 @@ class SpaceServiceTest extends ServiceTest {
             "#FFCCE5",
             "새로바뀐집",
             SPACE_DRAWING,
-            settingsRequest,
-            MAP_SVG
+            MAP_SVG,
+            BE_RESERVATION_ENABLE,
+            List.of(settingRequest)
     );
 
     private Member pobi;
@@ -78,13 +79,12 @@ class SpaceServiceTest extends ServiceTest {
         luther = new Map(1L, LUTHER_NAME, MAP_DRAWING_DATA, MAP_SVG, pobi);
 
         Setting beSetting = Setting.builder()
-                .availableTimeSlot(TimeSlot.of(
+                .settingTimeSlot(TimeSlot.of(
                         BE_AVAILABLE_START_TIME,
                         BE_AVAILABLE_END_TIME))
                 .reservationTimeUnit(BE_RESERVATION_TIME_UNIT)
                 .reservationMinimumTimeUnit(BE_RESERVATION_MINIMUM_TIME_UNIT)
                 .reservationMaximumTimeUnit(BE_RESERVATION_MAXIMUM_TIME_UNIT)
-                .reservationEnable(BE_RESERVATION_ENABLE)
                 .enabledDayOfWeek(BE_ENABLED_DAY_OF_WEEK)
                 .build();
 
@@ -94,17 +94,17 @@ class SpaceServiceTest extends ServiceTest {
                 .map(luther)
                 .description(BE_DESCRIPTION)
                 .area(SPACE_DRAWING)
-                .setting(beSetting)
+                .reservationEnable(BE_RESERVATION_ENABLE)
+                .spaceSettings(new Settings(List.of(beSetting)))
                 .build();
 
         Setting feSetting = Setting.builder()
-                .availableTimeSlot(TimeSlot.of(
+                .settingTimeSlot(TimeSlot.of(
                         FE_AVAILABLE_START_TIME,
                         FE_AVAILABLE_END_TIME))
                 .reservationTimeUnit(FE_RESERVATION_TIME_UNIT)
                 .reservationMinimumTimeUnit(FE_RESERVATION_MINIMUM_TIME_UNIT)
                 .reservationMaximumTimeUnit(FE_RESERVATION_MAXIMUM_TIME_UNIT)
-                .reservationEnable(FE_RESERVATION_ENABLE)
                 .enabledDayOfWeek(FE_ENABLED_DAY_OF_WEEK)
                 .build();
 
@@ -115,7 +115,8 @@ class SpaceServiceTest extends ServiceTest {
                 .map(luther)
                 .description(FE_DESCRIPTION)
                 .area(SPACE_DRAWING)
-                .setting(feSetting)
+                .reservationEnable(FE_RESERVATION_ENABLE)
+                .spaceSettings(new Settings(List.of(feSetting)))
                 .build();
 
         lutherId = luther.getId();
@@ -129,13 +130,12 @@ class SpaceServiceTest extends ServiceTest {
     void save() {
         // given
         Setting setting = Setting.builder()
-                .availableTimeSlot(TimeSlot.of(
+                .settingTimeSlot(TimeSlot.of(
                         BE_AVAILABLE_START_TIME,
                         BE_AVAILABLE_END_TIME))
                 .reservationTimeUnit(BE_RESERVATION_TIME_UNIT)
                 .reservationMinimumTimeUnit(BE_RESERVATION_MINIMUM_TIME_UNIT)
                 .reservationMaximumTimeUnit(BE_RESERVATION_MAXIMUM_TIME_UNIT)
-                .reservationEnable(BE_RESERVATION_ENABLE)
                 .enabledDayOfWeek(BE_ENABLED_DAY_OF_WEEK)
                 .build();
 
@@ -145,7 +145,8 @@ class SpaceServiceTest extends ServiceTest {
                 .map(luther)
                 .description(BE_DESCRIPTION)
                 .area(SPACE_DRAWING)
-                .setting(setting)
+                .reservationEnable(BE_RESERVATION_ENABLE)
+                .spaceSettings(new Settings(List.of(setting)))
                 .build();
 
         given(maps.findById(anyLong()))
@@ -267,24 +268,6 @@ class SpaceServiceTest extends ServiceTest {
         // then
         assertThat(actual).usingRecursiveComparison()
                 .isEqualTo(SpaceFindAllResponse.from(List.of(be, fe)));
-    }
-
-    @Test
-    @DisplayName("공간을 수정한다.")
-    void update() {
-        // given, when
-        given(maps.findByIdFetch(anyLong()))
-                .willReturn(Optional.of(luther));
-
-        // then
-        assertDoesNotThrow(() -> spaceService.updateSpace(
-                luther.getId(),
-                fe.getId(),
-                updateSpaceCreateUpdateRequest,
-                pobiEmail));
-
-        assertThat(be.getReservationTimeUnitAsInt()).isEqualTo(settingsRequest.getReservationTimeUnit());
-        assertThat(be.getEnabledDayOfWeek()).isEqualTo(settingsRequest.enabledDayOfWeekAsString());
     }
 
     @Test

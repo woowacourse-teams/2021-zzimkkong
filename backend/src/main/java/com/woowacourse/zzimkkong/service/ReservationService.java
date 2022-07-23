@@ -3,8 +3,10 @@ package com.woowacourse.zzimkkong.service;
 import com.woowacourse.zzimkkong.domain.*;
 import com.woowacourse.zzimkkong.dto.reservation.*;
 import com.woowacourse.zzimkkong.dto.slack.SlackResponse;
+import com.woowacourse.zzimkkong.exception.setting.MultipleSettingsException;
 import com.woowacourse.zzimkkong.exception.map.NoSuchMapException;
 import com.woowacourse.zzimkkong.exception.reservation.*;
+import com.woowacourse.zzimkkong.exception.setting.NoSettingAvailableException;
 import com.woowacourse.zzimkkong.exception.space.NoSuchSpaceException;
 import com.woowacourse.zzimkkong.infrastructure.sharingid.SharingIdGenerator;
 import com.woowacourse.zzimkkong.repository.MapRepository;
@@ -223,28 +225,36 @@ public class ReservationService {
         TimeSlot timeSlot = reservationTime.asTimeSlotKST();
         DayOfWeek dayOfWeek = reservationTime.getDayOfWeekKST();
 
-        if (space.cannotAcceptDueToTimeUnit(timeSlot)) {
+        Settings relevantSettings = space.getRelevantSettings(timeSlot, dayOfWeek);
+        if (relevantSettings.isEmpty()) {
+            throw new NoSettingAvailableException(space);
+        }
+
+        // TODO: 추후 N부제 -> 예약 유도로 넘어갈 때 이부분이 제거되어야함 - 여러 조건에 걸치면 유도하는 식으로 로직이 변경되어야 하기 때문
+        if (relevantSettings.haveMultipleSettings()) {
+            throw new MultipleSettingsException(relevantSettings);
+        }
+
+        if (relevantSettings.cannotAcceptDueToAvailableTime(timeSlot)) {
+            throw new InvalidStartEndTimeException(relevantSettings, timeSlot);
+        }
+
+        Setting setting = relevantSettings.getSettings().get(0);
+
+        if (setting.cannotAcceptDueToTimeUnit(timeSlot)) {
             throw new InvalidTimeUnitException();
         }
 
-        if (space.cannotAcceptDueToMinimumTimeUnit(timeSlot)) {
+        if (setting.cannotAcceptDueToMinimumTimeUnit(timeSlot)) {
             throw new InvalidMinimumDurationTimeException();
         }
 
-        if (space.cannotAcceptDueToMaximumTimeUnit(timeSlot)) {
+        if (setting.cannotAcceptDueToMaximumTimeUnit(timeSlot)) {
             throw new InvalidMaximumDurationTimeException();
-        }
-
-        if (space.cannotAcceptDueToAvailableTime(timeSlot)) {
-            throw new InvalidStartEndTimeException();
         }
 
         if (space.isUnableToReserve()) {
             throw new InvalidReservationEnableException();
-        }
-
-        if (space.isClosedOn(dayOfWeek)) {
-            throw new InvalidDayOfWeekException();
         }
     }
 
