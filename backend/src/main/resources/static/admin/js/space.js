@@ -23,29 +23,31 @@ function getSpaces(pageNumber) {
         } else {
             response.json().then(data => {
                 const spaceList = document.querySelector(".spaces-row");
-                spaceList.innerHTML += data.spaces.map(space =>
-                    `<tr class="space">
-                        <th scope="row">${space.id}</th>
-                        <td>${space.name}</td>
-                        <td>${space.color}</td>
-                        <td>${space.description}</td>
-                        <td>
-                        시작시간: ${space.settings.availableStartTime}, 끝시간: ${space.settings.availableEndTime}, <br>
-                        단위시간: ${space.settings.reservationTimeUnit}, 최소시간: ${space.settings.reservationMinimumTimeUnit}, 최대시간: ${space.settings.reservationMaximumTimeUnit}, <br>
-                        예약가능여부: ${space.settings.reservationEnable}, <br>
-                        월: ${space.settings.enabledDayOfWeek.monday}, 
-                        화: ${space.settings.enabledDayOfWeek.tuesday}, 
-                        수: ${space.settings.enabledDayOfWeek.wednesday}, 
-                        목: ${space.settings.enabledDayOfWeek.thursday}, 
-                        금: ${space.settings.enabledDayOfWeek.friday}, 
-                        토: ${space.settings.enabledDayOfWeek.saturday}, 
-                        일: ${space.settings.enabledDayOfWeek.sunday}
-                        </td>
-                        <td>
-                        맵id: ${space.mapId} <br>
-                        매니저id: ${space.managerId}
-                        </td>
-                    </tr>`
+                spaceList.innerHTML += data.spaces.map(space => {
+                    let settingInfo = space.settings.map(setting =>
+                        `Setting ID: ${setting.settingId}, <br>
+                        시작시간: ${setting.settingStartTime}, 끝시간: ${setting.settingEndTime}, <br>
+                        단위시간: ${setting.reservationTimeUnit}, 최소시간: ${setting.reservationMinimumTimeUnit}, 최대시간: ${setting.reservationMaximumTimeUnit}, <br>
+                        월: ${setting.enabledDayOfWeek.monday},
+                        화: ${setting.enabledDayOfWeek.tuesday},
+                        수: ${setting.enabledDayOfWeek.wednesday},
+                        목: ${setting.enabledDayOfWeek.thursday},
+                        금: ${setting.enabledDayOfWeek.friday},
+                        토: ${setting.enabledDayOfWeek.saturday},
+                        일: ${setting.enabledDayOfWeek.sunday}`).join("\n\n");
+
+                    let spaceInfo =
+                        `<td>${space.id}</td>
+                            <td>
+                                맵id: ${space.mapId} <br>
+                                매니저id: ${space.managerId}
+                            </td>
+                            <td>${space.name}</td>
+                            <td>${space.color}</td>
+                            <td>${space.description}</td>
+                            <td>${space.reservationEnable}</td>`;
+                    return `<tr class="space">` + spaceInfo + `<td>${settingInfo}</td>` + `</tr>`;
+                    }
                 ).join("");
             });
         }
