@@ -77,7 +77,7 @@ class SettingsTest {
         List<TimeSlot> expectedResult = List.of(
                 TimeSlot.of(LocalTime.MIN, LocalTime.of(10, 0)),
                 TimeSlot.of(LocalTime.of(13, 0), LocalTime.of(14, 0)),
-                TimeSlot.of(LocalTime.of(20, 0), LocalTime.of(23, 50))
+                TimeSlot.of(LocalTime.of(20, 0), TimeSlot.MAX_TIME)
         );
 
         assertThat(settings.getUnavailableTimeSlots()).usingRecursiveComparison().isEqualTo(expectedResult);

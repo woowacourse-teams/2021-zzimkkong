@@ -150,6 +150,7 @@ class ManagerSpaceControllerTest extends AcceptanceTest {
                 .color(defaultSpaceCreateUpdateRequest.getColor())
                 .description(defaultSpaceCreateUpdateRequest.getDescription())
                 .spaceSettings(new Settings(List.of(defaultSetting)))
+                .reservationEnable(true)
                 .area(SPACE_DRAWING)
                 .build();
 
@@ -164,6 +165,7 @@ class ManagerSpaceControllerTest extends AcceptanceTest {
 
         assertThat(actualSpaceFindDetailResponse)
                 .usingRecursiveComparison()
+                .ignoringExpectedNullFields()
                 .isEqualTo(expectedSpaceFindDetailResponse);
     }
 

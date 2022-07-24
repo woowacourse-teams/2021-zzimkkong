@@ -139,9 +139,16 @@ public class Setting {
         return timeSlot.isDurationLongerThan(reservationMaximumTimeUnit);
     }
 
+    public void updateSpace(final Space space) {
+        this.space = space;
+    }
+
     @Override
     public String toString() {
-        return "예약 가능한 시간대: " +
+        return "예약 가능한 요일: " +
+                EnabledDayOfWeek.getDisplayNames(enabledDayOfWeek) +
+                System.getProperty("line.separator") +
+                "예약 가능한 시간대: " +
                 settingTimeSlot.toString() +
                 System.getProperty("line.separator") +
                 "예약 시간 단위: " +
