@@ -6,10 +6,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.springframework.util.CollectionUtils;
 
-import javax.persistence.CascadeType;
-import javax.persistence.Embeddable;
-import javax.persistence.FetchType;
-import javax.persistence.OneToMany;
+import javax.persistence.*;
 import java.time.DayOfWeek;
 import java.time.LocalTime;
 import java.util.ArrayList;
@@ -27,9 +24,8 @@ public class Settings {
     private List<Setting> settings = new ArrayList<>();
 
     public Settings(final List<Setting> settings) {
-        this.settings = settings.stream()
-                .sorted(Comparator.comparing(Setting::getSettingStartTime))
-                .collect(Collectors.toList());
+        this.settings = new ArrayList<>(settings);
+        sort();
 
         if (this.settings.size() <= MINIMUM_SETTING_COUNT) {
             return;
@@ -64,6 +60,7 @@ public class Settings {
 
     public void add(final Setting setting) {
         settings.add(setting);
+        sort();
     }
 
     public Settings getSettingsByTimeSlotAndDayOfWeek(final TimeSlot timeSlot, final DayOfWeek dayOfWeek) {
@@ -151,10 +148,20 @@ public class Settings {
 
     public void addAll(final List<Setting> newSettings) {
         settings.addAll(newSettings);
+        sort();
     }
 
     public void clear() {
         settings.clear();
+    }
+
+    @PostLoad
+    public void PostLoad(){
+        sort();
+    }
+
+    private void sort() {
+        settings.sort(Comparator.comparing(Setting::getSettingStartTime));
     }
 
     @Override
