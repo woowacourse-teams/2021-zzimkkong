@@ -26,19 +26,7 @@ public class Settings {
     public Settings(final List<Setting> settings) {
         this.settings = new ArrayList<>(settings);
         sort();
-
-        if (this.settings.size() <= MINIMUM_SETTING_COUNT) {
-            return;
-        }
-
-        for (int i = 0; i < this.settings.size() - 1; i++) {
-            Setting currentSetting = this.settings.get(i);
-            Setting nextSetting = this.settings.get(i + 1);
-
-            if (currentSetting.hasConflictWith(nextSetting)) {
-                throw new SettingConflictException(currentSetting, nextSetting);
-            }
-        }
+        validateConflicts();
     }
 
     public static Settings from(final List<SettingRequest> settingRequests) {
@@ -61,6 +49,7 @@ public class Settings {
     public void add(final Setting setting) {
         settings.add(setting);
         sort();
+        validateConflicts();
     }
 
     public Settings getSettingsByTimeSlotAndDayOfWeek(final TimeSlot timeSlot, final DayOfWeek dayOfWeek) {
@@ -149,6 +138,7 @@ public class Settings {
     public void addAll(final List<Setting> newSettings) {
         settings.addAll(newSettings);
         sort();
+        validateConflicts();
     }
 
     public void clear() {
@@ -162,6 +152,21 @@ public class Settings {
 
     private void sort() {
         settings.sort(Comparator.comparing(Setting::getSettingStartTime));
+    }
+
+    private void validateConflicts() {
+        if (this.settings.size() <= MINIMUM_SETTING_COUNT) {
+            return;
+        }
+
+        for (int i = 0; i < this.settings.size() - 1; i++) {
+            Setting currentSetting = this.settings.get(i);
+            Setting nextSetting = this.settings.get(i + 1);
+
+            if (currentSetting.hasConflictWith(nextSetting)) {
+                throw new SettingConflictException(currentSetting, nextSetting);
+            }
+        }
     }
 
     @Override
