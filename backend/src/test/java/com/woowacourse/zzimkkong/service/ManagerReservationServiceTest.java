@@ -6,6 +6,8 @@ import com.woowacourse.zzimkkong.dto.reservation.*;
 import com.woowacourse.zzimkkong.exception.authorization.NoAuthorityOnMapException;
 import com.woowacourse.zzimkkong.exception.map.NoSuchMapException;
 import com.woowacourse.zzimkkong.exception.reservation.*;
+import com.woowacourse.zzimkkong.exception.setting.MultipleSettingsException;
+import com.woowacourse.zzimkkong.exception.setting.NoSettingAvailableException;
 import com.woowacourse.zzimkkong.exception.space.NoSuchSpaceException;
 import com.woowacourse.zzimkkong.infrastructure.datetime.TimeZoneUtils;
 import com.woowacourse.zzimkkong.service.strategy.ManagerReservationStrategy;
@@ -371,35 +373,6 @@ class ManagerReservationServiceTest extends ServiceTest {
     }
 
     @ParameterizedTest
-    @CsvSource(value = {"9:10", "22:23"}, delimiter = ':')
-    @DisplayName("예약 생성 요청 시, 공간의 예약가능 시간이 아니라면 예외가 발생한다.")
-    void saveInvalidTimeSetting(int startTime, int endTime) {
-        //given
-        given(maps.findByIdFetch(anyLong()))
-                .willReturn(Optional.of(luther));
-
-        reservationCreateUpdateWithPasswordRequest = new ReservationCreateUpdateWithPasswordRequest(
-                THE_DAY_AFTER_TOMORROW.atTime(startTime, 0).atZone(KST.toZoneId()),
-                THE_DAY_AFTER_TOMORROW.atTime(endTime, 30).atZone(KST.toZoneId()),
-                RESERVATION_PW,
-                USER_NAME,
-                DESCRIPTION);
-
-        //when
-        ReservationCreateDto reservationCreateDto = ReservationCreateDto.of(
-                lutherId,
-                beId,
-                reservationCreateUpdateWithPasswordRequest,
-                pobiEmail);
-
-        //then
-        assertThatThrownBy(() -> reservationService.saveReservation(
-                reservationCreateDto,
-                managerReservationStrategy))
-                .isInstanceOf(InvalidStartEndTimeException.class);
-    }
-
-    @ParameterizedTest
     @CsvSource(value = {"60:0", "0:60"}, delimiter = ':')
     @DisplayName("예약 생성 요청 시, 이미 겹치는 시간이 존재하면 예외가 발생한다.")
     void saveAvailabilityException(int startMinute, int endMinute) {
@@ -439,7 +412,7 @@ class ManagerReservationServiceTest extends ServiceTest {
                 .reservationTimeUnit(TimeUnit.from(10))
                 .reservationMinimumTimeUnit(TimeUnit.from(10))
                 .reservationMaximumTimeUnit(TimeUnit.from(120))
-                .enabledDayOfWeek(null)
+                .enabledDayOfWeek(BE_ENABLED_DAY_OF_WEEK)
                 .build();
 
         Space closedSpace = Space.builder()
@@ -510,7 +483,7 @@ class ManagerReservationServiceTest extends ServiceTest {
         assertThatThrownBy(() -> reservationService.saveReservation(
                 reservationCreateDto,
                 managerReservationStrategy)).
-                isInstanceOf(InvalidDayOfWeekException.class);
+                isInstanceOf(NoSettingAvailableException.class);
     }
 
     @ParameterizedTest
@@ -548,6 +521,144 @@ class ManagerReservationServiceTest extends ServiceTest {
                 reservationCreateDto,
                 managerReservationStrategy);
         assertThat(reservationCreateResponse.getId()).isEqualTo(reservation.getId());
+    }
+
+    @ParameterizedTest
+    @CsvSource({"6,8","8,10","22,23"})
+    @DisplayName("예약 생성/수정 요청 시, 예약 시간대에 해당하는 예약 조건이 없으면 에러를 반환한다")
+    void saveUpdateReservationNoRelevantSetting(int startHour, int endHour) {
+        //given
+        given(maps.findByIdFetch(anyLong()))
+                .willReturn(Optional.of(luther));
+        given(reservations.findById(anyLong()))
+                .willReturn(Optional.of(reservation));
+
+        //when
+        ReservationCreateUpdateWithPasswordRequest reservationCreateUpdateWithPasswordRequest = new ReservationCreateUpdateWithPasswordRequest(
+                THE_DAY_AFTER_TOMORROW.atTime(startHour, 0).atZone(KST.toZoneId()),
+                THE_DAY_AFTER_TOMORROW.atTime(endHour, 0).atZone(KST.toZoneId()),
+                RESERVATION_PW,
+                USER_NAME,
+                DESCRIPTION);
+        Long reservationId = reservation.getId();
+
+        // be setting: 10:00 ~ 22:00
+        ReservationCreateDto reservationCreateDto = ReservationCreateDto.of(
+                lutherId,
+                beId,
+                reservationCreateUpdateWithPasswordRequest,
+                pobiEmail);
+        ReservationUpdateDto reservationUpdateDto = ReservationUpdateDto.of(
+                lutherId,
+                beId,
+                reservationId,
+                reservationCreateUpdateWithPasswordRequest,
+                pobiEmail);
+
+        //then
+        assertThatThrownBy(() -> reservationService.saveReservation(
+                reservationCreateDto,
+                managerReservationStrategy))
+                .isInstanceOf(NoSettingAvailableException.class);
+        assertThatThrownBy(() -> reservationService.updateReservation(
+                reservationUpdateDto,
+                managerReservationStrategy))
+                .isInstanceOf(NoSettingAvailableException.class);
+    }
+
+    @ParameterizedTest
+    @CsvSource({"7,11","9,11"})
+    @DisplayName("예약 생성/수정 요청 시, 예약 시간대에 해당하는 예약 조건이 2개 이상이면 에러를 반환한다")
+    void saveUpdateReservationMultipleSettings(int startHour, int endHour) {
+        //given
+        be.addSetting(Setting.builder()
+                .settingTimeSlot(TimeSlot.of(
+                        LocalTime.of(8,0),
+                        LocalTime.of(10,0)))
+                .reservationTimeUnit(TimeUnit.from(10))
+                .reservationMinimumTimeUnit(TimeUnit.from(10))
+                .reservationMaximumTimeUnit(TimeUnit.from(60))
+                .enabledDayOfWeek(BE_ENABLED_DAY_OF_WEEK)
+                .build());
+        given(maps.findByIdFetch(anyLong()))
+                .willReturn(Optional.of(luther));
+        given(reservations.findById(anyLong()))
+                .willReturn(Optional.of(reservation));
+
+        //when
+        ReservationCreateUpdateWithPasswordRequest reservationCreateUpdateWithPasswordRequest = new ReservationCreateUpdateWithPasswordRequest(
+                THE_DAY_AFTER_TOMORROW.atTime(startHour, 0).atZone(KST.toZoneId()),
+                THE_DAY_AFTER_TOMORROW.atTime(endHour, 0).atZone(KST.toZoneId()),
+                RESERVATION_PW,
+                USER_NAME,
+                DESCRIPTION);
+        Long reservationId = reservation.getId();
+
+        // be setting: 8:00 ~ 10:00 / 10:00 ~ 22:00
+        ReservationCreateDto reservationCreateDto = ReservationCreateDto.of(
+                lutherId,
+                beId,
+                reservationCreateUpdateWithPasswordRequest,
+                pobiEmail);
+        ReservationUpdateDto reservationUpdateDto = ReservationUpdateDto.of(
+                lutherId,
+                beId,
+                reservationId,
+                reservationCreateUpdateWithPasswordRequest,
+                pobiEmail);
+
+        //then
+        assertThatThrownBy(() -> reservationService.saveReservation(
+                reservationCreateDto,
+                managerReservationStrategy))
+                .isInstanceOf(MultipleSettingsException.class);
+        assertThatThrownBy(() -> reservationService.updateReservation(
+                reservationUpdateDto,
+                managerReservationStrategy))
+                .isInstanceOf(MultipleSettingsException.class);
+    }
+
+    @ParameterizedTest
+    @CsvSource({"9,11","21,23"})
+    @DisplayName("예약 생성/수정 요청 시, 예약 시간대가 예약 조건안에 완전히 포함되지 않고 걸쳐있으면 에러를 반환한다")
+    void saveUpdateReservationIsNotWithinSetting(int startHour, int endHour) {
+        //given
+        given(maps.findByIdFetch(anyLong()))
+                .willReturn(Optional.of(luther));
+        given(reservations.findById(anyLong()))
+                .willReturn(Optional.of(reservation));
+
+        //when
+        ReservationCreateUpdateWithPasswordRequest reservationCreateUpdateWithPasswordRequest = new ReservationCreateUpdateWithPasswordRequest(
+                THE_DAY_AFTER_TOMORROW.atTime(startHour, 0).atZone(KST.toZoneId()),
+                THE_DAY_AFTER_TOMORROW.atTime(endHour, 0).atZone(KST.toZoneId()),
+                RESERVATION_PW,
+                USER_NAME,
+                DESCRIPTION);
+        Long reservationId = reservation.getId();
+
+        // be setting: 10:00 ~ 22:00
+        ReservationCreateDto reservationCreateDto = ReservationCreateDto.of(
+                lutherId,
+                beId,
+                reservationCreateUpdateWithPasswordRequest,
+                pobiEmail);
+        ReservationUpdateDto reservationUpdateDto = ReservationUpdateDto.of(
+                lutherId,
+                beId,
+                reservationId,
+                reservationCreateUpdateWithPasswordRequest,
+                pobiEmail);
+
+        //then
+        assertThatThrownBy(() -> reservationService.saveReservation(
+                reservationCreateDto,
+                managerReservationStrategy))
+                .isInstanceOf(InvalidStartEndTimeException.class);
+        assertThatThrownBy(() -> reservationService.updateReservation(
+                reservationUpdateDto,
+                managerReservationStrategy))
+                .isInstanceOf(InvalidStartEndTimeException.class);
     }
 
     @ParameterizedTest
@@ -1210,7 +1321,7 @@ class ManagerReservationServiceTest extends ServiceTest {
     }
 
     @ParameterizedTest
-    @CsvSource(value = {"9:10", "22:23"}, delimiter = ':')
+    @CsvSource(value = {"9:10", "21:22"}, delimiter = ':')
     @DisplayName("예약 수정 요청 시, 공간의 예약가능 시간이 아니라면 에러가 발생한다.")
     void updateInvalidTimeSetting(int startTime, int endTime) {
         //given
@@ -1253,7 +1364,7 @@ class ManagerReservationServiceTest extends ServiceTest {
                 .reservationTimeUnit(TimeUnit.from(10))
                 .reservationMinimumTimeUnit(TimeUnit.from(10))
                 .reservationMaximumTimeUnit(TimeUnit.from(120))
-                .enabledDayOfWeek(null)
+                .enabledDayOfWeek(BE_ENABLED_DAY_OF_WEEK)
                 .build();
 
         Space closedSpace = Space.builder()
@@ -1333,7 +1444,7 @@ class ManagerReservationServiceTest extends ServiceTest {
         assertThatThrownBy(() -> reservationService.updateReservation(
                 reservationUpdateDto,
                 managerReservationStrategy))
-                .isInstanceOf(InvalidDayOfWeekException.class);
+                .isInstanceOf(NoSettingAvailableException.class);
     }
 
     @ParameterizedTest

@@ -8,7 +8,7 @@ public class NoSettingAvailableException extends ZzimkkongException {
     private static final String MESSAGE_FORMAT = "예약이 불가능한 시간대 혹은 요일입니다" +
             System.getProperty("line.separator") +
             System.getProperty("line.separator") +
-            "공간 [%s]의 전체 예약 조건: " +
+            "공간 [%s]의 예약 조건: " +
             System.getProperty("line.separator") +
             "%s";
 
