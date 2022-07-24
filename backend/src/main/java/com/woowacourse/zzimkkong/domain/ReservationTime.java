@@ -63,7 +63,7 @@ public class ReservationTime {
         return of(startDateTime, endDateTime, true);
     }
 
-    public static void validatePastTime(final LocalDateTime startDateTime) {
+    private static void validatePastTime(final LocalDateTime startDateTime) {
         if (startDateTime.isBefore(LocalDateTime.now())) {
             throw new PastReservationTimeException();
         }
@@ -101,6 +101,14 @@ public class ReservationTime {
         LocalDateTime endDateTimeKST = TimeZoneUtils.convert(endTime, UTC, KST);
 
         return TimeSlot.of(startDateTimeKST.toLocalTime(), endDateTimeKST.toLocalTime());
+    }
+
+    public boolean contains(final LocalDateTime now) {
+        return !(startTime.isAfter(now) || endTime.isBefore(now));
+    }
+
+    public boolean isBefore(final LocalDateTime now) {
+        return endTime.isBefore(now);
     }
 
     public boolean hasConflictWith(final ReservationTime that) {

@@ -20,6 +20,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.DayOfWeek;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
@@ -198,13 +199,24 @@ public class ReservationService {
         reservationStrategy.checkCorrectPassword(reservation, password);
 
         if (!reservationStrategy.isManager()) {
-            ReservationTime.validatePastTime(reservation.getStartTime());
+            validateDeletability(reservation);
         }
 
         reservations.delete(reservation);
 
         String sharingMapId = sharingIdGenerator.from(map);
         return SlackResponse.of(reservation, sharingMapId, map.getSlackUrl());
+    }
+
+    private void validateDeletability(final Reservation reservation) {
+        LocalDateTime now = LocalDateTime.now();
+        if (reservation.isInUse(now)) {
+            throw new DeleteReservationInUseException();
+        }
+
+        if (reservation.isExpired(now)) {
+            throw new DeleteExpiredReservationException();
+        }
     }
 
     private void validateAvailability(

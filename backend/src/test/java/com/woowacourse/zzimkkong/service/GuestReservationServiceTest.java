@@ -2,7 +2,6 @@ package com.woowacourse.zzimkkong.service;
 
 import com.woowacourse.zzimkkong.domain.*;
 import com.woowacourse.zzimkkong.dto.reservation.*;
-import com.woowacourse.zzimkkong.dto.space.EnabledDayOfWeekDto;
 import com.woowacourse.zzimkkong.exception.map.NoSuchMapException;
 import com.woowacourse.zzimkkong.exception.reservation.*;
 import com.woowacourse.zzimkkong.exception.setting.MultipleSettingsException;
@@ -1358,7 +1357,7 @@ class GuestReservationServiceTest extends ServiceTest {
         assertThatThrownBy(() -> reservationService.deleteReservation(
                 reservationAuthenticationDto,
                 guestReservationStrategy))
-                .isInstanceOf(PastReservationTimeException.class);
+                .isInstanceOf(DeleteExpiredReservationException.class);
     }
 
     private Reservation makeReservation(final LocalDateTime startTime, final LocalDateTime endTime, final Space space) {

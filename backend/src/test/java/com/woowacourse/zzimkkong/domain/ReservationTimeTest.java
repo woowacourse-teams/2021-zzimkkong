@@ -7,6 +7,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.CsvSource;
 import org.junit.jupiter.params.provider.MethodSource;
 
 import java.time.DayOfWeek;
@@ -37,17 +38,6 @@ class ReservationTimeTest {
     void of_invalidStartAndEndTime() {
         assertThatThrownBy(() -> ReservationTime.of(sixPmUTC, fourPmUTC))
                 .isInstanceOf(ImpossibleStartEndTimeException.class);
-    }
-
-    @Test
-    @DisplayName("주어진 시간이 현재 시간보다 과거의 시간이면 에러를 반환한다.")
-    void validatePastTime() {
-        LocalDateTime pastTime = LocalDateTime.now().withSecond(0).withNano(0).minusHours(1);
-        LocalDateTime futureTime = LocalDateTime.now().withSecond(0).withNano(0).plusHours(1);
-
-        assertThatThrownBy(() -> ReservationTime.validatePastTime(pastTime))
-                .isInstanceOf(PastReservationTimeException.class);
-        assertDoesNotThrow(() -> ReservationTime.validatePastTime(futureTime));
     }
 
     @Test
@@ -89,6 +79,24 @@ class ReservationTimeTest {
         LocalDate expectedDate = fourPmUTC.toLocalDate().plusDays(1);
 
         assertThat(actualDate).isEqualTo(expectedDate);
+    }
+
+    @ParameterizedTest
+    @DisplayName("주어진 시간을 포함하면 true 아니면 false")
+    @CsvSource(value = {"16,true","15,false","17,true","18,true","19,false"})
+    void contains(Integer hour, boolean expectedResult) {
+        // 16:00 ~ 18:00
+        boolean result = reservationTime.contains(THE_DAY_AFTER_TOMORROW.atTime(hour, 0));
+        assertThat(result).isEqualTo(expectedResult);
+    }
+
+    @ParameterizedTest
+    @DisplayName("주어진 시간보다 이전의 예약이면 true 아니면 false")
+    @CsvSource(value = {"16,false","15,false","17,false","18,false","19,true"})
+    void isBefore(Integer hour, boolean expectedResult) {
+        // 16:00 ~ 18:00
+        boolean result = reservationTime.isBefore(THE_DAY_AFTER_TOMORROW.atTime(hour, 0));
+        assertThat(result).isEqualTo(expectedResult);
     }
 
     private static Stream<Arguments> provideReservationTimes() {
