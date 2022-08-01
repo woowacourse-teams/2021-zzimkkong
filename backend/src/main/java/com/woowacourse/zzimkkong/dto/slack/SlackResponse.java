@@ -56,7 +56,8 @@ public class SlackResponse {
 
     @Override
     public String toString() {
-        return spaceName + "\\n " +
+        return mapName + "\\n " +
+                spaceName + "\\n " +
                 userName + "\\n " +
                 reservationTime + "\\n " +
                 description;
