@@ -30,7 +30,7 @@ public class SlackResponse {
             final String description,
             final String sharingMapId,
             final String slackUrl) {
-        this.mapName = "교육장명 : " + mapName;
+        this.mapName = "장소 : " + mapName;
         this.spaceName = "회의실명 : " + spaceName;
         this.userName = "예약자명 : " + userName;
         this.reservationTime = "예약시간 : " + startTime + " ~ " + endTime;
