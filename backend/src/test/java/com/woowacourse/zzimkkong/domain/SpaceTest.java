@@ -9,12 +9,32 @@ import org.junit.jupiter.params.provider.MethodSource;
 import java.time.DayOfWeek;
 import java.time.LocalTime;
 import java.util.Arrays;
+import java.util.List;
 import java.util.stream.Stream;
 
 import static com.woowacourse.zzimkkong.Constants.*;
 import static org.assertj.core.api.Assertions.assertThat;
 
 class SpaceTest {
+    private static final Setting setting1 = Setting.builder()
+            .settingTimeSlot(TimeSlot.of(
+                    LocalTime.of(10, 0),
+                    LocalTime.of(14, 0)))
+            .reservationTimeUnit(FE_RESERVATION_TIME_UNIT)
+            .reservationMinimumTimeUnit(FE_RESERVATION_MINIMUM_TIME_UNIT)
+            .reservationMaximumTimeUnit(FE_RESERVATION_MAXIMUM_TIME_UNIT)
+            .enabledDayOfWeek(FE_ENABLED_DAY_OF_WEEK)
+            .build();
+    private static final Setting setting2 = Setting.builder()
+            .settingTimeSlot(TimeSlot.of(
+                    LocalTime.of(15, 0),
+                    LocalTime.of(18, 0)))
+            .reservationTimeUnit(FE_RESERVATION_TIME_UNIT)
+            .reservationMinimumTimeUnit(FE_RESERVATION_MINIMUM_TIME_UNIT)
+            .reservationMaximumTimeUnit(FE_RESERVATION_MAXIMUM_TIME_UNIT)
+            .enabledDayOfWeek(FE_ENABLED_DAY_OF_WEEK)
+            .build();
+
     @Test
     void update() {
         Member member = new Member(EMAIL, PW, ORGANIZATION);
@@ -118,72 +138,50 @@ class SpaceTest {
     }
 
     @ParameterizedTest
-//    @CsvSource(value = {"10,12,monday", "17,18,tuesday"})
     @DisplayName("예약하려는 시간과 요일에 부합하는 조건을 반환한다")
     @MethodSource("provideReservationInfo")
-    void isNotBetweenAvailableTime(TimeSlot reservationTimeSlot, DayOfWeek dayofWeek, Setting expectedResult) {
-        //TODO: setting 추가해서 테스트
-        Setting setting1 = Setting.builder()
-                .settingTimeSlot(TimeSlot.of(
-                        LocalTime.of(10, 0),
-                        LocalTime.of(14, 0)))
-                .reservationTimeUnit(FE_RESERVATION_TIME_UNIT)
-                .reservationMinimumTimeUnit(FE_RESERVATION_MINIMUM_TIME_UNIT)
-                .reservationMaximumTimeUnit(FE_RESERVATION_MAXIMUM_TIME_UNIT)
-                .enabledDayOfWeek(FE_ENABLED_DAY_OF_WEEK)
-                .build();
-        Setting setting2 = Setting.builder()
-                .settingTimeSlot(TimeSlot.of(
-                        LocalTime.of(15, 0),
-                        LocalTime.of(18, 0)))
-                .reservationTimeUnit(FE_RESERVATION_TIME_UNIT)
-                .reservationMinimumTimeUnit(FE_RESERVATION_MINIMUM_TIME_UNIT)
-                .reservationMaximumTimeUnit(FE_RESERVATION_MAXIMUM_TIME_UNIT)
-                .enabledDayOfWeek(FE_ENABLED_DAY_OF_WEEK)
-                .build();
+    void isNotBetweenAvailableTime(TimeSlot reservationTimeSlot, DayOfWeek dayofWeek, Settings expectedResult) {
+        // setting1: 10 ~ 14
+        // setting2: 15 ~ 18
         Space space = Space.builder()
                 .spaceSettings(new Settings(Arrays.asList(setting1, setting2)))
                 .build();
 
-        space.getRelevantSettings(reservationTimeSlot, dayofWeek);
-
+        Settings relevantSettings = space.getRelevantSettings(reservationTimeSlot, dayofWeek);
+        assertThat(relevantSettings).usingRecursiveComparison().isEqualTo(expectedResult);
     }
 
     private static Stream<Arguments> provideReservationInfo() {
         return Stream.of(
                 Arguments.of(
                         TimeSlot.of(
-                                LocalTime.of(10, 0),
-                                LocalTime.of(12, 0)),
+                                LocalTime.of(9, 0),
+                                LocalTime.of(10, 0)),
                         DayOfWeek.MONDAY,
-                        Setting.builder()
-                                .settingTimeSlot(TimeSlot.of(
-                                        LocalTime.of(10, 0),
-                                        LocalTime.of(14, 0)))
-                                .reservationTimeUnit(FE_RESERVATION_TIME_UNIT)
-                                .reservationMinimumTimeUnit(FE_RESERVATION_MINIMUM_TIME_UNIT)
-                                .reservationMaximumTimeUnit(FE_RESERVATION_MAXIMUM_TIME_UNIT)
-                                .enabledDayOfWeek(FE_ENABLED_DAY_OF_WEEK)
-                                .build()),
+                        new Settings()),
                 Arguments.of(
                         TimeSlot.of(
                                 LocalTime.of(10, 0),
                                 LocalTime.of(12, 0)),
                         DayOfWeek.MONDAY,
-                        Setting.builder()
-                                .settingTimeSlot(TimeSlot.of(
-                                        LocalTime.of(15, 0),
-                                        LocalTime.of(18, 0)))
-                                .reservationTimeUnit(FE_RESERVATION_TIME_UNIT)
-                                .reservationMinimumTimeUnit(FE_RESERVATION_MINIMUM_TIME_UNIT)
-                                .reservationMaximumTimeUnit(FE_RESERVATION_MAXIMUM_TIME_UNIT)
-                                .enabledDayOfWeek(FE_ENABLED_DAY_OF_WEEK)
-                                .build()),
+                        new Settings(List.of(setting1))),
                 Arguments.of(
                         TimeSlot.of(
-                                LocalTime.of(10, 0),
-                                LocalTime.of(12, 0)),
+                                LocalTime.of(12, 0),
+                                LocalTime.of(15, 0)),
                         DayOfWeek.MONDAY,
-                        null));
+                        new Settings(List.of(setting1))),
+                Arguments.of(
+                        TimeSlot.of(
+                                LocalTime.of(14, 0),
+                                LocalTime.of(15, 0)),
+                        DayOfWeek.MONDAY,
+                        new Settings()),
+                Arguments.of(
+                        TimeSlot.of(
+                                LocalTime.of(15, 0),
+                                LocalTime.of(19, 0)),
+                        DayOfWeek.MONDAY,
+                        new Settings(List.of(setting2))));
     }
 }

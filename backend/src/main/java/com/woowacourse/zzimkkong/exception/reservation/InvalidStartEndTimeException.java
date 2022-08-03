@@ -7,12 +7,14 @@ import org.springframework.http.HttpStatus;
 
 import java.util.stream.Collectors;
 
+import static com.woowacourse.zzimkkong.infrastructure.message.MessageUtils.LINE_SEPARATOR;
+
 public class InvalidStartEndTimeException extends ZzimkkongException {
     private static final String MESSAGE_FORMAT = "예약 시간이 예약이 불가한 시간대에 걸쳐 있습니다." +
-            System.getProperty("line.separator") +
-            System.getProperty("line.separator") +
+            LINE_SEPARATOR +
+            LINE_SEPARATOR +
             "예약 요청 시간: %s" +
-            System.getProperty("line.separator") +
+            LINE_SEPARATOR +
             "예약 불가 시간대: %s";
 
     public InvalidStartEndTimeException(Settings settings, TimeSlot reservationTimeSlot) {

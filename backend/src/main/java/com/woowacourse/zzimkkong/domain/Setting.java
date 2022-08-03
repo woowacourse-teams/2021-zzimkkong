@@ -10,6 +10,8 @@ import javax.persistence.*;
 import java.time.DayOfWeek;
 import java.time.LocalTime;
 
+import static com.woowacourse.zzimkkong.infrastructure.message.MessageUtils.LINE_SEPARATOR;
+
 @Builder
 @Getter
 @NoArgsConstructor
@@ -147,18 +149,18 @@ public class Setting {
     public String toString() {
         return "예약 가능한 요일: " +
                 EnabledDayOfWeek.getDisplayNames(enabledDayOfWeek) +
-                System.getProperty("line.separator") +
+                LINE_SEPARATOR +
                 "예약 가능한 시간대: " +
                 settingTimeSlot.toString() +
-                System.getProperty("line.separator") +
+                LINE_SEPARATOR +
                 "예약 시간 단위: " +
                 reservationTimeUnit.toString() +
-                System.getProperty("line.separator") +
+                LINE_SEPARATOR +
                 "최소 예약 가능 시간: " +
                 reservationMinimumTimeUnit.toString() +
-                System.getProperty("line.separator") +
+                LINE_SEPARATOR +
                 "최대 예약 가능 시간: " +
                 reservationMaximumTimeUnit.toString() +
-                System.getProperty("line.separator");
+                LINE_SEPARATOR;
     }
 }

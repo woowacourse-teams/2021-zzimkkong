@@ -1,6 +1,8 @@
 package com.woowacourse.zzimkkong.service;
 
-import com.woowacourse.zzimkkong.domain.*;
+import com.woowacourse.zzimkkong.domain.Map;
+import com.woowacourse.zzimkkong.domain.Settings;
+import com.woowacourse.zzimkkong.domain.Space;
 import com.woowacourse.zzimkkong.dto.member.LoginEmailDto;
 import com.woowacourse.zzimkkong.dto.space.*;
 import com.woowacourse.zzimkkong.exception.authorization.NoAuthorityOnMapException;
@@ -9,7 +11,6 @@ import com.woowacourse.zzimkkong.exception.space.NoSuchSpaceException;
 import com.woowacourse.zzimkkong.exception.space.ReservationExistOnSpaceException;
 import com.woowacourse.zzimkkong.repository.MapRepository;
 import com.woowacourse.zzimkkong.repository.ReservationRepository;
-import com.woowacourse.zzimkkong.repository.SettingRepository;
 import com.woowacourse.zzimkkong.repository.SpaceRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -23,17 +24,14 @@ public class SpaceService {
     private final MapRepository maps;
     private final SpaceRepository spaces;
     private final ReservationRepository reservations;
-    private final SettingRepository settings;
 
     public SpaceService(
             final MapRepository maps,
             final SpaceRepository spaces,
-            final ReservationRepository reservations,
-            final SettingRepository settings) {
+            final ReservationRepository reservations) {
         this.maps = maps;
         this.spaces = spaces;
         this.reservations = reservations;
-        this.settings = settings;
     }
 
     public SpaceCreateResponse saveSpace(

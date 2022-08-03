@@ -12,7 +12,11 @@ import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
+import java.util.stream.IntStream;
+
+import static com.woowacourse.zzimkkong.infrastructure.message.MessageUtils.LINE_SEPARATOR;
 
 @Getter
 @Embeddable
@@ -48,6 +52,12 @@ public class Settings {
 
     public void add(final Setting setting) {
         settings.add(setting);
+        sort();
+        validateConflicts();
+    }
+
+    public void addAll(final List<Setting> newSettings) {
+        settings.addAll(newSettings);
         sort();
         validateConflicts();
     }
@@ -135,18 +145,12 @@ public class Settings {
         return availableTimeSlots;
     }
 
-    public void addAll(final List<Setting> newSettings) {
-        settings.addAll(newSettings);
-        sort();
-        validateConflicts();
-    }
-
     public void clear() {
         settings.clear();
     }
 
     @PostLoad
-    public void PostLoad(){
+    public void postLoad(){
         sort();
     }
 
@@ -155,18 +159,16 @@ public class Settings {
     }
 
     private void validateConflicts() {
-        if (this.settings.size() <= MINIMUM_SETTING_COUNT) {
-            return;
-        }
-
-        for (int i = 0; i < this.settings.size() - 1; i++) {
-            Setting currentSetting = this.settings.get(i);
-            Setting nextSetting = this.settings.get(i + 1);
-
-            if (currentSetting.hasConflictWith(nextSetting)) {
-                throw new SettingConflictException(currentSetting, nextSetting);
-            }
-        }
+        IntStream.range(0, settings.size() - 1)
+                .mapToObj(i -> Map.entry(settings.get(i), settings.get(i + 1)))
+                .collect(Collectors.toList())
+                .forEach(pair -> {
+                    Setting currentSetting = pair.getKey();
+                    Setting nextSetting = pair.getValue();
+                    if (currentSetting.hasConflictWith(nextSetting)) {
+                        throw new SettingConflictException(currentSetting, nextSetting);
+                    }
+                });
     }
 
     @Override
@@ -175,9 +177,9 @@ public class Settings {
         for (int i = 0; i < settings.size(); i++) {
             Setting setting = settings.get(i);
             stringBuilder.append(String.format("[예약 조건 %d]", i + 1));
-            stringBuilder.append(System.getProperty("line.separator"));
+            stringBuilder.append(LINE_SEPARATOR);
             stringBuilder.append(setting);
-            stringBuilder.append(System.getProperty("line.separator"));
+            stringBuilder.append(LINE_SEPARATOR);
         }
         return stringBuilder.toString();
     }
