@@ -44,13 +44,12 @@ class AdminControllerTest extends AcceptanceTest {
     private static final Member POBI = new Member(memberSaveRequest.getEmail(), memberSaveRequest.getPassword(), memberSaveRequest.getOrganization());
     private static final Map LUTHER = new Map(LUTHER_NAME, MAP_DRAWING_DATA, MAP_SVG, POBI);
     private static final Setting BE_SETTING = Setting.builder()
-            .availableTimeSlot(TimeSlot.of(
+            .settingTimeSlot(TimeSlot.of(
                     BE_AVAILABLE_START_TIME,
                     BE_AVAILABLE_END_TIME))
             .reservationTimeUnit(BE_RESERVATION_TIME_UNIT)
             .reservationMinimumTimeUnit(BE_RESERVATION_MINIMUM_TIME_UNIT)
             .reservationMaximumTimeUnit(BE_RESERVATION_MAXIMUM_TIME_UNIT)
-            .reservationEnable(BE_RESERVATION_ENABLE)
             .enabledDayOfWeek(BE_ENABLED_DAY_OF_WEEK)
             .build();
     private static final Space BE = Space.builder()
@@ -59,7 +58,8 @@ class AdminControllerTest extends AcceptanceTest {
             .map(LUTHER)
             .description(BE_DESCRIPTION)
             .area(SPACE_DRAWING)
-            .setting(BE_SETTING)
+            .reservationEnable(BE_RESERVATION_ENABLE)
+            .spaceSettings(new Settings(List.of(BE_SETTING)))
             .build();
 
     private static String token;

@@ -67,15 +67,15 @@ class TimeSlotTest {
         assertThat(longTimeSlot.isDurationLongerThan(timeUnit)).isTrue();
     }
 
-    @ParameterizedTest
-    @DisplayName("TimeSlot이 다른 TimeSlot과 안 겹치면 true, 겹치면 false")
-    @MethodSource("provideTimeSlotArguments_isNotWithin")
-    void isNotWithin(
-            final TimeSlot thisTimeSlot,
-            final TimeSlot thatTimeSlot,
-            final boolean expectedResult) {
-        assertThat(thisTimeSlot.isNotWithin(thatTimeSlot)).isEqualTo(expectedResult);
-    }
+//    @ParameterizedTest
+//    @DisplayName("TimeSlot이 다른 TimeSlot과 안 겹치면 true, 겹치면 false")
+//    @MethodSource("provideTimeSlotArguments_isNotWithin")
+//    void isNotWithin(
+//            final TimeSlot thisTimeSlot,
+//            final TimeSlot thatTimeSlot,
+//            final boolean expectedResult) {
+//        assertThat(thisTimeSlot.isNotWithin(thatTimeSlot)).isEqualTo(expectedResult);
+//    }
 
     private static Stream<Arguments> provideStartAndEndTime_endTimeEqualOrShorterThanStartTime() {
         return Stream.of(

@@ -4,6 +4,7 @@ import com.woowacourse.zzimkkong.exception.reservation.IllegalTimeUnitValueExcep
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
@@ -60,5 +61,10 @@ public class TimeUnit {
 
     public boolean isShorterThan(final TimeUnit that) {
         return this.minutes < that.minutes;
+    }
+
+    @Override
+    public String toString() {
+        return minutes + "분";
     }
 }

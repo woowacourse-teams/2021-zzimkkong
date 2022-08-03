@@ -74,4 +74,12 @@ public class Reservation {
     public LocalDateTime getEndTime() {
         return reservationTime.getEndTime();
     }
+
+    public boolean isInUse(final LocalDateTime now) {
+        return reservationTime.contains(now);
+    }
+
+    public boolean isExpired(final LocalDateTime now) {
+        return reservationTime.isBefore(now);
+    }
 }

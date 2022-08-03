@@ -23,19 +23,18 @@ class PresetRepositoryTest extends RepositoryTest {
         Member pobi = new Member(EMAIL, PW, ORGANIZATION);
         members.save(pobi);
 
-        Setting setting = Setting.builder()
-                .availableTimeSlot(
+        preset = Preset.builder()
+                .name(PRESET_NAME1)
+                .settingTimeSlot(
                         TimeSlot.of(
                                 BE_AVAILABLE_START_TIME,
                                 BE_AVAILABLE_END_TIME))
                 .reservationTimeUnit(BE_RESERVATION_TIME_UNIT)
                 .reservationMinimumTimeUnit(BE_RESERVATION_MINIMUM_TIME_UNIT)
                 .reservationMaximumTimeUnit(BE_RESERVATION_MAXIMUM_TIME_UNIT)
-                .reservationEnable(BE_RESERVATION_ENABLE)
                 .enabledDayOfWeek(BE_ENABLED_DAY_OF_WEEK)
+                .member(pobi)
                 .build();
-
-        preset = new Preset(PRESET_NAME1, setting, pobi);
     }
 
     @Test

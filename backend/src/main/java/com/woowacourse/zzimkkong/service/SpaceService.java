@@ -9,6 +9,7 @@ import com.woowacourse.zzimkkong.exception.space.NoSuchSpaceException;
 import com.woowacourse.zzimkkong.exception.space.ReservationExistOnSpaceException;
 import com.woowacourse.zzimkkong.repository.MapRepository;
 import com.woowacourse.zzimkkong.repository.ReservationRepository;
+import com.woowacourse.zzimkkong.repository.SettingRepository;
 import com.woowacourse.zzimkkong.repository.SpaceRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -22,14 +23,17 @@ public class SpaceService {
     private final MapRepository maps;
     private final SpaceRepository spaces;
     private final ReservationRepository reservations;
+    private final SettingRepository settings;
 
     public SpaceService(
             final MapRepository maps,
             final SpaceRepository spaces,
-            final ReservationRepository reservations) {
+            final ReservationRepository reservations,
+            final SettingRepository settings) {
         this.maps = maps;
         this.spaces = spaces;
         this.reservations = reservations;
+        this.settings = settings;
     }
 
     public SpaceCreateResponse saveSpace(
@@ -40,13 +44,14 @@ public class SpaceService {
                 .orElseThrow(NoSuchMapException::new);
         validateManagerOfMap(map, loginEmailDto.getEmail());
 
-        Setting setting = getSetting(spaceCreateUpdateRequest);
+        Settings settings = Settings.from(spaceCreateUpdateRequest.getSettings());
         Space space = Space.builder()
                 .name(spaceCreateUpdateRequest.getName())
                 .color(spaceCreateUpdateRequest.getColor())
                 .description(spaceCreateUpdateRequest.getDescription())
                 .area(spaceCreateUpdateRequest.getArea())
-                .setting(setting)
+                .reservationEnable(spaceCreateUpdateRequest.getReservationEnable())
+                .spaceSettings(settings)
                 .map(map)
                 .build();
         Space saveSpace = spaces.save(space);
@@ -104,13 +109,14 @@ public class SpaceService {
         Space space = map.findSpaceById(spaceId)
                 .orElseThrow(NoSuchSpaceException::new);
 
-        Setting setting = getSetting(spaceCreateUpdateRequest);
+        Settings updateSettings = Settings.from(spaceCreateUpdateRequest.getSettings());
         Space updateSpace = Space.builder()
                 .name(spaceCreateUpdateRequest.getName())
                 .color(spaceCreateUpdateRequest.getColor())
                 .description(spaceCreateUpdateRequest.getDescription())
                 .area(spaceCreateUpdateRequest.getArea())
-                .setting(setting)
+                .reservationEnable(spaceCreateUpdateRequest.getReservationEnable())
+                .spaceSettings(updateSettings)
                 .build();
 
         space.update(updateSpace);
@@ -135,22 +141,6 @@ public class SpaceService {
         spaces.delete(space);
 
         map.updateThumbnail(spaceDeleteRequest.getThumbnail());
-    }
-
-    private Setting getSetting(final SpaceCreateUpdateRequest spaceCreateUpdateRequest) {
-        SettingsRequest settingsRequest = spaceCreateUpdateRequest.getSettingsRequest();
-
-        return Setting.builder()
-                .availableTimeSlot(
-                        TimeSlot.of(
-                                settingsRequest.getAvailableStartTime(),
-                                settingsRequest.getAvailableEndTime()))
-                .reservationTimeUnit(TimeUnit.from(settingsRequest.getReservationTimeUnit()))
-                .reservationMinimumTimeUnit(TimeUnit.from(settingsRequest.getReservationMinimumTimeUnit()))
-                .reservationMaximumTimeUnit(TimeUnit.from(settingsRequest.getReservationMaximumTimeUnit()))
-                .reservationEnable(settingsRequest.getReservationEnable())
-                .enabledDayOfWeek(settingsRequest.enabledDayOfWeekAsString())
-                .build();
     }
 
     private void validateReservationExistence(final Long spaceId) {
