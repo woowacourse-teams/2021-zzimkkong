@@ -1,4 +1,4 @@
-import { Dispatch, FormEventHandler, SetStateAction, useEffect, useRef } from 'react';
+import { Dispatch, FormEventHandler, SetStateAction, useEffect, useRef, useState } from 'react';
 import {
   DeleteManagerSpaceParams,
   PostManagerSpaceParams,
@@ -46,6 +46,12 @@ const Form = ({
   const nameInputRef = useRef<HTMLInputElement | null>(null);
 
   const [mode, setMode] = modeState;
+
+  const [tabIndex, setTabIndex] = useState<number>(0);
+
+  const handleTabIndex = (index: number): void => {
+    setTabIndex(index);
+  };
 
   const { values, onChange, resetForm, setValues, getRequestValues } =
     useFormContext(SpaceFormContext);
@@ -176,102 +182,121 @@ const Form = ({
           <Styled.Title>예약 조건</Styled.Title>
         </Styled.TitleContainer>
 
-        <Styled.ContentsContainer>
-          <Styled.Row>
-            <Preset />
-          </Styled.Row>
+        <div>
+          <button type="button" onClick={() => handleTabIndex(0)}>
+            탭 0
+          </button>
+          <button type="button" onClick={() => handleTabIndex(1)}>
+            탭 1
+          </button>
+          <button type="button" onClick={() => handleTabIndex(3)}>
+            탭 2
+          </button>
+        </div>
+        <div>
+          <h1>{tabIndex}</h1>
+          <Styled.ContentsContainer>
+            <Styled.Row>
+              <Preset />
+            </Styled.Row>
 
-          <Styled.Row>
-            <Styled.InputWrapper>
-              <Input
-                type="time"
-                label="예약이 열릴 시간"
-                value={values.availableStartTime}
-                name="availableStartTime"
-                onChange={onChange}
-                required
-              />
-              <Input
-                type="time"
-                label="예약이 닫힐 시간"
-                value={values.availableEndTime}
-                name="availableEndTime"
-                onChange={onChange}
-                required
-              />
-            </Styled.InputWrapper>
-            <Styled.InputMessage>예약이 열릴 시간과 닫힐 시간을 설정해주세요.</Styled.InputMessage>
-          </Styled.Row>
+            <Styled.Row>
+              <Styled.InputWrapper>
+                <Input
+                  type="time"
+                  label="예약이 열릴 시간"
+                  value={values.availableStartTime}
+                  name="availableStartTime"
+                  onChange={onChange}
+                  required
+                />
+                <Input
+                  type="time"
+                  label="예약이 닫힐 시간"
+                  value={values.availableEndTime}
+                  name="availableEndTime"
+                  onChange={onChange}
+                  required
+                />
+              </Styled.InputWrapper>
+              <Styled.InputMessage>
+                예약이 열릴 시간과 닫힐 시간을 설정해주세요.
+              </Styled.InputMessage>
+            </Styled.Row>
 
-          <Styled.Row>
-            <Styled.Fieldset>
-              <Styled.Label>예약 시간 단위</Styled.Label>
-              <FormTimeUnitSelect
-                timeUnits={timeUnits}
-                selectedValue={`${values.reservationTimeUnit}`}
-                name="reservationTimeUnit"
-                onChange={onChange}
-              />
-            </Styled.Fieldset>
-            <Styled.InputMessage>예약 시간의 단위를 설정해주세요.</Styled.InputMessage>
-          </Styled.Row>
+            <Styled.Row>
+              <Styled.Fieldset>
+                <Styled.Label>예약 시간 단위</Styled.Label>
+                <FormTimeUnitSelect
+                  timeUnits={timeUnits}
+                  selectedValue={`${values.reservationTimeUnit}`}
+                  name="reservationTimeUnit"
+                  onChange={onChange}
+                />
+              </Styled.Fieldset>
+              <Styled.InputMessage>예약 시간의 단위를 설정해주세요.</Styled.InputMessage>
+            </Styled.Row>
 
-          <Styled.Row>
-            <Styled.InputWrapper>
-              <Input
-                type="number"
-                min="0"
-                max="1440"
-                step={values.reservationTimeUnit}
-                label="최소 예약 시간(분)"
-                value={values.reservationMinimumTimeUnit}
-                name="reservationMinimumTimeUnit"
-                onChange={onChange}
-                required
-              />
-              <Input
-                type="number"
-                min={values.reservationMinimumTimeUnit}
-                max="1440"
-                step={values.reservationTimeUnit}
-                label="최대 예약 시간(분)"
-                value={values.reservationMaximumTimeUnit}
-                name="reservationMaximumTimeUnit"
-                onChange={onChange}
-                required
-              />
-            </Styled.InputWrapper>
-            <Styled.InputMessage>
-              예약 가능한 최소 시간과 최대 시간을 설정해주세요.
-            </Styled.InputMessage>
-          </Styled.Row>
+            <Styled.Row>
+              <Styled.InputWrapper>
+                <Input
+                  type="number"
+                  min="0"
+                  max="1440"
+                  step={values.reservationTimeUnit}
+                  label="최소 예약 시간(분)"
+                  value={values.reservationMinimumTimeUnit}
+                  name="reservationMinimumTimeUnit"
+                  onChange={onChange}
+                  required
+                />
+                <Input
+                  type="number"
+                  min={values.reservationMinimumTimeUnit}
+                  max="1440"
+                  step={values.reservationTimeUnit}
+                  label="최대 예약 시간(분)"
+                  value={values.reservationMaximumTimeUnit}
+                  name="reservationMaximumTimeUnit"
+                  onChange={onChange}
+                  required
+                />
+              </Styled.InputWrapper>
+              <Styled.InputMessage>
+                예약 가능한 최소 시간과 최대 시간을 설정해주세요.
+              </Styled.InputMessage>
+            </Styled.Row>
 
-          <Styled.Row>
-            <Styled.Fieldset>
-              <Styled.Label>예약 가능한 요일</Styled.Label>
-              <FormDayOfWeekSelect onChange={onChange} enabledDayOfWeek={values.enabledDayOfWeek} />
-            </Styled.Fieldset>
-          </Styled.Row>
+            <Styled.Row>
+              <Styled.Fieldset>
+                <Styled.Label>예약 가능한 요일</Styled.Label>
+                <FormDayOfWeekSelect
+                  onChange={onChange}
+                  enabledDayOfWeek={values.enabledDayOfWeek}
+                />
+              </Styled.Fieldset>
+            </Styled.Row>
 
-          <Styled.Row>
-            {selectedSpaceId ? (
-              <Styled.FormSubmitContainer>
-                <Styled.DeleteButton type="button" variant="text" onClick={handleDelete}>
-                  <DeleteIcon />
-                  공간 삭제
-                </Styled.DeleteButton>
-                <Button variant="primary">저장</Button>
-              </Styled.FormSubmitContainer>
-            ) : (
-              <Styled.FormSubmitContainer>
-                <Button type="button" variant="text" onClick={handleCancel}>
-                  취소
-                </Button>
-                <Button variant="primary">공간 추가</Button>
-              </Styled.FormSubmitContainer>
-            )}
-          </Styled.Row>
-        </Styled.ContentsContainer>
+            <Styled.Row>
+              {selectedSpaceId ? (
+                <Styled.FormSubmitContainer>
+                  <Styled.DeleteButton type="button" variant="text" onClick={handleDelete}>
+                    <DeleteIcon />
+                    공간 삭제
+                  </Styled.DeleteButton>
+                  <Button variant="primary">저장</Button>
+                </Styled.FormSubmitContainer>
+              ) : (
+                <Styled.FormSubmitContainer>
+                  <Button type="button" variant="text" onClick={handleCancel}>
+                    취소
+                  </Button>
+                  <Button variant="primary">공간 추가</Button>
+                </Styled.FormSubmitContainer>
+              )}
+            </Styled.Row>
+          </Styled.ContentsContainer>
+        </div>
       </Styled.Section>
     </Styled.Form>
   );
