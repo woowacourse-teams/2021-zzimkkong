@@ -3,9 +3,9 @@ package com.woowacourse.zzimkkong.service;
 import com.woowacourse.zzimkkong.domain.*;
 import com.woowacourse.zzimkkong.dto.reservation.*;
 import com.woowacourse.zzimkkong.dto.slack.SlackResponse;
-import com.woowacourse.zzimkkong.exception.setting.MultipleSettingsException;
 import com.woowacourse.zzimkkong.exception.map.NoSuchMapException;
 import com.woowacourse.zzimkkong.exception.reservation.*;
+import com.woowacourse.zzimkkong.exception.setting.MultipleSettingsException;
 import com.woowacourse.zzimkkong.exception.setting.NoSettingAvailableException;
 import com.woowacourse.zzimkkong.exception.space.NoSuchSpaceException;
 import com.woowacourse.zzimkkong.infrastructure.sharingid.SharingIdGenerator;
@@ -59,20 +59,21 @@ public class ReservationService {
         ReservationTime reservationTime = ReservationTime.of(
                 reservationCreateDto.getStartDateTime(),
                 reservationCreateDto.getEndDateTime(),
+                map.getServiceZone(),
                 reservationStrategy.isManager());
+        Reservation reservation = Reservation.builder()
+                .reservationTime(reservationTime)
+                .password(reservationCreateDto.getPassword())
+                .userName(reservationCreateDto.getName())
+                .description(reservationCreateDto.getDescription())
+                .space(space)
+                .build();
 
-        validateAvailability(space, reservationTime, new ExcludeReservationCreateStrategy());
+        validateAvailability(space, reservation, new ExcludeReservationCreateStrategy());
 
-        Reservation reservation = reservations.save(
-                Reservation.builder()
-                        .reservationTime(reservationTime)
-                        .password(reservationCreateDto.getPassword())
-                        .userName(reservationCreateDto.getName())
-                        .description(reservationCreateDto.getDescription())
-                        .space(space)
-                        .build());
+        Reservation savedReservation = reservations.save(reservation);
         String sharingMapId = sharingIdGenerator.from(map);
-        return ReservationCreateResponse.of(reservation, sharingMapId, map.getSlackUrl());
+        return ReservationCreateResponse.of(savedReservation, sharingMapId, map.getSlackUrl());
     }
 
     @Transactional(readOnly = true)
@@ -154,23 +155,24 @@ public class ReservationService {
         ReservationTime reservationTime = ReservationTime.of(
                 reservationUpdateDto.getStartDateTime(),
                 reservationUpdateDto.getEndDateTime(),
+                map.getServiceZone(),
                 reservationStrategy.isManager());
 
         Long reservationId = reservationUpdateDto.getReservationId();
         String password = reservationUpdateDto.getPassword();
+
         Reservation reservation = reservations
                 .findById(reservationId)
                 .orElseThrow(NoSuchReservationException::new);
         reservationStrategy.checkCorrectPassword(reservation, password);
-
-        validateAvailability(space, reservationTime, new ExcludeReservationUpdateStrategy(reservation));
-
         Reservation updateReservation = Reservation.builder()
                 .reservationTime(reservationTime)
                 .userName(reservationUpdateDto.getName())
                 .description(reservationUpdateDto.getDescription())
                 .space(space)
                 .build();
+
+        validateAvailability(space, updateReservation, new ExcludeReservationUpdateStrategy(reservation));
 
         reservation.update(updateReservation, space);
 
@@ -221,21 +223,21 @@ public class ReservationService {
 
     private void validateAvailability(
             final Space space,
-            final ReservationTime reservationTime,
+            final Reservation reservation,
             final ExcludeReservationStrategy excludeReservationStrategy) {
-        validateSpaceSetting(space, reservationTime);
+        validateSpaceSetting(space, reservation);
 
         List<Reservation> reservationsOnDate = getReservations(
                 Collections.singletonList(space),
-                reservationTime.getDate());
+                reservation.getDate());
         excludeReservationStrategy.apply(space, reservationsOnDate);
 
-        validateTimeConflicts(reservationTime, reservationsOnDate);
+        validateTimeConflicts(reservation, reservationsOnDate);
     }
 
-    private void validateSpaceSetting(final Space space, final ReservationTime reservationTime) {
-        TimeSlot timeSlot = reservationTime.asTimeSlotKST();
-        DayOfWeek dayOfWeek = reservationTime.getDayOfWeekKST();
+    private void validateSpaceSetting(final Space space, final Reservation reservation) {
+        TimeSlot timeSlot = reservation.getTimeSlot();
+        DayOfWeek dayOfWeek = reservation.getDayOfWeek();
 
         Settings relevantSettings = space.getRelevantSettings(timeSlot, dayOfWeek);
         if (relevantSettings.isEmpty()) {
@@ -271,10 +273,10 @@ public class ReservationService {
     }
 
     private void validateTimeConflicts(
-            final ReservationTime reservationTime,
+            final Reservation reservation,
             final List<Reservation> reservationsOnDate) {
         for (Reservation existingReservation : reservationsOnDate) {
-            if (existingReservation.hasConflictWith(reservationTime)) {
+            if (existingReservation.hasConflictWith(reservation)) {
                 throw new ReservationAlreadyExistsException();
             }
         }

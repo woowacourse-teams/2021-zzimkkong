@@ -36,7 +36,7 @@ public class TimeSlot {
         return new TimeSlot(startTime, endTime);
     }
 
-    public static void validateStartEndTime(final LocalTime startTime, LocalTime endTime) {
+    public static void validateStartEndTime(final LocalTime startTime, final LocalTime endTime) {
         if (endTime.isBefore(startTime) || startTime.equals(endTime)) {
             throw new ImpossibleStartEndTimeException();
         }

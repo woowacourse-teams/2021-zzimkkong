@@ -7,9 +7,6 @@ import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
 
-import static com.woowacourse.zzimkkong.infrastructure.datetime.TimeZoneUtils.KST;
-import static com.woowacourse.zzimkkong.infrastructure.datetime.TimeZoneUtils.UTC;
-
 @Getter
 @NoArgsConstructor
 public class SlackResponse {
@@ -37,14 +34,18 @@ public class SlackResponse {
     }
 
     public static SlackResponse of(final Reservation reservation, final String sharingMapId, final String slackUrl) {
-        LocalDateTime reservationStartTimeKST = TimeZoneUtils.convert(reservation.getStartTime(), UTC, KST);
-        LocalDateTime reservationEndTimeKST = TimeZoneUtils.convert(reservation.getEndTime(), UTC, KST);
+        LocalDateTime reservationStartTime = TimeZoneUtils.convertTo(
+                reservation.getStartTime(),
+                reservation.getServiceZone());
+        LocalDateTime reservationEndTime = TimeZoneUtils.convertTo(
+                reservation.getEndTime(),
+                reservation.getServiceZone());
 
         return new SlackResponse(
                 reservation.getSpace().getName(),
                 reservation.getUserName(),
-                reservationStartTimeKST,
-                reservationEndTimeKST,
+                reservationStartTime,
+                reservationEndTime,
                 reservation.getDescription(),
                 sharingMapId,
                 slackUrl);

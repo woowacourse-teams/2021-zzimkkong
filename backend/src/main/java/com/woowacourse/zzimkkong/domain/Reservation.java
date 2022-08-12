@@ -5,6 +5,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.time.DayOfWeek;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Getter
@@ -52,8 +54,8 @@ public class Reservation {
         }
     }
 
-    public boolean hasConflictWith(final ReservationTime thatReservationTime) {
-        return this.reservationTime.hasConflictWith(thatReservationTime);
+    public boolean hasConflictWith(final Reservation that) {
+        return this.reservationTime.hasConflictWith(that.reservationTime);
     }
 
     public boolean isWrongPassword(final String password) {
@@ -81,5 +83,21 @@ public class Reservation {
 
     public boolean isExpired(final LocalDateTime now) {
         return reservationTime.isBefore(now);
+    }
+
+    public ServiceZone getServiceZone() {
+        return space.getServiceZone();
+    }
+
+    public LocalDate getDate() {
+        return reservationTime.getDate();
+    }
+
+    public TimeSlot getTimeSlot() {
+        return reservationTime.at(space.getServiceZone());
+    }
+
+    public DayOfWeek getDayOfWeek() {
+        return reservationTime.getDayOfWeek();
     }
 }

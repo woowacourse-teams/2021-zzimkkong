@@ -47,7 +47,7 @@ class ReservationRepositoryImplTest extends RepositoryTest {
 
         Reservation beAmZeroOneYesterday = Reservation.builder()
                 .reservationTime(
-                        ReservationTime.of(
+                        ReservationTime.ofDefaultServiceZone(
                                 THE_DAY_AFTER_TOMORROW.minusDays(1).atTime(0, 0),
                                 THE_DAY_AFTER_TOMORROW.minusDays(1).atTime(1, 0)))
                 .description(BE_AM_TEN_ELEVEN_DESCRIPTION)
@@ -61,7 +61,7 @@ class ReservationRepositoryImplTest extends RepositoryTest {
         if (isReservationExists) {
             Reservation beAmZeroOne = Reservation.builder()
                     .reservationTime(
-                            ReservationTime.of(
+                            ReservationTime.ofDefaultServiceZone(
                                     BE_AM_TEN_ELEVEN_START_TIME_KST.withZoneSameInstant(UTC.toZoneId()).toLocalDateTime(),
                                     BE_AM_TEN_ELEVEN_END_TIME_KST.withZoneSameInstant(UTC.toZoneId()).toLocalDateTime()))
                     .description(BE_AM_TEN_ELEVEN_DESCRIPTION)

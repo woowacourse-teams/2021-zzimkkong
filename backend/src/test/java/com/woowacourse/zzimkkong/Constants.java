@@ -1,12 +1,12 @@
 package com.woowacourse.zzimkkong;
 
+import com.woowacourse.zzimkkong.domain.ServiceZone;
 import com.woowacourse.zzimkkong.domain.TimeUnit;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.time.ZoneId;
 import java.time.ZonedDateTime;
-
-import static com.woowacourse.zzimkkong.infrastructure.datetime.TimeZoneUtils.KST;
 
 public class Constants {
     private Constants() {
@@ -58,27 +58,27 @@ public class Constants {
     public static final String PRESET_NAME1 = "프리셋1";
     public static final String PRESET_NAME2 = "프리셋2";
 
-    public static final ZonedDateTime BE_AM_TEN_ELEVEN_START_TIME_KST = THE_DAY_AFTER_TOMORROW.atTime(10, 0).atZone(KST.toZoneId());
-    public static final ZonedDateTime BE_AM_TEN_ELEVEN_END_TIME_KST = THE_DAY_AFTER_TOMORROW.atTime(11, 0).atZone(KST.toZoneId());
+    public static final ZonedDateTime BE_AM_TEN_ELEVEN_START_TIME_KST = THE_DAY_AFTER_TOMORROW.atTime(10, 0).atZone(ZoneId.of(ServiceZone.KOREA.getTimeZone()));
+    public static final ZonedDateTime BE_AM_TEN_ELEVEN_END_TIME_KST = THE_DAY_AFTER_TOMORROW.atTime(11, 0).atZone(ZoneId.of(ServiceZone.KOREA.getTimeZone()));
 
     public static final String BE_AM_TEN_ELEVEN_DESCRIPTION = DESCRIPTION;
     public static final String BE_AM_TEN_ELEVEN_USERNAME = USER_NAME;
     public static final String BE_AM_TEN_ELEVEN_PW = RESERVATION_PW;
 
-    public static final ZonedDateTime BE_PM_ONE_TWO_START_TIME_KST = THE_DAY_AFTER_TOMORROW.atTime(13, 0).atZone(KST.toZoneId());
-    public static final ZonedDateTime BE_PM_ONE_TWO_END_TIME_KST = THE_DAY_AFTER_TOMORROW.atTime(14, 0).atZone(KST.toZoneId());
+    public static final ZonedDateTime BE_PM_ONE_TWO_START_TIME_KST = THE_DAY_AFTER_TOMORROW.atTime(13, 0).atZone(ZoneId.of(ServiceZone.KOREA.getTimeZone()));
+    public static final ZonedDateTime BE_PM_ONE_TWO_END_TIME_KST = THE_DAY_AFTER_TOMORROW.atTime(14, 0).atZone(ZoneId.of(ServiceZone.KOREA.getTimeZone()));
     public static final String BE_PM_ONE_TWO_DESCRIPTION = "찜꽁 2차 회의";
     public static final String BE_PM_ONE_TWO_USERNAME = USER_NAME;
     public static final String BE_PM_ONE_TWO_PW = RESERVATION_PW;
 
-    public static final ZonedDateTime BE_NEXT_DAY_PM_FOUR_TO_SIX_START_TIME_KST = THE_DAY_AFTER_TOMORROW.plusDays(1L).atTime(16, 0).atZone(KST.toZoneId());
-    public static final ZonedDateTime BE_NEXT_DAY_PM_FOUR_TO_SIX_END_TIME_KST = THE_DAY_AFTER_TOMORROW.plusDays(1L).atTime(18, 0).atZone(KST.toZoneId());
+    public static final ZonedDateTime BE_NEXT_DAY_PM_FOUR_TO_SIX_START_TIME_KST = THE_DAY_AFTER_TOMORROW.plusDays(1L).atTime(16, 0).atZone(ZoneId.of(ServiceZone.KOREA.getTimeZone()));
+    public static final ZonedDateTime BE_NEXT_DAY_PM_FOUR_TO_SIX_END_TIME_KST = THE_DAY_AFTER_TOMORROW.plusDays(1L).atTime(18, 0).atZone(ZoneId.of(ServiceZone.KOREA.getTimeZone()));
     public static final String BE_NEXT_DAY_PM_FOUR_TO_SIX_DESCRIPTION = "찜꽁 3차 회의";
     public static final String BE_NEXT_DAY_PM_FOUR_TO_SIX_USERNAME = USER_NAME;
     public static final String BE_NEXT_DAY_PM_FOUR_TO_SIX_PW = RESERVATION_PW;
 
-    public static final ZonedDateTime FE1_AM_TEN_ELEVEN_START_TIME_KST = THE_DAY_AFTER_TOMORROW.atTime(10, 0).atZone(KST.toZoneId());
-    public static final ZonedDateTime FE1_AM_TEN_ELEVEN_END_TIME_KST = THE_DAY_AFTER_TOMORROW.atTime(11, 0).atZone(KST.toZoneId());
+    public static final ZonedDateTime FE1_AM_TEN_ELEVEN_START_TIME_KST = THE_DAY_AFTER_TOMORROW.atTime(10, 0).atZone(ZoneId.of(ServiceZone.KOREA.getTimeZone()));
+    public static final ZonedDateTime FE1_AM_TEN_ELEVEN_END_TIME_KST = THE_DAY_AFTER_TOMORROW.atTime(11, 0).atZone(ZoneId.of(ServiceZone.KOREA.getTimeZone()));
     public static final String FE1_AM_TEN_ELEVEN_DESCRIPTION = "찜꽁 5차 회의";
     public static final String FE1_AM_TEN_ELEVEN_USERNAME = USER_NAME;
     public static final String FE1_AM_TEN_ELEVEN_PW = RESERVATION_PW;

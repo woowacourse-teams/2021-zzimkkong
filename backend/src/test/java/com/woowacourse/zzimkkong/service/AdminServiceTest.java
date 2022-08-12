@@ -172,7 +172,7 @@ class AdminServiceTest extends ServiceTest {
 
         Reservation beAmZeroOne = Reservation.builder()
                 .reservationTime(
-                        ReservationTime.of(
+                        ReservationTime.ofDefaultServiceZone(
                                 BE_AM_TEN_ELEVEN_START_TIME_KST.withZoneSameInstant(UTC.toZoneId()).toLocalDateTime(),
                                 BE_AM_TEN_ELEVEN_END_TIME_KST.withZoneSameInstant(UTC.toZoneId()).toLocalDateTime()))
                 .description(BE_AM_TEN_ELEVEN_DESCRIPTION)

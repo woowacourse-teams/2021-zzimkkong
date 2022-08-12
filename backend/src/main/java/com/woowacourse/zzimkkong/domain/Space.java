@@ -118,4 +118,8 @@ public class Space {
     public Settings getRelevantSettings(final TimeSlot timeSlot, final DayOfWeek dayOfWeek) {
         return spaceSettings.getSettingsByTimeSlotAndDayOfWeek(timeSlot, dayOfWeek);
     }
+
+    public ServiceZone getServiceZone() {
+        return map.getServiceZone();
+    }
 }

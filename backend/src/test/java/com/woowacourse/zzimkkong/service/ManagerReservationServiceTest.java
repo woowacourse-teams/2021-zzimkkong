@@ -19,17 +19,13 @@ import org.junit.jupiter.params.provider.CsvSource;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.LocalTime;
-import java.time.ZonedDateTime;
+import java.time.*;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
 import static com.woowacourse.zzimkkong.Constants.*;
-import static com.woowacourse.zzimkkong.infrastructure.datetime.TimeZoneUtils.KST;
 import static com.woowacourse.zzimkkong.infrastructure.datetime.TimeZoneUtils.UTC;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -46,14 +42,14 @@ class ManagerReservationServiceTest extends ServiceTest {
     private final ManagerReservationStrategy managerReservationStrategy = new ManagerReservationStrategy();
 
     private ReservationCreateUpdateWithPasswordRequest reservationCreateUpdateWithPasswordRequest = new ReservationCreateUpdateWithPasswordRequest(
-            THE_DAY_AFTER_TOMORROW.atTime(11, 0).atZone(KST.toZoneId()),
-            THE_DAY_AFTER_TOMORROW.atTime(12, 0).atZone(KST.toZoneId()),
+            THE_DAY_AFTER_TOMORROW.atTime(11, 0).atZone(ZoneId.of(ServiceZone.KOREA.getTimeZone())),
+            THE_DAY_AFTER_TOMORROW.atTime(12, 0).atZone(ZoneId.of(ServiceZone.KOREA.getTimeZone())),
             RESERVATION_PW,
             USER_NAME,
             DESCRIPTION);
     private final ReservationCreateUpdateRequest reservationCreateUpdateRequest = new ReservationCreateUpdateRequest(
-            THE_DAY_AFTER_TOMORROW.atTime(11, 0).atZone(KST.toZoneId()),
-            THE_DAY_AFTER_TOMORROW.atTime(12, 0).atZone(KST.toZoneId()),
+            THE_DAY_AFTER_TOMORROW.atTime(11, 0).atZone(ZoneId.of(ServiceZone.KOREA.getTimeZone())),
+            THE_DAY_AFTER_TOMORROW.atTime(12, 0).atZone(ZoneId.of(ServiceZone.KOREA.getTimeZone())),
             CHANGED_NAME,
             CHANGED_DESCRIPTION);
 
@@ -125,7 +121,7 @@ class ManagerReservationServiceTest extends ServiceTest {
         beAmZeroOne = Reservation.builder()
                 .id(1L)
                 .reservationTime(
-                        ReservationTime.of(
+                        ReservationTime.ofDefaultServiceZone(
                                 BE_AM_TEN_ELEVEN_START_TIME_KST.withZoneSameInstant(UTC.toZoneId()).toLocalDateTime(),
                                 BE_AM_TEN_ELEVEN_END_TIME_KST.withZoneSameInstant(UTC.toZoneId()).toLocalDateTime()))
                 .description(BE_AM_TEN_ELEVEN_DESCRIPTION)
@@ -137,7 +133,7 @@ class ManagerReservationServiceTest extends ServiceTest {
         bePmOneTwo = Reservation.builder()
                 .id(2L)
                 .reservationTime(
-                        ReservationTime.of(
+                        ReservationTime.ofDefaultServiceZone(
                                 BE_PM_ONE_TWO_START_TIME_KST.withZoneSameInstant(UTC.toZoneId()).toLocalDateTime(),
                                 BE_PM_ONE_TWO_END_TIME_KST.withZoneSameInstant(UTC.toZoneId()).toLocalDateTime()))
                 .description(BE_PM_ONE_TWO_DESCRIPTION)
@@ -189,7 +185,7 @@ class ManagerReservationServiceTest extends ServiceTest {
         Reservation pastReservation = Reservation.builder()
                 .id(1L)
                 .reservationTime(
-                        ReservationTime.of(
+                        ReservationTime.ofDefaultServiceZone(
                                 BE_AM_TEN_ELEVEN_START_TIME_KST.minusDays(5).withZoneSameInstant(UTC.toZoneId()).toLocalDateTime(),
                                 BE_AM_TEN_ELEVEN_END_TIME_KST.minusDays(5).withZoneSameInstant(UTC.toZoneId()).toLocalDateTime()))
                 .description(BE_AM_TEN_ELEVEN_DESCRIPTION)
@@ -203,8 +199,8 @@ class ManagerReservationServiceTest extends ServiceTest {
                 .willReturn(pastReservation);
 
         //when
-        ZonedDateTime pastReservationStartTimeKST = TimeZoneUtils.convert(pastReservation.getStartTime(), UTC, KST).atZone(KST.toZoneId());
-        ZonedDateTime pastReservationEndTimeKST = TimeZoneUtils.convert(pastReservation.getEndTime(), UTC, KST).atZone(KST.toZoneId());
+        ZonedDateTime pastReservationStartTimeKST = TimeZoneUtils.convertTo(pastReservation.getStartTime(), ServiceZone.KOREA).atZone(ZoneId.of(ServiceZone.KOREA.getTimeZone()));
+        ZonedDateTime pastReservationEndTimeKST = TimeZoneUtils.convertTo(pastReservation.getEndTime(), ServiceZone.KOREA).atZone(ZoneId.of(ServiceZone.KOREA.getTimeZone()));
         ReservationCreateUpdateWithPasswordRequest pastReservationCreateUpdateWithPasswordRequest = new ReservationCreateUpdateWithPasswordRequest(
                 pastReservationStartTimeKST,
                 pastReservationEndTimeKST,
@@ -296,8 +292,8 @@ class ManagerReservationServiceTest extends ServiceTest {
                 .willReturn(Optional.of(luther));
 
         reservationCreateUpdateWithPasswordRequest = new ReservationCreateUpdateWithPasswordRequest(
-                THE_DAY_AFTER_TOMORROW.atTime(14, 0).atZone(KST.toZoneId()),
-                THE_DAY_AFTER_TOMORROW.atTime(13, 0).atZone(KST.toZoneId()),
+                THE_DAY_AFTER_TOMORROW.atTime(14, 0).atZone(ZoneId.of(ServiceZone.KOREA.getTimeZone())),
+                THE_DAY_AFTER_TOMORROW.atTime(13, 0).atZone(ZoneId.of(ServiceZone.KOREA.getTimeZone())),
                 RESERVATION_PW,
                 USER_NAME,
                 DESCRIPTION);
@@ -324,8 +320,8 @@ class ManagerReservationServiceTest extends ServiceTest {
                 .willReturn(Optional.of(luther));
 
         reservationCreateUpdateWithPasswordRequest = new ReservationCreateUpdateWithPasswordRequest(
-                THE_DAY_AFTER_TOMORROW.atTime(10, 0).atZone(KST.toZoneId()),
-                THE_DAY_AFTER_TOMORROW.atTime(10, 0).atZone(KST.toZoneId()),
+                THE_DAY_AFTER_TOMORROW.atTime(10, 0).atZone(ZoneId.of(ServiceZone.KOREA.getTimeZone())),
+                THE_DAY_AFTER_TOMORROW.atTime(10, 0).atZone(ZoneId.of(ServiceZone.KOREA.getTimeZone())),
                 RESERVATION_PW,
                 USER_NAME,
                 DESCRIPTION);
@@ -352,8 +348,8 @@ class ManagerReservationServiceTest extends ServiceTest {
                 .willReturn(Optional.of(luther));
 
         reservationCreateUpdateWithPasswordRequest = new ReservationCreateUpdateWithPasswordRequest(
-                THE_DAY_AFTER_TOMORROW.atTime(10, 0).atZone(KST.toZoneId()),
-                THE_DAY_AFTER_TOMORROW.atTime(10, 0).plusDays(1).atZone(KST.toZoneId()),
+                THE_DAY_AFTER_TOMORROW.atTime(10, 0).atZone(ZoneId.of(ServiceZone.KOREA.getTimeZone())),
+                THE_DAY_AFTER_TOMORROW.atTime(10, 0).plusDays(1).atZone(ZoneId.of(ServiceZone.KOREA.getTimeZone())),
                 RESERVATION_PW,
                 USER_NAME,
                 DESCRIPTION);
@@ -524,7 +520,7 @@ class ManagerReservationServiceTest extends ServiceTest {
     }
 
     @ParameterizedTest
-    @CsvSource({"6,8","8,10","22,23"})
+    @CsvSource({"6,8", "8,10", "22,23"})
     @DisplayName("예약 생성/수정 요청 시, 예약 시간대에 해당하는 예약 조건이 없으면 에러를 반환한다")
     void saveUpdateReservationNoRelevantSetting(int startHour, int endHour) {
         //given
@@ -535,8 +531,8 @@ class ManagerReservationServiceTest extends ServiceTest {
 
         //when
         ReservationCreateUpdateWithPasswordRequest reservationCreateUpdateWithPasswordRequest = new ReservationCreateUpdateWithPasswordRequest(
-                THE_DAY_AFTER_TOMORROW.atTime(startHour, 0).atZone(KST.toZoneId()),
-                THE_DAY_AFTER_TOMORROW.atTime(endHour, 0).atZone(KST.toZoneId()),
+                THE_DAY_AFTER_TOMORROW.atTime(startHour, 0).atZone(ZoneId.of(ServiceZone.KOREA.getTimeZone())),
+                THE_DAY_AFTER_TOMORROW.atTime(endHour, 0).atZone(ZoneId.of(ServiceZone.KOREA.getTimeZone())),
                 RESERVATION_PW,
                 USER_NAME,
                 DESCRIPTION);
@@ -567,14 +563,14 @@ class ManagerReservationServiceTest extends ServiceTest {
     }
 
     @ParameterizedTest
-    @CsvSource({"7,11","9,11"})
+    @CsvSource({"7,11", "9,11"})
     @DisplayName("예약 생성/수정 요청 시, 예약 시간대에 해당하는 예약 조건이 2개 이상이면 에러를 반환한다")
     void saveUpdateReservationMultipleSettings(int startHour, int endHour) {
         //given
         be.addSetting(Setting.builder()
                 .settingTimeSlot(TimeSlot.of(
-                        LocalTime.of(8,0),
-                        LocalTime.of(10,0)))
+                        LocalTime.of(8, 0),
+                        LocalTime.of(10, 0)))
                 .reservationTimeUnit(TimeUnit.from(10))
                 .reservationMinimumTimeUnit(TimeUnit.from(10))
                 .reservationMaximumTimeUnit(TimeUnit.from(60))
@@ -587,8 +583,8 @@ class ManagerReservationServiceTest extends ServiceTest {
 
         //when
         ReservationCreateUpdateWithPasswordRequest reservationCreateUpdateWithPasswordRequest = new ReservationCreateUpdateWithPasswordRequest(
-                THE_DAY_AFTER_TOMORROW.atTime(startHour, 0).atZone(KST.toZoneId()),
-                THE_DAY_AFTER_TOMORROW.atTime(endHour, 0).atZone(KST.toZoneId()),
+                THE_DAY_AFTER_TOMORROW.atTime(startHour, 0).atZone(ZoneId.of(ServiceZone.KOREA.getTimeZone())),
+                THE_DAY_AFTER_TOMORROW.atTime(endHour, 0).atZone(ZoneId.of(ServiceZone.KOREA.getTimeZone())),
                 RESERVATION_PW,
                 USER_NAME,
                 DESCRIPTION);
@@ -619,7 +615,7 @@ class ManagerReservationServiceTest extends ServiceTest {
     }
 
     @ParameterizedTest
-    @CsvSource({"9,11","21,23"})
+    @CsvSource({"9,11", "21,23"})
     @DisplayName("예약 생성/수정 요청 시, 예약 시간대가 예약 조건안에 완전히 포함되지 않고 걸쳐있으면 에러를 반환한다")
     void saveUpdateReservationIsNotWithinSetting(int startHour, int endHour) {
         //given
@@ -630,8 +626,8 @@ class ManagerReservationServiceTest extends ServiceTest {
 
         //when
         ReservationCreateUpdateWithPasswordRequest reservationCreateUpdateWithPasswordRequest = new ReservationCreateUpdateWithPasswordRequest(
-                THE_DAY_AFTER_TOMORROW.atTime(startHour, 0).atZone(KST.toZoneId()),
-                THE_DAY_AFTER_TOMORROW.atTime(endHour, 0).atZone(KST.toZoneId()),
+                THE_DAY_AFTER_TOMORROW.atTime(startHour, 0).atZone(ZoneId.of(ServiceZone.KOREA.getTimeZone())),
+                THE_DAY_AFTER_TOMORROW.atTime(endHour, 0).atZone(ZoneId.of(ServiceZone.KOREA.getTimeZone())),
                 RESERVATION_PW,
                 USER_NAME,
                 DESCRIPTION);
@@ -674,14 +670,14 @@ class ManagerReservationServiceTest extends ServiceTest {
 
         //when
         ReservationCreateUpdateWithPasswordRequest reservationCreateUpdateWithPasswordRequest = new ReservationCreateUpdateWithPasswordRequest(
-                theDayAfterTomorrowTen.plusMinutes(additionalStartMinute).atZone(KST.toZoneId()),
-                theDayAfterTomorrowTen.plusMinutes(additionalEndMinute).atZone(KST.toZoneId()),
+                theDayAfterTomorrowTen.plusMinutes(additionalStartMinute).atZone(ZoneId.of(ServiceZone.KOREA.getTimeZone())),
+                theDayAfterTomorrowTen.plusMinutes(additionalEndMinute).atZone(ZoneId.of(ServiceZone.KOREA.getTimeZone())),
                 RESERVATION_PW,
                 USER_NAME,
                 DESCRIPTION);
         ReservationCreateUpdateRequest reservationCreateUpdateRequest = new ReservationCreateUpdateRequest(
-                theDayAfterTomorrowTen.plusMinutes(additionalStartMinute).atZone(KST.toZoneId()),
-                theDayAfterTomorrowTen.plusMinutes(additionalEndMinute).atZone(KST.toZoneId()),
+                theDayAfterTomorrowTen.plusMinutes(additionalStartMinute).atZone(ZoneId.of(ServiceZone.KOREA.getTimeZone())),
+                theDayAfterTomorrowTen.plusMinutes(additionalEndMinute).atZone(ZoneId.of(ServiceZone.KOREA.getTimeZone())),
                 USER_NAME,
                 DESCRIPTION);
 
@@ -722,8 +718,8 @@ class ManagerReservationServiceTest extends ServiceTest {
 
         //when
         ReservationCreateUpdateWithPasswordRequest reservationCreateUpdateWithPasswordRequest = new ReservationCreateUpdateWithPasswordRequest(
-                THE_DAY_AFTER_TOMORROW.atTime(10, 0).atZone(KST.toZoneId()),
-                THE_DAY_AFTER_TOMORROW.atTime(10, 0).plusMinutes(50).atZone(KST.toZoneId()),
+                THE_DAY_AFTER_TOMORROW.atTime(10, 0).atZone(ZoneId.of(ServiceZone.KOREA.getTimeZone())),
+                THE_DAY_AFTER_TOMORROW.atTime(10, 0).plusMinutes(50).atZone(ZoneId.of(ServiceZone.KOREA.getTimeZone())),
                 RESERVATION_PW,
                 USER_NAME,
                 DESCRIPTION);
@@ -752,8 +748,8 @@ class ManagerReservationServiceTest extends ServiceTest {
 
         //when
         ReservationCreateUpdateWithPasswordRequest reservationCreateUpdateWithPasswordRequest = new ReservationCreateUpdateWithPasswordRequest(
-                THE_DAY_AFTER_TOMORROW.atTime(10, 0).atZone(KST.toZoneId()),
-                THE_DAY_AFTER_TOMORROW.atTime(10, 0).plusMinutes(130).atZone(KST.toZoneId()),
+                THE_DAY_AFTER_TOMORROW.atTime(10, 0).atZone(ZoneId.of(ServiceZone.KOREA.getTimeZone())),
+                THE_DAY_AFTER_TOMORROW.atTime(10, 0).plusMinutes(130).atZone(ZoneId.of(ServiceZone.KOREA.getTimeZone())),
                 RESERVATION_PW,
                 USER_NAME,
                 DESCRIPTION);
@@ -782,8 +778,8 @@ class ManagerReservationServiceTest extends ServiceTest {
 
         //when
         ReservationCreateUpdateRequest reservationCreateUpdateRequest = new ReservationCreateUpdateRequest(
-                THE_DAY_AFTER_TOMORROW.atTime(10, 0).atZone(KST.toZoneId()),
-                THE_DAY_AFTER_TOMORROW.atTime(10, 0).plusMinutes(50).atZone(KST.toZoneId()),
+                THE_DAY_AFTER_TOMORROW.atTime(10, 0).atZone(ZoneId.of(ServiceZone.KOREA.getTimeZone())),
+                THE_DAY_AFTER_TOMORROW.atTime(10, 0).plusMinutes(50).atZone(ZoneId.of(ServiceZone.KOREA.getTimeZone())),
                 USER_NAME,
                 DESCRIPTION);
 
@@ -814,8 +810,8 @@ class ManagerReservationServiceTest extends ServiceTest {
 
         //when
         ReservationCreateUpdateRequest reservationCreateUpdateRequest = new ReservationCreateUpdateRequest(
-                THE_DAY_AFTER_TOMORROW.atTime(10, 0).atZone(KST.toZoneId()),
-                THE_DAY_AFTER_TOMORROW.atTime(10, 0).plusMinutes(130).atZone(KST.toZoneId()),
+                THE_DAY_AFTER_TOMORROW.atTime(10, 0).atZone(ZoneId.of(ServiceZone.KOREA.getTimeZone())),
+                THE_DAY_AFTER_TOMORROW.atTime(10, 0).plusMinutes(130).atZone(ZoneId.of(ServiceZone.KOREA.getTimeZone())),
                 USER_NAME,
                 DESCRIPTION);
 
@@ -1168,8 +1164,8 @@ class ManagerReservationServiceTest extends ServiceTest {
 
         // when
         ReservationCreateUpdateRequest reservationCreateUpdateRequest = new ReservationCreateUpdateRequest(
-                THE_DAY_AFTER_TOMORROW.atTime(10, 0).minusDays(beforeDay).atZone(KST.toZoneId()),
-                THE_DAY_AFTER_TOMORROW.atTime(11, 0).minusDays(beforeDay).atZone(KST.toZoneId()),
+                THE_DAY_AFTER_TOMORROW.atTime(10, 0).minusDays(beforeDay).atZone(ZoneId.of(ServiceZone.KOREA.getTimeZone())),
+                THE_DAY_AFTER_TOMORROW.atTime(11, 0).minusDays(beforeDay).atZone(ZoneId.of(ServiceZone.KOREA.getTimeZone())),
                 CHANGED_NAME,
                 CHANGED_DESCRIPTION);
         Long reservationId = reservation.getId();
@@ -1200,8 +1196,8 @@ class ManagerReservationServiceTest extends ServiceTest {
 
         //when
         ReservationCreateUpdateRequest reservationCreateUpdateRequest = new ReservationCreateUpdateRequest(
-                THE_DAY_AFTER_TOMORROW.atTime(20, 0).atZone(KST.toZoneId()),
-                THE_DAY_AFTER_TOMORROW.atTime(21, 0).atZone(KST.toZoneId()),
+                THE_DAY_AFTER_TOMORROW.atTime(20, 0).atZone(ZoneId.of(ServiceZone.KOREA.getTimeZone())),
+                THE_DAY_AFTER_TOMORROW.atTime(21, 0).atZone(ZoneId.of(ServiceZone.KOREA.getTimeZone())),
                 CHANGED_NAME,
                 CHANGED_DESCRIPTION);
         Long reservationId = reservation.getId();
@@ -1231,8 +1227,8 @@ class ManagerReservationServiceTest extends ServiceTest {
 
         //when
         ReservationCreateUpdateRequest reservationCreateUpdateRequest = new ReservationCreateUpdateRequest(
-                THE_DAY_AFTER_TOMORROW.atTime(12, 0).atZone(KST.toZoneId()),
-                THE_DAY_AFTER_TOMORROW.atTime(12, 0).minusHours(endTime).atZone(KST.toZoneId()),
+                THE_DAY_AFTER_TOMORROW.atTime(12, 0).atZone(ZoneId.of(ServiceZone.KOREA.getTimeZone())),
+                THE_DAY_AFTER_TOMORROW.atTime(12, 0).minusHours(endTime).atZone(ZoneId.of(ServiceZone.KOREA.getTimeZone())),
                 CHANGED_NAME,
                 CHANGED_DESCRIPTION);
         Long reservationId = reservation.getId();
@@ -1261,8 +1257,8 @@ class ManagerReservationServiceTest extends ServiceTest {
 
         //when
         ReservationCreateUpdateRequest reservationCreateUpdateRequest = new ReservationCreateUpdateRequest(
-                THE_DAY_AFTER_TOMORROW.atTime(10, 0).atZone(KST.toZoneId()),
-                THE_DAY_AFTER_TOMORROW.atTime(10, 0).plusDays(1).atZone(KST.toZoneId()),
+                THE_DAY_AFTER_TOMORROW.atTime(10, 0).atZone(ZoneId.of(ServiceZone.KOREA.getTimeZone())),
+                THE_DAY_AFTER_TOMORROW.atTime(10, 0).plusDays(1).atZone(ZoneId.of(ServiceZone.KOREA.getTimeZone())),
                 CHANGED_NAME,
                 CHANGED_DESCRIPTION);
         Long reservationId = reservation.getId();
@@ -1300,8 +1296,8 @@ class ManagerReservationServiceTest extends ServiceTest {
 
         //when
         ReservationCreateUpdateRequest reservationCreateUpdateRequest = new ReservationCreateUpdateRequest(
-                TimeZoneUtils.convert(bePmOneTwo.getStartTime(), UTC, KST).plusMinutes(startTime).atZone(KST.toZoneId()),
-                TimeZoneUtils.convert(bePmOneTwo.getEndTime(), UTC, KST).plusMinutes(endTime).atZone(KST.toZoneId()),
+                TimeZoneUtils.convertTo(bePmOneTwo.getStartTime(), ServiceZone.KOREA).plusMinutes(startTime).atZone(ZoneId.of(ServiceZone.KOREA.getTimeZone())),
+                TimeZoneUtils.convertTo(bePmOneTwo.getEndTime(), ServiceZone.KOREA).plusMinutes(endTime).atZone(ZoneId.of(ServiceZone.KOREA.getTimeZone())),
                 reservation.getUserName(),
                 reservation.getDescription());
         Long reservationId = reservation.getId();
@@ -1333,8 +1329,8 @@ class ManagerReservationServiceTest extends ServiceTest {
 
         //when
         ReservationCreateUpdateRequest reservationCreateUpdateRequest = new ReservationCreateUpdateRequest(
-                THE_DAY_AFTER_TOMORROW.atTime(startTime, 0).atZone(KST.toZoneId()),
-                THE_DAY_AFTER_TOMORROW.atTime(endTime, 30).atZone(KST.toZoneId()),
+                THE_DAY_AFTER_TOMORROW.atTime(startTime, 0).atZone(ZoneId.of(ServiceZone.KOREA.getTimeZone())),
+                THE_DAY_AFTER_TOMORROW.atTime(endTime, 30).atZone(ZoneId.of(ServiceZone.KOREA.getTimeZone())),
                 CHANGED_NAME,
                 CHANGED_DESCRIPTION);
         Long reservationId = reservation.getId();
@@ -1531,7 +1527,7 @@ class ManagerReservationServiceTest extends ServiceTest {
         return Reservation.builder()
                 .id(3L)
                 .reservationTime(
-                        ReservationTime.of(
+                        ReservationTime.ofDefaultServiceZone(
                                 startTime,
                                 endTime))
                 .password(reservationCreateUpdateWithPasswordRequest.getPassword())

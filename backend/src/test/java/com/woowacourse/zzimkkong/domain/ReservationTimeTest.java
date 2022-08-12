@@ -2,7 +2,6 @@ package com.woowacourse.zzimkkong.domain;
 
 import com.woowacourse.zzimkkong.exception.reservation.ImpossibleStartEndTimeException;
 import com.woowacourse.zzimkkong.exception.reservation.NonMatchingStartEndDateException;
-import com.woowacourse.zzimkkong.exception.reservation.PastReservationTimeException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -23,27 +22,27 @@ import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 class ReservationTimeTest {
     private final LocalDateTime fourPmUTC = THE_DAY_AFTER_TOMORROW.atTime(16, 0); // next day KST 01:00
     private final LocalDateTime sixPmUTC = THE_DAY_AFTER_TOMORROW.atTime(18, 0); // next day KST 03:00
-    private final ReservationTime reservationTime = ReservationTime.of(fourPmUTC, sixPmUTC);
+    private final ReservationTime reservationTime = ReservationTime.of(fourPmUTC, sixPmUTC, ServiceZone.KOREA, true);
 
     @Test
     @DisplayName("startTime과 endTime의 KST date가 동일하지 않으면 에러를 반환한다")
     void of_notSameDate() {
         LocalDateTime twoPmUTC = THE_DAY_AFTER_TOMORROW.atTime(14, 0);// KST 23:00
-        assertThatThrownBy(() -> ReservationTime.of(twoPmUTC, fourPmUTC))
+        assertThatThrownBy(() -> ReservationTime.of(twoPmUTC, fourPmUTC, ServiceZone.KOREA, true))
                 .isInstanceOf(NonMatchingStartEndDateException.class);
     }
 
     @Test
     @DisplayName("endTime이 startTime과 동일하거나 더 이르면 에러를 반환한다")
     void of_invalidStartAndEndTime() {
-        assertThatThrownBy(() -> ReservationTime.of(sixPmUTC, fourPmUTC))
+        assertThatThrownBy(() -> ReservationTime.ofDefaultServiceZone(sixPmUTC, fourPmUTC))
                 .isInstanceOf(ImpossibleStartEndTimeException.class);
     }
 
     @Test
     @DisplayName("UTC 시간이 주어질 때, 한국 시간으로 변환(+9시간) 했을 때의 요일을 반환한다")
     void getDayOfWeekKST() {
-        DayOfWeek dayOfWeekKST = reservationTime.getDayOfWeekKST();
+        DayOfWeek dayOfWeekKST = reservationTime.getDayOfWeek();
         DayOfWeek dayOfWeekUTC = fourPmUTC.getDayOfWeek();
 
         assertThat(dayOfWeekUTC).isNotEqualTo(dayOfWeekKST);
@@ -53,7 +52,7 @@ class ReservationTimeTest {
     @Test
     @DisplayName("UTC 시간이 주어질 때, 한국 시간으로 변환(+9시간) 했을 때의 TimeSlot을 반환한다")
     void asTimeSlotKST() {
-        TimeSlot actualTimeSlot = reservationTime.asTimeSlotKST();
+        TimeSlot actualTimeSlot = reservationTime.at(ServiceZone.KOREA);
         TimeSlot expectedTimeSlot = TimeSlot.of(
                 fourPmUTC.plusHours(9).toLocalTime(),
                 sixPmUTC.plusHours(9).toLocalTime());
@@ -102,40 +101,40 @@ class ReservationTimeTest {
     private static Stream<Arguments> provideReservationTimes() {
         return Stream.of(
                 Arguments.of(
-                        ReservationTime.of(THE_DAY_AFTER_TOMORROW.atTime(10, 0), THE_DAY_AFTER_TOMORROW.atTime(10, 5)),
-                        ReservationTime.of(THE_DAY_AFTER_TOMORROW.atTime(10, 0), THE_DAY_AFTER_TOMORROW.atTime(10, 5)),
+                        ReservationTime.ofDefaultServiceZone(THE_DAY_AFTER_TOMORROW.atTime(10, 0), THE_DAY_AFTER_TOMORROW.atTime(10, 5)),
+                        ReservationTime.ofDefaultServiceZone(THE_DAY_AFTER_TOMORROW.atTime(10, 0), THE_DAY_AFTER_TOMORROW.atTime(10, 5)),
                         true),
                 Arguments.of(
-                        ReservationTime.of(THE_DAY_AFTER_TOMORROW.atTime(12, 10), THE_DAY_AFTER_TOMORROW.atTime(12, 20)),
-                        ReservationTime.of(THE_DAY_AFTER_TOMORROW.atTime(12, 5), THE_DAY_AFTER_TOMORROW.atTime(12, 15)),
+                        ReservationTime.ofDefaultServiceZone(THE_DAY_AFTER_TOMORROW.atTime(12, 10), THE_DAY_AFTER_TOMORROW.atTime(12, 20)),
+                        ReservationTime.ofDefaultServiceZone(THE_DAY_AFTER_TOMORROW.atTime(12, 5), THE_DAY_AFTER_TOMORROW.atTime(12, 15)),
                         true),
                 Arguments.of(
-                        ReservationTime.of(THE_DAY_AFTER_TOMORROW.atTime(12, 10), THE_DAY_AFTER_TOMORROW.atTime(12, 20)),
-                        ReservationTime.of(THE_DAY_AFTER_TOMORROW.atTime(12, 15), THE_DAY_AFTER_TOMORROW.atTime(12, 20)),
+                        ReservationTime.ofDefaultServiceZone(THE_DAY_AFTER_TOMORROW.atTime(12, 10), THE_DAY_AFTER_TOMORROW.atTime(12, 20)),
+                        ReservationTime.ofDefaultServiceZone(THE_DAY_AFTER_TOMORROW.atTime(12, 15), THE_DAY_AFTER_TOMORROW.atTime(12, 20)),
                         true),
                 Arguments.of(
-                        ReservationTime.of(THE_DAY_AFTER_TOMORROW.atTime(12, 10), THE_DAY_AFTER_TOMORROW.atTime(12, 20)),
-                        ReservationTime.of(THE_DAY_AFTER_TOMORROW.atTime(12, 15), THE_DAY_AFTER_TOMORROW.atTime(12, 25)),
+                        ReservationTime.ofDefaultServiceZone(THE_DAY_AFTER_TOMORROW.atTime(12, 10), THE_DAY_AFTER_TOMORROW.atTime(12, 20)),
+                        ReservationTime.ofDefaultServiceZone(THE_DAY_AFTER_TOMORROW.atTime(12, 15), THE_DAY_AFTER_TOMORROW.atTime(12, 25)),
                         true),
                 Arguments.of(
-                        ReservationTime.of(THE_DAY_AFTER_TOMORROW.atTime(12, 10), THE_DAY_AFTER_TOMORROW.atTime(12, 30)),
-                        ReservationTime.of(THE_DAY_AFTER_TOMORROW.atTime(12, 15), THE_DAY_AFTER_TOMORROW.atTime(12, 25)),
+                        ReservationTime.ofDefaultServiceZone(THE_DAY_AFTER_TOMORROW.atTime(12, 10), THE_DAY_AFTER_TOMORROW.atTime(12, 30)),
+                        ReservationTime.ofDefaultServiceZone(THE_DAY_AFTER_TOMORROW.atTime(12, 15), THE_DAY_AFTER_TOMORROW.atTime(12, 25)),
                         true),
                 Arguments.of(
-                        ReservationTime.of(THE_DAY_AFTER_TOMORROW.atTime(12, 10), THE_DAY_AFTER_TOMORROW.atTime(12, 20)),
-                        ReservationTime.of(THE_DAY_AFTER_TOMORROW.atTime(12, 0), THE_DAY_AFTER_TOMORROW.atTime(12, 5)),
+                        ReservationTime.ofDefaultServiceZone(THE_DAY_AFTER_TOMORROW.atTime(12, 10), THE_DAY_AFTER_TOMORROW.atTime(12, 20)),
+                        ReservationTime.ofDefaultServiceZone(THE_DAY_AFTER_TOMORROW.atTime(12, 0), THE_DAY_AFTER_TOMORROW.atTime(12, 5)),
                         false),
                 Arguments.of(
-                        ReservationTime.of(THE_DAY_AFTER_TOMORROW.atTime(12, 10), THE_DAY_AFTER_TOMORROW.atTime(12, 20)),
-                        ReservationTime.of(THE_DAY_AFTER_TOMORROW.atTime(12, 25), THE_DAY_AFTER_TOMORROW.atTime(12, 35)),
+                        ReservationTime.ofDefaultServiceZone(THE_DAY_AFTER_TOMORROW.atTime(12, 10), THE_DAY_AFTER_TOMORROW.atTime(12, 20)),
+                        ReservationTime.ofDefaultServiceZone(THE_DAY_AFTER_TOMORROW.atTime(12, 25), THE_DAY_AFTER_TOMORROW.atTime(12, 35)),
                         false),
                 Arguments.of(
-                        ReservationTime.of(THE_DAY_AFTER_TOMORROW.atTime(12, 10), THE_DAY_AFTER_TOMORROW.atTime(12, 20)),
-                        ReservationTime.of(THE_DAY_AFTER_TOMORROW.atTime(12, 5), THE_DAY_AFTER_TOMORROW.atTime(12, 10)),
+                        ReservationTime.ofDefaultServiceZone(THE_DAY_AFTER_TOMORROW.atTime(12, 10), THE_DAY_AFTER_TOMORROW.atTime(12, 20)),
+                        ReservationTime.ofDefaultServiceZone(THE_DAY_AFTER_TOMORROW.atTime(12, 5), THE_DAY_AFTER_TOMORROW.atTime(12, 10)),
                         false),
                 Arguments.of(
-                        ReservationTime.of(THE_DAY_AFTER_TOMORROW.atTime(12, 10), THE_DAY_AFTER_TOMORROW.atTime(12, 20)),
-                        ReservationTime.of(THE_DAY_AFTER_TOMORROW.atTime(12, 20), THE_DAY_AFTER_TOMORROW.atTime(12, 30)),
+                        ReservationTime.ofDefaultServiceZone(THE_DAY_AFTER_TOMORROW.atTime(12, 10), THE_DAY_AFTER_TOMORROW.atTime(12, 20)),
+                        ReservationTime.ofDefaultServiceZone(THE_DAY_AFTER_TOMORROW.atTime(12, 20), THE_DAY_AFTER_TOMORROW.atTime(12, 30)),
                         false)
         );
     }

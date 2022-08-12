@@ -3,12 +3,6 @@ package com.woowacourse.zzimkkong.domain;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.CsvSource;
-
-import java.time.LocalDateTime;
-import java.time.LocalTime;
-import java.time.format.DateTimeFormatter;
 
 import static com.woowacourse.zzimkkong.Constants.THE_DAY_AFTER_TOMORROW;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -20,7 +14,7 @@ class ReservationTest {
     void setUp() {
         reservation = Reservation.builder()
                 .reservationTime(
-                        ReservationTime.of(
+                        ReservationTime.ofDefaultServiceZone(
                                 THE_DAY_AFTER_TOMORROW.atTime(8, 0),
                                 THE_DAY_AFTER_TOMORROW.atTime(9, 0)))
                 .password("1234")

@@ -20,13 +20,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.time.ZoneId;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
 import static com.woowacourse.zzimkkong.Constants.*;
-import static com.woowacourse.zzimkkong.infrastructure.datetime.TimeZoneUtils.KST;
 import static com.woowacourse.zzimkkong.infrastructure.datetime.TimeZoneUtils.UTC;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -43,8 +43,8 @@ class GuestReservationServiceTest extends ServiceTest {
     private final GuestReservationStrategy guestReservationStrategy = new GuestReservationStrategy();
 
     private ReservationCreateUpdateWithPasswordRequest reservationCreateUpdateWithPasswordRequest = new ReservationCreateUpdateWithPasswordRequest(
-            THE_DAY_AFTER_TOMORROW.atTime(11, 0).atZone(KST.toZoneId()),
-            THE_DAY_AFTER_TOMORROW.atTime(12, 0).atZone(KST.toZoneId()),
+            THE_DAY_AFTER_TOMORROW.atTime(11, 0).atZone(ZoneId.of(ServiceZone.KOREA.getTimeZone())),
+            THE_DAY_AFTER_TOMORROW.atTime(12, 0).atZone(ZoneId.of(ServiceZone.KOREA.getTimeZone())),
             RESERVATION_PW,
             USER_NAME,
             DESCRIPTION);
@@ -111,7 +111,7 @@ class GuestReservationServiceTest extends ServiceTest {
         beAmZeroOne = Reservation.builder()
                 .id(1L)
                 .reservationTime(
-                        ReservationTime.of(
+                        ReservationTime.ofDefaultServiceZone(
                                 BE_AM_TEN_ELEVEN_START_TIME_KST.withZoneSameInstant(UTC.toZoneId()).toLocalDateTime(),
                                 BE_AM_TEN_ELEVEN_END_TIME_KST.withZoneSameInstant(UTC.toZoneId()).toLocalDateTime()))
                 .description(BE_AM_TEN_ELEVEN_DESCRIPTION)
@@ -123,7 +123,7 @@ class GuestReservationServiceTest extends ServiceTest {
         bePmOneTwo = Reservation.builder()
                 .id(2L)
                 .reservationTime(
-                        ReservationTime.of(
+                        ReservationTime.ofDefaultServiceZone(
                                 BE_PM_ONE_TWO_START_TIME_KST.withZoneSameInstant(UTC.toZoneId()).toLocalDateTime(),
                                 BE_PM_ONE_TWO_END_TIME_KST.withZoneSameInstant(UTC.toZoneId()).toLocalDateTime()))
                 .description(BE_PM_ONE_TWO_DESCRIPTION)
@@ -215,8 +215,8 @@ class GuestReservationServiceTest extends ServiceTest {
 
         // when
         reservationCreateUpdateWithPasswordRequest = new ReservationCreateUpdateWithPasswordRequest(
-                LocalDateTime.now().minusHours(3).atZone(KST.toZoneId()),
-                LocalDateTime.now().plusHours(3).atZone(KST.toZoneId()),
+                LocalDateTime.now().minusHours(3).atZone(ZoneId.of(ServiceZone.KOREA.getTimeZone())),
+                LocalDateTime.now().plusHours(3).atZone(ZoneId.of(ServiceZone.KOREA.getTimeZone())),
                 RESERVATION_PW,
                 USER_NAME,
                 DESCRIPTION);
@@ -241,8 +241,8 @@ class GuestReservationServiceTest extends ServiceTest {
 
         // when
         reservationCreateUpdateWithPasswordRequest = new ReservationCreateUpdateWithPasswordRequest(
-                THE_DAY_AFTER_TOMORROW.atTime(14, 0).atZone(KST.toZoneId()),
-                THE_DAY_AFTER_TOMORROW.atTime(13, 0).atZone(KST.toZoneId()),
+                THE_DAY_AFTER_TOMORROW.atTime(14, 0).atZone(ZoneId.of(ServiceZone.KOREA.getTimeZone())),
+                THE_DAY_AFTER_TOMORROW.atTime(13, 0).atZone(ZoneId.of(ServiceZone.KOREA.getTimeZone())),
                 RESERVATION_PW,
                 USER_NAME,
                 DESCRIPTION);
@@ -267,8 +267,8 @@ class GuestReservationServiceTest extends ServiceTest {
 
         //when
         reservationCreateUpdateWithPasswordRequest = new ReservationCreateUpdateWithPasswordRequest(
-                THE_DAY_AFTER_TOMORROW.atTime(10, 0).atZone(KST.toZoneId()),
-                THE_DAY_AFTER_TOMORROW.atTime(10, 0).atZone(KST.toZoneId()),
+                THE_DAY_AFTER_TOMORROW.atTime(10, 0).atZone(ZoneId.of(ServiceZone.KOREA.getTimeZone())),
+                THE_DAY_AFTER_TOMORROW.atTime(10, 0).atZone(ZoneId.of(ServiceZone.KOREA.getTimeZone())),
                 RESERVATION_PW,
                 USER_NAME,
                 DESCRIPTION);
@@ -293,8 +293,8 @@ class GuestReservationServiceTest extends ServiceTest {
 
         //when
         reservationCreateUpdateWithPasswordRequest = new ReservationCreateUpdateWithPasswordRequest(
-                THE_DAY_AFTER_TOMORROW.atTime(10, 0).atZone(KST.toZoneId()),
-                THE_DAY_AFTER_TOMORROW.atTime(10, 0).plusDays(1).atZone(KST.toZoneId()),
+                THE_DAY_AFTER_TOMORROW.atTime(10, 0).atZone(ZoneId.of(ServiceZone.KOREA.getTimeZone())),
+                THE_DAY_AFTER_TOMORROW.atTime(10, 0).plusDays(1).atZone(ZoneId.of(ServiceZone.KOREA.getTimeZone())),
                 RESERVATION_PW,
                 USER_NAME,
                 DESCRIPTION);
@@ -467,8 +467,8 @@ class GuestReservationServiceTest extends ServiceTest {
 
         //when
         ReservationCreateUpdateWithPasswordRequest reservationCreateUpdateWithPasswordRequest = new ReservationCreateUpdateWithPasswordRequest(
-                THE_DAY_AFTER_TOMORROW.atTime(startHour, 0).atZone(KST.toZoneId()),
-                THE_DAY_AFTER_TOMORROW.atTime(endHour, 0).atZone(KST.toZoneId()),
+                THE_DAY_AFTER_TOMORROW.atTime(startHour, 0).atZone(ZoneId.of(ServiceZone.KOREA.getTimeZone())),
+                THE_DAY_AFTER_TOMORROW.atTime(endHour, 0).atZone(ZoneId.of(ServiceZone.KOREA.getTimeZone())),
                 RESERVATION_PW,
                 USER_NAME,
                 DESCRIPTION);
@@ -517,8 +517,8 @@ class GuestReservationServiceTest extends ServiceTest {
 
         //when
         ReservationCreateUpdateWithPasswordRequest reservationCreateUpdateWithPasswordRequest = new ReservationCreateUpdateWithPasswordRequest(
-                THE_DAY_AFTER_TOMORROW.atTime(startHour, 0).atZone(KST.toZoneId()),
-                THE_DAY_AFTER_TOMORROW.atTime(endHour, 0).atZone(KST.toZoneId()),
+                THE_DAY_AFTER_TOMORROW.atTime(startHour, 0).atZone(ZoneId.of(ServiceZone.KOREA.getTimeZone())),
+                THE_DAY_AFTER_TOMORROW.atTime(endHour, 0).atZone(ZoneId.of(ServiceZone.KOREA.getTimeZone())),
                 RESERVATION_PW,
                 USER_NAME,
                 DESCRIPTION);
@@ -558,8 +558,8 @@ class GuestReservationServiceTest extends ServiceTest {
 
         //when
         ReservationCreateUpdateWithPasswordRequest reservationCreateUpdateWithPasswordRequest = new ReservationCreateUpdateWithPasswordRequest(
-                THE_DAY_AFTER_TOMORROW.atTime(startHour, 0).atZone(KST.toZoneId()),
-                THE_DAY_AFTER_TOMORROW.atTime(endHour, 0).atZone(KST.toZoneId()),
+                THE_DAY_AFTER_TOMORROW.atTime(startHour, 0).atZone(ZoneId.of(ServiceZone.KOREA.getTimeZone())),
+                THE_DAY_AFTER_TOMORROW.atTime(endHour, 0).atZone(ZoneId.of(ServiceZone.KOREA.getTimeZone())),
                 RESERVATION_PW,
                 USER_NAME,
                 DESCRIPTION);
@@ -600,8 +600,8 @@ class GuestReservationServiceTest extends ServiceTest {
 
         //when
         ReservationCreateUpdateWithPasswordRequest reservationCreateUpdateWithPasswordRequest = new ReservationCreateUpdateWithPasswordRequest(
-                theDayAfterTomorrowTen.plusMinutes(additionalStartMinute).atZone(KST.toZoneId()),
-                theDayAfterTomorrowTen.plusMinutes(additionalEndMinute).atZone(KST.toZoneId()),
+                theDayAfterTomorrowTen.plusMinutes(additionalStartMinute).atZone(ZoneId.of(ServiceZone.KOREA.getTimeZone())),
+                theDayAfterTomorrowTen.plusMinutes(additionalEndMinute).atZone(ZoneId.of(ServiceZone.KOREA.getTimeZone())),
                 RESERVATION_PW,
                 USER_NAME,
                 DESCRIPTION);
@@ -639,8 +639,8 @@ class GuestReservationServiceTest extends ServiceTest {
 
         //when
         ReservationCreateUpdateWithPasswordRequest reservationCreateUpdateWithPasswordRequest = new ReservationCreateUpdateWithPasswordRequest(
-                THE_DAY_AFTER_TOMORROW.atTime(10, 0).atZone(KST.toZoneId()),
-                THE_DAY_AFTER_TOMORROW.atTime(10, 0).plusMinutes(50).atZone(KST.toZoneId()),
+                THE_DAY_AFTER_TOMORROW.atTime(10, 0).atZone(ZoneId.of(ServiceZone.KOREA.getTimeZone())),
+                THE_DAY_AFTER_TOMORROW.atTime(10, 0).plusMinutes(50).atZone(ZoneId.of(ServiceZone.KOREA.getTimeZone())),
                 RESERVATION_PW,
                 USER_NAME,
                 DESCRIPTION);
@@ -674,8 +674,8 @@ class GuestReservationServiceTest extends ServiceTest {
 
         //when
         ReservationCreateUpdateWithPasswordRequest reservationCreateUpdateWithPasswordRequest = new ReservationCreateUpdateWithPasswordRequest(
-                THE_DAY_AFTER_TOMORROW.atTime(10, 0).atZone(KST.toZoneId()),
-                THE_DAY_AFTER_TOMORROW.atTime(10, 0).plusMinutes(130).atZone(KST.toZoneId()),
+                THE_DAY_AFTER_TOMORROW.atTime(10, 0).atZone(ZoneId.of(ServiceZone.KOREA.getTimeZone())),
+                THE_DAY_AFTER_TOMORROW.atTime(10, 0).plusMinutes(130).atZone(ZoneId.of(ServiceZone.KOREA.getTimeZone())),
                 RESERVATION_PW,
                 USER_NAME,
                 DESCRIPTION);
@@ -709,8 +709,8 @@ class GuestReservationServiceTest extends ServiceTest {
 
         //when
         ReservationCreateUpdateWithPasswordRequest reservationCreateUpdateWithPasswordRequest = new ReservationCreateUpdateWithPasswordRequest(
-                THE_DAY_AFTER_TOMORROW.atTime(10, 0).minusDays(5).atZone(KST.toZoneId()),
-                THE_DAY_AFTER_TOMORROW.atTime(10, 0).minusDays(5).plusMinutes(60).atZone(KST.toZoneId()),
+                THE_DAY_AFTER_TOMORROW.atTime(10, 0).minusDays(5).atZone(ZoneId.of(ServiceZone.KOREA.getTimeZone())),
+                THE_DAY_AFTER_TOMORROW.atTime(10, 0).minusDays(5).plusMinutes(60).atZone(ZoneId.of(ServiceZone.KOREA.getTimeZone())),
                 RESERVATION_PW,
                 USER_NAME,
                 DESCRIPTION);
@@ -979,8 +979,8 @@ class GuestReservationServiceTest extends ServiceTest {
                 .willReturn(Optional.of(reservation));
         Long reservationId = reservation.getId();
         ReservationCreateUpdateWithPasswordRequest reservationCreateUpdateWithPasswordRequest = new ReservationCreateUpdateWithPasswordRequest(
-                THE_DAY_AFTER_TOMORROW.atTime(10, 0).atZone(KST.toZoneId()),
-                THE_DAY_AFTER_TOMORROW.atTime(11, 0).atZone(KST.toZoneId()),
+                THE_DAY_AFTER_TOMORROW.atTime(10, 0).atZone(ZoneId.of(ServiceZone.KOREA.getTimeZone())),
+                THE_DAY_AFTER_TOMORROW.atTime(11, 0).atZone(ZoneId.of(ServiceZone.KOREA.getTimeZone())),
                 reservation.getPassword(),
                 CHANGED_NAME,
                 CHANGED_DESCRIPTION);
@@ -1010,8 +1010,8 @@ class GuestReservationServiceTest extends ServiceTest {
 
         //when
         ReservationCreateUpdateWithPasswordRequest reservationCreateUpdateWithPasswordRequest = new ReservationCreateUpdateWithPasswordRequest(
-                THE_DAY_AFTER_TOMORROW.atTime(12, 0).atZone(KST.toZoneId()),
-                THE_DAY_AFTER_TOMORROW.atTime(12, 0).minusHours(endTime).atZone(KST.toZoneId()),
+                THE_DAY_AFTER_TOMORROW.atTime(12, 0).atZone(ZoneId.of(ServiceZone.KOREA.getTimeZone())),
+                THE_DAY_AFTER_TOMORROW.atTime(12, 0).minusHours(endTime).atZone(ZoneId.of(ServiceZone.KOREA.getTimeZone())),
                 reservation.getPassword(),
                 CHANGED_NAME,
                 CHANGED_DESCRIPTION);
@@ -1039,8 +1039,8 @@ class GuestReservationServiceTest extends ServiceTest {
 
         //when
         ReservationCreateUpdateWithPasswordRequest reservationCreateUpdateWithPasswordRequest = new ReservationCreateUpdateWithPasswordRequest(
-                LocalDateTime.now().plusDays(1).atZone(KST.toZoneId()),
-                LocalDateTime.now().plusDays(2).atZone(KST.toZoneId()),
+                LocalDateTime.now().plusDays(1).atZone(ZoneId.of(ServiceZone.KOREA.getTimeZone())),
+                LocalDateTime.now().plusDays(2).atZone(ZoneId.of(ServiceZone.KOREA.getTimeZone())),
                 reservation.getPassword(),
                 CHANGED_NAME,
                 CHANGED_DESCRIPTION);
@@ -1070,8 +1070,8 @@ class GuestReservationServiceTest extends ServiceTest {
 
         //when
         ReservationCreateUpdateWithPasswordRequest reservationCreateUpdateWithPasswordRequest = new ReservationCreateUpdateWithPasswordRequest(
-                TimeZoneUtils.convert(reservation.getStartTime(), UTC, KST).atZone(KST.toZoneId()),
-                TimeZoneUtils.convert(reservation.getEndTime(), UTC, KST).atZone(KST.toZoneId()),
+                TimeZoneUtils.convertTo(reservation.getStartTime(), ServiceZone.KOREA).atZone(ZoneId.of(ServiceZone.KOREA.getTimeZone())),
+                TimeZoneUtils.convertTo(reservation.getEndTime(), ServiceZone.KOREA).atZone(ZoneId.of(ServiceZone.KOREA.getTimeZone())),
                 "1231",
                 CHANGED_NAME,
                 CHANGED_DESCRIPTION);
@@ -1108,8 +1108,8 @@ class GuestReservationServiceTest extends ServiceTest {
 
         //when
         ReservationCreateUpdateWithPasswordRequest reservationCreateUpdateWithPasswordRequest = new ReservationCreateUpdateWithPasswordRequest(
-                TimeZoneUtils.convert(bePmOneTwo.getStartTime().plusMinutes(startTime), UTC, KST).atZone(KST.toZoneId()),
-                TimeZoneUtils.convert(bePmOneTwo.getEndTime().plusMinutes(endTime), UTC, KST).atZone(KST.toZoneId()),
+                TimeZoneUtils.convertTo(bePmOneTwo.getStartTime().plusMinutes(startTime), ServiceZone.KOREA).atZone(ZoneId.of(ServiceZone.KOREA.getTimeZone())),
+                TimeZoneUtils.convertTo(bePmOneTwo.getEndTime().plusMinutes(endTime), ServiceZone.KOREA).atZone(ZoneId.of(ServiceZone.KOREA.getTimeZone())),
                 reservation.getPassword(),
                 reservation.getUserName(),
                 reservation.getDescription());
@@ -1140,8 +1140,8 @@ class GuestReservationServiceTest extends ServiceTest {
 
         //when
         ReservationCreateUpdateWithPasswordRequest reservationCreateUpdateWithPasswordRequest = new ReservationCreateUpdateWithPasswordRequest(
-                THE_DAY_AFTER_TOMORROW.atTime(startTime, 0).atZone(KST.toZoneId()),
-                THE_DAY_AFTER_TOMORROW.atTime(endTime, 30).atZone(KST.toZoneId()),
+                THE_DAY_AFTER_TOMORROW.atTime(startTime, 0).atZone(ZoneId.of(ServiceZone.KOREA.getTimeZone())),
+                THE_DAY_AFTER_TOMORROW.atTime(endTime, 30).atZone(ZoneId.of(ServiceZone.KOREA.getTimeZone())),
                 RESERVATION_PW,
                 CHANGED_NAME,
                 CHANGED_DESCRIPTION);
@@ -1364,7 +1364,7 @@ class GuestReservationServiceTest extends ServiceTest {
         return Reservation.builder()
                 .id(3L)
                 .reservationTime(
-                        ReservationTime.of(
+                        ReservationTime.ofDefaultServiceZone(
                                 startTime,
                                 endTime))
                 .password(reservationCreateUpdateWithPasswordRequest.getPassword())

@@ -15,7 +15,6 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 import static com.woowacourse.zzimkkong.Constants.*;
-import static com.woowacourse.zzimkkong.infrastructure.datetime.TimeZoneUtils.ONE_DAY_OFFSET;
 import static com.woowacourse.zzimkkong.infrastructure.datetime.TimeZoneUtils.UTC;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
@@ -83,7 +82,7 @@ class ReservationRepositoryTest extends RepositoryTest {
 
         beAmZeroOne = Reservation.builder()
                 .reservationTime(
-                        ReservationTime.of(
+                        ReservationTime.ofDefaultServiceZone(
                                 BE_AM_TEN_ELEVEN_START_TIME_KST.withZoneSameInstant(UTC.toZoneId()).toLocalDateTime(),
                                 BE_AM_TEN_ELEVEN_END_TIME_KST.withZoneSameInstant(UTC.toZoneId()).toLocalDateTime()))
                 .description(BE_AM_TEN_ELEVEN_DESCRIPTION)
@@ -94,7 +93,7 @@ class ReservationRepositoryTest extends RepositoryTest {
 
         bePmOneTwo = Reservation.builder()
                 .reservationTime(
-                        ReservationTime.of(
+                        ReservationTime.ofDefaultServiceZone(
                                 BE_PM_ONE_TWO_START_TIME_KST.withZoneSameInstant(UTC.toZoneId()).toLocalDateTime(),
                                 BE_PM_ONE_TWO_END_TIME_KST.withZoneSameInstant(UTC.toZoneId()).toLocalDateTime()))
                 .description(BE_PM_ONE_TWO_DESCRIPTION)
@@ -105,7 +104,7 @@ class ReservationRepositoryTest extends RepositoryTest {
 
         beNextDayAmSixTwelve = Reservation.builder()
                 .reservationTime(
-                        ReservationTime.of(
+                        ReservationTime.ofDefaultServiceZone(
                                 BE_NEXT_DAY_PM_FOUR_TO_SIX_START_TIME_KST.withZoneSameInstant(UTC.toZoneId()).toLocalDateTime(),
                                 BE_NEXT_DAY_PM_FOUR_TO_SIX_END_TIME_KST.withZoneSameInstant(UTC.toZoneId()).toLocalDateTime()))
                 .description(BE_NEXT_DAY_PM_FOUR_TO_SIX_DESCRIPTION)
@@ -116,7 +115,7 @@ class ReservationRepositoryTest extends RepositoryTest {
 
         fe1ZeroOne = Reservation.builder()
                 .reservationTime(
-                        ReservationTime.of(
+                        ReservationTime.ofDefaultServiceZone(
                                 FE1_AM_TEN_ELEVEN_START_TIME_KST.withZoneSameInstant(UTC.toZoneId()).toLocalDateTime(),
                                 FE1_AM_TEN_ELEVEN_END_TIME_KST.withZoneSameInstant(UTC.toZoneId()).toLocalDateTime()))
                 .description(FE1_AM_TEN_ELEVEN_DESCRIPTION)
@@ -137,7 +136,7 @@ class ReservationRepositoryTest extends RepositoryTest {
         //given
         Reservation be_two_three = Reservation.builder()
                 .reservationTime(
-                        ReservationTime.of(
+                        ReservationTime.ofDefaultServiceZone(
                                 THE_DAY_AFTER_TOMORROW.atTime(2, 0),
                                 THE_DAY_AFTER_TOMORROW.atTime(3, 0)))
                 .description("찜꽁 4차 회의")
@@ -231,7 +230,7 @@ class ReservationRepositoryTest extends RepositoryTest {
     private List<Reservation> getReservations(List<Long> spaceIds, LocalDate date) {
         return reservations.findAllBySpaceIdInAndDateBetween(
                 spaceIds,
-                date.minusDays(ONE_DAY_OFFSET),
-                date.plusDays(ONE_DAY_OFFSET));
+                date.minusDays(1L),
+                date.plusDays(1L));
     }
 }

@@ -177,7 +177,7 @@ public class DataLoader implements CommandLineRunner {
 
         Reservation reservationBackEndTargetDate0To1 = Reservation.builder()
                 .reservationTime(
-                        ReservationTime.of(
+                        ReservationTime.ofDefaultServiceZone(
                                 targetDate.atStartOfDay(),
                                 targetDate.atTime(1, 0, 0)))
                 .description("찜꽁 1차 회의")
@@ -188,7 +188,7 @@ public class DataLoader implements CommandLineRunner {
 
         Reservation reservationBackEndTargetDate13To14 = Reservation.builder()
                 .reservationTime(
-                        ReservationTime.of(
+                        ReservationTime.ofDefaultServiceZone(
                                 targetDate.atTime(13, 0, 0),
                                 targetDate.atTime(14, 0, 0)))
                 .description("찜꽁 2차 회의")
@@ -199,7 +199,7 @@ public class DataLoader implements CommandLineRunner {
 
         Reservation reservationBackEndTargetDate18To23 = Reservation.builder()
                 .reservationTime(
-                        ReservationTime.of(
+                        ReservationTime.ofDefaultServiceZone(
                                 targetDate.atTime(18, 0, 0),
                                 targetDate.atTime(23, 0, 0)))
                 .description("찜꽁 3차 회의")
@@ -210,7 +210,7 @@ public class DataLoader implements CommandLineRunner {
 
         Reservation reservationBackEndTheDayAfterTargetDate = Reservation.builder()
                 .reservationTime(
-                        ReservationTime.of(
+                        ReservationTime.ofDefaultServiceZone(
                                 targetDate.plusDays(1L).atStartOfDay(),
                                 targetDate.plusDays(1L).atTime(1, 0, 0)))
                 .description("찜꽁 4차 회의")
@@ -221,7 +221,7 @@ public class DataLoader implements CommandLineRunner {
 
         Reservation reservationFrontEnd1TargetDate0to1 = Reservation.builder()
                 .reservationTime(
-                        ReservationTime.of(
+                        ReservationTime.ofDefaultServiceZone(
                                 targetDate.atStartOfDay(),
                                 targetDate.atTime(1, 0, 0)))
                 .description("찜꽁 5차 회의")

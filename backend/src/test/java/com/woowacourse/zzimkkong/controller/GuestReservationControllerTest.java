@@ -13,6 +13,7 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 
+import java.time.ZoneId;
 import java.util.Arrays;
 import java.util.List;
 
@@ -20,7 +21,6 @@ import static com.woowacourse.zzimkkong.Constants.*;
 import static com.woowacourse.zzimkkong.DocumentUtils.*;
 import static com.woowacourse.zzimkkong.controller.ManagerSpaceControllerTest.saveSpace;
 import static com.woowacourse.zzimkkong.controller.MapControllerTest.saveMap;
-import static com.woowacourse.zzimkkong.infrastructure.datetime.TimeZoneUtils.KST;
 import static com.woowacourse.zzimkkong.infrastructure.datetime.TimeZoneUtils.UTC;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.restdocs.restassured3.RestAssuredRestDocumentation.document;
@@ -58,8 +58,8 @@ class GuestReservationControllerTest extends AcceptanceTest {
                 .replaceAll("managers", "guests") + "/reservations";
 
         reservationCreateUpdateWithPasswordRequest = new ReservationCreateUpdateWithPasswordRequest(
-                THE_DAY_AFTER_TOMORROW.atTime(15, 0).atZone(KST.toZoneId()),
-                THE_DAY_AFTER_TOMORROW.atTime(16, 0).atZone(KST.toZoneId()),
+                THE_DAY_AFTER_TOMORROW.atTime(15, 0).atZone(ZoneId.of(ServiceZone.KOREA.getTimeZone())),
+                THE_DAY_AFTER_TOMORROW.atTime(16, 0).atZone(ZoneId.of(ServiceZone.KOREA.getTimeZone())),
                 SALLY_PW,
                 SALLY_NAME,
                 SALLY_DESCRIPTION);
@@ -112,7 +112,7 @@ class GuestReservationControllerTest extends AcceptanceTest {
         savedReservationId = getReservationIdAfterSave(beReservationApi, reservationCreateUpdateWithPasswordRequest);
         savedReservation = Reservation.builder()
                 .reservationTime(
-                        ReservationTime.of(
+                        ReservationTime.ofDefaultServiceZone(
                                 reservationCreateUpdateWithPasswordRequest.localStartDateTime(),
                                 reservationCreateUpdateWithPasswordRequest.localEndDateTime()))
                 .password(reservationCreateUpdateWithPasswordRequest.getPassword())
@@ -127,8 +127,8 @@ class GuestReservationControllerTest extends AcceptanceTest {
     void save() {
         //given
         ReservationCreateUpdateWithPasswordRequest newReservationCreateUpdateWithPasswordRequest = new ReservationCreateUpdateWithPasswordRequest(
-                THE_DAY_AFTER_TOMORROW.atTime(19, 0).atZone(KST.toZoneId()),
-                THE_DAY_AFTER_TOMORROW.atTime(20, 0).atZone(KST.toZoneId()),
+                THE_DAY_AFTER_TOMORROW.atTime(19, 0).atZone(ZoneId.of(ServiceZone.KOREA.getTimeZone())),
+                THE_DAY_AFTER_TOMORROW.atTime(20, 0).atZone(ZoneId.of(ServiceZone.KOREA.getTimeZone())),
                 SALLY_PW,
                 SALLY_NAME,
                 SALLY_DESCRIPTION);
@@ -195,8 +195,8 @@ class GuestReservationControllerTest extends AcceptanceTest {
     void update_sameSpace() {
         //given
         ReservationCreateUpdateWithPasswordRequest reservationCreateUpdateWithPasswordRequestSameSpace = new ReservationCreateUpdateWithPasswordRequest(
-                THE_DAY_AFTER_TOMORROW.atTime(19, 0).atZone(KST.toZoneId()),
-                THE_DAY_AFTER_TOMORROW.atTime(20, 30).atZone(KST.toZoneId()),
+                THE_DAY_AFTER_TOMORROW.atTime(19, 0).atZone(ZoneId.of(ServiceZone.KOREA.getTimeZone())),
+                THE_DAY_AFTER_TOMORROW.atTime(20, 30).atZone(ZoneId.of(ServiceZone.KOREA.getTimeZone())),
                 reservationCreateUpdateWithPasswordRequest.getPassword(),
                 "sally",
                 "회의입니다."
@@ -212,7 +212,7 @@ class GuestReservationControllerTest extends AcceptanceTest {
                 Reservation.builder()
                         .id(savedReservationId)
                         .reservationTime(
-                                ReservationTime.of(
+                                ReservationTime.ofDefaultServiceZone(
                                         reservationCreateUpdateWithPasswordRequestSameSpace.localStartDateTime(),
                                         reservationCreateUpdateWithPasswordRequestSameSpace.localEndDateTime()))
                         .description(reservationCreateUpdateWithPasswordRequestSameSpace.getDescription())
@@ -232,8 +232,8 @@ class GuestReservationControllerTest extends AcceptanceTest {
     void update_spaceUpdate() {
         //given
         ReservationCreateUpdateWithPasswordRequest reservationCreateUpdateWithPasswordRequestDifferentSpace = new ReservationCreateUpdateWithPasswordRequest(
-                THE_DAY_AFTER_TOMORROW.atTime(19, 30).atZone(KST.toZoneId()),
-                THE_DAY_AFTER_TOMORROW.atTime(20, 30).atZone(KST.toZoneId()),
+                THE_DAY_AFTER_TOMORROW.atTime(19, 30).atZone(ZoneId.of(ServiceZone.KOREA.getTimeZone())),
+                THE_DAY_AFTER_TOMORROW.atTime(20, 30).atZone(ZoneId.of(ServiceZone.KOREA.getTimeZone())),
                 SALLY_PW,
                 "sally",
                 "회의입니다."
@@ -250,7 +250,7 @@ class GuestReservationControllerTest extends AcceptanceTest {
         List<Reservation> expectedFindReservations = Arrays.asList(
                 Reservation.builder()
                         .reservationTime(
-                                ReservationTime.of(
+                                ReservationTime.ofDefaultServiceZone(
                                         reservationCreateUpdateWithPasswordRequestDifferentSpace.localStartDateTime(),
                                         reservationCreateUpdateWithPasswordRequestDifferentSpace.localEndDateTime()))
                         .description(reservationCreateUpdateWithPasswordRequestDifferentSpace.getDescription())
@@ -332,7 +332,7 @@ class GuestReservationControllerTest extends AcceptanceTest {
         beAmZeroOne = Reservation.builder()
                 .id(getReservationIdAfterSave(beReservationApi, beAmZeroOneRequest))
                 .reservationTime(
-                        ReservationTime.of(
+                        ReservationTime.ofDefaultServiceZone(
                                 BE_AM_TEN_ELEVEN_START_TIME_KST.withZoneSameInstant(UTC.toZoneId()).toLocalDateTime(),
                                 BE_AM_TEN_ELEVEN_END_TIME_KST.withZoneSameInstant(UTC.toZoneId()).toLocalDateTime()))
                 .description(BE_AM_TEN_ELEVEN_DESCRIPTION)
@@ -344,7 +344,7 @@ class GuestReservationControllerTest extends AcceptanceTest {
         bePmOneTwo = Reservation.builder()
                 .id(getReservationIdAfterSave(beReservationApi, bePmOneTwoRequest))
                 .reservationTime(
-                        ReservationTime.of(
+                        ReservationTime.ofDefaultServiceZone(
                                 BE_PM_ONE_TWO_START_TIME_KST.withZoneSameInstant(UTC.toZoneId()).toLocalDateTime(),
                                 BE_PM_ONE_TWO_END_TIME_KST.withZoneSameInstant(UTC.toZoneId()).toLocalDateTime()))
                 .description(BE_PM_ONE_TWO_DESCRIPTION)
@@ -358,7 +358,7 @@ class GuestReservationControllerTest extends AcceptanceTest {
         fe1ZeroOne = Reservation.builder()
                 .id(getReservationIdAfterSave(fe1ReservationApi, feZeroOneRequest))
                 .reservationTime(
-                        ReservationTime.of(
+                        ReservationTime.ofDefaultServiceZone(
                                 FE1_AM_TEN_ELEVEN_START_TIME_KST.withZoneSameInstant(UTC.toZoneId()).toLocalDateTime(),
                                 FE1_AM_TEN_ELEVEN_END_TIME_KST.withZoneSameInstant(UTC.toZoneId()).toLocalDateTime()))
                 .description(FE1_AM_TEN_ELEVEN_DESCRIPTION)
