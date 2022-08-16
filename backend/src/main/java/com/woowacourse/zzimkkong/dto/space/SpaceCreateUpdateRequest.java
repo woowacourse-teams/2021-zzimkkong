@@ -1,14 +1,17 @@
 package com.woowacourse.zzimkkong.dto.space;
 
+import com.woowacourse.zzimkkong.domain.Settings;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import javax.validation.Valid;
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Size;
 import java.util.Arrays;
 import java.util.List;
 
 import static com.woowacourse.zzimkkong.dto.ValidatorMessage.EMPTY_MESSAGE;
+import static com.woowacourse.zzimkkong.dto.ValidatorMessage.SETTING_COUNT_MESSAGE;
 
 @Getter
 @NoArgsConstructor
@@ -30,6 +33,7 @@ public class SpaceCreateUpdateRequest {
 
     private Boolean reservationEnable = true;
 
+    @Size(min = Settings.MINIMUM_SETTING_COUNT, message = SETTING_COUNT_MESSAGE)
     @Valid
     private List<SettingRequest> settings = Arrays.asList(new SettingRequest());
 
