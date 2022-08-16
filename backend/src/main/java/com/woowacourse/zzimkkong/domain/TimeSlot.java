@@ -16,6 +16,8 @@ import java.time.temporal.ChronoUnit;
 @EqualsAndHashCode
 @Embeddable
 public class TimeSlot {
+    public static final LocalTime MAX_TIME = LocalTime.of(23, 50);
+
     @Column(nullable = false)
     private LocalTime startTime;
 
@@ -27,7 +29,7 @@ public class TimeSlot {
             final LocalTime endTime) {
         this.startTime = startTime;
         this.endTime = endTime;
-        validateStartEndTime(startTime, endTime);
+        validateStartEndTime(this.startTime, this.endTime);
     }
 
     public static TimeSlot of(final LocalTime startTime, final LocalTime endTime) {
@@ -66,8 +68,34 @@ public class TimeSlot {
         return !(isEqualOrAfterStartTime && isEqualOrBeforeEndTime);
     }
 
+    public boolean isExtendableWith(final TimeSlot that) {
+        return this.endTime.equals(that.startTime);
+    }
+
+    public boolean hasConflictWith(final TimeSlot that) {
+        return !(this.isEarlierThan(that) || this.isLaterThan(that));
+    }
+
+    private boolean isEarlierThan(final TimeSlot that) {
+        return this.endTime.equals(that.startTime) || this.endTime.isBefore(that.startTime);
+    }
+
+    private boolean isLaterThan(final TimeSlot that) {
+        return this.startTime.equals(that.endTime) || this.startTime.isAfter(that.endTime);
+    }
+
     private TimeUnit getDurationMinute() {
         return TimeUnit.from(ChronoUnit.MINUTES.between(startTime, endTime));
+    }
+
+    @Override
+    public String toString() {
+        String endTimeAsString = endTime.toString();
+        if (MAX_TIME.equals(endTime)) {
+            endTimeAsString = "24:00";
+        }
+
+        return startTime + " ~ " + endTimeAsString;
     }
 }
 

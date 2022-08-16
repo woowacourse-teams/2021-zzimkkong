@@ -1,10 +1,7 @@
 package com.woowacourse.zzimkkong;
 
 import com.woowacourse.zzimkkong.domain.*;
-import com.woowacourse.zzimkkong.repository.MapRepository;
-import com.woowacourse.zzimkkong.repository.MemberRepository;
-import com.woowacourse.zzimkkong.repository.ReservationRepository;
-import com.woowacourse.zzimkkong.repository.SpaceRepository;
+import com.woowacourse.zzimkkong.repository.*;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
@@ -20,16 +17,19 @@ public class DataLoader implements CommandLineRunner {
     private final MapRepository maps;
     private final SpaceRepository spaces;
     private final ReservationRepository reservations;
+    private final SettingRepository settings;
 
     public DataLoader(
             final MemberRepository memberRepository,
             final MapRepository mapRepository,
             final SpaceRepository spaceRepository,
-            final ReservationRepository reservationRepository) {
+            final ReservationRepository reservationRepository,
+            final SettingRepository settings) {
         this.members = memberRepository;
         this.maps = mapRepository;
         this.spaces = spaceRepository;
         this.reservations = reservationRepository;
+        this.settings = settings;
     }
 
     @Override
@@ -52,114 +52,102 @@ public class DataLoader implements CommandLineRunner {
                         pobi)
         );
 
-        Setting defaultSetting = Setting.builder()
-                .availableTimeSlot(
-                        TimeSlot.of(
-                                LocalTime.of(9, 0),
-                                LocalTime.of(22, 0)))
-                .reservationTimeUnit(TimeUnit.from(10))
-                .reservationMinimumTimeUnit(TimeUnit.from(10))
-                .reservationMaximumTimeUnit(TimeUnit.from(700))
-                .reservationEnable(true)
-                .enabledDayOfWeek("monday,tuesday,wednesday,thursday,friday,saturday,sunday")
-                .build();
-
         Space be = Space.builder()
                 .name("백엔드 강의실")
                 .color(lectureRoomColor)
                 .map(luther)
-                .setting(defaultSetting)
+                .reservationEnable(true)
                 .build();
 
         Space fe1 = Space.builder()
                 .name("프론트엔드 강의실1")
                 .color(lectureRoomColor)
                 .map(luther)
-                .setting(defaultSetting)
+                .reservationEnable(true)
                 .build();
 
         Space fe2 = Space.builder()
                 .name("프론트엔드 강의실2")
                 .color(lectureRoomColor)
                 .map(luther)
-                .setting(defaultSetting)
+                .reservationEnable(true)
                 .build();
 
         Space meetingRoom1 = Space.builder()
                 .name("회의실1")
                 .color(meetingRoomColor)
                 .map(luther)
-                .setting(defaultSetting)
+                .reservationEnable(true)
                 .build();
 
         Space meetingRoom2 = Space.builder()
                 .name("회의실2")
                 .color(meetingRoomColor)
                 .map(luther)
-                .setting(defaultSetting)
+                .reservationEnable(true)
                 .build();
 
         Space meetingRoom3 = Space.builder()
                 .name("회의실3")
                 .color(meetingRoomColor)
                 .map(luther)
-                .setting(defaultSetting)
+                .reservationEnable(true)
                 .build();
 
         Space meetingRoom4 = Space.builder()
                 .name("회의실4")
                 .color(meetingRoomColor)
                 .map(luther)
-                .setting(defaultSetting)
+                .reservationEnable(true)
                 .build();
 
         Space meetingRoom5 = Space.builder()
                 .name("회의실5")
                 .color(meetingRoomColor)
                 .map(luther)
-                .setting(defaultSetting)
+                .reservationEnable(true)
                 .build();
 
         Space pairRoom1 = Space.builder()
                 .name("페어룸1")
                 .color(pairRoomColor)
                 .map(luther)
-                .setting(defaultSetting)
+                .reservationEnable(true)
                 .build();
 
         Space pairRoom2 = Space.builder()
                 .name("페어룸2")
                 .color(pairRoomColor)
                 .map(luther)
-                .setting(defaultSetting)
+                .reservationEnable(true)
                 .build();
 
         Space pairRoom3 = Space.builder()
                 .name("페어룸3")
                 .color(pairRoomColor)
                 .map(luther)
-                .setting(defaultSetting)
+                .reservationEnable(true)
                 .build();
 
         Space pairRoom4 = Space.builder()
                 .name("페어룸4")
                 .color(pairRoomColor)
                 .map(luther)
-                .setting(defaultSetting)
+                .reservationEnable(true)
                 .build();
 
         Space pairRoom5 = Space.builder()
                 .name("페어룸5")
                 .color(pairRoomColor)
                 .map(luther)
-                .setting(defaultSetting)
+                .reservationEnable(true)
                 .build();
 
         Space trackRoom = Space.builder()
                 .name("트랙방")
                 .color("#D8FBCC")
                 .map(luther)
-                .setting(defaultSetting)
+                .reservationEnable(true)
                 .build();
 
         List<Space> sampleSpaces = List.of(
@@ -172,13 +160,24 @@ public class DataLoader implements CommandLineRunner {
 
         for (Space space : sampleSpaces) {
             spaces.save(space);
+            settings.save(Setting.builder()
+                    .space(space)
+                    .settingTimeSlot(
+                            TimeSlot.of(
+                                    LocalTime.of(9, 0),
+                                    LocalTime.of(22, 0)))
+                    .reservationTimeUnit(TimeUnit.from(10))
+                    .reservationMinimumTimeUnit(TimeUnit.from(10))
+                    .reservationMaximumTimeUnit(TimeUnit.from(700))
+                    .enabledDayOfWeek("monday,tuesday,wednesday,thursday,friday,saturday,sunday")
+                    .build());
         }
 
         LocalDate targetDate = LocalDate.now().plusDays(1L);
 
         Reservation reservationBackEndTargetDate0To1 = Reservation.builder()
                 .reservationTime(
-                        ReservationTime.of(
+                        ReservationTime.ofDefaultServiceZone(
                                 targetDate.atStartOfDay(),
                                 targetDate.atTime(1, 0, 0)))
                 .description("찜꽁 1차 회의")
@@ -189,7 +188,7 @@ public class DataLoader implements CommandLineRunner {
 
         Reservation reservationBackEndTargetDate13To14 = Reservation.builder()
                 .reservationTime(
-                        ReservationTime.of(
+                        ReservationTime.ofDefaultServiceZone(
                                 targetDate.atTime(13, 0, 0),
                                 targetDate.atTime(14, 0, 0)))
                 .description("찜꽁 2차 회의")
@@ -200,7 +199,7 @@ public class DataLoader implements CommandLineRunner {
 
         Reservation reservationBackEndTargetDate18To23 = Reservation.builder()
                 .reservationTime(
-                        ReservationTime.of(
+                        ReservationTime.ofDefaultServiceZone(
                                 targetDate.atTime(18, 0, 0),
                                 targetDate.atTime(23, 0, 0)))
                 .description("찜꽁 3차 회의")
@@ -211,7 +210,7 @@ public class DataLoader implements CommandLineRunner {
 
         Reservation reservationBackEndTheDayAfterTargetDate = Reservation.builder()
                 .reservationTime(
-                        ReservationTime.of(
+                        ReservationTime.ofDefaultServiceZone(
                                 targetDate.plusDays(1L).atStartOfDay(),
                                 targetDate.plusDays(1L).atTime(1, 0, 0)))
                 .description("찜꽁 4차 회의")
@@ -222,7 +221,7 @@ public class DataLoader implements CommandLineRunner {
 
         Reservation reservationFrontEnd1TargetDate0to1 = Reservation.builder()
                 .reservationTime(
-                        ReservationTime.of(
+                        ReservationTime.ofDefaultServiceZone(
                                 targetDate.atStartOfDay(),
                                 targetDate.atTime(1, 0, 0)))
                 .description("찜꽁 5차 회의")

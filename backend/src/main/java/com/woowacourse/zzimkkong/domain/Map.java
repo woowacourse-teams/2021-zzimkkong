@@ -4,10 +4,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 @Getter
 @NoArgsConstructor
@@ -40,6 +37,14 @@ public class Map {
 
     @OneToMany(mappedBy = "map", cascade = CascadeType.REMOVE, fetch = FetchType.LAZY, orphanRemoval = true)
     private List<Space> spaces = new ArrayList<>();
+
+    /**
+     * The default Zzimkkong service zone (Asia/Seoul)
+     * 추후 timezone 관련 확장성을 고려한다면 Map Table에 Column으로 추가 될 수도 있음
+     * 일단은 transient field 로 구현
+     */
+    @Transient
+    private final ServiceZone serviceZone = ServiceZone.KOREA;
 
     public Map(final String name,
                final String mapDrawing,

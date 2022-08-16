@@ -13,12 +13,12 @@ import static com.woowacourse.zzimkkong.dto.ValidatorMessage.TIME_FORMAT;
 @Getter
 @NoArgsConstructor
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class SettingsRequest {
+public class SettingRequest {
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = TIME_FORMAT)
-    private LocalTime availableStartTime = LocalTime.of(0, 0);
+    private LocalTime settingStartTime = LocalTime.of(0, 0);
 
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = TIME_FORMAT)
-    private LocalTime availableEndTime = LocalTime.of(23, 59);
+    private LocalTime settingEndTime = LocalTime.of(23, 59);
 
     @TimeUnit
     private Integer reservationTimeUnit = 10;
@@ -27,24 +27,20 @@ public class SettingsRequest {
 
     private Integer reservationMaximumTimeUnit = 120;
 
-    private Boolean reservationEnable = true;
-
     private EnabledDayOfWeekDto enabledDayOfWeek = new EnabledDayOfWeekDto();
 
-    public SettingsRequest(
-            final LocalTime availableStartTime,
-            final LocalTime availableEndTime,
+    public SettingRequest(
+            final LocalTime settingStartTime,
+            final LocalTime settingEndTime,
             final Integer reservationTimeUnit,
             final Integer reservationMinimumTimeUnit,
             final Integer reservationMaximumTimeUnit,
-            final Boolean reservationEnable,
             final EnabledDayOfWeekDto enabledDayOfWeek) {
-        this.availableStartTime = availableStartTime;
-        this.availableEndTime = availableEndTime;
+        this.settingStartTime = settingStartTime;
+        this.settingEndTime = settingEndTime;
         this.reservationTimeUnit = reservationTimeUnit;
         this.reservationMinimumTimeUnit = reservationMinimumTimeUnit;
         this.reservationMaximumTimeUnit = reservationMaximumTimeUnit;
-        this.reservationEnable = reservationEnable;
         this.enabledDayOfWeek = enabledDayOfWeek;
     }
 

@@ -1,6 +1,5 @@
 package com.woowacourse.zzimkkong.domain;
 
-import com.woowacourse.zzimkkong.exception.space.NoSuchDayOfWeekException;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -9,12 +8,8 @@ import org.hibernate.annotations.DynamicUpdate;
 
 import javax.persistence.*;
 import java.time.DayOfWeek;
-import java.time.LocalTime;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Getter
 @Builder
@@ -41,25 +36,18 @@ public class Space {
     @Column(nullable = true)
     private String area;
 
-    @Embedded
-    @AttributeOverrides({
-            @AttributeOverride(name = "availableTimeSlot.startTime",
-                    column = @Column(name = "available_start_time")),
-            @AttributeOverride(name = "availableTimeSlot.endTime",
-                    column = @Column(name = "available_end_time")),
-            @AttributeOverride(name = "reservationTimeUnit.minutes",
-                    column = @Column(name = "reservation_time_unit")),
-            @AttributeOverride(name = "reservationMinimumTimeUnit.minutes",
-                    column = @Column(name = "reservation_minimum_time_unit")),
-            @AttributeOverride(name = "reservationMaximumTimeUnit.minutes",
-                    column = @Column(name = "reservation_maximum_time_unit"))
-    })
-    private Setting setting;
+    @Column(nullable = false)
+    private Boolean reservationEnable;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "map_id", foreignKey = @ForeignKey(name = "fk_space_map"), nullable = false)
     private Map map;
 
+    @Embedded
+    @Builder.Default
+    private Settings spaceSettings = new Settings();
+
+    //TODO: Embedded로 고치고 Reservations Embeddable 클래스 생성하기 + 관련 로직 (e.g. 예약들 겹침 검증) Reservations 안으로 옮기기
     @OneToMany(mappedBy = "space", cascade = CascadeType.REMOVE, fetch = FetchType.LAZY, orphanRemoval = true)
     @Builder.Default
     private List<Reservation> reservations = new ArrayList<>();
@@ -70,20 +58,24 @@ public class Space {
             final String color,
             final String description,
             final String area,
-            final Setting setting,
+            final Boolean reservationEnable,
             final Map map,
+            final Settings spaceSettings,
             final List<Reservation> reservations) {
         this.id = id;
         this.name = name;
         this.color = color;
         this.description = description;
         this.area = area;
-        this.setting = setting;
+        this.reservationEnable = reservationEnable;
+        this.spaceSettings = new Settings();
         this.map = map;
         this.reservations = reservations;
 
-        if (map != null) {
-            map.addSpace(this);
+        updateSpaceSettings(spaceSettings);
+
+        if (this.map != null) {
+            this.map.addSpace(this);
         }
     }
 
@@ -92,87 +84,42 @@ public class Space {
         this.color = updateSpace.color;
         this.description = updateSpace.description;
         this.area = updateSpace.area;
-        this.setting = updateSpace.setting;
+        this.reservationEnable = updateSpace.reservationEnable;
+
+        updateSpaceSettings(updateSpace.getSpaceSettings());
     }
 
-    public boolean cannotAcceptDueToTimeUnit(final TimeSlot timeSlot) {
-        return setting.cannotDivideByTimeUnit(timeSlot);
-    }
-
-    public boolean cannotAcceptDueToMinimumTimeUnit(final TimeSlot timeSlot) {
-        return setting.hasLongerMinimumTimeUnitThan(timeSlot);
-    }
-
-    public boolean cannotAcceptDueToMaximumTimeUnit(final TimeSlot timeSlot) {
-        return setting.hasShorterMaximumTimeUnitThan(timeSlot);
-    }
-
-    public boolean cannotAcceptDueToAvailableTime(final TimeSlot timeSlot) {
-        return setting.hasNotEnoughAvailableTimeToCover(timeSlot);
+    private void updateSpaceSettings(final Settings settings) {
+        List<Setting> updateSettings = settings.getSettings();
+        for (Setting setting : updateSettings) {
+            setting.updateSpace(this);
+        }
+        this.spaceSettings.clear();
+        this.spaceSettings.addAll(updateSettings);
     }
 
     public boolean isUnableToReserve() {
-        return !getReservationEnable();
-    }
-
-    public boolean isClosedOn(final DayOfWeek dayOfWeek) {
-        return getEnabledDaysOfWeek().stream()
-                .noneMatch(enabledDayOfWeek -> enabledDayOfWeek.equals(dayOfWeek));
+        return !reservationEnable;
     }
 
     public void addReservation(final Reservation reservation) {
         reservations.add(reservation);
     }
 
+    public void addSetting(final Setting setting) {
+        setting.updateSpace(this);
+        spaceSettings.add(setting);
+    }
+
     public boolean hasSameId(final Long spaceId) {
         return id.equals(spaceId);
     }
 
-    public LocalTime getAvailableStartTime() {
-        return setting.getAvailableStartTime();
+    public Settings getRelevantSettings(final TimeSlot timeSlot, final DayOfWeek dayOfWeek) {
+        return spaceSettings.getSettingsByTimeSlotAndDayOfWeek(timeSlot, dayOfWeek);
     }
 
-    public LocalTime getAvailableEndTime() {
-        return setting.getAvailableEndTime();
-    }
-
-    public Integer getReservationTimeUnitAsInt() {
-        return setting.getReservationTimeUnitAsInt();
-    }
-
-    public Integer getReservationMinimumTimeUnitAsInt() {
-        return setting.getReservationMinimumTimeUnitAsInt();
-    }
-
-    public Integer getReservationMaximumTimeUnitAsInt() {
-        return setting.getReservationMaximumTimeUnitAsInt();
-    }
-
-    public Boolean getReservationEnable() {
-        return setting.getReservationEnable();
-    }
-
-    public String getEnabledDayOfWeek() {
-        return setting.getEnabledDayOfWeek();
-    }
-
-    private List<DayOfWeek> getEnabledDaysOfWeek() {
-        String enabledDayOfWeekNames = getEnabledDayOfWeek();
-
-        if (enabledDayOfWeekNames == null) {
-            return Collections.emptyList();
-        }
-
-        return Arrays.stream(enabledDayOfWeekNames.split(DELIMITER))
-                .map(String::trim)
-                .map(this::convertToDayOfWeek)
-                .collect(Collectors.toList());
-    }
-
-    private DayOfWeek convertToDayOfWeek(final String dayOfWeekName) {
-        return Arrays.stream(DayOfWeek.values())
-                .filter(dayOfWeek -> dayOfWeek.name().equals(dayOfWeekName.toUpperCase()))
-                .findAny()
-                .orElseThrow(NoSuchDayOfWeekException::new);
+    public ServiceZone getServiceZone() {
+        return map.getServiceZone();
     }
 }

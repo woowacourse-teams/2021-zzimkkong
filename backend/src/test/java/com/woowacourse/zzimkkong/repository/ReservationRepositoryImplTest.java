@@ -6,6 +6,8 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 
+import java.util.List;
+
 import static com.woowacourse.zzimkkong.Constants.*;
 import static com.woowacourse.zzimkkong.infrastructure.datetime.TimeZoneUtils.UTC;
 
@@ -22,13 +24,12 @@ class ReservationRepositoryImplTest extends RepositoryTest {
         maps.save(luther);
 
         Setting beSetting = Setting.builder()
-                .availableTimeSlot(TimeSlot.of(
+                .settingTimeSlot(TimeSlot.of(
                         BE_AVAILABLE_START_TIME,
                         BE_AVAILABLE_END_TIME))
                 .reservationTimeUnit(BE_RESERVATION_TIME_UNIT)
                 .reservationMinimumTimeUnit(BE_RESERVATION_MINIMUM_TIME_UNIT)
                 .reservationMaximumTimeUnit(BE_RESERVATION_MAXIMUM_TIME_UNIT)
-                .reservationEnable(BE_RESERVATION_ENABLE)
                 .enabledDayOfWeek(BE_ENABLED_DAY_OF_WEEK)
                 .build();
 
@@ -37,7 +38,8 @@ class ReservationRepositoryImplTest extends RepositoryTest {
                 .color(BE_COLOR)
                 .description(BE_DESCRIPTION)
                 .area(SPACE_DRAWING)
-                .setting(beSetting)
+                .reservationEnable(BE_RESERVATION_ENABLE)
+                .spaceSettings(new Settings(List.of(beSetting)))
                 .map(luther)
                 .build();
 
@@ -45,7 +47,7 @@ class ReservationRepositoryImplTest extends RepositoryTest {
 
         Reservation beAmZeroOneYesterday = Reservation.builder()
                 .reservationTime(
-                        ReservationTime.of(
+                        ReservationTime.ofDefaultServiceZone(
                                 THE_DAY_AFTER_TOMORROW.minusDays(1).atTime(0, 0),
                                 THE_DAY_AFTER_TOMORROW.minusDays(1).atTime(1, 0)))
                 .description(BE_AM_TEN_ELEVEN_DESCRIPTION)
@@ -59,7 +61,7 @@ class ReservationRepositoryImplTest extends RepositoryTest {
         if (isReservationExists) {
             Reservation beAmZeroOne = Reservation.builder()
                     .reservationTime(
-                            ReservationTime.of(
+                            ReservationTime.ofDefaultServiceZone(
                                     BE_AM_TEN_ELEVEN_START_TIME_KST.withZoneSameInstant(UTC.toZoneId()).toLocalDateTime(),
                                     BE_AM_TEN_ELEVEN_END_TIME_KST.withZoneSameInstant(UTC.toZoneId()).toLocalDateTime()))
                     .description(BE_AM_TEN_ELEVEN_DESCRIPTION)

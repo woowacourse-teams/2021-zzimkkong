@@ -8,13 +8,12 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 class PresetTest {
     private final Setting setting = Setting.builder()
-            .availableTimeSlot(TimeSlot.of(
+            .settingTimeSlot(TimeSlot.of(
                     BE_AVAILABLE_START_TIME,
                     BE_AVAILABLE_END_TIME))
             .reservationTimeUnit(BE_RESERVATION_TIME_UNIT)
             .reservationMinimumTimeUnit(BE_RESERVATION_MINIMUM_TIME_UNIT)
             .reservationMaximumTimeUnit(BE_RESERVATION_MAXIMUM_TIME_UNIT)
-            .reservationEnable(BE_RESERVATION_ENABLE)
             .enabledDayOfWeek(BE_ENABLED_DAY_OF_WEEK)
             .build();
 
@@ -26,7 +25,17 @@ class PresetTest {
 
         //when
         assertThat(member.getPresets().size()).isZero();
-        new Preset(1L, PRESET_NAME1, setting, member);
+
+        Preset.builder()
+                .id(1L)
+                .name(PRESET_NAME1)
+                .settingTimeSlot(setting.getSettingTimeSlot())
+                .reservationTimeUnit(setting.getReservationTimeUnit())
+                .reservationMinimumTimeUnit(setting.getReservationMinimumTimeUnit())
+                .reservationMaximumTimeUnit(setting.getReservationMaximumTimeUnit())
+                .enabledDayOfWeek(setting.getEnabledDayOfWeek())
+                .member(member)
+                .build();
 
         //then
         assertThat(member.getPresets().size()).isEqualTo(1);
@@ -38,7 +47,16 @@ class PresetTest {
         //given
         Member member = new Member(EMAIL, PW, ORGANIZATION);
         Member another = new Member("another@email.com", PW, ORGANIZATION);
-        Preset preset = new Preset(PRESET_NAME1, setting, member);
+
+        Preset preset = Preset.builder()
+                .name(PRESET_NAME1)
+                .settingTimeSlot(setting.getSettingTimeSlot())
+                .reservationTimeUnit(setting.getReservationTimeUnit())
+                .reservationMinimumTimeUnit(setting.getReservationMinimumTimeUnit())
+                .reservationMaximumTimeUnit(setting.getReservationMaximumTimeUnit())
+                .enabledDayOfWeek(setting.getEnabledDayOfWeek())
+                .member(member)
+                .build();
 
         //when, then
         assertThat(preset.isNotOwnedBy(member)).isTrue();
@@ -51,7 +69,16 @@ class PresetTest {
         //given
         Member member = new Member(EMAIL, PW, ORGANIZATION);
         long presetId = 1L;
-        Preset preset = new Preset(presetId, PRESET_NAME1, setting, member);
+        Preset preset = Preset.builder()
+                .id(presetId)
+                .name(PRESET_NAME1)
+                .settingTimeSlot(setting.getSettingTimeSlot())
+                .reservationTimeUnit(setting.getReservationTimeUnit())
+                .reservationMinimumTimeUnit(setting.getReservationMinimumTimeUnit())
+                .reservationMaximumTimeUnit(setting.getReservationMaximumTimeUnit())
+                .enabledDayOfWeek(setting.getEnabledDayOfWeek())
+                .member(member)
+                .build();
 
         //when, then
         assertThat(preset.hasSameId(presetId)).isTrue();

@@ -4,59 +4,81 @@ import com.woowacourse.zzimkkong.exception.space.InvalidMinimumMaximumTimeUnitEx
 import com.woowacourse.zzimkkong.exception.space.NotEnoughAvailableTimeException;
 import com.woowacourse.zzimkkong.exception.space.TimeUnitInconsistencyException;
 import com.woowacourse.zzimkkong.exception.space.TimeUnitMismatchException;
-import lombok.Builder;
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
-import javax.persistence.Column;
-import javax.persistence.Embeddable;
-import javax.persistence.Embedded;
+import javax.persistence.*;
+import java.time.DayOfWeek;
 import java.time.LocalTime;
 
+import static com.woowacourse.zzimkkong.infrastructure.message.MessageUtils.LINE_SEPARATOR;
+
+@Builder
 @Getter
 @NoArgsConstructor
-@Builder
-@EqualsAndHashCode
-@Embeddable
+@Entity
 public class Setting {
-    @Embedded
-    private TimeSlot availableTimeSlot;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
     @Embedded
+    @AttributeOverrides({
+            @AttributeOverride(name = "startTime",
+                    column = @Column(name = "setting_start_time")),
+            @AttributeOverride(name = "endTime",
+                    column = @Column(name = "setting_end_time")),
+    })
+    private TimeSlot settingTimeSlot;
+
+    @Embedded
+    @AttributeOverrides({
+            @AttributeOverride(name = "minutes",
+                    column = @Column(name = "reservation_time_unit"))
+    })
     private TimeUnit reservationTimeUnit;
 
     @Embedded
+    @AttributeOverrides({
+            @AttributeOverride(name = "minutes",
+                    column = @Column(name = "reservation_minimum_time_unit"))
+    })
     private TimeUnit reservationMinimumTimeUnit;
 
     @Embedded
+    @AttributeOverrides({
+            @AttributeOverride(name = "minutes",
+                    column = @Column(name = "reservation_maximum_time_unit"))
+    })
     private TimeUnit reservationMaximumTimeUnit;
-
-    @Column(nullable = false)
-    private Boolean reservationEnable;
 
     @Column(nullable = false)
     private String enabledDayOfWeek;
 
-    protected Setting(
-            final TimeSlot availableTimeSlot,
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "space_id", foreignKey = @ForeignKey(name = "fk_setting_space"), nullable = false)
+    private Space space;
+
+    public Setting(
+            final Long id,
+            final TimeSlot settingTimeSlot,
             final TimeUnit reservationTimeUnit,
             final TimeUnit reservationMinimumTimeUnit,
             final TimeUnit reservationMaximumTimeUnit,
-            final Boolean reservationEnable,
-            final String enabledDayOfWeek) {
-        this.availableTimeSlot = availableTimeSlot;
+            final String enabledDayOfWeek,
+            final Space space) {
+        this.id = id;
+        this.settingTimeSlot = settingTimeSlot;
         this.reservationTimeUnit = reservationTimeUnit;
         this.reservationMinimumTimeUnit = reservationMinimumTimeUnit;
         this.reservationMaximumTimeUnit = reservationMaximumTimeUnit;
-        this.reservationEnable = reservationEnable;
         this.enabledDayOfWeek = enabledDayOfWeek;
+        this.space = space;
 
         validateSetting();
     }
 
     private void validateSetting() {
-        if (availableTimeSlot.isNotDivisibleBy(reservationTimeUnit)) {
+        if (settingTimeSlot.isNotDivisibleBy(reservationTimeUnit)) {
             throw new TimeUnitMismatchException();
         }
 
@@ -68,33 +90,17 @@ public class Setting {
             throw new TimeUnitInconsistencyException();
         }
 
-        if (availableTimeSlot.isDurationShorterThan(reservationMaximumTimeUnit)) {
+        if (settingTimeSlot.isDurationShorterThan(reservationMaximumTimeUnit)) {
             throw new NotEnoughAvailableTimeException();
         }
     }
 
-    public boolean cannotDivideByTimeUnit(final TimeSlot timeSlot) {
-        return timeSlot.isNotDivisibleBy(reservationTimeUnit);
+    public LocalTime getSettingStartTime() {
+        return settingTimeSlot.getStartTime();
     }
 
-    public boolean hasLongerMinimumTimeUnitThan(final TimeSlot timeSlot) {
-        return timeSlot.isDurationShorterThan(reservationMinimumTimeUnit);
-    }
-
-    public boolean hasShorterMaximumTimeUnitThan(final TimeSlot timeSlot) {
-        return timeSlot.isDurationLongerThan(reservationMaximumTimeUnit);
-    }
-
-    public boolean hasNotEnoughAvailableTimeToCover(final TimeSlot timeSlot) {
-        return timeSlot.isNotWithin(availableTimeSlot);
-    }
-
-    public LocalTime getAvailableStartTime() {
-        return availableTimeSlot.getStartTime();
-    }
-
-    public LocalTime getAvailableEndTime() {
-        return availableTimeSlot.getEndTime();
+    public LocalTime getSettingEndTime() {
+        return settingTimeSlot.getEndTime();
     }
 
     public Integer getReservationTimeUnitAsInt() {
@@ -112,5 +118,49 @@ public class Setting {
     private boolean isNotConsistentTimeUnit() {
         return !(reservationMinimumTimeUnit.isDivisibleBy(reservationTimeUnit) &&
                 reservationMaximumTimeUnit.isDivisibleBy(reservationTimeUnit));
+    }
+
+    public boolean hasConflictWith(final Setting that) {
+        return this.settingTimeSlot.hasConflictWith(that.settingTimeSlot);
+    }
+
+    public boolean supports(final TimeSlot timeSlot, final DayOfWeek dayOfWeek) {
+        return enabledDayOfWeek.contains(dayOfWeek.name().toLowerCase())
+                && settingTimeSlot.hasConflictWith(timeSlot);
+    }
+
+    public boolean cannotAcceptDueToTimeUnit(final TimeSlot timeSlot) {
+        return timeSlot.isNotDivisibleBy(reservationTimeUnit);
+    }
+
+    public boolean cannotAcceptDueToMinimumTimeUnit(final TimeSlot timeSlot) {
+        return timeSlot.isDurationShorterThan(reservationMinimumTimeUnit);
+    }
+
+    public boolean cannotAcceptDueToMaximumTimeUnit(final TimeSlot timeSlot) {
+        return timeSlot.isDurationLongerThan(reservationMaximumTimeUnit);
+    }
+
+    public void updateSpace(final Space space) {
+        this.space = space;
+    }
+
+    @Override
+    public String toString() {
+        return "예약 가능한 요일: " +
+                EnabledDayOfWeek.getDisplayNames(enabledDayOfWeek) +
+                LINE_SEPARATOR +
+                "예약 가능한 시간대: " +
+                settingTimeSlot.toString() +
+                LINE_SEPARATOR +
+                "예약 시간 단위: " +
+                reservationTimeUnit.toString() +
+                LINE_SEPARATOR +
+                "최소 예약 가능 시간: " +
+                reservationMinimumTimeUnit.toString() +
+                LINE_SEPARATOR +
+                "최대 예약 가능 시간: " +
+                reservationMaximumTimeUnit.toString() +
+                LINE_SEPARATOR;
     }
 }

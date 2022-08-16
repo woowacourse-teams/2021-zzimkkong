@@ -5,7 +5,7 @@ import com.woowacourse.zzimkkong.dto.map.MapCreateUpdateRequest;
 import com.woowacourse.zzimkkong.dto.member.LoginRequest;
 import com.woowacourse.zzimkkong.dto.member.MemberSaveRequest;
 import com.woowacourse.zzimkkong.dto.space.EnabledDayOfWeekDto;
-import com.woowacourse.zzimkkong.dto.space.SettingsRequest;
+import com.woowacourse.zzimkkong.dto.space.SettingRequest;
 import com.woowacourse.zzimkkong.dto.space.SpaceCreateUpdateRequest;
 import com.woowacourse.zzimkkong.infrastructure.oauth.GithubRequester;
 import com.woowacourse.zzimkkong.infrastructure.oauth.GoogleRequester;
@@ -26,6 +26,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
+import java.util.List;
+
 import static com.woowacourse.zzimkkong.Constants.*;
 import static com.woowacourse.zzimkkong.DocumentUtils.setRequestSpecification;
 import static com.woowacourse.zzimkkong.controller.AuthControllerTest.getToken;
@@ -42,13 +44,12 @@ class AcceptanceTest {
     protected static final MemberSaveRequest memberSaveRequest = new MemberSaveRequest(EMAIL, PW, ORGANIZATION);
     protected static final LoginRequest loginRequest = new LoginRequest(EMAIL, PW);
     protected final MapCreateUpdateRequest mapCreateUpdateRequest = new MapCreateUpdateRequest(LUTHER_NAME, MAP_DRAWING_DATA, MAP_SVG);
-    protected final SettingsRequest beSettingsRequest = new SettingsRequest(
+    protected final SettingRequest beSettingRequest = new SettingRequest(
             BE_AVAILABLE_START_TIME,
             BE_AVAILABLE_END_TIME,
             BE_RESERVATION_TIME_UNIT.getMinutes(),
             BE_RESERVATION_MINIMUM_TIME_UNIT.getMinutes(),
             BE_RESERVATION_MAXIMUM_TIME_UNIT.getMinutes(),
-            BE_RESERVATION_ENABLE,
             EnabledDayOfWeekDto.from(BE_ENABLED_DAY_OF_WEEK)
     );
     protected final SpaceCreateUpdateRequest beSpaceCreateUpdateRequest = new SpaceCreateUpdateRequest(
@@ -56,16 +57,16 @@ class AcceptanceTest {
             BE_COLOR,
             BE_DESCRIPTION,
             SPACE_DRAWING,
-            beSettingsRequest,
-            MAP_SVG
+            MAP_SVG,
+            BE_RESERVATION_ENABLE,
+            List.of(beSettingRequest)
     );
-    protected final SettingsRequest feSettingsRequest = new SettingsRequest(
+    protected final SettingRequest feSettingRequest = new SettingRequest(
             FE_AVAILABLE_START_TIME,
             FE_AVAILABLE_END_TIME,
             FE_RESERVATION_TIME_UNIT.getMinutes(),
             FE_RESERVATION_MINIMUM_TIME_UNIT.getMinutes(),
             FE_RESERVATION_MAXIMUM_TIME_UNIT.getMinutes(),
-            FE_RESERVATION_ENABLE,
             EnabledDayOfWeekDto.from(FE_ENABLED_DAY_OF_WEEK)
     );
     protected final SpaceCreateUpdateRequest feSpaceCreateUpdateRequest = new SpaceCreateUpdateRequest(
@@ -73,8 +74,9 @@ class AcceptanceTest {
             FE_COLOR,
             FE_DESCRIPTION,
             SPACE_DRAWING,
-            feSettingsRequest,
-            MAP_SVG
+            MAP_SVG,
+            FE_RESERVATION_ENABLE,
+            List.of(feSettingRequest)
     );
 
     @LocalServerPort

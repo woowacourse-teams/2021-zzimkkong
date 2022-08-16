@@ -13,16 +13,14 @@ import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
-import static com.woowacourse.zzimkkong.infrastructure.datetime.TimeZoneUtils.KST;
-import static com.woowacourse.zzimkkong.infrastructure.datetime.TimeZoneUtils.UTC;
-
 @Getter
 @NoArgsConstructor
 @EqualsAndHashCode
 @Embeddable
 public class ReservationTime {
     /**
-     * The reservation date in KST (the time zone of the map)
+     * The reservation date at the service zone (time zone) of the map
+     * Indexing purpose
      */
     @Column(nullable = false)
     private LocalDate date;
@@ -48,22 +46,21 @@ public class ReservationTime {
     public static ReservationTime of(
             final LocalDateTime startDateTime,
             final LocalDateTime endDateTime,
+            final ServiceZone serviceZone,
             final boolean manageable) {
         LocalDateTime reservationStartDateTime = startDateTime.withSecond(0).withNano(0);
         LocalDateTime reservationEndDateTime = endDateTime.withSecond(0).withNano(0);
-        validateReservationTime(reservationStartDateTime, reservationEndDateTime, manageable);
+        validateReservationTime(reservationStartDateTime, reservationEndDateTime, serviceZone, manageable);
 
-        LocalDate date = TimeZoneUtils.convert(reservationStartDateTime, UTC, KST).toLocalDate();
+        LocalDate date = TimeZoneUtils.convertTo(reservationStartDateTime, serviceZone).toLocalDate();
         return new ReservationTime(date, reservationStartDateTime, reservationEndDateTime);
     }
 
-    public static ReservationTime of(
-            final LocalDateTime startDateTime,
-            final LocalDateTime endDateTime) {
-        return of(startDateTime, endDateTime, true);
+    public static ReservationTime ofDefaultServiceZone(final LocalDateTime startDateTime, final LocalDateTime endDateTime) {
+        return of(startDateTime, endDateTime, ServiceZone.KOREA, true);
     }
 
-    public static void validatePastTime(final LocalDateTime startDateTime) {
+    private static void validatePastTime(final LocalDateTime startDateTime) {
         if (startDateTime.isBefore(LocalDateTime.now())) {
             throw new PastReservationTimeException();
         }
@@ -72,15 +69,16 @@ public class ReservationTime {
     private static void validateReservationTime(
             final LocalDateTime startDateTime,
             final LocalDateTime endDateTime,
+            final ServiceZone serviceZone,
             final boolean manageable) {
-        LocalDateTime startDateTimeKST = TimeZoneUtils.convert(startDateTime, UTC, KST);
-        LocalDateTime endDateTimeKST = TimeZoneUtils.convert(endDateTime, UTC, KST);
+        LocalDateTime convertedStartDateTime = TimeZoneUtils.convertTo(startDateTime, serviceZone);
+        LocalDateTime convertedEndDateTime = TimeZoneUtils.convertTo(endDateTime, serviceZone);
 
         if (!manageable) {
             validatePastTime(startDateTime);
         }
-        validateStartEndDate(startDateTimeKST, endDateTimeKST);
-        TimeSlot.validateStartEndTime(startDateTimeKST.toLocalTime(), endDateTimeKST.toLocalTime());
+        validateStartEndDate(convertedStartDateTime, convertedEndDateTime);
+        TimeSlot.validateStartEndTime(convertedStartDateTime.toLocalTime(), convertedEndDateTime.toLocalTime());
     }
 
     private static void validateStartEndDate(final LocalDateTime startDateTime, final LocalDateTime endDateTime) {
@@ -92,15 +90,23 @@ public class ReservationTime {
         }
     }
 
-    public DayOfWeek getDayOfWeekKST() {
+    public DayOfWeek getDayOfWeek() {
         return date.getDayOfWeek();
     }
 
-    public TimeSlot asTimeSlotKST() {
-        LocalDateTime startDateTimeKST = TimeZoneUtils.convert(startTime, UTC, KST);
-        LocalDateTime endDateTimeKST = TimeZoneUtils.convert(endTime, UTC, KST);
+    public TimeSlot at(ServiceZone serviceZone) {
+        LocalDateTime convertedStartDateTime = TimeZoneUtils.convertTo(startTime, serviceZone);
+        LocalDateTime convertedEndDateTime = TimeZoneUtils.convertTo(endTime, serviceZone);
 
-        return TimeSlot.of(startDateTimeKST.toLocalTime(), endDateTimeKST.toLocalTime());
+        return TimeSlot.of(convertedStartDateTime.toLocalTime(), convertedEndDateTime.toLocalTime());
+    }
+
+    public boolean contains(final LocalDateTime now) {
+        return !(startTime.isAfter(now) || endTime.isBefore(now));
+    }
+
+    public boolean isBefore(final LocalDateTime now) {
+        return endTime.isBefore(now);
     }
 
     public boolean hasConflictWith(final ReservationTime that) {

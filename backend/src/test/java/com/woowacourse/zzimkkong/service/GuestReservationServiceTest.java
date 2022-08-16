@@ -4,6 +4,8 @@ import com.woowacourse.zzimkkong.domain.*;
 import com.woowacourse.zzimkkong.dto.reservation.*;
 import com.woowacourse.zzimkkong.exception.map.NoSuchMapException;
 import com.woowacourse.zzimkkong.exception.reservation.*;
+import com.woowacourse.zzimkkong.exception.setting.MultipleSettingsException;
+import com.woowacourse.zzimkkong.exception.setting.NoSettingAvailableException;
 import com.woowacourse.zzimkkong.exception.space.NoSuchSpaceException;
 import com.woowacourse.zzimkkong.infrastructure.datetime.TimeZoneUtils;
 import com.woowacourse.zzimkkong.service.strategy.GuestReservationStrategy;
@@ -18,13 +20,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.time.ZoneId;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
 import static com.woowacourse.zzimkkong.Constants.*;
-import static com.woowacourse.zzimkkong.infrastructure.datetime.TimeZoneUtils.KST;
 import static com.woowacourse.zzimkkong.infrastructure.datetime.TimeZoneUtils.UTC;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -41,8 +43,8 @@ class GuestReservationServiceTest extends ServiceTest {
     private final GuestReservationStrategy guestReservationStrategy = new GuestReservationStrategy();
 
     private ReservationCreateUpdateWithPasswordRequest reservationCreateUpdateWithPasswordRequest = new ReservationCreateUpdateWithPasswordRequest(
-            THE_DAY_AFTER_TOMORROW.atTime(11, 0).atZone(KST.toZoneId()),
-            THE_DAY_AFTER_TOMORROW.atTime(12, 0).atZone(KST.toZoneId()),
+            THE_DAY_AFTER_TOMORROW.atTime(11, 0).atZone(ZoneId.of(ServiceZone.KOREA.getTimeZone())),
+            THE_DAY_AFTER_TOMORROW.atTime(12, 0).atZone(ZoneId.of(ServiceZone.KOREA.getTimeZone())),
             RESERVATION_PW,
             USER_NAME,
             DESCRIPTION);
@@ -66,13 +68,12 @@ class GuestReservationServiceTest extends ServiceTest {
         luther = new Map(1L, LUTHER_NAME, MAP_DRAWING_DATA, MAP_SVG, pobi);
         
         Setting beSetting = Setting.builder()
-                .availableTimeSlot(TimeSlot.of(
+                .settingTimeSlot(TimeSlot.of(
                         BE_AVAILABLE_START_TIME,
                         BE_AVAILABLE_END_TIME))
                 .reservationTimeUnit(BE_RESERVATION_TIME_UNIT)
                 .reservationMinimumTimeUnit(BE_RESERVATION_MINIMUM_TIME_UNIT)
                 .reservationMaximumTimeUnit(BE_RESERVATION_MAXIMUM_TIME_UNIT)
-                .reservationEnable(BE_RESERVATION_ENABLE)
                 .enabledDayOfWeek(BE_ENABLED_DAY_OF_WEEK)
                 .build();
 
@@ -82,17 +83,17 @@ class GuestReservationServiceTest extends ServiceTest {
                 .map(luther)
                 .description(BE_DESCRIPTION)
                 .area(SPACE_DRAWING)
-                .setting(beSetting)
+                .reservationEnable(BE_RESERVATION_ENABLE)
+                .spaceSettings(new Settings(List.of(beSetting)))
                 .build();
 
         Setting feSetting = Setting.builder()
-                .availableTimeSlot(TimeSlot.of(
+                .settingTimeSlot(TimeSlot.of(
                         FE_AVAILABLE_START_TIME,
                         FE_AVAILABLE_END_TIME))
                 .reservationTimeUnit(FE_RESERVATION_TIME_UNIT)
                 .reservationMinimumTimeUnit(FE_RESERVATION_MINIMUM_TIME_UNIT)
                 .reservationMaximumTimeUnit(FE_RESERVATION_MAXIMUM_TIME_UNIT)
-                .reservationEnable(FE_RESERVATION_ENABLE)
                 .enabledDayOfWeek(FE_ENABLED_DAY_OF_WEEK)
                 .build();
 
@@ -103,13 +104,14 @@ class GuestReservationServiceTest extends ServiceTest {
                 .map(luther)
                 .description(FE_DESCRIPTION)
                 .area(SPACE_DRAWING)
-                .setting(feSetting)
+                .reservationEnable(FE_RESERVATION_ENABLE)
+                .spaceSettings(new Settings(List.of(feSetting)))
                 .build();
 
         beAmZeroOne = Reservation.builder()
                 .id(1L)
                 .reservationTime(
-                        ReservationTime.of(
+                        ReservationTime.ofDefaultServiceZone(
                                 BE_AM_TEN_ELEVEN_START_TIME_KST.withZoneSameInstant(UTC.toZoneId()).toLocalDateTime(),
                                 BE_AM_TEN_ELEVEN_END_TIME_KST.withZoneSameInstant(UTC.toZoneId()).toLocalDateTime()))
                 .description(BE_AM_TEN_ELEVEN_DESCRIPTION)
@@ -121,7 +123,7 @@ class GuestReservationServiceTest extends ServiceTest {
         bePmOneTwo = Reservation.builder()
                 .id(2L)
                 .reservationTime(
-                        ReservationTime.of(
+                        ReservationTime.ofDefaultServiceZone(
                                 BE_PM_ONE_TWO_START_TIME_KST.withZoneSameInstant(UTC.toZoneId()).toLocalDateTime(),
                                 BE_PM_ONE_TWO_END_TIME_KST.withZoneSameInstant(UTC.toZoneId()).toLocalDateTime()))
                 .description(BE_PM_ONE_TWO_DESCRIPTION)
@@ -213,8 +215,8 @@ class GuestReservationServiceTest extends ServiceTest {
 
         // when
         reservationCreateUpdateWithPasswordRequest = new ReservationCreateUpdateWithPasswordRequest(
-                LocalDateTime.now().minusHours(3).atZone(KST.toZoneId()),
-                LocalDateTime.now().plusHours(3).atZone(KST.toZoneId()),
+                LocalDateTime.now().minusHours(3).atZone(ZoneId.of(ServiceZone.KOREA.getTimeZone())),
+                LocalDateTime.now().plusHours(3).atZone(ZoneId.of(ServiceZone.KOREA.getTimeZone())),
                 RESERVATION_PW,
                 USER_NAME,
                 DESCRIPTION);
@@ -239,8 +241,8 @@ class GuestReservationServiceTest extends ServiceTest {
 
         // when
         reservationCreateUpdateWithPasswordRequest = new ReservationCreateUpdateWithPasswordRequest(
-                THE_DAY_AFTER_TOMORROW.atTime(14, 0).atZone(KST.toZoneId()),
-                THE_DAY_AFTER_TOMORROW.atTime(13, 0).atZone(KST.toZoneId()),
+                THE_DAY_AFTER_TOMORROW.atTime(14, 0).atZone(ZoneId.of(ServiceZone.KOREA.getTimeZone())),
+                THE_DAY_AFTER_TOMORROW.atTime(13, 0).atZone(ZoneId.of(ServiceZone.KOREA.getTimeZone())),
                 RESERVATION_PW,
                 USER_NAME,
                 DESCRIPTION);
@@ -265,8 +267,8 @@ class GuestReservationServiceTest extends ServiceTest {
 
         //when
         reservationCreateUpdateWithPasswordRequest = new ReservationCreateUpdateWithPasswordRequest(
-                THE_DAY_AFTER_TOMORROW.atTime(10, 0).atZone(KST.toZoneId()),
-                THE_DAY_AFTER_TOMORROW.atTime(10, 0).atZone(KST.toZoneId()),
+                THE_DAY_AFTER_TOMORROW.atTime(10, 0).atZone(ZoneId.of(ServiceZone.KOREA.getTimeZone())),
+                THE_DAY_AFTER_TOMORROW.atTime(10, 0).atZone(ZoneId.of(ServiceZone.KOREA.getTimeZone())),
                 RESERVATION_PW,
                 USER_NAME,
                 DESCRIPTION);
@@ -291,8 +293,8 @@ class GuestReservationServiceTest extends ServiceTest {
 
         //when
         reservationCreateUpdateWithPasswordRequest = new ReservationCreateUpdateWithPasswordRequest(
-                THE_DAY_AFTER_TOMORROW.atTime(10, 0).atZone(KST.toZoneId()),
-                THE_DAY_AFTER_TOMORROW.atTime(10, 0).plusDays(1).atZone(KST.toZoneId()),
+                THE_DAY_AFTER_TOMORROW.atTime(10, 0).atZone(ZoneId.of(ServiceZone.KOREA.getTimeZone())),
+                THE_DAY_AFTER_TOMORROW.atTime(10, 0).plusDays(1).atZone(ZoneId.of(ServiceZone.KOREA.getTimeZone())),
                 RESERVATION_PW,
                 USER_NAME,
                 DESCRIPTION);
@@ -306,34 +308,6 @@ class GuestReservationServiceTest extends ServiceTest {
                 reservationCreateDto,
                 guestReservationStrategy))
                 .isInstanceOf(NonMatchingStartEndDateException.class);
-    }
-
-    @ParameterizedTest
-    @CsvSource(value = {"9:10", "22:23"}, delimiter = ':')
-    @DisplayName("예약 생성 요청 시, 공간의 예약가능 시간이 아니라면 예외가 발생한다.")
-    void saveInvalidTimeSetting(int startTime, int endTime) {
-        //given
-        given(maps.findByIdFetch(anyLong()))
-                .willReturn(Optional.of(luther));
-
-        //when
-        reservationCreateUpdateWithPasswordRequest = new ReservationCreateUpdateWithPasswordRequest(
-                THE_DAY_AFTER_TOMORROW.atTime(startTime, 0).atZone(KST.toZoneId()),
-                THE_DAY_AFTER_TOMORROW.atTime(endTime, 30).atZone(KST.toZoneId()),
-                RESERVATION_PW,
-                USER_NAME,
-                DESCRIPTION);
-
-        ReservationCreateDto reservationCreateDto = ReservationCreateDto.of(
-                lutherId,
-                beId,
-                reservationCreateUpdateWithPasswordRequest);
-
-        //then
-        assertThatThrownBy(() -> reservationService.saveReservation(
-                reservationCreateDto,
-                guestReservationStrategy))
-                .isInstanceOf(InvalidStartEndTimeException.class);
     }
 
     @ParameterizedTest
@@ -368,14 +342,13 @@ class GuestReservationServiceTest extends ServiceTest {
     void saveReservationUnable() {
         // given, when
         Setting setting = Setting.builder()
-                .availableTimeSlot(TimeSlot.of(
+                .settingTimeSlot(TimeSlot.of(
                         LocalTime.of(0, 0),
                         LocalTime.of(18, 0)))
                 .reservationTimeUnit(TimeUnit.from(10))
                 .reservationMinimumTimeUnit(TimeUnit.from(10))
                 .reservationMaximumTimeUnit(TimeUnit.from(120))
-                .reservationEnable(false)
-                .enabledDayOfWeek(null)
+                .enabledDayOfWeek(BE_ENABLED_DAY_OF_WEEK)
                 .build();
 
         Space closedSpace = Space.builder()
@@ -385,7 +358,8 @@ class GuestReservationServiceTest extends ServiceTest {
                 .map(luther)
                 .description("시니컬하네")
                 .area(SPACE_DRAWING)
-                .setting(setting)
+                .reservationEnable(false)
+                .spaceSettings(new Settings(List.of(setting)))
                 .build();
 
         given(maps.findByIdFetch(anyLong()))
@@ -409,13 +383,12 @@ class GuestReservationServiceTest extends ServiceTest {
     void saveIllegalDayOfWeek() {
         // given, when
         Setting setting = Setting.builder()
-                .availableTimeSlot(TimeSlot.of(
+                .settingTimeSlot(TimeSlot.of(
                         LocalTime.of(0, 0),
                         LocalTime.of(18, 0)))
                 .reservationTimeUnit(TimeUnit.from(10))
                 .reservationMinimumTimeUnit(TimeUnit.from(10))
                 .reservationMaximumTimeUnit(TimeUnit.from(120))
-                .reservationEnable(true)
                 .enabledDayOfWeek(THE_DAY_AFTER_TOMORROW.plusDays(1L).getDayOfWeek().name())
                 .build();
 
@@ -426,7 +399,8 @@ class GuestReservationServiceTest extends ServiceTest {
                 .map(luther)
                 .description("시니컬하네")
                 .area(SPACE_DRAWING)
-                .setting(setting)
+                .reservationEnable(true)
+                .spaceSettings(new Settings(List.of(setting)))
                 .build();
 
         given(maps.findByIdFetch(anyLong()))
@@ -442,7 +416,7 @@ class GuestReservationServiceTest extends ServiceTest {
         assertThatThrownBy(() -> reservationService.saveReservation(
                 reservationCreateDto,
                 guestReservationStrategy))
-                .isInstanceOf(InvalidDayOfWeekException.class);
+                .isInstanceOf(NoSettingAvailableException.class);
     }
 
     @ParameterizedTest
@@ -482,6 +456,138 @@ class GuestReservationServiceTest extends ServiceTest {
     }
 
     @ParameterizedTest
+    @CsvSource({"6,8","8,10","22,23"})
+    @DisplayName("예약 생성/수정 요청 시, 예약 시간대에 해당하는 예약 조건이 없으면 에러를 반환한다")
+    void saveUpdateReservationNoRelevantSetting(int startHour, int endHour) {
+        //given
+        given(maps.findByIdFetch(anyLong()))
+                .willReturn(Optional.of(luther));
+        given(reservations.findById(anyLong()))
+                .willReturn(Optional.of(reservation));
+
+        //when
+        ReservationCreateUpdateWithPasswordRequest reservationCreateUpdateWithPasswordRequest = new ReservationCreateUpdateWithPasswordRequest(
+                THE_DAY_AFTER_TOMORROW.atTime(startHour, 0).atZone(ZoneId.of(ServiceZone.KOREA.getTimeZone())),
+                THE_DAY_AFTER_TOMORROW.atTime(endHour, 0).atZone(ZoneId.of(ServiceZone.KOREA.getTimeZone())),
+                RESERVATION_PW,
+                USER_NAME,
+                DESCRIPTION);
+        Long reservationId = reservation.getId();
+
+        // be setting: 10:00 ~ 22:00
+        ReservationCreateDto reservationCreateDto = ReservationCreateDto.of(
+                lutherId,
+                beId,
+                reservationCreateUpdateWithPasswordRequest);
+        ReservationUpdateDto reservationUpdateDto = ReservationUpdateDto.of(
+                lutherId,
+                beId,
+                reservationId,
+                reservationCreateUpdateWithPasswordRequest);
+
+        //then
+        assertThatThrownBy(() -> reservationService.saveReservation(
+                reservationCreateDto,
+                guestReservationStrategy))
+                .isInstanceOf(NoSettingAvailableException.class);
+        assertThatThrownBy(() -> reservationService.updateReservation(
+                reservationUpdateDto,
+                guestReservationStrategy))
+                .isInstanceOf(NoSettingAvailableException.class);
+    }
+
+    @ParameterizedTest
+    @CsvSource({"7,11","9,11"})
+    @DisplayName("예약 생성/수정 요청 시, 예약 시간대에 해당하는 예약 조건이 2개 이상이면 에러를 반환한다")
+    void saveUpdateReservationMultipleSettings(int startHour, int endHour) {
+        //given
+        be.addSetting(Setting.builder()
+                .settingTimeSlot(TimeSlot.of(
+                        LocalTime.of(8,0),
+                        LocalTime.of(10,0)))
+                .reservationTimeUnit(TimeUnit.from(10))
+                .reservationMinimumTimeUnit(TimeUnit.from(10))
+                .reservationMaximumTimeUnit(TimeUnit.from(60))
+                .enabledDayOfWeek(BE_ENABLED_DAY_OF_WEEK)
+                .build());
+        given(maps.findByIdFetch(anyLong()))
+                .willReturn(Optional.of(luther));
+        given(reservations.findById(anyLong()))
+                .willReturn(Optional.of(reservation));
+
+        //when
+        ReservationCreateUpdateWithPasswordRequest reservationCreateUpdateWithPasswordRequest = new ReservationCreateUpdateWithPasswordRequest(
+                THE_DAY_AFTER_TOMORROW.atTime(startHour, 0).atZone(ZoneId.of(ServiceZone.KOREA.getTimeZone())),
+                THE_DAY_AFTER_TOMORROW.atTime(endHour, 0).atZone(ZoneId.of(ServiceZone.KOREA.getTimeZone())),
+                RESERVATION_PW,
+                USER_NAME,
+                DESCRIPTION);
+        Long reservationId = reservation.getId();
+
+        // be setting: 8:00 ~ 10:00 / 10:00 ~ 22:00
+        ReservationCreateDto reservationCreateDto = ReservationCreateDto.of(
+                lutherId,
+                beId,
+                reservationCreateUpdateWithPasswordRequest);
+        ReservationUpdateDto reservationUpdateDto = ReservationUpdateDto.of(
+                lutherId,
+                beId,
+                reservationId,
+                reservationCreateUpdateWithPasswordRequest);
+
+        //then
+        assertThatThrownBy(() -> reservationService.saveReservation(
+                reservationCreateDto,
+                guestReservationStrategy))
+                .isInstanceOf(MultipleSettingsException.class);
+        assertThatThrownBy(() -> reservationService.updateReservation(
+                reservationUpdateDto,
+                guestReservationStrategy))
+                .isInstanceOf(MultipleSettingsException.class);
+    }
+
+    @ParameterizedTest
+    @CsvSource({"9,11","21,23"})
+    @DisplayName("예약 생성/수정 요청 시, 예약 시간대가 예약 조건안에 완전히 포함되지 않고 걸쳐있으면 에러를 반환한다")
+    void saveUpdateReservationIsNotWithinSetting(int startHour, int endHour) {
+        //given
+        given(maps.findByIdFetch(anyLong()))
+                .willReturn(Optional.of(luther));
+        given(reservations.findById(anyLong()))
+                .willReturn(Optional.of(reservation));
+
+        //when
+        ReservationCreateUpdateWithPasswordRequest reservationCreateUpdateWithPasswordRequest = new ReservationCreateUpdateWithPasswordRequest(
+                THE_DAY_AFTER_TOMORROW.atTime(startHour, 0).atZone(ZoneId.of(ServiceZone.KOREA.getTimeZone())),
+                THE_DAY_AFTER_TOMORROW.atTime(endHour, 0).atZone(ZoneId.of(ServiceZone.KOREA.getTimeZone())),
+                RESERVATION_PW,
+                USER_NAME,
+                DESCRIPTION);
+        Long reservationId = reservation.getId();
+
+        // be setting: 10:00 ~ 22:00
+        ReservationCreateDto reservationCreateDto = ReservationCreateDto.of(
+                lutherId,
+                beId,
+                reservationCreateUpdateWithPasswordRequest);
+        ReservationUpdateDto reservationUpdateDto = ReservationUpdateDto.of(
+                lutherId,
+                beId,
+                reservationId,
+                reservationCreateUpdateWithPasswordRequest);
+
+        //then
+        assertThatThrownBy(() -> reservationService.saveReservation(
+                reservationCreateDto,
+                guestReservationStrategy))
+                .isInstanceOf(InvalidStartEndTimeException.class);
+        assertThatThrownBy(() -> reservationService.updateReservation(
+                reservationUpdateDto,
+                guestReservationStrategy))
+                .isInstanceOf(InvalidStartEndTimeException.class);
+    }
+
+    @ParameterizedTest
     @CsvSource({"5,60","10,55","5,65","20,85"})
     @DisplayName("예약 생성/수정 요청 시, space setting의 reservationTimeUnit이 일치하지 않으면 예외가 발생한다.")
     void saveReservationTimeUnitException(int additionalStartMinute, int additionalEndMinute) {
@@ -494,8 +600,8 @@ class GuestReservationServiceTest extends ServiceTest {
 
         //when
         ReservationCreateUpdateWithPasswordRequest reservationCreateUpdateWithPasswordRequest = new ReservationCreateUpdateWithPasswordRequest(
-                theDayAfterTomorrowTen.plusMinutes(additionalStartMinute).atZone(KST.toZoneId()),
-                theDayAfterTomorrowTen.plusMinutes(additionalEndMinute).atZone(KST.toZoneId()),
+                theDayAfterTomorrowTen.plusMinutes(additionalStartMinute).atZone(ZoneId.of(ServiceZone.KOREA.getTimeZone())),
+                theDayAfterTomorrowTen.plusMinutes(additionalEndMinute).atZone(ZoneId.of(ServiceZone.KOREA.getTimeZone())),
                 RESERVATION_PW,
                 USER_NAME,
                 DESCRIPTION);
@@ -533,8 +639,8 @@ class GuestReservationServiceTest extends ServiceTest {
 
         //when
         ReservationCreateUpdateWithPasswordRequest reservationCreateUpdateWithPasswordRequest = new ReservationCreateUpdateWithPasswordRequest(
-                THE_DAY_AFTER_TOMORROW.atTime(10, 0).atZone(KST.toZoneId()),
-                THE_DAY_AFTER_TOMORROW.atTime(10, 0).plusMinutes(50).atZone(KST.toZoneId()),
+                THE_DAY_AFTER_TOMORROW.atTime(10, 0).atZone(ZoneId.of(ServiceZone.KOREA.getTimeZone())),
+                THE_DAY_AFTER_TOMORROW.atTime(10, 0).plusMinutes(50).atZone(ZoneId.of(ServiceZone.KOREA.getTimeZone())),
                 RESERVATION_PW,
                 USER_NAME,
                 DESCRIPTION);
@@ -568,8 +674,8 @@ class GuestReservationServiceTest extends ServiceTest {
 
         //when
         ReservationCreateUpdateWithPasswordRequest reservationCreateUpdateWithPasswordRequest = new ReservationCreateUpdateWithPasswordRequest(
-                THE_DAY_AFTER_TOMORROW.atTime(10, 0).atZone(KST.toZoneId()),
-                THE_DAY_AFTER_TOMORROW.atTime(10, 0).plusMinutes(130).atZone(KST.toZoneId()),
+                THE_DAY_AFTER_TOMORROW.atTime(10, 0).atZone(ZoneId.of(ServiceZone.KOREA.getTimeZone())),
+                THE_DAY_AFTER_TOMORROW.atTime(10, 0).plusMinutes(130).atZone(ZoneId.of(ServiceZone.KOREA.getTimeZone())),
                 RESERVATION_PW,
                 USER_NAME,
                 DESCRIPTION);
@@ -603,8 +709,8 @@ class GuestReservationServiceTest extends ServiceTest {
 
         //when
         ReservationCreateUpdateWithPasswordRequest reservationCreateUpdateWithPasswordRequest = new ReservationCreateUpdateWithPasswordRequest(
-                THE_DAY_AFTER_TOMORROW.atTime(10, 0).minusDays(5).atZone(KST.toZoneId()),
-                THE_DAY_AFTER_TOMORROW.atTime(10, 0).minusDays(5).plusMinutes(60).atZone(KST.toZoneId()),
+                THE_DAY_AFTER_TOMORROW.atTime(10, 0).minusDays(5).atZone(ZoneId.of(ServiceZone.KOREA.getTimeZone())),
+                THE_DAY_AFTER_TOMORROW.atTime(10, 0).minusDays(5).plusMinutes(60).atZone(ZoneId.of(ServiceZone.KOREA.getTimeZone())),
                 RESERVATION_PW,
                 USER_NAME,
                 DESCRIPTION);
@@ -873,8 +979,8 @@ class GuestReservationServiceTest extends ServiceTest {
                 .willReturn(Optional.of(reservation));
         Long reservationId = reservation.getId();
         ReservationCreateUpdateWithPasswordRequest reservationCreateUpdateWithPasswordRequest = new ReservationCreateUpdateWithPasswordRequest(
-                THE_DAY_AFTER_TOMORROW.atTime(10, 0).atZone(KST.toZoneId()),
-                THE_DAY_AFTER_TOMORROW.atTime(11, 0).atZone(KST.toZoneId()),
+                THE_DAY_AFTER_TOMORROW.atTime(10, 0).atZone(ZoneId.of(ServiceZone.KOREA.getTimeZone())),
+                THE_DAY_AFTER_TOMORROW.atTime(11, 0).atZone(ZoneId.of(ServiceZone.KOREA.getTimeZone())),
                 reservation.getPassword(),
                 CHANGED_NAME,
                 CHANGED_DESCRIPTION);
@@ -904,8 +1010,8 @@ class GuestReservationServiceTest extends ServiceTest {
 
         //when
         ReservationCreateUpdateWithPasswordRequest reservationCreateUpdateWithPasswordRequest = new ReservationCreateUpdateWithPasswordRequest(
-                THE_DAY_AFTER_TOMORROW.atTime(12, 0).atZone(KST.toZoneId()),
-                THE_DAY_AFTER_TOMORROW.atTime(12, 0).minusHours(endTime).atZone(KST.toZoneId()),
+                THE_DAY_AFTER_TOMORROW.atTime(12, 0).atZone(ZoneId.of(ServiceZone.KOREA.getTimeZone())),
+                THE_DAY_AFTER_TOMORROW.atTime(12, 0).minusHours(endTime).atZone(ZoneId.of(ServiceZone.KOREA.getTimeZone())),
                 reservation.getPassword(),
                 CHANGED_NAME,
                 CHANGED_DESCRIPTION);
@@ -933,8 +1039,8 @@ class GuestReservationServiceTest extends ServiceTest {
 
         //when
         ReservationCreateUpdateWithPasswordRequest reservationCreateUpdateWithPasswordRequest = new ReservationCreateUpdateWithPasswordRequest(
-                LocalDateTime.now().plusDays(1).atZone(KST.toZoneId()),
-                LocalDateTime.now().plusDays(2).atZone(KST.toZoneId()),
+                LocalDateTime.now().plusDays(1).atZone(ZoneId.of(ServiceZone.KOREA.getTimeZone())),
+                LocalDateTime.now().plusDays(2).atZone(ZoneId.of(ServiceZone.KOREA.getTimeZone())),
                 reservation.getPassword(),
                 CHANGED_NAME,
                 CHANGED_DESCRIPTION);
@@ -964,8 +1070,8 @@ class GuestReservationServiceTest extends ServiceTest {
 
         //when
         ReservationCreateUpdateWithPasswordRequest reservationCreateUpdateWithPasswordRequest = new ReservationCreateUpdateWithPasswordRequest(
-                TimeZoneUtils.convert(reservation.getStartTime(), UTC, KST).atZone(KST.toZoneId()),
-                TimeZoneUtils.convert(reservation.getEndTime(), UTC, KST).atZone(KST.toZoneId()),
+                TimeZoneUtils.convertTo(reservation.getStartTime(), ServiceZone.KOREA).atZone(ZoneId.of(ServiceZone.KOREA.getTimeZone())),
+                TimeZoneUtils.convertTo(reservation.getEndTime(), ServiceZone.KOREA).atZone(ZoneId.of(ServiceZone.KOREA.getTimeZone())),
                 "1231",
                 CHANGED_NAME,
                 CHANGED_DESCRIPTION);
@@ -1002,8 +1108,8 @@ class GuestReservationServiceTest extends ServiceTest {
 
         //when
         ReservationCreateUpdateWithPasswordRequest reservationCreateUpdateWithPasswordRequest = new ReservationCreateUpdateWithPasswordRequest(
-                TimeZoneUtils.convert(bePmOneTwo.getStartTime().plusMinutes(startTime), UTC, KST).atZone(KST.toZoneId()),
-                TimeZoneUtils.convert(bePmOneTwo.getEndTime().plusMinutes(endTime), UTC, KST).atZone(KST.toZoneId()),
+                TimeZoneUtils.convertTo(bePmOneTwo.getStartTime().plusMinutes(startTime), ServiceZone.KOREA).atZone(ZoneId.of(ServiceZone.KOREA.getTimeZone())),
+                TimeZoneUtils.convertTo(bePmOneTwo.getEndTime().plusMinutes(endTime), ServiceZone.KOREA).atZone(ZoneId.of(ServiceZone.KOREA.getTimeZone())),
                 reservation.getPassword(),
                 reservation.getUserName(),
                 reservation.getDescription());
@@ -1023,7 +1129,7 @@ class GuestReservationServiceTest extends ServiceTest {
     }
 
     @ParameterizedTest
-    @CsvSource(value = {"9:10", "22:23"}, delimiter = ':')
+    @CsvSource(value = {"9:10", "21:22"}, delimiter = ':')
     @DisplayName("예약 수정 요청 시, 공간의 예약가능 시간이 아니라면 에러가 발생한다.")
     void updateInvalidTimeSetting(int startTime, int endTime) {
         //given
@@ -1034,8 +1140,8 @@ class GuestReservationServiceTest extends ServiceTest {
 
         //when
         ReservationCreateUpdateWithPasswordRequest reservationCreateUpdateWithPasswordRequest = new ReservationCreateUpdateWithPasswordRequest(
-                THE_DAY_AFTER_TOMORROW.atTime(startTime, 0).atZone(KST.toZoneId()),
-                THE_DAY_AFTER_TOMORROW.atTime(endTime, 30).atZone(KST.toZoneId()),
+                THE_DAY_AFTER_TOMORROW.atTime(startTime, 0).atZone(ZoneId.of(ServiceZone.KOREA.getTimeZone())),
+                THE_DAY_AFTER_TOMORROW.atTime(endTime, 30).atZone(ZoneId.of(ServiceZone.KOREA.getTimeZone())),
                 RESERVATION_PW,
                 CHANGED_NAME,
                 CHANGED_DESCRIPTION);
@@ -1058,14 +1164,13 @@ class GuestReservationServiceTest extends ServiceTest {
     void updateReservationUnable() {
         // given, when
         Setting setting = Setting.builder()
-                .availableTimeSlot(TimeSlot.of(
+                .settingTimeSlot(TimeSlot.of(
                         LocalTime.of(0, 0),
                         LocalTime.of(18, 0)))
                 .reservationTimeUnit(TimeUnit.from(10))
                 .reservationMinimumTimeUnit(TimeUnit.from(10))
                 .reservationMaximumTimeUnit(TimeUnit.from(120))
-                .reservationEnable(false)
-                .enabledDayOfWeek(null)
+                .enabledDayOfWeek(BE_ENABLED_DAY_OF_WEEK)
                 .build();
 
         Space closedSpace = Space.builder()
@@ -1075,7 +1180,8 @@ class GuestReservationServiceTest extends ServiceTest {
                 .map(luther)
                 .description("시니컬하네")
                 .area(SPACE_DRAWING)
-                .setting(setting)
+                .reservationEnable(false)
+                .spaceSettings(new Settings(List.of(setting)))
                 .build();
 
         given(maps.findByIdFetch(anyLong()))
@@ -1103,13 +1209,12 @@ class GuestReservationServiceTest extends ServiceTest {
     void updateIllegalDayOfWeek() {
         // given, when
         Setting setting = Setting.builder()
-                .availableTimeSlot(TimeSlot.of(
+                .settingTimeSlot(TimeSlot.of(
                         LocalTime.of(0, 0),
                         LocalTime.of(18, 0)))
                 .reservationTimeUnit(TimeUnit.from(10))
                 .reservationMinimumTimeUnit(TimeUnit.from(10))
                 .reservationMaximumTimeUnit(TimeUnit.from(120))
-                .reservationEnable(true)
                 .enabledDayOfWeek(THE_DAY_AFTER_TOMORROW.plusDays(1L).getDayOfWeek().name())
                 .build();
 
@@ -1120,7 +1225,8 @@ class GuestReservationServiceTest extends ServiceTest {
                 .map(luther)
                 .description("시니컬하네")
                 .area(SPACE_DRAWING)
-                .setting(setting)
+                .reservationEnable(true)
+                .spaceSettings(new Settings(List.of(setting)))
                 .build();
 
         given(maps.findByIdFetch(anyLong()))
@@ -1140,7 +1246,7 @@ class GuestReservationServiceTest extends ServiceTest {
         assertThatThrownBy(() -> reservationService.updateReservation(
                 reservationUpdateDto,
                 guestReservationStrategy))
-                .isInstanceOf(InvalidDayOfWeekException.class);
+                .isInstanceOf(NoSettingAvailableException.class);
     }
 
     @Test
@@ -1251,14 +1357,14 @@ class GuestReservationServiceTest extends ServiceTest {
         assertThatThrownBy(() -> reservationService.deleteReservation(
                 reservationAuthenticationDto,
                 guestReservationStrategy))
-                .isInstanceOf(PastReservationTimeException.class);
+                .isInstanceOf(DeleteExpiredReservationException.class);
     }
 
     private Reservation makeReservation(final LocalDateTime startTime, final LocalDateTime endTime, final Space space) {
         return Reservation.builder()
                 .id(3L)
                 .reservationTime(
-                        ReservationTime.of(
+                        ReservationTime.ofDefaultServiceZone(
                                 startTime,
                                 endTime))
                 .password(reservationCreateUpdateWithPasswordRequest.getPassword())

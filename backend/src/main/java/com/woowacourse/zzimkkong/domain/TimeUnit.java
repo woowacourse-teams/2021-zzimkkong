@@ -61,4 +61,9 @@ public class TimeUnit {
     public boolean isShorterThan(final TimeUnit that) {
         return this.minutes < that.minutes;
     }
+
+    @Override
+    public String toString() {
+        return minutes + "분";
+    }
 }

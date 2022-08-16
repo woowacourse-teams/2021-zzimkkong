@@ -3,7 +3,7 @@ package com.woowacourse.zzimkkong.service;
 import com.woowacourse.zzimkkong.domain.*;
 import com.woowacourse.zzimkkong.dto.member.PresetCreateResponse;
 import com.woowacourse.zzimkkong.dto.member.PresetFindAllResponse;
-import com.woowacourse.zzimkkong.dto.space.SettingsRequest;
+import com.woowacourse.zzimkkong.dto.space.SettingRequest;
 import com.woowacourse.zzimkkong.dto.member.PresetCreateRequest;
 import com.woowacourse.zzimkkong.exception.member.NoSuchMemberException;
 import com.woowacourse.zzimkkong.exception.preset.NoSuchPresetException;
@@ -29,22 +29,24 @@ public class PresetService {
     }
 
     public PresetCreateResponse savePreset(final PresetCreateRequest presetCreateRequest, final LoginEmailDto loginEmailDto) {
-        SettingsRequest settingsRequest = presetCreateRequest.getSettingsRequest();
-        Setting setting = Setting.builder()
-                .availableTimeSlot(
-                        TimeSlot.of(
-                                settingsRequest.getAvailableStartTime(),
-                                settingsRequest.getAvailableEndTime()))
-                .reservationTimeUnit(TimeUnit.from(settingsRequest.getReservationTimeUnit()))
-                .reservationMinimumTimeUnit(TimeUnit.from(settingsRequest.getReservationMinimumTimeUnit()))
-                .reservationMaximumTimeUnit(TimeUnit.from(settingsRequest.getReservationMaximumTimeUnit()))
-                .reservationEnable(settingsRequest.getReservationEnable())
-                .enabledDayOfWeek(settingsRequest.enabledDayOfWeekAsString())
-                .build();
+        SettingRequest settingRequest = presetCreateRequest.getPreset();
 
         Member manager = members.findByEmail(loginEmailDto.getEmail())
                 .orElseThrow(NoSuchMemberException::new);
-        Preset preset = presets.save(new Preset(presetCreateRequest.getName(), setting, manager));
+        Preset savePreset = Preset.builder()
+                .name(presetCreateRequest.getName())
+                .settingTimeSlot(
+                        TimeSlot.of(
+                                settingRequest.getSettingStartTime(),
+                                settingRequest.getSettingEndTime()))
+                .reservationTimeUnit(TimeUnit.from(settingRequest.getReservationTimeUnit()))
+                .reservationMinimumTimeUnit(TimeUnit.from(settingRequest.getReservationMinimumTimeUnit()))
+                .reservationMaximumTimeUnit(TimeUnit.from(settingRequest.getReservationMaximumTimeUnit()))
+                .enabledDayOfWeek(settingRequest.enabledDayOfWeekAsString())
+                .member(manager)
+                .build();
+
+        Preset preset = presets.save(savePreset);
 
         return PresetCreateResponse.from(preset);
     }
