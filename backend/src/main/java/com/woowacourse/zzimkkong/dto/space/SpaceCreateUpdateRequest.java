@@ -6,6 +6,7 @@ import lombok.NoArgsConstructor;
 
 import javax.validation.Valid;
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.util.Arrays;
 import java.util.List;
@@ -33,6 +34,7 @@ public class SpaceCreateUpdateRequest {
 
     private Boolean reservationEnable = true;
 
+    @NotNull(message = SETTING_COUNT_MESSAGE)
     @Size(min = Settings.MINIMUM_SETTING_COUNT, message = SETTING_COUNT_MESSAGE)
     @Valid
     private List<SettingRequest> settings = Arrays.asList(new SettingRequest());

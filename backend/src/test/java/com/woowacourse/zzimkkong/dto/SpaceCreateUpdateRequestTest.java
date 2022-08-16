@@ -88,7 +88,7 @@ class SpaceCreateUpdateRequestTest extends RequestTest {
     }
 
     @ParameterizedTest
-    @EmptySource
+    @NullAndEmptySource
     @DisplayName("빈 array의 settings 필드가 들어오면 에러를 반환한다")
     void emptySettings(List<SettingRequest> settingRequests) {
         SpaceCreateUpdateRequest spaceCreateUpdateRequest = new SpaceCreateUpdateRequest(
