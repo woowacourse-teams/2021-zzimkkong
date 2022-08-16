@@ -15,10 +15,10 @@ import static com.woowacourse.zzimkkong.dto.ValidatorMessage.TIME_FORMAT;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class SettingRequest {
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = TIME_FORMAT)
-    private LocalTime settingStartTime = LocalTime.of(0, 0);
+    private LocalTime settingStartTime = LocalTime.of(7, 0);
 
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = TIME_FORMAT)
-    private LocalTime settingEndTime = LocalTime.of(23, 59);
+    private LocalTime settingEndTime = LocalTime.of(23, 0);
 
     @TimeUnit
     private Integer reservationTimeUnit = 10;
