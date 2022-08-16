@@ -10,6 +10,7 @@ import java.time.LocalDateTime;
 @Getter
 @NoArgsConstructor
 public class SlackResponse {
+    private String mapName;
     private String spaceName;
     private String userName;
     private String reservationTime;
@@ -18,6 +19,7 @@ public class SlackResponse {
     private String slackUrl;
 
     private SlackResponse(
+            final String mapName,
             final String spaceName,
             final String userName,
             final LocalDateTime startTime,
@@ -25,6 +27,7 @@ public class SlackResponse {
             final String description,
             final String sharingMapId,
             final String slackUrl) {
+        this.mapName = "장소 : " + mapName;
         this.spaceName = "회의실명 : " + spaceName;
         this.userName = "예약자명 : " + userName;
         this.reservationTime = "예약시간 : " + startTime + " ~ " + endTime;
@@ -42,6 +45,7 @@ public class SlackResponse {
                 reservation.getServiceZone());
 
         return new SlackResponse(
+                reservation.getSpace().getMap().getName(),
                 reservation.getSpace().getName(),
                 reservation.getUserName(),
                 reservationStartTime,
@@ -53,7 +57,8 @@ public class SlackResponse {
 
     @Override
     public String toString() {
-        return spaceName + "\\n " +
+        return mapName + "\\n " +
+                spaceName + "\\n " +
                 userName + "\\n " +
                 reservationTime + "\\n " +
                 description;
