@@ -1,13 +1,17 @@
 package com.woowacourse.zzimkkong.dto;
 
+import com.woowacourse.zzimkkong.dto.space.SettingRequest;
 import com.woowacourse.zzimkkong.dto.space.SpaceCreateUpdateRequest;
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.EmptySource;
 import org.junit.jupiter.params.provider.NullAndEmptySource;
 
 import java.util.List;
 
 import static com.woowacourse.zzimkkong.dto.ValidatorMessage.EMPTY_MESSAGE;
+import static com.woowacourse.zzimkkong.dto.ValidatorMessage.SETTING_COUNT_MESSAGE;
 import static org.assertj.core.api.Assertions.assertThat;
 
 class SpaceCreateUpdateRequestTest extends RequestTest {
@@ -80,6 +84,24 @@ class SpaceCreateUpdateRequestTest extends RequestTest {
 
         assertThat(getConstraintViolations(spaceCreateUpdateRequest).stream()
                 .anyMatch(violation -> violation.getMessage().equals(EMPTY_MESSAGE)))
+                .isTrue();
+    }
+
+    @ParameterizedTest
+    @NullAndEmptySource
+    @DisplayName("빈 array의 settings 필드가 들어오면 에러를 반환한다")
+    void emptySettings(List<SettingRequest> settingRequests) {
+        SpaceCreateUpdateRequest spaceCreateUpdateRequest = new SpaceCreateUpdateRequest(
+                "sakjung space",
+                "color",
+                "description",
+                "area",
+                "mapImageSvg",
+                true,
+                settingRequests);
+
+        assertThat(getConstraintViolations(spaceCreateUpdateRequest).stream()
+                .anyMatch(violation -> violation.getMessage().equals(SETTING_COUNT_MESSAGE)))
                 .isTrue();
     }
 }
