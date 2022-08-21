@@ -6,7 +6,7 @@ import api from './api';
 
 export interface PostPresetParams {
   name: string;
-  settingsRequest: ReservationSettings;
+  preset: ReservationSettings;
 }
 
 export interface DeletePresetParams {
@@ -16,11 +16,8 @@ export interface DeletePresetParams {
 export const queryPresets: QueryFunction<AxiosResponse<QueryPresetsSuccess>, [QueryKey]> = () =>
   api.get('/managers/presets');
 
-export const postPreset = ({
-  name,
-  settingsRequest,
-}: PostPresetParams): Promise<AxiosResponse<never>> =>
-  api.post('/managers/presets', { name, settingsRequest });
+export const postPreset = ({ name, preset }: PostPresetParams): Promise<AxiosResponse<never>> =>
+  api.post('/managers/presets', { name, preset });
 
 export const deletePreset = ({ id }: DeletePresetParams): Promise<AxiosResponse<never>> =>
   api.delete(`/managers/presets/${id}`);

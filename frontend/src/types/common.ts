@@ -95,8 +95,8 @@ export interface SpaceReservation {
 }
 
 export interface ReservationSettings {
-  availableStartTime: string;
-  availableEndTime: string;
+  settingStartTime: string;
+  settingEndTime: string;
   reservationTimeUnit: number;
   reservationMinimumTimeUnit: number;
   reservationMaximumTimeUnit: number;
@@ -112,9 +112,23 @@ export interface ReservationSettings {
   };
 }
 
-export interface Preset extends ReservationSettings {
+export interface Preset {
   id: number;
   name: string;
+  settingStartTime: string;
+  settingEndTime: string;
+  reservationTimeUnit: number;
+  reservationMinimumTimeUnit: number;
+  reservationMaximumTimeUnit: number;
+  enabledDayOfWeek: {
+    monday: boolean;
+    tuesday: boolean;
+    wednesday: boolean;
+    thursday: boolean;
+    friday: boolean;
+    saturday: boolean;
+    sunday: boolean;
+  };
 }
 
 export interface ManagerSpace {

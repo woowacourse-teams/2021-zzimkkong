@@ -70,12 +70,10 @@ const SpaceFormProvider = ({ children }: Props): JSX.Element => {
   const getRequestValues = () => {
     const todayDate = formatDate(new Date());
 
-    const availableStartTime = formatTimeWithSecond(
-      new Date(`${todayDate}T${values.availableStartTime}`)
+    const settingStartTime = formatTimeWithSecond(
+      new Date(`${todayDate}T${values.settingStartTime}`)
     );
-    const availableEndTime = formatTimeWithSecond(
-      new Date(`${todayDate}T${values.availableEndTime}`)
-    );
+    const settingEndTime = formatTimeWithSecond(new Date(`${todayDate}T${values.settingEndTime}`));
 
     return {
       space: {
@@ -84,8 +82,8 @@ const SpaceFormProvider = ({ children }: Props): JSX.Element => {
         description: values.name,
         area: JSON.stringify(values.area),
         settings: {
-          availableStartTime,
-          availableEndTime,
+          settingStartTime,
+          settingEndTime,
           reservationTimeUnit: Number(values.reservationTimeUnit),
           reservationMinimumTimeUnit: Number(values.reservationMinimumTimeUnit),
           reservationMaximumTimeUnit: Number(values.reservationMaximumTimeUnit),

@@ -6,8 +6,8 @@ import { formatDate, formatTimeWithSecond } from 'utils/datetime';
 export interface SpaceFormValue {
   name: string;
   color: string;
-  availableStartTime: string;
-  availableEndTime: string;
+  settingStartTime: string;
+  settingEndTime: string;
   reservationTimeUnit: string | number;
   reservationMinimumTimeUnit: string | number;
   reservationMaximumTimeUnit: string | number;
@@ -30,8 +30,8 @@ export const initialSpaceFormValue: Omit<SpaceFormValue, 'enabledDayOfWeek' | 'a
   reservationEnable: true,
   name: '',
   color: PALETTE.RED[500],
-  availableStartTime: formatTimeWithSecond(new Date(`${today}T07:00:00`)),
-  availableEndTime: formatTimeWithSecond(new Date(`${today}T23:00:00`)),
+  settingStartTime: formatTimeWithSecond(new Date(`${today}T07:00:00`)),
+  settingEndTime: formatTimeWithSecond(new Date(`${today}T23:00:00`)),
   reservationTimeUnit: '10',
   reservationMinimumTimeUnit: '10',
   reservationMaximumTimeUnit: '120',

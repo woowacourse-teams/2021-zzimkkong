@@ -42,7 +42,7 @@ const ManagerReservationForm = ({
 }: Props): JSX.Element => {
   useScrollToTop();
 
-  const { availableStartTime, availableEndTime, reservationTimeUnit, reservationMaximumTimeUnit } =
+  const { settingStartTime, settingEndTime, reservationTimeUnit, reservationMaximumTimeUnit } =
     space.settings;
 
   const todayDate = formatDate(new Date());
@@ -53,8 +53,8 @@ const ManagerReservationForm = ({
     initialEndTime: !!reservation ? new Date(reservation.endDateTime) : undefined,
   });
 
-  const availableStartTimeText = formatTime(new Date(`${todayDate}T${availableStartTime}`));
-  const availableEndTimeText = formatTime(new Date(`${todayDate}T${availableEndTime}`));
+  const settingStartTimeText = formatTime(new Date(`${todayDate}T${settingStartTime}`));
+  const settingEndTimeText = formatTime(new Date(`${todayDate}T${settingEndTime}`));
 
   const [{ name, description, password }, onChangeForm] = useInputs<Form>({
     name: reservation?.name ?? '',
@@ -143,7 +143,7 @@ const ManagerReservationForm = ({
             onCloseOptions={onCloseOptions}
           />
           <Styled.TimeFormMessage>
-            예약 가능 시간 : {availableStartTimeText} ~ {availableEndTimeText} (최대{' '}
+            예약 가능 시간 : {settingStartTime} ~ {settingEndTimeText} (최대{' '}
             {formatTimePrettier(reservationMaximumTimeUnit)})
           </Styled.TimeFormMessage>
         </Styled.InputWrapper>

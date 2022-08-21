@@ -61,8 +61,8 @@ const Preset = (): JSX.Element => {
     if (selectedPreset === null) throw new Error(THROW_ERROR.NOT_EXIST_PRESET);
 
     const {
-      availableStartTime,
-      availableEndTime,
+      settingStartTime,
+      settingEndTime,
       reservationTimeUnit,
       reservationMinimumTimeUnit,
       reservationMaximumTimeUnit,
@@ -71,8 +71,8 @@ const Preset = (): JSX.Element => {
 
     setValues({
       ...values,
-      availableStartTime,
-      availableEndTime,
+      settingStartTime,
+      settingEndTime,
       reservationTimeUnit,
       reservationMinimumTimeUnit,
       reservationMaximumTimeUnit,
@@ -92,7 +92,7 @@ const Preset = (): JSX.Element => {
 
     const requestValues = getRequestValues();
 
-    createPreset.mutate({ name: presetName, settingsRequest: requestValues.space.settings });
+    createPreset.mutate({ name: presetName, preset: requestValues.space.settings });
   };
 
   const handleDeletePreset = (event: React.MouseEvent<HTMLButtonElement>, id: PresetType['id']) => {

@@ -205,16 +205,16 @@ const Form = ({
                 <Input
                   type="time"
                   label="예약이 열릴 시간"
-                  value={values.availableStartTime}
-                  name="availableStartTime"
+                  value={values.settingStartTime}
+                  name="settingStartTime"
                   onChange={onChange}
                   required
                 />
                 <Input
                   type="time"
                   label="예약이 닫힐 시간"
-                  value={values.availableEndTime}
-                  name="availableEndTime"
+                  value={values.settingEndTime}
+                  name="settingEndTime"
                   onChange={onChange}
                   required
                 />
