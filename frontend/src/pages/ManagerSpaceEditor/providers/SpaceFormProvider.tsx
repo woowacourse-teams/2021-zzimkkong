@@ -1,5 +1,4 @@
 import React, { createContext, Dispatch, ReactNode, SetStateAction, useState } from 'react';
-import useInputs from 'hooks/useInputs';
 import { Area, ManagerSpace, ManagerSpaceAPI } from 'types/common';
 import { WithOptional } from 'types/util';
 import { formatDate, formatTimeWithSecond } from 'utils/datetime';
@@ -11,7 +10,7 @@ interface Props {
 
 export interface SpaceProviderValue {
   values: SpaceFormValue;
-  onChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
+  onChange: (event: React.ChangeEvent<HTMLInputElement>, settingsIndex: number) => void;
   resetForm: () => void;
   updateArea: (nextArea: Area) => void;
   updateWithSpace: (space: ManagerSpace) => void;
@@ -21,117 +20,143 @@ export interface SpaceProviderValue {
   };
   selectedPresetId: number | null;
   setSelectedPresetId: Dispatch<SetStateAction<number | null>>;
+  selectedSettingIndex: number;
+  setSelectedSettingIndex: Dispatch<SetStateAction<number>>;
 }
 
 export const SpaceFormContext = createContext<SpaceProviderValue | null>(null);
 const weekdays = Object.keys(initialEnabledDayOfWeek);
+const settingKeys = Object.keys(initialSpaceFormValue.settings[0]);
 
 const SpaceFormProvider = ({ children }: Props): JSX.Element => {
-  const [spaceFormValue, onChangeSpaceFormValues, setSpaceFormValues] =
-    useInputs(initialSpaceFormValue);
-  const [enabledDayOfWeek, onChangeEnabledDayOfWeek, setEnabledDayOfWeek] =
-    useInputs(initialEnabledDayOfWeek);
+  const [spaceFormValue, setSpaceFormValues] = useState(initialSpaceFormValue);
   const [area, setArea] = useState<Area | null>(null);
   const [selectedPresetId, setSelectedPresetId] = useState<number | null>(null);
+  const [selectedSettingIndex, setSelectedSettingIndex] = useState<number>(0);
 
-  const values = { ...spaceFormValue, enabledDayOfWeek, area };
+  const values = { ...spaceFormValue, area };
 
   const setValues = (values: SpaceFormValue) => {
-    setEnabledDayOfWeek({ ...values.enabledDayOfWeek });
-    setArea(values.area === null ? null : { ...values.area });
+    const { area, ...rest } = values;
 
-    const nextValues = { ...values };
-
-    delete (nextValues as WithOptional<SpaceFormValue, 'enabledDayOfWeek'>).enabledDayOfWeek;
-    delete (nextValues as WithOptional<SpaceFormValue, 'area'>).area;
-
-    setSpaceFormValues(nextValues);
+    setArea(area);
+    setSpaceFormValues(rest);
   };
 
   const updateWithSpace = (space: ManagerSpace) => {
-    const { name, color, area, settings } = space;
-
     setSelectedPresetId(null);
-    setValues({
-      name,
-      color,
-      ...settings,
-      enabledDayOfWeek: settings.enabledDayOfWeek,
-      area,
-    });
+    setValues(space);
   };
 
   const updateArea = (nextArea: Area) => {
     setArea(nextArea);
     setSpaceFormValues(initialSpaceFormValue);
-    setEnabledDayOfWeek(initialEnabledDayOfWeek);
   };
 
   const getRequestValues = () => {
     const todayDate = formatDate(new Date());
 
-    const settingStartTime = formatTimeWithSecond(
-      new Date(`${todayDate}T${values.settingStartTime}`)
-    );
-    const settingEndTime = formatTimeWithSecond(new Date(`${todayDate}T${values.settingEndTime}`));
-
     return {
       space: {
-        name: values.name,
-        color: values.color,
-        description: values.name,
+        ...values,
         area: JSON.stringify(values.area),
-        settings: {
-          settingStartTime,
-          settingEndTime,
-          reservationTimeUnit: Number(values.reservationTimeUnit),
-          reservationMinimumTimeUnit: Number(values.reservationMinimumTimeUnit),
-          reservationMaximumTimeUnit: Number(values.reservationMaximumTimeUnit),
-          reservationEnable: values.reservationEnable,
-          enabledDayOfWeek,
-        },
+        settings: values.settings?.map((setting) => ({
+          ...setting,
+          settingStartTime: formatTimeWithSecond(
+            new Date(`${todayDate}T${setting.settingStartTime}`)
+          ),
+          settingEndTime: formatTimeWithSecond(new Date(`${todayDate}T${setting.settingEndTime}`)),
+        })),
       },
     };
   };
 
-  const onChangeReservationTimeUnit = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const onChangeReservationTimeUnit = (
+    event: React.ChangeEvent<HTMLInputElement>,
+    settingsIndex: number
+  ) => {
     const isValidMinimumTimeUnit =
-      Number(event.target.value) <= Number(spaceFormValue.reservationMinimumTimeUnit);
+      Number(event.target.value) <=
+      spaceFormValue.settings[settingsIndex].reservationMinimumTimeUnit;
 
-    if (!isValidMinimumTimeUnit) {
+    setSpaceFormValues({
+      ...spaceFormValue,
+      settings: spaceFormValue.settings.map((setting, index) => {
+        if (index === settingsIndex) {
+          return {
+            ...setting,
+            reservationTimeUnit: Number(event.target.value),
+            reservationMinimumTimeUnit: !isValidMinimumTimeUnit
+              ? Number(event.target.value)
+              : setting.reservationMinimumTimeUnit,
+          };
+        }
+
+        return setting;
+      }),
+    });
+
+    return;
+  };
+
+  const onChange = (event: React.ChangeEvent<HTMLInputElement>, settingsIndex: number) => {
+    if (selectedPresetId !== null) setSelectedPresetId(null);
+
+    if (weekdays.includes(event.target.name)) {
       setSpaceFormValues({
         ...spaceFormValue,
-        reservationTimeUnit: event.target.value,
-        reservationMinimumTimeUnit: event.target.value,
+        settings: spaceFormValue.settings.map((setting, index) => {
+          if (index === settingsIndex) {
+            return {
+              ...setting,
+              enabledDayOfWeek: {
+                ...setting.enabledDayOfWeek,
+                [event.target.name]: event.target.checked,
+              },
+            };
+          }
+
+          return setting;
+        }),
       });
 
       return;
     }
 
-    onChangeSpaceFormValues(event);
-  };
-
-  const onChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    if (selectedPresetId !== null) setSelectedPresetId(null);
-
-    if (weekdays.includes(event.target.name)) {
-      onChangeEnabledDayOfWeek(event);
-
-      return;
-    }
-
     if (event.target.name === 'reservationTimeUnit') {
-      onChangeReservationTimeUnit(event);
+      onChangeReservationTimeUnit(event, settingsIndex);
 
       return;
     }
 
-    onChangeSpaceFormValues(event);
+    if (settingKeys.includes(event.target.name)) {
+      setSpaceFormValues({
+        ...spaceFormValue,
+        settings: spaceFormValue.settings.map((setting, index) => {
+          if (index === settingsIndex) {
+            return {
+              ...setting,
+
+              [event.target.name]: event.target.value,
+            };
+          }
+
+          return setting;
+        }),
+      });
+
+      return;
+    }
+
+    setSpaceFormValues({
+      ...spaceFormValue,
+      [event.target.name]: event.target.value,
+    });
   };
 
   const resetForm = () => {
     setSelectedPresetId(null);
-    setValues({ ...initialSpaceFormValue, enabledDayOfWeek: initialEnabledDayOfWeek, area: null });
+    setValues({ ...initialSpaceFormValue, area: null });
   };
 
   return (
@@ -146,6 +171,8 @@ const SpaceFormProvider = ({ children }: Props): JSX.Element => {
         getRequestValues,
         selectedPresetId,
         setSelectedPresetId,
+        selectedSettingIndex,
+        setSelectedSettingIndex,
       }}
     >
       {children}

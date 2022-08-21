@@ -6,38 +6,30 @@ import { formatDate, formatTimeWithSecond } from 'utils/datetime';
 export interface SpaceFormValue {
   name: string;
   color: string;
-  settingStartTime: string;
-  settingEndTime: string;
-  reservationTimeUnit: string | number;
-  reservationMinimumTimeUnit: string | number;
-  reservationMaximumTimeUnit: string | number;
-  reservationEnable: boolean;
-  enabledDayOfWeek: {
-    monday: boolean;
-    tuesday: boolean;
-    wednesday: boolean;
-    thursday: boolean;
-    friday: boolean;
-    saturday: boolean;
-    sunday: boolean;
-  };
   area: Area | null;
+  reservationEnable: boolean;
+  description?: string;
+  settings: {
+    settingStartTime: string;
+    settingEndTime: string;
+    reservationTimeUnit: number;
+    reservationMinimumTimeUnit: number;
+    reservationMaximumTimeUnit: number;
+    enabledDayOfWeek: {
+      monday: boolean;
+      tuesday: boolean;
+      wednesday: boolean;
+      thursday: boolean;
+      friday: boolean;
+      saturday: boolean;
+      sunday: boolean;
+    };
+  }[];
 }
 
 const today = formatDate(new Date());
 
-export const initialSpaceFormValue: Omit<SpaceFormValue, 'enabledDayOfWeek' | 'area'> = {
-  reservationEnable: true,
-  name: '',
-  color: PALETTE.RED[500],
-  settingStartTime: formatTimeWithSecond(new Date(`${today}T07:00:00`)),
-  settingEndTime: formatTimeWithSecond(new Date(`${today}T23:00:00`)),
-  reservationTimeUnit: '10',
-  reservationMinimumTimeUnit: '10',
-  reservationMaximumTimeUnit: '120',
-};
-
-export const initialEnabledDayOfWeek: SpaceFormValue['enabledDayOfWeek'] = {
+export const initialEnabledDayOfWeek: SpaceFormValue['settings'][number]['enabledDayOfWeek'] = {
   monday: true,
   tuesday: true,
   wednesday: true,
@@ -45,6 +37,22 @@ export const initialEnabledDayOfWeek: SpaceFormValue['enabledDayOfWeek'] = {
   friday: true,
   saturday: true,
   sunday: true,
+};
+
+export const initialSpaceFormValue: Omit<SpaceFormValue, 'area'> = {
+  reservationEnable: true,
+  name: '',
+  color: PALETTE.RED[500],
+  settings: [
+    {
+      settingStartTime: formatTimeWithSecond(new Date(`${today}T07:00:00`)),
+      settingEndTime: formatTimeWithSecond(new Date(`${today}T23:00:00`)),
+      reservationTimeUnit: 10,
+      reservationMinimumTimeUnit: 10,
+      reservationMaximumTimeUnit: 120,
+      enabledDayOfWeek: initialEnabledDayOfWeek,
+    },
+  ],
 };
 
 export const colorSelectOptions = [

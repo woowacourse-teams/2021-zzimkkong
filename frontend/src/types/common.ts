@@ -100,7 +100,6 @@ export interface ReservationSettings {
   reservationTimeUnit: number;
   reservationMinimumTimeUnit: number;
   reservationMaximumTimeUnit: number;
-  reservationEnable: boolean;
   enabledDayOfWeek: {
     monday: boolean;
     tuesday: boolean;
@@ -135,9 +134,10 @@ export interface ManagerSpace {
   id: number;
   name: string;
   color: Color;
-  description: string;
+  description?: string;
   area: Area;
-  settings: ReservationSettings;
+  reservationEnable: boolean;
+  settings: ReservationSettings[];
 }
 
 export interface ManagerSpaceAPI extends Omit<ManagerSpace, 'area'> {

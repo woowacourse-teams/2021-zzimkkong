@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 
-const useInputs = <T = Record<string, string | boolean>>(
+const useInputs = <T = Record<string, string | boolean | number>>(
   initialValues: T
 ): [
   T,
