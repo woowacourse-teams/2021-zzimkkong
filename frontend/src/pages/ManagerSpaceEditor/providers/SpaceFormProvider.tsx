@@ -1,8 +1,20 @@
-import React, { createContext, Dispatch, ReactNode, SetStateAction, useState } from 'react';
+import React, {
+  createContext,
+  Dispatch,
+  ReactNode,
+  SetStateAction,
+  useEffect,
+  useState,
+} from 'react';
 import { Area, ManagerSpace, ManagerSpaceAPI } from 'types/common';
 import { WithOptional } from 'types/util';
 import { formatDate, formatTimeWithSecond } from 'utils/datetime';
-import { initialEnabledDayOfWeek, initialSpaceFormValue, SpaceFormValue } from '../data';
+import {
+  initialEnabledDayOfWeek,
+  initialSpaceFormValue,
+  initialSpaceFormValueSetting,
+  SpaceFormValue,
+} from '../data';
 
 interface Props {
   children: ReactNode;
@@ -21,7 +33,9 @@ export interface SpaceProviderValue {
   selectedPresetId: number | null;
   setSelectedPresetId: Dispatch<SetStateAction<number | null>>;
   selectedSettingIndex: number;
-  setSelectedSettingIndex: Dispatch<SetStateAction<number>>;
+  onChangeSettingSelectedIndex: (settingIndex: number) => void;
+  createSetting: () => void;
+  removeSetting: (settingIndex: number) => void;
 }
 
 export const SpaceFormContext = createContext<SpaceProviderValue | null>(null);
@@ -33,6 +47,7 @@ const SpaceFormProvider = ({ children }: Props): JSX.Element => {
   const [area, setArea] = useState<Area | null>(null);
   const [selectedPresetId, setSelectedPresetId] = useState<number | null>(null);
   const [selectedSettingIndex, setSelectedSettingIndex] = useState<number>(0);
+  const [isCreatingSetting, setIsCreatingSetting] = useState<boolean>(false);
 
   const values = { ...spaceFormValue, area };
 
@@ -43,7 +58,39 @@ const SpaceFormProvider = ({ children }: Props): JSX.Element => {
     setSpaceFormValues(rest);
   };
 
+  const createSetting = () => {
+    setSpaceFormValues({
+      ...spaceFormValue,
+      settings: [...spaceFormValue.settings, initialSpaceFormValueSetting],
+    });
+    setIsCreatingSetting(true);
+  };
+
+  const removeSetting = (settingIndex: number) => {
+    if (spaceFormValue.settings.length === 1) {
+      return;
+    }
+
+    setSpaceFormValues({
+      ...spaceFormValue,
+      settings: [
+        ...spaceFormValue.settings.slice(0, settingIndex),
+        ...spaceFormValue.settings.slice(settingIndex + 1),
+      ],
+    });
+
+    if (selectedSettingIndex === settingIndex) {
+      setSelectedSettingIndex(0);
+    }
+  };
+
+  const onChangeSettingSelectedIndex = (settingIndex: number) => {
+    setSelectedSettingIndex(settingIndex);
+    setSelectedPresetId(null);
+  };
+
   const updateWithSpace = (space: ManagerSpace) => {
+    onChangeSettingSelectedIndex(0);
     setSelectedPresetId(null);
     setValues(space);
   };
@@ -159,6 +206,13 @@ const SpaceFormProvider = ({ children }: Props): JSX.Element => {
     setValues({ ...initialSpaceFormValue, area: null });
   };
 
+  useEffect(() => {
+    if (isCreatingSetting) {
+      onChangeSettingSelectedIndex(spaceFormValue.settings.length - 1);
+      setIsCreatingSetting(false);
+    }
+  }, [isCreatingSetting, spaceFormValue.settings.length]);
+
   return (
     <SpaceFormContext.Provider
       value={{
@@ -172,7 +226,9 @@ const SpaceFormProvider = ({ children }: Props): JSX.Element => {
         selectedPresetId,
         setSelectedPresetId,
         selectedSettingIndex,
-        setSelectedSettingIndex,
+        onChangeSettingSelectedIndex,
+        createSetting,
+        removeSetting,
       }}
     >
       {children}

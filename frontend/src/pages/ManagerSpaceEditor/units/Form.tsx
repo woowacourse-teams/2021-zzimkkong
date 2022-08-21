@@ -47,14 +47,17 @@ const Form = ({
 
   const [mode, setMode] = modeState;
 
-  const [tabIndex, setTabIndex] = useState<number>(0);
-
-  const handleTabIndex = (index: number): void => {
-    setTabIndex(index);
-  };
-
-  const { values, onChange, resetForm, setValues, getRequestValues, selectedSettingIndex } =
-    useFormContext(SpaceFormContext);
+  const {
+    values,
+    onChange,
+    resetForm,
+    setValues,
+    getRequestValues,
+    selectedSettingIndex,
+    onChangeSettingSelectedIndex,
+    createSetting,
+    removeSetting,
+  } = useFormContext(SpaceFormContext);
 
   const setColor = (color: Color) => {
     setValues({ ...values, color });
@@ -185,18 +188,18 @@ const Form = ({
         </Styled.TitleContainer>
 
         <div>
-          <button type="button" onClick={() => handleTabIndex(0)}>
-            탭 0
-          </button>
-          <button type="button" onClick={() => handleTabIndex(1)}>
-            탭 1
-          </button>
-          <button type="button" onClick={() => handleTabIndex(3)}>
-            탭 2
+          {values.settings.map((_, index) => (
+            <button key={index} type="button" onClick={() => onChangeSettingSelectedIndex(index)}>
+              예약조건 {index + 1}
+            </button>
+          ))}
+
+          <button type="button" onClick={createSetting}>
+            +
           </button>
         </div>
         <div>
-          <h1>{tabIndex}</h1>
+          <span>{selectedSettingIndex}</span>
           <Styled.ContentsContainer>
             <Styled.Row>
               <Preset />

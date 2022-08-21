@@ -39,20 +39,20 @@ export const initialEnabledDayOfWeek: SpaceFormValue['settings'][number]['enable
   sunday: true,
 };
 
+export const initialSpaceFormValueSetting = {
+  settingStartTime: formatTimeWithSecond(new Date(`${today}T07:00:00`)),
+  settingEndTime: formatTimeWithSecond(new Date(`${today}T23:00:00`)),
+  reservationTimeUnit: 10,
+  reservationMinimumTimeUnit: 10,
+  reservationMaximumTimeUnit: 120,
+  enabledDayOfWeek: initialEnabledDayOfWeek,
+};
+
 export const initialSpaceFormValue: Omit<SpaceFormValue, 'area'> = {
   reservationEnable: true,
   name: '',
   color: PALETTE.RED[500],
-  settings: [
-    {
-      settingStartTime: formatTimeWithSecond(new Date(`${today}T07:00:00`)),
-      settingEndTime: formatTimeWithSecond(new Date(`${today}T23:00:00`)),
-      reservationTimeUnit: 10,
-      reservationMinimumTimeUnit: 10,
-      reservationMaximumTimeUnit: 120,
-      enabledDayOfWeek: initialEnabledDayOfWeek,
-    },
-  ],
+  settings: [initialSpaceFormValueSetting],
 };
 
 export const colorSelectOptions = [
