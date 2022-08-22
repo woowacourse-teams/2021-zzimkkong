@@ -113,3 +113,15 @@ export const isFutureDate = (time: Date | Dayjs, baseDate: Date = new Date()): b
 
   return time.getTime() > baseDate.getTime() + 1000 * 60 * 60 * 24;
 };
+
+// YYYY:MM:DD:HH:mm:ss -> N
+export const convertTimeToMinutes = (time: Date): number => {
+  return time.getHours() * 60 + time.getMinutes();
+};
+
+// HH:mm:ss -> N
+export const convertSettingTimeToMinutes = (time: string): number => {
+  const [hours, minutes] = time.split(':');
+
+  return Number(hours) * 60 + Number(minutes);
+};

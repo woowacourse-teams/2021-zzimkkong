@@ -11,7 +11,12 @@ import useInputs from 'hooks/useInputs';
 import useScrollToTop from 'hooks/useScrollToTop';
 import useTimePicker from 'hooks/useTimePicker';
 import { ManagerSpaceAPI, Reservation } from 'types/common';
-import { formatTimePrettier, formatTimeWithSecond } from 'utils/datetime';
+import {
+  convertSettingTimeToMinutes,
+  convertTimeToMinutes,
+  formatTimePrettier,
+  formatTimeWithSecond,
+} from 'utils/datetime';
 import { CreateReservationParams, EditReservationParams } from '../ManagerReservation';
 import * as Styled from './ManagerReservationForm.styles';
 
@@ -41,16 +46,6 @@ const ManagerReservationForm = ({
   onEditReservation,
 }: Props): JSX.Element => {
   useScrollToTop();
-
-  const convertTimeToMinutes = (time: Date): number => {
-    return time.getHours() * 60 + time.getMinutes();
-  };
-
-  const convertSettingTimeToMinutes = (time: string): number => {
-    const [hours, minutes] = time.split(':');
-
-    return Number(hours) * 60 + Number(minutes);
-  };
 
   const reservationTimeStep = useMemo(() => {
     const startTime = convertTimeToMinutes(
