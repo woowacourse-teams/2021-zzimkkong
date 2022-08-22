@@ -13,7 +13,8 @@ export const Section = styled.section`
 export const InputWrapper = styled.div`
   position: relative;
   display: flex;
-  gap: 1rem;
+  display: flex;
+  flex-direction: column;
   margin: 1.625rem 0;
 
   & > label,
@@ -22,8 +23,14 @@ export const InputWrapper = styled.div`
   }
 `;
 
+export const TimeFormMessageWrapper = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  margin-top: 0.5rem;
+`;
+
 export const TimeFormMessage = styled.p`
-  position: absolute;
   left: 0.75rem;
   bottom: -1rem;
   font-size: 0.75rem;

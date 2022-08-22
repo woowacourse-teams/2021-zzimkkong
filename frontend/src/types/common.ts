@@ -46,13 +46,20 @@ export interface MapItem {
 }
 
 interface SpaceSetting {
-  availableStartTime: string;
-  availableEndTime: string;
+  settingStartTime: string;
+  settingEndTime: string;
   reservationTimeUnit: number;
   reservationMinimumTimeUnit: number;
   reservationMaximumTimeUnit: number;
-  reservationEnable: boolean;
-  disabledWeekdays: string[];
+  enabledDayOfWeek: {
+    monday: boolean;
+    tuesday: boolean;
+    wednesday: boolean;
+    thursday: boolean;
+    friday: boolean;
+    saturday: boolean;
+    sunday: boolean;
+  };
 }
 
 export interface AreaRect {
@@ -76,7 +83,8 @@ export interface Space {
   color: Color;
   description: string;
   area: AreaRect | AreaPolygon;
-  settings: SpaceSetting;
+  reservationEnabled: boolean;
+  settings: SpaceSetting[];
 }
 
 export interface Reservation {
