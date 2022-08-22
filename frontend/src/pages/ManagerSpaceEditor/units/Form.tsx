@@ -1,11 +1,13 @@
-import { Dispatch, FormEventHandler, SetStateAction, useEffect, useRef, useState } from 'react';
+import { Dispatch, FormEventHandler, SetStateAction, useEffect, useRef } from 'react';
 import {
   DeleteManagerSpaceParams,
   PostManagerSpaceParams,
   PutManagerSpaceParams,
 } from 'api/managerSpace';
+import { ReactComponent as RemoveIcon } from 'assets/svg/close.svg';
 import { ReactComponent as DeleteIcon } from 'assets/svg/delete.svg';
 import { ReactComponent as PaletteIcon } from 'assets/svg/palette.svg';
+import { ReactComponent as PlusIcon } from 'assets/svg/plus.svg';
 import Button from 'components/Button/Button';
 import ColorDot from 'components/ColorDot/ColorDot';
 import Input from 'components/Input/Input';
@@ -187,121 +189,138 @@ const Form = ({
           <Styled.Title>예약 조건</Styled.Title>
         </Styled.TitleContainer>
 
-        <div>
+        <Styled.TabList>
           {values.settings.map((_, index) => (
-            <button key={index} type="button" onClick={() => onChangeSettingSelectedIndex(index)}>
-              예약조건 {index + 1}
-            </button>
+            <Styled.TabListItem key={index}>
+              <Styled.TabTextButton
+                variant="text"
+                size="small"
+                type="button"
+                onClick={() => onChangeSettingSelectedIndex(index)}
+              >
+                예약조건 {index + 1}
+              </Styled.TabTextButton>
+              <Styled.TabRemoveButton
+                size="small"
+                type="button"
+                onClick={() => removeSetting(index)}
+              >
+                <RemoveIcon />
+              </Styled.TabRemoveButton>
+            </Styled.TabListItem>
           ))}
 
-          <button type="button" onClick={createSetting}>
-            +
-          </button>
-        </div>
-        <div>
-          <span>{selectedSettingIndex}</span>
-          <Styled.ContentsContainer>
-            <Styled.Row>
-              <Preset />
-            </Styled.Row>
+          <Styled.TabListItem>
+            <Styled.TabCreateButton
+              variant="text"
+              size="small"
+              type="button"
+              onClick={createSetting}
+            >
+              <PlusIcon />
+            </Styled.TabCreateButton>
+          </Styled.TabListItem>
+        </Styled.TabList>
 
-            <Styled.Row>
-              <Styled.InputWrapper>
-                <Input
-                  type="time"
-                  label="예약이 열릴 시간"
-                  value={values.settings[selectedSettingIndex].settingStartTime}
-                  name="settingStartTime"
-                  onChange={(event) => onChange(event, selectedSettingIndex)}
-                  required
-                />
-                <Input
-                  type="time"
-                  label="예약이 닫힐 시간"
-                  value={values.settings[selectedSettingIndex].settingEndTime}
-                  name="settingEndTime"
-                  onChange={(event) => onChange(event, selectedSettingIndex)}
-                  required
-                />
-              </Styled.InputWrapper>
-              <Styled.InputMessage>
-                예약이 열릴 시간과 닫힐 시간을 설정해주세요.
-              </Styled.InputMessage>
-            </Styled.Row>
+        <Styled.ContentsContainer>
+          <Styled.Row>
+            <Preset />
+          </Styled.Row>
 
-            <Styled.Row>
-              <Styled.Fieldset>
-                <Styled.Label>예약 시간 단위</Styled.Label>
-                <FormTimeUnitSelect
-                  timeUnits={timeUnits}
-                  selectedValue={`${values.settings[selectedSettingIndex].reservationTimeUnit}`}
-                  name="reservationTimeUnit"
-                  onChange={(event) => onChange(event, selectedSettingIndex)}
-                />
-              </Styled.Fieldset>
-              <Styled.InputMessage>예약 시간의 단위를 설정해주세요.</Styled.InputMessage>
-            </Styled.Row>
+          <Styled.Row>
+            <Styled.InputWrapper>
+              <Input
+                type="time"
+                label="예약이 열릴 시간"
+                value={values.settings[selectedSettingIndex].settingStartTime}
+                name="settingStartTime"
+                onChange={(event) => onChange(event, selectedSettingIndex)}
+                required
+              />
+              <Input
+                type="time"
+                label="예약이 닫힐 시간"
+                value={values.settings[selectedSettingIndex].settingEndTime}
+                name="settingEndTime"
+                onChange={(event) => onChange(event, selectedSettingIndex)}
+                required
+              />
+            </Styled.InputWrapper>
+            <Styled.InputMessage>예약이 열릴 시간과 닫힐 시간을 설정해주세요.</Styled.InputMessage>
+          </Styled.Row>
 
-            <Styled.Row>
-              <Styled.InputWrapper>
-                <Input
-                  type="number"
-                  min="0"
-                  max="1440"
-                  step={values.settings[selectedSettingIndex].reservationTimeUnit}
-                  label="최소 예약 시간(분)"
-                  value={values.settings[selectedSettingIndex].reservationMinimumTimeUnit}
-                  name="reservationMinimumTimeUnit"
-                  onChange={(event) => onChange(event, selectedSettingIndex)}
-                  required
-                />
-                <Input
-                  type="number"
-                  min={values.settings[selectedSettingIndex].reservationMinimumTimeUnit}
-                  max="1440"
-                  step={values.settings[selectedSettingIndex].reservationTimeUnit}
-                  label="최대 예약 시간(분)"
-                  value={values.settings[selectedSettingIndex].reservationMaximumTimeUnit}
-                  name="reservationMaximumTimeUnit"
-                  onChange={(event) => onChange(event, selectedSettingIndex)}
-                  required
-                />
-              </Styled.InputWrapper>
-              <Styled.InputMessage>
-                예약 가능한 최소 시간과 최대 시간을 설정해주세요.
-              </Styled.InputMessage>
-            </Styled.Row>
+          <Styled.Row>
+            <Styled.Fieldset>
+              <Styled.Label>예약 시간 단위</Styled.Label>
+              <FormTimeUnitSelect
+                timeUnits={timeUnits}
+                selectedValue={`${values.settings[selectedSettingIndex].reservationTimeUnit}`}
+                name="reservationTimeUnit"
+                onChange={(event) => onChange(event, selectedSettingIndex)}
+              />
+            </Styled.Fieldset>
+            <Styled.InputMessage>예약 시간의 단위를 설정해주세요.</Styled.InputMessage>
+          </Styled.Row>
 
-            <Styled.Row>
-              <Styled.Fieldset>
-                <Styled.Label>예약 가능한 요일</Styled.Label>
-                <FormDayOfWeekSelect
-                  onChange={(event) => onChange(event, selectedSettingIndex)}
-                  enabledDayOfWeek={values.settings[selectedSettingIndex].enabledDayOfWeek}
-                />
-              </Styled.Fieldset>
-            </Styled.Row>
+          <Styled.Row>
+            <Styled.InputWrapper>
+              <Input
+                type="number"
+                min="0"
+                max="1440"
+                step={values.settings[selectedSettingIndex].reservationTimeUnit}
+                label="최소 예약 시간(분)"
+                value={values.settings[selectedSettingIndex].reservationMinimumTimeUnit}
+                name="reservationMinimumTimeUnit"
+                onChange={(event) => onChange(event, selectedSettingIndex)}
+                required
+              />
+              <Input
+                type="number"
+                min={values.settings[selectedSettingIndex].reservationMinimumTimeUnit}
+                max="1440"
+                step={values.settings[selectedSettingIndex].reservationTimeUnit}
+                label="최대 예약 시간(분)"
+                value={values.settings[selectedSettingIndex].reservationMaximumTimeUnit}
+                name="reservationMaximumTimeUnit"
+                onChange={(event) => onChange(event, selectedSettingIndex)}
+                required
+              />
+            </Styled.InputWrapper>
+            <Styled.InputMessage>
+              예약 가능한 최소 시간과 최대 시간을 설정해주세요.
+            </Styled.InputMessage>
+          </Styled.Row>
 
-            <Styled.Row>
-              {selectedSpaceId ? (
-                <Styled.FormSubmitContainer>
-                  <Styled.DeleteButton type="button" variant="text" onClick={handleDelete}>
-                    <DeleteIcon />
-                    공간 삭제
-                  </Styled.DeleteButton>
-                  <Button variant="primary">저장</Button>
-                </Styled.FormSubmitContainer>
-              ) : (
-                <Styled.FormSubmitContainer>
-                  <Button type="button" variant="text" onClick={handleCancel}>
-                    취소
-                  </Button>
-                  <Button variant="primary">공간 추가</Button>
-                </Styled.FormSubmitContainer>
-              )}
-            </Styled.Row>
-          </Styled.ContentsContainer>
-        </div>
+          <Styled.Row>
+            <Styled.Fieldset>
+              <Styled.Label>예약 가능한 요일</Styled.Label>
+              <FormDayOfWeekSelect
+                onChange={(event) => onChange(event, selectedSettingIndex)}
+                enabledDayOfWeek={values.settings[selectedSettingIndex].enabledDayOfWeek}
+              />
+            </Styled.Fieldset>
+          </Styled.Row>
+
+          <Styled.Row>
+            {selectedSpaceId ? (
+              <Styled.FormSubmitContainer>
+                <Styled.DeleteButton type="button" variant="text" onClick={handleDelete}>
+                  <DeleteIcon />
+                  공간 삭제
+                </Styled.DeleteButton>
+                <Button variant="primary">저장</Button>
+              </Styled.FormSubmitContainer>
+            ) : (
+              <Styled.FormSubmitContainer>
+                <Button type="button" variant="text" onClick={handleCancel}>
+                  취소
+                </Button>
+                <Button variant="primary">공간 추가</Button>
+              </Styled.FormSubmitContainer>
+            )}
+          </Styled.Row>
+        </Styled.ContentsContainer>
       </Styled.Section>
     </Styled.Form>
   );
