@@ -158,7 +158,7 @@ const ManagerReservationForm = ({
             required
           />
         </Styled.InputWrapper>
-        <Styled.InputWrapper>
+        <Styled.InputWrapper css={{ marginBottom: 0 }}>
           <TimePicker
             label="예약 시간"
             selectedTime={selectedTime}
@@ -168,28 +168,32 @@ const ManagerReservationForm = ({
             onChange={onChange}
             onCloseOptions={onCloseOptions}
           />
-          {/* <Styled.TimeFormMessage> */}
-          {space.settings.map(
-            (
-              {
-                settingStartTime,
-                settingEndTime,
-                reservationMaximumTimeUnit,
-                reservationMinimumTimeUnit,
-              },
-              index
-            ) => {
-              return (
-                <Styled.TimeFormMessage key={index}>
-                  예약 가능 시간 : {settingStartTime.slice(0, 5)} ~ {settingEndTime.slice(0, 5)}
-                  (최소
-                  {formatTimePrettier(reservationMinimumTimeUnit)}, 최대
-                  {formatTimePrettier(reservationMaximumTimeUnit)})
-                </Styled.TimeFormMessage>
-              );
-            }
-          )}
+
+          <Styled.TimeFormMessageWrapper>
+            <Styled.TimeFormMessage>예약 가능 시간</Styled.TimeFormMessage>
+            {space.settings.map(
+              (
+                {
+                  settingStartTime,
+                  settingEndTime,
+                  reservationMaximumTimeUnit,
+                  reservationMinimumTimeUnit,
+                },
+                index
+              ) => {
+                return (
+                  <Styled.TimeFormMessage key={index}>
+                    {settingStartTime.slice(0, 5)} ~ {settingEndTime.slice(0, 5)}
+                    (최소
+                    {formatTimePrettier(reservationMinimumTimeUnit)}, 최대
+                    {formatTimePrettier(reservationMaximumTimeUnit)})
+                  </Styled.TimeFormMessage>
+                );
+              }
+            )}
+          </Styled.TimeFormMessageWrapper>
         </Styled.InputWrapper>
+
         {isEditMode || (
           <Styled.InputWrapper>
             <Input
