@@ -87,7 +87,7 @@ export const formatTimePrettier = (minutes: number): string => {
   const hour = Math.floor(minutes / 60);
   const minute = minutes % 60;
 
-  return `${hour ? `${hour}시간` : ''}${minute ? ' ' : ''}${minute ? `${minute}분` : ''}`;
+  return `${hour ? ` ${hour}시간` : ''}${minute ? ' ' : ''}${minute ? `${minute}분` : ''}`;
 };
 
 export const isPastTime = (time: Date | Dayjs, baseDate: Date = new Date()): boolean => {

@@ -13,8 +13,6 @@ import { Reservation, Space } from 'types/common';
 import {
   convertSettingTimeToMinutes,
   convertTimeToMinutes,
-  formatDate,
-  formatTime,
   formatTimePrettier,
   formatTimeWithSecond,
   isPastDate,
