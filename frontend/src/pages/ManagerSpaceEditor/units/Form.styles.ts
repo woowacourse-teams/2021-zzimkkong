@@ -123,7 +123,8 @@ export const TabList = styled.ul`
   width: 100%;
   display: grid;
   grid-gap: 4px;
-  grid-template-columns: auto auto auto;
+  grid-template-columns: 1fr 1fr 1fr;
+  grid-row: 1;
   margin-bottom: 0.5rem;
 `;
 
@@ -166,7 +167,7 @@ export const TabCreateButton = styled(Button)`
   align-items: center;
   justify-content: center;
   width: 100%;
-  height: 100%;
+  height: 25.5px;
   border-radius: 0;
 
   svg {
