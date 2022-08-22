@@ -71,6 +71,14 @@ const SpaceFormProvider = ({ children }: Props): JSX.Element => {
       return;
     }
 
+    if (selectedSettingIndex === settingIndex) {
+      setSelectedSettingIndex(0);
+    }
+
+    if (settingIndex < selectedSettingIndex) {
+      setSelectedSettingIndex((prev) => prev - 1);
+    }
+
     setSpaceFormValues({
       ...spaceFormValue,
       settings: [
@@ -78,10 +86,6 @@ const SpaceFormProvider = ({ children }: Props): JSX.Element => {
         ...spaceFormValue.settings.slice(settingIndex + 1),
       ],
     });
-
-    if (selectedSettingIndex === settingIndex) {
-      setSelectedSettingIndex(0);
-    }
   };
 
   const onChangeSettingSelectedIndex = (settingIndex: number) => {
