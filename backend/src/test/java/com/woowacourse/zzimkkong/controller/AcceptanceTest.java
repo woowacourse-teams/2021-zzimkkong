@@ -55,7 +55,6 @@ class AcceptanceTest {
     protected final SpaceCreateUpdateRequest beSpaceCreateUpdateRequest = new SpaceCreateUpdateRequest(
             BE_NAME,
             BE_COLOR,
-            BE_DESCRIPTION,
             SPACE_DRAWING,
             MAP_SVG,
             BE_RESERVATION_ENABLE,
@@ -72,7 +71,6 @@ class AcceptanceTest {
     protected final SpaceCreateUpdateRequest feSpaceCreateUpdateRequest = new SpaceCreateUpdateRequest(
             FE_NAME,
             FE_COLOR,
-            FE_DESCRIPTION,
             SPACE_DRAWING,
             MAP_SVG,
             FE_RESERVATION_ENABLE,

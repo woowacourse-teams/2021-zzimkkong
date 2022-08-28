@@ -12,7 +12,6 @@ import java.util.stream.Collectors;
 public class SpaceFindDetailResponse {
     private String name;
     private String color;
-    private String description;
     private String area;
     private Boolean reservationEnable;
     private List<SettingResponse> settings;
@@ -20,13 +19,11 @@ public class SpaceFindDetailResponse {
     protected SpaceFindDetailResponse(
             final String name,
             final String color,
-            final String description,
             final String area,
             final Boolean reservationEnable,
             final List<SettingResponse> settings) {
         this.name = name;
         this.color = color;
-        this.description = description;
         this.area = area;
         this.reservationEnable = reservationEnable;
         this.settings = settings;
@@ -38,7 +35,6 @@ public class SpaceFindDetailResponse {
         return new SpaceFindDetailResponse(
                 space.getName(),
                 space.getColor(),
-                space.getDescription(),
                 space.getArea(),
                 space.getReservationEnable(),
                 settingResponses);

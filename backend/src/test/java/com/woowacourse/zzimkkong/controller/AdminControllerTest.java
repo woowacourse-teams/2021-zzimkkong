@@ -55,7 +55,6 @@ class AdminControllerTest extends AcceptanceTest {
             .name(BE_NAME)
             .color(BE_COLOR)
             .map(LUTHER)
-            .description(BE_DESCRIPTION)
             .area(SPACE_DRAWING)
             .reservationEnable(BE_RESERVATION_ENABLE)
             .spaceSettings(new Settings(List.of(BE_SETTING)))

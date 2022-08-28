@@ -40,7 +40,6 @@ class SpaceServiceTest extends ServiceTest {
     private final SpaceCreateUpdateRequest spaceCreateUpdateRequest = new SpaceCreateUpdateRequest(
             BE_NAME,
             BE_COLOR,
-            BE_DESCRIPTION,
             SPACE_DRAWING,
             MAP_SVG,
             BE_RESERVATION_ENABLE,
@@ -50,7 +49,6 @@ class SpaceServiceTest extends ServiceTest {
     private final SpaceCreateUpdateRequest updateSpaceCreateUpdateRequest = new SpaceCreateUpdateRequest(
             BE_NAME,
             "#FFCCE5",
-            "새로바뀐집",
             SPACE_DRAWING,
             MAP_SVG,
             BE_RESERVATION_ENABLE,
@@ -92,7 +90,6 @@ class SpaceServiceTest extends ServiceTest {
                 .id(1L)
                 .name(BE_NAME)
                 .map(luther)
-                .description(BE_DESCRIPTION)
                 .area(SPACE_DRAWING)
                 .reservationEnable(BE_RESERVATION_ENABLE)
                 .spaceSettings(new Settings(List.of(beSetting)))
@@ -113,7 +110,6 @@ class SpaceServiceTest extends ServiceTest {
                 .name(FE_NAME)
                 .color(FE_COLOR)
                 .map(luther)
-                .description(FE_DESCRIPTION)
                 .area(SPACE_DRAWING)
                 .reservationEnable(FE_RESERVATION_ENABLE)
                 .spaceSettings(new Settings(List.of(feSetting)))
@@ -143,7 +139,6 @@ class SpaceServiceTest extends ServiceTest {
                 .id(3L)
                 .name("새로운 공간")
                 .map(luther)
-                .description(BE_DESCRIPTION)
                 .area(SPACE_DRAWING)
                 .reservationEnable(BE_RESERVATION_ENABLE)
                 .spaceSettings(new Settings(List.of(setting)))

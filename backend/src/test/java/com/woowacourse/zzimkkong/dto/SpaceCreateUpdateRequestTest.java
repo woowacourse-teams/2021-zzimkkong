@@ -22,25 +22,6 @@ class SpaceCreateUpdateRequestTest extends RequestTest {
         SpaceCreateUpdateRequest spaceCreateUpdateRequest = new SpaceCreateUpdateRequest(
                 name,
                 "color",
-                "description",
-                "area",
-                "mapImageSvg",
-                true,
-                List.of(beSettingRequest));
-
-        assertThat(getConstraintViolations(spaceCreateUpdateRequest).stream()
-                .anyMatch(violation -> violation.getMessage().equals(EMPTY_MESSAGE)))
-                .isTrue();
-    }
-
-    @ParameterizedTest
-    @NullAndEmptySource
-    @DisplayName("공간 설명에 빈 문자열이 들어오면 처리한다.")
-    void blankReservationDescription(String description) {
-        SpaceCreateUpdateRequest spaceCreateUpdateRequest = new SpaceCreateUpdateRequest(
-                "name",
-                "color",
-                description,
                 "area",
                 "mapImageSvg",
                 true,
@@ -58,7 +39,6 @@ class SpaceCreateUpdateRequestTest extends RequestTest {
         SpaceCreateUpdateRequest spaceCreateUpdateRequest = new SpaceCreateUpdateRequest(
                 "name",
                 "color",
-                "description",
                 area,
                 "mapImageSvg",
                 true,
@@ -76,7 +56,6 @@ class SpaceCreateUpdateRequestTest extends RequestTest {
         SpaceCreateUpdateRequest spaceCreateUpdateRequest = new SpaceCreateUpdateRequest(
                 "name",
                 "color",
-                "description",
                 "area",
                 mapImageSvg,
                 true,
@@ -94,7 +73,6 @@ class SpaceCreateUpdateRequestTest extends RequestTest {
         SpaceCreateUpdateRequest spaceCreateUpdateRequest = new SpaceCreateUpdateRequest(
                 "sakjung space",
                 "color",
-                "description",
                 "area",
                 "mapImageSvg",
                 true,

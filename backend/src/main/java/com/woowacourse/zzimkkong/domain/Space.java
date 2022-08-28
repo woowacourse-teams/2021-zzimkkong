@@ -31,9 +31,6 @@ public class Space {
     private String color;
 
     @Column(nullable = true)
-    private String description;
-
-    @Column(nullable = true)
     private String area;
 
     @Column(nullable = false)
@@ -56,7 +53,6 @@ public class Space {
             final Long id,
             final String name,
             final String color,
-            final String description,
             final String area,
             final Boolean reservationEnable,
             final Map map,
@@ -65,7 +61,6 @@ public class Space {
         this.id = id;
         this.name = name;
         this.color = color;
-        this.description = description;
         this.area = area;
         this.reservationEnable = reservationEnable;
         this.spaceSettings = new Settings();
@@ -82,7 +77,6 @@ public class Space {
     public void update(final Space updateSpace) {
         this.name = updateSpace.name;
         this.color = updateSpace.color;
-        this.description = updateSpace.description;
         this.area = updateSpace.area;
         this.reservationEnable = updateSpace.reservationEnable;
 
