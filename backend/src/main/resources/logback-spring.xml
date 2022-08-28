@@ -10,20 +10,23 @@
     <property name="FILE_LOG_PATTERN"
               value="[%-5level] %d{yyyy-MM-dd HH:mm:ss} [%thread] [%logger{0}:%line] - %message %n"/>
 
-    <property name="FILE_PATH"
-              value="${user.home}/logs"/>
-
     <!-- Console   -->
     <include resource="appenders/async-console-appender.xml"/>
 
     <!--    Profiles    -->
     <springProfile name="local">
+        <property name="FILE_PATH"
+                  value="${user.home}/logs/local"/>
+
         <root level="INFO">
             <appender-ref ref="ASYNC_CONSOLE_APPENDER"/>
         </root>
     </springProfile>
 
     <springProfile name="dev">
+        <property name="FILE_PATH"
+                  value="${user.home}/logs/dev"/>
+
         <include resource="appenders/slack-appender.xml"/>
 
         <include resource="appenders/async-file-appender-error.xml"/>
@@ -39,6 +42,9 @@
     </springProfile>
 
     <springProfile name="prod">
+        <property name="FILE_PATH"
+                  value="${user.home}/logs/prodc"/>
+
         <include resource="appenders/slack-appender.xml"/>
 
         <include resource="appenders/async-file-appender-error.xml"/>
