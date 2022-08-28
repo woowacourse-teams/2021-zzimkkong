@@ -8,7 +8,6 @@ export interface SpaceFormValue {
   color: string;
   area: Area | null;
   reservationEnable: boolean;
-  description?: string;
   settings: {
     settingStartTime: string;
     settingEndTime: string;

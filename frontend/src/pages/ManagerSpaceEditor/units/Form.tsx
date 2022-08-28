@@ -80,14 +80,13 @@ const Form = ({
 
     const thumbnail = generateSvg({ ...mapData, spaces: getSpacesForSvg() });
     const {
-      space: { description, ...rest },
+      space: { ...rest },
     } = getRequestValues();
 
     if (selectedSpaceId === null) {
       onCreateSpace({
         space: {
           thumbnail,
-          description: description ? description : null,
           ...rest,
         },
       });
@@ -98,7 +97,6 @@ const Form = ({
     onUpdateSpace({
       spaceId: selectedSpaceId,
       space: {
-        description: description ? description : null,
         ...rest,
         thumbnail,
       },
