@@ -27,6 +27,7 @@
     "start": "cross-env NODE_ENV=development DEPLOY_ENV=development webpack serve",
     "build": "cross-env NODE_ENV=production DEPLOY_ENV=production webpack",
     "build:dev": "cross-env NODE_ENV=production DEPLOY_ENV=development webpack",
+    "build:prod": "cross-env NODE_ENV=production DEPLOY_ENV=production webpack",
     "storybook": "start-storybook -s ./src/assets -p 6006",
     "build-storybook": "build-storybook -s ./src/assets",
     "test": "TZ=Asia/Seoul jest --watch --passWithNoTests",
