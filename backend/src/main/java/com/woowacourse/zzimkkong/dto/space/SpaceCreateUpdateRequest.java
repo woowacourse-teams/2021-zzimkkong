@@ -24,9 +24,6 @@ public class SpaceCreateUpdateRequest {
     private String color;
 
     @NotBlank(message = EMPTY_MESSAGE)
-    private String description;
-
-    @NotBlank(message = EMPTY_MESSAGE)
     private String area;
 
     @NotBlank(message = EMPTY_MESSAGE)
@@ -42,14 +39,12 @@ public class SpaceCreateUpdateRequest {
     public SpaceCreateUpdateRequest(
             final String name,
             final String color,
-            final String description,
             final String area,
             final String thumbnail,
             final Boolean reservationEnable,
             final List<SettingRequest> settings) {
         this.name = name;
         this.color = color;
-        this.description = description;
         this.area = area;
         this.thumbnail = thumbnail;
         this.reservationEnable = reservationEnable;

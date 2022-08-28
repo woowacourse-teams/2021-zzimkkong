@@ -36,7 +36,6 @@ class ReservationRepositoryImplTest extends RepositoryTest {
         Space be = Space.builder()
                 .name(BE_NAME)
                 .color(BE_COLOR)
-                .description(BE_DESCRIPTION)
                 .area(SPACE_DRAWING)
                 .reservationEnable(BE_RESERVATION_ENABLE)
                 .spaceSettings(new Settings(List.of(beSetting)))

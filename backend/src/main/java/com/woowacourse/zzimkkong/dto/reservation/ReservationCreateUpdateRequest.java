@@ -11,7 +11,6 @@ import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 import java.time.LocalDateTime;
 import java.time.ZonedDateTime;
-import java.util.TimeZone;
 
 import static com.woowacourse.zzimkkong.dto.ValidatorMessage.*;
 import static com.woowacourse.zzimkkong.infrastructure.datetime.TimeZoneUtils.UTC;

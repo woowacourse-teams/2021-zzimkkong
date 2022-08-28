@@ -64,7 +64,6 @@ class ManagerSpaceControllerTest extends AcceptanceTest {
                 .name(BE_NAME)
                 .color(BE_COLOR)
                 .map(luther)
-                .description(BE_DESCRIPTION)
                 .area(SPACE_DRAWING)
                 .reservationEnable(BE_RESERVATION_ENABLE)
                 .spaceSettings(new Settings(List.of(beSetting)))
@@ -75,7 +74,6 @@ class ManagerSpaceControllerTest extends AcceptanceTest {
                 .name(FE_NAME)
                 .color(FE_COLOR)
                 .map(luther)
-                .description(FE_DESCRIPTION)
                 .area(SPACE_DRAWING)
                 .reservationEnable(FE_RESERVATION_ENABLE)
                 .spaceSettings(new Settings(List.of(feSetting)))
@@ -98,7 +96,6 @@ class ManagerSpaceControllerTest extends AcceptanceTest {
         SpaceCreateUpdateRequest newSpaceCreateUpdateRequest = new SpaceCreateUpdateRequest(
                 "잠실우리집",
                 "#CCFFE5",
-                "우리집",
                 SPACE_DRAWING,
                 MAP_SVG,
                 true,
@@ -128,7 +125,6 @@ class ManagerSpaceControllerTest extends AcceptanceTest {
         SpaceCreateUpdateRequest defaultSpaceCreateUpdateRequest = new SpaceCreateUpdateRequest(
                 "잠실우리집",
                 "#CCFFE5",
-                "우리집",
                 SPACE_DRAWING,
                 MAP_SVG,
                 true,
@@ -148,7 +144,6 @@ class ManagerSpaceControllerTest extends AcceptanceTest {
         Space defaultSpace = Space.builder()
                 .name(defaultSpaceCreateUpdateRequest.getName())
                 .color(defaultSpaceCreateUpdateRequest.getColor())
-                .description(defaultSpaceCreateUpdateRequest.getDescription())
                 .spaceSettings(new Settings(List.of(defaultSetting)))
                 .reservationEnable(true)
                 .area(SPACE_DRAWING)
@@ -217,7 +212,6 @@ class ManagerSpaceControllerTest extends AcceptanceTest {
         SpaceCreateUpdateRequest updateSpaceCreateUpdateRequest = new SpaceCreateUpdateRequest(
                 "바다",
                 "#CCCCFF",
-                "장미아파트",
                 SPACE_DRAWING,
                 MAP_SVG,
                 false,

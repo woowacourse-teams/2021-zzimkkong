@@ -50,10 +50,8 @@ public class Constants {
 
     public static final String BE_NAME = "백엔드 강의실";
     public static final String BE_COLOR = "#FED7D9";
-    public static final String BE_DESCRIPTION = "시니컬하네";
     public static final String FE_NAME = "프론트엔드 강의실1";
     public static final String FE_COLOR = "#FFCCCC";
-    public static final String FE_DESCRIPTION = "시니컬하네";
 
     public static final String PRESET_NAME1 = "프리셋1";
     public static final String PRESET_NAME2 = "프리셋2";
