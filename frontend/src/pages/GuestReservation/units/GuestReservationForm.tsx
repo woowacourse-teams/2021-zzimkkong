@@ -166,8 +166,7 @@ const GuestReservationForm = ({
                 return (
                   <Styled.TimeFormMessage key={index}>
                     {settingStartTime.slice(0, 5)} ~ {settingEndTime.slice(0, 5)}
-                    (최소
-                    {formatTimePrettier(reservationMinimumTimeUnit)}, 최대
+                    (최소 {formatTimePrettier(reservationMinimumTimeUnit)}, 최대{' '}
                     {formatTimePrettier(reservationMaximumTimeUnit)})
                   </Styled.TimeFormMessage>
                 );
