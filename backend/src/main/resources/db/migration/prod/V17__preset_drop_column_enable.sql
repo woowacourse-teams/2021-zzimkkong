@@ -1,1 +1,0 @@
-ALTER TABLE preset DROP COLUMN reservation_enable
