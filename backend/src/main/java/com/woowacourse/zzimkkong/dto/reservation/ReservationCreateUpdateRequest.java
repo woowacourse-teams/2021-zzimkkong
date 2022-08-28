@@ -1,7 +1,6 @@
 package com.woowacourse.zzimkkong.dto.reservation;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import com.woowacourse.zzimkkong.infrastructure.datetime.TimeZoneUtils;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
