@@ -43,7 +43,7 @@
 
     <springProfile name="prod">
         <property name="FILE_PATH"
-                  value="${user.home}/logs/prodc"/>
+                  value="${user.home}/logs/prod"/>
 
         <include resource="appenders/slack-appender.xml"/>
 
