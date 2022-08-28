@@ -4,8 +4,10 @@ import {
   PostManagerSpaceParams,
   PutManagerSpaceParams,
 } from 'api/managerSpace';
+import { ReactComponent as RemoveIcon } from 'assets/svg/close.svg';
 import { ReactComponent as DeleteIcon } from 'assets/svg/delete.svg';
 import { ReactComponent as PaletteIcon } from 'assets/svg/palette.svg';
+import { ReactComponent as PlusIcon } from 'assets/svg/plus.svg';
 import Button from 'components/Button/Button';
 import ColorDot from 'components/ColorDot/ColorDot';
 import Input from 'components/Input/Input';
@@ -47,8 +49,17 @@ const Form = ({
 
   const [mode, setMode] = modeState;
 
-  const { values, onChange, resetForm, setValues, getRequestValues } =
-    useFormContext(SpaceFormContext);
+  const {
+    values,
+    onChange,
+    resetForm,
+    setValues,
+    getRequestValues,
+    selectedSettingIndex,
+    onChangeSettingSelectedIndex,
+    createSetting,
+    removeSetting,
+  } = useFormContext(SpaceFormContext);
 
   const setColor = (color: Color) => {
     setValues({ ...values, color });
@@ -68,14 +79,15 @@ const Form = ({
     event.preventDefault();
 
     const thumbnail = generateSvg({ ...mapData, spaces: getSpacesForSvg() });
-    const valuesForRequest = getRequestValues();
+    const {
+      space: { ...rest },
+    } = getRequestValues();
 
     if (selectedSpaceId === null) {
       onCreateSpace({
         space: {
           thumbnail,
-          ...valuesForRequest.space,
-          settingsRequest: { ...valuesForRequest.space.settings },
+          ...rest,
         },
       });
 
@@ -85,9 +97,8 @@ const Form = ({
     onUpdateSpace({
       spaceId: selectedSpaceId,
       space: {
+        ...rest,
         thumbnail,
-        ...valuesForRequest.space,
-        settingsRequest: { ...valuesForRequest.space.settings },
       },
     });
   };
@@ -131,7 +142,7 @@ const Form = ({
             textPosition="left"
             name="reservationEnable"
             checked={values.reservationEnable}
-            onChange={onChange}
+            onChange={(event) => onChange(event, selectedSettingIndex)}
           />
         </Styled.TitleContainer>
 
@@ -142,8 +153,9 @@ const Form = ({
               label="공간 이름"
               value={values.name}
               name="name"
-              onChange={onChange}
+              onChange={(event) => onChange(event, selectedSettingIndex)}
               ref={nameInputRef}
+              maxLength={20}
               required
             />
           </Styled.Row>
@@ -156,7 +168,7 @@ const Form = ({
                   type="color"
                   value={values.color}
                   name="color"
-                  onChange={onChange}
+                  onChange={(event) => onChange(event, selectedSettingIndex)}
                   required
                 />
               </Styled.ColorInputLabel>
@@ -175,6 +187,40 @@ const Form = ({
           <Styled.Title>예약 조건</Styled.Title>
         </Styled.TitleContainer>
 
+        <Styled.TabList>
+          {values.settings.map((_, index) => (
+            <Styled.TabListItem key={index} isPrimary={index === selectedSettingIndex}>
+              <Styled.TabTextButton
+                variant="text"
+                size="small"
+                type="button"
+                onClick={() => onChangeSettingSelectedIndex(index)}
+              >
+                예약조건 {index + 1}
+              </Styled.TabTextButton>
+
+              <Styled.TabRemoveButton
+                size="small"
+                type="button"
+                onClick={() => removeSetting(index)}
+              >
+                <RemoveIcon />
+              </Styled.TabRemoveButton>
+            </Styled.TabListItem>
+          ))}
+
+          <Styled.TabListItem isPrimary={false}>
+            <Styled.TabCreateButton
+              variant="text"
+              size="small"
+              type="button"
+              onClick={createSetting}
+            >
+              <PlusIcon />
+            </Styled.TabCreateButton>
+          </Styled.TabListItem>
+        </Styled.TabList>
+
         <Styled.ContentsContainer>
           <Styled.Row>
             <Preset />
@@ -185,17 +231,17 @@ const Form = ({
               <Input
                 type="time"
                 label="예약이 열릴 시간"
-                value={values.availableStartTime}
-                name="availableStartTime"
-                onChange={onChange}
+                value={values.settings[selectedSettingIndex].settingStartTime}
+                name="settingStartTime"
+                onChange={(event) => onChange(event, selectedSettingIndex)}
                 required
               />
               <Input
                 type="time"
                 label="예약이 닫힐 시간"
-                value={values.availableEndTime}
-                name="availableEndTime"
-                onChange={onChange}
+                value={values.settings[selectedSettingIndex].settingEndTime}
+                name="settingEndTime"
+                onChange={(event) => onChange(event, selectedSettingIndex)}
                 required
               />
             </Styled.InputWrapper>
@@ -207,9 +253,9 @@ const Form = ({
               <Styled.Label>예약 시간 단위</Styled.Label>
               <FormTimeUnitSelect
                 timeUnits={timeUnits}
-                selectedValue={`${values.reservationTimeUnit}`}
+                selectedValue={`${values.settings[selectedSettingIndex].reservationTimeUnit}`}
                 name="reservationTimeUnit"
-                onChange={onChange}
+                onChange={(event) => onChange(event, selectedSettingIndex)}
               />
             </Styled.Fieldset>
             <Styled.InputMessage>예약 시간의 단위를 설정해주세요.</Styled.InputMessage>
@@ -221,22 +267,22 @@ const Form = ({
                 type="number"
                 min="0"
                 max="1440"
-                step={values.reservationTimeUnit}
+                step={values.settings[selectedSettingIndex].reservationTimeUnit}
                 label="최소 예약 시간(분)"
-                value={values.reservationMinimumTimeUnit}
+                value={values.settings[selectedSettingIndex].reservationMinimumTimeUnit}
                 name="reservationMinimumTimeUnit"
-                onChange={onChange}
+                onChange={(event) => onChange(event, selectedSettingIndex)}
                 required
               />
               <Input
                 type="number"
-                min={values.reservationMinimumTimeUnit}
+                min={values.settings[selectedSettingIndex].reservationMinimumTimeUnit}
                 max="1440"
-                step={values.reservationTimeUnit}
+                step={values.settings[selectedSettingIndex].reservationTimeUnit}
                 label="최대 예약 시간(분)"
-                value={values.reservationMaximumTimeUnit}
+                value={values.settings[selectedSettingIndex].reservationMaximumTimeUnit}
                 name="reservationMaximumTimeUnit"
-                onChange={onChange}
+                onChange={(event) => onChange(event, selectedSettingIndex)}
                 required
               />
             </Styled.InputWrapper>
@@ -248,7 +294,10 @@ const Form = ({
           <Styled.Row>
             <Styled.Fieldset>
               <Styled.Label>예약 가능한 요일</Styled.Label>
-              <FormDayOfWeekSelect onChange={onChange} enabledDayOfWeek={values.enabledDayOfWeek} />
+              <FormDayOfWeekSelect
+                onChange={(event) => onChange(event, selectedSettingIndex)}
+                enabledDayOfWeek={values.settings[selectedSettingIndex].enabledDayOfWeek}
+              />
             </Styled.Fieldset>
           </Styled.Row>
 

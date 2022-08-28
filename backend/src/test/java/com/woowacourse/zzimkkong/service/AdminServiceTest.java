@@ -109,12 +109,12 @@ class AdminServiceTest extends ServiceTest {
         //given
         Map luther = new Map(LUTHER_NAME, MAP_DRAWING_DATA, MAP_SVG, pobi);
         Setting beSetting = Setting.builder()
-                .availableStartTime(BE_AVAILABLE_START_TIME)
-                .availableEndTime(BE_AVAILABLE_END_TIME)
+                .settingTimeSlot(TimeSlot.of(
+                        BE_AVAILABLE_START_TIME,
+                        BE_AVAILABLE_END_TIME))
                 .reservationTimeUnit(BE_RESERVATION_TIME_UNIT)
                 .reservationMinimumTimeUnit(BE_RESERVATION_MINIMUM_TIME_UNIT)
                 .reservationMaximumTimeUnit(BE_RESERVATION_MAXIMUM_TIME_UNIT)
-                .reservationEnable(BE_RESERVATION_ENABLE)
                 .enabledDayOfWeek(BE_ENABLED_DAY_OF_WEEK)
                 .build();
 
@@ -122,9 +122,9 @@ class AdminServiceTest extends ServiceTest {
                 .id(1L)
                 .name(BE_NAME)
                 .map(luther)
-                .description(BE_DESCRIPTION)
                 .area(SPACE_DRAWING)
-                .setting(beSetting)
+                .reservationEnable(BE_RESERVATION_ENABLE)
+                .spaceSettings(new Settings(List.of(beSetting)))
                 .build();
 
         PageRequest pageRequest = PageRequest.of(0, 20, Sort.unsorted());
@@ -150,12 +150,12 @@ class AdminServiceTest extends ServiceTest {
         //given
         Map luther = new Map(1L, LUTHER_NAME, MAP_DRAWING_DATA, MAP_SVG, pobi);
         Setting beSetting = Setting.builder()
-                .availableStartTime(BE_AVAILABLE_START_TIME)
-                .availableEndTime(BE_AVAILABLE_END_TIME)
+                .settingTimeSlot(TimeSlot.of(
+                        BE_AVAILABLE_START_TIME,
+                        BE_AVAILABLE_END_TIME))
                 .reservationTimeUnit(BE_RESERVATION_TIME_UNIT)
                 .reservationMinimumTimeUnit(BE_RESERVATION_MINIMUM_TIME_UNIT)
                 .reservationMaximumTimeUnit(BE_RESERVATION_MAXIMUM_TIME_UNIT)
-                .reservationEnable(BE_RESERVATION_ENABLE)
                 .enabledDayOfWeek(BE_ENABLED_DAY_OF_WEEK)
                 .build();
 
@@ -163,15 +163,16 @@ class AdminServiceTest extends ServiceTest {
                 .id(1L)
                 .name(BE_NAME)
                 .map(luther)
-                .description(BE_DESCRIPTION)
                 .area(SPACE_DRAWING)
-                .setting(beSetting)
+                .reservationEnable(BE_RESERVATION_ENABLE)
+                .spaceSettings(new Settings(List.of(beSetting)))
                 .build();
 
         Reservation beAmZeroOne = Reservation.builder()
-                .date(BE_AM_TEN_ELEVEN_START_TIME_KST.toLocalDate())
-                .startTime(BE_AM_TEN_ELEVEN_START_TIME_KST.withZoneSameInstant(UTC.toZoneId()).toLocalDateTime())
-                .endTime(BE_AM_TEN_ELEVEN_END_TIME_KST.withZoneSameInstant(UTC.toZoneId()).toLocalDateTime())
+                .reservationTime(
+                        ReservationTime.ofDefaultServiceZone(
+                                BE_AM_TEN_ELEVEN_START_TIME_KST.withZoneSameInstant(UTC.toZoneId()).toLocalDateTime(),
+                                BE_AM_TEN_ELEVEN_END_TIME_KST.withZoneSameInstant(UTC.toZoneId()).toLocalDateTime()))
                 .description(BE_AM_TEN_ELEVEN_DESCRIPTION)
                 .userName(BE_AM_TEN_ELEVEN_USERNAME)
                 .password(BE_AM_TEN_ELEVEN_PW)

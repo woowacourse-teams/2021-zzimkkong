@@ -6,8 +6,8 @@ import { MapElement, ManagerSpace } from './../types/common';
 export interface MapSvgData {
   width: number;
   height: number;
-  mapElements: WithOptional<MapElement, 'id'>[];
-  spaces: WithOptional<ManagerSpace, 'id' | 'name' | 'description' | 'settings'>[];
+  mapElements: Omit<MapElement, 'id'>[];
+  spaces: Omit<ManagerSpace, 'id' | 'name' | 'description' | 'settings' | 'reservationEnable'>[];
 }
 
 const generateMapSvg = (mapElements: MapSvgData['mapElements']): string =>

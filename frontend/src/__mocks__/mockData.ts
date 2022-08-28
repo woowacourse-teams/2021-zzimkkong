@@ -32,6 +32,7 @@ export const guestMaps: GuestMaps = {
       '{"width":800,"height":600,"mapElements":[{"id":2,"type":"rect","stroke":"#333333","points":["210,90","650,230"]},{"id":3,"type":"rect","stroke":"#333333","width":440,"height":140,"x":210,"y":90,"points":["210, 90","650, 230"]}]}',
     thumbnail: '',
     sharingMapId: 'JMTGR',
+    notice: null,
   },
 };
 
@@ -41,25 +42,26 @@ export const spaces: Spaces = {
       id: 1,
       name: 'testSpace',
       color: '#EB3933',
-      description: 'testMap',
       area: '{"shape":"rect","x":210,"y":90,"width":440,"height":140}',
-      settings: {
-        availableStartTime: '07:00:00',
-        availableEndTime: '23:00:00',
-        reservationTimeUnit: 10,
-        reservationMinimumTimeUnit: 10,
-        reservationMaximumTimeUnit: 1440,
-        reservationEnable: true,
-        enabledDayOfWeek: {
-          monday: true,
-          tuesday: true,
-          wednesday: true,
-          thursday: true,
-          friday: true,
-          saturday: true,
-          sunday: true,
+      reservationEnable: true,
+      settings: [
+        {
+          settingStartTime: '07:00:00',
+          settingEndTime: '23:00:00',
+          reservationTimeUnit: 10,
+          reservationMinimumTimeUnit: 10,
+          reservationMaximumTimeUnit: 1440,
+          enabledDayOfWeek: {
+            monday: true,
+            tuesday: true,
+            wednesday: true,
+            thursday: true,
+            friday: true,
+            saturday: true,
+            sunday: true,
+          },
         },
-      },
+      ],
     },
   ],
 };

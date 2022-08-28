@@ -1,10 +1,6 @@
 package com.woowacourse.zzimkkong.service;
 
-import com.woowacourse.zzimkkong.Constants;
-import com.woowacourse.zzimkkong.domain.Map;
-import com.woowacourse.zzimkkong.domain.Member;
-import com.woowacourse.zzimkkong.domain.Setting;
-import com.woowacourse.zzimkkong.domain.Space;
+import com.woowacourse.zzimkkong.domain.*;
 import com.woowacourse.zzimkkong.dto.map.MapCreateResponse;
 import com.woowacourse.zzimkkong.dto.map.MapCreateUpdateRequest;
 import com.woowacourse.zzimkkong.dto.map.MapFindAllResponse;
@@ -50,12 +46,12 @@ class MapServiceTest extends ServiceTest {
         lutherId = luther.getId();
 
         Setting beSetting = Setting.builder()
-                .availableStartTime(BE_AVAILABLE_START_TIME)
-                .availableEndTime(BE_AVAILABLE_END_TIME)
+                .settingTimeSlot(TimeSlot.of(
+                        BE_AVAILABLE_START_TIME,
+                        BE_AVAILABLE_END_TIME))
                 .reservationTimeUnit(BE_RESERVATION_TIME_UNIT)
                 .reservationMinimumTimeUnit(BE_RESERVATION_MINIMUM_TIME_UNIT)
                 .reservationMaximumTimeUnit(BE_RESERVATION_MAXIMUM_TIME_UNIT)
-                .reservationEnable(BE_RESERVATION_ENABLE)
                 .enabledDayOfWeek(BE_ENABLED_DAY_OF_WEEK)
                 .build();
 
@@ -63,18 +59,18 @@ class MapServiceTest extends ServiceTest {
                 .id(1L)
                 .name(BE_NAME)
                 .map(luther)
-                .description(BE_DESCRIPTION)
                 .area(SPACE_DRAWING)
-                .setting(beSetting)
+                .reservationEnable(BE_RESERVATION_ENABLE)
+                .spaceSettings(new Settings(List.of(beSetting)))
                 .build();
 
         Setting feSetting = Setting.builder()
-                .availableStartTime(FE_AVAILABLE_START_TIME)
-                .availableEndTime(FE_AVAILABLE_END_TIME)
+                .settingTimeSlot(TimeSlot.of(
+                        FE_AVAILABLE_START_TIME,
+                        FE_AVAILABLE_END_TIME))
                 .reservationTimeUnit(FE_RESERVATION_TIME_UNIT)
                 .reservationMinimumTimeUnit(FE_RESERVATION_MINIMUM_TIME_UNIT)
                 .reservationMaximumTimeUnit(FE_RESERVATION_MAXIMUM_TIME_UNIT)
-                .reservationEnable(FE_RESERVATION_ENABLE)
                 .enabledDayOfWeek(FE_ENABLED_DAY_OF_WEEK)
                 .build();
 
@@ -83,9 +79,9 @@ class MapServiceTest extends ServiceTest {
                 .name(FE_NAME)
                 .color(FE_COLOR)
                 .map(luther)
-                .description(FE_DESCRIPTION)
                 .area(SPACE_DRAWING)
-                .setting(feSetting)
+                .reservationEnable(FE_RESERVATION_ENABLE)
+                .spaceSettings(new Settings(List.of(feSetting)))
                 .build();
     }
 
@@ -174,7 +170,7 @@ class MapServiceTest extends ServiceTest {
         //given
         given(maps.findByIdFetch(anyLong()))
                 .willReturn(Optional.of(luther));
-        given(reservations.existsBySpaceIdAndEndTimeAfter(anyLong(), any(LocalDateTime.class)))
+        given(reservations.existsBySpaceIdAndReservationTimeEndTimeAfter(anyLong(), any(LocalDateTime.class)))
                 .willReturn(false);
 
         //when, then
@@ -189,7 +185,7 @@ class MapServiceTest extends ServiceTest {
                 .willReturn(Optional.of(pobi));
         given(maps.findByIdFetch(anyLong()))
                 .willReturn(Optional.of(luther));
-        given(reservations.existsBySpaceIdAndEndTimeAfter(anyLong(), any(LocalDateTime.class)))
+        given(reservations.existsBySpaceIdAndReservationTimeEndTimeAfter(anyLong(), any(LocalDateTime.class)))
                 .willReturn(true);
 
         //when, then

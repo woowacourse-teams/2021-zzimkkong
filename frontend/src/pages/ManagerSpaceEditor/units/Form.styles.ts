@@ -1,8 +1,13 @@
 import styled from 'styled-components';
 import Button from 'components/Button/Button';
+import IconButton from 'components/IconButton/IconButton';
 
 interface FormContainerProps {
   disabled: boolean;
+}
+
+interface TabListItemProps {
+  isPrimary: boolean;
 }
 
 export const Form = styled.form<FormContainerProps>`
@@ -115,5 +120,73 @@ export const DeleteButton = styled(Button)`
     height: 1rem;
     vertical-align: middle;
     fill: ${({ theme }) => theme.red[900]};
+  }
+`;
+
+export const TabList = styled.ul`
+  width: 100%;
+  display: grid;
+  grid-gap: 4px;
+  grid-template-columns: 1fr 1fr 1fr;
+  grid-row: 1;
+  margin-bottom: 0.5rem;
+`;
+
+export const TabListItem = styled.li<TabListItemProps>`
+  display: flex;
+  justify-content: stretch;
+  align-items: center;
+  border: 1px solid ${({ theme }) => theme.gray[500]};
+  overflow: hidden;
+  white-space: nowrap;
+  border-radius: 0.25rem;
+
+  background-color: ${({ isPrimary, theme }) => isPrimary && theme.primary[400]};
+  color: ${({ isPrimary, theme }) => isPrimary && theme.white};
+
+  svg {
+    fill: ${({ isPrimary, theme }) => isPrimary && theme.white};
+  }
+`;
+
+export const TabTextButton = styled(Button)`
+  flex: 1;
+  font-size: 0.75rem;
+`;
+
+export const TabRemoveButton = styled(IconButton)`
+  display: block;
+  border-radius: 50%;
+  margin-right: 4px;
+
+  &:hover {
+    background-color: ${({ theme }) => theme.gray[200]};
+
+    svg {
+      fill: ${({ theme }) => theme.black[400]};
+    }
+  }
+
+  svg {
+    width: 10px;
+    height: 10px;
+  }
+`;
+
+export const TabCreateButton = styled(Button)`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 25.5px;
+  border-radius: 0;
+
+  svg {
+    width: 10px;
+    height: 10px;
+  }
+
+  &:hover {
+    background-color: ${({ theme }) => theme.gray[200]};
   }
 `;

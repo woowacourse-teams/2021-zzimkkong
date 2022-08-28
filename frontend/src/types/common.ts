@@ -42,16 +42,24 @@ export interface MapItem {
   mapDrawing: MapDrawing;
   thumbnail: string;
   sharingMapId: string;
+  notice: string | null;
 }
 
 interface SpaceSetting {
-  availableStartTime: string;
-  availableEndTime: string;
+  settingStartTime: string;
+  settingEndTime: string;
   reservationTimeUnit: number;
   reservationMinimumTimeUnit: number;
   reservationMaximumTimeUnit: number;
-  reservationEnable: boolean;
-  disabledWeekdays: string[];
+  enabledDayOfWeek: {
+    monday: boolean;
+    tuesday: boolean;
+    wednesday: boolean;
+    thursday: boolean;
+    friday: boolean;
+    saturday: boolean;
+    sunday: boolean;
+  };
 }
 
 export interface AreaRect {
@@ -75,7 +83,8 @@ export interface Space {
   color: Color;
   description: string;
   area: AreaRect | AreaPolygon;
-  settings: SpaceSetting;
+  reservationEnabled: boolean;
+  settings: SpaceSetting[];
 }
 
 export interface Reservation {
@@ -94,12 +103,11 @@ export interface SpaceReservation {
 }
 
 export interface ReservationSettings {
-  availableStartTime: string;
-  availableEndTime: string;
+  settingStartTime: string;
+  settingEndTime: string;
   reservationTimeUnit: number;
   reservationMinimumTimeUnit: number;
   reservationMaximumTimeUnit: number;
-  reservationEnable: boolean;
   enabledDayOfWeek: {
     monday: boolean;
     tuesday: boolean;
@@ -111,18 +119,32 @@ export interface ReservationSettings {
   };
 }
 
-export interface Preset extends ReservationSettings {
+export interface Preset {
   id: number;
   name: string;
+  settingStartTime: string;
+  settingEndTime: string;
+  reservationTimeUnit: number;
+  reservationMinimumTimeUnit: number;
+  reservationMaximumTimeUnit: number;
+  enabledDayOfWeek: {
+    monday: boolean;
+    tuesday: boolean;
+    wednesday: boolean;
+    thursday: boolean;
+    friday: boolean;
+    saturday: boolean;
+    sunday: boolean;
+  };
 }
 
 export interface ManagerSpace {
   id: number;
   name: string;
   color: Color;
-  description: string;
   area: Area;
-  settings: ReservationSettings;
+  reservationEnable: boolean;
+  settings: ReservationSettings[];
 }
 
 export interface ManagerSpaceAPI extends Omit<ManagerSpace, 'area'> {

@@ -1,19 +1,17 @@
 package com.woowacourse.zzimkkong.infrastructure.datetime;
 
+import com.woowacourse.zzimkkong.domain.ServiceZone;
+
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.TimeZone;
 
 public class TimeZoneUtils {
     public static final TimeZone UTC = TimeZone.getTimeZone("UTC");
-    public static final TimeZone KST = TimeZone.getTimeZone("Asia/Seoul");
-    public static final Long ONE_DAY_OFFSET = 1L;
 
-    public static LocalDateTime convert(
-            final LocalDateTime dateTime,
-            final TimeZone fromTimeZone,
-            final TimeZone toTimeZone) {
-        return dateTime.atZone(fromTimeZone.toZoneId())
-                .withZoneSameInstant(toTimeZone.toZoneId())
+    public static LocalDateTime convertTo(final LocalDateTime dateTime, final ServiceZone serviceZone) {
+        return dateTime.atZone(UTC.toZoneId())
+                .withZoneSameInstant(ZoneId.of(serviceZone.getTimeZone()))
                 .toLocalDateTime();
     }
 }

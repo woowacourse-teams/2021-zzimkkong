@@ -3,6 +3,7 @@ package com.woowacourse.zzimkkong.repository;
 import com.woowacourse.zzimkkong.domain.Member;
 import com.woowacourse.zzimkkong.domain.Preset;
 import com.woowacourse.zzimkkong.domain.Setting;
+import com.woowacourse.zzimkkong.domain.TimeSlot;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -22,17 +23,18 @@ class PresetRepositoryTest extends RepositoryTest {
         Member pobi = new Member(EMAIL, PW, ORGANIZATION);
         members.save(pobi);
 
-        Setting setting = Setting.builder()
-                .availableStartTime(BE_AVAILABLE_START_TIME)
-                .availableEndTime(BE_AVAILABLE_END_TIME)
+        preset = Preset.builder()
+                .name(PRESET_NAME1)
+                .settingTimeSlot(
+                        TimeSlot.of(
+                                BE_AVAILABLE_START_TIME,
+                                BE_AVAILABLE_END_TIME))
                 .reservationTimeUnit(BE_RESERVATION_TIME_UNIT)
                 .reservationMinimumTimeUnit(BE_RESERVATION_MINIMUM_TIME_UNIT)
                 .reservationMaximumTimeUnit(BE_RESERVATION_MAXIMUM_TIME_UNIT)
-                .reservationEnable(BE_RESERVATION_ENABLE)
                 .enabledDayOfWeek(BE_ENABLED_DAY_OF_WEEK)
+                .member(pobi)
                 .build();
-
-        preset = new Preset(PRESET_NAME1, setting, pobi);
     }
 
     @Test

@@ -3,11 +3,12 @@ package com.woowacourse.zzimkkong.service;
 import com.woowacourse.zzimkkong.domain.Member;
 import com.woowacourse.zzimkkong.domain.Preset;
 import com.woowacourse.zzimkkong.domain.Setting;
+import com.woowacourse.zzimkkong.domain.TimeSlot;
 import com.woowacourse.zzimkkong.dto.member.PresetCreateRequest;
 import com.woowacourse.zzimkkong.dto.member.PresetCreateResponse;
 import com.woowacourse.zzimkkong.dto.member.PresetFindAllResponse;
 import com.woowacourse.zzimkkong.dto.space.EnabledDayOfWeekDto;
-import com.woowacourse.zzimkkong.dto.space.SettingsRequest;
+import com.woowacourse.zzimkkong.dto.space.SettingRequest;
 import com.woowacourse.zzimkkong.exception.preset.NoSuchPresetException;
 import com.woowacourse.zzimkkong.dto.member.LoginEmailDto;
 import com.woowacourse.zzimkkong.repository.PresetRepository;
@@ -35,23 +36,22 @@ class PresetServiceTest extends ServiceTest {
     @MockBean
     private PresetRepository presets;
 
-    private final SettingsRequest settingsRequest = new SettingsRequest(
+    private final SettingRequest settingRequest = new SettingRequest(
             BE_AVAILABLE_START_TIME,
             BE_AVAILABLE_END_TIME,
-            BE_RESERVATION_TIME_UNIT,
-            BE_RESERVATION_MINIMUM_TIME_UNIT,
-            BE_RESERVATION_MAXIMUM_TIME_UNIT,
-            BE_RESERVATION_ENABLE,
+            BE_RESERVATION_TIME_UNIT.getMinutes(),
+            BE_RESERVATION_MINIMUM_TIME_UNIT.getMinutes(),
+            BE_RESERVATION_MAXIMUM_TIME_UNIT.getMinutes(),
             EnabledDayOfWeekDto.from(BE_ENABLED_DAY_OF_WEEK)
     );
 
     private final Setting setting = Setting.builder()
-            .availableStartTime(BE_AVAILABLE_START_TIME)
-            .availableEndTime(BE_AVAILABLE_END_TIME)
+            .settingTimeSlot(TimeSlot.of(
+                    BE_AVAILABLE_START_TIME,
+                    BE_AVAILABLE_END_TIME))
             .reservationTimeUnit(BE_RESERVATION_TIME_UNIT)
             .reservationMinimumTimeUnit(BE_RESERVATION_MINIMUM_TIME_UNIT)
             .reservationMaximumTimeUnit(BE_RESERVATION_MAXIMUM_TIME_UNIT)
-            .reservationEnable(BE_RESERVATION_ENABLE)
             .enabledDayOfWeek(BE_ENABLED_DAY_OF_WEEK)
             .build();
 
@@ -68,8 +68,17 @@ class PresetServiceTest extends ServiceTest {
     @DisplayName("프리셋 저장 요청 시, 프리셋을 저장한다.")
     void save() {
         //given
-        PresetCreateRequest presetCreateRequest = new PresetCreateRequest(PRESET_NAME1, settingsRequest);
-        Preset expected = new Preset(1L, presetCreateRequest.getName(), setting, pobi);
+        PresetCreateRequest presetCreateRequest = new PresetCreateRequest(PRESET_NAME1, settingRequest);
+        Preset expected = Preset.builder()
+                .id(1L)
+                .name(presetCreateRequest.getName())
+                .settingTimeSlot(setting.getSettingTimeSlot())
+                .reservationTimeUnit(setting.getReservationTimeUnit())
+                .reservationMinimumTimeUnit(setting.getReservationMinimumTimeUnit())
+                .reservationMaximumTimeUnit(setting.getReservationMaximumTimeUnit())
+                .enabledDayOfWeek(setting.getEnabledDayOfWeek())
+                .member(pobi)
+                .build();
 
         given(members.findByEmail(anyString()))
                 .willReturn(Optional.of(pobi));
@@ -87,8 +96,26 @@ class PresetServiceTest extends ServiceTest {
     @DisplayName("모든 프리셋 조회 요청 시, member가 가진 모든 프리셋을 조회한다.")
     void findAll() {
         //given
-        Preset firstPreset = new Preset(1L, PRESET_NAME1, setting, pobi);
-        Preset secondPreset = new Preset(2L, PRESET_NAME2, setting, pobi);
+        Preset firstPreset = Preset.builder()
+                .id(1L)
+                .name(PRESET_NAME1)
+                .settingTimeSlot(setting.getSettingTimeSlot())
+                .reservationTimeUnit(setting.getReservationTimeUnit())
+                .reservationMinimumTimeUnit(setting.getReservationMinimumTimeUnit())
+                .reservationMaximumTimeUnit(setting.getReservationMaximumTimeUnit())
+                .enabledDayOfWeek(setting.getEnabledDayOfWeek())
+                .member(pobi)
+                .build();
+        Preset secondPreset = Preset.builder()
+                .id(2L)
+                .name(PRESET_NAME2)
+                .settingTimeSlot(setting.getSettingTimeSlot())
+                .reservationTimeUnit(setting.getReservationTimeUnit())
+                .reservationMinimumTimeUnit(setting.getReservationMinimumTimeUnit())
+                .reservationMaximumTimeUnit(setting.getReservationMaximumTimeUnit())
+                .enabledDayOfWeek(setting.getEnabledDayOfWeek())
+                .member(pobi)
+                .build();
 
         List<Preset> expectedPresets = List.of(firstPreset, secondPreset);
         given(members.findByEmailWithFetchPresets(anyString()))
@@ -106,7 +133,16 @@ class PresetServiceTest extends ServiceTest {
     @DisplayName("프리셋 삭제 요청 시, 프리셋을 삭제한다.")
     void delete() {
         //given
-        Preset savedPreset = new Preset(1L, PRESET_NAME1, setting, pobi);
+        Preset savedPreset = Preset.builder()
+                .id(1L)
+                .name(PRESET_NAME1)
+                .settingTimeSlot(setting.getSettingTimeSlot())
+                .reservationTimeUnit(setting.getReservationTimeUnit())
+                .reservationMinimumTimeUnit(setting.getReservationMinimumTimeUnit())
+                .reservationMaximumTimeUnit(setting.getReservationMaximumTimeUnit())
+                .enabledDayOfWeek(setting.getEnabledDayOfWeek())
+                .member(pobi)
+                .build();
         given(members.findByEmailWithFetchPresets(anyString()))
                 .willReturn(Optional.of(pobi));
 
@@ -118,7 +154,16 @@ class PresetServiceTest extends ServiceTest {
     @DisplayName("프리셋 삭제 요청 시, 사용자의 프리셋이 아니면 예외가 발생한다.")
     void deleteOwnerException() {
         //given
-        Preset savedPreset = new Preset(1L, PRESET_NAME1, setting, pobi);
+        Preset savedPreset = Preset.builder()
+                .id(1L)
+                .name(PRESET_NAME1)
+                .settingTimeSlot(setting.getSettingTimeSlot())
+                .reservationTimeUnit(setting.getReservationTimeUnit())
+                .reservationMinimumTimeUnit(setting.getReservationMinimumTimeUnit())
+                .reservationMaximumTimeUnit(setting.getReservationMaximumTimeUnit())
+                .enabledDayOfWeek(setting.getEnabledDayOfWeek())
+                .member(pobi)
+                .build();
         LoginEmailDto anotherEmail = LoginEmailDto.from(NEW_EMAIL);
         Member anotherMember = new Member(NEW_EMAIL, PW, ORGANIZATION);
 

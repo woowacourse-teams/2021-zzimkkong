@@ -47,3 +47,9 @@ include::{snippets}/map/slackPost/http-response.adoc[]
 include::{snippets}/map/slackGet/http-request.adoc[]
 ==== Response
 include::{snippets}/map/slackGet/http-response.adoc[]
+
+=== 맵별 공지사항 등록
+==== Request
+include::{snippets}/map/noticePost/http-request.adoc[]
+==== Response
+include::{snippets}/map/noticePost/http-response.adoc[]

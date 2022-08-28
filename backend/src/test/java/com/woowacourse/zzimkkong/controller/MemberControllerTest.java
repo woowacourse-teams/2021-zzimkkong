@@ -3,12 +3,13 @@ package com.woowacourse.zzimkkong.controller;
 import com.woowacourse.zzimkkong.domain.Member;
 import com.woowacourse.zzimkkong.domain.Preset;
 import com.woowacourse.zzimkkong.domain.Setting;
+import com.woowacourse.zzimkkong.domain.TimeSlot;
 import com.woowacourse.zzimkkong.dto.ErrorResponse;
 import com.woowacourse.zzimkkong.dto.InputFieldErrorResponse;
 import com.woowacourse.zzimkkong.dto.member.*;
 import com.woowacourse.zzimkkong.dto.member.oauth.OauthMemberSaveRequest;
 import com.woowacourse.zzimkkong.dto.space.EnabledDayOfWeekDto;
-import com.woowacourse.zzimkkong.dto.space.SettingsRequest;
+import com.woowacourse.zzimkkong.dto.space.SettingRequest;
 import com.woowacourse.zzimkkong.infrastructure.auth.AuthorizationExtractor;
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
@@ -32,32 +33,31 @@ class MemberControllerTest extends AcceptanceTest {
     private Member pobi;
     private Setting setting;
 
-    private SettingsRequest settingsRequest;
+    private SettingRequest settingRequest;
     private PresetCreateRequest presetCreateRequest;
 
     @BeforeEach
     void setUp() {
         pobi = new Member(EMAIL, passwordEncoder.encode(PW), ORGANIZATION);
         setting = Setting.builder()
-                .availableStartTime(BE_AVAILABLE_START_TIME)
-                .availableEndTime(BE_AVAILABLE_END_TIME)
+                .settingTimeSlot(TimeSlot.of(
+                        BE_AVAILABLE_START_TIME,
+                        BE_AVAILABLE_END_TIME))
                 .reservationTimeUnit(BE_RESERVATION_TIME_UNIT)
                 .reservationMinimumTimeUnit(BE_RESERVATION_MINIMUM_TIME_UNIT)
                 .reservationMaximumTimeUnit(BE_RESERVATION_MAXIMUM_TIME_UNIT)
-                .reservationEnable(BE_RESERVATION_ENABLE)
                 .enabledDayOfWeek(BE_ENABLED_DAY_OF_WEEK)
                 .build();
 
-        settingsRequest = new SettingsRequest(
+        settingRequest = new SettingRequest(
                 BE_AVAILABLE_START_TIME,
                 BE_AVAILABLE_END_TIME,
-                BE_RESERVATION_TIME_UNIT,
-                BE_RESERVATION_MINIMUM_TIME_UNIT,
-                BE_RESERVATION_MAXIMUM_TIME_UNIT,
-                BE_RESERVATION_ENABLE,
+                BE_RESERVATION_TIME_UNIT.getMinutes(),
+                BE_RESERVATION_MINIMUM_TIME_UNIT.getMinutes(),
+                BE_RESERVATION_MAXIMUM_TIME_UNIT.getMinutes(),
                 EnabledDayOfWeekDto.from(BE_ENABLED_DAY_OF_WEEK)
         );
-        presetCreateRequest = new PresetCreateRequest(PRESET_NAME1, settingsRequest);
+        presetCreateRequest = new PresetCreateRequest(PRESET_NAME1, settingRequest);
     }
 
     @Test
@@ -116,9 +116,25 @@ class MemberControllerTest extends AcceptanceTest {
     @DisplayName("멤버가 가진 프리셋을 모두 조회한다.")
     void findAllPreset() {
         //given
-        Preset firstPreset = new Preset(PRESET_NAME1, setting, pobi);
-        Preset secondPreset = new Preset(PRESET_NAME2, setting, pobi);
-        PresetCreateRequest presetCreateRequest2 = new PresetCreateRequest(PRESET_NAME2, settingsRequest);
+        Preset firstPreset = Preset.builder()
+                .name(PRESET_NAME1)
+                .settingTimeSlot(setting.getSettingTimeSlot())
+                .reservationTimeUnit(setting.getReservationTimeUnit())
+                .reservationMinimumTimeUnit(setting.getReservationMinimumTimeUnit())
+                .reservationMaximumTimeUnit(setting.getReservationMaximumTimeUnit())
+                .enabledDayOfWeek(setting.getEnabledDayOfWeek())
+                .member(pobi)
+                .build();
+        Preset secondPreset = Preset.builder()
+                .name(PRESET_NAME2)
+                .settingTimeSlot(setting.getSettingTimeSlot())
+                .reservationTimeUnit(setting.getReservationTimeUnit())
+                .reservationMinimumTimeUnit(setting.getReservationMinimumTimeUnit())
+                .reservationMaximumTimeUnit(setting.getReservationMaximumTimeUnit())
+                .enabledDayOfWeek(setting.getEnabledDayOfWeek())
+                .member(pobi)
+                .build();
+        PresetCreateRequest presetCreateRequest2 = new PresetCreateRequest(PRESET_NAME2, settingRequest);
 
         savePreset(presetCreateRequest);
         savePreset(presetCreateRequest2);

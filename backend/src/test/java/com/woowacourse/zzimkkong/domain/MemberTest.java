@@ -16,16 +16,18 @@ class MemberTest {
     void findPresetById() {
         //given, when
         Member member = new Member(1L, EMAIL, PW, ORGANIZATION);
-        Setting setting = Setting.builder()
-                .availableStartTime(BE_AVAILABLE_START_TIME)
-                .availableEndTime(BE_AVAILABLE_END_TIME)
+        Preset preset = Preset.builder()
+                .id(1L)
+                .name(PRESET_NAME1)
+                .settingTimeSlot(TimeSlot.of(
+                        BE_AVAILABLE_START_TIME,
+                        BE_AVAILABLE_END_TIME))
                 .reservationTimeUnit(BE_RESERVATION_TIME_UNIT)
                 .reservationMinimumTimeUnit(BE_RESERVATION_MINIMUM_TIME_UNIT)
                 .reservationMaximumTimeUnit(BE_RESERVATION_MAXIMUM_TIME_UNIT)
-                .reservationEnable(BE_RESERVATION_ENABLE)
                 .enabledDayOfWeek(BE_ENABLED_DAY_OF_WEEK)
+                .member(member)
                 .build();
-        Preset preset = new Preset(1L, PRESET_NAME1, setting, member);
 
         //then
         assertThat(member.findPresetById(1L))

@@ -1,9 +1,6 @@
 package com.woowacourse.zzimkkong.controller;
 
-import com.woowacourse.zzimkkong.domain.Map;
-import com.woowacourse.zzimkkong.domain.Member;
-import com.woowacourse.zzimkkong.domain.Setting;
-import com.woowacourse.zzimkkong.domain.Space;
+import com.woowacourse.zzimkkong.domain.*;
 import com.woowacourse.zzimkkong.dto.space.*;
 import com.woowacourse.zzimkkong.infrastructure.auth.AuthorizationExtractor;
 import io.restassured.RestAssured;
@@ -43,22 +40,22 @@ class ManagerSpaceControllerTest extends AcceptanceTest {
         Member pobi = new Member(EMAIL, passwordEncoder.encode(PW), ORGANIZATION);
         Map luther = new Map(LUTHER_NAME, MAP_DRAWING_DATA, MAP_SVG, pobi);
         Setting beSetting = Setting.builder()
-                .availableStartTime(BE_AVAILABLE_START_TIME)
-                .availableEndTime(BE_AVAILABLE_END_TIME)
+                .settingTimeSlot(TimeSlot.of(
+                        BE_AVAILABLE_START_TIME,
+                        BE_AVAILABLE_END_TIME))
                 .reservationTimeUnit(BE_RESERVATION_TIME_UNIT)
                 .reservationMinimumTimeUnit(BE_RESERVATION_MINIMUM_TIME_UNIT)
                 .reservationMaximumTimeUnit(BE_RESERVATION_MAXIMUM_TIME_UNIT)
-                .reservationEnable(BE_RESERVATION_ENABLE)
                 .enabledDayOfWeek(BE_ENABLED_DAY_OF_WEEK)
                 .build();
 
         Setting feSetting = Setting.builder()
-                .availableStartTime(FE_AVAILABLE_START_TIME)
-                .availableEndTime(FE_AVAILABLE_END_TIME)
+                .settingTimeSlot(TimeSlot.of(
+                        FE_AVAILABLE_START_TIME,
+                        FE_AVAILABLE_END_TIME))
                 .reservationTimeUnit(FE_RESERVATION_TIME_UNIT)
                 .reservationMinimumTimeUnit(FE_RESERVATION_MINIMUM_TIME_UNIT)
                 .reservationMaximumTimeUnit(FE_RESERVATION_MAXIMUM_TIME_UNIT)
-                .reservationEnable(FE_RESERVATION_ENABLE)
                 .enabledDayOfWeek(FE_ENABLED_DAY_OF_WEEK)
                 .build();
 
@@ -67,9 +64,9 @@ class ManagerSpaceControllerTest extends AcceptanceTest {
                 .name(BE_NAME)
                 .color(BE_COLOR)
                 .map(luther)
-                .description(BE_DESCRIPTION)
                 .area(SPACE_DRAWING)
-                .setting(beSetting)
+                .reservationEnable(BE_RESERVATION_ENABLE)
+                .spaceSettings(new Settings(List.of(beSetting)))
                 .build();
 
         fe = Space.builder()
@@ -77,9 +74,9 @@ class ManagerSpaceControllerTest extends AcceptanceTest {
                 .name(FE_NAME)
                 .color(FE_COLOR)
                 .map(luther)
-                .description(FE_DESCRIPTION)
                 .area(SPACE_DRAWING)
-                .setting(feSetting)
+                .reservationEnable(FE_RESERVATION_ENABLE)
+                .spaceSettings(new Settings(List.of(feSetting)))
                 .build();
     }
 
@@ -87,23 +84,22 @@ class ManagerSpaceControllerTest extends AcceptanceTest {
     @DisplayName("space 정보가 들어오면 space를 저장한다")
     void save() {
         // given
-        SettingsRequest newSettingsRequest = new SettingsRequest(
+        SettingRequest newSettingRequest = new SettingRequest(
                 LocalTime.of(10, 0),
                 LocalTime.of(20, 0),
                 30,
                 60,
                 120,
-                true,
                 EnabledDayOfWeekDto.from("monday, tuesday, wednesday, thursday, friday, saturday, sunday")
         );
 
         SpaceCreateUpdateRequest newSpaceCreateUpdateRequest = new SpaceCreateUpdateRequest(
                 "잠실우리집",
                 "#CCFFE5",
-                "우리집",
                 SPACE_DRAWING,
-                newSettingsRequest,
-                MAP_SVG
+                MAP_SVG,
+                true,
+                List.of(newSettingRequest)
         );
 
         // when
@@ -117,10 +113,9 @@ class ManagerSpaceControllerTest extends AcceptanceTest {
     @DisplayName("space 정보 중 주어지지 않은 필드를 디폴트 값으로 저장한다")
     void save_default() {
         // given, when
-        SettingsRequest settingsRequest = new SettingsRequest(
+        SettingRequest settingRequest = new SettingRequest(
                 LocalTime.of(0, 0),
                 LocalTime.of(18, 0),
-                null,
                 null,
                 null,
                 null,
@@ -130,27 +125,27 @@ class ManagerSpaceControllerTest extends AcceptanceTest {
         SpaceCreateUpdateRequest defaultSpaceCreateUpdateRequest = new SpaceCreateUpdateRequest(
                 "잠실우리집",
                 "#CCFFE5",
-                "우리집",
                 SPACE_DRAWING,
-                settingsRequest,
-                MAP_SVG
+                MAP_SVG,
+                true,
+                List.of(settingRequest)
         );
 
         Setting defaultSetting = Setting.builder()
-                .availableStartTime(LocalTime.of(0, 0))
-                .availableEndTime(LocalTime.of(18, 0))
-                .reservationTimeUnit(10)
-                .reservationMinimumTimeUnit(10)
-                .reservationMaximumTimeUnit(120)
-                .reservationEnable(true)
+                .settingTimeSlot(TimeSlot.of(
+                        LocalTime.of(0, 0),
+                        LocalTime.of(18, 0)))
+                .reservationTimeUnit(TimeUnit.from(10))
+                .reservationMinimumTimeUnit(TimeUnit.from(10))
+                .reservationMaximumTimeUnit(TimeUnit.from(120))
                 .enabledDayOfWeek("monday, tuesday, wednesday, thursday, friday, saturday, sunday")
                 .build();
 
         Space defaultSpace = Space.builder()
                 .name(defaultSpaceCreateUpdateRequest.getName())
                 .color(defaultSpaceCreateUpdateRequest.getColor())
-                .description(defaultSpaceCreateUpdateRequest.getDescription())
-                .setting(defaultSetting)
+                .spaceSettings(new Settings(List.of(defaultSetting)))
+                .reservationEnable(true)
                 .area(SPACE_DRAWING)
                 .build();
 
@@ -165,6 +160,7 @@ class ManagerSpaceControllerTest extends AcceptanceTest {
 
         assertThat(actualSpaceFindDetailResponse)
                 .usingRecursiveComparison()
+                .ignoringExpectedNullFields()
                 .isEqualTo(expectedSpaceFindDetailResponse);
     }
 
@@ -204,23 +200,22 @@ class ManagerSpaceControllerTest extends AcceptanceTest {
     @DisplayName("공간을 수정한다.")
     void update() {
         // given, when
-        SettingsRequest settingsRequest = new SettingsRequest(
+        SettingRequest settingRequest = new SettingRequest(
                 LocalTime.of(10, 0),
                 LocalTime.of(22, 0),
                 30,
                 60,
                 120,
-                false,
                 EnabledDayOfWeekDto.from("monday, tuesday, wednesday, thursday, friday, saturday, sunday")
         );
 
         SpaceCreateUpdateRequest updateSpaceCreateUpdateRequest = new SpaceCreateUpdateRequest(
                 "바다",
                 "#CCCCFF",
-                "장미아파트",
                 SPACE_DRAWING,
-                settingsRequest,
-                MAP_SVG
+                MAP_SVG,
+                false,
+                List.of(settingRequest)
         );
 
         String api = spaceApi + "/" + beSpaceId;

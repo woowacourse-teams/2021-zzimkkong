@@ -4,10 +4,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 @Getter
 @NoArgsConstructor
@@ -31,6 +28,9 @@ public class Map {
     @Lob
     private String slackUrl;
 
+    @Lob
+    private String notice;
+
     @ManyToOne
     @JoinColumn(name = "member_id", foreignKey = @ForeignKey(name = "fk_map_member"), nullable = false)
     private Member member;
@@ -38,7 +38,18 @@ public class Map {
     @OneToMany(mappedBy = "map", cascade = CascadeType.REMOVE, fetch = FetchType.LAZY, orphanRemoval = true)
     private List<Space> spaces = new ArrayList<>();
 
-    public Map(final String name, final String mapDrawing, final String thumbnail, final Member member) {
+    /**
+     * The default Zzimkkong service zone (Asia/Seoul)
+     * 추후 timezone 관련 확장성을 고려한다면 Map Table에 Column으로 추가 될 수도 있음
+     * 일단은 transient field 로 구현
+     */
+    @Transient
+    private final ServiceZone serviceZone = ServiceZone.KOREA;
+
+    public Map(final String name,
+               final String mapDrawing,
+               final String thumbnail,
+               final Member member) {
         this.name = name;
         this.mapDrawing = mapDrawing;
         this.thumbnail = thumbnail;
@@ -49,7 +60,11 @@ public class Map {
         }
     }
 
-    public Map(final Long id, final String name, final String mapDrawing, final String thumbnail, final Member member) {
+    public Map(final Long id,
+               final String name,
+               final String mapDrawing,
+               final String thumbnail,
+               final Member member) {
         this(name, mapDrawing, thumbnail, member);
         this.id = id;
     }
@@ -80,6 +95,10 @@ public class Map {
 
     public void updateSlackUrl(final String slackUrl) {
         this.slackUrl = slackUrl;
+    }
+
+    public void updateNotice(final String notice) {
+        this.notice = notice;
     }
 
     public void addSpace(final Space space) {

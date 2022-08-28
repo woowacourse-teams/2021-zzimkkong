@@ -12,10 +12,12 @@ public class ValidatorMessage {
     public static final String NAME_MESSAGE = "이름은 특수문자(-_!?.,)를 포함하여 20자 이내로 작성 가능합니다.";
     public static final String PRESET_NAME_MESSAGE = "프리셋 이름은 공백과 특수문자(-_!?.,)를 포함하여 20자 이내로 작성 가능합니다.";
     public static final String DESCRIPTION_MESSAGE = "예약 내용은 100자 이내로 작성 가능합니다.";
+    public static final String NOTICE_MESSAGE = "공지사항은 100자 이내로 작성 가능합니다.";
     public static final String FORMAT_MESSAGE = "날짜 및 시간 데이터 형식이 올바르지 않습니다.";
     public static final String DAY_OF_WEEK_MESSAGE = "올바른 요일 형식이 아닙니다.";
     public static final String SERVER_ERROR_MESSAGE = "예상치 못한 문제가 발생했습니다. 개발자에게 문의하세요.";
     public static final String TIME_UNIT_MESSAGE = "시간 단위는 10, 30, 60, 120입니다.";
+    public static final String SETTING_COUNT_MESSAGE = "공간의 예약 조건이 최소 1개는 존재해야 합니다.";
 
     public static final String DATE_FORMAT = "yyyy-MM-dd";
     public static final String TIME_FORMAT = "HH:mm:ss";

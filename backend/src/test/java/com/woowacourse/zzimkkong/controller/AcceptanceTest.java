@@ -1,12 +1,11 @@
 package com.woowacourse.zzimkkong.controller;
 
 import com.woowacourse.zzimkkong.DatabaseCleaner;
-import com.woowacourse.zzimkkong.domain.Reservation;
 import com.woowacourse.zzimkkong.dto.map.MapCreateUpdateRequest;
 import com.woowacourse.zzimkkong.dto.member.LoginRequest;
 import com.woowacourse.zzimkkong.dto.member.MemberSaveRequest;
 import com.woowacourse.zzimkkong.dto.space.EnabledDayOfWeekDto;
-import com.woowacourse.zzimkkong.dto.space.SettingsRequest;
+import com.woowacourse.zzimkkong.dto.space.SettingRequest;
 import com.woowacourse.zzimkkong.dto.space.SpaceCreateUpdateRequest;
 import com.woowacourse.zzimkkong.infrastructure.oauth.GithubRequester;
 import com.woowacourse.zzimkkong.infrastructure.oauth.GoogleRequester;
@@ -27,15 +26,12 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
-import java.time.LocalDate;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import static com.woowacourse.zzimkkong.Constants.*;
 import static com.woowacourse.zzimkkong.DocumentUtils.setRequestSpecification;
 import static com.woowacourse.zzimkkong.controller.AuthControllerTest.getToken;
 import static com.woowacourse.zzimkkong.controller.MemberControllerTest.saveMember;
-import static com.woowacourse.zzimkkong.infrastructure.datetime.TimeZoneUtils.KST;
 import static org.mockito.ArgumentMatchers.any;
 import static org.springframework.restdocs.restassured3.RestAssuredRestDocumentation.documentationConfiguration;
 
@@ -48,39 +44,37 @@ class AcceptanceTest {
     protected static final MemberSaveRequest memberSaveRequest = new MemberSaveRequest(EMAIL, PW, ORGANIZATION);
     protected static final LoginRequest loginRequest = new LoginRequest(EMAIL, PW);
     protected final MapCreateUpdateRequest mapCreateUpdateRequest = new MapCreateUpdateRequest(LUTHER_NAME, MAP_DRAWING_DATA, MAP_SVG);
-    protected final SettingsRequest beSettingsRequest = new SettingsRequest(
+    protected final SettingRequest beSettingRequest = new SettingRequest(
             BE_AVAILABLE_START_TIME,
             BE_AVAILABLE_END_TIME,
-            BE_RESERVATION_TIME_UNIT,
-            BE_RESERVATION_MINIMUM_TIME_UNIT,
-            BE_RESERVATION_MAXIMUM_TIME_UNIT,
-            BE_RESERVATION_ENABLE,
+            BE_RESERVATION_TIME_UNIT.getMinutes(),
+            BE_RESERVATION_MINIMUM_TIME_UNIT.getMinutes(),
+            BE_RESERVATION_MAXIMUM_TIME_UNIT.getMinutes(),
             EnabledDayOfWeekDto.from(BE_ENABLED_DAY_OF_WEEK)
     );
     protected final SpaceCreateUpdateRequest beSpaceCreateUpdateRequest = new SpaceCreateUpdateRequest(
             BE_NAME,
             BE_COLOR,
-            BE_DESCRIPTION,
             SPACE_DRAWING,
-            beSettingsRequest,
-            MAP_SVG
+            MAP_SVG,
+            BE_RESERVATION_ENABLE,
+            List.of(beSettingRequest)
     );
-    protected final SettingsRequest feSettingsRequest = new SettingsRequest(
+    protected final SettingRequest feSettingRequest = new SettingRequest(
             FE_AVAILABLE_START_TIME,
             FE_AVAILABLE_END_TIME,
-            FE_RESERVATION_TIME_UNIT,
-            FE_RESERVATION_MINIMUM_TIME_UNIT,
-            FE_RESERVATION_MAXIMUM_TIME_UNIT,
-            FE_RESERVATION_ENABLE,
+            FE_RESERVATION_TIME_UNIT.getMinutes(),
+            FE_RESERVATION_MINIMUM_TIME_UNIT.getMinutes(),
+            FE_RESERVATION_MAXIMUM_TIME_UNIT.getMinutes(),
             EnabledDayOfWeekDto.from(FE_ENABLED_DAY_OF_WEEK)
     );
     protected final SpaceCreateUpdateRequest feSpaceCreateUpdateRequest = new SpaceCreateUpdateRequest(
             FE_NAME,
             FE_COLOR,
-            FE_DESCRIPTION,
             SPACE_DRAWING,
-            feSettingsRequest,
-            MAP_SVG
+            MAP_SVG,
+            FE_RESERVATION_ENABLE,
+            List.of(feSettingRequest)
     );
 
     @LocalServerPort
@@ -113,11 +107,5 @@ class AcceptanceTest {
     @AfterEach
     void deleteAll() {
         databaseCleaner.execute();
-    }
-
-    protected List<Reservation> filterReservationsByKST(List<Reservation> reservations, LocalDate date) {
-        return reservations.stream()
-                .filter(reservation -> reservation.isBookedOn(date, KST))
-                .collect(Collectors.toList());
     }
 }

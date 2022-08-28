@@ -1,7 +1,7 @@
 package com.woowacourse.zzimkkong.dto;
 
 import com.woowacourse.zzimkkong.dto.space.EnabledDayOfWeekDto;
-import com.woowacourse.zzimkkong.dto.space.SettingsRequest;
+import com.woowacourse.zzimkkong.dto.space.SettingRequest;
 import org.junit.jupiter.api.BeforeAll;
 
 import javax.validation.ConstraintViolation;
@@ -14,13 +14,12 @@ import static com.woowacourse.zzimkkong.Constants.*;
 
 class RequestTest {
     private static Validator validator;
-    protected final SettingsRequest beSettingsRequest = new SettingsRequest(
+    protected final SettingRequest beSettingRequest = new SettingRequest(
             BE_AVAILABLE_START_TIME,
             BE_AVAILABLE_END_TIME,
-            BE_RESERVATION_TIME_UNIT,
-            BE_RESERVATION_MINIMUM_TIME_UNIT,
-            BE_RESERVATION_MAXIMUM_TIME_UNIT,
-            BE_RESERVATION_ENABLE,
+            BE_RESERVATION_TIME_UNIT.getMinutes(),
+            BE_RESERVATION_MINIMUM_TIME_UNIT.getMinutes(),
+            BE_RESERVATION_MAXIMUM_TIME_UNIT.getMinutes(),
             EnabledDayOfWeekDto.from(BE_ENABLED_DAY_OF_WEEK)
     );
 

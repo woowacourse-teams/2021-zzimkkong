@@ -18,9 +18,8 @@ export interface PostManagerSpaceParams {
   space: {
     name: string;
     color: Color;
-    description: string;
     area: string;
-    settingsRequest: ReservationSettings;
+    settings: ReservationSettings[];
     thumbnail: string;
   };
 }

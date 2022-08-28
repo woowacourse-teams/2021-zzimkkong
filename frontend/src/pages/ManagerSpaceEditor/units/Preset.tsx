@@ -22,8 +22,14 @@ interface CreateResponseHeaders {
 }
 
 const Preset = (): JSX.Element => {
-  const { values, setValues, selectedPresetId, setSelectedPresetId, getRequestValues } =
-    useFormContext(SpaceFormContext);
+  const {
+    values,
+    setValues,
+    selectedPresetId,
+    setSelectedPresetId,
+    getRequestValues,
+    selectedSettingIndex,
+  } = useFormContext(SpaceFormContext);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [presetName, onChangePresetName] = useInput('');
 
@@ -60,23 +66,17 @@ const Preset = (): JSX.Element => {
 
     if (selectedPreset === null) throw new Error(THROW_ERROR.NOT_EXIST_PRESET);
 
-    const {
-      availableStartTime,
-      availableEndTime,
-      reservationTimeUnit,
-      reservationMinimumTimeUnit,
-      reservationMaximumTimeUnit,
-      enabledDayOfWeek,
-    } = selectedPreset;
+    const { id: presetId, name, ...rest } = selectedPreset;
 
     setValues({
       ...values,
-      availableStartTime,
-      availableEndTime,
-      reservationTimeUnit,
-      reservationMinimumTimeUnit,
-      reservationMaximumTimeUnit,
-      enabledDayOfWeek,
+      settings: values.settings.map((setting, index) => {
+        if (index === selectedSettingIndex) {
+          return rest;
+        }
+
+        return setting;
+      }),
     });
 
     setSelectedPresetId(id);
@@ -92,7 +92,10 @@ const Preset = (): JSX.Element => {
 
     const requestValues = getRequestValues();
 
-    createPreset.mutate({ name: presetName, settingsRequest: requestValues.space.settings });
+    createPreset.mutate({
+      name: presetName,
+      preset: requestValues.space.settings[selectedSettingIndex],
+    });
   };
 
   const handleDeletePreset = (event: React.MouseEvent<HTMLButtonElement>, id: PresetType['id']) => {

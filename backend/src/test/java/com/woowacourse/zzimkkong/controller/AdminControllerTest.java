@@ -25,6 +25,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 
+import java.time.ZoneId;
 import java.util.List;
 
 import static com.woowacourse.zzimkkong.Constants.*;
@@ -32,7 +33,6 @@ import static com.woowacourse.zzimkkong.DocumentUtils.getRequestSpecification;
 import static com.woowacourse.zzimkkong.controller.ManagerReservationControllerTest.saveReservation;
 import static com.woowacourse.zzimkkong.controller.ManagerSpaceControllerTest.saveSpace;
 import static com.woowacourse.zzimkkong.controller.MapControllerTest.saveMap;
-import static com.woowacourse.zzimkkong.infrastructure.datetime.TimeZoneUtils.KST;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
 
@@ -43,21 +43,21 @@ class AdminControllerTest extends AcceptanceTest {
     private static final Member POBI = new Member(memberSaveRequest.getEmail(), memberSaveRequest.getPassword(), memberSaveRequest.getOrganization());
     private static final Map LUTHER = new Map(LUTHER_NAME, MAP_DRAWING_DATA, MAP_SVG, POBI);
     private static final Setting BE_SETTING = Setting.builder()
-            .availableStartTime(BE_AVAILABLE_START_TIME)
-            .availableEndTime(BE_AVAILABLE_END_TIME)
+            .settingTimeSlot(TimeSlot.of(
+                    BE_AVAILABLE_START_TIME,
+                    BE_AVAILABLE_END_TIME))
             .reservationTimeUnit(BE_RESERVATION_TIME_UNIT)
             .reservationMinimumTimeUnit(BE_RESERVATION_MINIMUM_TIME_UNIT)
             .reservationMaximumTimeUnit(BE_RESERVATION_MAXIMUM_TIME_UNIT)
-            .reservationEnable(BE_RESERVATION_ENABLE)
             .enabledDayOfWeek(BE_ENABLED_DAY_OF_WEEK)
             .build();
     private static final Space BE = Space.builder()
             .name(BE_NAME)
             .color(BE_COLOR)
             .map(LUTHER)
-            .description(BE_DESCRIPTION)
             .area(SPACE_DRAWING)
-            .setting(BE_SETTING)
+            .reservationEnable(BE_RESERVATION_ENABLE)
+            .spaceSettings(new Settings(List.of(BE_SETTING)))
             .build();
 
     private static String token;
@@ -153,15 +153,17 @@ class AdminControllerTest extends AcceptanceTest {
         ExtractableResponse<Response> saveBeSpaceResponse = saveSpace(spaceApi, beSpaceCreateUpdateRequest);
         String beReservationApi = saveBeSpaceResponse.header("location") + "/reservations";
         ReservationCreateUpdateWithPasswordRequest newReservationCreateUpdateWithPasswordRequest = new ReservationCreateUpdateWithPasswordRequest(
-                THE_DAY_AFTER_TOMORROW.atTime(19, 0).atZone(KST.toZoneId()),
-                THE_DAY_AFTER_TOMORROW.atTime(20, 0).atZone(KST.toZoneId()),
+                THE_DAY_AFTER_TOMORROW.atTime(19, 0).atZone(ZoneId.of(ServiceZone.KOREA.getTimeZone())),
+                THE_DAY_AFTER_TOMORROW.atTime(20, 0).atZone(ZoneId.of(ServiceZone.KOREA.getTimeZone())),
                 SALLY_PW,
                 SALLY_NAME,
                 SALLY_DESCRIPTION);
         saveReservation(beReservationApi, newReservationCreateUpdateWithPasswordRequest);
         Reservation reservation = Reservation.builder()
-                .startTime(newReservationCreateUpdateWithPasswordRequest.localStartDateTime())
-                .endTime(newReservationCreateUpdateWithPasswordRequest.localEndDateTime())
+                .reservationTime(
+                        ReservationTime.ofDefaultServiceZone(
+                                newReservationCreateUpdateWithPasswordRequest.localStartDateTime(),
+                                newReservationCreateUpdateWithPasswordRequest.localEndDateTime()))
                 .userName(newReservationCreateUpdateWithPasswordRequest.getName())
                 .password(newReservationCreateUpdateWithPasswordRequest.getPassword())
                 .description(newReservationCreateUpdateWithPasswordRequest.getDescription())

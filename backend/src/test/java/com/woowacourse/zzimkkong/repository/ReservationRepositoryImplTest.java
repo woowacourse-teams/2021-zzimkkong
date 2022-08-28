@@ -6,8 +6,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 
-import java.time.LocalDate;
-import java.time.LocalDateTime;
+import java.util.List;
 
 import static com.woowacourse.zzimkkong.Constants.*;
 import static com.woowacourse.zzimkkong.infrastructure.datetime.TimeZoneUtils.UTC;
@@ -25,30 +24,31 @@ class ReservationRepositoryImplTest extends RepositoryTest {
         maps.save(luther);
 
         Setting beSetting = Setting.builder()
-                .availableStartTime(BE_AVAILABLE_START_TIME)
-                .availableEndTime(BE_AVAILABLE_END_TIME)
+                .settingTimeSlot(TimeSlot.of(
+                        BE_AVAILABLE_START_TIME,
+                        BE_AVAILABLE_END_TIME))
                 .reservationTimeUnit(BE_RESERVATION_TIME_UNIT)
                 .reservationMinimumTimeUnit(BE_RESERVATION_MINIMUM_TIME_UNIT)
                 .reservationMaximumTimeUnit(BE_RESERVATION_MAXIMUM_TIME_UNIT)
-                .reservationEnable(BE_RESERVATION_ENABLE)
                 .enabledDayOfWeek(BE_ENABLED_DAY_OF_WEEK)
                 .build();
 
         Space be = Space.builder()
                 .name(BE_NAME)
                 .color(BE_COLOR)
-                .description(BE_DESCRIPTION)
                 .area(SPACE_DRAWING)
-                .setting(beSetting)
+                .reservationEnable(BE_RESERVATION_ENABLE)
+                .spaceSettings(new Settings(List.of(beSetting)))
                 .map(luther)
                 .build();
 
         spaces.save(be);
 
         Reservation beAmZeroOneYesterday = Reservation.builder()
-                .date(LocalDate.now().minusDays(1))
-                .startTime(LocalDateTime.now().minusDays(1))
-                .endTime(LocalDateTime.now().minusDays(1).plusHours(1))
+                .reservationTime(
+                        ReservationTime.ofDefaultServiceZone(
+                                THE_DAY_AFTER_TOMORROW.minusDays(1).atTime(0, 0),
+                                THE_DAY_AFTER_TOMORROW.minusDays(1).atTime(1, 0)))
                 .description(BE_AM_TEN_ELEVEN_DESCRIPTION)
                 .userName(BE_AM_TEN_ELEVEN_USERNAME)
                 .password(BE_AM_TEN_ELEVEN_PW)
@@ -59,9 +59,10 @@ class ReservationRepositoryImplTest extends RepositoryTest {
 
         if (isReservationExists) {
             Reservation beAmZeroOne = Reservation.builder()
-                    .date(BE_AM_TEN_ELEVEN_START_TIME_KST.toLocalDate())
-                    .startTime(BE_AM_TEN_ELEVEN_START_TIME_KST.withZoneSameInstant(UTC.toZoneId()).toLocalDateTime())
-                    .endTime(BE_AM_TEN_ELEVEN_END_TIME_KST.withZoneSameInstant(UTC.toZoneId()).toLocalDateTime())
+                    .reservationTime(
+                            ReservationTime.ofDefaultServiceZone(
+                                    BE_AM_TEN_ELEVEN_START_TIME_KST.withZoneSameInstant(UTC.toZoneId()).toLocalDateTime(),
+                                    BE_AM_TEN_ELEVEN_END_TIME_KST.withZoneSameInstant(UTC.toZoneId()).toLocalDateTime()))
                     .description(BE_AM_TEN_ELEVEN_DESCRIPTION)
                     .userName(BE_AM_TEN_ELEVEN_USERNAME)
                     .password(BE_AM_TEN_ELEVEN_PW)
@@ -72,7 +73,9 @@ class ReservationRepositoryImplTest extends RepositoryTest {
         }
 
         // when
-        Boolean hasAnyReservations = reservations.existsReservationsByMemberFromToday(savedMember);
+        Boolean hasAnyReservations = reservations.existsByMemberAndEndTimeAfter(
+                savedMember,
+                THE_DAY_AFTER_TOMORROW.atTime(0, 0));
 
         // then
         AssertionsForClassTypes.assertThat(hasAnyReservations).isEqualTo(isReservationExists);

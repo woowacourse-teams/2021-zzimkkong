@@ -196,8 +196,20 @@ const GuestMap = (): JSX.Element => {
       <Header />
       <Layout>
         <Styled.Page>
-          <Styled.PageTitle>{map?.mapName}</Styled.PageTitle>
-          <DateInput date={date} setDate={setDate} />
+          <Styled.PageHeader>
+            <Styled.MapInfo>
+              <Styled.PageTitle>{map?.mapName}</Styled.PageTitle>
+              <DateInput date={date} setDate={setDate} hasBackground={false} />
+            </Styled.MapInfo>
+            {map?.notice && (
+              <Styled.NoticeWrapper>
+                <Styled.Notice>
+                  <Styled.NoticeTitle>공지사항</Styled.NoticeTitle>
+                  <Styled.NoticeText>{map?.notice ?? ''}</Styled.NoticeText>
+                </Styled.Notice>
+              </Styled.NoticeWrapper>
+            )}
+          </Styled.PageHeader>
           <Styled.MapContainer ref={mapRef}>
             {mapDrawing && (
               <Styled.MapContainerInner width={mapDrawing.width} height={mapDrawing.height}>

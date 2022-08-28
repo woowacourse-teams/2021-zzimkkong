@@ -1,7 +1,7 @@
 package com.woowacourse.zzimkkong.service;
 
 import com.woowacourse.zzimkkong.domain.Map;
-import com.woowacourse.zzimkkong.domain.Setting;
+import com.woowacourse.zzimkkong.domain.Settings;
 import com.woowacourse.zzimkkong.domain.Space;
 import com.woowacourse.zzimkkong.dto.member.LoginEmailDto;
 import com.woowacourse.zzimkkong.dto.space.*;
@@ -42,13 +42,13 @@ public class SpaceService {
                 .orElseThrow(NoSuchMapException::new);
         validateManagerOfMap(map, loginEmailDto.getEmail());
 
-        Setting setting = getSetting(spaceCreateUpdateRequest);
+        Settings settings = Settings.from(spaceCreateUpdateRequest.getSettings());
         Space space = Space.builder()
                 .name(spaceCreateUpdateRequest.getName())
                 .color(spaceCreateUpdateRequest.getColor())
-                .description(spaceCreateUpdateRequest.getDescription())
                 .area(spaceCreateUpdateRequest.getArea())
-                .setting(setting)
+                .reservationEnable(spaceCreateUpdateRequest.getReservationEnable())
+                .spaceSettings(settings)
                 .map(map)
                 .build();
         Space saveSpace = spaces.save(space);
@@ -106,13 +106,13 @@ public class SpaceService {
         Space space = map.findSpaceById(spaceId)
                 .orElseThrow(NoSuchSpaceException::new);
 
-        Setting setting = getSetting(spaceCreateUpdateRequest);
+        Settings updateSettings = Settings.from(spaceCreateUpdateRequest.getSettings());
         Space updateSpace = Space.builder()
                 .name(spaceCreateUpdateRequest.getName())
                 .color(spaceCreateUpdateRequest.getColor())
-                .description(spaceCreateUpdateRequest.getDescription())
                 .area(spaceCreateUpdateRequest.getArea())
-                .setting(setting)
+                .reservationEnable(spaceCreateUpdateRequest.getReservationEnable())
+                .spaceSettings(updateSettings)
                 .build();
 
         space.update(updateSpace);
@@ -139,22 +139,8 @@ public class SpaceService {
         map.updateThumbnail(spaceDeleteRequest.getThumbnail());
     }
 
-    private Setting getSetting(final SpaceCreateUpdateRequest spaceCreateUpdateRequest) {
-        SettingsRequest settingsRequest = spaceCreateUpdateRequest.getSettingsRequest();
-
-        return Setting.builder()
-                .availableStartTime(settingsRequest.getAvailableStartTime())
-                .availableEndTime(settingsRequest.getAvailableEndTime())
-                .reservationTimeUnit(settingsRequest.getReservationTimeUnit())
-                .reservationEnable(settingsRequest.getReservationEnable())
-                .reservationMinimumTimeUnit(settingsRequest.getReservationMinimumTimeUnit())
-                .reservationMaximumTimeUnit(settingsRequest.getReservationMaximumTimeUnit())
-                .enabledDayOfWeek(settingsRequest.enabledDayOfWeekAsString())
-                .build();
-    }
-
     private void validateReservationExistence(final Long spaceId) {
-        if (reservations.existsBySpaceIdAndEndTimeAfter(spaceId, LocalDateTime.now())) {
+        if (reservations.existsBySpaceIdAndReservationTimeEndTimeAfter(spaceId, LocalDateTime.now())) {
             throw new ReservationExistOnSpaceException();
         }
     }

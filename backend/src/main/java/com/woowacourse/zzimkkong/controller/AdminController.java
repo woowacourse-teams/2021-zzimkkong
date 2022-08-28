@@ -47,6 +47,7 @@ public class AdminController {
         return ResponseEntity.ok(mapsResponse);
     }
 
+    // TODO: API Response 변경됨 프론트 쪽 변경 필요하면 찾아서 변경할 것
     @GetMapping("/spaces")
     public ResponseEntity<SpacesResponse> spaces(@PageableDefault(value = 20) Pageable pageable) {
         SpacesResponse spacesResponse = adminService.findSpaces(pageable);

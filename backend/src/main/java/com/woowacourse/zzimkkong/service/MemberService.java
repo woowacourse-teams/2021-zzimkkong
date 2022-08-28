@@ -13,6 +13,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
+
 @Service
 @Transactional
 public class MemberService {
@@ -79,7 +81,7 @@ public class MemberService {
     public void deleteMember(final LoginEmailDto loginEmailDto) {
         Member member = members.findByEmail(loginEmailDto.getEmail())
                 .orElseThrow(NoSuchMemberException::new);
-        boolean hasAnyReservations = reservations.existsReservationsByMemberFromToday(member);
+        boolean hasAnyReservations = reservations.existsByMemberAndEndTimeAfter(member, LocalDateTime.now());
         if (hasAnyReservations) {
             throw new ReservationExistsOnMemberException();
         }

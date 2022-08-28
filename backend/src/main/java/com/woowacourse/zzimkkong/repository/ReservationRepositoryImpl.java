@@ -13,13 +13,13 @@ public class ReservationRepositoryImpl implements ReservationRepositoryCustom {
     }
 
     @Override
-    public boolean existsReservationsByMemberFromToday(Member member) {
+    public boolean existsByMemberAndEndTimeAfter(final Member member, final LocalDateTime now) {
         return entityManager.createQuery(
                         "SELECT COUNT(r) > 0 FROM Reservation r " +
                                 "JOIN r.space s JOIN s.map m " +
-                                "WHERE m.member = :member AND r.endTime >= :currentTime", Boolean.class)
+                                "WHERE m.member = :member AND r.reservationTime.endTime >= :currentTime", Boolean.class)
                 .setParameter("member", member)
-                .setParameter("currentTime", LocalDateTime.now())
+                .setParameter("currentTime", now)
                 .getSingleResult();
     }
 }
