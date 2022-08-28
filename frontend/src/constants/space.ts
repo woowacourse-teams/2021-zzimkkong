@@ -4,7 +4,7 @@ const SPACE = {
   },
 
   RESERVATION: {
-    MIN_STEP: 5,
+    MIN_STEP: 10,
   },
 };
 
