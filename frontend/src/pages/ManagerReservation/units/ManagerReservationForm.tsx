@@ -1,4 +1,4 @@
-import { ChangeEventHandler } from 'react';
+import { ChangeEventHandler, useMemo } from 'react';
 import { ReactComponent as CalendarIcon } from 'assets/svg/calendar.svg';
 import Button from 'components/Button/Button';
 import Input from 'components/Input/Input';
@@ -11,7 +11,12 @@ import useInputs from 'hooks/useInputs';
 import useScrollToTop from 'hooks/useScrollToTop';
 import useTimePicker from 'hooks/useTimePicker';
 import { ManagerSpaceAPI, Reservation } from 'types/common';
-import { formatDate, formatTime, formatTimePrettier, formatTimeWithSecond } from 'utils/datetime';
+import {
+  convertSettingTimeToMinutes,
+  convertTimeToMinutes,
+  formatTimePrettier,
+  formatTimeWithSecond,
+} from 'utils/datetime';
 import { CreateReservationParams, EditReservationParams } from '../ManagerReservation';
 import * as Styled from './ManagerReservationForm.styles';
 
@@ -42,19 +47,35 @@ const ManagerReservationForm = ({
 }: Props): JSX.Element => {
   useScrollToTop();
 
-  const { availableStartTime, availableEndTime, reservationTimeUnit, reservationMaximumTimeUnit } =
-    space.settings;
+  const reservationTimeStep = useMemo(() => {
+    const startTime = convertTimeToMinutes(
+      reservation ? new Date(reservation.startDateTime) : new Date()
+    );
+    const endTime = convertTimeToMinutes(
+      reservation ? new Date(reservation.endDateTime) : new Date()
+    );
 
-  const todayDate = formatDate(new Date());
+    return Math.max(
+      ...space.settings
+        .filter((setting) => {
+          const settingStartTime = convertSettingTimeToMinutes(setting.settingStartTime);
+          const settingEndTime = convertSettingTimeToMinutes(setting.settingEndTime);
+
+          return (
+            (settingStartTime < startTime && settingEndTime < startTime) ||
+            (settingStartTime < endTime && settingEndTime > endTime)
+          );
+        })
+        .map(({ reservationTimeUnit }) => reservationTimeUnit),
+      5
+    );
+  }, [reservation, space.settings]);
 
   const { range, selectedTime, onClick, onChange, onCloseOptions } = useTimePicker({
-    step: reservationTimeUnit as Step,
+    step: reservationTimeStep as Step,
     initialStartTime: !!reservation ? new Date(reservation.startDateTime) : undefined,
     initialEndTime: !!reservation ? new Date(reservation.endDateTime) : undefined,
   });
-
-  const availableStartTimeText = formatTime(new Date(`${todayDate}T${availableStartTime}`));
-  const availableEndTimeText = formatTime(new Date(`${todayDate}T${availableEndTime}`));
 
   const [{ name, description, password }, onChangeForm] = useInputs<Form>({
     name: reservation?.name ?? '',
@@ -137,16 +158,36 @@ const ManagerReservationForm = ({
             label="예약 시간"
             selectedTime={selectedTime}
             range={range}
-            step={reservationTimeUnit as Step}
+            step={reservationTimeStep as Step}
             onClick={onClick}
             onChange={onChange}
             onCloseOptions={onCloseOptions}
           />
-          <Styled.TimeFormMessage>
-            예약 가능 시간 : {availableStartTimeText} ~ {availableEndTimeText} (최대{' '}
-            {formatTimePrettier(reservationMaximumTimeUnit)})
-          </Styled.TimeFormMessage>
+
+          <Styled.TimeFormMessageWrapper>
+            <Styled.TimeFormMessage>예약 가능 시간</Styled.TimeFormMessage>
+            {space.settings.map(
+              (
+                {
+                  settingStartTime,
+                  settingEndTime,
+                  reservationMaximumTimeUnit,
+                  reservationMinimumTimeUnit,
+                },
+                index
+              ) => {
+                return (
+                  <Styled.TimeFormMessage key={index}>
+                    {settingStartTime.slice(0, 5)} ~ {settingEndTime.slice(0, 5)}
+                    (최소 {formatTimePrettier(reservationMinimumTimeUnit)}, 최대{' '}
+                    {formatTimePrettier(reservationMaximumTimeUnit)})
+                  </Styled.TimeFormMessage>
+                );
+              }
+            )}
+          </Styled.TimeFormMessageWrapper>
         </Styled.InputWrapper>
+
         {isEditMode || (
           <Styled.InputWrapper>
             <Input

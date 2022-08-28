@@ -1,11 +1,10 @@
 import { ManagerSpace } from 'types/common';
 import { DrawingAreaShape } from 'types/editor';
-import { WithOptional } from 'types/util';
 import { getPolygonCenterPoint } from 'utils/editor';
 import * as Styled from './BoardSpace.styles';
 
 interface Props {
-  space: WithOptional<ManagerSpace, 'id' | 'description' | 'settings'>;
+  space: Omit<ManagerSpace, 'reservationEnable' | 'id' | 'description' | 'settings'>;
   drawing: boolean;
   selected: boolean;
   onClick?: () => void;
