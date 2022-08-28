@@ -64,6 +64,17 @@ public class TimeUnit {
 
     @Override
     public String toString() {
-        return minutes + "분";
+        int hours = this.minutes / 60;
+        int minutes = this.minutes % 60;
+
+        if (hours < 1) {
+            return minutes + "분";
+        }
+
+        if (minutes == 0) {
+            return hours + "시간";
+        }
+
+        return String.format("%d시간 %d분", hours, minutes);
     }
 }
