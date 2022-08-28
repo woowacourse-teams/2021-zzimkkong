@@ -189,7 +189,7 @@ const Form = ({
 
         <Styled.TabList>
           {values.settings.map((_, index) => (
-            <Styled.TabListItem key={index}>
+            <Styled.TabListItem key={index} isPrimary={index === selectedSettingIndex}>
               <Styled.TabTextButton
                 variant="text"
                 size="small"
@@ -198,6 +198,7 @@ const Form = ({
               >
                 예약조건 {index + 1}
               </Styled.TabTextButton>
+
               <Styled.TabRemoveButton
                 size="small"
                 type="button"
@@ -208,7 +209,7 @@ const Form = ({
             </Styled.TabListItem>
           ))}
 
-          <Styled.TabListItem>
+          <Styled.TabListItem isPrimary={false}>
             <Styled.TabCreateButton
               variant="text"
               size="small"
