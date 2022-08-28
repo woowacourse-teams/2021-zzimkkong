@@ -142,6 +142,11 @@ export const TabListItem = styled.li<TabListItemProps>`
   border-radius: 0.25rem;
 
   background-color: ${({ isPrimary, theme }) => isPrimary && theme.primary[400]};
+  color: ${({ isPrimary, theme }) => isPrimary && theme.white};
+
+  svg {
+    fill: ${({ isPrimary, theme }) => isPrimary && theme.white};
+  }
 `;
 
 export const TabTextButton = styled(Button)`
@@ -155,10 +160,10 @@ export const TabRemoveButton = styled(IconButton)`
   margin-right: 4px;
 
   &:hover {
-    background-color: ${({ theme }) => theme.gray[300]};
+    background-color: ${({ theme }) => theme.gray[200]};
 
     svg {
-      fill: #fff;
+      fill: ${({ theme }) => theme.black[400]};
     }
   }
 
