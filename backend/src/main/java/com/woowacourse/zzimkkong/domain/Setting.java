@@ -9,6 +9,9 @@ import lombok.*;
 import javax.persistence.*;
 import java.time.DayOfWeek;
 import java.time.LocalTime;
+import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
 
 import static com.woowacourse.zzimkkong.infrastructure.message.MessageUtils.LINE_SEPARATOR;
 
@@ -121,7 +124,16 @@ public class Setting {
     }
 
     public boolean hasConflictWith(final Setting that) {
-        return this.settingTimeSlot.hasConflictWith(that.settingTimeSlot);
+        List<EnabledDayOfWeek> thisEnabledDayOfWeek = Arrays.stream(this.enabledDayOfWeek.split(Space.DELIMITER))
+                .map(String::trim)
+                .map(EnabledDayOfWeek::from)
+                .collect(Collectors.toList());
+        boolean enabledDayOfWeekMatch = Arrays.stream(that.enabledDayOfWeek.split(Space.DELIMITER))
+                .map(String::trim)
+                .map(EnabledDayOfWeek::from)
+                .anyMatch(thisEnabledDayOfWeek::contains);
+
+        return this.settingTimeSlot.hasConflictWith(that.settingTimeSlot) && enabledDayOfWeekMatch;
     }
 
     public boolean supports(final TimeSlot timeSlot, final DayOfWeek dayOfWeek) {

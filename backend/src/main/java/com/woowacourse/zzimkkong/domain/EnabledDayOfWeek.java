@@ -31,7 +31,7 @@ public enum EnabledDayOfWeek {
                 .collect(Collectors.joining(Space.DELIMITER));
     }
 
-    private static EnabledDayOfWeek from(String dayOfWeek) {
+    public static EnabledDayOfWeek from(String dayOfWeek) {
         return Arrays.stream(values())
                 .filter(enabledDayOfWeek -> enabledDayOfWeek.name().equals(dayOfWeek.toUpperCase(Locale.ROOT)))
                 .findFirst()
