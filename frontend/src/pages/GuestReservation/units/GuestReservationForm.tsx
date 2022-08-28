@@ -6,6 +6,7 @@ import DATE from 'constants/date';
 import MESSAGE from 'constants/message';
 import REGEXP from 'constants/regexp';
 import RESERVATION from 'constants/reservation';
+import SPACE from 'constants/space';
 import useInputs from 'hooks/useInputs';
 import useScrollToTop from 'hooks/useScrollToTop';
 import useTimePicker from 'hooks/useTimePicker';
@@ -68,7 +69,7 @@ const GuestReservationForm = ({
           );
         })
         .map(({ reservationTimeUnit }) => reservationTimeUnit),
-      5
+      SPACE.RESERVATION.MIN_STEP
     );
   }, [reservation, space.settings]);
 
