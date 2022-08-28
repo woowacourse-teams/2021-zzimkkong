@@ -142,7 +142,6 @@ export interface ManagerSpace {
   id: number;
   name: string;
   color: Color;
-  description?: string;
   area: Area;
   reservationEnable: boolean;
   settings: ReservationSettings[];

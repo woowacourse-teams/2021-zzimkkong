@@ -6,6 +6,10 @@ interface FormContainerProps {
   disabled: boolean;
 }
 
+interface TabListItemProps {
+  isPrimary: boolean;
+}
+
 export const Form = styled.form<FormContainerProps>`
   padding: 2rem 1.5rem;
   overflow-y: ${({ disabled }) => (disabled ? 'hidden' : 'auto')};
@@ -128,7 +132,7 @@ export const TabList = styled.ul`
   margin-bottom: 0.5rem;
 `;
 
-export const TabListItem = styled.li`
+export const TabListItem = styled.li<TabListItemProps>`
   display: flex;
   justify-content: stretch;
   align-items: center;
@@ -136,6 +140,8 @@ export const TabListItem = styled.li`
   overflow: hidden;
   white-space: nowrap;
   border-radius: 0.25rem;
+
+  background-color: ${({ isPrimary, theme }) => isPrimary && theme.primary[400]};
 `;
 
 export const TabTextButton = styled(Button)`
@@ -149,7 +155,7 @@ export const TabRemoveButton = styled(IconButton)`
   margin-right: 4px;
 
   &:hover {
-    background-color: ${({ theme }) => theme.red[100]};
+    background-color: ${({ theme }) => theme.gray[300]};
 
     svg {
       fill: #fff;

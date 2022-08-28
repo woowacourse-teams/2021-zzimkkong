@@ -80,14 +80,13 @@ const Form = ({
 
     const thumbnail = generateSvg({ ...mapData, spaces: getSpacesForSvg() });
     const {
-      space: { description, ...rest },
+      space: { ...rest },
     } = getRequestValues();
 
     if (selectedSpaceId === null) {
       onCreateSpace({
         space: {
           thumbnail,
-          description: description ? description : null,
           ...rest,
         },
       });
@@ -98,7 +97,6 @@ const Form = ({
     onUpdateSpace({
       spaceId: selectedSpaceId,
       space: {
-        description: description ? description : null,
         ...rest,
         thumbnail,
       },
@@ -191,7 +189,7 @@ const Form = ({
 
         <Styled.TabList>
           {values.settings.map((_, index) => (
-            <Styled.TabListItem key={index}>
+            <Styled.TabListItem key={index} isPrimary={index === selectedSettingIndex}>
               <Styled.TabTextButton
                 variant="text"
                 size="small"
@@ -200,6 +198,7 @@ const Form = ({
               >
                 예약조건 {index + 1}
               </Styled.TabTextButton>
+
               <Styled.TabRemoveButton
                 size="small"
                 type="button"
@@ -210,7 +209,7 @@ const Form = ({
             </Styled.TabListItem>
           ))}
 
-          <Styled.TabListItem>
+          <Styled.TabListItem isPrimary={false}>
             <Styled.TabCreateButton
               variant="text"
               size="small"

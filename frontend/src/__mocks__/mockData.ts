@@ -42,7 +42,6 @@ export const spaces: Spaces = {
       id: 1,
       name: 'testSpace',
       color: '#EB3933',
-      description: 'testMap',
       area: '{"shape":"rect","x":210,"y":90,"width":440,"height":140}',
       reservationEnable: true,
       settings: [

@@ -7,6 +7,7 @@ import DATE from 'constants/date';
 import MESSAGE from 'constants/message';
 import REGEXP from 'constants/regexp';
 import RESERVATION from 'constants/reservation';
+import SPACE from 'constants/space';
 import useInputs from 'hooks/useInputs';
 import useScrollToTop from 'hooks/useScrollToTop';
 import useTimePicker from 'hooks/useTimePicker';
@@ -55,7 +56,7 @@ const ManagerReservationForm = ({
       reservation ? new Date(reservation.endDateTime) : new Date()
     );
 
-    return Math.max(
+    return Math.min(
       ...space.settings
         .filter((setting) => {
           const settingStartTime = convertSettingTimeToMinutes(setting.settingStartTime);
@@ -67,7 +68,7 @@ const ManagerReservationForm = ({
           );
         })
         .map(({ reservationTimeUnit }) => reservationTimeUnit),
-      5
+      SPACE.RESERVATION.MIN_STEP
     );
   }, [reservation, space.settings]);
 

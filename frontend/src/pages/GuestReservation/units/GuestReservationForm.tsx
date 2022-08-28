@@ -57,7 +57,7 @@ const GuestReservationForm = ({
       reservation ? new Date(reservation.endDateTime) : new Date()
     );
 
-    return Math.max(
+    return Math.min(
       ...space.settings
         .filter((setting) => {
           const settingStartTime = convertSettingTimeToMinutes(setting.settingStartTime);
