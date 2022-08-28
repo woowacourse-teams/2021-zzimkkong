@@ -153,7 +153,7 @@ const ManagerReservationForm = ({
             required
           />
         </Styled.InputWrapper>
-        <Styled.InputWrapper css={{ marginBottom: 0 }}>
+        <Styled.InputWrapper>
           <TimePicker
             label="예약 시간"
             selectedTime={selectedTime}
