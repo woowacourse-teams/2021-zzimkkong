@@ -13,7 +13,6 @@ export const Section = styled.section`
 export const InputWrapper = styled.div`
   position: relative;
   display: flex;
-  display: flex;
   flex-direction: column;
   margin: 1.625rem 0;
 
