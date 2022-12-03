@@ -1,6 +1,6 @@
 import { AxiosError } from 'axios';
 import dayjs, { Dayjs } from 'dayjs';
-import { FormEventHandler, useEffect, useMemo, useRef, useState } from 'react';
+import { FormEventHandler, useContext, useEffect, useMemo, useRef, useState } from 'react';
 import { useMutation } from 'react-query';
 import { useHistory, useLocation, useParams } from 'react-router-dom';
 import { deleteGuestReservation } from 'api/guestReservation';
@@ -10,6 +10,7 @@ import Header from 'components/Header/Header';
 import Input from 'components/Input/Input';
 import Layout from 'components/Layout/Layout';
 import Modal from 'components/Modal/Modal';
+import SocialLoginButton from 'components/SocialAuthButton/SocialLoginButton';
 import { EDITOR } from 'constants/editor';
 import MESSAGE from 'constants/message';
 import PALETTE from 'constants/palette';
@@ -18,6 +19,7 @@ import useGuestMap from 'hooks/query/useGuestMap';
 import useGuestReservations from 'hooks/query/useGuestReservations';
 import useGuestSpaces from 'hooks/query/useGuestSpaces';
 import useInput from 'hooks/useInput';
+import { AccessTokenContext } from 'providers/AccessTokenProvider';
 import { Area, MapDrawing, MapItem, Reservation, ScrollPosition, Space } from 'types/common';
 import { DrawingAreaShape } from 'types/editor';
 import { GuestPageURLParams } from 'types/guest';
@@ -35,9 +37,13 @@ export interface GuestMapState {
 }
 
 const GuestMap = (): JSX.Element => {
+  const { accessToken } = useContext(AccessTokenContext);
+
   const [detailOpen, setDetailOpen] = useState(false);
   const [passwordInputModalOpen, setPasswordInputModalOpen] = useState(false);
   const [selectedReservation, setSelectedReservation] = useState<Reservation>();
+
+  const [loginPopupOpen, setLoginPopupOpen] = useState(true);
 
   const [passwordInput, onChangePasswordInput] = useInput('');
 
@@ -292,7 +298,6 @@ const GuestMap = (): JSX.Element => {
           </Styled.MapContainer>
         </Styled.Page>
       </Layout>
-
       {selectedSpaceId && map?.mapId && detailOpen && (
         <ReservationDrawer
           reservations={reservations}
@@ -307,7 +312,6 @@ const GuestMap = (): JSX.Element => {
           onDelete={handleDelete}
         />
       )}
-
       {passwordInputModalOpen && (
         <Modal
           open={passwordInputModalOpen}
@@ -339,6 +343,39 @@ const GuestMap = (): JSX.Element => {
               </Styled.DeleteModalContainer>
             </form>
           </Modal.Inner>
+        </Modal>
+      )}
+      {!accessToken && (
+        <Modal open={loginPopupOpen} onClose={() => setLoginPopupOpen(false)}>
+          <Styled.LoginPopupWrapper>
+            <Styled.LoginPopupHeading>
+              <strong>나의 예약 내역</strong>을 관리해보세요!
+            </Styled.LoginPopupHeading>
+            <Styled.LoginPopupForm>
+              <Styled.LoginForm>
+                <Input type="text" label="이메일" />
+                <Input type="password" label="비밀번호" />
+              </Styled.LoginForm>
+              <Styled.LoginFormButtonWrapper>
+                <Button type="submit" variant="primary" size="medium" fullWidth>
+                  로그인
+                </Button>
+                <Button type="button" variant="inverse" size="medium" fullWidth>
+                  회원가입
+                </Button>
+              </Styled.LoginFormButtonWrapper>
+            </Styled.LoginPopupForm>
+            <Styled.Line />
+            <Styled.SocialLoginButtonWrapper>
+              <SocialLoginButton provider="GITHUB" variant="icon" />
+              <SocialLoginButton provider="GOOGLE" variant="icon" />
+            </Styled.SocialLoginButtonWrapper>
+            <Styled.ContinueWithNonMemberWrapper>
+              <Styled.ContinueWithNonMember onClick={() => setLoginPopupOpen(false)}>
+                비회원으로 계속하기
+              </Styled.ContinueWithNonMember>
+            </Styled.ContinueWithNonMemberWrapper>
+          </Styled.LoginPopupWrapper>
         </Modal>
       )}
     </>

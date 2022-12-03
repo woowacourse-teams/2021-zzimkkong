@@ -30,12 +30,14 @@ const buttonCSS = css`
 export const SocialLoginButton = styled.a<LoginButtonProps>`
   ${({ provider }) => providerCSS[provider]}
   ${buttonCSS};
+  width: ${({ variant }) => (variant === 'icon' ? '52px' : '100%')};
+  height: 52px;
+  cursor: pointer;
 `;
 
 export const SocialJoinButton = styled.button<JoinButtonProps>`
   ${({ provider }) => providerCSS[provider]}
   ${buttonCSS};
-  width: 100%;
   cursor: pointer;
 `;
 
