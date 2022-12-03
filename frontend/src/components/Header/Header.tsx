@@ -11,7 +11,11 @@ interface Params {
   sharingMapId?: MapItem['sharingMapId'];
 }
 
-const Header = (): JSX.Element => {
+interface HeaderProps {
+  onClickLogin?: () => void;
+}
+
+const Header = ({ onClickLogin }: HeaderProps): JSX.Element => {
   const history = useHistory();
   const { accessToken, resetAccessToken } = useContext(AccessTokenContext);
 
@@ -30,6 +34,12 @@ const Header = (): JSX.Element => {
     resetAccessToken();
     queryClient.clear();
 
+    if (sharingMapId) {
+      history.push(HREF.GUEST_MAP(sharingMapId));
+
+      return;
+    }
+
     history.push(PATH.MANAGER_LOGIN);
   };
 
@@ -42,20 +52,23 @@ const Header = (): JSX.Element => {
           </Styled.Logo>
           <Styled.Title>찜꽁</Styled.Title>
         </Styled.HeaderLink>
-        {!sharingMapId && (
-          <Styled.ButtonContainer>
-            {accessToken ? (
-              <Styled.TextButton variant="text" onClick={handleLogout}>
-                로그아웃
-              </Styled.TextButton>
-            ) : (
-              <>
-                <Styled.TextLink to={PATH.MANAGER_LOGIN}>로그인</Styled.TextLink>
-                <Styled.TextLink to={PATH.MANAGER_JOIN}>회원가입</Styled.TextLink>
-              </>
-            )}
-          </Styled.ButtonContainer>
-        )}
+        <Styled.ButtonContainer>
+          {accessToken ? (
+            <Styled.TextButton variant="text" onClick={handleLogout}>
+              로그아웃
+            </Styled.TextButton>
+          ) : (
+            <>
+              <Styled.TextLink
+                to={sharingMapId ? HREF.GUEST_MAP(sharingMapId) : PATH.MANAGER_LOGIN}
+                onClick={onClickLogin}
+              >
+                로그인
+              </Styled.TextLink>
+              <Styled.TextLink to={PATH.MANAGER_JOIN}>회원가입</Styled.TextLink>
+            </>
+          )}
+        </Styled.ButtonContainer>
       </Styled.HeaderLayout>
     </Styled.Header>
   );

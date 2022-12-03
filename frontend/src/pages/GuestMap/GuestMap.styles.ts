@@ -170,7 +170,7 @@ export const LoginPopupForm = styled.form`
   gap: 1.5rem;
 `;
 
-export const LoginForm = styled.div`
+export const LoginFormInputWrapper = styled.div`
   display: flex;
   flex-direction: column;
   gap: 0.5rem;
@@ -203,7 +203,7 @@ export const ContinueWithNonMemberWrapper = styled.div`
 
 export const ContinueWithNonMember = styled.a`
   display: inline-block;
-  font-size: 0.5rem;
+  font-size: 0.75rem;
   color: ${({ theme }) => theme.gray[400]};
   text-decoration: underline;
   cursor: pointer;
