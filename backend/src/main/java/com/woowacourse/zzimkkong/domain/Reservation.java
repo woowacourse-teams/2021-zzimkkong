@@ -13,7 +13,9 @@ import java.time.LocalDateTime;
 @Builder
 @NoArgsConstructor
 @Entity
-@Table(indexes = @Index(name = "i_spaceid_date", columnList = "space_id, date"))
+@Table(indexes = {
+        @Index(name = "i_spaceid_date", columnList = "space_id, date"),
+        @Index(name = "i_memberid_date", columnList = "member_id, date")})
 public class Reservation {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -22,7 +24,7 @@ public class Reservation {
     @Embedded
     private ReservationTime reservationTime;
 
-    @Column(nullable = false, length = 20)
+    @Column(length = 20)
     private String password;
 
     @Column(nullable = false, length = 20)
@@ -35,19 +37,25 @@ public class Reservation {
     @JoinColumn(name = "space_id", foreignKey = @ForeignKey(name = "fk_reservation_space"), nullable = false)
     private Space space;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "member_id", foreignKey = @ForeignKey(name = "fk_reservation_member"))
+    private Member member;
+
     protected Reservation(
             final Long id,
             final ReservationTime reservationTime,
             final String password,
             final String userName,
             final String description,
-            final Space space) {
+            final Space space,
+            final Member member) {
         this.id = id;
         this.reservationTime = reservationTime;
         this.password = password;
         this.userName = userName;
         this.description = description;
         this.space = space;
+        this.member = member;
 
         if (space != null) {
             this.space.addReservation(this);

@@ -80,4 +80,16 @@ public class Constants {
     public static final String FE1_AM_TEN_ELEVEN_DESCRIPTION = "찜꽁 5차 회의";
     public static final String FE1_AM_TEN_ELEVEN_USERNAME = USER_NAME;
     public static final String FE1_AM_TEN_ELEVEN_PW = RESERVATION_PW;
+
+    public static final ZonedDateTime BE_PM_TWO_THREE_START_TIME_KST = THE_DAY_AFTER_TOMORROW.atTime(14, 0).atZone(ZoneId.of(ServiceZone.KOREA.getTimeZone()));
+    public static final ZonedDateTime BE_PM_TWO_THREE_END_TIME_KST = THE_DAY_AFTER_TOMORROW.atTime(15, 0).atZone(ZoneId.of(ServiceZone.KOREA.getTimeZone()));
+    public static final String BE_PM_TWO_THREE_DESCRIPTION = "찜꽁 6차 회의 로그인 예약자";
+    public static final String BE_PM_TWO_THREE_USERNAME = "LOGIN_USER";
+    public static final String BE_PM_TWO_THREE_PW = null;
+
+    public static final ZonedDateTime BE_YESTERDAY_PM_TWO_THREE_START_TIME_KST = THE_DAY_AFTER_TOMORROW.minusDays(1).atTime(14, 0).atZone(ZoneId.of(ServiceZone.KOREA.getTimeZone()));
+    public static final ZonedDateTime BE_YESTERDAY_PM_TWO_THREE_END_TIME_KST = THE_DAY_AFTER_TOMORROW.minusDays(1).atTime(15, 0).atZone(ZoneId.of(ServiceZone.KOREA.getTimeZone()));
+    public static final String BE_YESTERDAY_PM_TWO_THREE_DESCRIPTION = "이미 지나간 찜꽁 7차 회의 로그인 예약자";
+    public static final String BE_YESTERDAY_PM_TWO_THREE_USERNAME = "LOGIN_USER";
+    public static final String BE_YESTERDAY_PM_TWO_THREE_PW = null;
 }
