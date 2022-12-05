@@ -1,6 +1,7 @@
 package com.woowacourse.zzimkkong.dto.reservation;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.woowacourse.zzimkkong.dto.ReservationUserName;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -25,8 +26,7 @@ public class ReservationCreateUpdateRequest {
     @NotNull(message = EMPTY_MESSAGE)
     protected ZonedDateTime endDateTime;
 
-    @NotBlank(message = EMPTY_MESSAGE)
-    @Pattern(regexp = NAMING_FORMAT, message = NAME_MESSAGE)
+    @ReservationUserName
     protected String name;
 
     @NotBlank(message = EMPTY_MESSAGE)

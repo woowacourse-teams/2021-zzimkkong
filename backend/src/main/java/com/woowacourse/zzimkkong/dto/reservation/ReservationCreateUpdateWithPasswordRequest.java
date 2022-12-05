@@ -1,5 +1,7 @@
 package com.woowacourse.zzimkkong.dto.reservation;
 
+import com.woowacourse.zzimkkong.dto.ReservationPassword;
+import com.woowacourse.zzimkkong.dto.ReservationUserName;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -12,8 +14,7 @@ import static com.woowacourse.zzimkkong.dto.ValidatorMessage.*;
 @Getter
 @NoArgsConstructor
 public class ReservationCreateUpdateWithPasswordRequest extends ReservationCreateUpdateRequest {
-    @NotBlank(message = EMPTY_MESSAGE)
-    @Pattern(regexp = RESERVATION_PW_FORMAT, message = RESERVATION_PW_MESSAGE)
+    @ReservationPassword
     private String password;
 
     public ReservationCreateUpdateWithPasswordRequest(

@@ -1,8 +1,7 @@
 package com.woowacourse.zzimkkong.infrastructure.auth;
 
 import com.woowacourse.zzimkkong.config.logaspect.LogMethodExecutionTime;
-import com.woowacourse.zzimkkong.domain.LoginEmail;
-import com.woowacourse.zzimkkong.dto.member.LoginEmailDto;
+import com.woowacourse.zzimkkong.dto.member.LoginUserEmail;
 import org.springframework.core.MethodParameter;
 import org.springframework.stereotype.Component;
 import org.springframework.web.bind.support.WebDataBinderFactory;
@@ -23,13 +22,20 @@ public class AuthenticationPrincipalArgumentResolver implements HandlerMethodArg
 
     @Override
     public boolean supportsParameter(MethodParameter parameter) {
-        return parameter.hasParameterAnnotation(LoginEmail.class);
+        return parameter.hasParameterAnnotation(com.woowacourse.zzimkkong.domain.LoginEmail.class);
     }
 
     @Override
     public Object resolveArgument(MethodParameter parameter, ModelAndViewContainer mavContainer, NativeWebRequest webRequest, WebDataBinderFactory binderFactory) {
-        String token = AuthorizationExtractor.extractAccessToken((HttpServletRequest) webRequest.getNativeRequest());
+        HttpServletRequest request = (HttpServletRequest) webRequest.getNativeRequest();
+
+        com.woowacourse.zzimkkong.domain.LoginEmail loginEmailParameterAnnotation = parameter.getParameterAnnotation(com.woowacourse.zzimkkong.domain.LoginEmail.class);
+        if (loginEmailParameterAnnotation.isOptional() && !AuthorizationExtractor.hasAccessToken(request)) {
+            return LoginUserEmail.NO_LOGIN;
+        }
+
+        String token = AuthorizationExtractor.extractAccessToken(request);
         String email = jwtUtils.getPayload(token);
-        return LoginEmailDto.from(email);
+        return LoginUserEmail.from(email);
     }
 }

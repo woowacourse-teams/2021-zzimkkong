@@ -2,6 +2,7 @@ package com.woowacourse.zzimkkong.controller;
 
 import com.woowacourse.zzimkkong.domain.*;
 import com.woowacourse.zzimkkong.dto.reservation.*;
+import com.woowacourse.zzimkkong.infrastructure.auth.AuthorizationExtractor;
 import com.woowacourse.zzimkkong.service.SlackService;
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
@@ -298,6 +299,19 @@ class GuestReservationControllerTest extends AcceptanceTest {
                 .isEqualTo(expectedResponse);
     }
 
+    @Test
+    @DisplayName("로그인 한 예약자가 다가오는 예약 내역을 조회할 떄, 해당 예약자가 예약한 내역들을 반환한다")
+    void findAllUpcomingReservations() {
+        // given
+
+        // when
+        ExtractableResponse<Response> response = findAllUpcomingReservations("/api/guests/reservations?page=0");
+        ReservationInfiniteScrollResponse actualResponse = response.as(ReservationInfiniteScrollResponse.class);
+
+        // then
+        System.out.println(actualResponse);
+    }
+
     private void saveExampleReservations() {
         ReservationCreateUpdateWithPasswordRequest beAmZeroOneRequest = new ReservationCreateUpdateWithPasswordRequest(
                 BE_AM_TEN_ELEVEN_START_TIME_KST,
@@ -444,6 +458,17 @@ class GuestReservationControllerTest extends AcceptanceTest {
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body(reservationPasswordAuthenticationRequest)
                 .when().delete(api)
+                .then().log().all().extract();
+    }
+
+    private ExtractableResponse<Response> findAllUpcomingReservations(final String api) {
+        return RestAssured
+                .given(getRequestSpecification()).log().all()
+                .accept("application/json")
+                .header("Authorization", AuthorizationExtractor.AUTHENTICATION_TYPE + " " + accessToken)
+                .filter(document("reservation/guest/getAllUpcomingMine", getRequestPreprocessor(), getResponsePreprocessor()))
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .when().get(api)
                 .then().log().all().extract();
     }
 }
