@@ -1,10 +1,8 @@
 package com.woowacourse.zzimkkong.controller;
 
 import com.woowacourse.zzimkkong.config.logaspect.LogMethodExecutionTime;
-import com.woowacourse.zzimkkong.domain.Member;
-import com.woowacourse.zzimkkong.domain.LoginEmail;
 import com.woowacourse.zzimkkong.dto.space.*;
-import com.woowacourse.zzimkkong.dto.member.LoginEmailDto;
+import com.woowacourse.zzimkkong.dto.member.LoginUserEmail;
 import com.woowacourse.zzimkkong.service.SpaceService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -26,8 +24,8 @@ public class ManagerSpaceController {
     public ResponseEntity<Void> save(
             @PathVariable final Long mapId,
             @RequestBody @Valid final SpaceCreateUpdateRequest spaceCreateRequest,
-            @LoginEmail final LoginEmailDto loginEmailDto) {
-        SpaceCreateResponse spaceCreateResponse = spaceService.saveSpace(mapId, spaceCreateRequest, loginEmailDto);
+            @com.woowacourse.zzimkkong.domain.LoginEmail final LoginUserEmail loginUserEmail) {
+        SpaceCreateResponse spaceCreateResponse = spaceService.saveSpace(mapId, spaceCreateRequest, loginUserEmail);
         return ResponseEntity
                 .created(URI.create("/api/managers/maps/" + mapId + "/spaces/" + spaceCreateResponse.getId()))
                 .build();
@@ -36,8 +34,8 @@ public class ManagerSpaceController {
     @GetMapping
     public ResponseEntity<SpaceFindAllResponse> findAll(
             @PathVariable final Long mapId,
-            @LoginEmail final LoginEmailDto loginEmailDto) {
-        SpaceFindAllResponse spaceFindAllResponse = spaceService.findAllSpace(mapId, loginEmailDto);
+            @com.woowacourse.zzimkkong.domain.LoginEmail final LoginUserEmail loginUserEmail) {
+        SpaceFindAllResponse spaceFindAllResponse = spaceService.findAllSpace(mapId, loginUserEmail);
         return ResponseEntity.ok().body(spaceFindAllResponse);
     }
 
@@ -45,8 +43,8 @@ public class ManagerSpaceController {
     public ResponseEntity<SpaceFindDetailResponse> find(
             @PathVariable final Long mapId,
             @PathVariable final Long spaceId,
-            @LoginEmail final LoginEmailDto loginEmailDto) {
-        SpaceFindDetailResponse spaceFindDetailResponse = spaceService.findSpace(mapId, spaceId, loginEmailDto);
+            @com.woowacourse.zzimkkong.domain.LoginEmail final LoginUserEmail loginUserEmail) {
+        SpaceFindDetailResponse spaceFindDetailResponse = spaceService.findSpace(mapId, spaceId, loginUserEmail);
         return ResponseEntity.ok().body(spaceFindDetailResponse);
     }
 
@@ -55,8 +53,8 @@ public class ManagerSpaceController {
             @PathVariable final Long mapId,
             @PathVariable final Long spaceId,
             @RequestBody final SpaceCreateUpdateRequest spaceCreateUpdateRequest,
-            @LoginEmail final LoginEmailDto loginEmailDto) {
-        spaceService.updateSpace(mapId, spaceId, spaceCreateUpdateRequest, loginEmailDto);
+            @com.woowacourse.zzimkkong.domain.LoginEmail final LoginUserEmail loginUserEmail) {
+        spaceService.updateSpace(mapId, spaceId, spaceCreateUpdateRequest, loginUserEmail);
         return ResponseEntity.ok().build();
     }
 
@@ -65,8 +63,8 @@ public class ManagerSpaceController {
             @PathVariable final Long mapId,
             @PathVariable final Long spaceId,
             @RequestBody SpaceDeleteRequest spaceDeleteRequest,
-            @LoginEmail final LoginEmailDto loginEmailDto) {
-        spaceService.deleteSpace(mapId, spaceId, spaceDeleteRequest, loginEmailDto);
+            @com.woowacourse.zzimkkong.domain.LoginEmail final LoginUserEmail loginUserEmail) {
+        spaceService.deleteSpace(mapId, spaceId, spaceDeleteRequest, loginUserEmail);
         return ResponseEntity.noContent().build();
     }
 }

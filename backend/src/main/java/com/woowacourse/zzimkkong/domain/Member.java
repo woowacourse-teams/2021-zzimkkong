@@ -21,6 +21,9 @@ public class Member {
     @Column(nullable = false, length = 50, unique = true)
     private String email;
 
+    @Column(nullable = false, length = 20)
+    private String userName;
+
     @Column(length = 128)
     private String password;
 
@@ -88,7 +91,7 @@ public class Member {
         this.organization = organization;
     }
 
-    public boolean isSameEmail(String email) {
+    public boolean hasEmail(String email) {
         return this.email.equals(email);
     }
 }

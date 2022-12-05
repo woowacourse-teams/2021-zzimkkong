@@ -42,7 +42,7 @@ class MemberTest {
         Member member = new Member(1L, EMAIL, PW, ORGANIZATION);
 
         // when
-        boolean actual = member.isSameEmail(email);
+        boolean actual = member.hasEmail(email);
 
         // then
         assertThat(actual).isEqualTo(expected);

@@ -75,7 +75,7 @@ public class Map {
     }
 
     public boolean isOwnedBy(final String email) {
-        return member.isSameEmail(email);
+        return member.hasEmail(email);
     }
 
     public boolean doesNotHaveSpaceId(final Long spaceId) {

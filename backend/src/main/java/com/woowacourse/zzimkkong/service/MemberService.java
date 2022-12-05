@@ -66,20 +66,20 @@ public class MemberService {
     }
 
     @Transactional(readOnly = true)
-    public MemberFindResponse findMember(final LoginEmailDto loginEmailDto) {
-        Member member = members.findByEmail(loginEmailDto.getEmail())
+    public MemberFindResponse findMember(final LoginUserEmail loginUserEmail) {
+        Member member = members.findByEmail(loginUserEmail.getEmail())
                 .orElseThrow(NoSuchMemberException::new);
         return MemberFindResponse.from(member);
     }
 
-    public void updateMember(final LoginEmailDto loginEmailDto, final MemberUpdateRequest memberUpdateRequest) {
-        Member member = members.findByEmail(loginEmailDto.getEmail())
+    public void updateMember(final LoginUserEmail loginUserEmail, final MemberUpdateRequest memberUpdateRequest) {
+        Member member = members.findByEmail(loginUserEmail.getEmail())
                 .orElseThrow(NoSuchMemberException::new);
         member.update(memberUpdateRequest.getOrganization());
     }
 
-    public void deleteMember(final LoginEmailDto loginEmailDto) {
-        Member member = members.findByEmail(loginEmailDto.getEmail())
+    public void deleteMember(final LoginUserEmail loginUserEmail) {
+        Member member = members.findByEmail(loginUserEmail.getEmail())
                 .orElseThrow(NoSuchMemberException::new);
         boolean hasAnyReservations = reservations.existsByMemberAndEndTimeAfter(member, LocalDateTime.now());
         if (hasAnyReservations) {

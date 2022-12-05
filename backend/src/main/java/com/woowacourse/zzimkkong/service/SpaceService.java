@@ -3,7 +3,7 @@ package com.woowacourse.zzimkkong.service;
 import com.woowacourse.zzimkkong.domain.Map;
 import com.woowacourse.zzimkkong.domain.Settings;
 import com.woowacourse.zzimkkong.domain.Space;
-import com.woowacourse.zzimkkong.dto.member.LoginEmailDto;
+import com.woowacourse.zzimkkong.dto.member.LoginUserEmail;
 import com.woowacourse.zzimkkong.dto.space.*;
 import com.woowacourse.zzimkkong.exception.authorization.NoAuthorityOnMapException;
 import com.woowacourse.zzimkkong.exception.map.NoSuchMapException;
@@ -37,10 +37,10 @@ public class SpaceService {
     public SpaceCreateResponse saveSpace(
             final Long mapId,
             final SpaceCreateUpdateRequest spaceCreateUpdateRequest,
-            final LoginEmailDto loginEmailDto) {
+            final LoginUserEmail loginUserEmail) {
         Map map = maps.findById(mapId)
                 .orElseThrow(NoSuchMapException::new);
-        validateManagerOfMap(map, loginEmailDto.getEmail());
+        validateManagerOfMap(map, loginUserEmail.getEmail());
 
         Settings settings = Settings.from(spaceCreateUpdateRequest.getSettings());
         Space space = Space.builder()
@@ -62,10 +62,10 @@ public class SpaceService {
     public SpaceFindDetailResponse findSpace(
             final Long mapId,
             final Long spaceId,
-            final LoginEmailDto loginEmailDto) {
+            final LoginUserEmail loginUserEmail) {
         Map map = maps.findByIdFetch(mapId)
                 .orElseThrow(NoSuchMapException::new);
-        validateManagerOfMap(map, loginEmailDto.getEmail());
+        validateManagerOfMap(map, loginUserEmail.getEmail());
 
         Space space = map.findSpaceById(spaceId)
                 .orElseThrow(NoSuchSpaceException::new);
@@ -75,10 +75,10 @@ public class SpaceService {
     @Transactional(readOnly = true)
     public SpaceFindAllResponse findAllSpace(
             final Long mapId,
-            final LoginEmailDto loginEmailDto) {
+            final LoginUserEmail loginUserEmail) {
         Map map = maps.findByIdFetch(mapId)
                 .orElseThrow(NoSuchMapException::new);
-        validateManagerOfMap(map, loginEmailDto.getEmail());
+        validateManagerOfMap(map, loginUserEmail.getEmail());
 
         List<Space> findAllSpaces = map.getSpaces();
         return SpaceFindAllResponse.from(findAllSpaces);
@@ -98,10 +98,10 @@ public class SpaceService {
             final Long mapId,
             final Long spaceId,
             final SpaceCreateUpdateRequest spaceCreateUpdateRequest,
-            final LoginEmailDto loginEmailDto) {
+            final LoginUserEmail loginUserEmail) {
         Map map = maps.findByIdFetch(mapId)
                 .orElseThrow(NoSuchMapException::new);
-        validateManagerOfMap(map, loginEmailDto.getEmail());
+        validateManagerOfMap(map, loginUserEmail.getEmail());
 
         Space space = map.findSpaceById(spaceId)
                 .orElseThrow(NoSuchSpaceException::new);
@@ -124,10 +124,10 @@ public class SpaceService {
             final Long mapId,
             final Long spaceId,
             final SpaceDeleteRequest spaceDeleteRequest,
-            final LoginEmailDto loginEmailDto) {
+            final LoginUserEmail loginUserEmail) {
         Map map = maps.findByIdFetch(mapId)
                 .orElseThrow(NoSuchMapException::new);
-        validateManagerOfMap(map, loginEmailDto.getEmail());
+        validateManagerOfMap(map, loginUserEmail.getEmail());
 
         Space space = map.findSpaceById(spaceId)
                 .orElseThrow(NoSuchSpaceException::new);

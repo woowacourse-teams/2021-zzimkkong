@@ -8,7 +8,6 @@ import com.woowacourse.zzimkkong.exception.setting.MultipleSettingsException;
 import com.woowacourse.zzimkkong.exception.setting.NoSettingAvailableException;
 import com.woowacourse.zzimkkong.exception.space.NoSuchSpaceException;
 import com.woowacourse.zzimkkong.infrastructure.datetime.TimeZoneUtils;
-import com.woowacourse.zzimkkong.service.strategy.GuestReservationStrategy;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -40,7 +39,6 @@ class GuestReservationServiceTest extends ServiceTest {
 
     @Autowired
     private ReservationService reservationService;
-    private final GuestReservationStrategy guestReservationStrategy = new GuestReservationStrategy();
 
     private ReservationCreateUpdateWithPasswordRequest reservationCreateUpdateWithPasswordRequest = new ReservationCreateUpdateWithPasswordRequest(
             THE_DAY_AFTER_TOMORROW.atTime(11, 0).atZone(ZoneId.of(ServiceZone.KOREA.getTimeZone())),
@@ -66,7 +64,7 @@ class GuestReservationServiceTest extends ServiceTest {
     void setUp() {
         Member pobi = new Member(EMAIL, PW, ORGANIZATION);
         luther = new Map(1L, LUTHER_NAME, MAP_DRAWING_DATA, MAP_SVG, pobi);
-        
+
         Setting beSetting = Setting.builder()
                 .settingTimeSlot(TimeSlot.of(
                         BE_AVAILABLE_START_TIME,
@@ -158,7 +156,7 @@ class GuestReservationServiceTest extends ServiceTest {
 
         ReservationCreateResponse reservationCreateResponse = reservationService.saveReservation(
                 reservationCreateDto,
-                guestReservationStrategy);
+                UserType.GUEST);
 
         //then
         assertThat(reservationCreateResponse.getId()).isEqualTo(reservation.getId());
@@ -180,7 +178,7 @@ class GuestReservationServiceTest extends ServiceTest {
         //then
         assertThatThrownBy(() -> reservationService.saveReservation(
                 reservationCreateDto,
-                guestReservationStrategy))
+                UserType.GUEST))
                 .isInstanceOf(NoSuchMapException.class);
     }
 
@@ -200,7 +198,7 @@ class GuestReservationServiceTest extends ServiceTest {
         //then
         assertThatThrownBy(() -> reservationService.saveReservation(
                 reservationCreateDto,
-                guestReservationStrategy))
+                UserType.GUEST))
                 .isInstanceOf(NoSuchSpaceException.class);
     }
 
@@ -226,7 +224,7 @@ class GuestReservationServiceTest extends ServiceTest {
         //then
         assertThatThrownBy(() -> reservationService.saveReservation(
                 reservationCreateDto,
-                guestReservationStrategy))
+                UserType.GUEST))
                 .isInstanceOf(PastReservationTimeException.class);
     }
 
@@ -252,7 +250,7 @@ class GuestReservationServiceTest extends ServiceTest {
         //then
         assertThatThrownBy(() -> reservationService.saveReservation(
                 reservationCreateDto,
-                guestReservationStrategy))
+                UserType.GUEST))
                 .isInstanceOf(ImpossibleStartEndTimeException.class);
     }
 
@@ -278,7 +276,7 @@ class GuestReservationServiceTest extends ServiceTest {
         //then
         assertThatThrownBy(() -> reservationService.saveReservation(
                 reservationCreateDto,
-                guestReservationStrategy))
+                UserType.GUEST))
                 .isInstanceOf(ImpossibleStartEndTimeException.class);
     }
 
@@ -304,7 +302,7 @@ class GuestReservationServiceTest extends ServiceTest {
         //then
         assertThatThrownBy(() -> reservationService.saveReservation(
                 reservationCreateDto,
-                guestReservationStrategy))
+                UserType.GUEST))
                 .isInstanceOf(NonMatchingStartEndDateException.class);
     }
 
@@ -331,7 +329,7 @@ class GuestReservationServiceTest extends ServiceTest {
         //then
         assertThatThrownBy(() -> reservationService.saveReservation(
                 reservationCreateDto,
-                guestReservationStrategy))
+                UserType.GUEST))
                 .isInstanceOf(ReservationAlreadyExistsException.class);
     }
 
@@ -371,7 +369,7 @@ class GuestReservationServiceTest extends ServiceTest {
         //then
         assertThatThrownBy(() -> reservationService.saveReservation(
                 reservationCreateDto,
-                guestReservationStrategy))
+                UserType.GUEST))
                 .isInstanceOf(InvalidReservationEnableException.class);
     }
 
@@ -411,7 +409,7 @@ class GuestReservationServiceTest extends ServiceTest {
         //then
         assertThatThrownBy(() -> reservationService.saveReservation(
                 reservationCreateDto,
-                guestReservationStrategy))
+                UserType.GUEST))
                 .isInstanceOf(NoSettingAvailableException.class);
     }
 
@@ -447,12 +445,12 @@ class GuestReservationServiceTest extends ServiceTest {
         //then
         ReservationCreateResponse reservationCreateResponse = reservationService.saveReservation(
                 reservationCreateDto,
-                guestReservationStrategy);
+                UserType.GUEST);
         assertThat(reservationCreateResponse.getId()).isEqualTo(reservation.getId());
     }
 
     @ParameterizedTest
-    @CsvSource({"6,8","8,10","22,23"})
+    @CsvSource({"6,8", "8,10", "22,23"})
     @DisplayName("예약 생성/수정 요청 시, 예약 시간대에 해당하는 예약 조건이 없으면 에러를 반환한다")
     void saveUpdateReservationNoRelevantSetting(int startHour, int endHour) {
         //given
@@ -484,23 +482,23 @@ class GuestReservationServiceTest extends ServiceTest {
         //then
         assertThatThrownBy(() -> reservationService.saveReservation(
                 reservationCreateDto,
-                guestReservationStrategy))
+                UserType.GUEST))
                 .isInstanceOf(NoSettingAvailableException.class);
         assertThatThrownBy(() -> reservationService.updateReservation(
                 reservationUpdateDto,
-                guestReservationStrategy))
+                UserType.GUEST))
                 .isInstanceOf(NoSettingAvailableException.class);
     }
 
     @ParameterizedTest
-    @CsvSource({"7,11","9,11"})
+    @CsvSource({"7,11", "9,11"})
     @DisplayName("예약 생성/수정 요청 시, 예약 시간대에 해당하는 예약 조건이 2개 이상이면 에러를 반환한다")
     void saveUpdateReservationMultipleSettings(int startHour, int endHour) {
         //given
         be.addSetting(Setting.builder()
                 .settingTimeSlot(TimeSlot.of(
-                        LocalTime.of(8,0),
-                        LocalTime.of(10,0)))
+                        LocalTime.of(8, 0),
+                        LocalTime.of(10, 0)))
                 .reservationTimeUnit(TimeUnit.from(10))
                 .reservationMinimumTimeUnit(TimeUnit.from(10))
                 .reservationMaximumTimeUnit(TimeUnit.from(60))
@@ -534,16 +532,16 @@ class GuestReservationServiceTest extends ServiceTest {
         //then
         assertThatThrownBy(() -> reservationService.saveReservation(
                 reservationCreateDto,
-                guestReservationStrategy))
+                UserType.GUEST))
                 .isInstanceOf(MultipleSettingsException.class);
         assertThatThrownBy(() -> reservationService.updateReservation(
                 reservationUpdateDto,
-                guestReservationStrategy))
+                UserType.GUEST))
                 .isInstanceOf(MultipleSettingsException.class);
     }
 
     @ParameterizedTest
-    @CsvSource({"9,11","21,23"})
+    @CsvSource({"9,11", "21,23"})
     @DisplayName("예약 생성/수정 요청 시, 예약 시간대가 예약 조건안에 완전히 포함되지 않고 걸쳐있으면 에러를 반환한다")
     void saveUpdateReservationIsNotWithinSetting(int startHour, int endHour) {
         //given
@@ -575,16 +573,16 @@ class GuestReservationServiceTest extends ServiceTest {
         //then
         assertThatThrownBy(() -> reservationService.saveReservation(
                 reservationCreateDto,
-                guestReservationStrategy))
+                UserType.GUEST))
                 .isInstanceOf(InvalidStartEndTimeException.class);
         assertThatThrownBy(() -> reservationService.updateReservation(
                 reservationUpdateDto,
-                guestReservationStrategy))
+                UserType.GUEST))
                 .isInstanceOf(InvalidStartEndTimeException.class);
     }
 
     @ParameterizedTest
-    @CsvSource({"5,60","10,55","5,65","20,85"})
+    @CsvSource({"5,60", "10,55", "5,65", "20,85"})
     @DisplayName("예약 생성/수정 요청 시, space setting의 reservationTimeUnit이 일치하지 않으면 예외가 발생한다.")
     void saveReservationTimeUnitException(int additionalStartMinute, int additionalEndMinute) {
         //given
@@ -616,11 +614,11 @@ class GuestReservationServiceTest extends ServiceTest {
         //then
         assertThatThrownBy(() -> reservationService.saveReservation(
                 reservationCreateDto,
-                guestReservationStrategy))
+                UserType.GUEST))
                 .isInstanceOf(InvalidTimeUnitException.class);
         assertThatThrownBy(() -> reservationService.updateReservation(
                 reservationUpdateDto,
-                guestReservationStrategy))
+                UserType.GUEST))
                 .isInstanceOf(InvalidTimeUnitException.class);
     }
 
@@ -655,7 +653,7 @@ class GuestReservationServiceTest extends ServiceTest {
         //then
         assertThatThrownBy(() -> reservationService.saveReservation(
                 reservationCreateDto,
-                guestReservationStrategy))
+                UserType.GUEST))
                 .isInstanceOf(InvalidMinimumDurationTimeException.class);
     }
 
@@ -690,7 +688,7 @@ class GuestReservationServiceTest extends ServiceTest {
         //then
         assertThatThrownBy(() -> reservationService.saveReservation(
                 reservationCreateDto,
-                guestReservationStrategy))
+                UserType.GUEST))
                 .isInstanceOf(InvalidMaximumDurationTimeException.class);
     }
 
@@ -725,12 +723,12 @@ class GuestReservationServiceTest extends ServiceTest {
         //then
         assertThatThrownBy(() -> reservationService.saveReservation(
                 reservationCreateDto,
-                guestReservationStrategy))
+                UserType.GUEST))
                 .isInstanceOf(PastReservationTimeException.class);
 
         assertThatThrownBy(() -> reservationService.updateReservation(
                 reservationUpdateDto,
-                guestReservationStrategy))
+                UserType.GUEST))
                 .isInstanceOf(PastReservationTimeException.class);
     }
 
@@ -765,7 +763,7 @@ class GuestReservationServiceTest extends ServiceTest {
         ReservationFindResponse reservationFindResponse = ReservationFindResponse.from(foundReservations);
         assertThat(reservationService.findReservations(
                 reservationFindDto,
-                guestReservationStrategy))
+                UserType.GUEST))
                 .usingRecursiveComparison()
                 .isEqualTo(reservationFindResponse);
     }
@@ -786,7 +784,7 @@ class GuestReservationServiceTest extends ServiceTest {
         //then
         assertThatThrownBy(() -> reservationService.findReservations(
                 reservationFindDto,
-                guestReservationStrategy))
+                UserType.GUEST))
                 .isInstanceOf(NoSuchMapException.class);
     }
 
@@ -806,7 +804,7 @@ class GuestReservationServiceTest extends ServiceTest {
         //then
         assertThatThrownBy(() -> reservationService.findReservations(
                 reservationFindDto,
-                guestReservationStrategy))
+                UserType.GUEST))
                 .isInstanceOf(NoSuchSpaceException.class);
     }
 
@@ -838,12 +836,12 @@ class GuestReservationServiceTest extends ServiceTest {
         ReservationFindResponse reservationFindResponse = ReservationFindResponse.from(Collections.emptyList());
         assertThat(reservationService.findReservations(
                 reservationFindDto,
-                guestReservationStrategy))
+                UserType.GUEST))
                 .usingRecursiveComparison()
                 .isEqualTo(reservationFindResponse);
         assertThat(reservationService.findAllReservations(
                 reservationFindAllDto,
-                guestReservationStrategy))
+                UserType.GUEST))
                 .usingRecursiveComparison()
                 .isEqualTo(ReservationFindAllResponse.of(List.of(be, fe), Collections.emptyList()));
     }
@@ -885,7 +883,7 @@ class GuestReservationServiceTest extends ServiceTest {
 
         //then
         ReservationFindAllResponse reservationFindAllResponse = ReservationFindAllResponse.of(findSpaces, foundReservations);
-        assertThat(reservationService.findAllReservations(reservationFindAllDto, guestReservationStrategy))
+        assertThat(reservationService.findAllReservations(reservationFindAllDto, UserType.GUEST))
                 .usingRecursiveComparison()
                 .isEqualTo(reservationFindAllResponse);
     }
@@ -908,7 +906,7 @@ class GuestReservationServiceTest extends ServiceTest {
 
         ReservationResponse actualResponse = reservationService.findReservation(
                 reservationAuthenticationDto,
-                guestReservationStrategy);
+                UserType.GUEST);
 
         //then
         assertThat(actualResponse).usingRecursiveComparison()
@@ -936,7 +934,7 @@ class GuestReservationServiceTest extends ServiceTest {
         //then
         assertThatThrownBy(() -> reservationService.findReservation(
                 reservationAuthenticationDto,
-                guestReservationStrategy))
+                UserType.GUEST))
                 .isInstanceOf(NoSuchReservationException.class);
     }
 
@@ -961,7 +959,7 @@ class GuestReservationServiceTest extends ServiceTest {
         //then
         assertThatThrownBy(() -> reservationService.findReservation(
                 reservationAuthenticationDto,
-                guestReservationStrategy))
+                UserType.GUEST))
                 .isInstanceOf(ReservationPasswordException.class);
     }
 
@@ -991,7 +989,7 @@ class GuestReservationServiceTest extends ServiceTest {
         //then
         assertDoesNotThrow(() -> reservationService.updateReservation(
                 reservationUpdateDto,
-                guestReservationStrategy));
+                UserType.GUEST));
         assertThat(reservation.getUserName()).isEqualTo(CHANGED_NAME);
         assertThat(reservation.getDescription()).isEqualTo(CHANGED_DESCRIPTION);
     }
@@ -1022,7 +1020,7 @@ class GuestReservationServiceTest extends ServiceTest {
         //then
         assertThatThrownBy(() -> reservationService.updateReservation(
                 reservationUpdateDto,
-                guestReservationStrategy))
+                UserType.GUEST))
                 .isInstanceOf(ImpossibleStartEndTimeException.class);
     }
 
@@ -1051,7 +1049,7 @@ class GuestReservationServiceTest extends ServiceTest {
         //then
         assertThatThrownBy(() -> reservationService.updateReservation(
                 reservationUpdateDto,
-                guestReservationStrategy))
+                UserType.GUEST))
                 .isInstanceOf(NonMatchingStartEndDateException.class);
     }
 
@@ -1082,7 +1080,7 @@ class GuestReservationServiceTest extends ServiceTest {
         //then
         assertThatThrownBy(() -> reservationService.updateReservation(
                 reservationUpdateDto,
-                guestReservationStrategy))
+                UserType.GUEST))
                 .isInstanceOf(ReservationPasswordException.class);
     }
 
@@ -1120,7 +1118,7 @@ class GuestReservationServiceTest extends ServiceTest {
         //then
         assertThatThrownBy(() -> reservationService.updateReservation(
                 reservationUpdateDto,
-                guestReservationStrategy))
+                UserType.GUEST))
                 .isInstanceOf(ReservationAlreadyExistsException.class);
     }
 
@@ -1151,7 +1149,7 @@ class GuestReservationServiceTest extends ServiceTest {
         //then
         assertThatThrownBy(() -> reservationService.updateReservation(
                 reservationUpdateDto,
-                guestReservationStrategy))
+                UserType.GUEST))
                 .isInstanceOf(InvalidStartEndTimeException.class);
     }
 
@@ -1195,7 +1193,7 @@ class GuestReservationServiceTest extends ServiceTest {
         // then
         assertThatThrownBy(() -> reservationService.updateReservation(
                 reservationUpdateDto,
-                guestReservationStrategy))
+                UserType.GUEST))
                 .isInstanceOf(InvalidReservationEnableException.class);
     }
 
@@ -1239,7 +1237,7 @@ class GuestReservationServiceTest extends ServiceTest {
         // then
         assertThatThrownBy(() -> reservationService.updateReservation(
                 reservationUpdateDto,
-                guestReservationStrategy))
+                UserType.GUEST))
                 .isInstanceOf(NoSettingAvailableException.class);
     }
 
@@ -1267,7 +1265,7 @@ class GuestReservationServiceTest extends ServiceTest {
         //then
         assertDoesNotThrow(() -> reservationService.deleteReservation(
                 reservationAuthenticationDto,
-                guestReservationStrategy));
+                UserType.GUEST));
     }
 
     @Test
@@ -1290,7 +1288,7 @@ class GuestReservationServiceTest extends ServiceTest {
         //then
         assertThatThrownBy(() -> reservationService.deleteReservation(
                 reservationAuthenticationDto,
-                guestReservationStrategy))
+                UserType.GUEST))
                 .isInstanceOf(NoSuchReservationException.class);
     }
 
@@ -1320,7 +1318,7 @@ class GuestReservationServiceTest extends ServiceTest {
         //then
         assertThatThrownBy(() -> reservationService.deleteReservation(
                 reservationAuthenticationDto,
-                guestReservationStrategy))
+                UserType.GUEST))
                 .isInstanceOf(ReservationPasswordException.class);
     }
 
@@ -1350,7 +1348,7 @@ class GuestReservationServiceTest extends ServiceTest {
         //then
         assertThatThrownBy(() -> reservationService.deleteReservation(
                 reservationAuthenticationDto,
-                guestReservationStrategy))
+                UserType.GUEST))
                 .isInstanceOf(DeleteExpiredReservationException.class);
     }
 
