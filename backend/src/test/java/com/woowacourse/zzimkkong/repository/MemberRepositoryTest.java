@@ -21,7 +21,7 @@ class MemberRepositoryTest extends RepositoryTest {
 
     @BeforeEach
     void setUp() {
-        pobi = new Member(EMAIL, PW, ORGANIZATION);
+        pobi = new Member(EMAIL, USER_NAME, PW, ORGANIZATION);
     }
 
     @Test
@@ -66,7 +66,7 @@ class MemberRepositoryTest extends RepositoryTest {
         members.save(pobi);
 
         // when
-        Member sameEmailMember = new Member(EMAIL, "another123", "루터회관");
+        Member sameEmailMember = new Member(EMAIL, "삭정", "another123", "루터회관");
 
         // then
         assertThatThrownBy(() -> members.save(sameEmailMember))

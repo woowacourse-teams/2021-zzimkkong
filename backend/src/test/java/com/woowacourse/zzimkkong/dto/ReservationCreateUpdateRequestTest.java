@@ -53,7 +53,7 @@ class ReservationCreateUpdateRequestTest extends RequestTest {
                 "description");
 
         assertThat(getConstraintViolations(nameRequest).stream()
-                .anyMatch(violation -> violation.getMessage().equals(EMPTY_MESSAGE)))
+                .anyMatch(violation -> violation.getMessage().equals(NAME_MESSAGE)))
                 .isTrue();
     }
 

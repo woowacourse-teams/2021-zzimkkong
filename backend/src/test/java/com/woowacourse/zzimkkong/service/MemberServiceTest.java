@@ -38,9 +38,10 @@ class MemberServiceTest extends ServiceTest {
     @DisplayName("회원이 올바르게 저장을 요청하면 저장한다.")
     void saveMember() {
         //given
-        MemberSaveRequest memberSaveRequest = new MemberSaveRequest(EMAIL, PW, ORGANIZATION);
+        MemberSaveRequest memberSaveRequest = new MemberSaveRequest(EMAIL, USER_NAME, PW, ORGANIZATION);
         Member member = new Member(
                 memberSaveRequest.getEmail(),
+                memberSaveRequest.getUserName(),
                 memberSaveRequest.getPassword(),
                 memberSaveRequest.getOrganization()
         );
@@ -49,6 +50,7 @@ class MemberServiceTest extends ServiceTest {
         Member savedMember = new Member(
                 1L,
                 member.getEmail(),
+                member.getUserName(),
                 member.getPassword(),
                 member.getOrganization());
 
@@ -65,7 +67,7 @@ class MemberServiceTest extends ServiceTest {
     @DisplayName("회원이 중복된 이메일로 저장을 요청하면 오류가 발생한다.")
     void saveMemberException() {
         //given
-        MemberSaveRequest memberSaveRequest = new MemberSaveRequest(EMAIL, PW, ORGANIZATION);
+        MemberSaveRequest memberSaveRequest = new MemberSaveRequest(EMAIL, USER_NAME, PW, ORGANIZATION);
 
         //when
         given(members.existsByEmail(anyString()))
@@ -81,9 +83,10 @@ class MemberServiceTest extends ServiceTest {
     @DisplayName("소셜 로그인을 이용해 회원가입한다.")
     void saveMemberByOauth(String oauth) {
         //given
-        OauthMemberSaveRequest oauthMemberSaveRequest = new OauthMemberSaveRequest(EMAIL, ORGANIZATION, oauth);
+        OauthMemberSaveRequest oauthMemberSaveRequest = new OauthMemberSaveRequest(EMAIL, USER_NAME, ORGANIZATION, oauth);
         Member member = new Member(
                 oauthMemberSaveRequest.getEmail(),
+                oauthMemberSaveRequest.getUserName(),
                 oauthMemberSaveRequest.getOrganization(),
                 oauthMemberSaveRequest.getOauthProvider()
         );
@@ -94,6 +97,7 @@ class MemberServiceTest extends ServiceTest {
         Member savedMember = new Member(
                 1L,
                 member.getEmail(),
+                member.getUserName(),
                 member.getOrganization(),
                 member.getOauthProvider());
         given(members.save(any(Member.class)))
@@ -111,7 +115,7 @@ class MemberServiceTest extends ServiceTest {
     @DisplayName("이미 존재하는 이메일로 소셜 로그인을 이용해 회원가입하면 에러가 발생한다.")
     void saveMemberByOauthException(String oauth) {
         //given
-        OauthMemberSaveRequest oauthMemberSaveRequest = new OauthMemberSaveRequest(EMAIL, ORGANIZATION, oauth);
+        OauthMemberSaveRequest oauthMemberSaveRequest = new OauthMemberSaveRequest(EMAIL, USER_NAME, ORGANIZATION, oauth);
 
         //when
         given(members.existsByEmail(anyString()))
@@ -127,8 +131,8 @@ class MemberServiceTest extends ServiceTest {
     void updateMember() {
         // given
         LoginUserEmail loginUserEmail = LoginUserEmail.from(EMAIL);
-        Member member = new Member(EMAIL, PW, ORGANIZATION);
-        MemberUpdateRequest memberUpdateRequest = new MemberUpdateRequest("woowabros");
+        Member member = new Member(EMAIL, USER_NAME, PW, ORGANIZATION);
+        MemberUpdateRequest memberUpdateRequest = new MemberUpdateRequest("woowabros", "sakjung");
 
         given(members.findByEmail(anyString()))
                 .willReturn(Optional.of(member));
@@ -137,6 +141,7 @@ class MemberServiceTest extends ServiceTest {
         memberService.updateMember(loginUserEmail, memberUpdateRequest);
 
         assertThat(members.findByEmail(EMAIL).orElseThrow().getOrganization()).isEqualTo("woowabros");
+        assertThat(members.findByEmail(EMAIL).orElseThrow().getUserName()).isEqualTo("sakjung");
     }
 
     @Test
@@ -144,7 +149,7 @@ class MemberServiceTest extends ServiceTest {
     void deleteMember() {
         // given
         LoginUserEmail loginUserEmail = LoginUserEmail.from(EMAIL);
-        Member pobi = new Member(EMAIL, PW, ORGANIZATION);
+        Member pobi = new Member(EMAIL, USER_NAME, PW, ORGANIZATION);
         given(members.findByEmail(anyString()))
                 .willReturn(Optional.of(pobi));
         given(reservations.existsByMemberAndEndTimeAfter(any(Member.class), any(LocalDateTime.class)))
@@ -159,7 +164,7 @@ class MemberServiceTest extends ServiceTest {
     void deleteMemberFailWhenAnyReservationsExists() {
         // given
         LoginUserEmail loginUserEmail = LoginUserEmail.from(EMAIL);
-        Member pobi = new Member(EMAIL, PW, ORGANIZATION);
+        Member pobi = new Member(EMAIL, USER_NAME, PW, ORGANIZATION);
         given(members.findByEmail(anyString()))
                 .willReturn(Optional.of(pobi));
         given(reservations.existsByMemberAndEndTimeAfter(any(Member.class), any(LocalDateTime.class)))

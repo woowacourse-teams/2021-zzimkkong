@@ -20,7 +20,7 @@ class PresetRepositoryTest extends RepositoryTest {
 
     @BeforeEach
     void setUp() {
-        Member pobi = new Member(EMAIL, PW, ORGANIZATION);
+        Member pobi = new Member(EMAIL, USER_NAME, PW, ORGANIZATION);
         members.save(pobi);
 
         preset = Preset.builder()

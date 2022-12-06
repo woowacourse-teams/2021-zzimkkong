@@ -27,7 +27,7 @@ class ReservationCreateUpdateWithPasswordRequestTest extends RequestTest {
                 "description");
 
         assertThat(getConstraintViolations(reservationCreateUpdateWithPasswordRequest).stream()
-                .anyMatch(violation -> violation.getMessage().equals(EMPTY_MESSAGE)))
+                .anyMatch(violation -> violation.getMessage().equals(RESERVATION_PW_MESSAGE)))
                 .isTrue();
     }
 

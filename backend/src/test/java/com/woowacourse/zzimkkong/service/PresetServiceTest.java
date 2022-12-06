@@ -60,7 +60,7 @@ class PresetServiceTest extends ServiceTest {
 
     @BeforeEach
     void setUp() {
-        pobi = new Member(1L, EMAIL, PW, ORGANIZATION);
+        pobi = new Member(1L, USER_NAME, EMAIL, PW, ORGANIZATION);
         pobiEmail = LoginUserEmail.from(EMAIL);
     }
 
@@ -164,8 +164,9 @@ class PresetServiceTest extends ServiceTest {
                 .enabledDayOfWeek(setting.getEnabledDayOfWeek())
                 .member(pobi)
                 .build();
+
         LoginUserEmail anotherEmail = LoginUserEmail.from(NEW_EMAIL);
-        Member anotherMember = new Member(NEW_EMAIL, PW, ORGANIZATION);
+        Member anotherMember = new Member(NEW_EMAIL, USER_NAME, PW, ORGANIZATION);
 
         given(members.findByEmailWithFetchPresets(anyString()))
                 .willReturn(Optional.of(anotherMember));

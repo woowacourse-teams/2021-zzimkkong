@@ -22,7 +22,7 @@ public class ReservationPasswordValidator implements ConstraintValidator<Reserva
 
     @Override
     public boolean isValid(final String value, final ConstraintValidatorContext context) {
-        if (AuthorizationExtractor.hasAccessToken(request)) {
+        if (request != null && AuthorizationExtractor.hasAccessToken(request)) {
             return true;
         }
 

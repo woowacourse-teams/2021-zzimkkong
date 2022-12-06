@@ -15,7 +15,7 @@ class OauthMemberSaveRequestTest extends RequestTest {
     @NullAndEmptySource
     @DisplayName("oauth 회원가입 이메일에 빈 문자열이 들어오면 처리한다.")
     void blankEmail(String email) {
-        OauthMemberSaveRequest oauthMemberSaveRequest = new OauthMemberSaveRequest(email, "ORGANIZTION", "GOOGLE");
+        OauthMemberSaveRequest oauthMemberSaveRequest = new OauthMemberSaveRequest(email, "sakjung", "ORGANIZTION", "GOOGLE");
 
         assertThat(getConstraintViolations(oauthMemberSaveRequest).stream()
                 .anyMatch(violation -> violation.getMessage().equals(EMPTY_MESSAGE)))
@@ -26,7 +26,7 @@ class OauthMemberSaveRequestTest extends RequestTest {
     @CsvSource(value = {"email:true", "email@email:false", "email@email.com:false"}, delimiter = ':')
     @DisplayName("oauth 회원가입 이메일에 옳지 않은 이메일 형식의 문자열이 들어오면 처리한다.")
     void invalidEmail(String email, boolean flag) {
-        OauthMemberSaveRequest oauthMemberSaveRequest = new OauthMemberSaveRequest(email, "ORGANIZTION", "GOOGLE");
+        OauthMemberSaveRequest oauthMemberSaveRequest = new OauthMemberSaveRequest(email, "sakjung", "ORGANIZTION", "GOOGLE");
 
         assertThat(getConstraintViolations(oauthMemberSaveRequest).stream()
                 .anyMatch(violation -> violation.getMessage().equals(EMAIL_MESSAGE)))
@@ -37,7 +37,7 @@ class OauthMemberSaveRequestTest extends RequestTest {
     @NullSource
     @DisplayName("회원가입 조직명에 빈 문자열이 들어오면 처리한다.")
     void blankOrganization(String organization) {
-        OauthMemberSaveRequest oauthMemberSaveRequest = new OauthMemberSaveRequest("email@email.com", organization, "GOOGLE");
+        OauthMemberSaveRequest oauthMemberSaveRequest = new OauthMemberSaveRequest("email@email.com", "sakjung", organization, "GOOGLE");
 
         assertThat(getConstraintViolations(oauthMemberSaveRequest).stream()
                 .anyMatch(violation -> violation.getMessage().equals(EMPTY_MESSAGE)))
@@ -48,7 +48,7 @@ class OauthMemberSaveRequestTest extends RequestTest {
     @CsvSource(value = {"hihellomorethantwenty:true", "한글조직:false", "hihello:false", "안 녕 하 세 요:false", "ㄱㄴ 힣 ㄷㄹ:false"}, delimiter = ':')
     @DisplayName("회원가입 조직명에 옳지 않은 형식의 문자열이 들어오면 처리한다.")
     void invalidOrganization(String organization, boolean flag) {
-        OauthMemberSaveRequest oauthMemberSaveRequest = new OauthMemberSaveRequest("email@email.com", organization, "GOOGLE");
+        OauthMemberSaveRequest oauthMemberSaveRequest = new OauthMemberSaveRequest("email@email.com", "sakjung", organization, "GOOGLE");
 
         assertThat(getConstraintViolations(oauthMemberSaveRequest).stream()
                 .anyMatch(violation -> violation.getMessage().equals(ORGANIZATION_MESSAGE)))
@@ -59,7 +59,7 @@ class OauthMemberSaveRequestTest extends RequestTest {
     @NullSource
     @DisplayName("회원가입한 oauth 제공사에 빈 문자열이 들어오면 처리한다.")
     void blankOauthProvider(String oauthProvider) {
-        OauthMemberSaveRequest oauthMemberSaveRequest = new OauthMemberSaveRequest("email@email.com", "organization", oauthProvider);
+        OauthMemberSaveRequest oauthMemberSaveRequest = new OauthMemberSaveRequest("email@email.com",  "sakjung", "organization", oauthProvider);
 
         assertThat(getConstraintViolations(oauthMemberSaveRequest).stream()
                 .anyMatch(violation -> violation.getMessage().equals(EMPTY_MESSAGE)))

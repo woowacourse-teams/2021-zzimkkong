@@ -37,7 +37,7 @@ class AuthServiceTest extends ServiceTest {
 
     @BeforeEach
     void setUp() {
-        pobi = new Member(EMAIL, passwordEncoder.encode(PW), ORGANIZATION);
+        pobi = new Member(EMAIL, USER_NAME, passwordEncoder.encode(PW), ORGANIZATION);
     }
 
     @MockBean
@@ -88,7 +88,7 @@ class AuthServiceTest extends ServiceTest {
 
         //when
         given(members.findByEmail(anyString()))
-                .willReturn(Optional.of(new Member(EMAIL, passwordEncoder.encode("wrong_password"), ORGANIZATION)));
+                .willReturn(Optional.of(new Member(EMAIL, USER_NAME, passwordEncoder.encode("wrong_password"), ORGANIZATION)));
 
         //then
         assertThatThrownBy(() -> authService.login(loginRequest))
@@ -108,7 +108,7 @@ class AuthServiceTest extends ServiceTest {
         given(mockOauthUserInfo.getEmail())
                 .willReturn(EMAIL);
         given(members.findByEmail(EMAIL))
-                .willReturn(Optional.of(new Member(EMAIL, ORGANIZATION, oauthProvider)));
+                .willReturn(Optional.of(new Member(EMAIL, USER_NAME, ORGANIZATION, oauthProvider)));
 
         // when
         TokenResponse tokenResponse = authService.loginByOauth(oauthProvider, mockCode);
@@ -160,7 +160,7 @@ class AuthServiceTest extends ServiceTest {
         given(mockOauthUserInfo.getEmail())
                 .willReturn(EMAIL);
         given(members.findByEmail(EMAIL))
-                .willReturn(Optional.of(new Member(EMAIL, ORGANIZATION, actualOauthProvider)));
+                .willReturn(Optional.of(new Member(EMAIL, USER_NAME, ORGANIZATION, actualOauthProvider)));
 
         // when, then
         assertThatThrownBy(() -> authService.loginByOauth(oauthProvider, mockCode))

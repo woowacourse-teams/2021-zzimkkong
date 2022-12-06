@@ -17,7 +17,7 @@ class ReservationRepositoryImplTest extends RepositoryTest {
     @DisplayName("멤버를 이용해 오늘 이후의 예약이 존재하는지 확인할 수 있다.")
     void existsReservationsByMember(boolean isReservationExists) {
         // given
-        Member sakjung = new Member(NEW_EMAIL, PW, ORGANIZATION);
+        Member sakjung = new Member(NEW_EMAIL, USER_NAME, PW, ORGANIZATION);
         Member savedMember = members.save(sakjung);
 
         Map luther = new Map(LUTHER_NAME, MAP_DRAWING_DATA, MAP_SVG, savedMember);

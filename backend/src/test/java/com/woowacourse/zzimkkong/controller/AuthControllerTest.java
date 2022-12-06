@@ -17,8 +17,7 @@ import org.springframework.http.MediaType;
 
 import java.util.Map;
 
-import static com.woowacourse.zzimkkong.Constants.NEW_EMAIL;
-import static com.woowacourse.zzimkkong.Constants.ORGANIZATION;
+import static com.woowacourse.zzimkkong.Constants.*;
 import static com.woowacourse.zzimkkong.DocumentUtils.*;
 import static com.woowacourse.zzimkkong.controller.MemberControllerTest.saveMember;
 import static com.woowacourse.zzimkkong.controller.MemberControllerTest.saveMemberByOauth;
@@ -49,7 +48,7 @@ class AuthControllerTest extends AcceptanceTest {
     void loginByGithubOauth() {
         // given
         OauthProvider oauthProvider = OauthProvider.GITHUB;
-        saveMemberByOauth(new OauthMemberSaveRequest(NEW_EMAIL, ORGANIZATION, oauthProvider.name()));
+        saveMemberByOauth(new OauthMemberSaveRequest(NEW_EMAIL, NEW_USER_NAME, ORGANIZATION, oauthProvider.name()));
         String code = "example-code";
 
         given(githubRequester.supports(OauthProvider.GITHUB))
@@ -72,7 +71,7 @@ class AuthControllerTest extends AcceptanceTest {
     void loginByGoogleOauth() {
         // given
         OauthProvider oauthProvider = OauthProvider.GOOGLE;
-        saveMemberByOauth(new OauthMemberSaveRequest(NEW_EMAIL, ORGANIZATION, oauthProvider.name()));
+        saveMemberByOauth(new OauthMemberSaveRequest(NEW_EMAIL, NEW_USER_NAME, ORGANIZATION, oauthProvider.name()));
         String code = "example-code";
 
         given(googleRequester.supports(any(OauthProvider.class)))

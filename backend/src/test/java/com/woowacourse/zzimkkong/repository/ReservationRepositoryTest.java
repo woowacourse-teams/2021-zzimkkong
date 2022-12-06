@@ -35,7 +35,7 @@ class ReservationRepositoryTest extends RepositoryTest {
 
     @BeforeEach
     void setUp() {
-        pobi = new Member(EMAIL, PW, ORGANIZATION);
+        pobi = new Member(EMAIL, USER_NAME, PW, ORGANIZATION);
         Map luther = new Map(LUTHER_NAME, MAP_DRAWING_DATA, MAP_SVG, pobi);
 
         Setting beSetting = Setting.builder()
@@ -189,7 +189,7 @@ class ReservationRepositoryTest extends RepositoryTest {
         // then
         assertThat(foundReservations).usingRecursiveComparison()
                 .ignoringCollectionOrder()
-                .isEqualTo(List.of(beAmZeroOne, beNextDayAmSixTwelve, bePmOneTwo, fe1ZeroOne));
+                .isEqualTo(List.of(beAmZeroOne, beNextDayAmSixTwelve, bePmOneTwo, fe1ZeroOne, bePmTwoThreeByPobi, beYesterdayPmTwoThreeByPobi));
     }
 
     @Test
@@ -247,9 +247,9 @@ class ReservationRepositoryTest extends RepositoryTest {
 
         // then
         assertThat(actual.getSize()).isEqualTo(20);
-        assertThat(actual.getContent()).hasSize(4);
+        assertThat(actual.getContent()).hasSize(6);
         assertThat(actual.getContent()).usingRecursiveComparison()
-                .isEqualTo(List.of(beAmZeroOne, bePmOneTwo, beNextDayAmSixTwelve, fe1ZeroOne));
+                .isEqualTo(List.of(beAmZeroOne, bePmOneTwo, beNextDayAmSixTwelve, fe1ZeroOne, bePmTwoThreeByPobi, beYesterdayPmTwoThreeByPobi));
     }
 
     private List<Reservation> getReservations(List<Long> spaceIds, LocalDate date) {
@@ -276,6 +276,6 @@ class ReservationRepositoryTest extends RepositoryTest {
         Slice<Reservation> actual = reservations.findAllByMemberAndReservationTimeDateLessThanEqual(pobi, THE_DAY_AFTER_TOMORROW, pageRequest);
 
         List<Reservation> expectedContent = List.of(bePmTwoThreeByPobi, beYesterdayPmTwoThreeByPobi);
-        assertThat(actual.getContent()).isEqualTo(expectedContent);
+        assertThat(actual.getContent()).containsExactlyInAnyOrderElementsOf(expectedContent);
     }
 }

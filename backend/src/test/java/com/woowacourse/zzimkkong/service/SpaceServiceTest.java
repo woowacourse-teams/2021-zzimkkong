@@ -70,8 +70,8 @@ class SpaceServiceTest extends ServiceTest {
 
     @BeforeEach
     void setUp() {
-        pobi = new Member(EMAIL, PW, ORGANIZATION);
-        sakjung = new Member(NEW_EMAIL, PW, ORGANIZATION);
+        pobi = new Member(EMAIL, USER_NAME, PW, ORGANIZATION);
+        sakjung = new Member(NEW_EMAIL, USER_NAME, PW, ORGANIZATION);
         pobiEmail = LoginUserEmail.from(EMAIL);
         sakjungEmail = LoginUserEmail.from(NEW_EMAIL);
         luther = new Map(1L, LUTHER_NAME, MAP_DRAWING_DATA, MAP_SVG, pobi);
