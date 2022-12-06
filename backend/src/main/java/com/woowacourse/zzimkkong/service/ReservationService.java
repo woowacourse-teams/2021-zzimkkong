@@ -149,32 +149,17 @@ public class ReservationService {
                 .orElseThrow(NoSuchMapException::new);
         reservationStrategy.validateManagerOfMap(map, loginUserEmail);
 
-        Long spaceId = reservationUpdateDto.getSpaceId();
-        Space space = map.findSpaceById(spaceId)
-                .orElseThrow(NoSuchSpaceException::new);
-
-        ReservationTime reservationTime = ReservationTime.of(
-                reservationUpdateDto.getStartDateTime(),
-                reservationUpdateDto.getEndDateTime(),
-                map.getServiceZone(),
-                reservationStrategy.isManager());
-
         Long reservationId = reservationUpdateDto.getReservationId();
         Reservation reservation = reservations
                 .findById(reservationId)
                 .orElseThrow(NoSuchReservationException::new);
         reservationStrategy.validateOwnerOfReservation(reservation, reservationUpdateDto.getPassword(), loginUserEmail);
 
-        Reservation updateReservation = Reservation.builder()
-                .reservationTime(reservationTime)
-                .userName(reservationUpdateDto.getName())
-                .description(reservationUpdateDto.getDescription())
-                .space(space)
-                .build();
+        Reservation updateReservation = reservationStrategy.createReservation(map, reservationUpdateDto);
 
         validateAvailability(updateReservation, new ExcludeReservationUpdateStrategy(reservation));
 
-        reservation.update(updateReservation, space);
+        reservation.update(updateReservation);
 
         String sharingMapId = sharingIdGenerator.from(map);
         return SlackResponse.of(reservation, sharingMapId, map.getSlackUrl());

@@ -70,11 +70,12 @@ public class Reservation {
         return !this.password.equals(password);
     }
 
-    public void update(final Reservation updateReservation, final Space space) {
+    public void update(final Reservation updateReservation) {
         this.reservationTime = updateReservation.reservationTime;
+        this.member = updateReservation.member;
         this.userName = updateReservation.userName;
         this.description = updateReservation.description;
-        this.space = space;
+        this.space = updateReservation.space;
     }
 
     public LocalDateTime getStartTime() {
@@ -114,5 +115,9 @@ public class Reservation {
             return true;
         }
         return !this.member.equals(thatMember);
+    }
+
+    public boolean hasNoMember() {
+        return this.member == null;
     }
 }

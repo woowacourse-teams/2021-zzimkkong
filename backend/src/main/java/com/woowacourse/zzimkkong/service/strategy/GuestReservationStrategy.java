@@ -2,7 +2,6 @@ package com.woowacourse.zzimkkong.service.strategy;
 
 import com.woowacourse.zzimkkong.domain.*;
 import com.woowacourse.zzimkkong.dto.member.LoginUserEmail;
-import com.woowacourse.zzimkkong.dto.reservation.ReservationAuthenticationDto;
 import com.woowacourse.zzimkkong.dto.reservation.ReservationCreateDto;
 import com.woowacourse.zzimkkong.exception.member.NoSuchMemberException;
 import com.woowacourse.zzimkkong.exception.reservation.ReservationOwnershipException;
@@ -28,6 +27,12 @@ public class GuestReservationStrategy extends ReservationStrategy {
 
     @Override
     public void validateOwnerOfReservation(final Reservation reservation, final String password, final LoginUserEmail loginUserEmail) {
+        if (reservation.hasNoMember()) {
+            if (reservation.isWrongPassword(password)) {
+                throw new ReservationPasswordException();
+            }
+            return;
+        }
         if (loginUserEmail.exists()) {
             Member member = members.findByEmail(loginUserEmail.getEmail())
                     .orElseThrow(NoSuchMemberException::new);
@@ -36,10 +41,7 @@ public class GuestReservationStrategy extends ReservationStrategy {
             }
             return;
         }
-
-        if (reservation.isWrongPassword(password)) {
-            throw new ReservationPasswordException();
-        }
+        throw new ReservationOwnershipException();
     }
 
     @Override
