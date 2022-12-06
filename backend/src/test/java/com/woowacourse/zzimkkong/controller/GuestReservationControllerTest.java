@@ -299,6 +299,7 @@ class GuestReservationControllerTest extends AcceptanceTest {
                 .isEqualTo(expectedResponse);
     }
 
+    //TODO: 완성하기 + REST DOCS 추가
     @Test
     @DisplayName("로그인 한 예약자가 다가오는 예약 내역을 조회할 떄, 해당 예약자가 예약한 내역들을 반환한다")
     void findAllUpcomingReservations() {

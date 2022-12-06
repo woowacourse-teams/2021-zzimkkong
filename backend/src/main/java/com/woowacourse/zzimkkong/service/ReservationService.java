@@ -58,32 +58,12 @@ public class ReservationService {
         ReservationStrategy reservationStrategy = reservationStrategies.getStrategyByUserType(userType);
 
         Long mapId = reservationCreateDto.getMapId();
-        LoginUserEmail loginUserEmail = reservationCreateDto.getLoginUserEmail();
-
         Map map = maps.findByIdFetch(mapId)
                 .orElseThrow(NoSuchMapException::new);
-        reservationStrategy.validateManagerOfMap(map, loginUserEmail);
 
-        // TODO: 어떻게 manager, guest를 나이스하게 분기할까
-        Long spaceId = reservationCreateDto.getSpaceId();
-        Space space = map.findSpaceById(spaceId)
-                .orElseThrow(NoSuchSpaceException::new);
+        Reservation reservation = reservationStrategy.createReservation(map, reservationCreateDto);
 
-        ReservationTime reservationTime = ReservationTime.of(
-                reservationCreateDto.getStartDateTime(),
-                reservationCreateDto.getEndDateTime(),
-                map.getServiceZone(),
-                reservationStrategy.isManager());
-
-        Reservation reservation = Reservation.builder()
-                .reservationTime(reservationTime)
-                .password(reservationCreateDto.getPassword())
-                .userName(reservationCreateDto.getName())
-                .description(reservationCreateDto.getDescription())
-                .space(space)
-                .build();
-
-        validateAvailability(space, reservation, new ExcludeReservationCreateStrategy());
+        validateAvailability(reservation, new ExcludeReservationCreateStrategy());
 
         Reservation savedReservation = reservations.save(reservation);
         String sharingMapId = sharingIdGenerator.from(map);
@@ -95,6 +75,7 @@ public class ReservationService {
             final ReservationFindAllDto reservationFindAllDto,
             final UserType userType) {
         ReservationStrategy reservationStrategy = reservationStrategies.getStrategyByUserType(userType);
+
         Long mapId = reservationFindAllDto.getMapId();
         LoginUserEmail loginUserEmail = reservationFindAllDto.getLoginUserEmail();
 
@@ -146,11 +127,13 @@ public class ReservationService {
         validateSpaceExistence(map, spaceId);
 
         Long reservationId = reservationAuthenticationDto.getReservationId();
-        String password = reservationAuthenticationDto.getPassword();
         Reservation reservation = reservations
                 .findById(reservationId)
                 .orElseThrow(NoSuchReservationException::new);
-        reservationStrategy.checkCorrectPassword(reservation, password);
+        reservationStrategy.validateOwnerOfReservation(
+                reservation,
+                reservationAuthenticationDto.getPassword(),
+                loginUserEmail);
 
         return ReservationResponse.from(reservation);
     }
@@ -177,12 +160,11 @@ public class ReservationService {
                 reservationStrategy.isManager());
 
         Long reservationId = reservationUpdateDto.getReservationId();
-        String password = reservationUpdateDto.getPassword();
-
         Reservation reservation = reservations
                 .findById(reservationId)
                 .orElseThrow(NoSuchReservationException::new);
-        reservationStrategy.checkCorrectPassword(reservation, password);
+        reservationStrategy.validateOwnerOfReservation(reservation, reservationUpdateDto.getPassword(), loginUserEmail);
+
         Reservation updateReservation = Reservation.builder()
                 .reservationTime(reservationTime)
                 .userName(reservationUpdateDto.getName())
@@ -190,7 +172,7 @@ public class ReservationService {
                 .space(space)
                 .build();
 
-        validateAvailability(space, updateReservation, new ExcludeReservationUpdateStrategy(reservation));
+        validateAvailability(updateReservation, new ExcludeReservationUpdateStrategy(reservation));
 
         reservation.update(updateReservation, space);
 
@@ -213,11 +195,13 @@ public class ReservationService {
         validateSpaceExistence(map, spaceId);
 
         Long reservationId = reservationAuthenticationDto.getReservationId();
-        String password = reservationAuthenticationDto.getPassword();
         Reservation reservation = reservations
                 .findById(reservationId)
                 .orElseThrow(NoSuchReservationException::new);
-        reservationStrategy.checkCorrectPassword(reservation, password);
+        reservationStrategy.validateOwnerOfReservation(
+                reservation,
+                reservationAuthenticationDto.getPassword(),
+                loginUserEmail);
 
         if (!reservationStrategy.isManager()) {
             validateDeletability(reservation);
@@ -241,9 +225,9 @@ public class ReservationService {
     }
 
     private void validateAvailability(
-            final Space space,
             final Reservation reservation,
             final ExcludeReservationStrategy excludeReservationStrategy) {
+        Space space = reservation.getSpace();
         validateSpaceSetting(space, reservation);
 
         List<Reservation> reservationsOnDate = getReservations(

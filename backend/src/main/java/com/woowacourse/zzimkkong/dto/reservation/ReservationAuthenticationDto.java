@@ -11,7 +11,7 @@ public class ReservationAuthenticationDto {
     private Long spaceId;
     private Long reservationId;
     private String password;
-    private LoginUserEmail loginUserEmail;
+    private LoginUserEmail loginUserEmail = new LoginUserEmail();
 
     private ReservationAuthenticationDto(
             final Long mapId,
