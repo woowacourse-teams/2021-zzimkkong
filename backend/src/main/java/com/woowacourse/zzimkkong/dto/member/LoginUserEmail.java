@@ -5,14 +5,14 @@ import lombok.NoArgsConstructor;
 
 @Getter
 @NoArgsConstructor
-public class LoginEmailDto {
+public class LoginUserEmail {
     private String email;
 
-    private LoginEmailDto(String email) {
+    private LoginUserEmail(String email) {
         this.email = email;
     }
 
-    public static LoginEmailDto from(String email) {
-        return new LoginEmailDto(email);
+    public static LoginUserEmail from(String email) {
+        return new LoginUserEmail(email);
     }
 }

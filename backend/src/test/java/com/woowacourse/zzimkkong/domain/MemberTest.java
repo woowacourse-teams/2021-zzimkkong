@@ -15,7 +15,7 @@ class MemberTest {
     @DisplayName("자신의 preset 중에 id가 같은 것을 반환한다.")
     void findPresetById() {
         //given, when
-        Member member = new Member(1L, EMAIL, PW, ORGANIZATION);
+        Member member = new Member(1L, EMAIL, USER_NAME, PW, ORGANIZATION);
         Preset preset = Preset.builder()
                 .id(1L)
                 .name(PRESET_NAME1)
@@ -39,7 +39,7 @@ class MemberTest {
     @CsvSource(value = {"pobi@email.com, true", "wrongemail@woowa.com, false"}, delimiter = ',')
     void isSameEmail(String email, boolean expected) {
         // given
-        Member member = new Member(1L, EMAIL, PW, ORGANIZATION);
+        Member member = new Member(1L, EMAIL, USER_NAME, PW, ORGANIZATION);
 
         // when
         boolean actual = member.isSameEmail(email);

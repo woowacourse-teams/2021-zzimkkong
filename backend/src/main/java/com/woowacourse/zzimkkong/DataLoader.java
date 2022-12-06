@@ -40,6 +40,7 @@ public class DataLoader implements CommandLineRunner {
 
         Member pobi = members.save(
                 new Member("pobi@woowa.com",
+                        "pobi",
                         "$2a$10$c3BysogWR4hnexYx60/r/e3lEUIbSs4zhW6kuX4UW733MW5/NmbW.", // test1234 입니다.
                         "woowacourse")
         );

@@ -17,6 +17,10 @@ public class OauthMemberSaveRequest {
     @Email(message = EMAIL_MESSAGE)
     private String email;
 
+    @NotBlank(message = EMPTY_MESSAGE)
+    @Pattern(regexp = NAMING_FORMAT, message = NAME_MESSAGE)
+    private String userName;
+
     @NotNull(message = EMPTY_MESSAGE)
     @Pattern(regexp = ORGANIZATION_FORMAT, message = ORGANIZATION_MESSAGE)
     private String organization;
@@ -25,9 +29,11 @@ public class OauthMemberSaveRequest {
     private String oauthProvider;
 
     public OauthMemberSaveRequest(final String email,
+                                  final String userName,
                                   final String organization,
                                   final String oauthProvider) {
         this.email = email;
+        this.userName = userName;
         this.organization = organization;
         this.oauthProvider = oauthProvider;
     }

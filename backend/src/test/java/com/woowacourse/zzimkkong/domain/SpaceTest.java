@@ -37,7 +37,7 @@ class SpaceTest {
 
     @Test
     void update() {
-        Member member = new Member(EMAIL, PW, ORGANIZATION);
+        Member member = new Member(EMAIL, USER_NAME, PW, ORGANIZATION);
         Map map = new Map(LUTHER_NAME, MAP_DRAWING_DATA, MAP_SVG, member);
 
         Setting setting = Setting.builder()

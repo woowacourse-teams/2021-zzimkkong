@@ -21,7 +21,7 @@ class PresetTest {
     @DisplayName("preset이 생성되면 member의 preset을 추가한다.")
     void addPreset() {
         //given
-        Member member = new Member(1L, EMAIL, PW, ORGANIZATION);
+        Member member = new Member(1L, EMAIL, USER_NAME, PW, ORGANIZATION);
 
         //when
         assertThat(member.getPresets().size()).isZero();
@@ -45,8 +45,8 @@ class PresetTest {
     @DisplayName("preset의 member가 동일하다면 false, 그렇지 않다면 true를 반환한다.")
     void isNotOwnedBy() {
         //given
-        Member member = new Member(EMAIL, PW, ORGANIZATION);
-        Member another = new Member("another@email.com", PW, ORGANIZATION);
+        Member member = new Member(EMAIL, USER_NAME, PW, ORGANIZATION);
+        Member another = new Member("another@email.com", USER_NAME, PW, ORGANIZATION);
 
         Preset preset = Preset.builder()
                 .name(PRESET_NAME1)
@@ -67,7 +67,7 @@ class PresetTest {
     @DisplayName("preset의 id가 동일하다면 true, 그렇지 않다면 false를 반환한다.")
     void hasSameId() {
         //given
-        Member member = new Member(EMAIL, PW, ORGANIZATION);
+        Member member = new Member(EMAIL, USER_NAME, PW, ORGANIZATION);
         long presetId = 1L;
         Preset preset = Preset.builder()
                 .id(presetId)

@@ -38,7 +38,7 @@ class MemberControllerTest extends AcceptanceTest {
 
     @BeforeEach
     void setUp() {
-        pobi = new Member(EMAIL, passwordEncoder.encode(PW), ORGANIZATION);
+        pobi = new Member(EMAIL, USER_NAME, passwordEncoder.encode(PW), ORGANIZATION);
         setting = Setting.builder()
                 .settingTimeSlot(TimeSlot.of(
                         BE_AVAILABLE_START_TIME,
@@ -64,7 +64,7 @@ class MemberControllerTest extends AcceptanceTest {
     @DisplayName("정상적인 회원가입 입력이 들어오면 회원 정보를 저장한다.")
     void join() {
         //given
-        MemberSaveRequest newMemberSaveRequest = new MemberSaveRequest(NEW_EMAIL, PW, ORGANIZATION);
+        MemberSaveRequest newMemberSaveRequest = new MemberSaveRequest(NEW_EMAIL, NEW_USER_NAME, PW, ORGANIZATION);
 
         // when
         ExtractableResponse<Response> response = saveMember(newMemberSaveRequest);
@@ -78,7 +78,7 @@ class MemberControllerTest extends AcceptanceTest {
     @DisplayName("Oauth을 이용해 회원가입한다.")
     void joinByOauth(String oauth) {
         // given
-        OauthMemberSaveRequest oauthMemberSaveRequest = new OauthMemberSaveRequest(NEW_EMAIL, ORGANIZATION, oauth);
+        OauthMemberSaveRequest oauthMemberSaveRequest = new OauthMemberSaveRequest(NEW_EMAIL, NEW_USER_NAME, ORGANIZATION, oauth);
 
         // when
         ExtractableResponse<Response> response = saveMemberByOauth(oauthMemberSaveRequest);
@@ -91,7 +91,7 @@ class MemberControllerTest extends AcceptanceTest {
     @DisplayName("이메일 중복 확인 시, 중복되지 않은 이메일을 입력하면 통과한다.")
     void getMembers() {
         //given
-        MemberSaveRequest newMemberSaveRequest = new MemberSaveRequest(NEW_EMAIL, PW, ORGANIZATION);
+        MemberSaveRequest newMemberSaveRequest = new MemberSaveRequest(NEW_EMAIL, USER_NAME, PW, ORGANIZATION);
         saveMember(newMemberSaveRequest);
 
         // when
@@ -183,7 +183,7 @@ class MemberControllerTest extends AcceptanceTest {
     @DisplayName("유저는 자신의 정보를 수정할 수 있다.")
     void updateMe() {
         // given
-        MemberUpdateRequest memberUpdateRequest = new MemberUpdateRequest("woowabros");
+        MemberUpdateRequest memberUpdateRequest = new MemberUpdateRequest("woowabros", "sakjung");
 
         // when
         ExtractableResponse<Response> response = updateMyInfo(memberUpdateRequest);
@@ -192,6 +192,7 @@ class MemberControllerTest extends AcceptanceTest {
         MemberFindResponse afterUpdate = findMyInfo().as(MemberFindResponse.class);
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
         assertThat(afterUpdate.getOrganization()).isEqualTo("woowabros");
+        assertThat(afterUpdate.getUserName()).isEqualTo("sakjung");
     }
 
     @Test

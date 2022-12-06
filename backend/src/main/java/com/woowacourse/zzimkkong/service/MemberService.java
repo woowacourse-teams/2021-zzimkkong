@@ -5,6 +5,7 @@ import com.woowacourse.zzimkkong.domain.OauthProvider;
 import com.woowacourse.zzimkkong.dto.member.*;
 import com.woowacourse.zzimkkong.dto.member.oauth.OauthMemberSaveRequest;
 import com.woowacourse.zzimkkong.exception.member.DuplicateEmailException;
+import com.woowacourse.zzimkkong.exception.member.DuplicateUserNameException;
 import com.woowacourse.zzimkkong.exception.member.NoSuchMemberException;
 import com.woowacourse.zzimkkong.exception.member.ReservationExistsOnMemberException;
 import com.woowacourse.zzimkkong.repository.MemberRepository;
@@ -32,10 +33,12 @@ public class MemberService {
 
     public MemberSaveResponse saveMember(final MemberSaveRequest memberSaveRequest) {
         validateDuplicateEmail(memberSaveRequest.getEmail());
+        validateDuplicateUserName(memberSaveRequest.getUserName());
 
         String password = passwordEncoder.encode(memberSaveRequest.getPassword());
         Member member = new Member(
                 memberSaveRequest.getEmail(),
+                memberSaveRequest.getUserName(),
                 password,
                 memberSaveRequest.getOrganization()
         );
@@ -48,12 +51,13 @@ public class MemberService {
         OauthProvider oauthProvider = OauthProvider.valueOfWithIgnoreCase(oauthMemberSaveRequest.getOauthProvider());
 
         validateDuplicateEmail(email);
+        validateDuplicateUserName(oauthMemberSaveRequest.getUserName());
 
         Member member = new Member(
                 email,
+                oauthMemberSaveRequest.getUserName(),
                 oauthMemberSaveRequest.getOrganization(),
-                oauthProvider
-        );
+                oauthProvider);
         Member saveMember = members.save(member);
         return MemberSaveResponse.from(saveMember);
     }
@@ -66,20 +70,30 @@ public class MemberService {
     }
 
     @Transactional(readOnly = true)
-    public MemberFindResponse findMember(final LoginEmailDto loginEmailDto) {
-        Member member = members.findByEmail(loginEmailDto.getEmail())
+    public void validateDuplicateUserName(final String userName) {
+        if (members.existsByUserName(userName)) {
+            throw new DuplicateUserNameException();
+        }
+    }
+
+    @Transactional(readOnly = true)
+    public MemberFindResponse findMember(final LoginUserEmail loginUserEmail) {
+        Member member = members.findByEmail(loginUserEmail.getEmail())
                 .orElseThrow(NoSuchMemberException::new);
         return MemberFindResponse.from(member);
     }
 
-    public void updateMember(final LoginEmailDto loginEmailDto, final MemberUpdateRequest memberUpdateRequest) {
-        Member member = members.findByEmail(loginEmailDto.getEmail())
+    public void updateMember(final LoginUserEmail loginUserEmail, final MemberUpdateRequest memberUpdateRequest) {
+        Member member = members.findByEmail(loginUserEmail.getEmail())
                 .orElseThrow(NoSuchMemberException::new);
-        member.update(memberUpdateRequest.getOrganization());
+
+        validateDuplicateUserName(memberUpdateRequest.getUserName());
+
+        member.update(memberUpdateRequest);
     }
 
-    public void deleteMember(final LoginEmailDto loginEmailDto) {
-        Member member = members.findByEmail(loginEmailDto.getEmail())
+    public void deleteMember(final LoginUserEmail loginUserEmail) {
+        Member member = members.findByEmail(loginUserEmail.getEmail())
                 .orElseThrow(NoSuchMemberException::new);
         boolean hasAnyReservations = reservations.existsByMemberAndEndTimeAfter(member, LocalDateTime.now());
         if (hasAnyReservations) {

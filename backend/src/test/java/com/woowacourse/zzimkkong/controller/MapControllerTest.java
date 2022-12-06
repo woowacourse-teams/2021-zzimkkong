@@ -41,7 +41,7 @@ class MapControllerTest extends AcceptanceTest {
         createdMapApi = saveMap(saveMapApi, mapCreateUpdateRequest).header("location");
 
         // For Test Comparison
-        pobi = new Member(EMAIL, passwordEncoder.encode(PW), ORGANIZATION);
+        pobi = new Member(EMAIL, USER_NAME, passwordEncoder.encode(PW), ORGANIZATION);
         luther = new Map(LUTHER_NAME, MAP_DRAWING_DATA, MAP_SVG, pobi);
         smallHouse = new Map(SMALL_HOUSE_NAME, MAP_DRAWING_DATA, MAP_SVG, pobi);
     }

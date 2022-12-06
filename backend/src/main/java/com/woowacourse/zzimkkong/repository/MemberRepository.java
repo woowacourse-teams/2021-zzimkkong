@@ -14,6 +14,8 @@ import java.util.Optional;
 public interface MemberRepository extends JpaRepository<Member, Long> {
     boolean existsByEmail(String email);
 
+    boolean existsByUserName(String userName);
+
     Optional<Member> findByEmail(String email);
 
     @Query("select distinct m from Member m left outer join fetch m.maps where m.email = :email")

@@ -10,7 +10,7 @@ import com.woowacourse.zzimkkong.dto.member.PresetFindAllResponse;
 import com.woowacourse.zzimkkong.dto.space.EnabledDayOfWeekDto;
 import com.woowacourse.zzimkkong.dto.space.SettingRequest;
 import com.woowacourse.zzimkkong.exception.preset.NoSuchPresetException;
-import com.woowacourse.zzimkkong.dto.member.LoginEmailDto;
+import com.woowacourse.zzimkkong.dto.member.LoginUserEmail;
 import com.woowacourse.zzimkkong.repository.PresetRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -56,12 +56,12 @@ class PresetServiceTest extends ServiceTest {
             .build();
 
     private Member pobi;
-    private LoginEmailDto pobiEmail;
+    private LoginUserEmail pobiEmail;
 
     @BeforeEach
     void setUp() {
-        pobi = new Member(1L, EMAIL, PW, ORGANIZATION);
-        pobiEmail = LoginEmailDto.from(EMAIL);
+        pobi = new Member(1L, USER_NAME, EMAIL, PW, ORGANIZATION);
+        pobiEmail = LoginUserEmail.from(EMAIL);
     }
 
     @Test
@@ -164,8 +164,9 @@ class PresetServiceTest extends ServiceTest {
                 .enabledDayOfWeek(setting.getEnabledDayOfWeek())
                 .member(pobi)
                 .build();
-        LoginEmailDto anotherEmail = LoginEmailDto.from(NEW_EMAIL);
-        Member anotherMember = new Member(NEW_EMAIL, PW, ORGANIZATION);
+
+        LoginUserEmail anotherEmail = LoginUserEmail.from(NEW_EMAIL);
+        Member anotherMember = new Member(NEW_EMAIL, USER_NAME, PW, ORGANIZATION);
 
         given(members.findByEmailWithFetchPresets(anyString()))
                 .willReturn(Optional.of(anotherMember));

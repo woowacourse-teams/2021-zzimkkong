@@ -1,7 +1,7 @@
 package com.woowacourse.zzimkkong.service;
 
 import com.woowacourse.zzimkkong.domain.*;
-import com.woowacourse.zzimkkong.dto.member.LoginEmailDto;
+import com.woowacourse.zzimkkong.dto.member.LoginUserEmail;
 import com.woowacourse.zzimkkong.dto.reservation.*;
 import com.woowacourse.zzimkkong.exception.authorization.NoAuthorityOnMapException;
 import com.woowacourse.zzimkkong.exception.map.NoSuchMapException;
@@ -45,7 +45,7 @@ class ManagerReservationServiceTest extends ServiceTest {
             THE_DAY_AFTER_TOMORROW.atTime(11, 0).atZone(ZoneId.of(ServiceZone.KOREA.getTimeZone())),
             THE_DAY_AFTER_TOMORROW.atTime(12, 0).atZone(ZoneId.of(ServiceZone.KOREA.getTimeZone())),
             RESERVATION_PW,
-            USER_NAME,
+            RESERVATION_USER_NAME,
             DESCRIPTION);
     private final ReservationCreateUpdateRequest reservationCreateUpdateRequest = new ReservationCreateUpdateRequest(
             THE_DAY_AFTER_TOMORROW.atTime(11, 0).atZone(ZoneId.of(ServiceZone.KOREA.getTimeZone())),
@@ -55,8 +55,8 @@ class ManagerReservationServiceTest extends ServiceTest {
 
     private Member pobi;
     private Member sakjung;
-    private LoginEmailDto pobiEmail;
-    private LoginEmailDto sakjungEmail;
+    private LoginUserEmail pobiEmail;
+    private LoginUserEmail sakjungEmail;
     private Map luther;
     private Space be;
     private Space fe;
@@ -71,10 +71,10 @@ class ManagerReservationServiceTest extends ServiceTest {
 
     @BeforeEach
     void setUp() {
-        pobi = new Member(EMAIL, PW, ORGANIZATION);
-        sakjung = new Member(NEW_EMAIL, PW, ORGANIZATION);
-        pobiEmail = LoginEmailDto.from(EMAIL);
-        sakjungEmail = LoginEmailDto.from(NEW_EMAIL);
+        pobi = new Member(EMAIL, USER_NAME, PW, ORGANIZATION);
+        sakjung = new Member(NEW_EMAIL, USER_NAME, PW, ORGANIZATION);
+        pobiEmail = LoginUserEmail.from(EMAIL);
+        sakjungEmail = LoginUserEmail.from(NEW_EMAIL);
         luther = new Map(1L, LUTHER_NAME, MAP_DRAWING_DATA, MAP_SVG, pobi);
 
         Setting beSetting = Setting.builder()
@@ -293,7 +293,7 @@ class ManagerReservationServiceTest extends ServiceTest {
                 THE_DAY_AFTER_TOMORROW.atTime(14, 0).atZone(ZoneId.of(ServiceZone.KOREA.getTimeZone())),
                 THE_DAY_AFTER_TOMORROW.atTime(13, 0).atZone(ZoneId.of(ServiceZone.KOREA.getTimeZone())),
                 RESERVATION_PW,
-                USER_NAME,
+                RESERVATION_USER_NAME,
                 DESCRIPTION);
 
         //when
@@ -321,7 +321,7 @@ class ManagerReservationServiceTest extends ServiceTest {
                 THE_DAY_AFTER_TOMORROW.atTime(10, 0).atZone(ZoneId.of(ServiceZone.KOREA.getTimeZone())),
                 THE_DAY_AFTER_TOMORROW.atTime(10, 0).atZone(ZoneId.of(ServiceZone.KOREA.getTimeZone())),
                 RESERVATION_PW,
-                USER_NAME,
+                RESERVATION_USER_NAME,
                 DESCRIPTION);
 
         //when
@@ -349,7 +349,7 @@ class ManagerReservationServiceTest extends ServiceTest {
                 THE_DAY_AFTER_TOMORROW.atTime(10, 0).atZone(ZoneId.of(ServiceZone.KOREA.getTimeZone())),
                 THE_DAY_AFTER_TOMORROW.atTime(10, 0).plusDays(1).atZone(ZoneId.of(ServiceZone.KOREA.getTimeZone())),
                 RESERVATION_PW,
-                USER_NAME,
+                RESERVATION_USER_NAME,
                 DESCRIPTION);
 
         //when

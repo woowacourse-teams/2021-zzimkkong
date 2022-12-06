@@ -1,7 +1,7 @@
 package com.woowacourse.zzimkkong.service;
 
 import com.woowacourse.zzimkkong.domain.*;
-import com.woowacourse.zzimkkong.dto.member.LoginEmailDto;
+import com.woowacourse.zzimkkong.dto.member.LoginUserEmail;
 import com.woowacourse.zzimkkong.dto.space.*;
 import com.woowacourse.zzimkkong.exception.authorization.NoAuthorityOnMapException;
 import com.woowacourse.zzimkkong.exception.map.NoSuchMapException;
@@ -57,8 +57,8 @@ class SpaceServiceTest extends ServiceTest {
 
     private Member pobi;
     private Member sakjung;
-    private LoginEmailDto pobiEmail;
-    private LoginEmailDto sakjungEmail;
+    private LoginUserEmail pobiEmail;
+    private LoginUserEmail sakjungEmail;
     private Map luther;
     private Space be;
     private Space fe;
@@ -70,10 +70,10 @@ class SpaceServiceTest extends ServiceTest {
 
     @BeforeEach
     void setUp() {
-        pobi = new Member(EMAIL, PW, ORGANIZATION);
-        sakjung = new Member(NEW_EMAIL, PW, ORGANIZATION);
-        pobiEmail = LoginEmailDto.from(EMAIL);
-        sakjungEmail = LoginEmailDto.from(NEW_EMAIL);
+        pobi = new Member(EMAIL, USER_NAME, PW, ORGANIZATION);
+        sakjung = new Member(NEW_EMAIL, USER_NAME, PW, ORGANIZATION);
+        pobiEmail = LoginUserEmail.from(EMAIL);
+        sakjungEmail = LoginUserEmail.from(NEW_EMAIL);
         luther = new Map(1L, LUTHER_NAME, MAP_DRAWING_DATA, MAP_SVG, pobi);
 
         Setting beSetting = Setting.builder()

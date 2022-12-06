@@ -9,11 +9,13 @@ import lombok.NoArgsConstructor;
 public class MemberFindResponse {
     private Long id;
     private String email;
+    private String userName;
     private String organization;
 
-    private MemberFindResponse(final Long id, final String email, final String organization) {
+    private MemberFindResponse(final Long id, final String email, final String userName, final String organization) {
         this.id = id;
         this.email = email;
+        this.userName = userName;
         this.organization = organization;
     }
 
@@ -21,6 +23,7 @@ public class MemberFindResponse {
         return new MemberFindResponse(
                 member.getId(),
                 member.getEmail(),
+                member.getUserName(),
                 member.getOrganization());
     }
 }
