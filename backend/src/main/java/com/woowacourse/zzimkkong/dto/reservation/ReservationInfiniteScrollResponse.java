@@ -5,17 +5,22 @@ import lombok.Builder;
 import lombok.Getter;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Getter
 @Builder
 public class ReservationInfiniteScrollResponse {
-    private List<Reservation> data;
+    private List<ReservationOwnerResponse> data;
     private Boolean hasNext;
     private Integer pageNumber;
 
-    public static ReservationInfiniteScrollResponse of(final List<Reservation> data, final Boolean hasNext, final Integer pageNumber) {
+    public static ReservationInfiniteScrollResponse of(final List<Reservation> reservations, final Boolean hasNext, final Integer pageNumber) {
+        List<ReservationOwnerResponse> reservationOwnerResponses = reservations.stream()
+                .map(ReservationOwnerResponse::from)
+                .collect(Collectors.toList());
+
         return ReservationInfiniteScrollResponse.builder()
-                .data(data)
+                .data(reservationOwnerResponses)
                 .hasNext(hasNext)
                 .pageNumber(pageNumber)
                 .build();

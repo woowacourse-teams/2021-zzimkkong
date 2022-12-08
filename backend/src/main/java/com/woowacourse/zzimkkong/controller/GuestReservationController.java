@@ -1,6 +1,7 @@
 package com.woowacourse.zzimkkong.controller;
 
 import com.woowacourse.zzimkkong.config.logaspect.LogMethodExecutionTime;
+import com.woowacourse.zzimkkong.domain.LoginEmail;
 import com.woowacourse.zzimkkong.domain.UserType;
 import com.woowacourse.zzimkkong.dto.member.LoginUserEmail;
 import com.woowacourse.zzimkkong.dto.reservation.*;
@@ -36,7 +37,7 @@ public class GuestReservationController {
 
     @GetMapping("/reservations")
     public ResponseEntity<ReservationInfiniteScrollResponse> findUpcomingReservations(
-            @com.woowacourse.zzimkkong.domain.LoginEmail final LoginUserEmail loginUserEmail,
+            @LoginEmail(isOptional = true) final LoginUserEmail loginUserEmail,
             @PageableDefault(sort = {"reservationTime.date"}) final Pageable Pageable) {
         ReservationInfiniteScrollResponse reservationInfiniteScrollResponse = reservationService.findUpcomingReservations(loginUserEmail, Pageable);
         return ResponseEntity.ok().body(reservationInfiniteScrollResponse);
@@ -44,7 +45,7 @@ public class GuestReservationController {
 
     @GetMapping("/reservations/history")
     public ResponseEntity<ReservationInfiniteScrollResponse> findPreviousReservations(
-            @com.woowacourse.zzimkkong.domain.LoginEmail final LoginUserEmail loginUserEmail,
+            @LoginEmail(isOptional = true) final LoginUserEmail loginUserEmail,
             @PageableDefault(sort = {"reservationTime.date"}, direction = Sort.Direction.DESC) final Pageable Pageable) {
         ReservationInfiniteScrollResponse reservationFindPreviousResponse = reservationService.findPreviousReservations(loginUserEmail, Pageable);
         return ResponseEntity.ok().body(reservationFindPreviousResponse);
@@ -80,7 +81,7 @@ public class GuestReservationController {
             @PathVariable final Long mapId,
             @PathVariable final Long spaceId,
             @RequestBody @Valid final ReservationCreateUpdateWithPasswordRequest reservationCreateUpdateWithPasswordRequest,
-            @com.woowacourse.zzimkkong.domain.LoginEmail(isOptional = true) final LoginUserEmail loginUserEmail) {
+            @LoginEmail(isOptional = true) final LoginUserEmail loginUserEmail) {
         ReservationCreateDto reservationCreateDto = ReservationCreateDto.of(
                 mapId,
                 spaceId,

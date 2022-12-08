@@ -1,6 +1,7 @@
 package com.woowacourse.zzimkkong.infrastructure.auth;
 
 import com.woowacourse.zzimkkong.config.logaspect.LogMethodExecutionTime;
+import com.woowacourse.zzimkkong.domain.LoginEmail;
 import com.woowacourse.zzimkkong.dto.member.LoginUserEmail;
 import org.springframework.core.MethodParameter;
 import org.springframework.stereotype.Component;
@@ -22,14 +23,14 @@ public class AuthenticationPrincipalArgumentResolver implements HandlerMethodArg
 
     @Override
     public boolean supportsParameter(MethodParameter parameter) {
-        return parameter.hasParameterAnnotation(com.woowacourse.zzimkkong.domain.LoginEmail.class);
+        return parameter.hasParameterAnnotation(LoginEmail.class);
     }
 
     @Override
     public Object resolveArgument(MethodParameter parameter, ModelAndViewContainer mavContainer, NativeWebRequest webRequest, WebDataBinderFactory binderFactory) {
         HttpServletRequest request = (HttpServletRequest) webRequest.getNativeRequest();
 
-        com.woowacourse.zzimkkong.domain.LoginEmail loginEmailParameterAnnotation = parameter.getParameterAnnotation(com.woowacourse.zzimkkong.domain.LoginEmail.class);
+        LoginEmail loginEmailParameterAnnotation = parameter.getParameterAnnotation(LoginEmail.class);
         if (loginEmailParameterAnnotation.isOptional() && !AuthorizationExtractor.hasAccessToken(request)) {
             return LoginUserEmail.NO_LOGIN;
         }

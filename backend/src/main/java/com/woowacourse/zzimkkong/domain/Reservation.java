@@ -24,7 +24,7 @@ public class Reservation {
     @Embedded
     private ReservationTime reservationTime;
 
-    @Column(length = 20)
+    @Column(length = 4)
     private String password;
 
     @Column(nullable = false, length = 20)
