@@ -1,19 +1,16 @@
-import { AxiosError, AxiosResponse } from 'axios';
+import { AxiosError } from 'axios';
 import dayjs, { Dayjs } from 'dayjs';
 import { FormEventHandler, useContext, useEffect, useMemo, useRef, useState } from 'react';
 import { useMutation } from 'react-query';
 import { useHistory, useLocation, useParams } from 'react-router-dom';
 import { deleteGuestReservation } from 'api/guestReservation';
-import { postLogin } from 'api/login';
 import Button from 'components/Button/Button';
 import DateInput from 'components/DateInput/DateInput';
 import Header from 'components/Header/Header';
 import Input from 'components/Input/Input';
 import Layout from 'components/Layout/Layout';
 import Modal from 'components/Modal/Modal';
-import SocialLoginButton from 'components/SocialAuthButton/SocialLoginButton';
 import { EDITOR } from 'constants/editor';
-import MANAGER from 'constants/manager';
 import MESSAGE from 'constants/message';
 import PALETTE from 'constants/palette';
 import PATH, { HREF } from 'constants/path';
@@ -21,16 +18,16 @@ import useGuestMap from 'hooks/query/useGuestMap';
 import useGuestReservations from 'hooks/query/useGuestReservations';
 import useGuestSpaces from 'hooks/query/useGuestSpaces';
 import useInput from 'hooks/useInput';
-import useInputs from 'hooks/useInputs';
 import { AccessTokenContext } from 'providers/AccessTokenProvider';
 import { Area, MapDrawing, MapItem, Reservation, ScrollPosition, Space } from 'types/common';
 import { DrawingAreaShape } from 'types/editor';
 import { GuestPageURLParams } from 'types/guest';
-import { ErrorResponse, LoginSuccess } from 'types/response';
+import { ErrorResponse } from 'types/response';
 import { formatDate } from 'utils/datetime';
 import { getPolygonCenterPoint } from 'utils/editor';
 import { isNullish } from 'utils/type';
 import * as Styled from './GuestMap.styles';
+import LoginPopup from './units/LoginPopup';
 import ReservationDrawer from './units/ReservationDrawer';
 
 export interface GuestMapState {
@@ -40,7 +37,7 @@ export interface GuestMapState {
 }
 
 const GuestMap = (): JSX.Element => {
-  const { accessToken, setAccessToken } = useContext(AccessTokenContext);
+  const { accessToken } = useContext(AccessTokenContext);
 
   const [detailOpen, setDetailOpen] = useState(false);
   const [passwordInputModalOpen, setPasswordInputModalOpen] = useState(false);
@@ -59,41 +56,6 @@ const GuestMap = (): JSX.Element => {
   const spaceId = location.state?.spaceId;
   const targetDate = location.state?.targetDate;
   const scrollPosition = location.state?.scrollPosition;
-
-  const [{ email, password }, onChangeForm, setValues] = useInputs<{
-    email: string;
-    password: string;
-  }>({
-    email: '',
-    password: '',
-  });
-
-  const [loginErrorMessage, setLoginErrorMessage] = useState<{ email?: string; password?: string }>(
-    {
-      email: undefined,
-      password: undefined,
-    }
-  );
-
-  const login = useMutation(postLogin, {
-    onSuccess: (response: AxiosResponse<LoginSuccess>) => {
-      const { accessToken } = response.data;
-
-      setAccessToken(accessToken);
-      setValues({ email: '', password: '' });
-    },
-    onError: (error: AxiosError<ErrorResponse>) => {
-      const field = error.response?.data.field;
-      const message = error.response?.data.message;
-
-      if (field && message) {
-        setLoginErrorMessage({ [field]: message });
-        return;
-      }
-
-      setLoginErrorMessage({ password: message ?? MESSAGE.LOGIN.UNEXPECTED_ERROR });
-    },
-  });
 
   const [map, setMap] = useState<MapItem | null>(null);
   const mapDrawing = map?.mapDrawing;
@@ -221,12 +183,6 @@ const GuestMap = (): JSX.Element => {
         scrollPosition: { x: mapRef?.current?.scrollLeft, y: mapRef?.current?.scrollTop },
       },
     });
-  };
-
-  const handleSubmitLogin: React.FormEventHandler<HTMLFormElement> = (event) => {
-    event.preventDefault();
-
-    login.mutate({ email, password });
   };
 
   useEffect(() => {
@@ -391,64 +347,7 @@ const GuestMap = (): JSX.Element => {
       )}
 
       {!accessToken && (
-        <Modal open={loginPopupOpen} onClose={() => setLoginPopupOpen(false)}>
-          <Styled.LoginPopupWrapper>
-            <Styled.LoginPopupHeading>
-              <strong>나의 예약 내역</strong>을 관리해보세요!
-            </Styled.LoginPopupHeading>
-            <Styled.LoginPopupForm onSubmit={handleSubmitLogin}>
-              <Styled.LoginFormInputWrapper>
-                <Input
-                  type="email"
-                  label="이메일"
-                  name="email"
-                  value={email}
-                  onChange={onChangeForm}
-                  message={loginErrorMessage?.email}
-                  status={loginErrorMessage?.email ? 'error' : 'default'}
-                  autoFocus
-                  required
-                />
-                <Input
-                  type="password"
-                  label="비밀번호"
-                  name="password"
-                  value={password}
-                  minLength={MANAGER.PASSWORD.MIN_LENGTH}
-                  maxLength={MANAGER.PASSWORD.MAX_LENGTH}
-                  onChange={onChangeForm}
-                  message={loginErrorMessage?.password}
-                  status={loginErrorMessage?.password ? 'error' : 'default'}
-                  required
-                />
-              </Styled.LoginFormInputWrapper>
-              <Styled.LoginFormButtonWrapper>
-                <Button type="submit" variant="primary" size="medium" fullWidth>
-                  로그인
-                </Button>
-                <Button
-                  type="button"
-                  variant="inverse"
-                  size="medium"
-                  fullWidth
-                  onClick={() => history.push('/join')}
-                >
-                  회원가입
-                </Button>
-              </Styled.LoginFormButtonWrapper>
-            </Styled.LoginPopupForm>
-            <Styled.Line />
-            <Styled.SocialLoginButtonWrapper>
-              <SocialLoginButton provider="GITHUB" variant="icon" />
-              <SocialLoginButton provider="GOOGLE" variant="icon" />
-            </Styled.SocialLoginButtonWrapper>
-            <Styled.ContinueWithNonMemberWrapper>
-              <Styled.ContinueWithNonMember onClick={() => setLoginPopupOpen(false)}>
-                비회원으로 계속하기
-              </Styled.ContinueWithNonMember>
-            </Styled.ContinueWithNonMemberWrapper>
-          </Styled.LoginPopupWrapper>
-        </Modal>
+        <LoginPopup open={loginPopupOpen} onClose={() => setLoginPopupOpen(false)} />
       )}
     </>
   );
