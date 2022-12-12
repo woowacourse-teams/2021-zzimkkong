@@ -296,14 +296,28 @@ class GuestReservationControllerTest extends AcceptanceTest {
     }
 
     @Test
-    @DisplayName("올바른 비밀번호와 함께 예약을 삭제한다.")
-    void delete() {
+    @DisplayName("비로그인 예약은 비밀번호 검증을 통해 예약을 삭제한다.")
+    void delete_nonLoginUser() {
         //given
         ReservationPasswordAuthenticationRequest reservationPasswordAuthenticationRequest = new ReservationPasswordAuthenticationRequest(SALLY_PW);
         String api = beReservationApi + "/" + savedReservationId;
 
         //when
-        ExtractableResponse<Response> response = deleteReservation(api, reservationPasswordAuthenticationRequest);
+        ExtractableResponse<Response> response = deleteNonLoginReservation(api, reservationPasswordAuthenticationRequest);
+
+        //then
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
+    }
+
+    @Test
+    @DisplayName("로그인 예약은 토큰 검증을 통해 예약을 삭제한다.")
+    void delete_loginUser() {
+        //given
+        ReservationPasswordAuthenticationRequest reservationPasswordAuthenticationRequest = new ReservationPasswordAuthenticationRequest(null);
+        String api = beReservationApi + "/" + bePmTwoThreeByPobi.getId();
+
+        //when
+        ExtractableResponse<Response> response = deleteLoginReservation(api, reservationPasswordAuthenticationRequest);
 
         //then
         assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
@@ -586,13 +600,27 @@ class GuestReservationControllerTest extends AcceptanceTest {
                 .then().log().all().extract();
     }
 
-    private ExtractableResponse<Response> deleteReservation(
+    private ExtractableResponse<Response> deleteNonLoginReservation(
             final String api,
             final ReservationPasswordAuthenticationRequest reservationPasswordAuthenticationRequest) {
         return RestAssured
                 .given(getRequestSpecification()).log().all()
                 .accept("application/json")
-                .filter(document("reservation/guest/delete", getRequestPreprocessor(), getResponsePreprocessor()))
+                .filter(document("reservation/guest/deleteForNonLoginReservation", getRequestPreprocessor(), getResponsePreprocessor()))
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .body(reservationPasswordAuthenticationRequest)
+                .when().delete(api)
+                .then().log().all().extract();
+    }
+
+    private ExtractableResponse<Response> deleteLoginReservation(
+            final String api,
+            final ReservationPasswordAuthenticationRequest reservationPasswordAuthenticationRequest) {
+        return RestAssured
+                .given(getRequestSpecification()).log().all()
+                .accept("application/json")
+                .header("Authorization", AuthorizationExtractor.AUTHENTICATION_TYPE + " " + accessToken)
+                .filter(document("reservation/guest/deleteForLoginReservation", getRequestPreprocessor(), getResponsePreprocessor()))
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body(reservationPasswordAuthenticationRequest)
                 .when().delete(api)
