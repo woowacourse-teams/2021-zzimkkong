@@ -5,34 +5,28 @@ import com.woowacourse.zzimkkong.dto.member.LoginUserEmail;
 import com.woowacourse.zzimkkong.dto.reservation.ReservationCreateDto;
 import com.woowacourse.zzimkkong.exception.member.NoSuchMemberException;
 import com.woowacourse.zzimkkong.exception.reservation.ReservationOwnershipException;
-import com.woowacourse.zzimkkong.exception.reservation.ReservationPasswordException;
 import com.woowacourse.zzimkkong.repository.MemberRepository;
 import org.springframework.stereotype.Component;
 
 @Component
-public class GuestReservationStrategy extends ReservationStrategy {
-    public GuestReservationStrategy(final MemberRepository members) {
+public class LoginGuestReservationStrategy extends ReservationStrategy {
+
+    public LoginGuestReservationStrategy(final MemberRepository members) {
         super(members);
     }
 
     @Override
-    public boolean supports(final UserType userType) {
-        return UserType.GUEST.equals(userType);
+    public boolean supports(final ReservationType reservationType) {
+        return ReservationType.LOGIN_GUEST.equals(reservationType);
     }
 
     @Override
     public void validateManagerOfMap(final Map map, final LoginUserEmail loginUserEmail) {
-        // guest는 맵의 관리자 확인과정 생략
+        // 로그인 예약은 맵의 관리자 확인과정 생략
     }
 
     @Override
     public void validateOwnerOfReservation(final Reservation reservation, final String password, final LoginUserEmail loginUserEmail) {
-        if (reservation.hasNoMember()) {
-            if (reservation.isWrongPassword(password)) {
-                throw new ReservationPasswordException();
-            }
-            return;
-        }
         if (loginUserEmail.exists()) {
             Member member = members.findByEmail(loginUserEmail.getEmail())
                     .orElseThrow(NoSuchMemberException::new);
@@ -50,26 +44,18 @@ public class GuestReservationStrategy extends ReservationStrategy {
     }
 
     @Override
-    protected Reservation buildReservation(
-            final Space space,
-            final ReservationTime reservationTime,
-            final ReservationCreateDto reservationCreateDto) {
+    protected Reservation buildReservation(final Space space, final ReservationTime reservationTime, final ReservationCreateDto reservationCreateDto) {
         LoginUserEmail loginUserEmail = reservationCreateDto.getLoginUserEmail();
-        if (loginUserEmail.exists()) {
-            Member member = members.findByEmail(loginUserEmail.getEmail())
-                    .orElseThrow(NoSuchMemberException::new);
-            return Reservation.builder()
-                    .reservationTime(reservationTime)
-                    .member(member)
-                    .userName(member.getUserName())
-                    .description(reservationCreateDto.getDescription())
-                    .space(space)
-                    .build();
+        if (!loginUserEmail.exists()) {
+            throw new ReservationOwnershipException();
         }
+
+        Member member = members.findByEmail(loginUserEmail.getEmail())
+                .orElseThrow(NoSuchMemberException::new);
         return Reservation.builder()
                 .reservationTime(reservationTime)
-                .password(reservationCreateDto.getPassword())
-                .userName(reservationCreateDto.getName())
+                .member(member)
+                .userName(member.getUserName())
                 .description(reservationCreateDto.getDescription())
                 .space(space)
                 .build();

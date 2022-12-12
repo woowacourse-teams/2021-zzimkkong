@@ -32,7 +32,6 @@ import static com.woowacourse.zzimkkong.Constants.*;
 import static com.woowacourse.zzimkkong.DocumentUtils.setRequestSpecification;
 import static com.woowacourse.zzimkkong.controller.AuthControllerTest.getToken;
 import static com.woowacourse.zzimkkong.controller.MemberControllerTest.saveMember;
-import static org.mockito.ArgumentMatchers.any;
 import static org.springframework.restdocs.restassured3.RestAssuredRestDocumentation.documentationConfiguration;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)

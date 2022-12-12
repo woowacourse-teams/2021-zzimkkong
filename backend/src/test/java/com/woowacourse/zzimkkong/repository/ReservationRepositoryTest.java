@@ -29,7 +29,7 @@ class ReservationRepositoryTest extends RepositoryTest {
     private Reservation beNextDayAmSixTwelve;
     private Reservation fe1ZeroOne;
     private Reservation bePmTwoThreeByPobi;
-    private Reservation beYesterdayPmTwoThreeByPobi;
+    private Reservation beFiveDaysAgoPmTwoThreeByPobi;
 
     private Member pobi;
 
@@ -136,13 +136,13 @@ class ReservationRepositoryTest extends RepositoryTest {
                 .space(be)
                 .build();
 
-        beYesterdayPmTwoThreeByPobi = Reservation.builder()
+        beFiveDaysAgoPmTwoThreeByPobi = Reservation.builder()
                 .reservationTime(
                         ReservationTime.ofDefaultServiceZone(
-                                BE_YESTERDAY_PM_TWO_THREE_START_TIME_KST.withZoneSameInstant(UTC.toZoneId()).toLocalDateTime(),
-                                BE_YESTERDAY_PM_TWO_THREE_END_TIME_KST.withZoneSameInstant(UTC.toZoneId()).toLocalDateTime()))
-                .description(BE_YESTERDAY_PM_TWO_THREE_DESCRIPTION)
-                .userName(BE_YESTERDAY_PM_TWO_THREE_USERNAME)
+                                BE_FIVE_DAYS_AGO_PM_TWO_THREE_START_TIME_KST.withZoneSameInstant(UTC.toZoneId()).toLocalDateTime(),
+                                BE_FIVE_DAYS_AGO_PM_TWO_THREE_END_TIME_KST.withZoneSameInstant(UTC.toZoneId()).toLocalDateTime()))
+                .description(BE_FIVE_DAYS_AGO_PM_TWO_THREE_DESCRIPTION)
+                .userName(BE_FIVE_DAYS_AGO_PM_TWO_THREE_USERNAME)
                 .member(pobi)
                 .space(be)
                 .build();
@@ -152,7 +152,7 @@ class ReservationRepositoryTest extends RepositoryTest {
         reservations.save(beNextDayAmSixTwelve);
         reservations.save(fe1ZeroOne);
         reservations.save(bePmTwoThreeByPobi);
-        reservations.save(beYesterdayPmTwoThreeByPobi);
+        reservations.save(beFiveDaysAgoPmTwoThreeByPobi);
     }
 
     @Test
@@ -189,7 +189,7 @@ class ReservationRepositoryTest extends RepositoryTest {
         // then
         assertThat(foundReservations).usingRecursiveComparison()
                 .ignoringCollectionOrder()
-                .isEqualTo(List.of(beAmZeroOne, beNextDayAmSixTwelve, bePmOneTwo, fe1ZeroOne, bePmTwoThreeByPobi, beYesterdayPmTwoThreeByPobi));
+                .isEqualTo(List.of(beAmZeroOne, beNextDayAmSixTwelve, bePmOneTwo, fe1ZeroOne, bePmTwoThreeByPobi));
     }
 
     @Test
@@ -249,7 +249,7 @@ class ReservationRepositoryTest extends RepositoryTest {
         assertThat(actual.getSize()).isEqualTo(20);
         assertThat(actual.getContent()).hasSize(6);
         assertThat(actual.getContent()).usingRecursiveComparison()
-                .isEqualTo(List.of(beAmZeroOne, bePmOneTwo, beNextDayAmSixTwelve, fe1ZeroOne, bePmTwoThreeByPobi, beYesterdayPmTwoThreeByPobi));
+                .isEqualTo(List.of(beAmZeroOne, bePmOneTwo, beNextDayAmSixTwelve, fe1ZeroOne, bePmTwoThreeByPobi, beFiveDaysAgoPmTwoThreeByPobi));
     }
 
     private List<Reservation> getReservations(List<Long> spaceIds, LocalDate date) {
@@ -275,7 +275,7 @@ class ReservationRepositoryTest extends RepositoryTest {
         PageRequest pageRequest = PageRequest.of(0, 10, Sort.by("reservationTime.date"));
         Slice<Reservation> actual = reservations.findAllByMemberAndReservationTimeDateLessThanEqual(pobi, THE_DAY_AFTER_TOMORROW, pageRequest);
 
-        List<Reservation> expectedContent = List.of(bePmTwoThreeByPobi, beYesterdayPmTwoThreeByPobi);
+        List<Reservation> expectedContent = List.of(bePmTwoThreeByPobi, beFiveDaysAgoPmTwoThreeByPobi);
         assertThat(actual.getContent()).containsExactlyInAnyOrderElementsOf(expectedContent);
     }
 }

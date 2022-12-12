@@ -2,7 +2,7 @@ package com.woowacourse.zzimkkong.controller;
 
 import com.woowacourse.zzimkkong.config.logaspect.LogMethodExecutionTime;
 import com.woowacourse.zzimkkong.domain.LoginEmail;
-import com.woowacourse.zzimkkong.domain.UserType;
+import com.woowacourse.zzimkkong.domain.ReservationType;
 import com.woowacourse.zzimkkong.dto.member.LoginUserEmail;
 import com.woowacourse.zzimkkong.dto.reservation.*;
 import com.woowacourse.zzimkkong.dto.slack.SlackResponse;
@@ -37,7 +37,7 @@ public class GuestReservationController {
 
     @GetMapping("/reservations")
     public ResponseEntity<ReservationInfiniteScrollResponse> findUpcomingReservations(
-            @LoginEmail(isOptional = true) final LoginUserEmail loginUserEmail,
+            @LoginEmail final LoginUserEmail loginUserEmail,
             @PageableDefault(sort = {"reservationTime.date"}) final Pageable Pageable) {
         ReservationInfiniteScrollResponse reservationInfiniteScrollResponse = reservationService.findUpcomingReservations(loginUserEmail, Pageable);
         return ResponseEntity.ok().body(reservationInfiniteScrollResponse);
@@ -45,7 +45,7 @@ public class GuestReservationController {
 
     @GetMapping("/reservations/history")
     public ResponseEntity<ReservationInfiniteScrollResponse> findPreviousReservations(
-            @LoginEmail(isOptional = true) final LoginUserEmail loginUserEmail,
+            @LoginEmail final LoginUserEmail loginUserEmail,
             @PageableDefault(sort = {"reservationTime.date"}, direction = Sort.Direction.DESC) final Pageable Pageable) {
         ReservationInfiniteScrollResponse reservationFindPreviousResponse = reservationService.findPreviousReservations(loginUserEmail, Pageable);
         return ResponseEntity.ok().body(reservationFindPreviousResponse);
@@ -57,8 +57,9 @@ public class GuestReservationController {
             @RequestParam @DateTimeFormat(pattern = DATE_FORMAT) final LocalDate date) {
         ReservationFindAllDto reservationFindAllDto = ReservationFindAllDto.of(
                 mapId,
-                date);
-        ReservationFindAllResponse reservationFindAllResponse = reservationService.findAllReservations(reservationFindAllDto, UserType.GUEST);
+                date,
+                ReservationType.Constants.GUEST);
+        ReservationFindAllResponse reservationFindAllResponse = reservationService.findAllReservations(reservationFindAllDto);
         return ResponseEntity.ok().body(reservationFindAllResponse);
     }
 
@@ -70,9 +71,9 @@ public class GuestReservationController {
         ReservationFindDto reservationFindDto = ReservationFindDto.of(
                 mapId,
                 spaceId,
-                date
-        );
-        ReservationFindResponse reservationFindResponse = reservationService.findReservations(reservationFindDto, UserType.GUEST);
+                date,
+                ReservationType.Constants.GUEST);
+        ReservationFindResponse reservationFindResponse = reservationService.findReservations(reservationFindDto);
         return ResponseEntity.ok().body(reservationFindResponse);
     }
 
@@ -86,8 +87,9 @@ public class GuestReservationController {
                 mapId,
                 spaceId,
                 reservationCreateUpdateWithPasswordRequest,
-                loginUserEmail);
-        ReservationCreateResponse reservationCreateResponse = reservationService.saveReservation(reservationCreateDto, UserType.GUEST);
+                loginUserEmail,
+                ReservationType.Constants.GUEST);
+        ReservationCreateResponse reservationCreateResponse = reservationService.saveReservation(reservationCreateDto);
         slackService.sendCreateMessage(reservationCreateResponse.getSlackResponse());
         return ResponseEntity
                 .created(URI.create("/api/guests/maps/" + mapId + "/spaces/" + spaceId + "/reservations/" + reservationCreateResponse.getId()))
@@ -99,13 +101,16 @@ public class GuestReservationController {
             @PathVariable final Long mapId,
             @PathVariable final Long spaceId,
             @PathVariable final Long reservationId,
-            @RequestBody @Valid final ReservationPasswordAuthenticationRequest reservationPasswordAuthenticationRequest) {
+            @RequestBody @Valid final ReservationPasswordAuthenticationRequest reservationPasswordAuthenticationRequest,
+            @LoginEmail(isOptional = true) final LoginUserEmail loginUserEmail) {
         ReservationAuthenticationDto reservationAuthenticationDto = ReservationAuthenticationDto.of(
                 mapId,
                 spaceId,
                 reservationId,
-                reservationPasswordAuthenticationRequest);
-        ReservationResponse reservationResponse = reservationService.findReservation(reservationAuthenticationDto, UserType.GUEST);
+                reservationPasswordAuthenticationRequest,
+                loginUserEmail,
+                ReservationType.Constants.GUEST);
+        ReservationResponse reservationResponse = reservationService.findReservation(reservationAuthenticationDto);
         return ResponseEntity.ok().body(reservationResponse);
     }
 
@@ -114,13 +119,16 @@ public class GuestReservationController {
             @PathVariable final Long mapId,
             @PathVariable final Long spaceId,
             @PathVariable final Long reservationId,
-            @RequestBody @Valid final ReservationCreateUpdateWithPasswordRequest reservationCreateUpdateWithPasswordRequest) {
+            @RequestBody @Valid final ReservationCreateUpdateWithPasswordRequest reservationCreateUpdateWithPasswordRequest,
+            @LoginEmail(isOptional = true) final LoginUserEmail loginUserEmail) {
         ReservationUpdateDto reservationUpdateDto = ReservationUpdateDto.of(
                 mapId,
                 spaceId,
                 reservationId,
-                reservationCreateUpdateWithPasswordRequest);
-        SlackResponse slackResponse = reservationService.updateReservation(reservationUpdateDto, UserType.GUEST);
+                reservationCreateUpdateWithPasswordRequest,
+                loginUserEmail,
+                ReservationType.Constants.GUEST);
+        SlackResponse slackResponse = reservationService.updateReservation(reservationUpdateDto);
         slackService.sendUpdateMessage(slackResponse);
         return ResponseEntity.ok().build();
     }
@@ -130,13 +138,16 @@ public class GuestReservationController {
             @PathVariable final Long mapId,
             @PathVariable final Long spaceId,
             @PathVariable final Long reservationId,
-            @RequestBody @Valid ReservationPasswordAuthenticationRequest reservationPasswordAuthenticationRequest) {
+            @RequestBody @Valid ReservationPasswordAuthenticationRequest reservationPasswordAuthenticationRequest,
+            @LoginEmail(isOptional = true) final LoginUserEmail loginUserEmail) {
         ReservationAuthenticationDto reservationAuthenticationDto = ReservationAuthenticationDto.of(
                 mapId,
                 spaceId,
                 reservationId,
-                reservationPasswordAuthenticationRequest);
-        SlackResponse slackResponse = reservationService.deleteReservation(reservationAuthenticationDto, UserType.GUEST);
+                reservationPasswordAuthenticationRequest,
+                loginUserEmail,
+                ReservationType.Constants.GUEST);
+        SlackResponse slackResponse = reservationService.deleteReservation(reservationAuthenticationDto);
         slackService.sendDeleteMessage(slackResponse);
         return ResponseEntity.noContent().build();
     }

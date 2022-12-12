@@ -363,7 +363,7 @@ class ManagerReservationControllerTest extends AcceptanceTest {
                 .build();
     }
 
-    private Long getReservationIdAfterSave(
+    public static Long getReservationIdAfterSave(
             final String api,
             final ReservationCreateUpdateWithPasswordRequest reservationCreateUpdateWithPasswordRequest) {
         return Long.valueOf(

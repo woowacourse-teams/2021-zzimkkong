@@ -1,6 +1,6 @@
 package com.woowacourse.zzimkkong.service.strategy;
 
-import com.woowacourse.zzimkkong.domain.UserType;
+import com.woowacourse.zzimkkong.domain.ReservationType;
 import com.woowacourse.zzimkkong.exception.ZzimkkongException;
 import org.springframework.stereotype.Component;
 
@@ -14,9 +14,9 @@ public class ReservationStrategies {
         this.reservationStrategies = reservationStrategies;
     }
 
-    public ReservationStrategy getStrategyByUserType(final UserType userType) {
+    public ReservationStrategy getStrategyByUserType(final ReservationType reservationType) {
         return reservationStrategies.stream()
-                .filter(strategy -> strategy.supports(userType))
+                .filter(strategy -> strategy.supports(reservationType))
                 .findFirst()
                 .orElseThrow(ZzimkkongException::new);
     }

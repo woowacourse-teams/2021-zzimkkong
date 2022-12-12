@@ -11,7 +11,6 @@ import static com.woowacourse.zzimkkong.dto.ValidatorMessage.*;
 @Getter
 @NoArgsConstructor
 public class ReservationPasswordAuthenticationRequest {
-    @NotBlank(message = EMPTY_MESSAGE)
     @Pattern(regexp = RESERVATION_PW_FORMAT, message = RESERVATION_PW_MESSAGE)
     private String password;
 

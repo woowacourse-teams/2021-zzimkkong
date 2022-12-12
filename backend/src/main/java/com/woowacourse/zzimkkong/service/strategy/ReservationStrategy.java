@@ -2,7 +2,6 @@ package com.woowacourse.zzimkkong.service.strategy;
 
 import com.woowacourse.zzimkkong.domain.*;
 import com.woowacourse.zzimkkong.dto.member.LoginUserEmail;
-import com.woowacourse.zzimkkong.dto.reservation.ReservationAuthenticationDto;
 import com.woowacourse.zzimkkong.dto.reservation.ReservationCreateDto;
 import com.woowacourse.zzimkkong.exception.space.NoSuchSpaceException;
 import com.woowacourse.zzimkkong.repository.MemberRepository;
@@ -14,7 +13,7 @@ public abstract class ReservationStrategy {
         this.members = members;
     }
 
-    public abstract boolean supports(UserType userType);
+    public abstract boolean supports(ReservationType reservationType);
 
     public abstract void validateManagerOfMap(final Map map, final LoginUserEmail loginUserEmail);
 
@@ -28,8 +27,7 @@ public abstract class ReservationStrategy {
             final ReservationCreateDto reservationCreateDto);
 
     public Reservation createReservation(final Map map, final ReservationCreateDto reservationCreateDto) {
-        LoginUserEmail loginUserEmail = reservationCreateDto.getLoginUserEmail();
-        validateManagerOfMap(map, loginUserEmail);
+        validateManagerOfMap(map, reservationCreateDto.getLoginUserEmail());
 
         Long spaceId = reservationCreateDto.getSpaceId();
         Space space = map.findSpaceById(spaceId)

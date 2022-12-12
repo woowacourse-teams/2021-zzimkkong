@@ -53,9 +53,8 @@ public class ReservationService {
     }
 
     public ReservationCreateResponse saveReservation(
-            final ReservationCreateDto reservationCreateDto,
-            final UserType userType) {
-        ReservationStrategy reservationStrategy = reservationStrategies.getStrategyByUserType(userType);
+            final ReservationCreateDto reservationCreateDto) {
+        ReservationStrategy reservationStrategy = reservationStrategies.getStrategyByUserType(reservationCreateDto.getReservationType());
 
         Long mapId = reservationCreateDto.getMapId();
         Map map = maps.findByIdFetch(mapId)
@@ -71,10 +70,8 @@ public class ReservationService {
     }
 
     @Transactional(readOnly = true)
-    public ReservationFindAllResponse findAllReservations(
-            final ReservationFindAllDto reservationFindAllDto,
-            final UserType userType) {
-        ReservationStrategy reservationStrategy = reservationStrategies.getStrategyByUserType(userType);
+    public ReservationFindAllResponse findAllReservations(final ReservationFindAllDto reservationFindAllDto) {
+        ReservationStrategy reservationStrategy = reservationStrategies.getStrategyByUserType(reservationFindAllDto.getReservationType());
 
         Long mapId = reservationFindAllDto.getMapId();
         LoginUserEmail loginUserEmail = reservationFindAllDto.getLoginUserEmail();
@@ -91,10 +88,8 @@ public class ReservationService {
     }
 
     @Transactional(readOnly = true)
-    public ReservationFindResponse findReservations(
-            final ReservationFindDto reservationFindDto,
-            final UserType userType) {
-        ReservationStrategy reservationStrategy = reservationStrategies.getStrategyByUserType(userType);
+    public ReservationFindResponse findReservations(final ReservationFindDto reservationFindDto) {
+        ReservationStrategy reservationStrategy = reservationStrategies.getStrategyByUserType(reservationFindDto.getReservationType());
         Long mapId = reservationFindDto.getMapId();
         LoginUserEmail loginUserEmail = reservationFindDto.getLoginUserEmail();
 
@@ -112,10 +107,8 @@ public class ReservationService {
     }
 
     @Transactional(readOnly = true)
-    public ReservationResponse findReservation(
-            final ReservationAuthenticationDto reservationAuthenticationDto,
-            final UserType userType) {
-        ReservationStrategy reservationStrategy = reservationStrategies.getStrategyByUserType(userType);
+    public ReservationResponse findReservation(final ReservationAuthenticationDto reservationAuthenticationDto) {
+        ReservationStrategy reservationStrategy = reservationStrategies.getStrategyByUserType(reservationAuthenticationDto.getReservationType());
         Long mapId = reservationAuthenticationDto.getMapId();
         LoginUserEmail loginUserEmail = reservationAuthenticationDto.getLoginUserEmail();
 
@@ -138,10 +131,8 @@ public class ReservationService {
         return ReservationResponse.from(reservation);
     }
 
-    public SlackResponse updateReservation(
-            final ReservationUpdateDto reservationUpdateDto,
-            final UserType userType) {
-        ReservationStrategy reservationStrategy = reservationStrategies.getStrategyByUserType(userType);
+    public SlackResponse updateReservation(final ReservationUpdateDto reservationUpdateDto) {
+        ReservationStrategy reservationStrategy = reservationStrategies.getStrategyByUserType(reservationUpdateDto.getReservationType());
         Long mapId = reservationUpdateDto.getMapId();
         LoginUserEmail loginUserEmail = reservationUpdateDto.getLoginUserEmail();
 
@@ -150,8 +141,7 @@ public class ReservationService {
         reservationStrategy.validateManagerOfMap(map, loginUserEmail);
 
         Long reservationId = reservationUpdateDto.getReservationId();
-        Reservation reservation = reservations
-                .findById(reservationId)
+        Reservation reservation = reservations.findById(reservationId)
                 .orElseThrow(NoSuchReservationException::new);
         reservationStrategy.validateOwnerOfReservation(reservation, reservationUpdateDto.getPassword(), loginUserEmail);
 
@@ -165,10 +155,8 @@ public class ReservationService {
         return SlackResponse.of(reservation, sharingMapId, map.getSlackUrl());
     }
 
-    public SlackResponse deleteReservation(
-            final ReservationAuthenticationDto reservationAuthenticationDto,
-            final UserType userType) {
-        ReservationStrategy reservationStrategy = reservationStrategies.getStrategyByUserType(userType);
+    public SlackResponse deleteReservation(final ReservationAuthenticationDto reservationAuthenticationDto) {
+        ReservationStrategy reservationStrategy = reservationStrategies.getStrategyByUserType(reservationAuthenticationDto.getReservationType());
         Long mapId = reservationAuthenticationDto.getMapId();
         LoginUserEmail loginUserEmail = reservationAuthenticationDto.getLoginUserEmail();
 
@@ -311,6 +299,7 @@ public class ReservationService {
                 member,
                 TimeZoneUtils.convertTo(now, ServiceZone.KOREA).toLocalDate(),
                 pageable);
+
         List<Reservation> previousReservations = reservationSlice.getContent()
                 .stream()
                 .filter(reservation -> reservation.isExpired(now))

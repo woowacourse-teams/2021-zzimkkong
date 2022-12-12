@@ -66,8 +66,11 @@ public class Reservation {
         return this.reservationTime.hasConflictWith(that.reservationTime);
     }
 
-    public boolean isWrongPassword(final String password) {
-        return !this.password.equals(password);
+    public boolean isWrongPassword(final String thatPassword) {
+        if (this.password == null || thatPassword == null) {
+            return true;
+        }
+        return !this.password.equals(thatPassword);
     }
 
     public void update(final Reservation updateReservation) {
@@ -117,7 +120,7 @@ public class Reservation {
         return !this.member.equals(thatMember);
     }
 
-    public boolean hasNoMember() {
-        return this.member == null;
+    public boolean hasMember() {
+        return this.member != null;
     }
 }

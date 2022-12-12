@@ -15,23 +15,26 @@ public class ReservationFindDto extends ReservationFindAllDto {
             final Long mapId,
             final Long spaceId,
             final LocalDate date,
-            final LoginUserEmail loginUserEmail) {
-        super(mapId, date, loginUserEmail);
+            final LoginUserEmail loginUserEmail,
+            final String apiType) {
+        super(mapId, date, loginUserEmail, apiType);
         this.spaceId = spaceId;
     }
 
     public static ReservationFindDto of(
             final Long mapId,
             final Long spaceId,
-            final LocalDate date) {
-        return new ReservationFindDto(mapId, spaceId, date, new LoginUserEmail());
+            final LocalDate date,
+            final String apiType) {
+        return new ReservationFindDto(mapId, spaceId, date, new LoginUserEmail(), apiType);
     }
 
     public static ReservationFindDto of(
             final Long mapId,
             final Long spaceId,
             final LocalDate date,
-            final LoginUserEmail loginUserEmail) {
-        return new ReservationFindDto(mapId, spaceId, date, loginUserEmail);
+            final LoginUserEmail loginUserEmail,
+            final String apiType) {
+        return new ReservationFindDto(mapId, spaceId, date, loginUserEmail, apiType);
     }
 }

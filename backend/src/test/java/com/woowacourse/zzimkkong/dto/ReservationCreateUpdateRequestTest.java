@@ -43,21 +43,6 @@ class ReservationCreateUpdateRequestTest extends RequestTest {
     }
 
     @ParameterizedTest
-    @NullAndEmptySource
-    @DisplayName("예약 생성에 빈 이름이 들어오면 처리한다.")
-    void blankName(String data) {
-        ReservationCreateUpdateRequest nameRequest = new ReservationCreateUpdateRequest(
-                LocalDateTime.now().atZone(ZoneId.of(ServiceZone.KOREA.getTimeZone())),
-                LocalDateTime.now().atZone(ZoneId.of(ServiceZone.KOREA.getTimeZone())),
-                data,
-                "description");
-
-        assertThat(getConstraintViolations(nameRequest).stream()
-                .anyMatch(violation -> violation.getMessage().equals(NAME_MESSAGE)))
-                .isTrue();
-    }
-
-    @ParameterizedTest
     @CsvSource(value = {"hihellomorethantwenty:true", "hi~~~~:true", "hihello!:false"}, delimiter = ':')
     @DisplayName("예약 생성의 이름에 옳지 않은 형식의 문자열이 들어오면 처리한다.")
     void invalidName(String name, boolean flag) {

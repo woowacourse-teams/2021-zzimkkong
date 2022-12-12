@@ -163,12 +163,11 @@ class ManagerReservationServiceTest extends ServiceTest {
                 luther.getId(),
                 be.getId(),
                 reservationCreateUpdateWithPasswordRequest,
-                pobiEmail);
+                pobiEmail,
+                ReservationType.Constants.MANAGER);
 
 
-        ReservationCreateResponse reservationCreateResponse = reservationService.saveReservation(
-                reservationCreateDto,
-                UserType.MANAGER);
+        ReservationCreateResponse reservationCreateResponse = reservationService.saveReservation(reservationCreateDto);
 
         //then
         assertThat(reservationCreateResponse.getId()).isEqualTo(reservation.getId());
@@ -207,11 +206,10 @@ class ManagerReservationServiceTest extends ServiceTest {
                 luther.getId(),
                 be.getId(),
                 pastReservationCreateUpdateWithPasswordRequest,
-                pobiEmail);
+                pobiEmail,
+                ReservationType.Constants.MANAGER);
 
-        ReservationCreateResponse reservationCreateResponse = reservationService.saveReservation(
-                reservationCreateDto,
-                UserType.MANAGER);
+        ReservationCreateResponse reservationCreateResponse = reservationService.saveReservation(reservationCreateDto);
 
         //then
         assertThat(reservationCreateResponse.getId()).isEqualTo(pastReservation.getId());
@@ -229,12 +227,11 @@ class ManagerReservationServiceTest extends ServiceTest {
                 noneExistingMapId,
                 beId,
                 reservationCreateUpdateWithPasswordRequest,
-                pobiEmail);
+                pobiEmail,
+                ReservationType.Constants.MANAGER);
 
         //then
-        assertThatThrownBy(() -> reservationService.saveReservation(
-                reservationCreateDto,
-                UserType.MANAGER))
+        assertThatThrownBy(() -> reservationService.saveReservation(reservationCreateDto))
                 .isInstanceOf(NoSuchMapException.class);
     }
 
@@ -250,12 +247,11 @@ class ManagerReservationServiceTest extends ServiceTest {
                 lutherId,
                 beId,
                 reservationCreateUpdateWithPasswordRequest,
-                sakjungEmail);
+                sakjungEmail,
+                ReservationType.Constants.MANAGER);
 
         //then
-        assertThatThrownBy(() -> reservationService.saveReservation(
-                reservationCreateDto,
-                UserType.MANAGER))
+        assertThatThrownBy(() -> reservationService.saveReservation(reservationCreateDto))
                 .isInstanceOf(NoAuthorityOnMapException.class);
     }
 
@@ -271,12 +267,11 @@ class ManagerReservationServiceTest extends ServiceTest {
                 lutherId,
                 noneExistingSpaceId,
                 reservationCreateUpdateWithPasswordRequest,
-                pobiEmail);
+                pobiEmail,
+                ReservationType.Constants.MANAGER);
 
         //then
-        assertThatThrownBy(() -> reservationService.saveReservation(
-                reservationCreateDto,
-                UserType.MANAGER))
+        assertThatThrownBy(() -> reservationService.saveReservation(reservationCreateDto))
                 .isInstanceOf(NoSuchSpaceException.class);
     }
 
@@ -299,12 +294,11 @@ class ManagerReservationServiceTest extends ServiceTest {
                 lutherId,
                 beId,
                 reservationCreateUpdateWithPasswordRequest,
-                pobiEmail);
+                pobiEmail,
+                ReservationType.Constants.MANAGER);
 
         //then
-        assertThatThrownBy(() -> reservationService.saveReservation(
-                reservationCreateDto,
-                UserType.MANAGER))
+        assertThatThrownBy(() -> reservationService.saveReservation(reservationCreateDto))
                 .isInstanceOf(ImpossibleStartEndTimeException.class);
     }
 
@@ -327,12 +321,11 @@ class ManagerReservationServiceTest extends ServiceTest {
                 lutherId,
                 beId,
                 reservationCreateUpdateWithPasswordRequest,
-                pobiEmail);
+                pobiEmail,
+                ReservationType.Constants.MANAGER);
 
         //then
-        assertThatThrownBy(() -> reservationService.saveReservation(
-                reservationCreateDto,
-                UserType.MANAGER))
+        assertThatThrownBy(() -> reservationService.saveReservation(reservationCreateDto))
                 .isInstanceOf(ImpossibleStartEndTimeException.class);
     }
 
@@ -355,12 +348,11 @@ class ManagerReservationServiceTest extends ServiceTest {
                 lutherId,
                 beId,
                 reservationCreateUpdateWithPasswordRequest,
-                pobiEmail);
+                pobiEmail,
+                ReservationType.Constants.MANAGER);
 
         //then
-        assertThatThrownBy(() -> reservationService.saveReservation(
-                reservationCreateDto,
-                UserType.MANAGER))
+        assertThatThrownBy(() -> reservationService.saveReservation(reservationCreateDto))
                 .isInstanceOf(NonMatchingStartEndDateException.class);
     }
 
@@ -384,12 +376,11 @@ class ManagerReservationServiceTest extends ServiceTest {
                 lutherId,
                 beId,
                 reservationCreateUpdateWithPasswordRequest,
-                pobiEmail);
+                pobiEmail,
+                ReservationType.Constants.MANAGER);
 
         //then
-        assertThatThrownBy(() -> reservationService.saveReservation(
-                reservationCreateDto,
-                UserType.MANAGER))
+        assertThatThrownBy(() -> reservationService.saveReservation(reservationCreateDto))
                 .isInstanceOf(ReservationAlreadyExistsException.class);
     }
 
@@ -426,12 +417,11 @@ class ManagerReservationServiceTest extends ServiceTest {
                 lutherId,
                 closedSpaceId,
                 reservationCreateUpdateWithPasswordRequest,
-                pobiEmail);
+                pobiEmail,
+                ReservationType.Constants.MANAGER);
 
         // then
-        assertThatThrownBy(() -> reservationService.saveReservation(
-                reservationCreateDto,
-                UserType.MANAGER)).
+        assertThatThrownBy(() -> reservationService.saveReservation(reservationCreateDto)).
                 isInstanceOf(InvalidReservationEnableException.class);
     }
 
@@ -467,12 +457,11 @@ class ManagerReservationServiceTest extends ServiceTest {
                 lutherId,
                 invalidDayOfWeekSpaceId,
                 reservationCreateUpdateWithPasswordRequest,
-                pobiEmail);
+                pobiEmail,
+                ReservationType.Constants.MANAGER);
 
         // then
-        assertThatThrownBy(() -> reservationService.saveReservation(
-                reservationCreateDto,
-                UserType.MANAGER)).
+        assertThatThrownBy(() -> reservationService.saveReservation(reservationCreateDto)).
                 isInstanceOf(NoSettingAvailableException.class);
     }
 
@@ -504,12 +493,11 @@ class ManagerReservationServiceTest extends ServiceTest {
                 lutherId,
                 beId,
                 reservationCreateUpdateWithPasswordRequest,
-                pobiEmail);
+                pobiEmail,
+                ReservationType.Constants.MANAGER);
 
         //then
-        ReservationCreateResponse reservationCreateResponse = reservationService.saveReservation(
-                reservationCreateDto,
-                UserType.MANAGER);
+        ReservationCreateResponse reservationCreateResponse = reservationService.saveReservation(reservationCreateDto);
         assertThat(reservationCreateResponse.getId()).isEqualTo(reservation.getId());
     }
 
@@ -537,22 +525,21 @@ class ManagerReservationServiceTest extends ServiceTest {
                 lutherId,
                 beId,
                 reservationCreateUpdateWithPasswordRequest,
-                pobiEmail);
+                pobiEmail,
+                ReservationType.Constants.MANAGER);
         ReservationUpdateDto reservationUpdateDto = ReservationUpdateDto.of(
                 lutherId,
                 beId,
                 reservationId,
                 reservationCreateUpdateWithPasswordRequest,
-                pobiEmail);
+                pobiEmail,
+                ReservationType.Constants.MANAGER);
 
         //then
-        assertThatThrownBy(() -> reservationService.saveReservation(
-                reservationCreateDto,
-                UserType.MANAGER))
+        assertThatThrownBy(() -> reservationService.saveReservation(reservationCreateDto))
                 .isInstanceOf(NoSettingAvailableException.class);
         assertThatThrownBy(() -> reservationService.updateReservation(
-                reservationUpdateDto,
-                UserType.MANAGER))
+                reservationUpdateDto))
                 .isInstanceOf(NoSettingAvailableException.class);
     }
 
@@ -589,22 +576,21 @@ class ManagerReservationServiceTest extends ServiceTest {
                 lutherId,
                 beId,
                 reservationCreateUpdateWithPasswordRequest,
-                pobiEmail);
+                pobiEmail,
+                ReservationType.Constants.MANAGER);
         ReservationUpdateDto reservationUpdateDto = ReservationUpdateDto.of(
                 lutherId,
                 beId,
                 reservationId,
                 reservationCreateUpdateWithPasswordRequest,
-                pobiEmail);
+                pobiEmail,
+                ReservationType.Constants.MANAGER);
 
         //then
-        assertThatThrownBy(() -> reservationService.saveReservation(
-                reservationCreateDto,
-                UserType.MANAGER))
+        assertThatThrownBy(() -> reservationService.saveReservation(reservationCreateDto))
                 .isInstanceOf(MultipleSettingsException.class);
         assertThatThrownBy(() -> reservationService.updateReservation(
-                reservationUpdateDto,
-                UserType.MANAGER))
+                reservationUpdateDto))
                 .isInstanceOf(MultipleSettingsException.class);
     }
 
@@ -632,22 +618,21 @@ class ManagerReservationServiceTest extends ServiceTest {
                 lutherId,
                 beId,
                 reservationCreateUpdateWithPasswordRequest,
-                pobiEmail);
+                pobiEmail,
+                ReservationType.Constants.MANAGER);
         ReservationUpdateDto reservationUpdateDto = ReservationUpdateDto.of(
                 lutherId,
                 beId,
                 reservationId,
                 reservationCreateUpdateWithPasswordRequest,
-                pobiEmail);
+                pobiEmail,
+                ReservationType.Constants.MANAGER);
 
         //then
-        assertThatThrownBy(() -> reservationService.saveReservation(
-                reservationCreateDto,
-                UserType.MANAGER))
+        assertThatThrownBy(() -> reservationService.saveReservation(reservationCreateDto))
                 .isInstanceOf(InvalidStartEndTimeException.class);
         assertThatThrownBy(() -> reservationService.updateReservation(
-                reservationUpdateDto,
-                UserType.MANAGER))
+                reservationUpdateDto))
                 .isInstanceOf(InvalidStartEndTimeException.class);
     }
 
@@ -681,23 +666,22 @@ class ManagerReservationServiceTest extends ServiceTest {
                 lutherId,
                 beId,
                 reservationCreateUpdateWithPasswordRequest,
-                pobiEmail);
+                pobiEmail,
+                ReservationType.Constants.MANAGER);
 
         ReservationUpdateDto reservationUpdateDto = ReservationUpdateDto.of(
                 lutherId,
                 beId,
                 reservationId,
                 reservationCreateUpdateRequest,
-                pobiEmail);
+                pobiEmail,
+                ReservationType.Constants.MANAGER);
 
         //then
-        assertThatThrownBy(() -> reservationService.saveReservation(
-                reservationCreateDto,
-                UserType.MANAGER))
+        assertThatThrownBy(() -> reservationService.saveReservation(reservationCreateDto))
                 .isInstanceOf(InvalidTimeUnitException.class);
         assertThatThrownBy(() -> reservationService.updateReservation(
-                reservationUpdateDto,
-                UserType.MANAGER))
+                reservationUpdateDto))
                 .isInstanceOf(InvalidTimeUnitException.class);
     }
 
@@ -722,12 +706,11 @@ class ManagerReservationServiceTest extends ServiceTest {
                 lutherId,
                 beId,
                 reservationCreateUpdateWithPasswordRequest,
-                pobiEmail);
+                pobiEmail,
+                ReservationType.Constants.MANAGER);
 
         //then
-        assertThatThrownBy(() -> reservationService.saveReservation(
-                reservationCreateDto,
-                UserType.MANAGER))
+        assertThatThrownBy(() -> reservationService.saveReservation(reservationCreateDto))
                 .isInstanceOf(InvalidMinimumDurationTimeException.class);
     }
 
@@ -752,12 +735,11 @@ class ManagerReservationServiceTest extends ServiceTest {
                 lutherId,
                 beId,
                 reservationCreateUpdateWithPasswordRequest,
-                pobiEmail);
+                pobiEmail,
+                ReservationType.Constants.MANAGER);
 
         //then
-        assertThatThrownBy(() -> reservationService.saveReservation(
-                reservationCreateDto,
-                UserType.MANAGER))
+        assertThatThrownBy(() -> reservationService.saveReservation(reservationCreateDto))
                 .isInstanceOf(InvalidMaximumDurationTimeException.class);
     }
 
@@ -784,12 +766,12 @@ class ManagerReservationServiceTest extends ServiceTest {
                 beId,
                 reservationId,
                 reservationCreateUpdateRequest,
-                pobiEmail);
+                pobiEmail,
+                ReservationType.Constants.MANAGER);
 
         //then
         assertThatThrownBy(() -> reservationService.updateReservation(
-                reservationUpdateDto,
-                UserType.MANAGER))
+                reservationUpdateDto))
                 .isInstanceOf(InvalidMinimumDurationTimeException.class);
     }
 
@@ -816,12 +798,12 @@ class ManagerReservationServiceTest extends ServiceTest {
                 beId,
                 reservationId,
                 reservationCreateUpdateRequest,
-                pobiEmail);
+                pobiEmail,
+                ReservationType.Constants.MANAGER);
 
         //then
         assertThatThrownBy(() -> reservationService.updateReservation(
-                reservationUpdateDto,
-                UserType.MANAGER))
+                reservationUpdateDto))
                 .isInstanceOf(InvalidMaximumDurationTimeException.class);
     }
 
@@ -851,13 +833,13 @@ class ManagerReservationServiceTest extends ServiceTest {
                 lutherId,
                 beId,
                 THE_DAY_AFTER_TOMORROW,
-                pobiEmail);
+                pobiEmail,
+                ReservationType.Constants.MANAGER);
 
         //then
         ReservationFindResponse reservationFindResponse = ReservationFindResponse.from(foundReservations);
         assertThat(reservationService.findReservations(
-                reservationFindDto,
-                UserType.MANAGER))
+                reservationFindDto))
                 .usingRecursiveComparison()
                 .isEqualTo(reservationFindResponse);
     }
@@ -875,10 +857,11 @@ class ManagerReservationServiceTest extends ServiceTest {
                 noneExistingMapId,
                 beId,
                 THE_DAY_AFTER_TOMORROW,
-                pobiEmail);
+                pobiEmail,
+                ReservationType.Constants.MANAGER);
 
         //then
-        assertThatThrownBy(() -> reservationService.findReservations(reservationFindDto, UserType.MANAGER))
+        assertThatThrownBy(() -> reservationService.findReservations(reservationFindDto))
                 .isInstanceOf(NoSuchMapException.class);
     }
 
@@ -895,12 +878,12 @@ class ManagerReservationServiceTest extends ServiceTest {
                 lutherId,
                 noneExistingSpaceId,
                 THE_DAY_AFTER_TOMORROW,
-                pobiEmail);
+                pobiEmail,
+                ReservationType.Constants.MANAGER);
 
         //then
         assertThatThrownBy(() -> reservationService.findReservations(
-                reservationFindDto,
-                UserType.MANAGER))
+                reservationFindDto))
                 .isInstanceOf(NoSuchSpaceException.class);
     }
 
@@ -920,12 +903,12 @@ class ManagerReservationServiceTest extends ServiceTest {
                 lutherId,
                 noneExistingSpaceId,
                 reservationId,
-                pobiEmail);
+                pobiEmail,
+                ReservationType.Constants.MANAGER);
 
         //then
         assertThatThrownBy(() -> reservationService.findReservation(
-                reservationAuthenticationDto,
-                UserType.MANAGER))
+                reservationAuthenticationDto))
                 .isInstanceOf(NoSuchSpaceException.class);
     }
 
@@ -949,21 +932,21 @@ class ManagerReservationServiceTest extends ServiceTest {
                 lutherId,
                 beId,
                 THE_DAY_AFTER_TOMORROW,
-                pobiEmail);
+                pobiEmail,
+                ReservationType.Constants.MANAGER);
         ReservationFindAllDto reservationFindAllDto = ReservationFindAllDto.of(
                 lutherId,
                 THE_DAY_AFTER_TOMORROW,
-                pobiEmail);
+                pobiEmail,
+                ReservationType.Constants.MANAGER);
 
         //then
         assertThat(reservationService.findReservations(
-                reservationFindDto,
-                UserType.MANAGER))
+                reservationFindDto))
                 .usingRecursiveComparison()
                 .isEqualTo(ReservationFindResponse.from(Collections.emptyList()));
         assertThat(reservationService.findAllReservations(
-                reservationFindAllDto,
-                UserType.MANAGER))
+                reservationFindAllDto))
                 .usingRecursiveComparison()
                 .isEqualTo(ReservationFindAllResponse.of(List.of(be, fe), Collections.emptyList()));
     }
@@ -1004,13 +987,13 @@ class ManagerReservationServiceTest extends ServiceTest {
         ReservationFindAllDto reservationFindAllDto = ReservationFindAllDto.of(
                 lutherId,
                 THE_DAY_AFTER_TOMORROW,
-                pobiEmail);
+                pobiEmail,
+                ReservationType.Constants.MANAGER);
 
         //then
         ReservationFindAllResponse reservationFindAllResponse = ReservationFindAllResponse.of(findSpaces, foundReservations);
         assertThat(reservationService.findAllReservations(
-                reservationFindAllDto,
-                UserType.MANAGER))
+                reservationFindAllDto))
                 .usingRecursiveComparison()
                 .isEqualTo(reservationFindAllResponse);
     }
@@ -1033,12 +1016,12 @@ class ManagerReservationServiceTest extends ServiceTest {
         ReservationFindAllDto reservationFindAllDto = ReservationFindAllDto.of(
                 lutherId,
                 THE_DAY_AFTER_TOMORROW,
-                sakjungEmail);
+                sakjungEmail,
+                ReservationType.Constants.MANAGER);
 
         //then
         assertThatThrownBy(() -> reservationService.findAllReservations(
-                reservationFindAllDto,
-                UserType.MANAGER))
+                reservationFindAllDto))
                 .isInstanceOf(NoAuthorityOnMapException.class);
     }
 
@@ -1060,12 +1043,12 @@ class ManagerReservationServiceTest extends ServiceTest {
                 lutherId,
                 beId,
                 THE_DAY_AFTER_TOMORROW,
-                sakjungEmail);
+                sakjungEmail,
+                ReservationType.Constants.MANAGER);
 
         //then
         assertThatThrownBy(() -> reservationService.findReservations(
-                reservationFindDto,
-                UserType.MANAGER))
+                reservationFindDto))
                 .isInstanceOf(NoAuthorityOnMapException.class);
     }
 
@@ -1084,12 +1067,12 @@ class ManagerReservationServiceTest extends ServiceTest {
                 luther.getId(),
                 be.getId(),
                 reservation.getId(),
-                pobiEmail);
+                pobiEmail,
+                ReservationType.Constants.MANAGER);
 
         //when
         ReservationResponse actualResponse = reservationService.findReservation(
-                reservationAuthenticationDto,
-                UserType.MANAGER);
+                reservationAuthenticationDto);
 
         //then
         assertThat(actualResponse).usingRecursiveComparison()
@@ -1111,12 +1094,12 @@ class ManagerReservationServiceTest extends ServiceTest {
                 lutherId,
                 beId,
                 reservationId,
-                sakjungEmail);
+                sakjungEmail,
+                ReservationType.Constants.MANAGER);
 
         //then
         assertThatThrownBy(() -> reservationService.findReservation(
-                reservationAuthenticationDto,
-                UserType.MANAGER))
+                reservationAuthenticationDto))
                 .isInstanceOf(NoAuthorityOnMapException.class);
     }
 
@@ -1136,12 +1119,12 @@ class ManagerReservationServiceTest extends ServiceTest {
                 lutherId,
                 beId,
                 reservationId,
-                pobiEmail);
+                pobiEmail,
+                ReservationType.Constants.MANAGER);
 
         //then
         assertThatThrownBy(() -> reservationService.findReservation(
-                reservationAuthenticationDto,
-                UserType.MANAGER))
+                reservationAuthenticationDto))
                 .isInstanceOf(NoSuchReservationException.class);
     }
 
@@ -1169,12 +1152,12 @@ class ManagerReservationServiceTest extends ServiceTest {
                 beId,
                 reservationId,
                 reservationCreateUpdateRequest,
-                pobiEmail);
+                pobiEmail,
+                ReservationType.Constants.MANAGER);
 
         //then
         assertDoesNotThrow(() -> reservationService.updateReservation(
-                reservationUpdateDto,
-                UserType.MANAGER));
+                reservationUpdateDto));
         assertThat(reservation.getUserName()).isEqualTo(CHANGED_NAME);
         assertThat(reservation.getDescription()).isEqualTo(CHANGED_DESCRIPTION);
     }
@@ -1201,12 +1184,12 @@ class ManagerReservationServiceTest extends ServiceTest {
                 beId,
                 reservationId,
                 reservationCreateUpdateRequest,
-                sakjungEmail);
+                sakjungEmail,
+                ReservationType.Constants.MANAGER);
 
         //then
         assertThatThrownBy(() -> reservationService.updateReservation(
-                reservationUpdateDto,
-                UserType.MANAGER))
+                reservationUpdateDto))
                 .isInstanceOf(NoAuthorityOnMapException.class);
     }
 
@@ -1218,6 +1201,8 @@ class ManagerReservationServiceTest extends ServiceTest {
 
         given(maps.findByIdFetch(anyLong()))
                 .willReturn(Optional.of(luther));
+        given(reservations.findById(anyLong()))
+                .willReturn(Optional.of(reservation));
 
         //when
         ReservationCreateUpdateRequest reservationCreateUpdateRequest = new ReservationCreateUpdateRequest(
@@ -1232,12 +1217,11 @@ class ManagerReservationServiceTest extends ServiceTest {
                 beId,
                 reservationId,
                 reservationCreateUpdateRequest,
-                pobiEmail);
+                pobiEmail,
+                ReservationType.Constants.MANAGER);
 
         //then
-        assertThatThrownBy(() -> reservationService.updateReservation(
-                reservationUpdateDto,
-                UserType.MANAGER))
+        assertThatThrownBy(() -> reservationService.updateReservation(reservationUpdateDto))
                 .isInstanceOf(ImpossibleStartEndTimeException.class);
     }
 
@@ -1248,6 +1232,8 @@ class ManagerReservationServiceTest extends ServiceTest {
 
         given(maps.findByIdFetch(anyLong()))
                 .willReturn(Optional.of(luther));
+        given(reservations.findById(anyLong()))
+                .willReturn((Optional.of(reservation)));
 
         //when
         ReservationCreateUpdateRequest reservationCreateUpdateRequest = new ReservationCreateUpdateRequest(
@@ -1262,12 +1248,12 @@ class ManagerReservationServiceTest extends ServiceTest {
                 beId,
                 reservationId,
                 reservationCreateUpdateRequest,
-                pobiEmail);
+                pobiEmail,
+                ReservationType.Constants.MANAGER);
 
         //then
         assertThatThrownBy(() -> reservationService.updateReservation(
-                reservationUpdateDto,
-                UserType.MANAGER))
+                reservationUpdateDto))
                 .isInstanceOf(NonMatchingStartEndDateException.class);
     }
 
@@ -1301,12 +1287,12 @@ class ManagerReservationServiceTest extends ServiceTest {
                 beId,
                 reservationId,
                 reservationCreateUpdateRequest,
-                pobiEmail);
+                pobiEmail,
+                ReservationType.Constants.MANAGER);
 
         //then
         assertThatThrownBy(() -> reservationService.updateReservation(
-                reservationUpdateDto,
-                UserType.MANAGER))
+                reservationUpdateDto))
                 .isInstanceOf(ReservationAlreadyExistsException.class);
     }
 
@@ -1334,12 +1320,12 @@ class ManagerReservationServiceTest extends ServiceTest {
                 beId,
                 reservationId,
                 reservationCreateUpdateRequest,
-                pobiEmail);
+                pobiEmail,
+                ReservationType.Constants.MANAGER);
 
         //then
         assertThatThrownBy(() -> reservationService.updateReservation(
-                reservationUpdateDto,
-                UserType.MANAGER))
+                reservationUpdateDto))
                 .isInstanceOf(InvalidStartEndTimeException.class);
     }
 
@@ -1380,12 +1366,12 @@ class ManagerReservationServiceTest extends ServiceTest {
                 closedSpaceId,
                 reservationId,
                 reservationCreateUpdateRequest,
-                pobiEmail);
+                pobiEmail,
+                ReservationType.Constants.MANAGER);
 
         // then
         assertThatThrownBy(() -> reservationService.updateReservation(
-                reservationUpdateDto,
-                UserType.MANAGER))
+                reservationUpdateDto))
                 .isInstanceOf(InvalidReservationEnableException.class);
     }
 
@@ -1426,12 +1412,12 @@ class ManagerReservationServiceTest extends ServiceTest {
                 invalidDayOfWeekSpaceId,
                 reservationId,
                 reservationCreateUpdateRequest,
-                pobiEmail);
+                pobiEmail,
+                ReservationType.Constants.MANAGER);
 
         // then
         assertThatThrownBy(() -> reservationService.updateReservation(
-                reservationUpdateDto,
-                UserType.MANAGER))
+                reservationUpdateDto))
                 .isInstanceOf(NoSettingAvailableException.class);
     }
 
@@ -1458,12 +1444,12 @@ class ManagerReservationServiceTest extends ServiceTest {
                 lutherId,
                 beId,
                 reservationId,
-                pobiEmail);
+                pobiEmail,
+                ReservationType.Constants.MANAGER);
 
         //then
         assertDoesNotThrow(() -> reservationService.deleteReservation(
-                reservationAuthenticationDto,
-                UserType.MANAGER));
+                reservationAuthenticationDto));
     }
 
     @Test
@@ -1481,12 +1467,12 @@ class ManagerReservationServiceTest extends ServiceTest {
                 lutherId,
                 beId,
                 reservationId,
-                sakjungEmail);
+                sakjungEmail,
+                ReservationType.Constants.MANAGER);
 
         //then
         assertThatThrownBy(() -> reservationService.deleteReservation(
-                reservationAuthenticationDto,
-                UserType.MANAGER))
+                reservationAuthenticationDto))
                 .isInstanceOf(NoAuthorityOnMapException.class);
     }
 
@@ -1506,12 +1492,12 @@ class ManagerReservationServiceTest extends ServiceTest {
                 lutherId,
                 beId,
                 reservationId,
-                pobiEmail);
+                pobiEmail,
+                ReservationType.Constants.MANAGER);
 
         //then
         assertThatThrownBy(() -> reservationService.deleteReservation(
-                reservationAuthenticationDto,
-                UserType.MANAGER))
+                reservationAuthenticationDto))
                 .isInstanceOf(NoSuchReservationException.class);
     }
 

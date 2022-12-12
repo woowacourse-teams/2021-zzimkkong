@@ -89,9 +89,15 @@ public class Constants {
     public static final String BE_PM_TWO_THREE_USERNAME = "LOGIN_USER";
     public static final String BE_PM_TWO_THREE_PW = null;
 
-    public static final ZonedDateTime BE_YESTERDAY_PM_TWO_THREE_START_TIME_KST = THE_DAY_AFTER_TOMORROW.minusDays(1).atTime(14, 0).atZone(ZoneId.of(ServiceZone.KOREA.getTimeZone()));
-    public static final ZonedDateTime BE_YESTERDAY_PM_TWO_THREE_END_TIME_KST = THE_DAY_AFTER_TOMORROW.minusDays(1).atTime(15, 0).atZone(ZoneId.of(ServiceZone.KOREA.getTimeZone()));
-    public static final String BE_YESTERDAY_PM_TWO_THREE_DESCRIPTION = "이미 지나간 찜꽁 7차 회의 로그인 예약자";
-    public static final String BE_YESTERDAY_PM_TWO_THREE_USERNAME = "LOGIN_USER";
-    public static final String BE_YESTERDAY_PM_TWO_THREE_PW = null;
+    public static final ZonedDateTime BE_FIVE_DAYS_AGO_PM_TWO_THREE_START_TIME_KST = THE_DAY_AFTER_TOMORROW.minusDays(5).atTime(14, 0).atZone(ZoneId.of(ServiceZone.KOREA.getTimeZone()));
+    public static final ZonedDateTime BE_FIVE_DAYS_AGO_PM_TWO_THREE_END_TIME_KST = THE_DAY_AFTER_TOMORROW.minusDays(5).atTime(15, 0).atZone(ZoneId.of(ServiceZone.KOREA.getTimeZone()));
+    public static final String BE_FIVE_DAYS_AGO_PM_TWO_THREE_DESCRIPTION = "5일 전 찜꽁 7차 회의 로그인 예약자";
+    public static final String BE_FIVE_DAYS_AGO_PM_TWO_THREE_USERNAME = "LOGIN_USER";
+    public static final String BE_FIVE_DAYS_AGO_PM_TWO_THREE_PW = null;
+
+    public static final ZonedDateTime FE1_PM_TWO_THREE_START_TIME_KST = THE_DAY_AFTER_TOMORROW.atTime(14, 0).atZone(ZoneId.of(ServiceZone.KOREA.getTimeZone()));
+    public static final ZonedDateTime FE1_PM_TWO_THREE_END_TIME_KST = THE_DAY_AFTER_TOMORROW.atTime(15, 0).atZone(ZoneId.of(ServiceZone.KOREA.getTimeZone()));
+    public static final String FE1_PM_TWO_THREE_DESCRIPTION = "찜꽁 8차 회의 로그인 예약자";
+    public static final String FE1_PM_TWO_THREE_USERNAME = "LOGIN_USER";
+    public static final String FE1_PM_TWO_THREE_PW = null;
 }

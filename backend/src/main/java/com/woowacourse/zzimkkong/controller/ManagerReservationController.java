@@ -2,7 +2,7 @@ package com.woowacourse.zzimkkong.controller;
 
 import com.woowacourse.zzimkkong.config.logaspect.LogMethodExecutionTime;
 import com.woowacourse.zzimkkong.domain.LoginEmail;
-import com.woowacourse.zzimkkong.domain.UserType;
+import com.woowacourse.zzimkkong.domain.ReservationType;
 import com.woowacourse.zzimkkong.dto.member.LoginUserEmail;
 import com.woowacourse.zzimkkong.dto.reservation.*;
 import com.woowacourse.zzimkkong.dto.slack.SlackResponse;
@@ -36,14 +36,15 @@ public class ManagerReservationController {
     public ResponseEntity<Void> create(
             @PathVariable final Long mapId,
             @PathVariable final Long spaceId,
-            @RequestBody @Valid final ReservationCreateUpdateWithPasswordRequest reservationCreateUpdateWithPasswordRequest,
+            @RequestBody @Valid final ReservationCreateUpdateAsManagerRequest reservationCreateUpdateAsManagerRequest,
             @LoginEmail final LoginUserEmail loginUserEmail) {
         ReservationCreateDto reservationCreateDto = ReservationCreateDto.of(
                 mapId,
                 spaceId,
-                reservationCreateUpdateWithPasswordRequest,
-                loginUserEmail);
-        ReservationCreateResponse reservationCreateResponse = reservationService.saveReservation(reservationCreateDto, UserType.MANAGER);
+                reservationCreateUpdateAsManagerRequest,
+                loginUserEmail,
+                ReservationType.Constants.MANAGER);
+        ReservationCreateResponse reservationCreateResponse = reservationService.saveReservation(reservationCreateDto);
         slackService.sendCreateMessage(reservationCreateResponse.getSlackResponse());
         return ResponseEntity
                 .created(URI.create("/api/managers/maps/" + mapId + "/spaces/" + spaceId + "/reservations/" + reservationCreateResponse.getId()))
@@ -58,8 +59,9 @@ public class ManagerReservationController {
         ReservationFindAllDto reservationFindAllDto = ReservationFindAllDto.of(
                 mapId,
                 date,
-                loginUserEmail);
-        ReservationFindAllResponse reservationFindAllResponse = reservationService.findAllReservations(reservationFindAllDto, UserType.MANAGER);
+                loginUserEmail,
+                ReservationType.Constants.MANAGER);
+        ReservationFindAllResponse reservationFindAllResponse = reservationService.findAllReservations(reservationFindAllDto);
         return ResponseEntity.ok().body(reservationFindAllResponse);
     }
 
@@ -73,8 +75,9 @@ public class ManagerReservationController {
                 mapId,
                 spaceId,
                 date,
-                loginUserEmail);
-        ReservationFindResponse reservationFindResponse = reservationService.findReservations(reservationFindDto, UserType.MANAGER);
+                loginUserEmail,
+                ReservationType.Constants.MANAGER);
+        ReservationFindResponse reservationFindResponse = reservationService.findReservations(reservationFindDto);
         return ResponseEntity.ok().body(reservationFindResponse);
     }
 
@@ -88,8 +91,9 @@ public class ManagerReservationController {
                 mapId,
                 spaceId,
                 reservationId,
-                loginUserEmail);
-        ReservationResponse reservationResponse = reservationService.findReservation(reservationAuthenticationDto, UserType.MANAGER);
+                loginUserEmail,
+                ReservationType.Constants.MANAGER);
+        ReservationResponse reservationResponse = reservationService.findReservation(reservationAuthenticationDto);
         return ResponseEntity.ok().body(reservationResponse);
     }
 
@@ -98,15 +102,16 @@ public class ManagerReservationController {
             @PathVariable final Long mapId,
             @PathVariable final Long spaceId,
             @PathVariable final Long reservationId,
-            @RequestBody @Valid final ReservationCreateUpdateRequest reservationCreateUpdateRequest,
+            @RequestBody @Valid final ReservationCreateUpdateAsManagerRequest reservationCreateUpdateAsManagerRequest,
             @LoginEmail final LoginUserEmail loginUserEmail) {
         ReservationUpdateDto reservationUpdateDto = ReservationUpdateDto.of(
                 mapId,
                 spaceId,
                 reservationId,
-                reservationCreateUpdateRequest,
-                loginUserEmail);
-        SlackResponse slackResponse = reservationService.updateReservation(reservationUpdateDto, UserType.MANAGER);
+                reservationCreateUpdateAsManagerRequest,
+                loginUserEmail,
+                ReservationType.Constants.MANAGER);
+        SlackResponse slackResponse = reservationService.updateReservation(reservationUpdateDto);
         slackService.sendUpdateMessage(slackResponse);
         return ResponseEntity.ok().build();
     }
@@ -121,8 +126,9 @@ public class ManagerReservationController {
                 mapId,
                 spaceId,
                 reservationId,
-                loginUserEmail);
-        SlackResponse slackResponse = reservationService.deleteReservation(reservationAuthenticationDto, UserType.MANAGER);
+                loginUserEmail,
+                ReservationType.Constants.MANAGER);
+        SlackResponse slackResponse = reservationService.deleteReservation(reservationAuthenticationDto);
         slackService.sendDeleteMessage(slackResponse);
         return ResponseEntity.noContent().build();
     }
