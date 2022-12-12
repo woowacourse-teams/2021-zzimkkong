@@ -30,7 +30,7 @@ import java.util.List;
 
 import static com.woowacourse.zzimkkong.Constants.*;
 import static com.woowacourse.zzimkkong.DocumentUtils.getRequestSpecification;
-import static com.woowacourse.zzimkkong.controller.ManagerReservationControllerTest.saveReservation;
+import static com.woowacourse.zzimkkong.controller.ManagerReservationControllerTest.saveNonLoginReservation;
 import static com.woowacourse.zzimkkong.controller.ManagerSpaceControllerTest.saveSpace;
 import static com.woowacourse.zzimkkong.controller.MapControllerTest.saveMap;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -162,7 +162,7 @@ class AdminControllerTest extends AcceptanceTest {
                 SALLY_PW,
                 SALLY_NAME,
                 SALLY_DESCRIPTION);
-        saveReservation(beReservationApi, newReservationCreateUpdateWithPasswordRequest);
+        saveNonLoginReservation(beReservationApi, newReservationCreateUpdateWithPasswordRequest);
         Reservation reservation = Reservation.builder()
                 .reservationTime(
                         ReservationTime.ofDefaultServiceZone(

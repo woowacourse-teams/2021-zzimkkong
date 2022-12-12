@@ -127,8 +127,8 @@ class GuestReservationControllerTest extends AcceptanceTest {
     }
 
     @Test
-    @DisplayName("예약을 등록한다.")
-    void save() {
+    @DisplayName("비로그인 예약자로써 예약을 등록한다.")
+    void save_nonLoginUser() {
         //given
         ReservationCreateUpdateWithPasswordRequest newReservationCreateUpdateWithPasswordRequest = new ReservationCreateUpdateWithPasswordRequest(
                 THE_DAY_AFTER_TOMORROW.atTime(19, 0).atZone(ZoneId.of(ServiceZone.KOREA.getTimeZone())),
@@ -139,6 +139,24 @@ class GuestReservationControllerTest extends AcceptanceTest {
 
         // when
         ExtractableResponse<Response> response = saveNonLoginReservation(beReservationApi, newReservationCreateUpdateWithPasswordRequest);
+
+        //then
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
+    }
+
+    @Test
+    @DisplayName("로그인 예약자로써 예약을 등록한다.")
+    void save_loginUser() {
+        //given
+        ReservationCreateUpdateWithPasswordRequest newReservationCreateUpdateWithPasswordRequest = new ReservationCreateUpdateWithPasswordRequest(
+                THE_DAY_AFTER_TOMORROW.atTime(19, 0).atZone(ZoneId.of(ServiceZone.KOREA.getTimeZone())),
+                THE_DAY_AFTER_TOMORROW.atTime(20, 0).atZone(ZoneId.of(ServiceZone.KOREA.getTimeZone())),
+                null,
+                null,
+                SALLY_DESCRIPTION);
+
+        // when
+        ExtractableResponse<Response> response = saveLoginReservation(beReservationApi, newReservationCreateUpdateWithPasswordRequest);
 
         //then
         assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
@@ -490,7 +508,7 @@ class GuestReservationControllerTest extends AcceptanceTest {
             final String api,
             final ReservationCreateUpdateRequest reservationCreateUpdateRequest) {
         return Long.valueOf(
-                saveLoginReservation(api, reservationCreateUpdateRequest)
+                ManagerReservationControllerTest.saveLoginReservation(api, reservationCreateUpdateRequest)
                         .header("location")
                         .split("/")[8]);
     }
@@ -501,7 +519,7 @@ class GuestReservationControllerTest extends AcceptanceTest {
         return RestAssured
                 .given(getRequestSpecification()).log().all()
                 .accept("application/json")
-                .filter(document("reservation/guest/post", getRequestPreprocessor(), getResponsePreprocessor()))
+                .filter(document("reservation/guest/postForNonLoginUser", getRequestPreprocessor(), getResponsePreprocessor()))
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body(reservationCreateUpdateWithPasswordRequest)
                 .when().post(api)
@@ -515,7 +533,7 @@ class GuestReservationControllerTest extends AcceptanceTest {
                 .given(getRequestSpecification()).log().all()
                 .accept("application/json")
                 .header("Authorization", AuthorizationExtractor.AUTHENTICATION_TYPE + " " + accessToken)
-//                .filter(document("reservation/guest/post", getRequestPreprocessor(), getResponsePreprocessor()))
+                .filter(document("reservation/guest/postForLoginUser", getRequestPreprocessor(), getResponsePreprocessor()))
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body(reservationCreateUpdateRequest)
                 .when().post(api)

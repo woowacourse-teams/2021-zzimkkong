@@ -29,6 +29,8 @@ public class ReservationResponse {
     private String name;
     @JsonProperty
     private String description;
+    @JsonProperty
+    private Boolean isLoginReservation;
 
     private Long spaceId;
     private Long mapId;
@@ -39,12 +41,14 @@ public class ReservationResponse {
             final LocalDateTime startDateTime,
             final LocalDateTime endDateTime,
             final String name,
-            final String description) {
+            final String description,
+            final Boolean isLoginReservation) {
         this.id = id;
         this.startDateTime = startDateTime.atZone(UTC.toZoneId());
         this.endDateTime = endDateTime.atZone(UTC.toZoneId());
         this.name = name;
         this.description = description;
+        this.isLoginReservation = isLoginReservation;
     }
 
     public ReservationResponse(
@@ -53,10 +57,11 @@ public class ReservationResponse {
             final LocalDateTime endDateTime,
             final String name,
             final String description,
+            final Boolean isLoginReservation,
             final Long spaceId,
             final Long mapId,
             final Long managerId) {
-        this(id, startDateTime, endDateTime, name, description);
+        this(id, startDateTime, endDateTime, name, description, isLoginReservation);
         this.spaceId = spaceId;
         this.mapId = mapId;
         this.managerId = managerId;
@@ -68,7 +73,8 @@ public class ReservationResponse {
                 reservation.getStartTime(),
                 reservation.getEndTime(),
                 reservation.getUserName(),
-                reservation.getDescription()
+                reservation.getDescription(),
+                reservation.hasMember()
         );
     }
 
@@ -83,6 +89,7 @@ public class ReservationResponse {
                 reservation.getEndTime(),
                 reservation.getUserName(),
                 reservation.getDescription(),
+                reservation.hasMember(),
                 space.getId(),
                 map.getId(),
                 member.getId()

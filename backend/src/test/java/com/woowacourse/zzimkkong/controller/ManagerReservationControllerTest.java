@@ -119,18 +119,38 @@ class ManagerReservationControllerTest extends AcceptanceTest {
     }
 
     @Test
-    @DisplayName("올바른 토큰이 주어질 때, 예약을 등록한다.")
-    void save() {
+    @DisplayName("올바른 토큰과 비로그인 예약자의 이름 & 비밀번호가 주어질 때, 비로그인 예약자의 예약을 대신 등록한다.")
+    void save_nonLoginUser() {
         //given
-        ReservationCreateUpdateWithPasswordRequest newReservationCreateUpdateWithPasswordRequest = new ReservationCreateUpdateWithPasswordRequest(
+        ReservationCreateUpdateAsManagerRequest newReservationCreateUpdateAsManagerRequest = new ReservationCreateUpdateAsManagerRequest(
                 THE_DAY_AFTER_TOMORROW.atTime(19, 0).atZone(ZoneId.of(ServiceZone.KOREA.getTimeZone())),
                 THE_DAY_AFTER_TOMORROW.atTime(20, 0).atZone(ZoneId.of(ServiceZone.KOREA.getTimeZone())),
-                SALLY_PW,
                 SALLY_NAME,
-                SALLY_DESCRIPTION);
+                SALLY_DESCRIPTION,
+                SALLY_PW,
+                null);
 
         //when
-        ExtractableResponse<Response> response = saveReservation(beReservationApi, newReservationCreateUpdateWithPasswordRequest);
+        ExtractableResponse<Response> response = saveNonLoginReservation(beReservationApi, newReservationCreateUpdateAsManagerRequest);
+
+        //then
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
+    }
+
+    @Test
+    @DisplayName("올바른 토큰과 로그인 예약자의 이메일이 주어질 때, 로그인 예약자의 예약을 대신 등록한다.")
+    void save_loginUser() {
+        //given
+        ReservationCreateUpdateAsManagerRequest newReservationCreateUpdateAsManagerRequest = new ReservationCreateUpdateAsManagerRequest(
+                THE_DAY_AFTER_TOMORROW.atTime(19, 0).atZone(ZoneId.of(ServiceZone.KOREA.getTimeZone())),
+                THE_DAY_AFTER_TOMORROW.atTime(20, 0).atZone(ZoneId.of(ServiceZone.KOREA.getTimeZone())),
+                SALLY_NAME,
+                SALLY_DESCRIPTION,
+                null,
+                EMAIL);
+
+        //when
+        ExtractableResponse<Response> response = saveLoginReservation(beReservationApi, newReservationCreateUpdateAsManagerRequest);
 
         //then
         assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
@@ -367,19 +387,33 @@ class ManagerReservationControllerTest extends AcceptanceTest {
             final String api,
             final ReservationCreateUpdateWithPasswordRequest reservationCreateUpdateWithPasswordRequest) {
         return Long.valueOf(
-                saveReservation(api, reservationCreateUpdateWithPasswordRequest)
+                saveNonLoginReservation(api, reservationCreateUpdateWithPasswordRequest)
                         .header("location")
                         .split("/")[8]);
     }
 
-    static ExtractableResponse<Response> saveReservation(
+    static ExtractableResponse<Response> saveNonLoginReservation(
             final String api,
-            final ReservationCreateUpdateWithPasswordRequest reservationCreateUpdateWithPasswordRequest) {
+            final ReservationCreateUpdateRequest reservationCreateUpdateAsManagerRequest) {
         return RestAssured
                 .given(getRequestSpecification()).log().all()
                 .accept("application/json")
                 .header("Authorization", AuthorizationExtractor.AUTHENTICATION_TYPE + " " + accessToken)
-                .filter(document("reservation/manager/post", getRequestPreprocessor(), getResponsePreprocessor()))
+                .filter(document("reservation/manager/postForNonLoginUser", getRequestPreprocessor(), getResponsePreprocessor()))
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .body(reservationCreateUpdateAsManagerRequest)
+                .when().post(api)
+                .then().log().all().extract();
+    }
+
+    static ExtractableResponse<Response> saveLoginReservation(
+            final String api,
+            final ReservationCreateUpdateRequest reservationCreateUpdateWithPasswordRequest) {
+        return RestAssured
+                .given(getRequestSpecification()).log().all()
+                .accept("application/json")
+                .header("Authorization", AuthorizationExtractor.AUTHENTICATION_TYPE + " " + accessToken)
+                .filter(document("reservation/manager/postForLoginUser", getRequestPreprocessor(), getResponsePreprocessor()))
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body(reservationCreateUpdateWithPasswordRequest)
                 .when().post(api)

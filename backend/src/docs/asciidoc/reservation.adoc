@@ -1,17 +1,29 @@
 == Reservations(예약)
 
 === 예약 생성
-==== 공간 관리자
+==== 공간 관리자 - 비로그인 예약 대행
 ===== Request
-include::{snippets}/reservation/manager/post/http-request.adoc[]
+include::{snippets}/reservation/manager/postForNonLoginUser/http-request.adoc[]
 ===== Response
-include::{snippets}/reservation/manager/post/http-response.adoc[]
+include::{snippets}/reservation/manager/postForNonLoginUser/http-response.adoc[]
 
-==== 예약자
+==== 공간 관리자 - 로그인 예약 대행
 ===== Request
-include::{snippets}/reservation/guest/post/http-request.adoc[]
+include::{snippets}/reservation/manager/postForLoginUser/http-request.adoc[]
 ===== Response
-include::{snippets}/reservation/guest/post/http-response.adoc[]
+include::{snippets}/reservation/manager/postForLoginUser/http-response.adoc[]
+
+==== 비로그인 예약자
+===== Request
+include::{snippets}/reservation/guest/postForNonLoginUser/http-request.adoc[]
+===== Response
+include::{snippets}/reservation/guest/postForNonLoginUser/http-response.adoc[]
+
+==== 로그인 예약자
+===== Request
+include::{snippets}/reservation/guest/postForLoginUser/http-request.adoc[]
+===== Response
+include::{snippets}/reservation/guest/postForLoginUser/http-response.adoc[]
 
 === 특정 공간 예약 조회
 ==== 공간 관리자
@@ -46,33 +58,57 @@ include::{snippets}/reservation/manager/delete/http-request.adoc[]
 ===== Response
 include::{snippets}/reservation/manager/delete/http-response.adoc[]
 
-==== 예약자
+==== 비로그인 예약자
 ===== Request
 include::{snippets}/reservation/guest/delete/http-request.adoc[]
 ===== Response
 include::{snippets}/reservation/guest/delete/http-response.adoc[]
 
-=== 예약 비밀번호 확인
+==== 로그인 예약자
+===== Request
+include::{snippets}/reservation/guest/delete/http-request.adoc[]
+===== Response
+include::{snippets}/reservation/guest/delete/http-response.adoc[]
+
+=== 예약 상세 데이터 확인
 ==== 공간 관리자
 ===== Request
 include::{snippets}/reservation/manager/getForUpdate/http-request.adoc[]
 ===== Response
 include::{snippets}/reservation/manager/getForUpdate/http-response.adoc[]
 
-==== 예약자
+==== 비로그인 예약자
+===== Request
+include::{snippets}/reservation/guest/postForUpdate/http-request.adoc[]
+===== Response
+include::{snippets}/reservation/guest/postForUpdate/http-response.adoc[]
+
+==== 로그인 예약자
 ===== Request
 include::{snippets}/reservation/guest/postForUpdate/http-request.adoc[]
 ===== Response
 include::{snippets}/reservation/guest/postForUpdate/http-response.adoc[]
 
 === 예약 수정
-==== 공간 관리자
+==== 공간 관리자 - 비로그인 예약 대행
 ===== Request
 include::{snippets}/reservation/manager/put/http-request.adoc[]
 ===== Response
 include::{snippets}/reservation/manager/put/http-response.adoc[]
 
-==== 예약자
+==== 공간 관리자 - 로그인 예약 대행
+===== Request
+include::{snippets}/reservation/manager/put/http-request.adoc[]
+===== Response
+include::{snippets}/reservation/manager/put/http-response.adoc[]
+
+==== 비로그인 예약자
+===== Request
+include::{snippets}/reservation/guest/put/http-request.adoc[]
+===== Response
+include::{snippets}/reservation/guest/put/http-response.adoc[]
+
+==== 로그인 예약자
 ===== Request
 include::{snippets}/reservation/guest/put/http-request.adoc[]
 ===== Response
