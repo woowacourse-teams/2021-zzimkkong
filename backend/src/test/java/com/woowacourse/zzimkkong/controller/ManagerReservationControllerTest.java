@@ -404,13 +404,11 @@ class ManagerReservationControllerTest extends AcceptanceTest {
     @DisplayName("예약을 삭제한다.")
     void delete() {
         //given, when
-        ReservationPasswordAuthenticationRequest reservationPasswordAuthenticationRequest
-                = new ReservationPasswordAuthenticationRequest(SALLY_PW);
 
         String api = beReservationApi + "/" + savedReservationId;
 
         //then
-        ExtractableResponse<Response> response = deleteReservation(api, reservationPasswordAuthenticationRequest);
+        ExtractableResponse<Response> response = deleteReservation(api);
         assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
     }
 
@@ -645,17 +643,13 @@ class ManagerReservationControllerTest extends AcceptanceTest {
                 .then().log().all().extract();
     }
 
-    private ExtractableResponse<Response> deleteReservation(
-
-            final String api,
-            final ReservationPasswordAuthenticationRequest reservationPasswordAuthenticationRequest) {
+    private ExtractableResponse<Response> deleteReservation(final String api) {
         return RestAssured
                 .given(getRequestSpecification()).log().all()
                 .accept("application/json")
                 .header("Authorization", AuthorizationExtractor.AUTHENTICATION_TYPE + " " + accessToken)
                 .filter(document("reservation/manager/delete", getRequestPreprocessor(), getResponsePreprocessor()))
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(reservationPasswordAuthenticationRequest)
                 .when().delete(api)
                 .then().log().all().extract();
     }

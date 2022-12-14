@@ -131,7 +131,7 @@ class ReservationRepositoryTest extends RepositoryTest {
                                 BE_PM_TWO_THREE_START_TIME_KST.withZoneSameInstant(UTC.toZoneId()).toLocalDateTime(),
                                 BE_PM_TWO_THREE_END_TIME_KST.withZoneSameInstant(UTC.toZoneId()).toLocalDateTime()))
                 .description(BE_PM_TWO_THREE_DESCRIPTION)
-                .userName(BE_PM_TWO_THREE_USERNAME)
+                .userName(pobi.getUserName())
                 .member(pobi)
                 .space(be)
                 .build();
@@ -142,7 +142,7 @@ class ReservationRepositoryTest extends RepositoryTest {
                                 BE_FIVE_DAYS_AGO_PM_TWO_THREE_START_TIME_KST.withZoneSameInstant(UTC.toZoneId()).toLocalDateTime(),
                                 BE_FIVE_DAYS_AGO_PM_TWO_THREE_END_TIME_KST.withZoneSameInstant(UTC.toZoneId()).toLocalDateTime()))
                 .description(BE_FIVE_DAYS_AGO_PM_TWO_THREE_DESCRIPTION)
-                .userName(BE_FIVE_DAYS_AGO_PM_TWO_THREE_USERNAME)
+                .userName(pobi.getUserName())
                 .member(pobi)
                 .space(be)
                 .build();
