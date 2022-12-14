@@ -1,6 +1,7 @@
 package com.woowacourse.zzimkkong.controller;
 
 import com.woowacourse.zzimkkong.DatabaseCleaner;
+import com.woowacourse.zzimkkong.domain.ProfileEmoji;
 import com.woowacourse.zzimkkong.dto.map.MapCreateUpdateRequest;
 import com.woowacourse.zzimkkong.dto.member.LoginRequest;
 import com.woowacourse.zzimkkong.dto.member.MemberSaveRequest;
@@ -40,7 +41,7 @@ import static org.springframework.restdocs.restassured3.RestAssuredRestDocumenta
 @ActiveProfiles("test")
 class AcceptanceTest {
     protected static String accessToken;
-    protected static final MemberSaveRequest memberSaveRequest = new MemberSaveRequest(EMAIL, USER_NAME, PW, ORGANIZATION);
+    protected static final MemberSaveRequest memberSaveRequest = new MemberSaveRequest(EMAIL, USER_NAME, ProfileEmoji.MAN_DARK_SKIN_TONE_TECHNOLOGIST, PW, ORGANIZATION);
     protected static final LoginRequest loginRequest = new LoginRequest(EMAIL, PW);
     protected final MapCreateUpdateRequest mapCreateUpdateRequest = new MapCreateUpdateRequest(LUTHER_NAME, MAP_DRAWING_DATA, MAP_SVG);
     protected final SettingRequest beSettingRequest = new SettingRequest(

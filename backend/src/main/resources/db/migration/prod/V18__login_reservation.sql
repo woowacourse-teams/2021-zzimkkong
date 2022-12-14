@@ -1,5 +1,6 @@
 -- member table
-ALTER TABLE member ADD COLUMN user_name VARCHAR(20);
+ALTER TABLE member ADD COLUMN user_name VARCHAR(20) NOT NULL;
+ALTER TABLE member ADD COLUMN emoji VARCHAR(255) NOT NULL;
 
 -- reservation table
 ALTER TABLE reservation MODIFY COLUMN password VARCHAR(4);

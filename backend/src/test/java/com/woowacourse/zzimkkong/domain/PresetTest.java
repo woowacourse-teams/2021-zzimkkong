@@ -25,6 +25,7 @@ class PresetTest {
                 .id(1L)
                 .email(EMAIL)
                 .userName(USER_NAME)
+                .emoji(ProfileEmoji.MAN_DARK_SKIN_TONE_TECHNOLOGIST)
                 .password(PW)
                 .organization(ORGANIZATION)
                 .build();
@@ -54,12 +55,14 @@ class PresetTest {
         Member member = Member.builder()
                 .email(EMAIL)
                 .userName(USER_NAME)
+                .emoji(ProfileEmoji.MAN_DARK_SKIN_TONE_TECHNOLOGIST)
                 .password(PW)
                 .organization(ORGANIZATION)
                 .build();
         Member another = Member.builder()
                 .email("another@email.com")
                 .userName(USER_NAME)
+                .emoji(ProfileEmoji.MAN_DARK_SKIN_TONE_TECHNOLOGIST)
                 .password(PW)
                 .organization(ORGANIZATION)
                 .build();
@@ -86,6 +89,7 @@ class PresetTest {
         Member member = Member.builder()
                 .email(EMAIL)
                 .userName(USER_NAME)
+                .emoji(ProfileEmoji.MAN_DARK_SKIN_TONE_TECHNOLOGIST)
                 .password(PW)
                 .organization(ORGANIZATION)
                 .build();

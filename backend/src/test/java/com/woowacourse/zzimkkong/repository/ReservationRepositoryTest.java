@@ -38,6 +38,7 @@ class ReservationRepositoryTest extends RepositoryTest {
         pobi = Member.builder()
                 .email(EMAIL)
                 .userName(USER_NAME)
+                .emoji(ProfileEmoji.MAN_DARK_SKIN_TONE_TECHNOLOGIST)
                 .password(PW)
                 .organization(ORGANIZATION)
                 .build();
