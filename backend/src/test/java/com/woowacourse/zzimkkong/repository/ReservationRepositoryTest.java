@@ -35,7 +35,12 @@ class ReservationRepositoryTest extends RepositoryTest {
 
     @BeforeEach
     void setUp() {
-        pobi = new Member(EMAIL, USER_NAME, PW, ORGANIZATION);
+        pobi = Member.builder()
+                .email(EMAIL)
+                .userName(USER_NAME)
+                .password(PW)
+                .organization(ORGANIZATION)
+                .build();
         Map luther = new Map(LUTHER_NAME, MAP_DRAWING_DATA, MAP_SVG, pobi);
 
         Setting beSetting = Setting.builder()

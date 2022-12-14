@@ -1,6 +1,8 @@
 package com.woowacourse.zzimkkong.domain;
 
 import com.woowacourse.zzimkkong.dto.member.MemberUpdateRequest;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -10,7 +12,9 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
+@Builder
 @Getter
+@AllArgsConstructor
 @NoArgsConstructor
 @Entity
 @Table(indexes = @Index(name = "email", columnList = "email", unique = true))
@@ -36,43 +40,12 @@ public class Member {
     private OauthProvider oauthProvider;
 
     @OneToMany(mappedBy = "member", cascade = CascadeType.REMOVE, orphanRemoval = true)
+    @Builder.Default
     private final List<Preset> presets = new ArrayList<>();
 
     @OneToMany(mappedBy = "member", cascade = CascadeType.REMOVE, orphanRemoval = true)
+    @Builder.Default
     private final List<Map> maps = new ArrayList<>();
-
-    public Member(
-            final String email,
-            final String userName,
-            final String password,
-            final String organization) {
-        this.email = email;
-        this.userName = userName;
-        this.password = password;
-        this.organization = organization;
-    }
-
-    public Member(
-            final Long id,
-            final String email,
-            final String userName,
-            final String password,
-            final String organization) {
-        this(email, password, organization, userName);
-        this.id = id;
-    }
-
-    public Member(final String email, final String userName, final String organization, final OauthProvider oauthProvider) {
-        this.email = email;
-        this.userName = userName;
-        this.organization = organization;
-        this.oauthProvider = oauthProvider;
-    }
-
-    public Member(final Long id, final String email, final String userName, final String organization, final OauthProvider oauthProvider) {
-        this(email, userName, organization, oauthProvider);
-        this.id = id;
-    }
 
     public Optional<Preset> findPresetById(final Long presetId) {
         return this.presets.stream()

@@ -28,7 +28,13 @@ class SharingIdGeneratorTest {
 
     @BeforeEach
     void setUp() {
-        pobi = new Member(1L, USER_NAME, EMAIL, PW, ORGANIZATION);
+        pobi = Member.builder()
+                .id(1L)
+                .email(EMAIL)
+                .userName(USER_NAME)
+                .password(PW)
+                .organization(ORGANIZATION)
+                .build();
         luther = new Map(1L,
                 LUTHER_NAME,
                 MAP_DRAWING_DATA,

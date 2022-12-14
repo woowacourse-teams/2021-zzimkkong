@@ -36,12 +36,12 @@ public class MemberService {
         validateDuplicateUserName(memberSaveRequest.getUserName());
 
         String password = passwordEncoder.encode(memberSaveRequest.getPassword());
-        Member member = new Member(
-                memberSaveRequest.getEmail(),
-                memberSaveRequest.getUserName(),
-                password,
-                memberSaveRequest.getOrganization()
-        );
+        Member member = Member.builder()
+                .email(memberSaveRequest.getEmail())
+                .userName(memberSaveRequest.getUserName())
+                .password(password)
+                .organization(memberSaveRequest.getOrganization())
+                .build();
         Member saveMember = members.save(member);
         return MemberSaveResponse.from(saveMember);
     }
@@ -53,11 +53,12 @@ public class MemberService {
         validateDuplicateEmail(email);
         validateDuplicateUserName(oauthMemberSaveRequest.getUserName());
 
-        Member member = new Member(
-                email,
-                oauthMemberSaveRequest.getUserName(),
-                oauthMemberSaveRequest.getOrganization(),
-                oauthProvider);
+        Member member = Member.builder()
+                .email(email)
+                .userName(oauthMemberSaveRequest.getUserName())
+                .organization(oauthMemberSaveRequest.getOrganization())
+                .oauthProvider(oauthProvider)
+                .build();
         Member saveMember = members.save(member);
         return MemberSaveResponse.from(saveMember);
     }
