@@ -35,12 +35,17 @@ class ManagerReservationControllerTest extends AcceptanceTest {
     private String fe1ReservationApi;
     private Long savedReservationId;
 
+    private Member pobi;
+
     private Space be;
     private Space fe;
 
     private Reservation beAmZeroOne;
     private Reservation bePmOneTwo;
     private Reservation fe1ZeroOne;
+    private Reservation bePmTwoThreeByPobi;
+    private Reservation fePmTwoThreeByPobi;
+    private Reservation beFiveDaysAgoPmTwoThreeByPobi;
 
     @BeforeEach
     void setUp() {
@@ -55,14 +60,15 @@ class ManagerReservationControllerTest extends AcceptanceTest {
         beReservationApi = saveBeSpaceResponse.header("location") + "/reservations";
         fe1ReservationApi = saveFe1SpaceResponse.header("location") + "/reservations";
 
-        ReservationCreateUpdateWithPasswordRequest reservationCreateUpdateWithPasswordRequest = new ReservationCreateUpdateWithPasswordRequest(
+        ReservationCreateUpdateAsManagerRequest reservationCreateUpdateWithPasswordRequest = new ReservationCreateUpdateAsManagerRequest(
                 THE_DAY_AFTER_TOMORROW.atTime(15, 0).atZone(ZoneId.of(ServiceZone.KOREA.getTimeZone())),
                 THE_DAY_AFTER_TOMORROW.atTime(16, 0).atZone(ZoneId.of(ServiceZone.KOREA.getTimeZone())),
-                SALLY_PW,
                 SALLY_NAME,
-                SALLY_DESCRIPTION);
+                SALLY_DESCRIPTION,
+                SALLY_PW,
+                null);
 
-        Member pobi = new Member(EMAIL, USER_NAME, passwordEncoder.encode(PW), ORGANIZATION);
+        pobi = new Member(EMAIL, USER_NAME, passwordEncoder.encode(PW), ORGANIZATION);
         Map luther = new Map(LUTHER_NAME, MAP_DRAWING_DATA, MAP_SVG, pobi);
 
         Setting beSetting = Setting.builder()
@@ -166,7 +172,8 @@ class ManagerReservationControllerTest extends AcceptanceTest {
         List<Reservation> expectedFindReservations = Arrays.asList(
                 savedReservation,
                 beAmZeroOne,
-                bePmOneTwo);
+                bePmOneTwo,
+                bePmTwoThreeByPobi);
 
         ReservationFindResponse expectedResponse = ReservationFindResponse.from(expectedFindReservations);
 
@@ -191,7 +198,9 @@ class ManagerReservationControllerTest extends AcceptanceTest {
                 savedReservation,
                 beAmZeroOne,
                 bePmOneTwo,
-                fe1ZeroOne);
+                fe1ZeroOne,
+                bePmTwoThreeByPobi,
+                fePmTwoThreeByPobi);
         ReservationFindAllResponse expectedResponse = ReservationFindAllResponse.of(
                 Arrays.asList(be, fe),
                 expectedFindReservations);
@@ -222,19 +231,21 @@ class ManagerReservationControllerTest extends AcceptanceTest {
     }
 
     @Test
-    @DisplayName("공간 변경 없는 새로운 예약 정보가 주어지면 예약을 업데이트 한다")
-    void update_sameSpace() {
+    @DisplayName("비로그인 예약자의 공간 변경 없는 새로운 예약 정보가 주어지면 예약을 업데이트 한다")
+    void update_sameSpace_nonLoginUser() {
         //given
-        ReservationCreateUpdateRequest reservationCreateUpdateRequestSameSpace = new ReservationCreateUpdateRequest(
+        ReservationCreateUpdateAsManagerRequest reservationCreateUpdateRequestSameSpace = new ReservationCreateUpdateAsManagerRequest(
                 THE_DAY_AFTER_TOMORROW.atTime(19, 0).atZone(ZoneId.of(ServiceZone.KOREA.getTimeZone())),
                 THE_DAY_AFTER_TOMORROW.atTime(20, 30).atZone(ZoneId.of(ServiceZone.KOREA.getTimeZone())),
                 "sally",
-                "회의입니다."
+                "회의입니다.",
+                null,
+                null
         );
         String api = beReservationApi + "/" + savedReservationId;
 
         //when
-        ExtractableResponse<Response> updateResponse = updateReservation(api, reservationCreateUpdateRequestSameSpace);
+        ExtractableResponse<Response> updateResponse = updateReservationNonLoginUser(api, reservationCreateUpdateRequestSameSpace);
         ExtractableResponse<Response> findResponse = findReservation(api);
 
         ReservationResponse actualResponse = findResponse.as(ReservationResponse.class);
@@ -259,21 +270,62 @@ class ManagerReservationControllerTest extends AcceptanceTest {
     }
 
     @Test
-    @DisplayName("공간 변경 있는 새로운 예약 정보가 주어지면 공간을 이동한 채로 예약을 업데이트 한다.")
-    void update_spaceUpdate() {
+    @DisplayName("로그인 예약자의 공간 변경 없는 새로운 예약 정보가 주어지면 예약을 업데이트 한다")
+    void update_sameSpace_loginUser() {
         //given
-        ReservationCreateUpdateWithPasswordRequest reservationCreateUpdateWithPasswordRequestDifferentSpace = new ReservationCreateUpdateWithPasswordRequest(
+        ReservationCreateUpdateAsManagerRequest reservationCreateUpdateRequestSameSpace = new ReservationCreateUpdateAsManagerRequest(
+                THE_DAY_AFTER_TOMORROW.atTime(19, 0).atZone(ZoneId.of(ServiceZone.KOREA.getTimeZone())),
+                THE_DAY_AFTER_TOMORROW.atTime(20, 30).atZone(ZoneId.of(ServiceZone.KOREA.getTimeZone())),
+                null,
+                "회의입니다.",
+                null,
+                EMAIL
+        );
+        String api = beReservationApi + "/" + bePmTwoThreeByPobi.getId();
+
+        //when
+        ExtractableResponse<Response> updateResponse = updateReservationForLoginUser(api, reservationCreateUpdateRequestSameSpace);
+        ExtractableResponse<Response> findResponse = findReservation(api);
+
+        ReservationResponse actualResponse = findResponse.as(ReservationResponse.class);
+        ReservationResponse expectedResponse = ReservationResponse.from(
+                Reservation.builder()
+                        .id(bePmTwoThreeByPobi.getId())
+                        .reservationTime(
+                                ReservationTime.ofDefaultServiceZone(
+                                        reservationCreateUpdateRequestSameSpace.localStartDateTime(),
+                                        reservationCreateUpdateRequestSameSpace.localEndDateTime()))
+                        .description(reservationCreateUpdateRequestSameSpace.getDescription())
+                        .member(pobi)
+                        .userName(reservationCreateUpdateRequestSameSpace.getName())
+                        .space(be)
+                        .build());
+
+        //then
+        assertThat(updateResponse.statusCode()).isEqualTo(HttpStatus.OK.value());
+        assertThat(actualResponse).usingRecursiveComparison()
+                .ignoringCollectionOrder()
+                .ignoringExpectedNullFields()
+                .isEqualTo(expectedResponse);
+    }
+
+    @Test
+    @DisplayName("비로그인 예약자의 공간 변경 있는 새로운 예약 정보가 주어지면 공간을 이동한 채로 예약을 업데이트 한다.")
+    void update_spaceUpdate_nonLoginUser() {
+        //given
+        ReservationCreateUpdateAsManagerRequest reservationCreateUpdateWithPasswordRequestDifferentSpace = new ReservationCreateUpdateAsManagerRequest(
                 THE_DAY_AFTER_TOMORROW.atTime(19, 30).atZone(ZoneId.of(ServiceZone.KOREA.getTimeZone())),
                 THE_DAY_AFTER_TOMORROW.atTime(20, 30).atZone(ZoneId.of(ServiceZone.KOREA.getTimeZone())),
-                SALLY_PW,
                 "sally",
-                "회의입니다."
+                "회의입니다.",
+                null,
+                null
         );
 
         String api = fe1ReservationApi + "/" + savedReservationId;
 
         //when
-        ExtractableResponse<Response> updateResponse = updateReservation(api, reservationCreateUpdateWithPasswordRequestDifferentSpace);
+        ExtractableResponse<Response> updateResponse = updateReservationNonLoginUser(api, reservationCreateUpdateWithPasswordRequestDifferentSpace);
         ExtractableResponse<Response> findResponse = findReservations(
                 fe1ReservationApi,
                 THE_DAY_AFTER_TOMORROW.toString());
@@ -282,16 +334,63 @@ class ManagerReservationControllerTest extends AcceptanceTest {
 
         List<Reservation> expectedFindReservations = Arrays.asList(
                 Reservation.builder()
+                        .id(savedReservationId)
                         .reservationTime(
                                 ReservationTime.ofDefaultServiceZone(
                                         reservationCreateUpdateWithPasswordRequestDifferentSpace.localStartDateTime(),
                                         reservationCreateUpdateWithPasswordRequestDifferentSpace.localEndDateTime()))
                         .description(reservationCreateUpdateWithPasswordRequestDifferentSpace.getDescription())
                         .userName(reservationCreateUpdateWithPasswordRequestDifferentSpace.getName())
-                        .password(reservationCreateUpdateWithPasswordRequestDifferentSpace.getPassword())
+                        .password(savedReservation.getPassword())
                         .space(fe)
                         .build(),
-                fe1ZeroOne);
+                fe1ZeroOne,
+                fePmTwoThreeByPobi);
+        ReservationFindResponse expectedResponse = ReservationFindResponse.from(expectedFindReservations);
+
+        //then
+        assertThat(updateResponse.statusCode()).isEqualTo(HttpStatus.OK.value());
+        assertThat(actualResponse).usingRecursiveComparison()
+                .ignoringExpectedNullFields()
+                .isEqualTo(expectedResponse);
+    }
+
+    @Test
+    @DisplayName("로그인 예약자의 공간 변경 있는 새로운 예약 정보가 주어지면 공간을 이동한 채로 예약을 업데이트 한다.")
+    void update_spaceUpdate_loginUser() {
+        //given
+        ReservationCreateUpdateAsManagerRequest reservationCreateUpdateWithPasswordRequestDifferentSpace = new ReservationCreateUpdateAsManagerRequest(
+                THE_DAY_AFTER_TOMORROW.atTime(19, 30).atZone(ZoneId.of(ServiceZone.KOREA.getTimeZone())),
+                THE_DAY_AFTER_TOMORROW.atTime(20, 30).atZone(ZoneId.of(ServiceZone.KOREA.getTimeZone())),
+                null,
+                "회의입니다.",
+                null,
+                EMAIL);
+
+        String api = fe1ReservationApi + "/" + bePmTwoThreeByPobi.getId();
+
+        //when
+        ExtractableResponse<Response> updateResponse = updateReservationForLoginUser(api, reservationCreateUpdateWithPasswordRequestDifferentSpace);
+        ExtractableResponse<Response> findResponse = findReservations(
+                fe1ReservationApi,
+                THE_DAY_AFTER_TOMORROW.toString());
+
+        ReservationFindResponse actualResponse = findResponse.as(ReservationFindResponse.class);
+
+        List<Reservation> expectedFindReservations = Arrays.asList(
+                Reservation.builder()
+                        .id(bePmTwoThreeByPobi.getId())
+                        .reservationTime(
+                                ReservationTime.ofDefaultServiceZone(
+                                        reservationCreateUpdateWithPasswordRequestDifferentSpace.localStartDateTime(),
+                                        reservationCreateUpdateWithPasswordRequestDifferentSpace.localEndDateTime()))
+                        .description(reservationCreateUpdateWithPasswordRequestDifferentSpace.getDescription())
+                        .member(pobi)
+                        .userName(pobi.getUserName())
+                        .space(fe)
+                        .build(),
+                fe1ZeroOne,
+                fePmTwoThreeByPobi);
         ReservationFindResponse expectedResponse = ReservationFindResponse.from(expectedFindReservations);
 
         //then
@@ -316,33 +415,61 @@ class ManagerReservationControllerTest extends AcceptanceTest {
     }
 
     private void saveExampleReservations() {
-        ReservationCreateUpdateWithPasswordRequest beAmZeroOneRequest = new ReservationCreateUpdateWithPasswordRequest(
+        ReservationCreateUpdateAsManagerRequest beAmZeroOneRequest = new ReservationCreateUpdateAsManagerRequest(
                 BE_AM_TEN_ELEVEN_START_TIME_KST,
                 BE_AM_TEN_ELEVEN_END_TIME_KST,
-                BE_AM_TEN_ELEVEN_PW,
                 BE_AM_TEN_ELEVEN_USERNAME,
-                BE_AM_TEN_ELEVEN_DESCRIPTION);
+                BE_AM_TEN_ELEVEN_DESCRIPTION,
+                BE_AM_TEN_ELEVEN_PW,
+                null);
 
-        ReservationCreateUpdateWithPasswordRequest bePmOneTwoRequest = new ReservationCreateUpdateWithPasswordRequest(
+        ReservationCreateUpdateAsManagerRequest bePmOneTwoRequest = new ReservationCreateUpdateAsManagerRequest(
                 BE_PM_ONE_TWO_START_TIME_KST,
                 BE_PM_ONE_TWO_END_TIME_KST,
-                BE_PM_ONE_TWO_PW,
                 BE_PM_ONE_TWO_USERNAME,
-                BE_PM_ONE_TWO_DESCRIPTION);
+                BE_PM_ONE_TWO_DESCRIPTION,
+                BE_PM_ONE_TWO_PW,
+                null);
 
-        ReservationCreateUpdateWithPasswordRequest beNextDayAmSixTwelveRequest = new ReservationCreateUpdateWithPasswordRequest(
+        ReservationCreateUpdateAsManagerRequest beNextDayAmSixTwelveRequest = new ReservationCreateUpdateAsManagerRequest(
                 BE_NEXT_DAY_PM_FOUR_TO_SIX_START_TIME_KST,
                 BE_NEXT_DAY_PM_FOUR_TO_SIX_END_TIME_KST,
-                BE_NEXT_DAY_PM_FOUR_TO_SIX_PW,
                 BE_NEXT_DAY_PM_FOUR_TO_SIX_USERNAME,
-                BE_NEXT_DAY_PM_FOUR_TO_SIX_DESCRIPTION);
+                BE_NEXT_DAY_PM_FOUR_TO_SIX_DESCRIPTION,
+                BE_NEXT_DAY_PM_FOUR_TO_SIX_PW,
+                null);
 
-        ReservationCreateUpdateWithPasswordRequest feZeroOneRequest = new ReservationCreateUpdateWithPasswordRequest(
+        ReservationCreateUpdateAsManagerRequest feZeroOneRequest = new ReservationCreateUpdateAsManagerRequest(
                 FE1_AM_TEN_ELEVEN_START_TIME_KST,
                 FE1_AM_TEN_ELEVEN_END_TIME_KST,
-                FE1_AM_TEN_ELEVEN_PW,
                 FE1_AM_TEN_ELEVEN_USERNAME,
-                FE1_AM_TEN_ELEVEN_DESCRIPTION);
+                FE1_AM_TEN_ELEVEN_DESCRIPTION,
+                FE1_AM_TEN_ELEVEN_PW,
+                null);
+
+        ReservationCreateUpdateAsManagerRequest bePmTwoThreeRequestPobi = new ReservationCreateUpdateAsManagerRequest(
+                BE_PM_TWO_THREE_START_TIME_KST,
+                BE_PM_TWO_THREE_END_TIME_KST,
+                BE_PM_TWO_THREE_USERNAME,
+                BE_PM_TWO_THREE_DESCRIPTION,
+                BE_PM_TWO_THREE_PW,
+                EMAIL);
+
+        ReservationCreateUpdateAsManagerRequest beFiveDaysAgoPmTwoThreeRequestPobi = new ReservationCreateUpdateAsManagerRequest(
+                BE_FIVE_DAYS_AGO_PM_TWO_THREE_START_TIME_KST,
+                BE_FIVE_DAYS_AGO_PM_TWO_THREE_END_TIME_KST,
+                BE_FIVE_DAYS_AGO_PM_TWO_THREE_USERNAME,
+                BE_FIVE_DAYS_AGO_PM_TWO_THREE_DESCRIPTION,
+                BE_FIVE_DAYS_AGO_PM_TWO_THREE_PW,
+                EMAIL);
+
+        ReservationCreateUpdateAsManagerRequest fe1PmTwoThreeRequestPobi = new ReservationCreateUpdateAsManagerRequest(
+                FE1_PM_TWO_THREE_START_TIME_KST,
+                FE1_PM_TWO_THREE_END_TIME_KST,
+                FE1_PM_TWO_THREE_USERNAME,
+                FE1_PM_TWO_THREE_DESCRIPTION,
+                FE1_PM_TWO_THREE_PW,
+                EMAIL);
 
         beAmZeroOne = Reservation.builder()
                 .id(getReservationIdAfterSave(beReservationApi, beAmZeroOneRequest))
@@ -381,13 +508,50 @@ class ManagerReservationControllerTest extends AcceptanceTest {
                 .password(FE1_AM_TEN_ELEVEN_PW)
                 .space(fe)
                 .build();
+
+        bePmTwoThreeByPobi = Reservation.builder()
+                .id(getReservationIdAfterSave(beReservationApi, bePmTwoThreeRequestPobi))
+                .reservationTime(
+                        ReservationTime.ofDefaultServiceZone(
+                                BE_PM_TWO_THREE_START_TIME_KST.withZoneSameInstant(UTC.toZoneId()).toLocalDateTime(),
+                                BE_PM_TWO_THREE_END_TIME_KST.withZoneSameInstant(UTC.toZoneId()).toLocalDateTime()))
+                .description(BE_PM_TWO_THREE_DESCRIPTION)
+                .member(pobi)
+                .userName(pobi.getUserName())
+                .space(be)
+                .build();
+
+        fePmTwoThreeByPobi = Reservation.builder()
+                .id(getReservationIdAfterSave(fe1ReservationApi, fe1PmTwoThreeRequestPobi))
+                .reservationTime(
+                        ReservationTime.ofDefaultServiceZone(
+                                FE1_PM_TWO_THREE_START_TIME_KST.withZoneSameInstant(UTC.toZoneId()).toLocalDateTime(),
+                                FE1_PM_TWO_THREE_END_TIME_KST.withZoneSameInstant(UTC.toZoneId()).toLocalDateTime()))
+                .description(FE1_PM_TWO_THREE_DESCRIPTION)
+                .member(pobi)
+                .userName(pobi.getUserName())
+                .space(fe)
+                .build();
+
+        beFiveDaysAgoPmTwoThreeByPobi = Reservation.builder()
+                .id(getReservationIdAfterSave(beReservationApi, beFiveDaysAgoPmTwoThreeRequestPobi))
+                .reservationTime(
+                        ReservationTime.ofDefaultServiceZone(
+                                BE_FIVE_DAYS_AGO_PM_TWO_THREE_START_TIME_KST.withZoneSameInstant(UTC.toZoneId()).toLocalDateTime(),
+                                BE_FIVE_DAYS_AGO_PM_TWO_THREE_END_TIME_KST.withZoneSameInstant(UTC.toZoneId()).toLocalDateTime()))
+                .description(BE_FIVE_DAYS_AGO_PM_TWO_THREE_DESCRIPTION)
+                .member(pobi)
+                .userName(pobi.getUserName())
+                .password(BE_FIVE_DAYS_AGO_PM_TWO_THREE_USERNAME)
+                .space(be)
+                .build();
     }
 
     public static Long getReservationIdAfterSave(
             final String api,
-            final ReservationCreateUpdateWithPasswordRequest reservationCreateUpdateWithPasswordRequest) {
+            final ReservationCreateUpdateAsManagerRequest reservationCreateUpdateAsManagerRequest) {
         return Long.valueOf(
-                saveNonLoginReservation(api, reservationCreateUpdateWithPasswordRequest)
+                saveNonLoginReservation(api, reservationCreateUpdateAsManagerRequest)
                         .header("location")
                         .split("/")[8]);
     }
@@ -442,14 +606,28 @@ class ManagerReservationControllerTest extends AcceptanceTest {
                 .then().log().all().extract();
     }
 
-    private ExtractableResponse<Response> updateReservation(
+    private ExtractableResponse<Response> updateReservationNonLoginUser(
             final String api,
-            final ReservationCreateUpdateRequest reservationCreateUpdateRequest) {
+            final ReservationCreateUpdateAsManagerRequest reservationCreateUpdateRequest) {
         return RestAssured
                 .given(getRequestSpecification()).log().all()
                 .accept("application/json")
                 .header("Authorization", AuthorizationExtractor.AUTHENTICATION_TYPE + " " + accessToken)
-                .filter(document("reservation/manager/put", getRequestPreprocessor(), getResponsePreprocessor()))
+                .filter(document("reservation/manager/putForNonLoginUser", getRequestPreprocessor(), getResponsePreprocessor()))
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .body(reservationCreateUpdateRequest)
+                .when().put(api)
+                .then().log().all().extract();
+    }
+
+    private ExtractableResponse<Response> updateReservationForLoginUser(
+            final String api,
+            final ReservationCreateUpdateAsManagerRequest reservationCreateUpdateRequest) {
+        return RestAssured
+                .given(getRequestSpecification()).log().all()
+                .accept("application/json")
+                .header("Authorization", AuthorizationExtractor.AUTHENTICATION_TYPE + " " + accessToken)
+                .filter(document("reservation/manager/putForLoginUser", getRequestPreprocessor(), getResponsePreprocessor()))
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body(reservationCreateUpdateRequest)
                 .when().put(api)

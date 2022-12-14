@@ -37,8 +37,6 @@ public class ReservationCreateDto {
         this.description = request.getDescription();
         this.loginUserEmail = loginUserEmail;
         this.reservationType = ReservationType.of(apiType, this.loginUserEmail);
-
-        // 모두 null
     }
 
     public static ReservationCreateDto of(

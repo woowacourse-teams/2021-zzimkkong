@@ -79,40 +79,40 @@ include::{snippets}/reservation/manager/getForUpdate/http-response.adoc[]
 
 ==== 비로그인 예약자
 ===== Request
-include::{snippets}/reservation/guest/postForUpdate/http-request.adoc[]
+include::{snippets}/reservation/guest/postForUpdateNonLoginReservation/http-request.adoc[]
 ===== Response
-include::{snippets}/reservation/guest/postForUpdate/http-response.adoc[]
+include::{snippets}/reservation/guest/postForUpdateNonLoginReservation/http-response.adoc[]
 
 ==== 로그인 예약자
 ===== Request
-include::{snippets}/reservation/guest/postForUpdate/http-request.adoc[]
+include::{snippets}/reservation/guest/postForUpdateLoginReservation/http-request.adoc[]
 ===== Response
-include::{snippets}/reservation/guest/postForUpdate/http-response.adoc[]
+include::{snippets}/reservation/guest/postForUpdateLoginReservation/http-response.adoc[]
 
 === 예약 수정
 ==== 공간 관리자 - 비로그인 예약 대행
 ===== Request
-include::{snippets}/reservation/manager/put/http-request.adoc[]
+include::{snippets}/reservation/manager/putForNonLoginUser/http-request.adoc[]
 ===== Response
-include::{snippets}/reservation/manager/put/http-response.adoc[]
+include::{snippets}/reservation/manager/putForNonLoginUser/http-response.adoc[]
 
 ==== 공간 관리자 - 로그인 예약 대행
 ===== Request
-include::{snippets}/reservation/manager/put/http-request.adoc[]
+include::{snippets}/reservation/manager/putForLoginUser/http-request.adoc[]
 ===== Response
-include::{snippets}/reservation/manager/put/http-response.adoc[]
+include::{snippets}/reservation/manager/putForLoginUser/http-response.adoc[]
 
 ==== 비로그인 예약자
 ===== Request
-include::{snippets}/reservation/guest/put/http-request.adoc[]
+include::{snippets}/reservation/guest/putForNonLoginUser/http-request.adoc[]
 ===== Response
-include::{snippets}/reservation/guest/put/http-response.adoc[]
+include::{snippets}/reservation/guest/putForNonLoginUser/http-response.adoc[]
 
 ==== 로그인 예약자
 ===== Request
-include::{snippets}/reservation/guest/put/http-request.adoc[]
+include::{snippets}/reservation/guest/putForLoginUser/http-request.adoc[]
 ===== Response
-include::{snippets}/reservation/guest/put/http-response.adoc[]
+include::{snippets}/reservation/guest/putForLoginUser/http-response.adoc[]
 
 === 나의 예약 조회 (찜꽁한 예약)
 include::{snippets}/reservation/guest/getAllUpcomingMine/http-request.adoc[]

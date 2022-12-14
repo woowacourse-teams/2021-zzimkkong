@@ -216,8 +216,8 @@ class GuestReservationControllerTest extends AcceptanceTest {
     }
 
     @Test
-    @DisplayName("공간 변경 없는 새로운 예약 정보가 주어지면 예약을 업데이트 한다")
-    void update_sameSpace() {
+    @DisplayName("비로그인 예약자의 공간 변경 없는 새로운 예약 정보가 주어지면 예약을 업데이트 한다")
+    void update_sameSpace_nonLoginUser() {
         //given
         ReservationCreateUpdateWithPasswordRequest reservationCreateUpdateWithPasswordRequestSameSpace = new ReservationCreateUpdateWithPasswordRequest(
                 THE_DAY_AFTER_TOMORROW.atTime(19, 0).atZone(ZoneId.of(ServiceZone.KOREA.getTimeZone())),
@@ -229,8 +229,8 @@ class GuestReservationControllerTest extends AcceptanceTest {
         String api = beReservationApi + "/" + savedReservationId;
 
         //when
-        ExtractableResponse<Response> updateResponse = updateReservation(api, reservationCreateUpdateWithPasswordRequestSameSpace);
-        ExtractableResponse<Response> findResponse = findReservation(api, new ReservationPasswordAuthenticationRequest(SALLY_PW));
+        ExtractableResponse<Response> updateResponse = updateNonLoginReservation(api, reservationCreateUpdateWithPasswordRequestSameSpace);
+        ExtractableResponse<Response> findResponse = findNonLoginReservation(api, new ReservationPasswordAuthenticationRequest(SALLY_PW));
 
         ReservationResponse actualResponse = findResponse.as(ReservationResponse.class);
         ReservationResponse expectedResponse = ReservationResponse.from(
@@ -253,8 +253,46 @@ class GuestReservationControllerTest extends AcceptanceTest {
     }
 
     @Test
-    @DisplayName("공간 변경 있는 새로운 예약 정보가 주어지면 공간을 이동한 채로 예약을 업데이트 한다.")
-    void update_spaceUpdate() {
+    @DisplayName("로그인 예약자의 공간 변경 없는 새로운 예약 정보가 주어지면 예약을 업데이트 한다")
+    void update_sameSpace_loginUser() {
+        //given
+        ReservationCreateUpdateWithPasswordRequest reservationCreateUpdateWithPasswordRequestSameSpace = new ReservationCreateUpdateWithPasswordRequest(
+                THE_DAY_AFTER_TOMORROW.atTime(19, 0).atZone(ZoneId.of(ServiceZone.KOREA.getTimeZone())),
+                THE_DAY_AFTER_TOMORROW.atTime(20, 30).atZone(ZoneId.of(ServiceZone.KOREA.getTimeZone())),
+                null,
+                null,
+                "회의입니다."
+        );
+        String api = beReservationApi + "/" + bePmTwoThreeByPobi.getId();
+
+        //when
+        ExtractableResponse<Response> updateResponse = updateLoginReservation(api, reservationCreateUpdateWithPasswordRequestSameSpace);
+        ExtractableResponse<Response> findResponse = findLoginReservation(api, new ReservationPasswordAuthenticationRequest(null));
+
+        ReservationResponse actualResponse = findResponse.as(ReservationResponse.class);
+        ReservationResponse expectedResponse = ReservationResponse.from(
+                Reservation.builder()
+                        .id(bePmTwoThreeByPobi.getId())
+                        .reservationTime(
+                                ReservationTime.ofDefaultServiceZone(
+                                        reservationCreateUpdateWithPasswordRequestSameSpace.localStartDateTime(),
+                                        reservationCreateUpdateWithPasswordRequestSameSpace.localEndDateTime()))
+                        .description(reservationCreateUpdateWithPasswordRequestSameSpace.getDescription())
+                        .member(pobi)
+                        .userName(bePmTwoThreeByPobi.getUserName())
+                        .space(be)
+                        .build());
+
+        //then
+        assertThat(updateResponse.statusCode()).isEqualTo(HttpStatus.OK.value());
+        assertThat(actualResponse).usingRecursiveComparison()
+                .ignoringCollectionOrder()
+                .isEqualTo(expectedResponse);
+    }
+
+    @Test
+    @DisplayName("비로그인 예약자의 공간 변경 있는 새로운 예약 정보가 주어지면 공간을 이동한 채로 예약을 업데이트 한다.")
+    void update_spaceUpdate_nonLoginUser() {
         //given
         ReservationCreateUpdateWithPasswordRequest reservationCreateUpdateWithPasswordRequestDifferentSpace = new ReservationCreateUpdateWithPasswordRequest(
                 THE_DAY_AFTER_TOMORROW.atTime(19, 30).atZone(ZoneId.of(ServiceZone.KOREA.getTimeZone())),
@@ -267,7 +305,7 @@ class GuestReservationControllerTest extends AcceptanceTest {
         String api = fe1ReservationApi + "/" + savedReservationId;
 
         //when
-        ExtractableResponse<Response> updateResponse = updateReservation(api, reservationCreateUpdateWithPasswordRequestDifferentSpace);
+        ExtractableResponse<Response> updateResponse = updateNonLoginReservation(api, reservationCreateUpdateWithPasswordRequestDifferentSpace);
         ExtractableResponse<Response> findResponse = findReservations(fe1ReservationApi, THE_DAY_AFTER_TOMORROW.toString());
 
         ReservationFindResponse actualResponse = findResponse.as(ReservationFindResponse.class);
@@ -281,6 +319,50 @@ class GuestReservationControllerTest extends AcceptanceTest {
                         .description(reservationCreateUpdateWithPasswordRequestDifferentSpace.getDescription())
                         .userName(reservationCreateUpdateWithPasswordRequestDifferentSpace.getName())
                         .password(reservationCreateUpdateWithPasswordRequestDifferentSpace.getPassword())
+                        .space(fe)
+                        .build(),
+                fe1ZeroOne,
+                fePmTwoThreeByPobi);
+
+        ReservationFindResponse expectedResponse = ReservationFindResponse.from(expectedFindReservations);
+
+        //then
+        assertThat(updateResponse.statusCode()).isEqualTo(HttpStatus.OK.value());
+        assertThat(actualResponse).usingRecursiveComparison()
+                .ignoringExpectedNullFields()
+                .isEqualTo(expectedResponse);
+    }
+
+    @Test
+    @DisplayName("로그인 예약자의 공간 변경 있는 새로운 예약 정보가 주어지면 공간을 이동한 채로 예약을 업데이트 한다.")
+    void update_spaceUpdate_loginUser() {
+        //given
+        ReservationCreateUpdateWithPasswordRequest reservationCreateUpdateWithPasswordRequestDifferentSpace = new ReservationCreateUpdateWithPasswordRequest(
+                THE_DAY_AFTER_TOMORROW.atTime(19, 30).atZone(ZoneId.of(ServiceZone.KOREA.getTimeZone())),
+                THE_DAY_AFTER_TOMORROW.atTime(20, 30).atZone(ZoneId.of(ServiceZone.KOREA.getTimeZone())),
+                null,
+                null,
+                "회의입니다."
+        );
+
+        String api = fe1ReservationApi + "/" + bePmTwoThreeByPobi.getId();
+
+        //when
+        ExtractableResponse<Response> updateResponse = updateLoginReservation(api, reservationCreateUpdateWithPasswordRequestDifferentSpace);
+        ExtractableResponse<Response> findResponse = findReservations(fe1ReservationApi, THE_DAY_AFTER_TOMORROW.toString());
+
+        ReservationFindResponse actualResponse = findResponse.as(ReservationFindResponse.class);
+
+        List<Reservation> expectedFindReservations = Arrays.asList(
+                Reservation.builder()
+                        .id(bePmTwoThreeByPobi.getId())
+                        .reservationTime(
+                                ReservationTime.ofDefaultServiceZone(
+                                        reservationCreateUpdateWithPasswordRequestDifferentSpace.localStartDateTime(),
+                                        reservationCreateUpdateWithPasswordRequestDifferentSpace.localEndDateTime()))
+                        .description(reservationCreateUpdateWithPasswordRequestDifferentSpace.getDescription())
+                        .member(pobi)
+                        .userName(bePmTwoThreeByPobi.getUserName())
                         .space(fe)
                         .build(),
                 fe1ZeroOne,
@@ -325,13 +407,30 @@ class GuestReservationControllerTest extends AcceptanceTest {
 
     @Test
     @DisplayName("올바른 비밀번호와 함께 예약 수정을 위한 예약 조회 요청 시, 예약에 대한 정보를 반환한다")
-    void findOne() {
+    void findOne_nonLoginUser() {
         //given, when
         ReservationPasswordAuthenticationRequest reservationPasswordAuthenticationRequest = new ReservationPasswordAuthenticationRequest(SALLY_PW);
-        ExtractableResponse<Response> response = findReservation(beReservationApi + "/" + savedReservationId, reservationPasswordAuthenticationRequest);
+        ExtractableResponse<Response> response = findNonLoginReservation(beReservationApi + "/" + savedReservationId, reservationPasswordAuthenticationRequest);
 
         ReservationResponse actualResponse = response.as(ReservationResponse.class);
         ReservationResponse expectedResponse = ReservationResponse.from(savedReservation);
+
+        //then
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
+        assertThat(actualResponse).usingRecursiveComparison()
+                .ignoringExpectedNullFields()
+                .isEqualTo(expectedResponse);
+    }
+
+    @Test
+    @DisplayName("올바른 토큰과 함께 예약 수정을 위한 예약 조회 요청 시, 예약에 대한 정보를 반환한다")
+    void findOne_loginUser() {
+        //given, when
+        ReservationPasswordAuthenticationRequest reservationPasswordAuthenticationRequest = new ReservationPasswordAuthenticationRequest(null);
+        ExtractableResponse<Response> response = findLoginReservation(beReservationApi + "/" + bePmTwoThreeByPobi.getId(), reservationPasswordAuthenticationRequest);
+
+        ReservationResponse actualResponse = response.as(ReservationResponse.class);
+        ReservationResponse expectedResponse = ReservationResponse.from(bePmTwoThreeByPobi);
 
         //then
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
@@ -574,26 +673,54 @@ class GuestReservationControllerTest extends AcceptanceTest {
                 .then().log().all().extract();
     }
 
-    private ExtractableResponse<Response> updateReservation(
+    private ExtractableResponse<Response> updateNonLoginReservation(
             final String api,
             final ReservationCreateUpdateWithPasswordRequest reservationCreateUpdateWithPasswordRequest) {
         return RestAssured
                 .given(getRequestSpecification()).log().all()
                 .accept("application/json")
-                .filter(document("reservation/guest/put", getRequestPreprocessor(), getResponsePreprocessor()))
+                .filter(document("reservation/guest/putForNonLoginUser", getRequestPreprocessor(), getResponsePreprocessor()))
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body(reservationCreateUpdateWithPasswordRequest)
                 .when().put(api)
                 .then().log().all().extract();
     }
 
-    private ExtractableResponse<Response> findReservation(
+    private ExtractableResponse<Response> updateLoginReservation(
+            final String api,
+            final ReservationCreateUpdateWithPasswordRequest reservationCreateUpdateWithPasswordRequest) {
+        return RestAssured
+                .given(getRequestSpecification()).log().all()
+                .accept("application/json")
+                .header("Authorization", AuthorizationExtractor.AUTHENTICATION_TYPE + " " + accessToken)
+                .filter(document("reservation/guest/putForLoginUser", getRequestPreprocessor(), getResponsePreprocessor()))
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .body(reservationCreateUpdateWithPasswordRequest)
+                .when().put(api)
+                .then().log().all().extract();
+    }
+
+    private ExtractableResponse<Response> findNonLoginReservation(
             final String api,
             final ReservationPasswordAuthenticationRequest reservationPasswordAuthenticationRequest) {
         return RestAssured
                 .given(getRequestSpecification()).log().all()
                 .accept("application/json")
-                .filter(document("reservation/guest/postForUpdate", getRequestPreprocessor(), getResponsePreprocessor()))
+                .filter(document("reservation/guest/postForUpdateNonLoginReservation", getRequestPreprocessor(), getResponsePreprocessor()))
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .body(reservationPasswordAuthenticationRequest)
+                .when().post(api)
+                .then().log().all().extract();
+    }
+
+    private ExtractableResponse<Response> findLoginReservation(
+            final String api,
+            final ReservationPasswordAuthenticationRequest reservationPasswordAuthenticationRequest) {
+        return RestAssured
+                .given(getRequestSpecification()).log().all()
+                .accept("application/json")
+                .header("Authorization", AuthorizationExtractor.AUTHENTICATION_TYPE + " " + accessToken)
+                .filter(document("reservation/guest/postForUpdateLoginReservation", getRequestPreprocessor(), getResponsePreprocessor()))
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body(reservationPasswordAuthenticationRequest)
                 .when().post(api)
