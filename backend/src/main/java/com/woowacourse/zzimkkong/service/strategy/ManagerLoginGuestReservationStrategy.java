@@ -5,19 +5,18 @@ import com.woowacourse.zzimkkong.dto.member.LoginUserEmail;
 import com.woowacourse.zzimkkong.dto.reservation.ReservationCreateDto;
 import com.woowacourse.zzimkkong.exception.authorization.NoAuthorityOnMapException;
 import com.woowacourse.zzimkkong.exception.member.NoSuchMemberException;
-import com.woowacourse.zzimkkong.exception.reservation.InvalidManagerReservationException;
 import com.woowacourse.zzimkkong.repository.MemberRepository;
 import org.springframework.stereotype.Component;
 
 @Component
-public class ManagerReservationStrategy extends ReservationStrategy {
-    public ManagerReservationStrategy(final MemberRepository members) {
+public class ManagerLoginGuestReservationStrategy extends ReservationStrategy {
+    public ManagerLoginGuestReservationStrategy(final MemberRepository members) {
         super(members);
     }
 
     @Override
     public boolean supports(final ReservationType reservationType) {
-        return ReservationType.MANAGER.equals(reservationType);
+        return ReservationType.MANAGER_LOGIN_GUEST.equals(reservationType);
     }
 
     @Override
@@ -43,26 +42,14 @@ public class ManagerReservationStrategy extends ReservationStrategy {
             final Space space,
             final ReservationTime reservationTime,
             final ReservationCreateDto reservationCreateDto) {
-        if (reservationCreateDto.isManagerReservationForLoginUser()) {
-            Member member = members.findByEmail(reservationCreateDto.getEmail())
-                    .orElseThrow(NoSuchMemberException::new);
-            return Reservation.builder()
-                    .reservationTime(reservationTime)
-                    .member(member)
-                    .userName(member.getUserName())
-                    .description(reservationCreateDto.getDescription())
-                    .space(space)
-                    .build();
-        }
-        if (reservationCreateDto.isManagerReservationForNonLoginUser()) {
-            return Reservation.builder()
-                    .reservationTime(reservationTime)
-                    .password(reservationCreateDto.getPassword())
-                    .userName(reservationCreateDto.getName())
-                    .description(reservationCreateDto.getDescription())
-                    .space(space)
-                    .build();
-        }
-        throw new InvalidManagerReservationException();
+        Member member = members.findByEmail(reservationCreateDto.getEmail())
+                .orElseThrow(NoSuchMemberException::new);
+        return Reservation.builder()
+                .reservationTime(reservationTime)
+                .member(member)
+                .userName(member.getUserName())
+                .description(reservationCreateDto.getDescription())
+                .space(space)
+                .build();
     }
 }

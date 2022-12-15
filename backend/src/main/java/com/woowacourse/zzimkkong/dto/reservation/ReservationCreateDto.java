@@ -4,6 +4,7 @@ import com.woowacourse.zzimkkong.domain.ReservationType;
 import com.woowacourse.zzimkkong.dto.member.LoginUserEmail;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import net.logstash.logback.encoder.org.apache.commons.lang3.StringUtils;
 
 import java.time.LocalDateTime;
 
@@ -36,7 +37,14 @@ public class ReservationCreateDto {
         this.name = request.getName();
         this.description = request.getDescription();
         this.loginUserEmail = loginUserEmail;
-        this.reservationType = ReservationType.of(apiType, this.loginUserEmail);
+        this.reservationType = ReservationType.of(apiType, getReservationEmail(apiType));
+    }
+
+    private LoginUserEmail getReservationEmail(String apiType) {
+        if (ReservationType.Constants.GUEST.equals(apiType)) {
+            return this.loginUserEmail;
+        }
+        return LoginUserEmail.from(this.email);
     }
 
     public static ReservationCreateDto of(
@@ -66,14 +74,10 @@ public class ReservationCreateDto {
                 apiType);
     }
 
-    public boolean isManagerReservationForLoginUser() {
-        return this.email != null;
-    }
-
-    public boolean isManagerReservationForNonLoginUser() {
+    public boolean isInvalidNonLoginGuestReservation() {
         if (this instanceof ReservationUpdateDto) {
-            return !isManagerReservationForLoginUser() && this.name != null;
+            return StringUtils.isBlank(this.name);
         }
-        return !isManagerReservationForLoginUser() && this.name != null && this.password != null;
+        return StringUtils.isBlank(this.name) || StringUtils.isBlank(this.password);
     }
 }

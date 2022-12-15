@@ -14,7 +14,7 @@ public class ReservationStrategies {
         this.reservationStrategies = reservationStrategies;
     }
 
-    public ReservationStrategy getStrategyByUserType(final ReservationType reservationType) {
+    public ReservationStrategy getStrategyByReservationType(final ReservationType reservationType) {
         return reservationStrategies.stream()
                 .filter(strategy -> strategy.supports(reservationType))
                 .findFirst()

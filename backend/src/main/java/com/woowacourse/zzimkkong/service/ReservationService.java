@@ -54,7 +54,7 @@ public class ReservationService {
 
     public ReservationCreateResponse saveReservation(
             final ReservationCreateDto reservationCreateDto) {
-        ReservationStrategy reservationStrategy = reservationStrategies.getStrategyByUserType(reservationCreateDto.getReservationType());
+        ReservationStrategy reservationStrategy = reservationStrategies.getStrategyByReservationType(reservationCreateDto.getReservationType());
 
         Long mapId = reservationCreateDto.getMapId();
         Map map = maps.findByIdFetch(mapId)
@@ -71,7 +71,7 @@ public class ReservationService {
 
     @Transactional(readOnly = true)
     public ReservationFindAllResponse findAllReservations(final ReservationFindAllDto reservationFindAllDto) {
-        ReservationStrategy reservationStrategy = reservationStrategies.getStrategyByUserType(reservationFindAllDto.getReservationType());
+        ReservationStrategy reservationStrategy = reservationStrategies.getStrategyByReservationType(reservationFindAllDto.getReservationType());
 
         Long mapId = reservationFindAllDto.getMapId();
         LoginUserEmail loginUserEmail = reservationFindAllDto.getLoginUserEmail();
@@ -89,7 +89,7 @@ public class ReservationService {
 
     @Transactional(readOnly = true)
     public ReservationFindResponse findReservations(final ReservationFindDto reservationFindDto) {
-        ReservationStrategy reservationStrategy = reservationStrategies.getStrategyByUserType(reservationFindDto.getReservationType());
+        ReservationStrategy reservationStrategy = reservationStrategies.getStrategyByReservationType(reservationFindDto.getReservationType());
         Long mapId = reservationFindDto.getMapId();
         LoginUserEmail loginUserEmail = reservationFindDto.getLoginUserEmail();
 
@@ -108,7 +108,7 @@ public class ReservationService {
 
     @Transactional(readOnly = true)
     public ReservationResponse findReservation(final ReservationAuthenticationDto reservationAuthenticationDto) {
-        ReservationStrategy reservationStrategy = reservationStrategies.getStrategyByUserType(reservationAuthenticationDto.getReservationType());
+        ReservationStrategy reservationStrategy = reservationStrategies.getStrategyByReservationType(reservationAuthenticationDto.getReservationType());
         Long mapId = reservationAuthenticationDto.getMapId();
         LoginUserEmail loginUserEmail = reservationAuthenticationDto.getLoginUserEmail();
 
@@ -132,7 +132,7 @@ public class ReservationService {
     }
 
     public SlackResponse updateReservation(final ReservationUpdateDto reservationUpdateDto) {
-        ReservationStrategy reservationStrategy = reservationStrategies.getStrategyByUserType(reservationUpdateDto.getReservationType());
+        ReservationStrategy reservationStrategy = reservationStrategies.getStrategyByReservationType(reservationUpdateDto.getReservationType());
         Long mapId = reservationUpdateDto.getMapId();
         LoginUserEmail loginUserEmail = reservationUpdateDto.getLoginUserEmail();
 
@@ -156,7 +156,7 @@ public class ReservationService {
     }
 
     public SlackResponse deleteReservation(final ReservationAuthenticationDto reservationAuthenticationDto) {
-        ReservationStrategy reservationStrategy = reservationStrategies.getStrategyByUserType(reservationAuthenticationDto.getReservationType());
+        ReservationStrategy reservationStrategy = reservationStrategies.getStrategyByReservationType(reservationAuthenticationDto.getReservationType());
         Long mapId = reservationAuthenticationDto.getMapId();
         LoginUserEmail loginUserEmail = reservationAuthenticationDto.getLoginUserEmail();
 

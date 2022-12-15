@@ -7,9 +7,10 @@ import java.util.Arrays;
 import java.util.function.BiPredicate;
 
 public enum ReservationType {
-    NON_LOGIN_GUEST((apiType, loginUserEmail) -> Constants.GUEST.equals(apiType) && !loginUserEmail.exists()),
-    LOGIN_GUEST((apiType, loginUserEmail) -> Constants.GUEST.equals(apiType) && loginUserEmail.exists()),
-    MANAGER((apiType, loginUserEmail) -> Constants.MANAGER.equals(apiType) && loginUserEmail.exists());
+    NON_LOGIN_GUEST((apiType, reservationUserEmail) -> Constants.GUEST.equals(apiType) && !reservationUserEmail.exists()),
+    LOGIN_GUEST((apiType, reservationUserEmail) -> Constants.GUEST.equals(apiType) && reservationUserEmail.exists()),
+    MANAGER_NON_LOGIN_GUEST((apiType, reservationUserEmail) -> Constants.MANAGER.equals(apiType) && !reservationUserEmail.exists()),
+    MANAGER_LOGIN_GUEST((apiType, reservationUserEmail) -> Constants.MANAGER.equals(apiType) && reservationUserEmail.exists());
 
     private final BiPredicate<String, LoginUserEmail> expression;
 
@@ -17,9 +18,9 @@ public enum ReservationType {
         this.expression = expression;
     }
 
-    public static ReservationType of(final String apiType, final LoginUserEmail loginUserEmail) {
+    public static ReservationType of(final String apiType, final LoginUserEmail reservationUserEmail) {
         return Arrays.stream(values())
-                .filter(value -> value.expression.test(apiType, loginUserEmail))
+                .filter(value -> value.expression.test(apiType, reservationUserEmail))
                 .findFirst()
                 .orElseThrow(ZzimkkongException::new);
     }
