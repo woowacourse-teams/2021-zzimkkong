@@ -1,5 +1,4 @@
 == Member(멤버)
-
 === 멤버 회원가입
 ==== Request
 include::{snippets}/member/post/http-request.adoc[]
@@ -67,3 +66,9 @@ include::{snippets}/member/myinfo/put/http-response.adoc[]
 include::{snippets}/member/myinfo/delete/http-request.adoc[]
 ==== Response
 include::{snippets}/member/myinfo/delete/http-response.adoc[]
+
+=== 프로필 이모지 리스트 조회
+==== Request
+include::{snippets}/member/get/emojis/http-request.adoc[]
+==== Response
+include::{snippets}/member/get/emojis/http-response.adoc[]

@@ -331,7 +331,7 @@ class MemberControllerTest extends AcceptanceTest {
         return RestAssured
                 .given(getRequestSpecification()).log().all()
                 .accept("application/json")
-                .filter(document("member/getEmojis", getRequestPreprocessor(), getResponsePreprocessor()))
+                .filter(document("member/get/emojis", getRequestPreprocessor(), getResponsePreprocessor()))
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .when().get("/api/managers/emojis")
                 .then().log().all().extract();
