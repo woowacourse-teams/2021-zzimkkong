@@ -31,7 +31,8 @@ public class Member {
 
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)
-    private ProfileEmoji emoji;
+    @Builder.Default
+    private ProfileEmoji emoji = ProfileEmoji.MAN_LIGHT_SKIN_TONE_TECHNOLOGIST;
 
     @Column(length = 128)
     private String password;
