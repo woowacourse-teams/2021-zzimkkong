@@ -2,6 +2,7 @@ package com.woowacourse.zzimkkong.repository;
 
 import com.woowacourse.zzimkkong.domain.Member;
 import com.woowacourse.zzimkkong.domain.Preset;
+import com.woowacourse.zzimkkong.domain.ProfileEmoji;
 import com.woowacourse.zzimkkong.domain.TimeSlot;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -22,6 +23,7 @@ class PresetRepositoryTest extends RepositoryTest {
         Member pobi = Member.builder()
                 .email(EMAIL)
                 .userName(USER_NAME)
+                .emoji(ProfileEmoji.MAN_DARK_SKIN_TONE_TECHNOLOGIST)
                 .password(PW)
                 .organization(ORGANIZATION)
                 .build();

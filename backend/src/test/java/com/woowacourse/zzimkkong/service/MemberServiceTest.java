@@ -2,6 +2,7 @@ package com.woowacourse.zzimkkong.service;
 
 import com.woowacourse.zzimkkong.domain.Member;
 import com.woowacourse.zzimkkong.domain.OauthProvider;
+import com.woowacourse.zzimkkong.domain.ProfileEmoji;
 import com.woowacourse.zzimkkong.dto.member.MemberSaveRequest;
 import com.woowacourse.zzimkkong.dto.member.MemberSaveResponse;
 import com.woowacourse.zzimkkong.dto.member.MemberUpdateRequest;
@@ -39,10 +40,11 @@ class MemberServiceTest extends ServiceTest {
     @DisplayName("회원이 올바르게 저장을 요청하면 저장한다.")
     void saveMember() {
         //given
-        MemberSaveRequest memberSaveRequest = new MemberSaveRequest(EMAIL, USER_NAME, PW, ORGANIZATION);
+        MemberSaveRequest memberSaveRequest = new MemberSaveRequest(EMAIL, USER_NAME, ProfileEmoji.MAN_DARK_SKIN_TONE_TECHNOLOGIST, PW, ORGANIZATION);
         Member member = Member.builder()
                 .email(memberSaveRequest.getEmail())
                 .userName(memberSaveRequest.getUserName())
+                .emoji(ProfileEmoji.MAN_DARK_SKIN_TONE_TECHNOLOGIST)
                 .password(memberSaveRequest.getPassword())
                 .organization(memberSaveRequest.getOrganization())
                 .build();
@@ -52,6 +54,7 @@ class MemberServiceTest extends ServiceTest {
                 .id(1L)
                 .email(member.getEmail())
                 .userName(member.getUserName())
+                .emoji(ProfileEmoji.MAN_DARK_SKIN_TONE_TECHNOLOGIST)
                 .password(member.getPassword())
                 .organization(member.getOrganization())
                 .build();
@@ -69,7 +72,7 @@ class MemberServiceTest extends ServiceTest {
     @DisplayName("회원이 중복된 이메일로 저장을 요청하면 오류가 발생한다.")
     void saveMemberException() {
         //given
-        MemberSaveRequest memberSaveRequest = new MemberSaveRequest(EMAIL, USER_NAME, PW, ORGANIZATION);
+        MemberSaveRequest memberSaveRequest = new MemberSaveRequest(EMAIL, USER_NAME, ProfileEmoji.MAN_DARK_SKIN_TONE_TECHNOLOGIST, PW, ORGANIZATION);
 
         //when
         given(members.existsByEmail(anyString()))
@@ -85,10 +88,11 @@ class MemberServiceTest extends ServiceTest {
     @DisplayName("소셜 로그인을 이용해 회원가입한다.")
     void saveMemberByOauth(String oauth) {
         //given
-        OauthMemberSaveRequest oauthMemberSaveRequest = new OauthMemberSaveRequest(EMAIL, USER_NAME, ORGANIZATION, oauth);
+        OauthMemberSaveRequest oauthMemberSaveRequest = new OauthMemberSaveRequest(EMAIL, USER_NAME, ProfileEmoji.MAN_DARK_SKIN_TONE_TECHNOLOGIST, ORGANIZATION, oauth);
         Member member = Member.builder()
                 .email(oauthMemberSaveRequest.getEmail())
                 .userName(oauthMemberSaveRequest.getUserName())
+                .emoji(ProfileEmoji.MAN_DARK_SKIN_TONE_TECHNOLOGIST)
                 .organization(oauthMemberSaveRequest.getOrganization())
                 .oauthProvider(OauthProvider.valueOfWithIgnoreCase(oauthMemberSaveRequest.getOauthProvider()))
                 .build();
@@ -101,6 +105,7 @@ class MemberServiceTest extends ServiceTest {
                 .id(1L)
                 .email(member.getEmail())
                 .userName(member.getUserName())
+                .emoji(ProfileEmoji.MAN_DARK_SKIN_TONE_TECHNOLOGIST)
                 .organization(member.getOrganization())
                 .oauthProvider(member.getOauthProvider())
                 .build();
@@ -119,7 +124,7 @@ class MemberServiceTest extends ServiceTest {
     @DisplayName("이미 존재하는 이메일로 소셜 로그인을 이용해 회원가입하면 에러가 발생한다.")
     void saveMemberByOauthException(String oauth) {
         //given
-        OauthMemberSaveRequest oauthMemberSaveRequest = new OauthMemberSaveRequest(EMAIL, USER_NAME, ORGANIZATION, oauth);
+        OauthMemberSaveRequest oauthMemberSaveRequest = new OauthMemberSaveRequest(EMAIL, USER_NAME, ProfileEmoji.MAN_DARK_SKIN_TONE_TECHNOLOGIST, ORGANIZATION, oauth);
 
         //when
         given(members.existsByEmail(anyString()))
@@ -138,10 +143,11 @@ class MemberServiceTest extends ServiceTest {
         Member member = Member.builder()
                 .email(EMAIL)
                 .userName(USER_NAME)
+                .emoji(ProfileEmoji.MAN_DARK_SKIN_TONE_TECHNOLOGIST)
                 .password(PW)
                 .organization(ORGANIZATION)
                 .build();
-        MemberUpdateRequest memberUpdateRequest = new MemberUpdateRequest("woowabros", "sakjung");
+        MemberUpdateRequest memberUpdateRequest = new MemberUpdateRequest("woowabros", "sakjung", ProfileEmoji.MAN_DARK_SKIN_TONE_TECHNOLOGIST);
 
         given(members.findByEmail(anyString()))
                 .willReturn(Optional.of(member));
@@ -161,6 +167,7 @@ class MemberServiceTest extends ServiceTest {
         Member pobi = Member.builder()
                 .email(EMAIL)
                 .userName(USER_NAME)
+                .emoji(ProfileEmoji.MAN_DARK_SKIN_TONE_TECHNOLOGIST)
                 .password(PW)
                 .organization(ORGANIZATION)
                 .build();
@@ -181,6 +188,7 @@ class MemberServiceTest extends ServiceTest {
         Member pobi = Member.builder()
                 .email(EMAIL)
                 .userName(USER_NAME)
+                .emoji(ProfileEmoji.MAN_DARK_SKIN_TONE_TECHNOLOGIST)
                 .password(PW)
                 .organization(ORGANIZATION)
                 .build();

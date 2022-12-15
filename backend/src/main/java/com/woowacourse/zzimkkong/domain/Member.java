@@ -29,6 +29,10 @@ public class Member {
     @Column(nullable = false, unique = true)
     private String userName;
 
+    @Column(nullable = false)
+    @Enumerated(EnumType.STRING)
+    private ProfileEmoji emoji;
+
     @Column(length = 128)
     private String password;
 
@@ -68,6 +72,7 @@ public class Member {
     public void update(final MemberUpdateRequest memberUpdateRequest) {
         this.organization = memberUpdateRequest.getOrganization();
         this.userName = memberUpdateRequest.getUserName();
+        this.emoji = memberUpdateRequest.getEmoji();
     }
 
     public boolean isSameEmail(String email) {

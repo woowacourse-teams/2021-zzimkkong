@@ -1,9 +1,6 @@
 package com.woowacourse.zzimkkong.controller;
 
-import com.woowacourse.zzimkkong.domain.Member;
-import com.woowacourse.zzimkkong.domain.Preset;
-import com.woowacourse.zzimkkong.domain.Setting;
-import com.woowacourse.zzimkkong.domain.TimeSlot;
+import com.woowacourse.zzimkkong.domain.*;
 import com.woowacourse.zzimkkong.dto.ErrorResponse;
 import com.woowacourse.zzimkkong.dto.InputFieldErrorResponse;
 import com.woowacourse.zzimkkong.dto.member.*;
@@ -41,6 +38,7 @@ class MemberControllerTest extends AcceptanceTest {
         pobi = Member.builder()
                 .email(EMAIL)
                 .userName(USER_NAME)
+                .emoji(ProfileEmoji.MAN_DARK_SKIN_TONE_TECHNOLOGIST)
                 .password(passwordEncoder.encode(PW))
                 .organization(ORGANIZATION)
                 .build();
@@ -69,7 +67,7 @@ class MemberControllerTest extends AcceptanceTest {
     @DisplayName("정상적인 회원가입 입력이 들어오면 회원 정보를 저장한다.")
     void join() {
         //given
-        MemberSaveRequest newMemberSaveRequest = new MemberSaveRequest(NEW_EMAIL, NEW_USER_NAME, PW, ORGANIZATION);
+        MemberSaveRequest newMemberSaveRequest = new MemberSaveRequest(NEW_EMAIL, NEW_USER_NAME, ProfileEmoji.MAN_DARK_SKIN_TONE_TECHNOLOGIST, PW, ORGANIZATION);
 
         // when
         ExtractableResponse<Response> response = saveMember(newMemberSaveRequest);
@@ -83,7 +81,7 @@ class MemberControllerTest extends AcceptanceTest {
     @DisplayName("Oauth을 이용해 회원가입한다.")
     void joinByOauth(String oauth) {
         // given
-        OauthMemberSaveRequest oauthMemberSaveRequest = new OauthMemberSaveRequest(NEW_EMAIL, NEW_USER_NAME, ORGANIZATION, oauth);
+        OauthMemberSaveRequest oauthMemberSaveRequest = new OauthMemberSaveRequest(NEW_EMAIL, NEW_USER_NAME, ProfileEmoji.MAN_DARK_SKIN_TONE_TECHNOLOGIST, ORGANIZATION, oauth);
 
         // when
         ExtractableResponse<Response> response = saveMemberByOauth(oauthMemberSaveRequest);
@@ -96,7 +94,7 @@ class MemberControllerTest extends AcceptanceTest {
     @DisplayName("이메일 중복 확인 시, 중복되지 않은 이메일을 입력하면 통과한다.")
     void getMembers() {
         //given
-        MemberSaveRequest newMemberSaveRequest = new MemberSaveRequest(NEW_EMAIL, USER_NAME, PW, ORGANIZATION);
+        MemberSaveRequest newMemberSaveRequest = new MemberSaveRequest(NEW_EMAIL, USER_NAME, ProfileEmoji.MAN_DARK_SKIN_TONE_TECHNOLOGIST, PW, ORGANIZATION);
         saveMember(newMemberSaveRequest);
 
         // when
@@ -188,7 +186,7 @@ class MemberControllerTest extends AcceptanceTest {
     @DisplayName("유저는 자신의 정보를 수정할 수 있다.")
     void updateMe() {
         // given
-        MemberUpdateRequest memberUpdateRequest = new MemberUpdateRequest("woowabros", "sakjung");
+        MemberUpdateRequest memberUpdateRequest = new MemberUpdateRequest("woowabros", "sakjung", ProfileEmoji.MAN_DARK_SKIN_TONE_TECHNOLOGIST);
 
         // when
         ExtractableResponse<Response> response = updateMyInfo(memberUpdateRequest);

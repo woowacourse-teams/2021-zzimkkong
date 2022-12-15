@@ -43,6 +43,7 @@ class AdminControllerTest extends AcceptanceTest {
     private static final Member POBI = Member.builder()
             .email(memberSaveRequest.getEmail())
             .userName(memberSaveRequest.getUserName())
+            .emoji(ProfileEmoji.MAN_DARK_SKIN_TONE_TECHNOLOGIST)
             .password(memberSaveRequest.getPassword())
             .organization(memberSaveRequest.getOrganization())
             .build();

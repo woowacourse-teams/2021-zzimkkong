@@ -67,6 +67,7 @@ class ManagerReservationControllerTest extends AcceptanceTest {
         pobi = Member.builder()
                 .email(EMAIL)
                 .userName(USER_NAME)
+                .emoji(ProfileEmoji.MAN_DARK_SKIN_TONE_TECHNOLOGIST)
                 .password(passwordEncoder.encode(PW))
                 .organization(ORGANIZATION)
                 .build();

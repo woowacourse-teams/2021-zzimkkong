@@ -2,6 +2,7 @@ package com.woowacourse.zzimkkong.service;
 
 import com.woowacourse.zzimkkong.domain.Member;
 import com.woowacourse.zzimkkong.domain.OauthProvider;
+import com.woowacourse.zzimkkong.domain.ProfileEmoji;
 import com.woowacourse.zzimkkong.domain.oauth.OauthUserInfo;
 import com.woowacourse.zzimkkong.dto.member.LoginRequest;
 import com.woowacourse.zzimkkong.dto.member.TokenResponse;
@@ -40,6 +41,7 @@ class AuthServiceTest extends ServiceTest {
         pobi = Member.builder()
                 .email(EMAIL)
                 .userName(USER_NAME)
+                .emoji(ProfileEmoji.MAN_DARK_SKIN_TONE_TECHNOLOGIST)
                 .password(passwordEncoder.encode(PW))
                 .organization(ORGANIZATION)
                 .build();
@@ -96,6 +98,7 @@ class AuthServiceTest extends ServiceTest {
                 .willReturn(Optional.of(Member.builder()
                         .email(EMAIL)
                         .userName(USER_NAME)
+                        .emoji(ProfileEmoji.MAN_DARK_SKIN_TONE_TECHNOLOGIST)
                         .password(passwordEncoder.encode("wrong_password"))
                         .organization(ORGANIZATION)
                         .build()));
@@ -121,6 +124,7 @@ class AuthServiceTest extends ServiceTest {
                 .willReturn(Optional.of(Member.builder()
                         .email(EMAIL)
                         .userName(USER_NAME)
+                        .emoji(ProfileEmoji.MAN_DARK_SKIN_TONE_TECHNOLOGIST)
                         .organization(ORGANIZATION)
                         .oauthProvider(oauthProvider)
                         .build()));
@@ -178,6 +182,7 @@ class AuthServiceTest extends ServiceTest {
                 .willReturn(Optional.of(Member.builder()
                         .email(EMAIL)
                         .userName(USER_NAME)
+                        .emoji(ProfileEmoji.MAN_DARK_SKIN_TONE_TECHNOLOGIST)
                         .organization(ORGANIZATION)
                         .oauthProvider(actualOauthProvider)
                         .build()));

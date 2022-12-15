@@ -1,6 +1,7 @@
 package com.woowacourse.zzimkkong.controller;
 
 import com.woowacourse.zzimkkong.domain.OauthProvider;
+import com.woowacourse.zzimkkong.domain.ProfileEmoji;
 import com.woowacourse.zzimkkong.domain.oauth.GithubUserInfo;
 import com.woowacourse.zzimkkong.domain.oauth.GoogleUserInfo;
 import com.woowacourse.zzimkkong.dto.member.LoginRequest;
@@ -48,7 +49,7 @@ class AuthControllerTest extends AcceptanceTest {
     void loginByGithubOauth() {
         // given
         OauthProvider oauthProvider = OauthProvider.GITHUB;
-        saveMemberByOauth(new OauthMemberSaveRequest(NEW_EMAIL, NEW_USER_NAME, ORGANIZATION, oauthProvider.name()));
+        saveMemberByOauth(new OauthMemberSaveRequest(NEW_EMAIL, NEW_USER_NAME, ProfileEmoji.MAN_DARK_SKIN_TONE_TECHNOLOGIST, ORGANIZATION, oauthProvider.name()));
         String code = "example-code";
 
         given(githubRequester.supports(OauthProvider.GITHUB))
@@ -71,7 +72,7 @@ class AuthControllerTest extends AcceptanceTest {
     void loginByGoogleOauth() {
         // given
         OauthProvider oauthProvider = OauthProvider.GOOGLE;
-        saveMemberByOauth(new OauthMemberSaveRequest(NEW_EMAIL, NEW_USER_NAME, ORGANIZATION, oauthProvider.name()));
+        saveMemberByOauth(new OauthMemberSaveRequest(NEW_EMAIL, NEW_USER_NAME, ProfileEmoji.MAN_DARK_SKIN_TONE_TECHNOLOGIST, ORGANIZATION, oauthProvider.name()));
         String code = "example-code";
 
         given(googleRequester.supports(any(OauthProvider.class)))
