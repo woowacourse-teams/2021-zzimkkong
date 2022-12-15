@@ -1,6 +1,7 @@
 package com.woowacourse.zzimkkong.service;
 
 import com.woowacourse.zzimkkong.domain.Member;
+import com.woowacourse.zzimkkong.domain.OauthProvider;
 import com.woowacourse.zzimkkong.dto.member.MemberSaveRequest;
 import com.woowacourse.zzimkkong.dto.member.MemberSaveResponse;
 import com.woowacourse.zzimkkong.dto.member.MemberUpdateRequest;
@@ -39,20 +40,21 @@ class MemberServiceTest extends ServiceTest {
     void saveMember() {
         //given
         MemberSaveRequest memberSaveRequest = new MemberSaveRequest(EMAIL, USER_NAME, PW, ORGANIZATION);
-        Member member = new Member(
-                memberSaveRequest.getEmail(),
-                memberSaveRequest.getUserName(),
-                memberSaveRequest.getPassword(),
-                memberSaveRequest.getOrganization()
-        );
+        Member member = Member.builder()
+                .email(memberSaveRequest.getEmail())
+                .userName(memberSaveRequest.getUserName())
+                .password(memberSaveRequest.getPassword())
+                .organization(memberSaveRequest.getOrganization())
+                .build();
 
         //when
-        Member savedMember = new Member(
-                1L,
-                member.getEmail(),
-                member.getUserName(),
-                member.getPassword(),
-                member.getOrganization());
+        Member savedMember = Member.builder()
+                .id(1L)
+                .email(member.getEmail())
+                .userName(member.getUserName())
+                .password(member.getPassword())
+                .organization(member.getOrganization())
+                .build();
 
         given(members.save(any(Member.class)))
                 .willReturn(savedMember);
@@ -84,22 +86,24 @@ class MemberServiceTest extends ServiceTest {
     void saveMemberByOauth(String oauth) {
         //given
         OauthMemberSaveRequest oauthMemberSaveRequest = new OauthMemberSaveRequest(EMAIL, USER_NAME, ORGANIZATION, oauth);
-        Member member = new Member(
-                oauthMemberSaveRequest.getEmail(),
-                oauthMemberSaveRequest.getUserName(),
-                oauthMemberSaveRequest.getOrganization(),
-                oauthMemberSaveRequest.getOauthProvider()
-        );
+        Member member = Member.builder()
+                .email(oauthMemberSaveRequest.getEmail())
+                .userName(oauthMemberSaveRequest.getUserName())
+                .organization(oauthMemberSaveRequest.getOrganization())
+                .oauthProvider(OauthProvider.valueOfWithIgnoreCase(oauthMemberSaveRequest.getOauthProvider()))
+                .build();
+
         given(members.existsByEmail(anyString()))
                 .willReturn(false);
 
         //when
-        Member savedMember = new Member(
-                1L,
-                member.getEmail(),
-                member.getUserName(),
-                member.getOrganization(),
-                member.getOauthProvider());
+        Member savedMember = Member.builder()
+                .id(1L)
+                .email(member.getEmail())
+                .userName(member.getUserName())
+                .organization(member.getOrganization())
+                .oauthProvider(member.getOauthProvider())
+                .build();
         given(members.save(any(Member.class)))
                 .willReturn(savedMember);
 
@@ -131,7 +135,12 @@ class MemberServiceTest extends ServiceTest {
     void updateMember() {
         // given
         LoginUserEmail loginUserEmail = LoginUserEmail.from(EMAIL);
-        Member member = new Member(EMAIL, USER_NAME, PW, ORGANIZATION);
+        Member member = Member.builder()
+                .email(EMAIL)
+                .userName(USER_NAME)
+                .password(PW)
+                .organization(ORGANIZATION)
+                .build();
         MemberUpdateRequest memberUpdateRequest = new MemberUpdateRequest("woowabros", "sakjung");
 
         given(members.findByEmail(anyString()))
@@ -149,7 +158,12 @@ class MemberServiceTest extends ServiceTest {
     void deleteMember() {
         // given
         LoginUserEmail loginUserEmail = LoginUserEmail.from(EMAIL);
-        Member pobi = new Member(EMAIL, USER_NAME, PW, ORGANIZATION);
+        Member pobi = Member.builder()
+                .email(EMAIL)
+                .userName(USER_NAME)
+                .password(PW)
+                .organization(ORGANIZATION)
+                .build();
         given(members.findByEmail(anyString()))
                 .willReturn(Optional.of(pobi));
         given(reservations.existsByMemberAndEndTimeAfter(any(Member.class), any(LocalDateTime.class)))
@@ -164,7 +178,12 @@ class MemberServiceTest extends ServiceTest {
     void deleteMemberFailWhenAnyReservationsExists() {
         // given
         LoginUserEmail loginUserEmail = LoginUserEmail.from(EMAIL);
-        Member pobi = new Member(EMAIL, USER_NAME, PW, ORGANIZATION);
+        Member pobi = Member.builder()
+                .email(EMAIL)
+                .userName(USER_NAME)
+                .password(PW)
+                .organization(ORGANIZATION)
+                .build();
         given(members.findByEmail(anyString()))
                 .willReturn(Optional.of(pobi));
         given(reservations.existsByMemberAndEndTimeAfter(any(Member.class), any(LocalDateTime.class)))

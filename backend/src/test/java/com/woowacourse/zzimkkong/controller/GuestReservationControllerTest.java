@@ -2,6 +2,7 @@ package com.woowacourse.zzimkkong.controller;
 
 import com.woowacourse.zzimkkong.domain.*;
 import com.woowacourse.zzimkkong.dto.reservation.*;
+import com.woowacourse.zzimkkong.infrastructure.auth.AuthorizationExtractor;
 import com.woowacourse.zzimkkong.service.SlackService;
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
@@ -35,6 +36,8 @@ class GuestReservationControllerTest extends AcceptanceTest {
     private String fe1ReservationApi;
     private Long savedReservationId;
 
+    private Member pobi;
+
     private Space be;
     private Space fe;
 
@@ -64,7 +67,12 @@ class GuestReservationControllerTest extends AcceptanceTest {
                 SALLY_NAME,
                 SALLY_DESCRIPTION);
 
-        Member pobi = new Member(EMAIL, USER_NAME, passwordEncoder.encode(PW), ORGANIZATION);
+        pobi = Member.builder()
+                .email(EMAIL)
+                .userName(USER_NAME)
+                .password(passwordEncoder.encode(PW))
+                .organization(ORGANIZATION)
+                .build();
         Map luther = new Map(LUTHER_NAME, MAP_DRAWING_DATA, MAP_SVG, pobi);
 
         Setting beSetting = Setting.builder()

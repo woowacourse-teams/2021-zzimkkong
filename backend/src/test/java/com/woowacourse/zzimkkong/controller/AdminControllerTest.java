@@ -40,11 +40,13 @@ class AdminControllerTest extends AcceptanceTest {
     @MockBean
     private SlackService slackService;
 
-    private static final Member POBI = new Member(
-            memberSaveRequest.getEmail(),
-            memberSaveRequest.getUserName(),
-            memberSaveRequest.getPassword(),
-            memberSaveRequest.getOrganization());
+    private static final Member POBI = Member.builder()
+            .email(memberSaveRequest.getEmail())
+            .userName(memberSaveRequest.getUserName())
+            .password(memberSaveRequest.getPassword())
+            .organization(memberSaveRequest.getOrganization())
+            .build();
+
     private static final Map LUTHER = new Map(LUTHER_NAME, MAP_DRAWING_DATA, MAP_SVG, POBI);
     private static final Setting BE_SETTING = Setting.builder()
             .settingTimeSlot(TimeSlot.of(

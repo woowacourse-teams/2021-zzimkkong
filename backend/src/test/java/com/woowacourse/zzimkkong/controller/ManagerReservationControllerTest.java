@@ -35,6 +35,8 @@ class ManagerReservationControllerTest extends AcceptanceTest {
     private String fe1ReservationApi;
     private Long savedReservationId;
 
+    private Member pobi;
+
     private Space be;
     private Space fe;
 
@@ -62,7 +64,12 @@ class ManagerReservationControllerTest extends AcceptanceTest {
                 SALLY_NAME,
                 SALLY_DESCRIPTION);
 
-        Member pobi = new Member(EMAIL, USER_NAME, passwordEncoder.encode(PW), ORGANIZATION);
+        pobi = Member.builder()
+                .email(EMAIL)
+                .userName(USER_NAME)
+                .password(passwordEncoder.encode(PW))
+                .organization(ORGANIZATION)
+                .build();
         Map luther = new Map(LUTHER_NAME, MAP_DRAWING_DATA, MAP_SVG, pobi);
 
         Setting beSetting = Setting.builder()

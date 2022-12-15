@@ -23,7 +23,12 @@ class SpaceRepositoryTest extends RepositoryTest {
 
     @BeforeEach
     void setUp() {
-        Member pobi = new Member(EMAIL, USER_NAME, PW, ORGANIZATION);
+        Member pobi = Member.builder()
+                .email(EMAIL)
+                .userName(USER_NAME)
+                .password(PW)
+                .organization(ORGANIZATION)
+                .build();
         luther = new Map(LUTHER_NAME, MAP_DRAWING_DATA, MAP_SVG, pobi);
 
         beSetting = Setting.builder()

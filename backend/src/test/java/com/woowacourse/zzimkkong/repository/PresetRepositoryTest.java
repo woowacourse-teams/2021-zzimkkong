@@ -2,7 +2,6 @@ package com.woowacourse.zzimkkong.repository;
 
 import com.woowacourse.zzimkkong.domain.Member;
 import com.woowacourse.zzimkkong.domain.Preset;
-import com.woowacourse.zzimkkong.domain.Setting;
 import com.woowacourse.zzimkkong.domain.TimeSlot;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -20,7 +19,12 @@ class PresetRepositoryTest extends RepositoryTest {
 
     @BeforeEach
     void setUp() {
-        Member pobi = new Member(EMAIL, USER_NAME, PW, ORGANIZATION);
+        Member pobi = Member.builder()
+                .email(EMAIL)
+                .userName(USER_NAME)
+                .password(PW)
+                .organization(ORGANIZATION)
+                .build();
         members.save(pobi);
 
         preset = Preset.builder()

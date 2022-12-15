@@ -38,7 +38,12 @@ class MemberControllerTest extends AcceptanceTest {
 
     @BeforeEach
     void setUp() {
-        pobi = new Member(EMAIL, USER_NAME, passwordEncoder.encode(PW), ORGANIZATION);
+        pobi = Member.builder()
+                .email(EMAIL)
+                .userName(USER_NAME)
+                .password(passwordEncoder.encode(PW))
+                .organization(ORGANIZATION)
+                .build();
         setting = Setting.builder()
                 .settingTimeSlot(TimeSlot.of(
                         BE_AVAILABLE_START_TIME,

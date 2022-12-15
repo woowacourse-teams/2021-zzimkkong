@@ -60,7 +60,13 @@ class PresetServiceTest extends ServiceTest {
 
     @BeforeEach
     void setUp() {
-        pobi = new Member(1L, USER_NAME, EMAIL, PW, ORGANIZATION);
+        pobi = Member.builder()
+                .id(1L)
+                .email(EMAIL)
+                .userName(USER_NAME)
+                .password(PW)
+                .organization(ORGANIZATION)
+                .build();
         pobiEmail = LoginUserEmail.from(EMAIL);
     }
 
@@ -166,7 +172,12 @@ class PresetServiceTest extends ServiceTest {
                 .build();
 
         LoginUserEmail anotherEmail = LoginUserEmail.from(NEW_EMAIL);
-        Member anotherMember = new Member(NEW_EMAIL, USER_NAME, PW, ORGANIZATION);
+        Member anotherMember = Member.builder()
+                .email(NEW_EMAIL)
+                .userName(USER_NAME)
+                .password(PW)
+                .organization(ORGANIZATION)
+                .build();
 
         given(members.findByEmailWithFetchPresets(anyString()))
                 .willReturn(Optional.of(anotherMember));
