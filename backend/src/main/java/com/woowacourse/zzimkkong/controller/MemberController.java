@@ -101,4 +101,10 @@ public class MemberController {
         memberService.deleteMember(loginUserEmail);
         return ResponseEntity.noContent().build();
     }
+
+    @GetMapping("/emojis")
+    public ResponseEntity<ProfileEmojisResponse> getEmojis() {
+        ProfileEmojisResponse profileEmojis = memberService.getProfileEmojis();
+        return ResponseEntity.ok().body(profileEmojis);
+    }
 }

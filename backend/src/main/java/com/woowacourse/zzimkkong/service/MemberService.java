@@ -2,6 +2,7 @@ package com.woowacourse.zzimkkong.service;
 
 import com.woowacourse.zzimkkong.domain.Member;
 import com.woowacourse.zzimkkong.domain.OauthProvider;
+import com.woowacourse.zzimkkong.domain.ProfileEmoji;
 import com.woowacourse.zzimkkong.dto.member.*;
 import com.woowacourse.zzimkkong.dto.member.oauth.OauthMemberSaveRequest;
 import com.woowacourse.zzimkkong.exception.member.DuplicateEmailException;
@@ -15,6 +16,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @Transactional
@@ -104,5 +108,11 @@ public class MemberService {
         }
 
         members.delete(member);
+    }
+
+    @Transactional(readOnly = true)
+    public ProfileEmojisResponse getProfileEmojis() {
+        List<ProfileEmoji> allEmojis = Arrays.stream(ProfileEmoji.values()).collect(Collectors.toList());
+        return ProfileEmojisResponse.from(allEmojis);
     }
 }
