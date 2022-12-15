@@ -212,6 +212,20 @@ class MemberControllerTest extends AcceptanceTest {
         assertThat(errorResponse.getMessage()).isNotEmpty();
     }
 
+    @Test
+    @DisplayName("프로필 이미지로 사용할 수 있는 이모지 리스트를 조회할 수 있다.")
+    void findEmojis() {
+        // given, when
+        ExtractableResponse<Response> response = findProfileEmojis();
+
+        ProfileEmojisResponse actual = response.as(ProfileEmojisResponse.class);
+        ProfileEmojisResponse expected = ProfileEmojisResponse.from(List.of(ProfileEmoji.values()));
+
+        // then
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
+        assertThat(actual).usingRecursiveComparison().isEqualTo(expected);
+    }
+
     static ExtractableResponse<Response> saveMember(final MemberSaveRequest memberSaveRequest) {
         return RestAssured
                 .given(getRequestSpecification()).log().all()
@@ -310,6 +324,16 @@ class MemberControllerTest extends AcceptanceTest {
                 .filter(document("member/myinfo/delete", getRequestPreprocessor(), getResponsePreprocessor()))
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .when().delete("/api/managers/me")
+                .then().log().all().extract();
+    }
+
+    private ExtractableResponse<Response> findProfileEmojis() {
+        return RestAssured
+                .given(getRequestSpecification()).log().all()
+                .accept("application/json")
+                .filter(document("member/getEmojis", getRequestPreprocessor(), getResponsePreprocessor()))
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .when().get("/api/managers/emojis")
                 .then().log().all().extract();
     }
 }

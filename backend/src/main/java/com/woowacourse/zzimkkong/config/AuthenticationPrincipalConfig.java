@@ -47,6 +47,9 @@ public class AuthenticationPrincipalConfig implements WebMvcConfigurer {
                 "/api/managers/google/login/token",
                 "/api/managers/github/login/token",
 
+                //manager etc
+                "/api/managers/emojis",
+
                 //admin login
                 "/admin/login/",
                 "/admin/api/login"
