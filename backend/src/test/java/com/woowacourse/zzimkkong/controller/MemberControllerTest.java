@@ -28,10 +28,6 @@ import static org.springframework.restdocs.restassured3.RestAssuredRestDocumenta
 
 class MemberControllerTest extends AcceptanceTest {
     private Member pobi;
-    private Setting setting;
-
-    private SettingRequest settingRequest;
-    private PresetCreateRequest presetCreateRequest;
 
     @BeforeEach
     void setUp() {
@@ -42,25 +38,6 @@ class MemberControllerTest extends AcceptanceTest {
                 .password(passwordEncoder.encode(PW))
                 .organization(ORGANIZATION)
                 .build();
-        setting = Setting.builder()
-                .settingTimeSlot(TimeSlot.of(
-                        BE_AVAILABLE_START_TIME,
-                        BE_AVAILABLE_END_TIME))
-                .reservationTimeUnit(BE_RESERVATION_TIME_UNIT)
-                .reservationMinimumTimeUnit(BE_RESERVATION_MINIMUM_TIME_UNIT)
-                .reservationMaximumTimeUnit(BE_RESERVATION_MAXIMUM_TIME_UNIT)
-                .enabledDayOfWeek(BE_ENABLED_DAY_OF_WEEK)
-                .build();
-
-        settingRequest = new SettingRequest(
-                BE_AVAILABLE_START_TIME,
-                BE_AVAILABLE_END_TIME,
-                BE_RESERVATION_TIME_UNIT.getMinutes(),
-                BE_RESERVATION_MINIMUM_TIME_UNIT.getMinutes(),
-                BE_RESERVATION_MAXIMUM_TIME_UNIT.getMinutes(),
-                EnabledDayOfWeekDto.from(BE_ENABLED_DAY_OF_WEEK)
-        );
-        presetCreateRequest = new PresetCreateRequest(PRESET_NAME1, settingRequest);
     }
 
     @Test
@@ -103,67 +80,6 @@ class MemberControllerTest extends AcceptanceTest {
 
         //then
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
-    }
-
-    @Test
-    @DisplayName("프리셋을 저장한다.")
-    void createPreset() {
-        //given, when
-        ExtractableResponse<Response> response = savePreset(presetCreateRequest);
-
-        //then
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
-    }
-
-    @Test
-    @DisplayName("멤버가 가진 프리셋을 모두 조회한다.")
-    void findAllPreset() {
-        //given
-        Preset firstPreset = Preset.builder()
-                .name(PRESET_NAME1)
-                .settingTimeSlot(setting.getSettingTimeSlot())
-                .reservationTimeUnit(setting.getReservationTimeUnit())
-                .reservationMinimumTimeUnit(setting.getReservationMinimumTimeUnit())
-                .reservationMaximumTimeUnit(setting.getReservationMaximumTimeUnit())
-                .enabledDayOfWeek(setting.getEnabledDayOfWeek())
-                .member(pobi)
-                .build();
-        Preset secondPreset = Preset.builder()
-                .name(PRESET_NAME2)
-                .settingTimeSlot(setting.getSettingTimeSlot())
-                .reservationTimeUnit(setting.getReservationTimeUnit())
-                .reservationMinimumTimeUnit(setting.getReservationMinimumTimeUnit())
-                .reservationMaximumTimeUnit(setting.getReservationMaximumTimeUnit())
-                .enabledDayOfWeek(setting.getEnabledDayOfWeek())
-                .member(pobi)
-                .build();
-        PresetCreateRequest presetCreateRequest2 = new PresetCreateRequest(PRESET_NAME2, settingRequest);
-
-        savePreset(presetCreateRequest);
-        savePreset(presetCreateRequest2);
-
-        //when
-        ExtractableResponse<Response> response = findAllPresets();
-        PresetFindAllResponse actual = response.as(PresetFindAllResponse.class);
-        PresetFindAllResponse expected = PresetFindAllResponse.from(List.of(firstPreset, secondPreset));
-
-        //then
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
-        assertThat(actual).usingRecursiveComparison().ignoringExpectedNullFields().isEqualTo(expected);
-    }
-
-    @Test
-    @DisplayName("프리셋을 삭제한다.")
-    void delete() {
-        //given
-        ExtractableResponse<Response> saveResponse = savePreset(presetCreateRequest);
-        String api = saveResponse.header("location");
-
-        //when
-        ExtractableResponse<Response> response = deletePreset(api);
-
-        //then
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
     }
 
     @Test
@@ -233,7 +149,7 @@ class MemberControllerTest extends AcceptanceTest {
                 .filter(document("member/post", getRequestPreprocessor(), getResponsePreprocessor()))
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body(memberSaveRequest)
-                .when().post("/api/managers")
+                .when().post("/api/members")
                 .then().log().all().extract();
     }
 
@@ -244,7 +160,7 @@ class MemberControllerTest extends AcceptanceTest {
                 .filter(document("member/post/oauth/" + oauthMemberSaveRequest.getOauthProvider(), getRequestPreprocessor(), getResponsePreprocessor()))
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body(oauthMemberSaveRequest)
-                .when().post("/api/managers/oauth")
+                .when().post("/api/members/oauth")
                 .then().log().all().extract();
     }
 
@@ -255,41 +171,7 @@ class MemberControllerTest extends AcceptanceTest {
                 .filter(document("member/get", getRequestPreprocessor(), getResponsePreprocessor()))
                 .queryParam("email", email)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .when().get("/api/managers")
-                .then().log().all().extract();
-    }
-
-    private ExtractableResponse<Response> savePreset(final PresetCreateRequest presetCreateRequest) {
-        return RestAssured
-                .given(getRequestSpecification()).log().all()
-                .accept("application/json")
-                .header("Authorization", AuthorizationExtractor.AUTHENTICATION_TYPE + " " + accessToken)
-                .filter(document("preset/post", getRequestPreprocessor(), getResponsePreprocessor()))
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(presetCreateRequest)
-                .when().post("/api/managers/presets")
-                .then().log().all().extract();
-    }
-
-    private ExtractableResponse<Response> findAllPresets() {
-        return RestAssured
-                .given(getRequestSpecification()).log().all()
-                .accept("application/json")
-                .header("Authorization", AuthorizationExtractor.AUTHENTICATION_TYPE + " " + accessToken)
-                .filter(document("preset/getAll", getRequestPreprocessor(), getResponsePreprocessor()))
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .when().get("/api/managers/presets")
-                .then().log().all().extract();
-    }
-
-    private ExtractableResponse<Response> deletePreset(String api) {
-        return RestAssured
-                .given(getRequestSpecification()).log().all()
-                .accept("application/json")
-                .header("Authorization", AuthorizationExtractor.AUTHENTICATION_TYPE + " " + accessToken)
-                .filter(document("preset/delete", getRequestPreprocessor(), getResponsePreprocessor()))
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .when().delete(api)
+                .when().get("/api/members")
                 .then().log().all().extract();
     }
 
@@ -300,7 +182,7 @@ class MemberControllerTest extends AcceptanceTest {
                 .header("Authorization", AuthorizationExtractor.AUTHENTICATION_TYPE + " " + accessToken)
                 .filter(document("member/myinfo/get", getRequestPreprocessor(), getResponsePreprocessor()))
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .when().get("/api/managers/me")
+                .when().get("/api/members/me")
                 .then().log().all().extract();
     }
 
@@ -312,7 +194,7 @@ class MemberControllerTest extends AcceptanceTest {
                 .filter(document("member/myinfo/put", getRequestPreprocessor(), getResponsePreprocessor()))
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body(memberUpdateRequest)
-                .when().put("/api/managers/me")
+                .when().put("/api/members/me")
                 .then().log().all().extract();
     }
 
@@ -323,7 +205,7 @@ class MemberControllerTest extends AcceptanceTest {
                 .header("Authorization", AuthorizationExtractor.AUTHENTICATION_TYPE + " " + accessToken)
                 .filter(document("member/myinfo/delete", getRequestPreprocessor(), getResponsePreprocessor()))
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .when().delete("/api/managers/me")
+                .when().delete("/api/members/me")
                 .then().log().all().extract();
     }
 
@@ -333,7 +215,7 @@ class MemberControllerTest extends AcceptanceTest {
                 .accept("application/json")
                 .filter(document("member/get/emojis", getRequestPreprocessor(), getResponsePreprocessor()))
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .when().get("/api/managers/emojis")
+                .when().get("/api/members/emojis")
                 .then().log().all().extract();
     }
 }
