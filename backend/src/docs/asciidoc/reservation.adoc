@@ -115,11 +115,13 @@ include::{snippets}/reservation/guest/putForLoginUser/http-request.adoc[]
 include::{snippets}/reservation/guest/putForLoginUser/http-response.adoc[]
 
 === 나의 예약 조회 (찜꽁한 예약)
+===== Request
 include::{snippets}/reservation/guest/getAllUpcomingMine/http-request.adoc[]
 ===== Response
 include::{snippets}/reservation/guest/getAllUpcomingMine/http-response.adoc[]
 
 === 나의 이전 예약 조회
+===== Request
 include::{snippets}/reservation/guest/getAllPreviousMine/http-request.adoc[]
 ===== Response
 include::{snippets}/reservation/guest/getAllPreviousMine/http-response.adoc[]
