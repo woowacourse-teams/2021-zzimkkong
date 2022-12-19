@@ -139,9 +139,3 @@ export const SelectButton = styled.button`
     border-bottom: 1px solid rgba(196, 196, 196, 0.3);
   }
 `;
-
-export const DeleteModalContainer = styled.div`
-  display: flex;
-  justify-content: flex-end;
-  margin-top: 1.5rem;
-`;

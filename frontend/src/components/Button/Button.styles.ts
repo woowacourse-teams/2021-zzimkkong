@@ -1,10 +1,11 @@
 import styled, { css } from 'styled-components';
 
 interface Props {
-  variant: 'primary' | 'primary-text' | 'text' | 'default';
+  variant: 'primary' | 'inverse' | 'primary-text' | 'text' | 'default';
   shape: 'default' | 'round';
   size: 'dense' | 'small' | 'medium' | 'large';
   fullWidth: boolean;
+  disabled: boolean;
 }
 
 const variantCSS = {
@@ -15,6 +16,16 @@ const variantCSS = {
 
     &:disabled {
       background: ${({ theme }) => theme.primary[100]};
+    }
+  `,
+  inverse: css`
+    color: ${({ theme }) => theme.primary[400]};
+    border: 1px solid ${({ theme }) => theme.primary[400]};
+    background: none;
+
+    &:disabled {
+      color: ${({ theme }) => theme.primary[100]};
+      border: 1px solid ${({ theme }) => theme.primary[100]};
     }
   `,
   'primary-text': css`
@@ -68,5 +79,5 @@ export const Button = styled.button<Props>`
   ${({ shape }) => shapeCSS[shape]}
   ${({ size }) => sizeCSS[size]}
   width: ${({ fullWidth }) => (fullWidth ? '100%' : 'auto')};
-  cursor: pointer;
+  cursor: ${({ disabled }) => (disabled ? 'default' : 'pointer')};
 `;

@@ -81,6 +81,8 @@ describe('예약 페이지', () => {
   });
 
   it('예약을 삭제할 수 있다.', async () => {
+    screen.getByText(/비회원으로 계속하기/i).click();
+
     const $targetSpace = await screen.findByTestId(spaceId);
     const $targetDateInput = screen.getByDisplayValue(formatDate(nowDate));
 

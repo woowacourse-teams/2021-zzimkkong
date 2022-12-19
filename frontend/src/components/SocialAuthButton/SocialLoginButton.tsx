@@ -5,6 +5,7 @@ import * as Styled from './SocialAuthButton.styles';
 
 export interface Props extends AnchorHTMLAttributes<HTMLAnchorElement> {
   provider: 'GITHUB' | 'GOOGLE';
+  variant?: 'default' | 'icon';
 }
 
 const social = {
@@ -18,11 +19,11 @@ const social = {
   },
 };
 
-const SocialLoginButton = ({ provider, ...props }: Props): JSX.Element => {
+const SocialLoginButton = ({ provider, variant = 'default', ...props }: Props): JSX.Element => {
   return (
-    <Styled.SocialLoginButton provider={provider} {...props}>
+    <Styled.SocialLoginButton provider={provider} variant={variant} {...props}>
       <Styled.Icon>{social[provider].icon}</Styled.Icon>
-      <Styled.Text>{social[provider].text}</Styled.Text>
+      {variant === 'default' && <Styled.Text>{social[provider].text}</Styled.Text>}
     </Styled.SocialLoginButton>
   );
 };

@@ -1,15 +1,12 @@
 import { AxiosError } from 'axios';
 import dayjs, { Dayjs } from 'dayjs';
-import { FormEventHandler, useEffect, useMemo, useRef, useState } from 'react';
+import React, { useContext, useEffect, useMemo, useRef, useState } from 'react';
 import { useMutation } from 'react-query';
 import { useHistory, useLocation, useParams } from 'react-router-dom';
 import { deleteGuestReservation } from 'api/guestReservation';
-import Button from 'components/Button/Button';
 import DateInput from 'components/DateInput/DateInput';
 import Header from 'components/Header/Header';
-import Input from 'components/Input/Input';
 import Layout from 'components/Layout/Layout';
-import Modal from 'components/Modal/Modal';
 import { EDITOR } from 'constants/editor';
 import MESSAGE from 'constants/message';
 import PALETTE from 'constants/palette';
@@ -17,7 +14,7 @@ import PATH, { HREF } from 'constants/path';
 import useGuestMap from 'hooks/query/useGuestMap';
 import useGuestReservations from 'hooks/query/useGuestReservations';
 import useGuestSpaces from 'hooks/query/useGuestSpaces';
-import useInput from 'hooks/useInput';
+import { AccessTokenContext } from 'providers/AccessTokenProvider';
 import { Area, MapDrawing, MapItem, Reservation, ScrollPosition, Space } from 'types/common';
 import { DrawingAreaShape } from 'types/editor';
 import { GuestPageURLParams } from 'types/guest';
@@ -26,6 +23,8 @@ import { formatDate } from 'utils/datetime';
 import { getPolygonCenterPoint } from 'utils/editor';
 import { isNullish } from 'utils/type';
 import * as Styled from './GuestMap.styles';
+import LoginPopup from './units/LoginPopup';
+import PasswordInputModal from './units/PasswordInputModal';
 import ReservationDrawer from './units/ReservationDrawer';
 
 export interface GuestMapState {
@@ -35,11 +34,13 @@ export interface GuestMapState {
 }
 
 const GuestMap = (): JSX.Element => {
+  const { accessToken } = useContext(AccessTokenContext);
+
   const [detailOpen, setDetailOpen] = useState(false);
   const [passwordInputModalOpen, setPasswordInputModalOpen] = useState(false);
   const [selectedReservation, setSelectedReservation] = useState<Reservation>();
 
-  const [passwordInput, onChangePasswordInput] = useInput('');
+  const [loginPopupOpen, setLoginPopupOpen] = useState(true);
 
   const history = useHistory();
   const location = useLocation<GuestMapState>();
@@ -152,7 +153,10 @@ const GuestMap = (): JSX.Element => {
     setSelectedReservation(reservation);
   };
 
-  const handleDeleteReservation: FormEventHandler<HTMLFormElement> = (event) => {
+  const handleDeleteReservation = (
+    event: React.FormEvent<HTMLFormElement>,
+    passwordInput: string
+  ) => {
     event.preventDefault();
 
     if (typeof map?.mapId !== 'number' || selectedSpaceId === null) return;
@@ -193,7 +197,7 @@ const GuestMap = (): JSX.Element => {
 
   return (
     <>
-      <Header />
+      <Header onClickLogin={() => setLoginPopupOpen(true)} />
       <Layout>
         <Styled.Page>
           <Styled.PageHeader>
@@ -292,7 +296,6 @@ const GuestMap = (): JSX.Element => {
           </Styled.MapContainer>
         </Styled.Page>
       </Layout>
-
       {selectedSpaceId && map?.mapId && detailOpen && (
         <ReservationDrawer
           reservations={reservations}
@@ -307,39 +310,14 @@ const GuestMap = (): JSX.Element => {
           onDelete={handleDelete}
         />
       )}
+      <PasswordInputModal
+        open={passwordInputModalOpen}
+        onClose={() => setPasswordInputModalOpen(false)}
+        onSubmit={handleDeleteReservation}
+      />
 
-      {passwordInputModalOpen && (
-        <Modal
-          open={passwordInputModalOpen}
-          isClosableDimmer={true}
-          onClose={() => setPasswordInputModalOpen(false)}
-        >
-          <Modal.Header>예약시 사용하신 비밀번호를 입력해주세요.</Modal.Header>
-          <Modal.Inner>
-            <form onSubmit={handleDeleteReservation}>
-              <Input
-                type="password"
-                label="비밀번호"
-                minLength={4}
-                maxLength={4}
-                value={passwordInput}
-                onChange={onChangePasswordInput}
-              />
-              <Styled.DeleteModalContainer>
-                <Button
-                  variant="text"
-                  type="button"
-                  onClick={() => setPasswordInputModalOpen(false)}
-                >
-                  취소
-                </Button>
-                <Button variant="text" type="submit">
-                  확인
-                </Button>
-              </Styled.DeleteModalContainer>
-            </form>
-          </Modal.Inner>
-        </Modal>
+      {!accessToken && (
+        <LoginPopup open={loginPopupOpen} onClose={() => setLoginPopupOpen(false)} />
       )}
     </>
   );
