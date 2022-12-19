@@ -17,7 +17,7 @@ public class LogProxyPostProcessor implements BeanPostProcessor {
         this.logAspect = logAspect;
 
         Reflections reflections = new Reflections("com.woowacourse.zzimkkong");
-        typesAnnotatedWith = Collections.unmodifiableSet(reflections.getTypesAnnotatedWith(FindInstanceAndCreateLogProxy.class));
+        typesAnnotatedWith = Collections.unmodifiableSet(reflections.getTypesAnnotatedWith(LogMethodExecutionTime.class));
     }
 
     @Override
@@ -30,7 +30,7 @@ public class LogProxyPostProcessor implements BeanPostProcessor {
     }
 
     private Object createLogProxy(Object bean, Class<?> typeToLog) {
-        FindInstanceAndCreateLogProxy annotation = typeToLog.getAnnotation(FindInstanceAndCreateLogProxy.class);
+        LogMethodExecutionTime annotation = typeToLog.getAnnotation(LogMethodExecutionTime.class);
         String groupName = annotation.group();
         return logAspect.createLogProxy(bean, typeToLog, groupName);
     }

@@ -1,6 +1,6 @@
 package com.woowacourse.zzimkkong.repository;
 
-import com.woowacourse.zzimkkong.config.logaspect.FindInstanceAndCreateLogProxy;
+import com.woowacourse.zzimkkong.config.logaspect.LogMethodExecutionTime;
 import com.woowacourse.zzimkkong.domain.Reservation;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -13,7 +13,7 @@ import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.List;
 
-@FindInstanceAndCreateLogProxy(group = "repository")
+@LogMethodExecutionTime(group = "repository")
 public interface ReservationRepository extends JpaRepository<Reservation, Long>, ReservationRepositoryCustom {
     @Query(value = "SELECT r FROM Reservation r " +
             "WHERE r.space.id IN :spaceIds AND " +
