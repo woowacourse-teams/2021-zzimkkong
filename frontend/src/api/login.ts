@@ -13,11 +13,11 @@ export interface SocialLoginParams {
 }
 
 export const postLogin = (loginData: LoginParams): Promise<AxiosResponse> => {
-  return api.post('/managers/login/token', loginData);
+  return api.post('/members/login/token', loginData);
 };
 
 export const postTokenValidation = (): Promise<AxiosResponse> => {
-  return api.post('/managers/token');
+  return api.post('/members/token');
 };
 
 export const queryGithubLogin: QueryFunction<
@@ -26,7 +26,7 @@ export const queryGithubLogin: QueryFunction<
 > = ({ queryKey }) => {
   const [, { code }] = queryKey;
 
-  return api.get(`/managers/github/login/token?code=${code}`);
+  return api.get(`/members/github/login/token?code=${code}`);
 };
 
 export const queryGoogleLogin: QueryFunction<
@@ -35,5 +35,5 @@ export const queryGoogleLogin: QueryFunction<
 > = ({ queryKey }) => {
   const [, { code }] = queryKey;
 
-  return api.get(`/managers/google/login/token?code=${code}`);
+  return api.get(`/members/google/login/token?code=${code}`);
 };

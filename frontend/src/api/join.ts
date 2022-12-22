@@ -24,11 +24,11 @@ export const queryValidateEmail: QueryFunction = ({ queryKey }) => {
 
   if (typeof email !== 'string') throw new Error(THROW_ERROR.INVALID_EMAIL_FORMAT);
 
-  return api.get(`/managers?email=${email}`);
+  return api.get(`/members?email=${email}`);
 };
 
 export const postJoin = ({ email, password, organization }: JoinParams): Promise<AxiosResponse> => {
-  return api.post('/managers', { email, password, organization });
+  return api.post('/members', { email, password, organization });
 };
 
 export const postSocialJoin = ({
@@ -36,7 +36,7 @@ export const postSocialJoin = ({
   organization,
   oauthProvider,
 }: SocialJoinParams): Promise<AxiosResponse> =>
-  api.post(`/managers/oauth`, {
+  api.post(`/members/oauth`, {
     email,
     organization,
     oauthProvider,
