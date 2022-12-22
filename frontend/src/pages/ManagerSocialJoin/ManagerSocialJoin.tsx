@@ -12,6 +12,7 @@ import SocialJoinForm from './units/SocialJoinForm';
 
 export interface SocialJoinParams {
   email: string;
+  userName: string;
   organization: string;
 }
 
@@ -37,10 +38,10 @@ const ManagerSocialJoin = (): JSX.Element => {
     },
   });
 
-  const handleSubmit = ({ email, organization }: SocialJoinParams) => {
-    if (!email || !organization || !oauthProvider || socialJoin.isLoading) return;
+  const handleSubmit = ({ email, userName, organization }: SocialJoinParams) => {
+    if (!email || !userName || !organization || !oauthProvider || socialJoin.isLoading) return;
 
-    socialJoin.mutate({ email, organization, oauthProvider });
+    socialJoin.mutate({ email, userName, organization, oauthProvider });
   };
 
   if (!email || !oauthProvider) {

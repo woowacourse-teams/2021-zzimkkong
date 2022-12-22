@@ -11,21 +11,36 @@ import * as Styled from './SocialJoinForm.styles';
 interface Props {
   email: string;
   oauthProvider: 'GITHUB' | 'GOOGLE';
-  onSubmit: ({ email, organization }: SocialJoinParams) => void;
+  onSubmit: ({ email, userName, organization }: SocialJoinParams) => void;
 }
 
 const SocialJoinForm = ({ email, oauthProvider, onSubmit }: Props): JSX.Element => {
-  const [organization, onChangeForm] = useInput('');
+  const [userName, onChangeUserName] = useInput('');
+  const [organization, onChangeOrganization] = useInput('');
 
+  const [userNameMessage, setUserNameMessage] = useState('');
   const [organizationMessage, setOrganizationMessage] = useState('');
 
+  const isValidUsername = REGEXP.USERNAME.test(userName);
   const isValidOrganization = REGEXP.ORGANIZATION.test(organization);
 
   const handleSubmit: FormEventHandler<HTMLFormElement> = (event) => {
     event.preventDefault();
 
-    onSubmit({ email, organization });
+    onSubmit({ email, userName, organization });
   };
+
+  useEffect(() => {
+    if (!userName) {
+      setUserNameMessage('');
+
+      return;
+    }
+
+    setUserNameMessage(
+      isValidUsername ? MESSAGE.JOIN.VALID_USERNAME : MESSAGE.JOIN.INVALID_USERNAME
+    );
+  }, [userName, isValidUsername]);
 
   useEffect(() => {
     if (!organization) {
@@ -46,9 +61,21 @@ const SocialJoinForm = ({ email, oauthProvider, onSubmit }: Props): JSX.Element 
         label="이메일"
         name="email"
         value={email}
-        onChange={onChangeForm}
+        onChange={onChangeOrganization}
         required
         disabled
+      />
+      <Input
+        type="text"
+        label="이름"
+        name="userName"
+        minLength={MANAGER.USERNAME.MIN_LENGTH}
+        value={userName}
+        onChange={onChangeUserName}
+        message={userNameMessage}
+        status={isValidUsername ? 'success' : 'error'}
+        required
+        autoFocus
       />
       <Input
         type="text"
@@ -56,7 +83,7 @@ const SocialJoinForm = ({ email, oauthProvider, onSubmit }: Props): JSX.Element 
         name="organization"
         minLength={MANAGER.ORGANIZATION.MIN_LENGTH}
         value={organization}
-        onChange={onChangeForm}
+        onChange={onChangeOrganization}
         message={organizationMessage}
         status={isValidOrganization ? 'success' : 'error'}
         required

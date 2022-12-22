@@ -15,6 +15,7 @@ import JoinForm from './units/JoinForm';
 export interface JoinParams {
   email: string;
   password: string;
+  userName: string;
   organization: string;
 }
 
@@ -32,10 +33,10 @@ const ManagerJoin = (): JSX.Element => {
     },
   });
 
-  const handleSubmit = ({ email, password, organization }: JoinParams) => {
-    if (!email || !password || !organization) return;
+  const handleSubmit = ({ email, password, userName, organization }: JoinParams) => {
+    if (!email || !password || !userName || !organization) return;
 
-    join.mutate({ email, password, organization });
+    join.mutate({ email, password, userName, organization });
   };
 
   return (

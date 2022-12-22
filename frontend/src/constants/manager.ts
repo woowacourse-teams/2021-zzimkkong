@@ -3,6 +3,9 @@ const MANAGER = {
     MIN_LENGTH: 8,
     MAX_LENGTH: 20,
   },
+  USERNAME: {
+    MIN_LENGTH: 1,
+  },
   ORGANIZATION: {
     MIN_LENGTH: 1,
   },

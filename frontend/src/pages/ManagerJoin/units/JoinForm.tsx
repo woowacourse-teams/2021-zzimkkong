@@ -16,27 +16,32 @@ interface Form {
   email: string;
   password: string;
   passwordConfirm: string;
+  userName: string;
   organization: string;
 }
 
 interface Props {
-  onSubmit: ({ email, password, organization }: JoinParams) => void;
+  onSubmit: ({ email, password, userName, organization }: JoinParams) => void;
 }
 
 const JoinForm = ({ onSubmit }: Props): JSX.Element => {
-  const [{ email, password, passwordConfirm, organization }, onChangeForm] = useInputs<Form>({
-    email: '',
-    password: '',
-    passwordConfirm: '',
-    organization: '',
-  });
+  const [{ email, password, passwordConfirm, userName, organization }, onChangeForm] =
+    useInputs<Form>({
+      email: '',
+      password: '',
+      passwordConfirm: '',
+      userName: '',
+      organization: '',
+    });
 
   const [emailMessage, setEmailMessage] = useState('');
   const [passwordMessage, setPasswordMessage] = useState('');
   const [passwordConfirmMessage, setPasswordConfirmMessage] = useState('');
+  const [userNameMessage, setUserNameMessage] = useState('');
   const [organizationMessage, setOrganizationMessage] = useState('');
 
   const isValidPassword = REGEXP.PASSWORD.test(password);
+  const isValidUsername = REGEXP.ORGANIZATION.test(userName);
   const isValidOrganization = REGEXP.ORGANIZATION.test(organization);
 
   const checkValidateEmail = useQuery(['checkValidateEmail', email], queryValidateEmail, {
@@ -67,7 +72,7 @@ const JoinForm = ({ onSubmit }: Props): JSX.Element => {
       return;
     }
 
-    onSubmit({ email, password, organization });
+    onSubmit({ email, password, userName, organization });
   };
 
   useEffect(() => {
@@ -87,6 +92,18 @@ const JoinForm = ({ onSubmit }: Props): JSX.Element => {
         : MESSAGE.JOIN.INVALID_PASSWORD_CONFIRM
     );
   }, [password, passwordConfirm]);
+
+  useEffect(() => {
+    if (!userName) {
+      setUserNameMessage('');
+
+      return;
+    }
+
+    setUserNameMessage(
+      isValidUsername ? MESSAGE.JOIN.VALID_USERNAME : MESSAGE.JOIN.INVALID_USERNAME
+    );
+  }, [userName, isValidUsername]);
 
   useEffect(() => {
     if (!organization) {
@@ -136,6 +153,17 @@ const JoinForm = ({ onSubmit }: Props): JSX.Element => {
         onChange={onChangeForm}
         message={passwordConfirmMessage}
         status={password === passwordConfirm ? 'success' : 'error'}
+        required
+      />
+      <Input
+        type="text"
+        label="이름"
+        name="userName"
+        minLength={MANAGER.USERNAME.MIN_LENGTH}
+        value={userName}
+        onChange={onChangeForm}
+        message={userNameMessage}
+        status={isValidUsername ? 'success' : 'error'}
         required
       />
       <Input
