@@ -69,7 +69,7 @@ class MemberControllerTest extends AcceptanceTest {
 
     @Test
     @DisplayName("이메일 중복 확인 시, 중복되지 않은 이메일을 입력하면 통과한다.")
-    void getMembers() {
+    void getMembers_email() {
         //given
         MemberSaveRequest newMemberSaveRequest = new MemberSaveRequest(NEW_EMAIL, USER_NAME, ProfileEmoji.MAN_DARK_SKIN_TONE_TECHNOLOGIST, PW, ORGANIZATION);
         saveMember(newMemberSaveRequest);
@@ -77,6 +77,21 @@ class MemberControllerTest extends AcceptanceTest {
         // when
         String anotherEmail = "pobi@naver.com";
         ExtractableResponse<Response> response = validateDuplicateEmail(anotherEmail);
+
+        //then
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
+    }
+
+    @Test
+    @DisplayName("유저 네임 중복 확인 시, 중복되지 않은 이메일을 입력하면 통과한다.")
+    void getMembers_userName() {
+        //given
+        MemberSaveRequest newMemberSaveRequest = new MemberSaveRequest(NEW_EMAIL, USER_NAME, ProfileEmoji.MAN_DARK_SKIN_TONE_TECHNOLOGIST, PW, ORGANIZATION);
+        saveMember(newMemberSaveRequest);
+
+        // when
+        String anotherUserName = "삭정";
+        ExtractableResponse<Response> response = validateDuplicateUserName(anotherUserName);
 
         //then
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
@@ -168,8 +183,19 @@ class MemberControllerTest extends AcceptanceTest {
         return RestAssured
                 .given(getRequestSpecification()).log().all()
                 .accept("application/json")
-                .filter(document("member/get", getRequestPreprocessor(), getResponsePreprocessor()))
+                .filter(document("member/getEmail", getRequestPreprocessor(), getResponsePreprocessor()))
                 .queryParam("email", email)
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .when().get("/api/members")
+                .then().log().all().extract();
+    }
+
+    private ExtractableResponse<Response> validateDuplicateUserName(final String userName) {
+        return RestAssured
+                .given(getRequestSpecification()).log().all()
+                .accept("application/json")
+                .filter(document("member/getUserName", getRequestPreprocessor(), getResponsePreprocessor()))
+                .queryParam("userName", userName)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .when().get("/api/members")
                 .then().log().all().extract();

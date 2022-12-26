@@ -11,6 +11,7 @@ import com.woowacourse.zzimkkong.exception.member.NoSuchMemberException;
 import com.woowacourse.zzimkkong.exception.member.ReservationExistsOnMemberException;
 import com.woowacourse.zzimkkong.repository.MemberRepository;
 import com.woowacourse.zzimkkong.repository.ReservationRepository;
+import net.logstash.logback.encoder.org.apache.commons.lang3.StringUtils;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -71,6 +72,9 @@ public class MemberService {
 
     @Transactional(readOnly = true)
     public void validateDuplicateEmail(final String email) {
+        if (StringUtils.isBlank(email)) {
+            return;
+        }
         if (members.existsByEmail(email)) {
             throw new DuplicateEmailException();
         }
@@ -78,6 +82,9 @@ public class MemberService {
 
     @Transactional(readOnly = true)
     public void validateDuplicateUserName(final String userName) {
+        if (StringUtils.isBlank(userName)) {
+            return;
+        }
         if (members.existsByUserName(userName)) {
             throw new DuplicateUserNameException();
         }
