@@ -11,11 +11,11 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import javax.validation.constraints.Email;
-import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Pattern;
 import java.net.URI;
 
-import static com.woowacourse.zzimkkong.dto.ValidatorMessage.EMAIL_MESSAGE;
-import static com.woowacourse.zzimkkong.dto.ValidatorMessage.EMPTY_MESSAGE;
+import static com.woowacourse.zzimkkong.dto.ValidatorMessage.*;
+import static com.woowacourse.zzimkkong.dto.ValidatorMessage.NAME_MESSAGE;
 
 @LogMethodExecutionTime(group = "controller")
 @RestController
@@ -45,11 +45,13 @@ public class MemberController {
     }
 
     @GetMapping
-    public ResponseEntity<Void> validateEmail(
-            @RequestParam
-            @NotBlank(message = EMPTY_MESSAGE)
-            @Email(message = EMAIL_MESSAGE) final String email) {
+    public ResponseEntity<Void> validateMemberData(
+            @RequestParam(required = false)
+            @Email(message = EMAIL_MESSAGE) final String email,
+            @RequestParam(required = false)
+            @Pattern(regexp = NAMING_FORMAT, message = NAME_MESSAGE) final String userName) {
         memberService.validateDuplicateEmail(email);
+        memberService.validateDuplicateUserName(userName);
         return ResponseEntity.ok().build();
     }
 
