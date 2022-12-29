@@ -11,9 +11,9 @@ import * as Styled from './ManagerSocialJoin.styles';
 import SocialJoinForm from './units/SocialJoinForm';
 
 export interface SocialJoinParams {
+  emoji: string;
   email: string;
   userName: string;
-  organization: string;
 }
 
 interface SocialJoinState {
@@ -38,10 +38,10 @@ const ManagerSocialJoin = (): JSX.Element => {
     },
   });
 
-  const handleSubmit = ({ email, userName, organization }: SocialJoinParams) => {
-    if (!email || !userName || !organization || !oauthProvider || socialJoin.isLoading) return;
+  const handleSubmit = ({ emoji, email, userName }: SocialJoinParams) => {
+    if (!emoji || !email || !userName || !oauthProvider || socialJoin.isLoading) return;
 
-    socialJoin.mutate({ email, userName, organization, oauthProvider });
+    socialJoin.mutate({ emoji, email, userName, oauthProvider });
   };
 
   if (!email || !oauthProvider) {

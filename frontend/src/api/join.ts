@@ -12,9 +12,9 @@ interface JoinParams {
 }
 
 interface SocialJoinParams {
+  emoji: string;
   email: string;
   userName: string;
-  organization: string;
   oauthProvider: 'GITHUB' | 'GOOGLE';
 }
 
@@ -48,17 +48,12 @@ export const postJoin = ({
 };
 
 export const postSocialJoin = ({
+  emoji,
   email,
   userName,
-  organization,
   oauthProvider,
 }: SocialJoinParams): Promise<AxiosResponse> =>
-  api.post(`/members/oauth`, {
-    email,
-    userName,
-    organization,
-    oauthProvider,
-  });
+  api.post(`/members/oauth`, { emoji, email, userName, oauthProvider });
 
 export const getEmojiList: QueryFunction<AxiosResponse<QueryEmojiListSuccess>> = () => {
   return api.get('/members/emojis');
