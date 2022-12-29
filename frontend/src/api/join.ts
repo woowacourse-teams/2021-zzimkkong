@@ -1,13 +1,14 @@
 import { AxiosResponse } from 'axios';
 import { QueryFunction } from 'react-query';
 import THROW_ERROR from 'constants/throwError';
+import { QueryEmojiListSuccess } from 'types/response';
 import api from './api';
 
 interface JoinParams {
+  emoji: string;
   email: string;
   password: string;
   userName: string;
-  organization: string;
 }
 
 interface SocialJoinParams {
@@ -29,13 +30,21 @@ export const queryValidateEmail: QueryFunction = ({ queryKey }) => {
   return api.get(`/members?email=${email}`);
 };
 
+export const queryValidateUserName: QueryFunction = ({ queryKey }) => {
+  const [, userName] = queryKey;
+
+  if (typeof userName !== 'string') throw new Error(THROW_ERROR.INVALID_USER_NAME_FORMAT);
+
+  return api.get(`/members?userName=${userName}`);
+};
+
 export const postJoin = ({
+  emoji,
   email,
   password,
   userName,
-  organization,
 }: JoinParams): Promise<AxiosResponse> => {
-  return api.post('/members', { email, password, userName, organization });
+  return api.post('/members', { emoji, email, password, userName });
 };
 
 export const postSocialJoin = ({
@@ -50,3 +59,7 @@ export const postSocialJoin = ({
     organization,
     oauthProvider,
   });
+
+export const getEmojiList: QueryFunction<AxiosResponse<QueryEmojiListSuccess>> = () => {
+  return api.get('/members/emojis');
+};

@@ -1,4 +1,12 @@
-import { MapItem, Reservation, Space, SpaceReservation, ManagerSpaceAPI, Preset } from './common';
+import {
+  MapItem,
+  Reservation,
+  Space,
+  SpaceReservation,
+  ManagerSpaceAPI,
+  Preset,
+  Emoji,
+} from './common';
 
 export interface MapItemResponse extends Omit<MapItem, 'mapDrawing'> {
   mapDrawing: string;
@@ -25,6 +33,10 @@ export interface SocialLoginFailure {
 export interface QuerySocialEmailSuccess {
   email: string;
   oauthProvider: 'GITHUB' | 'GOOGLE';
+}
+
+export interface QueryEmojiListSuccess {
+  emojis: Emoji[];
 }
 
 export type QueryGuestMapSuccess = MapItemResponse;

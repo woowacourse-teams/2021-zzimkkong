@@ -1,7 +1,7 @@
 import { AxiosError } from 'axios';
 import React, { FormEventHandler, useEffect, useState } from 'react';
 import { useQuery } from 'react-query';
-import { queryValidateEmail } from 'api/join';
+import { queryValidateEmail, queryValidateUserName } from 'api/join';
 import Button from 'components/Button/Button';
 import Input from 'components/Input/Input';
 import MANAGER from 'constants/manager';
@@ -10,6 +10,7 @@ import REGEXP from 'constants/regexp';
 import useInputs from 'hooks/useInputs';
 import { ErrorResponse } from 'types/response';
 import { JoinParams } from '../ManagerJoin';
+import EmojiSelector from './EmojiSelector';
 import * as Styled from './JoinForm.styles';
 
 interface Form {
@@ -17,32 +18,27 @@ interface Form {
   password: string;
   passwordConfirm: string;
   userName: string;
-  organization: string;
 }
 
 interface Props {
-  onSubmit: ({ email, password, userName, organization }: JoinParams) => void;
+  onSubmit: ({ emoji, email, password, userName }: JoinParams) => void;
 }
 
 const JoinForm = ({ onSubmit }: Props): JSX.Element => {
-  const [{ email, password, passwordConfirm, userName, organization }, onChangeForm] =
-    useInputs<Form>({
-      email: '',
-      password: '',
-      passwordConfirm: '',
-      userName: '',
-      organization: '',
-    });
+  const [emoji, setEmoji] = useState<string>('');
+  const [{ email, password, passwordConfirm, userName }, onChangeForm] = useInputs<Form>({
+    email: '',
+    password: '',
+    passwordConfirm: '',
+    userName: '',
+  });
 
   const [emailMessage, setEmailMessage] = useState('');
   const [passwordMessage, setPasswordMessage] = useState('');
   const [passwordConfirmMessage, setPasswordConfirmMessage] = useState('');
   const [userNameMessage, setUserNameMessage] = useState('');
-  const [organizationMessage, setOrganizationMessage] = useState('');
 
   const isValidPassword = REGEXP.PASSWORD.test(password);
-  const isValidUsername = REGEXP.ORGANIZATION.test(userName);
-  const isValidOrganization = REGEXP.ORGANIZATION.test(organization);
 
   const checkValidateEmail = useQuery(['checkValidateEmail', email], queryValidateEmail, {
     enabled: false,
@@ -57,10 +53,47 @@ const JoinForm = ({ onSubmit }: Props): JSX.Element => {
     },
   });
 
+  const checkValidateUserName = useQuery(
+    ['checkValidateUserName', userName],
+    queryValidateUserName,
+    {
+      enabled: false,
+      retry: false,
+
+      onSuccess: () => {
+        setUserNameMessage(MESSAGE.JOIN.VALID_USERNAME);
+      },
+
+      onError: (error: AxiosError<ErrorResponse>) => {
+        setUserNameMessage(error.response?.data.message ?? '');
+      },
+    }
+  );
+
+  const handleChangeEmail = (event: React.ChangeEvent<HTMLInputElement>) => {
+    onChangeForm(event);
+    setEmailMessage('');
+  };
+
+  const handleChangeUserName = (event: React.ChangeEvent<HTMLInputElement>) => {
+    onChangeForm(event);
+    setUserNameMessage('');
+  };
+
   const handleValidateEmail = () => {
     if (!email) return;
 
     checkValidateEmail.refetch();
+  };
+
+  const handleValidateUserName = () => {
+    if (!userName) return;
+
+    checkValidateUserName.refetch();
+  };
+
+  const handleSelectEmoji = (emoji: string) => {
+    setEmoji(emoji);
   };
 
   const handleSubmit: FormEventHandler<HTMLFormElement> = (event) => {
@@ -72,7 +105,7 @@ const JoinForm = ({ onSubmit }: Props): JSX.Element => {
       return;
     }
 
-    onSubmit({ email, password, userName, organization });
+    onSubmit({ emoji, email, password, userName });
   };
 
   useEffect(() => {
@@ -93,95 +126,76 @@ const JoinForm = ({ onSubmit }: Props): JSX.Element => {
     );
   }, [password, passwordConfirm]);
 
-  useEffect(() => {
-    if (!userName) {
-      setUserNameMessage('');
-
-      return;
-    }
-
-    setUserNameMessage(
-      isValidUsername ? MESSAGE.JOIN.VALID_USERNAME : MESSAGE.JOIN.INVALID_USERNAME
-    );
-  }, [userName, isValidUsername]);
-
-  useEffect(() => {
-    if (!organization) {
-      setOrganizationMessage('');
-
-      return;
-    }
-
-    setOrganizationMessage(
-      isValidOrganization ? MESSAGE.JOIN.VALID_ORGANIZATION : MESSAGE.JOIN.INVALID_ORGANIZATION
-    );
-  }, [organization, isValidOrganization]);
-
   return (
     <Styled.Form onSubmit={handleSubmit}>
-      <Input
-        type="email"
-        label="이메일"
-        value={email}
-        name="email"
-        onChange={onChangeForm}
-        onBlur={handleValidateEmail}
-        message={emailMessage}
-        status={checkValidateEmail.isSuccess ? 'success' : 'error'}
-        required
-        autoFocus
-      />
-      <Input
-        type="password"
-        label="비밀번호"
-        name="password"
-        minLength={MANAGER.PASSWORD.MIN_LENGTH}
-        maxLength={MANAGER.PASSWORD.MAX_LENGTH}
-        value={password}
-        onChange={onChangeForm}
-        message={passwordMessage}
-        status={isValidPassword ? 'success' : 'error'}
-        required
-      />
-      <Input
-        type="password"
-        label="비밀번호 확인"
-        name="passwordConfirm"
-        minLength={MANAGER.PASSWORD.MIN_LENGTH}
-        maxLength={MANAGER.PASSWORD.MAX_LENGTH}
-        value={passwordConfirm}
-        onChange={onChangeForm}
-        message={passwordConfirmMessage}
-        status={password === passwordConfirm ? 'success' : 'error'}
-        required
-      />
-      <Input
-        type="text"
-        label="이름"
-        name="userName"
-        minLength={MANAGER.USERNAME.MIN_LENGTH}
-        value={userName}
-        onChange={onChangeForm}
-        message={userNameMessage}
-        status={isValidUsername ? 'success' : 'error'}
-        required
-      />
-      <Input
-        type="text"
-        label="조직명"
-        name="organization"
-        minLength={MANAGER.ORGANIZATION.MIN_LENGTH}
-        value={organization}
-        onChange={onChangeForm}
-        message={organizationMessage}
-        status={isValidOrganization ? 'success' : 'error'}
-        required
-      />
+      <EmojiSelector onSelect={handleSelectEmoji} />
+
+      <Styled.InputWrapper>
+        <Input
+          type="email"
+          label="이메일"
+          value={email}
+          name="email"
+          onChange={handleChangeEmail}
+          onBlur={handleValidateEmail}
+          message={emailMessage}
+          status={checkValidateEmail.isSuccess ? 'success' : 'error'}
+          required
+          autoFocus
+        />
+      </Styled.InputWrapper>
+
+      <Styled.InputWrapper>
+        <Input
+          type="password"
+          label="비밀번호"
+          name="password"
+          minLength={MANAGER.PASSWORD.MIN_LENGTH}
+          maxLength={MANAGER.PASSWORD.MAX_LENGTH}
+          value={password}
+          onChange={onChangeForm}
+          message={passwordMessage}
+          status={isValidPassword ? 'success' : 'error'}
+          required
+        />
+      </Styled.InputWrapper>
+
+      <Styled.InputWrapper>
+        <Input
+          type="password"
+          label="비밀번호 확인"
+          name="passwordConfirm"
+          minLength={MANAGER.PASSWORD.MIN_LENGTH}
+          maxLength={MANAGER.PASSWORD.MAX_LENGTH}
+          value={passwordConfirm}
+          onChange={onChangeForm}
+          message={passwordConfirmMessage}
+          status={password === passwordConfirm ? 'success' : 'error'}
+          required
+        />
+      </Styled.InputWrapper>
+
+      <Styled.InputWrapper>
+        <Input
+          type="text"
+          label="이름"
+          name="userName"
+          minLength={MANAGER.USERNAME.MIN_LENGTH}
+          maxLength={MANAGER.USERNAME.MAX_LENGTH}
+          value={userName}
+          onChange={handleChangeUserName}
+          onBlur={handleValidateUserName}
+          message={userNameMessage}
+          status={checkValidateUserName.isSuccess ? 'success' : 'error'}
+          required
+        />
+      </Styled.InputWrapper>
+
       <Button
         variant="primary"
         size="large"
         fullWidth
-        disabled={!(email && password && passwordConfirm && organization)}
+        disabled={!(emoji && email && password && passwordConfirm)}
       >
         회원가입
       </Button>

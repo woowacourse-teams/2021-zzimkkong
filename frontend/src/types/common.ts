@@ -176,3 +176,8 @@ export interface EditorBoard {
   y: number;
   scale: number;
 }
+
+export interface Emoji {
+  name: string;
+  code: string;
+}

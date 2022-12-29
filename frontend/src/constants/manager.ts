@@ -5,6 +5,7 @@ const MANAGER = {
   },
   USERNAME: {
     MIN_LENGTH: 1,
+    MAX_LENGTH: 20,
   },
   ORGANIZATION: {
     MIN_LENGTH: 1,
