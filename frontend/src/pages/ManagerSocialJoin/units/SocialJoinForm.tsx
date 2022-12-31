@@ -36,7 +36,9 @@ const SocialJoinForm = ({ email, oauthProvider, onSubmit }: Props): JSX.Element 
       },
 
       onError: (error: AxiosError<ErrorResponse>) => {
-        setUserNameMessage(error.response?.data.message ?? '');
+        setUserNameMessage(
+          error.response?.data.message ?? MESSAGE.JOIN.CHECK_USERNAME_UNEXPECTED_ERROR
+        );
       },
     }
   );
