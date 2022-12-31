@@ -38,22 +38,12 @@ export const queryValidateUserName: QueryFunction = ({ queryKey }) => {
   return api.get(`/members?userName=${userName}`);
 };
 
-export const postJoin = ({
-  emoji,
-  email,
-  password,
-  userName,
-}: JoinParams): Promise<AxiosResponse> => {
-  return api.post('/members', { emoji, email, password, userName });
+export const postJoin = (params: JoinParams): Promise<AxiosResponse> => {
+  return api.post('/members', params);
 };
 
-export const postSocialJoin = ({
-  emoji,
-  email,
-  userName,
-  oauthProvider,
-}: SocialJoinParams): Promise<AxiosResponse> =>
-  api.post(`/members/oauth`, { emoji, email, userName, oauthProvider });
+export const postSocialJoin = (params: SocialJoinParams): Promise<AxiosResponse> =>
+  api.post(`/members/oauth`, params);
 
 export const getEmojiList: QueryFunction<AxiosResponse<QueryEmojiListSuccess>> = () => {
   return api.get('/members/emojis');
