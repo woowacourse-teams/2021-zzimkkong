@@ -81,7 +81,7 @@ class MemberControllerTest extends AcceptanceTest {
     }
 
     @Test
-    @DisplayName("유저 네임 중복 확인 시, 중복되지 않은 이메일을 입력하면 통과한다.")
+    @DisplayName("유저 네임 중복 확인 시, 중복되지 않은 유저 네임을 입력하면 통과한다.")
     void getMembers_userName() {
         //given
         MemberSaveRequest newMemberSaveRequest = new MemberSaveRequest(NEW_EMAIL, POBI, ProfileEmoji.MAN_DARK_SKIN_TONE_TECHNOLOGIST, PW, ORGANIZATION);

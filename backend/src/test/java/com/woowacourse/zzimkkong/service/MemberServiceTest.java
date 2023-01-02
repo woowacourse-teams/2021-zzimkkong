@@ -8,6 +8,7 @@ import com.woowacourse.zzimkkong.dto.member.MemberSaveResponse;
 import com.woowacourse.zzimkkong.dto.member.MemberUpdateRequest;
 import com.woowacourse.zzimkkong.dto.member.oauth.OauthMemberSaveRequest;
 import com.woowacourse.zzimkkong.exception.member.DuplicateEmailException;
+import com.woowacourse.zzimkkong.exception.member.DuplicateUserNameException;
 import com.woowacourse.zzimkkong.exception.member.ReservationExistsOnMemberException;
 import com.woowacourse.zzimkkong.dto.member.LoginUserEmail;
 import com.woowacourse.zzimkkong.infrastructure.oauth.OauthHandler;
@@ -70,7 +71,7 @@ class MemberServiceTest extends ServiceTest {
 
     @Test
     @DisplayName("회원이 중복된 이메일로 저장을 요청하면 오류가 발생한다.")
-    void saveMemberException() {
+    void saveMemberEmailException() {
         //given
         MemberSaveRequest memberSaveRequest = new MemberSaveRequest(EMAIL, POBI, ProfileEmoji.MAN_DARK_SKIN_TONE_TECHNOLOGIST, PW, ORGANIZATION);
 
@@ -81,6 +82,23 @@ class MemberServiceTest extends ServiceTest {
         //then
         assertThatThrownBy(() -> memberService.saveMember(memberSaveRequest))
                 .isInstanceOf(DuplicateEmailException.class);
+    }
+
+    @Test
+    @DisplayName("회원이 중복된 유저네임으로 저장을 요청하면 오류가 발생한다.")
+    void saveMemberUserNameException() {
+        //given
+        MemberSaveRequest memberSaveRequest = new MemberSaveRequest(EMAIL, POBI, ProfileEmoji.MAN_DARK_SKIN_TONE_TECHNOLOGIST, PW, ORGANIZATION);
+
+        //when
+        given(members.existsByEmail(anyString()))
+                .willReturn(false);
+        given(members.existsByUserName(anyString()))
+                .willReturn(true);
+
+        //then
+        assertThatThrownBy(() -> memberService.saveMember(memberSaveRequest))
+                .isInstanceOf(DuplicateUserNameException.class);
     }
 
     @ParameterizedTest
@@ -122,7 +140,7 @@ class MemberServiceTest extends ServiceTest {
     @ParameterizedTest
     @ValueSource(strings = {"GOOGLE", "GITHUB"})
     @DisplayName("이미 존재하는 이메일로 소셜 로그인을 이용해 회원가입하면 에러가 발생한다.")
-    void saveMemberByOauthException(String oauth) {
+    void saveMemberByOauthEmailException(String oauth) {
         //given
         OauthMemberSaveRequest oauthMemberSaveRequest = new OauthMemberSaveRequest(EMAIL, POBI, ProfileEmoji.MAN_DARK_SKIN_TONE_TECHNOLOGIST, ORGANIZATION, oauth);
 
@@ -133,6 +151,24 @@ class MemberServiceTest extends ServiceTest {
         //then
         assertThatThrownBy(() -> memberService.saveMemberByOauth(oauthMemberSaveRequest))
                 .isInstanceOf(DuplicateEmailException.class);
+    }
+
+    @ParameterizedTest
+    @ValueSource(strings = {"GOOGLE", "GITHUB"})
+    @DisplayName("이미 존재하는 유저 네임으로 소셜 로그인을 이용해 회원가입하면 에러가 발생한다.")
+    void saveMemberByOauthUserNameException(String oauth) {
+        //given
+        OauthMemberSaveRequest oauthMemberSaveRequest = new OauthMemberSaveRequest(EMAIL, POBI, ProfileEmoji.MAN_DARK_SKIN_TONE_TECHNOLOGIST, ORGANIZATION, oauth);
+
+        //when
+        given(members.existsByEmail(anyString()))
+                .willReturn(false);
+        given(members.existsByUserName(anyString()))
+                .willReturn(true);
+
+        //then
+        assertThatThrownBy(() -> memberService.saveMemberByOauth(oauthMemberSaveRequest))
+                .isInstanceOf(DuplicateUserNameException.class);
     }
 
     @Test
@@ -200,5 +236,21 @@ class MemberServiceTest extends ServiceTest {
         // when, then
         assertThatThrownBy(() -> memberService.deleteMember(loginUserEmail))
                 .isInstanceOf(ReservationExistsOnMemberException.class);
+    }
+
+    @Test
+    @DisplayName("중복된 유저 네임이 들어오면 에러를 반환한다")
+    void validateDuplicateUserName() {
+        //given
+
+        //when
+        given(members.existsByEmail(anyString()))
+                .willReturn(false);
+        given(members.existsByUserName(anyString()))
+                .willReturn(true);
+
+        //then
+        assertThatThrownBy(() -> memberService.validateDuplicateUserName("중복된이름"))
+                .isInstanceOf(DuplicateUserNameException.class);
     }
 }
