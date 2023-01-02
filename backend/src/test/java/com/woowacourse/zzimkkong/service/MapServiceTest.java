@@ -6,7 +6,7 @@ import com.woowacourse.zzimkkong.dto.map.MapCreateUpdateRequest;
 import com.woowacourse.zzimkkong.dto.map.MapFindAllResponse;
 import com.woowacourse.zzimkkong.dto.map.MapFindResponse;
 import com.woowacourse.zzimkkong.dto.member.LoginUserEmail;
-import com.woowacourse.zzimkkong.exception.authorization.NoAuthorityOnMapException;
+import com.woowacourse.zzimkkong.dto.map.NoAuthorityOnMapException;
 import com.woowacourse.zzimkkong.exception.map.InvalidAccessLinkException;
 import com.woowacourse.zzimkkong.exception.space.ReservationExistOnSpaceException;
 import com.woowacourse.zzimkkong.infrastructure.sharingid.SharingIdGenerator;

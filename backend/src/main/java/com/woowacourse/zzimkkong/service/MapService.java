@@ -5,7 +5,7 @@ import com.woowacourse.zzimkkong.domain.Member;
 import com.woowacourse.zzimkkong.domain.Space;
 import com.woowacourse.zzimkkong.dto.map.*;
 import com.woowacourse.zzimkkong.dto.member.LoginUserEmail;
-import com.woowacourse.zzimkkong.exception.authorization.NoAuthorityOnMapException;
+import com.woowacourse.zzimkkong.dto.map.NoAuthorityOnMapException;
 import com.woowacourse.zzimkkong.exception.map.NoSuchMapException;
 import com.woowacourse.zzimkkong.exception.member.NoSuchMemberException;
 import com.woowacourse.zzimkkong.exception.space.ReservationExistOnSpaceException;

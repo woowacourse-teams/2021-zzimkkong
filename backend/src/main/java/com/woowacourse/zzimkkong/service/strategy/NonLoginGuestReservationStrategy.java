@@ -4,7 +4,7 @@ import com.woowacourse.zzimkkong.domain.*;
 import com.woowacourse.zzimkkong.dto.member.LoginUserEmail;
 import com.woowacourse.zzimkkong.dto.reservation.ReservationCreateDto;
 import com.woowacourse.zzimkkong.exception.reservation.InvalidNonLoginReservationException;
-import com.woowacourse.zzimkkong.exception.reservation.ReservationOwnershipException;
+import com.woowacourse.zzimkkong.exception.reservation.NoAuthorityOnReservationException;
 import com.woowacourse.zzimkkong.exception.reservation.ReservationPasswordException;
 import com.woowacourse.zzimkkong.repository.MemberRepository;
 import org.springframework.stereotype.Component;
@@ -28,7 +28,7 @@ public class NonLoginGuestReservationStrategy extends ReservationStrategy {
     @Override
     public void validateOwnerOfReservation(final Reservation reservation, final String password, final LoginUserEmail loginUserEmail) {
         if (reservation.hasMember()) {
-            throw new ReservationOwnershipException();
+            throw new NoAuthorityOnReservationException();
         }
         if (reservation.isWrongPassword(password)) {
             throw new ReservationPasswordException();

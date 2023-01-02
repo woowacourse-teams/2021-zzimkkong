@@ -4,7 +4,7 @@ import com.woowacourse.zzimkkong.domain.*;
 import com.woowacourse.zzimkkong.dto.member.LoginUserEmail;
 import com.woowacourse.zzimkkong.dto.reservation.ReservationCreateDto;
 import com.woowacourse.zzimkkong.exception.member.NoSuchMemberException;
-import com.woowacourse.zzimkkong.exception.reservation.ReservationOwnershipException;
+import com.woowacourse.zzimkkong.exception.reservation.NoAuthorityOnReservationException;
 import com.woowacourse.zzimkkong.repository.MemberRepository;
 import org.springframework.stereotype.Component;
 
@@ -31,11 +31,11 @@ public class LoginGuestReservationStrategy extends ReservationStrategy {
             Member member = members.findByEmail(loginUserEmail.getEmail())
                     .orElseThrow(NoSuchMemberException::new);
             if (reservation.isNotOwnedBy(member)) {
-                throw new ReservationOwnershipException();
+                throw new NoAuthorityOnReservationException();
             }
             return;
         }
-        throw new ReservationOwnershipException();
+        throw new NoAuthorityOnReservationException();
     }
 
     @Override
@@ -47,7 +47,7 @@ public class LoginGuestReservationStrategy extends ReservationStrategy {
     protected Reservation buildReservation(final Space space, final ReservationTime reservationTime, final ReservationCreateDto reservationCreateDto) {
         LoginUserEmail loginUserEmail = reservationCreateDto.getLoginUserEmail();
         if (!loginUserEmail.exists()) {
-            throw new ReservationOwnershipException();
+            throw new NoAuthorityOnReservationException();
         }
 
         Member member = members.findByEmail(loginUserEmail.getEmail())

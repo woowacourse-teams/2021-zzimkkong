@@ -3,7 +3,7 @@ package com.woowacourse.zzimkkong.service;
 import com.woowacourse.zzimkkong.domain.*;
 import com.woowacourse.zzimkkong.dto.member.LoginUserEmail;
 import com.woowacourse.zzimkkong.dto.space.*;
-import com.woowacourse.zzimkkong.exception.authorization.NoAuthorityOnMapException;
+import com.woowacourse.zzimkkong.dto.map.NoAuthorityOnMapException;
 import com.woowacourse.zzimkkong.exception.map.NoSuchMapException;
 import com.woowacourse.zzimkkong.exception.space.NoSuchSpaceException;
 import com.woowacourse.zzimkkong.exception.space.ReservationExistOnSpaceException;

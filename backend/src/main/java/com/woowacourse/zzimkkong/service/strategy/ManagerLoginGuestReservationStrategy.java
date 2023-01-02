@@ -3,7 +3,7 @@ package com.woowacourse.zzimkkong.service.strategy;
 import com.woowacourse.zzimkkong.domain.*;
 import com.woowacourse.zzimkkong.dto.member.LoginUserEmail;
 import com.woowacourse.zzimkkong.dto.reservation.ReservationCreateDto;
-import com.woowacourse.zzimkkong.exception.authorization.NoAuthorityOnMapException;
+import com.woowacourse.zzimkkong.dto.map.NoAuthorityOnMapException;
 import com.woowacourse.zzimkkong.exception.member.NoSuchMemberException;
 import com.woowacourse.zzimkkong.repository.MemberRepository;
 import org.springframework.stereotype.Component;
