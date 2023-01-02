@@ -119,7 +119,6 @@ public class MemberService {
 
     @Transactional(readOnly = true)
     public ProfileEmojisResponse getProfileEmojis() {
-        List<ProfileEmoji> allEmojis = Arrays.stream(ProfileEmoji.values()).collect(Collectors.toList());
-        return ProfileEmojisResponse.from(allEmojis);
+        return ProfileEmojisResponse.from(List.of(ProfileEmoji.values()));
     }
 }
