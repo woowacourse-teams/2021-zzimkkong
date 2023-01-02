@@ -16,7 +16,7 @@ public class ManagerNonLoginGuestReservationStrategy extends ReservationStrategy
 
     @Override
     public boolean supports(final ReservationType reservationType) {
-        return ReservationType.MANAGER_NON_LOGIN_GUEST.equals(reservationType);
+        return ReservationType.NON_LOGIN_MANAGER.equals(reservationType);
     }
 
     @Override

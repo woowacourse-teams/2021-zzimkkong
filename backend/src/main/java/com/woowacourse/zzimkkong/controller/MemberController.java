@@ -15,7 +15,6 @@ import javax.validation.constraints.Pattern;
 import java.net.URI;
 
 import static com.woowacourse.zzimkkong.dto.ValidatorMessage.*;
-import static com.woowacourse.zzimkkong.dto.ValidatorMessage.NAME_MESSAGE;
 
 @LogMethodExecutionTime(group = "controller")
 @RestController

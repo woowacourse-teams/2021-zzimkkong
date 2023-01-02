@@ -9,8 +9,8 @@ import java.util.function.BiPredicate;
 public enum ReservationType {
     NON_LOGIN_GUEST((apiType, reservationUserEmail) -> Constants.GUEST.equals(apiType) && !reservationUserEmail.exists()),
     LOGIN_GUEST((apiType, reservationUserEmail) -> Constants.GUEST.equals(apiType) && reservationUserEmail.exists()),
-    MANAGER_NON_LOGIN_GUEST((apiType, reservationUserEmail) -> Constants.MANAGER.equals(apiType) && !reservationUserEmail.exists()),
-    MANAGER_LOGIN_GUEST((apiType, reservationUserEmail) -> Constants.MANAGER.equals(apiType) && reservationUserEmail.exists());
+    NON_LOGIN_MANAGER((apiType, reservationUserEmail) -> Constants.MANAGER.equals(apiType) && !reservationUserEmail.exists()),
+    LOGIN_MANAGER((apiType, reservationUserEmail) -> Constants.MANAGER.equals(apiType) && reservationUserEmail.exists());
 
     private final BiPredicate<String, LoginUserEmail> expression;
 

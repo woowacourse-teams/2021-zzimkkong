@@ -16,7 +16,7 @@ public class ManagerLoginGuestReservationStrategy extends ReservationStrategy {
 
     @Override
     public boolean supports(final ReservationType reservationType) {
-        return ReservationType.MANAGER_LOGIN_GUEST.equals(reservationType);
+        return ReservationType.LOGIN_MANAGER.equals(reservationType);
     }
 
     @Override
