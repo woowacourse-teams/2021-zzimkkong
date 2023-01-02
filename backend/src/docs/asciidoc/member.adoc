@@ -7,15 +7,15 @@ include::{snippets}/member/post/http-response.adoc[]
 
 === 멤버 이메일 중복 확인
 ==== Request
-include::{snippets}/member/getEmail/http-request.adoc[]
+include::{snippets}/member/validateEmail/http-request.adoc[]
 ==== Response
-include::{snippets}/member/getEmail/http-response.adoc[]
+include::{snippets}/member/validateEmail/http-response.adoc[]
 
 === 멤버 유저 네임 중복 확인
 ==== Request
-include::{snippets}/member/getUserName/http-request.adoc[]
+include::{snippets}/member/validateUserName/http-request.adoc[]
 ==== Response
-include::{snippets}/member/getUserName/http-response.adoc[]
+include::{snippets}/member/validateUserName/http-response.adoc[]
 
 === 멤버 로그인
 ==== Request

@@ -10,11 +10,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-import javax.validation.constraints.Email;
-import javax.validation.constraints.Pattern;
 import java.net.URI;
-
-import static com.woowacourse.zzimkkong.dto.ValidatorMessage.*;
 
 @LogMethodExecutionTime(group = "controller")
 @RestController
@@ -43,17 +39,6 @@ public class MemberController {
                 .build();
     }
 
-    @GetMapping
-    public ResponseEntity<Void> validateMemberData(
-            @RequestParam(required = false)
-            @Email(message = EMAIL_MESSAGE) final String email,
-            @RequestParam(required = false)
-            @Pattern(regexp = NAMING_FORMAT, message = NAME_MESSAGE) final String userName) {
-        memberService.validateDuplicateEmail(email);
-        memberService.validateDuplicateUserName(userName);
-        return ResponseEntity.ok().build();
-    }
-
     @GetMapping("/me")
     public ResponseEntity<MemberFindResponse> findMember(@LoginEmail final LoginUserEmail loginUserEmail) {
         MemberFindResponse memberFindResponse = memberService.findMember(loginUserEmail);
@@ -72,6 +57,18 @@ public class MemberController {
     public ResponseEntity<Void> deleteMember(@LoginEmail final LoginUserEmail loginUserEmail) {
         memberService.deleteMember(loginUserEmail);
         return ResponseEntity.noContent().build();
+    }
+
+    @PostMapping("/validations/email")
+    public ResponseEntity<Void> validateEmail(@RequestBody @Valid final EmailValidationRequest emailValidationRequest) {
+        memberService.validateDuplicateEmail(emailValidationRequest.getEmail());
+        return ResponseEntity.ok().build();
+    }
+
+    @PostMapping("/validations/username")
+    public ResponseEntity<Void> validateUserName(@RequestBody @Valid final UserNameValidationRequest userNameValidationRequest) {
+        memberService.validateDuplicateUserName(userNameValidationRequest.getUserName());
+        return ResponseEntity.ok().build();
     }
 
     @GetMapping("/emojis")

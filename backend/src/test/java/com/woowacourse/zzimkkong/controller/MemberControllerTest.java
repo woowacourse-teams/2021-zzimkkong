@@ -73,8 +73,8 @@ class MemberControllerTest extends AcceptanceTest {
         saveMember(newMemberSaveRequest);
 
         // when
-        String anotherEmail = "pobi@naver.com";
-        ExtractableResponse<Response> response = validateDuplicateEmail(anotherEmail);
+        EmailValidationRequest anotherEmailRequest = new EmailValidationRequest("pobi@naver.com");
+        ExtractableResponse<Response> response = validateDuplicateEmail(anotherEmailRequest);
 
         //then
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
@@ -88,8 +88,8 @@ class MemberControllerTest extends AcceptanceTest {
         saveMember(newMemberSaveRequest);
 
         // when
-        String anotherUserName = "삭정";
-        ExtractableResponse<Response> response = validateDuplicateUserName(anotherUserName);
+        UserNameValidationRequest anotherUserNameRequest = new UserNameValidationRequest(SAKJUNG);
+        ExtractableResponse<Response> response = validateDuplicateUserName(anotherUserNameRequest);
 
         //then
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
@@ -177,25 +177,25 @@ class MemberControllerTest extends AcceptanceTest {
                 .then().log().all().extract();
     }
 
-    private ExtractableResponse<Response> validateDuplicateEmail(final String email) {
+    private ExtractableResponse<Response> validateDuplicateEmail(final EmailValidationRequest emailValidationRequest) {
         return RestAssured
                 .given(getRequestSpecification()).log().all()
                 .accept("application/json")
-                .filter(document("member/getEmail", getRequestPreprocessor(), getResponsePreprocessor()))
-                .queryParam("email", email)
+                .filter(document("member/validateEmail", getRequestPreprocessor(), getResponsePreprocessor()))
+                .body(emailValidationRequest)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .when().get("/api/members")
+                .when().post("/api/members/validations/email")
                 .then().log().all().extract();
     }
 
-    private ExtractableResponse<Response> validateDuplicateUserName(final String userName) {
+    private ExtractableResponse<Response> validateDuplicateUserName(final UserNameValidationRequest userNameValidationRequest) {
         return RestAssured
                 .given(getRequestSpecification()).log().all()
                 .accept("application/json")
-                .filter(document("member/getUserName", getRequestPreprocessor(), getResponsePreprocessor()))
-                .queryParam("userName", userName)
+                .filter(document("member/validateUserName", getRequestPreprocessor(), getResponsePreprocessor()))
+                .body(userNameValidationRequest)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .when().get("/api/members")
+                .when().post("/api/members/validations/username")
                 .then().log().all().extract();
     }
 

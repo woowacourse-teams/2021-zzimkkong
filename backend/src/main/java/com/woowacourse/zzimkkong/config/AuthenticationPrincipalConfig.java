@@ -33,22 +33,24 @@ public class AuthenticationPrincipalConfig implements WebMvcConfigurer {
         );
 
         List<String> pathsToExclude = List.of(
-                //manager join
+                //member join
                 "/api/members",
                 "/api/members/GOOGLE",
                 "/api/members/GITHUB",
                 "/api/members/google",
                 "/api/members/github",
                 "/api/members/oauth",
+                "/api/members/validations/email",
+                "/api/members/validations/username",
 
-                //manager login
+                //member login
                 "/api/members/login/token",
                 "/api/members/GOOGLE/login/token",
                 "/api/members/GITHUB/login/token",
                 "/api/members/google/login/token",
                 "/api/members/github/login/token",
 
-                //manager etc
+                //member etc
                 "/api/members/emojis",
 
                 //admin login

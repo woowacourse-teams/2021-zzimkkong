@@ -72,9 +72,6 @@ public class MemberService {
 
     @Transactional(readOnly = true)
     public void validateDuplicateEmail(final String email) {
-        if (StringUtils.isBlank(email)) {
-            return;
-        }
         if (members.existsByEmail(email)) {
             throw new DuplicateEmailException();
         }
@@ -82,9 +79,6 @@ public class MemberService {
 
     @Transactional(readOnly = true)
     public void validateDuplicateUserName(final String userName) {
-        if (StringUtils.isBlank(userName)) {
-            return;
-        }
         if (members.existsByUserName(userName)) {
             throw new DuplicateUserNameException();
         }
