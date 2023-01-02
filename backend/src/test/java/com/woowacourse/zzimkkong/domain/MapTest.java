@@ -14,7 +14,7 @@ class MapTest {
     void addSpace() {
         Member pobi = Member.builder()
                 .email(EMAIL)
-                .userName(USER_NAME)
+                .userName(POBI)
                 .emoji(ProfileEmoji.MAN_DARK_SKIN_TONE_TECHNOLOGIST)
                 .password(PW)
                 .organization(ORGANIZATION)
@@ -34,7 +34,7 @@ class MapTest {
     void isOwnedBy(String email, boolean expected) {
         Member pobi = Member.builder()
                 .email(EMAIL)
-                .userName(USER_NAME)
+                .userName(POBI)
                 .emoji(ProfileEmoji.MAN_DARK_SKIN_TONE_TECHNOLOGIST)
                 .password(PW)
                 .organization(ORGANIZATION)
@@ -57,7 +57,7 @@ class MapTest {
         }
         Member pobi = Member.builder()
                 .email(EMAIL)
-                .userName(USER_NAME)
+                .userName(POBI)
                 .emoji(ProfileEmoji.MAN_DARK_SKIN_TONE_TECHNOLOGIST)
                 .password(PW)
                 .organization(ORGANIZATION)

@@ -20,8 +20,8 @@ public class Constants {
     public static final String NEW_EMAIL = "sakjung@email.com";
     public static final String PW = "test1234";
     public static final String ORGANIZATION = "우아한테크코스";
-    public static final String USER_NAME = "포비";
-    public static final String NEW_USER_NAME = "삭정";
+    public static final String POBI = "포비";
+    public static final String SAKJUNG = "삭정";
     public static final LocalDate THE_DAY_AFTER_TOMORROW = LocalDate.now().plusDays(2);
 
     public static final String DESCRIPTION = "찜꽁 1차 회의";

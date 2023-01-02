@@ -43,7 +43,7 @@ class MapControllerTest extends AcceptanceTest {
         // For Test Comparison
         pobi = Member.builder()
                 .email(EMAIL)
-                .userName(USER_NAME)
+                .userName(POBI)
                 .emoji(ProfileEmoji.MAN_DARK_SKIN_TONE_TECHNOLOGIST)
                 .password(passwordEncoder.encode(PW))
                 .organization(ORGANIZATION)

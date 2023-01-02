@@ -37,7 +37,7 @@ class GuestSpaceControllerTest extends AcceptanceTest {
 
         Member pobi = Member.builder()
                 .email(EMAIL)
-                .userName(USER_NAME)
+                .userName(POBI)
                 .emoji(ProfileEmoji.MAN_DARK_SKIN_TONE_TECHNOLOGIST)
                 .password(passwordEncoder.encode(PW))
                 .organization(ORGANIZATION)

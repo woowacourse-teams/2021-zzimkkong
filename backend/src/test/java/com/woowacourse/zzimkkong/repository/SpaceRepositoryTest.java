@@ -4,12 +4,10 @@ import com.woowacourse.zzimkkong.domain.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 
-import javax.persistence.EntityManager;
 import java.util.List;
 
 import static com.woowacourse.zzimkkong.Constants.*;
@@ -25,7 +23,7 @@ class SpaceRepositoryTest extends RepositoryTest {
     void setUp() {
         Member pobi = Member.builder()
                 .email(EMAIL)
-                .userName(USER_NAME)
+                .userName(POBI)
                 .emoji(ProfileEmoji.MAN_DARK_SKIN_TONE_TECHNOLOGIST)
                 .password(PW)
                 .organization(ORGANIZATION)

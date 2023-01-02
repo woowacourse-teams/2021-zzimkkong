@@ -19,7 +19,7 @@ class ReservationRepositoryImplTest extends RepositoryTest {
         // given
         Member sakjung = Member.builder()
                 .email(NEW_EMAIL)
-                .userName(USER_NAME)
+                .userName(POBI)
                 .emoji(ProfileEmoji.MAN_DARK_SKIN_TONE_TECHNOLOGIST)
                 .password(PW)
                 .organization(ORGANIZATION)

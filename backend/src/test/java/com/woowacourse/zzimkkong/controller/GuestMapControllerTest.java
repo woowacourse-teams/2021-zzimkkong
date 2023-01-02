@@ -26,7 +26,7 @@ class GuestMapControllerTest extends AcceptanceTest {
 
     @BeforeEach
     void setUp() {
-        createMemberResponse = saveMember(new MemberSaveRequest(EMAIL, USER_NAME, ProfileEmoji.MAN_DARK_SKIN_TONE_TECHNOLOGIST, PW, ORGANIZATION));
+        createMemberResponse = saveMember(new MemberSaveRequest(EMAIL, POBI, ProfileEmoji.MAN_DARK_SKIN_TONE_TECHNOLOGIST, PW, ORGANIZATION));
         createMapResponse = saveMap("/api/managers/maps",
                 new MapCreateUpdateRequest(
                         LUTHER_NAME,

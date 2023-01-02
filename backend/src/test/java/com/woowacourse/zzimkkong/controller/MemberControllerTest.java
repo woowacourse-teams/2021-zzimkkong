@@ -5,8 +5,6 @@ import com.woowacourse.zzimkkong.dto.ErrorResponse;
 import com.woowacourse.zzimkkong.dto.InputFieldErrorResponse;
 import com.woowacourse.zzimkkong.dto.member.*;
 import com.woowacourse.zzimkkong.dto.member.oauth.OauthMemberSaveRequest;
-import com.woowacourse.zzimkkong.dto.space.EnabledDayOfWeekDto;
-import com.woowacourse.zzimkkong.dto.space.SettingRequest;
 import com.woowacourse.zzimkkong.infrastructure.auth.AuthorizationExtractor;
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
@@ -33,7 +31,7 @@ class MemberControllerTest extends AcceptanceTest {
     void setUp() {
         pobi = Member.builder()
                 .email(EMAIL)
-                .userName(USER_NAME)
+                .userName(POBI)
                 .emoji(ProfileEmoji.MAN_DARK_SKIN_TONE_TECHNOLOGIST)
                 .password(passwordEncoder.encode(PW))
                 .organization(ORGANIZATION)
@@ -44,7 +42,7 @@ class MemberControllerTest extends AcceptanceTest {
     @DisplayName("정상적인 회원가입 입력이 들어오면 회원 정보를 저장한다.")
     void join() {
         //given
-        MemberSaveRequest newMemberSaveRequest = new MemberSaveRequest(NEW_EMAIL, NEW_USER_NAME, ProfileEmoji.MAN_DARK_SKIN_TONE_TECHNOLOGIST, PW, ORGANIZATION);
+        MemberSaveRequest newMemberSaveRequest = new MemberSaveRequest(NEW_EMAIL, SAKJUNG, ProfileEmoji.MAN_DARK_SKIN_TONE_TECHNOLOGIST, PW, ORGANIZATION);
 
         // when
         ExtractableResponse<Response> response = saveMember(newMemberSaveRequest);
@@ -58,7 +56,7 @@ class MemberControllerTest extends AcceptanceTest {
     @DisplayName("Oauth을 이용해 회원가입한다.")
     void joinByOauth(String oauth) {
         // given
-        OauthMemberSaveRequest oauthMemberSaveRequest = new OauthMemberSaveRequest(NEW_EMAIL, NEW_USER_NAME, ProfileEmoji.MAN_DARK_SKIN_TONE_TECHNOLOGIST, ORGANIZATION, oauth);
+        OauthMemberSaveRequest oauthMemberSaveRequest = new OauthMemberSaveRequest(NEW_EMAIL, SAKJUNG, ProfileEmoji.MAN_DARK_SKIN_TONE_TECHNOLOGIST, ORGANIZATION, oauth);
 
         // when
         ExtractableResponse<Response> response = saveMemberByOauth(oauthMemberSaveRequest);
@@ -71,7 +69,7 @@ class MemberControllerTest extends AcceptanceTest {
     @DisplayName("이메일 중복 확인 시, 중복되지 않은 이메일을 입력하면 통과한다.")
     void getMembers_email() {
         //given
-        MemberSaveRequest newMemberSaveRequest = new MemberSaveRequest(NEW_EMAIL, USER_NAME, ProfileEmoji.MAN_DARK_SKIN_TONE_TECHNOLOGIST, PW, ORGANIZATION);
+        MemberSaveRequest newMemberSaveRequest = new MemberSaveRequest(NEW_EMAIL, POBI, ProfileEmoji.MAN_DARK_SKIN_TONE_TECHNOLOGIST, PW, ORGANIZATION);
         saveMember(newMemberSaveRequest);
 
         // when
@@ -86,7 +84,7 @@ class MemberControllerTest extends AcceptanceTest {
     @DisplayName("유저 네임 중복 확인 시, 중복되지 않은 이메일을 입력하면 통과한다.")
     void getMembers_userName() {
         //given
-        MemberSaveRequest newMemberSaveRequest = new MemberSaveRequest(NEW_EMAIL, USER_NAME, ProfileEmoji.MAN_DARK_SKIN_TONE_TECHNOLOGIST, PW, ORGANIZATION);
+        MemberSaveRequest newMemberSaveRequest = new MemberSaveRequest(NEW_EMAIL, POBI, ProfileEmoji.MAN_DARK_SKIN_TONE_TECHNOLOGIST, PW, ORGANIZATION);
         saveMember(newMemberSaveRequest);
 
         // when

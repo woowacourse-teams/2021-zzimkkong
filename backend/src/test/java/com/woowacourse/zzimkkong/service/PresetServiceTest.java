@@ -60,7 +60,7 @@ class PresetServiceTest extends ServiceTest {
         pobi = Member.builder()
                 .id(1L)
                 .email(EMAIL)
-                .userName(USER_NAME)
+                .userName(POBI)
                 .emoji(ProfileEmoji.MAN_DARK_SKIN_TONE_TECHNOLOGIST)
                 .password(PW)
                 .organization(ORGANIZATION)
@@ -172,7 +172,7 @@ class PresetServiceTest extends ServiceTest {
         LoginUserEmail anotherEmail = LoginUserEmail.from(NEW_EMAIL);
         Member anotherMember = Member.builder()
                 .email(NEW_EMAIL)
-                .userName(USER_NAME)
+                .userName(POBI)
                 .emoji(ProfileEmoji.MAN_DARK_SKIN_TONE_TECHNOLOGIST)
                 .password(PW)
                 .organization(ORGANIZATION)
