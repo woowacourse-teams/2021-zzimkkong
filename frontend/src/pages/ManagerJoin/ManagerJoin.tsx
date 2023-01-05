@@ -13,9 +13,10 @@ import * as Styled from './ManagerJoin.styles';
 import JoinForm from './units/JoinForm';
 
 export interface JoinParams {
+  emoji: string;
   email: string;
   password: string;
-  organization: string;
+  userName: string;
 }
 
 const ManagerJoin = (): JSX.Element => {
@@ -32,10 +33,10 @@ const ManagerJoin = (): JSX.Element => {
     },
   });
 
-  const handleSubmit = ({ email, password, organization }: JoinParams) => {
-    if (!email || !password || !organization) return;
+  const handleSubmit = ({ emoji, email, password, userName }: JoinParams) => {
+    if (!emoji || !email || !password || !userName) return;
 
-    join.mutate({ email, password, organization });
+    join.mutate({ emoji, email, password, userName });
   };
 
   return (
