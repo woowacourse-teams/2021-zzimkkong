@@ -37,7 +37,7 @@ public class Member {
     @Column(length = 128)
     private String password;
 
-    @Column(nullable = false, length = 20)
+    @Column(length = 20)
     private String organization;
 
     @Column(length = 10)
@@ -71,7 +71,6 @@ public class Member {
     }
 
     public void update(final MemberUpdateRequest memberUpdateRequest) {
-        this.organization = memberUpdateRequest.getOrganization();
         this.userName = memberUpdateRequest.getUserName();
         this.emoji = memberUpdateRequest.getEmoji();
     }

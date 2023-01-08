@@ -26,21 +26,15 @@ public class OauthMemberSaveRequest {
     private ProfileEmoji emoji;
 
     @NotNull(message = EMPTY_MESSAGE)
-    @Pattern(regexp = ORGANIZATION_FORMAT, message = ORGANIZATION_MESSAGE)
-    private String organization;
-
-    @NotNull(message = EMPTY_MESSAGE)
     private String oauthProvider;
 
     public OauthMemberSaveRequest(final String email,
                                   final String userName,
                                   final ProfileEmoji emoji,
-                                  final String organization,
                                   final String oauthProvider) {
         this.email = email;
         this.userName = userName;
         this.emoji = emoji;
-        this.organization = organization;
         this.oauthProvider = oauthProvider;
     }
 }

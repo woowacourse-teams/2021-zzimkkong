@@ -46,7 +46,6 @@ public class MemberService {
                 .userName(memberSaveRequest.getUserName())
                 .emoji(memberSaveRequest.getEmoji())
                 .password(password)
-                .organization(memberSaveRequest.getOrganization())
                 .build();
         Member saveMember = members.save(member);
         return MemberSaveResponse.from(saveMember);
@@ -63,7 +62,6 @@ public class MemberService {
                 .email(email)
                 .userName(oauthMemberSaveRequest.getUserName())
                 .emoji(oauthMemberSaveRequest.getEmoji())
-                .organization(oauthMemberSaveRequest.getOrganization())
                 .oauthProvider(oauthProvider)
                 .build();
         Member saveMember = members.save(member);

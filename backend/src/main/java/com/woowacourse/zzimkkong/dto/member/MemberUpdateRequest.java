@@ -13,10 +13,6 @@ import static com.woowacourse.zzimkkong.dto.ValidatorMessage.*;
 @Getter
 @NoArgsConstructor
 public class MemberUpdateRequest {
-    @NotNull(message = EMPTY_MESSAGE)
-    @Pattern(regexp = ORGANIZATION_FORMAT, message = ORGANIZATION_MESSAGE)
-    private String organization;
-
     @NotBlank(message = EMPTY_MESSAGE)
     @Pattern(regexp = NAMING_FORMAT, message = NAME_MESSAGE)
     private String userName;
@@ -24,8 +20,7 @@ public class MemberUpdateRequest {
     @NotNull(message = EMPTY_MESSAGE)
     private ProfileEmoji emoji;
 
-    public MemberUpdateRequest(final String organization, final String userName, final ProfileEmoji emoji) {
-        this.organization = organization;
+    public MemberUpdateRequest(final String userName, final ProfileEmoji emoji) {
         this.userName = userName;
         this.emoji = emoji;
     }

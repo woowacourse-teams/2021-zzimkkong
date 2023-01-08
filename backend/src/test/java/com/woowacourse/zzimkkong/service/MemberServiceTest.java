@@ -41,13 +41,12 @@ class MemberServiceTest extends ServiceTest {
     @DisplayName("회원이 올바르게 저장을 요청하면 저장한다.")
     void saveMember() {
         //given
-        MemberSaveRequest memberSaveRequest = new MemberSaveRequest(EMAIL, POBI, ProfileEmoji.MAN_DARK_SKIN_TONE_TECHNOLOGIST, PW, ORGANIZATION);
+        MemberSaveRequest memberSaveRequest = new MemberSaveRequest(EMAIL, POBI, ProfileEmoji.MAN_DARK_SKIN_TONE_TECHNOLOGIST, PW);
         Member member = Member.builder()
                 .email(memberSaveRequest.getEmail())
                 .userName(memberSaveRequest.getUserName())
                 .emoji(ProfileEmoji.MAN_DARK_SKIN_TONE_TECHNOLOGIST)
                 .password(memberSaveRequest.getPassword())
-                .organization(memberSaveRequest.getOrganization())
                 .build();
 
         //when
@@ -73,7 +72,7 @@ class MemberServiceTest extends ServiceTest {
     @DisplayName("회원이 중복된 이메일로 저장을 요청하면 오류가 발생한다.")
     void saveMemberEmailException() {
         //given
-        MemberSaveRequest memberSaveRequest = new MemberSaveRequest(EMAIL, POBI, ProfileEmoji.MAN_DARK_SKIN_TONE_TECHNOLOGIST, PW, ORGANIZATION);
+        MemberSaveRequest memberSaveRequest = new MemberSaveRequest(EMAIL, POBI, ProfileEmoji.MAN_DARK_SKIN_TONE_TECHNOLOGIST, PW);
 
         //when
         given(members.existsByEmail(anyString()))
@@ -88,7 +87,7 @@ class MemberServiceTest extends ServiceTest {
     @DisplayName("회원이 중복된 유저네임으로 저장을 요청하면 오류가 발생한다.")
     void saveMemberUserNameException() {
         //given
-        MemberSaveRequest memberSaveRequest = new MemberSaveRequest(EMAIL, POBI, ProfileEmoji.MAN_DARK_SKIN_TONE_TECHNOLOGIST, PW, ORGANIZATION);
+        MemberSaveRequest memberSaveRequest = new MemberSaveRequest(EMAIL, POBI, ProfileEmoji.MAN_DARK_SKIN_TONE_TECHNOLOGIST, PW);
 
         //when
         given(members.existsByEmail(anyString()))
@@ -106,12 +105,11 @@ class MemberServiceTest extends ServiceTest {
     @DisplayName("소셜 로그인을 이용해 회원가입한다.")
     void saveMemberByOauth(String oauth) {
         //given
-        OauthMemberSaveRequest oauthMemberSaveRequest = new OauthMemberSaveRequest(EMAIL, POBI, ProfileEmoji.MAN_DARK_SKIN_TONE_TECHNOLOGIST, ORGANIZATION, oauth);
+        OauthMemberSaveRequest oauthMemberSaveRequest = new OauthMemberSaveRequest(EMAIL, POBI, ProfileEmoji.MAN_DARK_SKIN_TONE_TECHNOLOGIST, oauth);
         Member member = Member.builder()
                 .email(oauthMemberSaveRequest.getEmail())
                 .userName(oauthMemberSaveRequest.getUserName())
                 .emoji(ProfileEmoji.MAN_DARK_SKIN_TONE_TECHNOLOGIST)
-                .organization(oauthMemberSaveRequest.getOrganization())
                 .oauthProvider(OauthProvider.valueOfWithIgnoreCase(oauthMemberSaveRequest.getOauthProvider()))
                 .build();
 
@@ -142,7 +140,7 @@ class MemberServiceTest extends ServiceTest {
     @DisplayName("이미 존재하는 이메일로 소셜 로그인을 이용해 회원가입하면 에러가 발생한다.")
     void saveMemberByOauthEmailException(String oauth) {
         //given
-        OauthMemberSaveRequest oauthMemberSaveRequest = new OauthMemberSaveRequest(EMAIL, POBI, ProfileEmoji.MAN_DARK_SKIN_TONE_TECHNOLOGIST, ORGANIZATION, oauth);
+        OauthMemberSaveRequest oauthMemberSaveRequest = new OauthMemberSaveRequest(EMAIL, POBI, ProfileEmoji.MAN_DARK_SKIN_TONE_TECHNOLOGIST, oauth);
 
         //when
         given(members.existsByEmail(anyString()))
@@ -158,7 +156,7 @@ class MemberServiceTest extends ServiceTest {
     @DisplayName("이미 존재하는 유저 네임으로 소셜 로그인을 이용해 회원가입하면 에러가 발생한다.")
     void saveMemberByOauthUserNameException(String oauth) {
         //given
-        OauthMemberSaveRequest oauthMemberSaveRequest = new OauthMemberSaveRequest(EMAIL, POBI, ProfileEmoji.MAN_DARK_SKIN_TONE_TECHNOLOGIST, ORGANIZATION, oauth);
+        OauthMemberSaveRequest oauthMemberSaveRequest = new OauthMemberSaveRequest(EMAIL, POBI, ProfileEmoji.MAN_DARK_SKIN_TONE_TECHNOLOGIST, oauth);
 
         //when
         given(members.existsByEmail(anyString()))
@@ -183,7 +181,7 @@ class MemberServiceTest extends ServiceTest {
                 .password(PW)
                 .organization(ORGANIZATION)
                 .build();
-        MemberUpdateRequest memberUpdateRequest = new MemberUpdateRequest("woowabros", "sakjung", ProfileEmoji.MAN_DARK_SKIN_TONE_TECHNOLOGIST);
+        MemberUpdateRequest memberUpdateRequest = new MemberUpdateRequest("sakjung", ProfileEmoji.MAN_DARK_SKIN_TONE_TECHNOLOGIST);
 
         given(members.findByEmail(anyString()))
                 .willReturn(Optional.of(member));
@@ -191,7 +189,6 @@ class MemberServiceTest extends ServiceTest {
         // when
         memberService.updateMember(loginUserEmail, memberUpdateRequest);
 
-        assertThat(members.findByEmail(EMAIL).orElseThrow().getOrganization()).isEqualTo("woowabros");
         assertThat(members.findByEmail(EMAIL).orElseThrow().getUserName()).isEqualTo("sakjung");
     }
 

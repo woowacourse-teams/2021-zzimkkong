@@ -34,7 +34,6 @@ class MemberControllerTest extends AcceptanceTest {
                 .userName(POBI)
                 .emoji(ProfileEmoji.MAN_DARK_SKIN_TONE_TECHNOLOGIST)
                 .password(passwordEncoder.encode(PW))
-                .organization(ORGANIZATION)
                 .build();
     }
 
@@ -42,7 +41,7 @@ class MemberControllerTest extends AcceptanceTest {
     @DisplayName("정상적인 회원가입 입력이 들어오면 회원 정보를 저장한다.")
     void join() {
         //given
-        MemberSaveRequest newMemberSaveRequest = new MemberSaveRequest(NEW_EMAIL, SAKJUNG, ProfileEmoji.MAN_DARK_SKIN_TONE_TECHNOLOGIST, PW, ORGANIZATION);
+        MemberSaveRequest newMemberSaveRequest = new MemberSaveRequest(NEW_EMAIL, SAKJUNG, ProfileEmoji.MAN_DARK_SKIN_TONE_TECHNOLOGIST, PW);
 
         // when
         ExtractableResponse<Response> response = saveMember(newMemberSaveRequest);
@@ -56,7 +55,7 @@ class MemberControllerTest extends AcceptanceTest {
     @DisplayName("Oauth을 이용해 회원가입한다.")
     void joinByOauth(String oauth) {
         // given
-        OauthMemberSaveRequest oauthMemberSaveRequest = new OauthMemberSaveRequest(NEW_EMAIL, SAKJUNG, ProfileEmoji.MAN_DARK_SKIN_TONE_TECHNOLOGIST, ORGANIZATION, oauth);
+        OauthMemberSaveRequest oauthMemberSaveRequest = new OauthMemberSaveRequest(NEW_EMAIL, SAKJUNG, ProfileEmoji.MAN_DARK_SKIN_TONE_TECHNOLOGIST, oauth);
 
         // when
         ExtractableResponse<Response> response = saveMemberByOauth(oauthMemberSaveRequest);
@@ -69,7 +68,7 @@ class MemberControllerTest extends AcceptanceTest {
     @DisplayName("이메일 중복 확인 시, 중복되지 않은 이메일을 입력하면 통과한다.")
     void getMembers_email() {
         //given
-        MemberSaveRequest newMemberSaveRequest = new MemberSaveRequest(NEW_EMAIL, POBI, ProfileEmoji.MAN_DARK_SKIN_TONE_TECHNOLOGIST, PW, ORGANIZATION);
+        MemberSaveRequest newMemberSaveRequest = new MemberSaveRequest(NEW_EMAIL, POBI, ProfileEmoji.MAN_DARK_SKIN_TONE_TECHNOLOGIST, PW);
         saveMember(newMemberSaveRequest);
 
         // when
@@ -84,7 +83,7 @@ class MemberControllerTest extends AcceptanceTest {
     @DisplayName("유저 네임 중복 확인 시, 중복되지 않은 유저 네임을 입력하면 통과한다.")
     void getMembers_userName() {
         //given
-        MemberSaveRequest newMemberSaveRequest = new MemberSaveRequest(NEW_EMAIL, POBI, ProfileEmoji.MAN_DARK_SKIN_TONE_TECHNOLOGIST, PW, ORGANIZATION);
+        MemberSaveRequest newMemberSaveRequest = new MemberSaveRequest(NEW_EMAIL, POBI, ProfileEmoji.MAN_DARK_SKIN_TONE_TECHNOLOGIST, PW);
         saveMember(newMemberSaveRequest);
 
         // when
@@ -115,7 +114,7 @@ class MemberControllerTest extends AcceptanceTest {
     @DisplayName("유저는 자신의 정보를 수정할 수 있다.")
     void updateMe() {
         // given
-        MemberUpdateRequest memberUpdateRequest = new MemberUpdateRequest("woowabros", "sakjung", ProfileEmoji.MAN_DARK_SKIN_TONE_TECHNOLOGIST);
+        MemberUpdateRequest memberUpdateRequest = new MemberUpdateRequest("sakjung", ProfileEmoji.MAN_DARK_SKIN_TONE_TECHNOLOGIST);
 
         // when
         ExtractableResponse<Response> response = updateMyInfo(memberUpdateRequest);
@@ -123,7 +122,6 @@ class MemberControllerTest extends AcceptanceTest {
         // then
         MemberFindResponse afterUpdate = findMyInfo().as(MemberFindResponse.class);
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
-        assertThat(afterUpdate.getOrganization()).isEqualTo("woowabros");
         assertThat(afterUpdate.getUserName()).isEqualTo("sakjung");
     }
 

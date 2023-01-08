@@ -1,0 +1,1 @@
+ALTER TABLE member MODIFY COLUMN organization VARCHAR(20);

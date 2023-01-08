@@ -45,7 +45,6 @@ class AdminControllerTest extends AcceptanceTest {
             .userName(memberSaveRequest.getUserName())
             .emoji(memberSaveRequest.getEmoji())
             .password(memberSaveRequest.getPassword())
-            .organization(memberSaveRequest.getOrganization())
             .build();
 
     private static final Map LUTHER = new Map(LUTHER_NAME, MAP_DRAWING_DATA, MAP_SVG, POBI);
