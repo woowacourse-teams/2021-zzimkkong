@@ -4,7 +4,6 @@ import Input from 'components/Input/Input';
 import TimePicker, { Step } from 'components/TimePicker/TimePicker';
 import DATE from 'constants/date';
 import MESSAGE from 'constants/message';
-import REGEXP from 'constants/regexp';
 import RESERVATION from 'constants/reservation';
 import SPACE from 'constants/space';
 import useInputs from 'hooks/useInputs';
@@ -18,7 +17,7 @@ import {
   formatTimeWithSecond,
   isPastDate,
 } from 'utils/datetime';
-import { EditGuestReservationParams } from '../GuestReservation';
+import { EditMemberGuestReservationParams } from '../GuestReservation';
 import * as Styled from './GuestReservationForm.styles';
 
 interface Props {
@@ -29,17 +28,15 @@ interface Props {
   onChangeDate: ChangeEventHandler<HTMLInputElement>;
   onSubmit: (
     event: React.FormEvent<HTMLFormElement>,
-    { reservation, reservationId }: EditGuestReservationParams
+    { reservation, reservationId }: EditMemberGuestReservationParams
   ) => void;
 }
 
 interface Form {
-  name: string;
   description: string;
-  password: string;
 }
 
-const GuestReservationForm = ({
+const MemberGuestReservationForm = ({
   isEditMode,
   space,
   date,
@@ -79,10 +76,8 @@ const GuestReservationForm = ({
     initialEndTime: !!reservation ? new Date(reservation.endDateTime) : undefined,
   });
 
-  const [{ name, description, password }, onChangeForm] = useInputs<Form>({
-    name: reservation?.name ?? '',
+  const [{ description }, onChangeForm] = useInputs<Form>({
     description: reservation?.description ?? '',
-    password: '',
   });
 
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
@@ -97,8 +92,6 @@ const GuestReservationForm = ({
       reservation: {
         startDateTime,
         endDateTime,
-        password,
-        name,
         description,
       },
       reservationId: reservation?.id,
@@ -107,17 +100,6 @@ const GuestReservationForm = ({
   return (
     <Styled.ReservationForm onSubmit={handleSubmit}>
       <Styled.Section>
-        <Styled.InputWrapper>
-          <Input
-            label="이름"
-            name="name"
-            value={name}
-            onChange={onChangeForm}
-            maxLength={RESERVATION.NAME.MAX_LENGTH}
-            autoFocus
-            required
-          />
-        </Styled.InputWrapper>
         <Styled.InputWrapper>
           <Input
             label="사용 목적"
@@ -174,21 +156,6 @@ const GuestReservationForm = ({
             )}
           </Styled.TimeFormMessageWrapper>
         </Styled.InputWrapper>
-        <Styled.InputWrapper>
-          <Input
-            type="password"
-            label="비밀번호"
-            name="password"
-            value={password}
-            onChange={onChangeForm}
-            minLength={RESERVATION.PASSWORD.MIN_LENGTH}
-            maxLength={RESERVATION.PASSWORD.MAX_LENGTH}
-            pattern={REGEXP.RESERVATION_PASSWORD.source}
-            inputMode="numeric"
-            message={MESSAGE.RESERVATION.PASSWORD_MESSAGE}
-            required
-          />
-        </Styled.InputWrapper>
       </Styled.Section>
       <Styled.ButtonWrapper>
         <Styled.ReservationButton
@@ -204,4 +171,4 @@ const GuestReservationForm = ({
   );
 };
 
-export default GuestReservationForm;
+export default MemberGuestReservationForm;

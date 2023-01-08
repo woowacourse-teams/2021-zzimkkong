@@ -1,9 +1,16 @@
 import { AxiosError } from 'axios';
 import dayjs from 'dayjs';
-import React, { useEffect } from 'react';
+import React, { useContext, useEffect } from 'react';
 import { useMutation } from 'react-query';
 import { useHistory, useLocation, useParams } from 'react-router-dom';
-import { postGuestReservation, putGuestReservation, ReservationParams } from 'api/guestReservation';
+import {
+  postGuestReservation,
+  putGuestReservation,
+  GuestReservationParams,
+  postMemberGuestReservation,
+  MemberGuestReservationParams,
+  putMemberGuestReservation,
+} from 'api/guestReservation';
 import Header from 'components/Header/Header';
 import Layout from 'components/Layout/Layout';
 import ManagerReservationListItem from 'components/ManagerReservationListItem/ManagerReservationListItem';
@@ -14,6 +21,7 @@ import { HREF } from 'constants/path';
 import useGuestReservations from 'hooks/query/useGuestReservations';
 import useInput from 'hooks/useInput';
 import { GuestMapState } from 'pages/GuestMap/GuestMap';
+import { AccessTokenContext } from 'providers/AccessTokenProvider';
 import { Reservation, ScrollPosition, Space } from 'types/common';
 import { GuestPageURLParams } from 'types/guest';
 import { ErrorResponse } from 'types/response';
@@ -22,6 +30,7 @@ import { getReservationStatus } from 'utils/reservation';
 import * as Styled from './GuestReservation.styles';
 import { GuestReservationSuccessState } from './GuestReservationSuccess';
 import GuestReservationForm from './units/GuestReservationForm';
+import MemberGuestReservationForm from './units/MemberGuestReservationForm';
 
 interface GuestReservationState {
   mapId: number;
@@ -31,11 +40,17 @@ interface GuestReservationState {
   reservation?: Reservation;
 }
 
-export interface EditReservationParams extends ReservationParams {
+export interface EditGuestReservationParams extends GuestReservationParams {
+  reservationId?: number;
+}
+
+export interface EditMemberGuestReservationParams extends MemberGuestReservationParams {
   reservationId?: number;
 }
 
 const GuestReservation = (): JSX.Element => {
+  const { accessToken } = useContext(AccessTokenContext);
+
   const location = useLocation<GuestReservationState>();
   const history = useHistory<GuestReservationSuccessState | GuestMapState>();
   const { sharingMapId } = useParams<GuestPageURLParams>();
@@ -57,7 +72,7 @@ const GuestReservation = (): JSX.Element => {
   );
   const reservations = getReservations.data?.data?.reservations ?? [];
 
-  const addReservation = useMutation(postGuestReservation, {
+  const addGuestReservation = useMutation(postGuestReservation, {
     onSuccess: (_, { reservation }) => {
       const { startDateTime, endDateTime, name, description } = reservation;
 
@@ -80,7 +95,30 @@ const GuestReservation = (): JSX.Element => {
     },
   });
 
-  const updateReservation = useMutation(putGuestReservation, {
+  const addMemberGuestReservation = useMutation(postMemberGuestReservation, {
+    onSuccess: (_, { reservation }) => {
+      const { startDateTime, endDateTime, description } = reservation;
+
+      history.push({
+        pathname: HREF.GUEST_RESERVATION_SUCCESS(sharingMapId),
+        state: {
+          space,
+          reservation: {
+            startDateTime,
+            endDateTime,
+            name: '',
+            description,
+          },
+          targetDate: dayjs(date).tz(),
+        },
+      });
+    },
+    onError: (error: AxiosError<ErrorResponse>) => {
+      alert(error.response?.data.message ?? MESSAGE.RESERVATION.UNEXPECTED_ERROR);
+    },
+  });
+
+  const updateGuestReservation = useMutation(putGuestReservation, {
     onSuccess: () => {
       history.push({
         pathname: HREF.GUEST_MAP(sharingMapId),
@@ -96,20 +134,60 @@ const GuestReservation = (): JSX.Element => {
     },
   });
 
-  const createReservation = ({ reservation }: ReservationParams) => {
-    if (addReservation.isLoading) return;
+  const updateMemberGuestReservation = useMutation(putMemberGuestReservation, {
+    onSuccess: () => {
+      history.push({
+        pathname: HREF.GUEST_MAP(sharingMapId),
+        state: {
+          spaceId: space.id,
+          targetDate: dayjs(date).tz(),
+        },
+      });
+    },
 
-    addReservation.mutate({
+    onError: (error: AxiosError<ErrorResponse>) => {
+      alert(error.response?.data.message ?? MESSAGE.RESERVATION.UNEXPECTED_ERROR);
+    },
+  });
+
+  const createGuestReservation = ({ reservation }: GuestReservationParams) => {
+    if (addGuestReservation.isLoading) return;
+
+    addGuestReservation.mutate({
       reservation,
       mapId,
       spaceId: space.id,
     });
   };
 
-  const editReservation = ({ reservation, reservationId }: EditReservationParams) => {
-    if (updateReservation.isLoading || !isEditMode || !reservationId) return;
+  const createMemberGuestReservation = ({ reservation }: MemberGuestReservationParams) => {
+    if (addMemberGuestReservation.isLoading) return;
 
-    updateReservation.mutate({
+    addMemberGuestReservation.mutate({
+      reservation,
+      mapId,
+      spaceId: space.id,
+    });
+  };
+
+  const editGuestReservation = ({ reservation, reservationId }: EditGuestReservationParams) => {
+    if (updateGuestReservation.isLoading || !isEditMode || !reservationId) return;
+
+    updateGuestReservation.mutate({
+      reservation,
+      mapId,
+      spaceId: space.id,
+      reservationId,
+    });
+  };
+
+  const editMemberGuestReservation = ({
+    reservation,
+    reservationId,
+  }: EditMemberGuestReservationParams) => {
+    if (updateGuestReservation.isLoading || !isEditMode || !reservationId) return;
+
+    updateMemberGuestReservation.mutate({
       reservation,
       mapId,
       spaceId: space.id,
@@ -135,15 +213,34 @@ const GuestReservation = (): JSX.Element => {
     setDate(value);
   };
 
-  const handleSubmit = (
+  const handleSubmitGuest = (
     event: React.FormEvent<HTMLFormElement>,
-    { reservation, reservationId }: EditReservationParams
+    { reservation, reservationId }: EditGuestReservationParams
   ) => {
     event.preventDefault();
 
-    reservationId
-      ? editReservation({ reservation, reservationId })
-      : createReservation({ reservation });
+    if (accessToken) return;
+
+    if (reservationId) {
+      editGuestReservation({ reservation, reservationId });
+    } else {
+      createGuestReservation({ reservation });
+    }
+  };
+
+  const handleSubmitMemberGuest = (
+    event: React.FormEvent<HTMLFormElement>,
+    { reservation, reservationId }: EditMemberGuestReservationParams
+  ) => {
+    event.preventDefault();
+
+    if (!accessToken) return;
+
+    if (reservationId) {
+      editMemberGuestReservation({ reservation, reservationId });
+    } else {
+      createMemberGuestReservation({ reservation });
+    }
   };
 
   useEffect(() => {
@@ -170,14 +267,25 @@ const GuestReservation = (): JSX.Element => {
             <Styled.ColorDot color={space.color} size="medium" />
             {space.name}
           </Styled.PageHeader>
-          <GuestReservationForm
-            isEditMode={isEditMode}
-            space={space}
-            reservation={reservation}
-            date={date}
-            onChangeDate={handleChangeDate}
-            onSubmit={handleSubmit}
-          />
+          {accessToken ? (
+            <MemberGuestReservationForm
+              isEditMode={isEditMode}
+              space={space}
+              reservation={reservation}
+              date={date}
+              onChangeDate={handleChangeDate}
+              onSubmit={handleSubmitMemberGuest}
+            />
+          ) : (
+            <GuestReservationForm
+              isEditMode={isEditMode}
+              space={space}
+              reservation={reservation}
+              date={date}
+              onChangeDate={handleChangeDate}
+              onSubmit={handleSubmitGuest}
+            />
+          )}
           <Styled.Section>
             <PageHeader title={`${date}${date && '의'} 예약 목록`} />
             {getReservations.isLoadingError && (
