@@ -181,7 +181,7 @@ class ManagerReservationControllerTest extends AcceptanceTest {
                 bePmOneTwo,
                 bePmTwoThreeByPobi);
 
-        ReservationFindResponse expectedResponse = ReservationFindResponse.from(expectedFindReservations);
+        ReservationFindResponse expectedResponse = ReservationFindResponse.from(expectedFindReservations, pobi);
 
         //then
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
@@ -209,7 +209,8 @@ class ManagerReservationControllerTest extends AcceptanceTest {
                 fePmTwoThreeByPobi);
         ReservationFindAllResponse expectedResponse = ReservationFindAllResponse.of(
                 Arrays.asList(be, fe),
-                expectedFindReservations);
+                expectedFindReservations,
+                pobi);
 
         //then
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
@@ -227,7 +228,7 @@ class ManagerReservationControllerTest extends AcceptanceTest {
         ExtractableResponse<Response> response = findReservation(beReservationApi + "/" + savedReservationId);
 
         ReservationResponse actualResponse = response.as(ReservationResponse.class);
-        ReservationResponse expectedResponse = ReservationResponse.from(savedReservation);
+        ReservationResponse expectedResponse = ReservationResponse.from(savedReservation, pobi);
 
         //then
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
@@ -265,7 +266,8 @@ class ManagerReservationControllerTest extends AcceptanceTest {
                         .description(reservationCreateUpdateRequestSameSpace.getDescription())
                         .userName(reservationCreateUpdateRequestSameSpace.getName())
                         .space(be)
-                        .build());
+                        .build(),
+                pobi);
 
         //then
         assertThat(updateResponse.statusCode()).isEqualTo(HttpStatus.OK.value());
@@ -305,7 +307,8 @@ class ManagerReservationControllerTest extends AcceptanceTest {
                         .member(pobi)
                         .userName(reservationCreateUpdateRequestSameSpace.getName())
                         .space(be)
-                        .build());
+                        .build(),
+                pobi);
 
         //then
         assertThat(updateResponse.statusCode()).isEqualTo(HttpStatus.OK.value());
@@ -352,7 +355,7 @@ class ManagerReservationControllerTest extends AcceptanceTest {
                         .build(),
                 fe1ZeroOne,
                 fePmTwoThreeByPobi);
-        ReservationFindResponse expectedResponse = ReservationFindResponse.from(expectedFindReservations);
+        ReservationFindResponse expectedResponse = ReservationFindResponse.from(expectedFindReservations, pobi);
 
         //then
         assertThat(updateResponse.statusCode()).isEqualTo(HttpStatus.OK.value());
@@ -397,7 +400,7 @@ class ManagerReservationControllerTest extends AcceptanceTest {
                         .build(),
                 fe1ZeroOne,
                 fePmTwoThreeByPobi);
-        ReservationFindResponse expectedResponse = ReservationFindResponse.from(expectedFindReservations);
+        ReservationFindResponse expectedResponse = ReservationFindResponse.from(expectedFindReservations, pobi);
 
         //then
         assertThat(updateResponse.statusCode()).isEqualTo(HttpStatus.OK.value());

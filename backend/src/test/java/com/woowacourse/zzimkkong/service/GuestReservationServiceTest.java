@@ -751,7 +751,7 @@ class GuestReservationServiceTest extends ServiceTest {
                 ReservationType.Constants.GUEST);
 
         //then
-        ReservationFindResponse reservationFindResponse = ReservationFindResponse.from(foundReservations);
+        ReservationFindResponse reservationFindResponse = ReservationFindResponse.from(foundReservations, Member.builder().build());
         assertThat(reservationService.findReservations(
                 reservationFindDto))
                 .usingRecursiveComparison()
@@ -825,7 +825,7 @@ class GuestReservationServiceTest extends ServiceTest {
                 ReservationType.Constants.GUEST);
 
         //then
-        ReservationFindResponse reservationFindResponse = ReservationFindResponse.from(Collections.emptyList());
+        ReservationFindResponse reservationFindResponse = ReservationFindResponse.from(Collections.emptyList(), Member.builder().build());
         assertThat(reservationService.findReservations(
                 reservationFindDto))
                 .usingRecursiveComparison()
@@ -833,7 +833,7 @@ class GuestReservationServiceTest extends ServiceTest {
         assertThat(reservationService.findAllReservations(
                 reservationFindAllDto))
                 .usingRecursiveComparison()
-                .isEqualTo(ReservationFindAllResponse.of(List.of(be, fe), Collections.emptyList()));
+                .isEqualTo(ReservationFindAllResponse.of(List.of(be, fe), Collections.emptyList(), Member.builder().build()));
     }
 
     @Test
@@ -873,7 +873,10 @@ class GuestReservationServiceTest extends ServiceTest {
                 ReservationType.Constants.GUEST);
 
         //then
-        ReservationFindAllResponse reservationFindAllResponse = ReservationFindAllResponse.of(findSpaces, foundReservations);
+        ReservationFindAllResponse reservationFindAllResponse = ReservationFindAllResponse.of(
+                findSpaces,
+                foundReservations,
+                Member.builder().build());
         assertThat(reservationService.findAllReservations(reservationFindAllDto))
                 .usingRecursiveComparison()
                 .isEqualTo(reservationFindAllResponse);
@@ -901,7 +904,7 @@ class GuestReservationServiceTest extends ServiceTest {
 
         //then
         assertThat(actualResponse).usingRecursiveComparison()
-                .isEqualTo(ReservationResponse.from(reservation));
+                .isEqualTo(ReservationResponse.from(reservation, Member.builder().build()));
     }
 
     @Test

@@ -840,6 +840,8 @@ class ManagerReservationServiceTest extends ServiceTest {
                 anyList(),
                 any(LocalDate.class)))
                 .willReturn(foundReservations);
+        given(members.findByEmail(anyString()))
+                .willReturn(Optional.of(pobi));
 
         ReservationFindDto reservationFindDto = ReservationFindDto.of(
                 lutherId,
@@ -849,7 +851,7 @@ class ManagerReservationServiceTest extends ServiceTest {
                 ReservationType.Constants.MANAGER);
 
         //then
-        ReservationFindResponse reservationFindResponse = ReservationFindResponse.from(foundReservations);
+        ReservationFindResponse reservationFindResponse = ReservationFindResponse.from(foundReservations, pobi);
         assertThat(reservationService.findReservations(
                 reservationFindDto))
                 .usingRecursiveComparison()
@@ -938,6 +940,8 @@ class ManagerReservationServiceTest extends ServiceTest {
                 any(LocalDate.class),
                 any(LocalDate.class)))
                 .willReturn(Collections.emptyList());
+        given(members.findByEmail(anyString()))
+                .willReturn(Optional.of(pobi));
 
         //when
         ReservationFindDto reservationFindDto = ReservationFindDto.of(
@@ -956,11 +960,11 @@ class ManagerReservationServiceTest extends ServiceTest {
         assertThat(reservationService.findReservations(
                 reservationFindDto))
                 .usingRecursiveComparison()
-                .isEqualTo(ReservationFindResponse.from(Collections.emptyList()));
+                .isEqualTo(ReservationFindResponse.from(Collections.emptyList(), pobi));
         assertThat(reservationService.findAllReservations(
                 reservationFindAllDto))
                 .usingRecursiveComparison()
-                .isEqualTo(ReservationFindAllResponse.of(List.of(be, fe), Collections.emptyList()));
+                .isEqualTo(ReservationFindAllResponse.of(List.of(be, fe), Collections.emptyList(), pobi));
     }
 
     @Test
@@ -995,6 +999,8 @@ class ManagerReservationServiceTest extends ServiceTest {
                 anyList(),
                 any(LocalDate.class)))
                 .willReturn(foundReservations);
+        given(members.findByEmail(anyString()))
+                .willReturn(Optional.of(pobi));
 
         ReservationFindAllDto reservationFindAllDto = ReservationFindAllDto.of(
                 lutherId,
@@ -1003,7 +1009,7 @@ class ManagerReservationServiceTest extends ServiceTest {
                 ReservationType.Constants.MANAGER);
 
         //then
-        ReservationFindAllResponse reservationFindAllResponse = ReservationFindAllResponse.of(findSpaces, foundReservations);
+        ReservationFindAllResponse reservationFindAllResponse = ReservationFindAllResponse.of(findSpaces, foundReservations, pobi);
         assertThat(reservationService.findAllReservations(
                 reservationFindAllDto))
                 .usingRecursiveComparison()
@@ -1073,6 +1079,8 @@ class ManagerReservationServiceTest extends ServiceTest {
                 .willReturn(Optional.of(luther));
         given(reservations.findById(anyLong()))
                 .willReturn(Optional.of(reservation));
+        given(members.findByEmail(anyString()))
+                .willReturn(Optional.of(pobi));
 
         //when
         ReservationAuthenticationDto reservationAuthenticationDto = ReservationAuthenticationDto.of(
@@ -1088,7 +1096,7 @@ class ManagerReservationServiceTest extends ServiceTest {
 
         //then
         assertThat(actualResponse).usingRecursiveComparison()
-                .isEqualTo(ReservationResponse.from(reservation));
+                .isEqualTo(ReservationResponse.from(reservation, pobi));
     }
 
     @Test

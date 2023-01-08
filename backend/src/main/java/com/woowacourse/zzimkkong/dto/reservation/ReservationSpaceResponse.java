@@ -1,6 +1,7 @@
 package com.woowacourse.zzimkkong.dto.reservation;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.woowacourse.zzimkkong.domain.Member;
 import com.woowacourse.zzimkkong.domain.Reservation;
 import com.woowacourse.zzimkkong.domain.Space;
 import lombok.Getter;
@@ -35,10 +36,12 @@ public class ReservationSpaceResponse {
         this.reservations = reservations;
     }
 
-    public static ReservationSpaceResponse from(final Map.Entry<Space, List<Reservation>> reservationsPerSpace) {
+    public static ReservationSpaceResponse from(
+            final Map.Entry<Space, List<Reservation>> reservationsPerSpace,
+            final Member loginUser) {
         List<ReservationResponse> reservations = reservationsPerSpace.getValue()
                 .stream()
-                .map(ReservationResponse::from)
+                .map(reservation -> ReservationResponse.from(reservation, loginUser))
                 .collect(Collectors.toList());
 
         Space space = reservationsPerSpace.getKey();

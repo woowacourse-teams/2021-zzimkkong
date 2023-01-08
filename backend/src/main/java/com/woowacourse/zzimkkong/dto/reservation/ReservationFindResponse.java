@@ -1,6 +1,7 @@
 package com.woowacourse.zzimkkong.dto.reservation;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.woowacourse.zzimkkong.domain.Member;
 import com.woowacourse.zzimkkong.domain.Reservation;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -19,11 +20,11 @@ public class ReservationFindResponse {
         this.reservations = reservations;
     }
 
-    public static ReservationFindResponse from(final List<Reservation> reservations) {
+    public static ReservationFindResponse from(final List<Reservation> reservations, final Member loginUser) {
         reservations.sort(Comparator.comparing(Reservation::getStartTime));
 
         List<ReservationResponse> reservationResponses = reservations.stream()
-                .map(ReservationResponse::from)
+                .map(reservation -> ReservationResponse.from(reservation, loginUser))
                 .collect(Collectors.toList());
 
         return new ReservationFindResponse(reservationResponses);

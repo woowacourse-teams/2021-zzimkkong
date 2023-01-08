@@ -113,6 +113,10 @@ public class Reservation {
         return reservationTime.getDayOfWeek();
     }
 
+    public Boolean isOwnedBy(final Member loginUser) {
+        return !isNotOwnedBy(loginUser);
+    }
+
     public boolean isNotOwnedBy(final Member thatMember) {
         if (member == null || thatMember == null) {
             return true;

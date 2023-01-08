@@ -84,7 +84,7 @@ public class ReservationService {
         LocalDate date = reservationFindAllDto.getDate();
         List<Reservation> findReservations = getReservations(findSpaces, date);
 
-        return ReservationFindAllResponse.of(findSpaces, findReservations);
+        return ReservationFindAllResponse.of(findSpaces, findReservations, getLoginUser(loginUserEmail));
     }
 
     @Transactional(readOnly = true)
@@ -103,7 +103,7 @@ public class ReservationService {
                 .orElseThrow(NoSuchSpaceException::new);
         List<Reservation> findReservations = getReservations(Collections.singletonList(space), date);
 
-        return ReservationFindResponse.from(findReservations);
+        return ReservationFindResponse.from(findReservations, getLoginUser(loginUserEmail));
     }
 
     @Transactional(readOnly = true)
@@ -128,7 +128,7 @@ public class ReservationService {
                 reservationAuthenticationDto.getPassword(),
                 loginUserEmail);
 
-        return ReservationResponse.from(reservation);
+        return ReservationResponse.from(reservation, getLoginUser(loginUserEmail));
     }
 
     public SlackResponse updateReservation(final ReservationUpdateDto reservationUpdateDto) {
@@ -184,6 +184,14 @@ public class ReservationService {
 
         String sharingMapId = sharingIdGenerator.from(map);
         return SlackResponse.of(reservation, sharingMapId, map.getSlackUrl());
+    }
+
+    private Member getLoginUser(final LoginUserEmail loginUserEmail) {
+        if (!loginUserEmail.exists()) {
+            return Member.builder().build();
+        }
+        return members.findByEmail(loginUserEmail.getEmail())
+                .orElseThrow(NoSuchMemberException::new);
     }
 
     private void validateDeletability(final Reservation reservation) {

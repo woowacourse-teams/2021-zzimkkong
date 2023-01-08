@@ -33,6 +33,8 @@ public class ReservationResponse {
     private String description;
     @JsonProperty
     private Boolean isLoginReservation;
+    @JsonProperty
+    private Boolean isMyReservation;
 
     private Long spaceId;
     private Long mapId;
@@ -44,13 +46,15 @@ public class ReservationResponse {
             final LocalDateTime endDateTime,
             final String name,
             final String description,
-            final Boolean isLoginReservation) {
+            final Boolean isLoginReservation,
+            final Boolean isMyReservation) {
         this.id = id;
         this.startDateTime = startDateTime.atZone(UTC.toZoneId());
         this.endDateTime = endDateTime.atZone(UTC.toZoneId());
         this.name = name;
         this.description = description;
         this.isLoginReservation = isLoginReservation;
+        this.isMyReservation = isMyReservation;
     }
 
     public ReservationResponse(
@@ -60,23 +64,25 @@ public class ReservationResponse {
             final String name,
             final String description,
             final Boolean isLoginReservation,
+            final Boolean isMyReservation,
             final Long spaceId,
             final Long mapId,
             final Long managerId) {
-        this(id, startDateTime, endDateTime, name, description, isLoginReservation);
+        this(id, startDateTime, endDateTime, name, description, isLoginReservation, isMyReservation);
         this.spaceId = spaceId;
         this.mapId = mapId;
         this.managerId = managerId;
     }
 
-    public static ReservationResponse from(final Reservation reservation) {
+    public static ReservationResponse from(final Reservation reservation, final Member loginUser) {
         return new ReservationResponse(
                 reservation.getId(),
                 reservation.getStartTime(),
                 reservation.getEndTime(),
                 reservation.getUserName(),
                 reservation.getDescription(),
-                reservation.hasMember()
+                reservation.hasMember(),
+                reservation.isOwnedBy(loginUser)
         );
     }
 
@@ -92,6 +98,7 @@ public class ReservationResponse {
                 reservation.getUserName(),
                 reservation.getDescription(),
                 reservation.hasMember(),
+                false,
                 space.getId(),
                 map.getId(),
                 member.getId()

@@ -182,7 +182,7 @@ class GuestReservationControllerTest extends AcceptanceTest {
                 bePmOneTwo,
                 bePmTwoThreeByPobi);
 
-        ReservationFindResponse expectedResponse = ReservationFindResponse.from(expectedFindReservations);
+        ReservationFindResponse expectedResponse = ReservationFindResponse.from(expectedFindReservations, Member.builder().build());
 
         //then
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
@@ -210,7 +210,8 @@ class GuestReservationControllerTest extends AcceptanceTest {
                 fePmTwoThreeByPobi);
         ReservationFindAllResponse expectedResponse = ReservationFindAllResponse.of(
                 Arrays.asList(be, fe),
-                expectedFindReservations);
+                expectedFindReservations,
+                Member.builder().build());
 
         //then
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
@@ -249,7 +250,8 @@ class GuestReservationControllerTest extends AcceptanceTest {
                         .description(reservationCreateUpdateWithPasswordRequestSameSpace.getDescription())
                         .userName(reservationCreateUpdateWithPasswordRequestSameSpace.getName())
                         .space(be)
-                        .build());
+                        .build(),
+                Member.builder().build());
 
         //then
         assertThat(updateResponse.statusCode()).isEqualTo(HttpStatus.OK.value());
@@ -287,7 +289,8 @@ class GuestReservationControllerTest extends AcceptanceTest {
                         .member(pobi)
                         .userName(bePmTwoThreeByPobi.getUserName())
                         .space(be)
-                        .build());
+                        .build(),
+                pobi);
 
         //then
         assertThat(updateResponse.statusCode()).isEqualTo(HttpStatus.OK.value());
@@ -330,7 +333,7 @@ class GuestReservationControllerTest extends AcceptanceTest {
                 fe1ZeroOne,
                 fePmTwoThreeByPobi);
 
-        ReservationFindResponse expectedResponse = ReservationFindResponse.from(expectedFindReservations);
+        ReservationFindResponse expectedResponse = ReservationFindResponse.from(expectedFindReservations, Member.builder().build());
 
         //then
         assertThat(updateResponse.statusCode()).isEqualTo(HttpStatus.OK.value());
@@ -374,7 +377,7 @@ class GuestReservationControllerTest extends AcceptanceTest {
                 fe1ZeroOne,
                 fePmTwoThreeByPobi);
 
-        ReservationFindResponse expectedResponse = ReservationFindResponse.from(expectedFindReservations);
+        ReservationFindResponse expectedResponse = ReservationFindResponse.from(expectedFindReservations, Member.builder().build());
 
         //then
         assertThat(updateResponse.statusCode()).isEqualTo(HttpStatus.OK.value());
@@ -419,7 +422,7 @@ class GuestReservationControllerTest extends AcceptanceTest {
         ExtractableResponse<Response> response = findNonLoginReservation(beReservationApi + "/" + savedReservationId, reservationPasswordAuthenticationRequest);
 
         ReservationResponse actualResponse = response.as(ReservationResponse.class);
-        ReservationResponse expectedResponse = ReservationResponse.from(savedReservation);
+        ReservationResponse expectedResponse = ReservationResponse.from(savedReservation, Member.builder().build());
 
         //then
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
@@ -436,7 +439,7 @@ class GuestReservationControllerTest extends AcceptanceTest {
         ExtractableResponse<Response> response = findLoginReservation(beReservationApi + "/" + bePmTwoThreeByPobi.getId(), reservationPasswordAuthenticationRequest);
 
         ReservationResponse actualResponse = response.as(ReservationResponse.class);
-        ReservationResponse expectedResponse = ReservationResponse.from(bePmTwoThreeByPobi);
+        ReservationResponse expectedResponse = ReservationResponse.from(bePmTwoThreeByPobi, pobi);
 
         //then
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
