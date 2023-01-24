@@ -22,17 +22,19 @@ const REDIRECT_URI = `${process.env.NODE_ENV === 'production' ? 'https://' : 'ht
 
 const PATH = {
   MAIN: '/',
-  MANAGER_LOGIN: '/login',
+  LOGIN: '/login',
   MANAGER_JOIN: '/join',
   MANAGER_SOCIAL_JOIN: '/join/social',
   MANAGER_GITHUB_OAUTH_REDIRECT: '/login/oauth/github',
   MANAGER_GOOGLE_OAUTH_REDIRECT: '/login/oauth/google',
-  MANAGER_MAIN: '/map',
-  MANAGER_RESERVATION: '/reservation',
-  MANAGER_RESERVATION_EDIT: '/reservation/edit',
+  MANAGER_MAP_DETAIL: '/map/:mapId',
+  MANAGER_MAP_LIST: '/map/list',
   MANAGER_MAP_CREATE: '/map/create',
   MANAGER_MAP_EDIT: '/map/:mapId/edit',
   MANAGER_SPACE_EDIT: '/map/:mapId/space/edit',
+  MANAGER_RESERVATION: '/reservation',
+  MANAGER_RESERVATION_EDIT: '/reservation/edit',
+  GUEST_MAIN: '/guest',
   GUEST_MAP: '/guest/:sharingMapId',
   GUEST_RESERVATION: '/guest/:sharingMapId/reservation',
   GUEST_RESERVATION_EDIT: '/guest/:sharingMapId/reservation/edit',
@@ -51,6 +53,8 @@ const PATH = {
 };
 
 export const HREF = {
+  MANAGER_MAP_DETAIL: (mapId: number): string =>
+    PATH.MANAGER_MAP_DETAIL.replace(':mapId', `${mapId}`),
   MANAGER_MAP_EDIT: (mapId: number): string => PATH.MANAGER_MAP_EDIT.replace(':mapId', `${mapId}`),
   MANAGER_SPACE_EDIT: (mapId: number): string =>
     PATH.MANAGER_SPACE_EDIT.replace(':mapId', `${mapId}`),

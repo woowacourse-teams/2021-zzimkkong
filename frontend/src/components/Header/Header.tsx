@@ -25,7 +25,7 @@ const Header = ({ onClickLogin }: HeaderProps): JSX.Element => {
   const getHeaderLinkPath = () => {
     if (sharingMapId) return HREF.GUEST_MAP(sharingMapId);
 
-    if (accessToken) return PATH.MANAGER_MAIN;
+    if (accessToken) return PATH.MANAGER_MAP_LIST;
 
     return PATH.MAIN;
   };
@@ -40,7 +40,7 @@ const Header = ({ onClickLogin }: HeaderProps): JSX.Element => {
       return;
     }
 
-    history.push(PATH.MANAGER_LOGIN);
+    history.push(PATH.LOGIN);
   };
 
   return (
@@ -60,7 +60,7 @@ const Header = ({ onClickLogin }: HeaderProps): JSX.Element => {
           ) : (
             <>
               <Styled.TextLink
-                to={sharingMapId ? HREF.GUEST_MAP(sharingMapId) : PATH.MANAGER_LOGIN}
+                to={sharingMapId ? HREF.GUEST_MAP(sharingMapId) : PATH.LOGIN}
                 onClick={onClickLogin}
               >
                 로그인

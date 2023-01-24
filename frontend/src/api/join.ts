@@ -45,6 +45,6 @@ export const postJoin = (params: JoinParams): Promise<AxiosResponse> => {
 export const postSocialJoin = (params: SocialJoinParams): Promise<AxiosResponse> =>
   api.post(`/members/oauth`, params);
 
-export const getEmojiList: QueryFunction<AxiosResponse<QueryEmojiListSuccess>> = () => {
+export const queryEmojiList: QueryFunction<AxiosResponse<QueryEmojiListSuccess>> = () => {
   return api.get('/members/emojis');
 };

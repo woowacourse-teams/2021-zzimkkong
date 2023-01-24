@@ -1,55 +1,59 @@
 import styled from 'styled-components';
 
-interface ContainerProps {
-  selected: boolean;
-}
+export const Container = styled.div`
+  display: flex;
+  align-items: center;
+  padding: 0.875rem;
+  border-bottom: 1px solid ${({ theme }) => theme.gray[300]};
 
-export const Container = styled.div<ContainerProps>`
-  padding: 0.75rem;
-  border: 2px solid ${({ theme, selected }) => (selected ? theme.primary[400] : theme.gray[400])};
-  border-radius: 0.25rem;
-`;
-
-export const ImageWrapper = styled.div`
-  width: 100%;
-  height: 0;
-  padding-bottom: 75%;
-  position: relative;
-
-  &:hover {
-    cursor: pointer;
+  :last-of-type {
+    border-bottom: 0;
   }
 `;
 
-export const ImageInner = styled.div`
-  position: absolute;
-  width: 100%;
-  height: 100%;
+export const MapInfo = styled.div`
   display: flex;
-  justify-content: center;
   align-items: center;
+  cursor: pointer;
+  flex: 1;
+`;
+
+export const ImageWrapper = styled.div`
+  display: flex;
+  align-items: center;
+  width: 120px;
+  height: 120px;
+  margin-right: 36px;
+`;
+
+export const ImageInner = styled.div`
+  width: 100%;
 
   svg {
-    z-index: -1;
+    width: 100% !important;
+    height: 100% !important;
   }
 `;
 
 export const TitleWrapper = styled.div`
   display: flex;
-  gap: 0.25rem;
-  justify-content: space-between;
   align-items: center;
-  padding: 0.75rem 0 0;
 `;
 
 export const Title = styled.h3`
-  font-size: 1rem;
-  line-height: 1.375rem;
+  font-size: 1.125rem;
+  margin-right: 0.5rem;
 `;
 
-export const Control = styled.div`
+export const ControlWrapper = styled.div`
   display: flex;
-  gap: 0.125rem;
   align-items: center;
-  justify-content: flex-end;
+
+  & > * {
+    margin-right: 1.25rem;
+
+    :last-of-type {
+      margin-right: 0;
+    }
+  }
 `;

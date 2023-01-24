@@ -25,7 +25,7 @@ const ManagerJoin = (): JSX.Element => {
   const join = useMutation(postJoin, {
     onSuccess: () => {
       alert(MESSAGE.JOIN.SUCCESS);
-      history.push(PATH.MANAGER_LOGIN);
+      history.push(PATH.LOGIN);
     },
 
     onError: (error: AxiosError<ErrorResponse>) => {
@@ -48,7 +48,7 @@ const ManagerJoin = (): JSX.Element => {
           <JoinForm onSubmit={handleSubmit} />
           <Styled.JoinLinkMessage>
             이미 회원이신가요?
-            <Link to={PATH.MANAGER_LOGIN}>로그인하기</Link>
+            <Link to={PATH.LOGIN}>로그인하기</Link>
           </Styled.JoinLinkMessage>
         </Styled.Container>
       </Layout>

@@ -23,7 +23,7 @@ const GoogleOAuthRedirect = (): JSX.Element => {
 
         setAccessToken(accessToken);
 
-        history.replace(PATH.MANAGER_MAIN);
+        history.replace(PATH.GUEST_MAIN);
       },
 
       onError: (error: AxiosError<SocialLoginFailure>) => {
@@ -41,7 +41,7 @@ const GoogleOAuthRedirect = (): JSX.Element => {
 
         alert(error.response?.data.message ?? MESSAGE.LOGIN.UNEXPECTED_ERROR);
 
-        history.replace(PATH.MANAGER_LOGIN);
+        history.replace(PATH.LOGIN);
       },
     }
   );

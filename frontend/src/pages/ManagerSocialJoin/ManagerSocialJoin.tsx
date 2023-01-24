@@ -30,7 +30,7 @@ const ManagerSocialJoin = (): JSX.Element => {
 
   const socialJoin = useMutation(postSocialJoin, {
     onSuccess: () => {
-      history.replace(PATH.MANAGER_LOGIN);
+      history.replace(PATH.LOGIN);
     },
 
     onError: (error: AxiosError<ErrorResponse>) => {
@@ -45,7 +45,7 @@ const ManagerSocialJoin = (): JSX.Element => {
   };
 
   if (!email || !oauthProvider) {
-    history.replace(PATH.MANAGER_LOGIN);
+    history.replace(PATH.LOGIN);
   }
 
   return (

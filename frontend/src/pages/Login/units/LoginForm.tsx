@@ -3,7 +3,7 @@ import Button from 'components/Button/Button';
 import Input from 'components/Input/Input';
 import MANAGER from 'constants/manager';
 import useInputs from 'hooks/useInputs';
-import { ErrorMessage, LoginParams } from '../ManagerLogin';
+import { ErrorMessage, LoginParams } from '../Login';
 
 import * as Styled from './LoginForm.styles';
 

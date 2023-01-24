@@ -12,7 +12,7 @@ const PALETTE = {
     900: '#BA1812',
   },
   ORANGE: {
-    50: '#FFB885',
+    50: '#F9CFB3',
     100: '#FFAC70',
     200: '#FFA05C',
     300: '#FF9447',

@@ -21,7 +21,6 @@ export const RightIconButton = styled(IconButton)`
 export const VerticalBar = styled.div`
   width: 1px;
   height: 1.5rem;
-  margin: 0 0.25rem;
   background-color: ${({ theme }) => theme.gray[400]};
 `;
 

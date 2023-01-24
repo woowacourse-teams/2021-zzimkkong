@@ -15,10 +15,9 @@ import PageHeader from 'components/PageHeader/PageHeader';
 import ReservationListItem from 'components/ReservationListItem/ReservationListItem';
 import DATE from 'constants/date';
 import MESSAGE from 'constants/message';
-import PATH from 'constants/path';
+import PATH, { HREF } from 'constants/path';
 import useManagerSpaceReservations from 'hooks/query/useManagerSpaceReservations';
 import useInput from 'hooks/useInput';
-import { ManagerMainState } from 'pages/ManagerMain/ManagerMain';
 import { ManagerSpaceAPI, Reservation } from 'types/common';
 import { ErrorResponse } from 'types/response';
 import { isFutureDate, isPastDate } from 'utils/datetime';
@@ -38,11 +37,11 @@ interface ManagerReservationState {
 
 const ManagerReservation = (): JSX.Element => {
   const location = useLocation<ManagerReservationState>();
-  const history = useHistory<ManagerMainState>();
+  const history = useHistory();
 
   const { mapId, space, selectedDate, reservation } = location.state;
 
-  if (!mapId || !space) history.replace(PATH.MANAGER_MAIN);
+  if (!mapId || !space) history.replace(PATH.MANAGER_MAP_LIST);
 
   const [date, , setDate] = useInput(selectedDate);
 
@@ -59,9 +58,8 @@ const ManagerReservation = (): JSX.Element => {
   const addReservation = useMutation(postManagerReservation, {
     onSuccess: () => {
       history.push({
-        pathname: PATH.MANAGER_MAIN,
+        pathname: HREF.MANAGER_MAP_DETAIL(mapId),
         state: {
-          mapId,
           targetDate: dayjs(date),
         },
       });
@@ -74,9 +72,8 @@ const ManagerReservation = (): JSX.Element => {
   const updateReservation = useMutation(putManagerReservation, {
     onSuccess: () => {
       history.push({
-        pathname: PATH.MANAGER_MAIN,
+        pathname: HREF.MANAGER_MAP_DETAIL(mapId),
         state: {
-          mapId,
           targetDate: dayjs(date),
         },
       });
@@ -128,13 +125,15 @@ const ManagerReservation = (): JSX.Element => {
 
   useEffect(() => {
     return history.listen((location) => {
-      if (
-        location.pathname === PATH.MANAGER_MAIN ||
-        location.pathname === PATH.MANAGER_MAIN + '/'
-      ) {
+      const managerMapDetailPathReg = /\/map\/\d+\/?/;
+
+      if (managerMapDetailPathReg.test(location.pathname)) {
+        const path = location.pathname.split('/');
+        const mapId = path[path.length - 1];
+
         location.state = {
-          mapId,
           targetDate: dayjs(date),
+          mapId,
         };
       }
     });
