@@ -18,7 +18,6 @@ import MESSAGE from 'constants/message';
 import useBoardStatus from 'hooks/board/useBoardStatus';
 import useManagerMap from 'hooks/query/useManagerMap';
 import useManagerSpaces from 'hooks/query/useManagerSpaces';
-import useListenManagerMainState from 'hooks/useListenManagerMainState';
 import { Area, ManagerSpace, MapDrawing } from 'types/common';
 import { SpaceEditorMode as Mode } from 'types/editor';
 import { ErrorResponse } from 'types/response';
@@ -38,7 +37,7 @@ interface CreateResponseHeaders {
 
 const ManagerSpaceEditor = (): JSX.Element => {
   const { mapId } = useParams<{ mapId: string }>();
-  useListenManagerMainState({ mapId: Number(mapId) });
+
   const map = useManagerMap({ mapId: Number(mapId) });
   const mapName = map.data?.data.mapName ?? '';
   const { width, height, mapElements } = useMemo(() => {
@@ -137,7 +136,7 @@ const ManagerSpaceEditor = (): JSX.Element => {
       <Layout>
         <Styled.Desktop>
           <Styled.Page>
-            <EditorHeader mapName={mapName} />
+            <EditorHeader mapId={Number(mapId)} mapName={mapName} />
 
             <Styled.EditorMain>
               <SpaceFormProvider>

@@ -46,7 +46,7 @@ const Login = (): JSX.Element => {
 
       setAccessToken(accessToken);
 
-      history.push(PATH.MANAGER_MAP_DETAIL);
+      history.push(PATH.MANAGER_MAP_LIST);
     },
     onError: (error: AxiosError<ErrorResponse>) => {
       const field = error.response?.data.field;

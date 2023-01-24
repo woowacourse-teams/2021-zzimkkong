@@ -30,6 +30,7 @@ const Tab = ({ tabList, defaultTabLabel }: Props): JSX.Element => {
     <Styled.Container>
       {tabList.map((tab) => (
         <Styled.TabItem
+          key={tab.label}
           onClick={() => handleTabClick(tab)}
           selected={tab.label === defaultTabLabel}
         >

@@ -23,7 +23,7 @@ const GithubOAuthRedirect = (): JSX.Element => {
 
         setAccessToken(accessToken);
 
-        history.replace(PATH.MANAGER_MAP_DETAIL);
+        history.replace(PATH.GUEST_MAIN);
       },
 
       onError: (error: AxiosError<SocialLoginFailure>) => {

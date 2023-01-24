@@ -73,11 +73,6 @@ export const PUBLIC_ROUTES: Route[] = [
 
 export const PRIVATE_ROUTES: PrivateRoute[] = [
   {
-    path: PATH.MANAGER_MAP_DETAIL,
-    component: <ManagerMapDetail />,
-    redirectPath: PATH.LOGIN,
-  },
-  {
     path: PATH.MANAGER_MAP_LIST,
     component: <ManagerMapList />,
     redirectPath: PATH.LOGIN,
@@ -110,6 +105,11 @@ export const PRIVATE_ROUTES: PrivateRoute[] = [
   {
     path: PATH.GUEST_MAIN,
     component: <GuestMain />,
+    redirectPath: PATH.LOGIN,
+  },
+  {
+    path: PATH.MANAGER_MAP_DETAIL,
+    component: <ManagerMapDetail />,
     redirectPath: PATH.LOGIN,
   },
 ];

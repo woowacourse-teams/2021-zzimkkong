@@ -25,7 +25,7 @@ const Header = ({ onClickLogin }: HeaderProps): JSX.Element => {
   const getHeaderLinkPath = () => {
     if (sharingMapId) return HREF.GUEST_MAP(sharingMapId);
 
-    if (accessToken) return PATH.MANAGER_MAP_DETAIL;
+    if (accessToken) return PATH.MANAGER_MAP_LIST;
 
     return PATH.MAIN;
   };

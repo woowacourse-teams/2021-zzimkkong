@@ -13,7 +13,6 @@ import PATH, { HREF } from 'constants/path';
 import useManagerMap from 'hooks/query/useManagerMap';
 import useManagerSpaces from 'hooks/query/useManagerSpaces';
 import useInputs from 'hooks/useInputs';
-import useListenManagerMainState from 'hooks/useListenManagerMainState';
 import { Area, ManagerSpace, MapDrawing, MapElement } from 'types/common';
 import { ErrorResponse } from 'types/response';
 import { createMapImageSvg } from 'utils/map';
@@ -87,16 +86,16 @@ const ManagerMapEditor = (): JSX.Element => {
 
   const createMap = useMutation(postMap, {
     onSuccess: (response) => {
-      if (window.confirm(MESSAGE.MANAGER_MAP.CREATE_SUCCESS_CONFIRM)) {
-        const headers = response.headers as { location: string };
-        const mapId = Number(headers.location.split('/').pop());
+      const headers = response.headers as { location: string };
+      const mapId = Number(headers.location.split('/').pop());
 
+      if (window.confirm(MESSAGE.MANAGER_MAP.CREATE_SUCCESS_CONFIRM)) {
         history.push(HREF.MANAGER_SPACE_EDIT(mapId));
 
         return;
       }
 
-      history.push(PATH.MANAGER_MAP_DETAIL);
+      history.push(HREF.MANAGER_MAP_DETAIL(mapId));
     },
     onError: (error: AxiosError<ErrorResponse>) => {
       alert(error?.response?.data.message ?? MESSAGE.MANAGER_MAP.UNEXPECTED_MAP_CREATE_ERROR);
@@ -115,7 +114,7 @@ const ManagerMapEditor = (): JSX.Element => {
   const handleCancel = () => {
     if (!window.confirm(MESSAGE.MANAGER_MAP.CANCEL_CONFIRM)) return;
 
-    history.push(PATH.MANAGER_MAP_DETAIL);
+    history.push(PATH.MANAGER_MAP_LIST);
   };
 
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
@@ -144,8 +143,6 @@ const ManagerMapEditor = (): JSX.Element => {
 
     createMap.mutate({ mapName: name, mapDrawing, thumbnail });
   };
-
-  useListenManagerMainState({ mapId: Number(mapId) }, { enabled: isEdit });
 
   return (
     <>
