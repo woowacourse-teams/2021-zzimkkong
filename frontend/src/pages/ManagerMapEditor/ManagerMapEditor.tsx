@@ -96,7 +96,7 @@ const ManagerMapEditor = (): JSX.Element => {
         return;
       }
 
-      history.push(PATH.MANAGER_MAIN);
+      history.push(PATH.MANAGER_MAP_DETAIL);
     },
     onError: (error: AxiosError<ErrorResponse>) => {
       alert(error?.response?.data.message ?? MESSAGE.MANAGER_MAP.UNEXPECTED_MAP_CREATE_ERROR);
@@ -115,7 +115,7 @@ const ManagerMapEditor = (): JSX.Element => {
   const handleCancel = () => {
     if (!window.confirm(MESSAGE.MANAGER_MAP.CANCEL_CONFIRM)) return;
 
-    history.push(PATH.MANAGER_MAIN);
+    history.push(PATH.MANAGER_MAP_DETAIL);
   };
 
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {

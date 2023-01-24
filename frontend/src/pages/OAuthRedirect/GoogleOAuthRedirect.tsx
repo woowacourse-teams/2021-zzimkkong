@@ -23,7 +23,7 @@ const GoogleOAuthRedirect = (): JSX.Element => {
 
         setAccessToken(accessToken);
 
-        history.replace(PATH.MANAGER_MAIN);
+        history.replace(PATH.MANAGER_MAP_DETAIL);
       },
 
       onError: (error: AxiosError<SocialLoginFailure>) => {

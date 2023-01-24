@@ -17,7 +17,7 @@ const useListenManagerMainState = (
     if (!enabled || isNullish(mapId)) return;
 
     history.listen((location) => {
-      if (location.pathname === PATH.MANAGER_MAIN) {
+      if (location.pathname === PATH.MANAGER_MAP_DETAIL) {
         location.state = { mapId };
       }
     });

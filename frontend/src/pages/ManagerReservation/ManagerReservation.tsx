@@ -18,7 +18,7 @@ import MESSAGE from 'constants/message';
 import PATH from 'constants/path';
 import useManagerSpaceReservations from 'hooks/query/useManagerSpaceReservations';
 import useInput from 'hooks/useInput';
-import { ManagerMainState } from 'pages/ManagerMain/ManagerMain';
+import { ManagerMainState } from 'pages/ManagerMapDetail/ManagerMapDetail';
 import { ManagerSpaceAPI, Reservation } from 'types/common';
 import { ErrorResponse } from 'types/response';
 import { isFutureDate, isPastDate } from 'utils/datetime';
@@ -42,7 +42,7 @@ const ManagerReservation = (): JSX.Element => {
 
   const { mapId, space, selectedDate, reservation } = location.state;
 
-  if (!mapId || !space) history.replace(PATH.MANAGER_MAIN);
+  if (!mapId || !space) history.replace(PATH.MANAGER_MAP_DETAIL);
 
   const [date, , setDate] = useInput(selectedDate);
 
@@ -59,7 +59,7 @@ const ManagerReservation = (): JSX.Element => {
   const addReservation = useMutation(postManagerReservation, {
     onSuccess: () => {
       history.push({
-        pathname: PATH.MANAGER_MAIN,
+        pathname: PATH.MANAGER_MAP_DETAIL,
         state: {
           mapId,
           targetDate: dayjs(date),
@@ -74,7 +74,7 @@ const ManagerReservation = (): JSX.Element => {
   const updateReservation = useMutation(putManagerReservation, {
     onSuccess: () => {
       history.push({
-        pathname: PATH.MANAGER_MAIN,
+        pathname: PATH.MANAGER_MAP_DETAIL,
         state: {
           mapId,
           targetDate: dayjs(date),
@@ -129,8 +129,8 @@ const ManagerReservation = (): JSX.Element => {
   useEffect(() => {
     return history.listen((location) => {
       if (
-        location.pathname === PATH.MANAGER_MAIN ||
-        location.pathname === PATH.MANAGER_MAIN + '/'
+        location.pathname === PATH.MANAGER_MAP_DETAIL ||
+        location.pathname === PATH.MANAGER_MAP_DETAIL + '/'
       ) {
         location.state = {
           mapId,

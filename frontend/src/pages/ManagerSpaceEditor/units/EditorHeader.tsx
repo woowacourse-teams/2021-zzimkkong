@@ -13,7 +13,7 @@ const EditorHeader = ({ mapName }: Props): JSX.Element => {
     <Styled.Container>
       <Styled.MapName>{mapName}</Styled.MapName>
       <Styled.ButtonContainer>
-        <Link to={PATH.MANAGER_MAIN}>
+        <Link to={PATH.MANAGER_MAP_DETAIL}>
           <Button variant="primary">공간 편집 끝내기</Button>
         </Link>
       </Styled.ButtonContainer>

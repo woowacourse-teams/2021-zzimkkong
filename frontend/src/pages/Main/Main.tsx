@@ -33,7 +33,7 @@ const Main = (): JSX.Element => {
               공간 예약 시스템 제작 플랫폼 '찜꽁'은 맵 & 공간 에디터를 이용하여 누구나 쉽고 빠르게
               예약 시스템을 제작할 수 있습니다.
             </Styled.Description>
-            <Styled.StartButton to={accessToken ? PATH.MANAGER_MAIN : PATH.MANAGER_LOGIN}>
+            <Styled.StartButton to={accessToken ? PATH.MANAGER_MAP_DETAIL : PATH.MANAGER_LOGIN}>
               시작하기
             </Styled.StartButton>
           </Styled.IntroductionTextContainer>

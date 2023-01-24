@@ -46,7 +46,7 @@ const ManagerLogin = (): JSX.Element => {
 
       setAccessToken(accessToken);
 
-      history.push(PATH.MANAGER_MAIN);
+      history.push(PATH.MANAGER_MAP_DETAIL);
     },
     onError: (error: AxiosError<ErrorResponse>) => {
       const field = error.response?.data.field;

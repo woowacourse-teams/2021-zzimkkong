@@ -29,7 +29,7 @@ import { Reservation } from 'types/common';
 import { ErrorResponse, MapItemResponse } from 'types/response';
 import { formatDate } from 'utils/datetime';
 import { isNullish } from 'utils/type';
-import * as Styled from './ManagerMain.styles';
+import * as Styled from './ManagerMapDetail.styles';
 import useSlackWebhookUrl from './hooks/useSlackWebhookUrl';
 import MapDrawer from './units/MapDrawer';
 import ReservationList from './units/ReservationList';
@@ -41,7 +41,7 @@ export interface ManagerMainState {
 
 type OpenableModal = 'slack' | 'notice';
 
-const ManagerMain = (): JSX.Element => {
+const ManagerMapDetail = (): JSX.Element => {
   const history = useHistory();
   const location = useLocation<ManagerMainState>();
 
@@ -416,4 +416,4 @@ const ManagerMain = (): JSX.Element => {
   );
 };
 
-export default ManagerMain;
+export default ManagerMapDetail;

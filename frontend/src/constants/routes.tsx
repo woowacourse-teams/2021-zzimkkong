@@ -10,7 +10,7 @@ const Main = React.lazy(() => import('pages/Main/Main'));
 const ManagerJoin = React.lazy(() => import('pages/ManagerJoin/ManagerJoin'));
 const ManagerSocialJoin = React.lazy(() => import('pages/ManagerSocialJoin/ManagerSocialJoin'));
 const ManagerLogin = React.lazy(() => import('pages/ManagerLogin/ManagerLogin'));
-const ManagerMain = React.lazy(() => import('pages/ManagerMain/ManagerMain'));
+const ManagerMapDetail = React.lazy(() => import('pages/ManagerMapDetail/ManagerMapDetail'));
 const ManagerMapEditor = React.lazy(() => import('pages/ManagerMapEditor/ManagerMapEditor'));
 const ManagerReservation = React.lazy(() => import('pages/ManagerReservation/ManagerReservation'));
 const ManagerSpaceEditor = React.lazy(() => import('pages/ManagerSpaceEditor/ManagerSpaceEditor'));
@@ -71,8 +71,8 @@ export const PUBLIC_ROUTES: Route[] = [
 
 export const PRIVATE_ROUTES: PrivateRoute[] = [
   {
-    path: PATH.MANAGER_MAIN,
-    component: <ManagerMain />,
+    path: PATH.MANAGER_MAP_DETAIL,
+    component: <ManagerMapDetail />,
     redirectPath: PATH.MANAGER_LOGIN,
   },
   {
