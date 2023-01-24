@@ -42,7 +42,7 @@ interface DeleteGuestReservationParams {
   mapId: number;
   spaceId: number;
   reservationId: number;
-  password: string;
+  password?: string;
 }
 
 export interface MemberGuestReservationParams {

@@ -93,6 +93,8 @@ export interface Reservation {
   endDateTime: string;
   name: string;
   description: string;
+  isLoginReservation: boolean;
+  isMyReservation: boolean;
 }
 
 export interface MemberReservarion extends Reservation {

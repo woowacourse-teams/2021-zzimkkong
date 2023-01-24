@@ -148,17 +148,19 @@ const GuestMap = (): JSX.Element => {
     });
   };
 
-  const handleDelete = (reservation: Reservation) => {
-    setPasswordInputModalOpen(true);
-    setSelectedReservation(reservation);
+  const deleteLoginReservation = (reservationId: number) => {
+    if (typeof map?.mapId !== 'number' || selectedSpaceId === null) return;
+
+    if (!window.confirm(MESSAGE.GUEST_MAP.DELETE_CONFIRM)) return;
+
+    removeReservation.mutate({
+      mapId: map?.mapId,
+      spaceId: selectedSpaceId,
+      reservationId: reservationId,
+    });
   };
 
-  const handleDeleteReservation = (
-    event: React.FormEvent<HTMLFormElement>,
-    passwordInput: string
-  ) => {
-    event.preventDefault();
-
+  const handleDeleteGuestReservation = (passwordInput: string) => {
     if (typeof map?.mapId !== 'number' || selectedSpaceId === null) return;
 
     removeReservation.mutate({
@@ -167,6 +169,15 @@ const GuestMap = (): JSX.Element => {
       password: passwordInput,
       reservationId: Number(selectedReservation?.id),
     });
+  };
+
+  const handleDelete = (reservation: Reservation) => {
+    if (!reservation.isLoginReservation) {
+      setPasswordInputModalOpen(true);
+      setSelectedReservation(reservation);
+    } else {
+      deleteLoginReservation(reservation.id);
+    }
   };
 
   const handleReservation = () => {
@@ -313,7 +324,7 @@ const GuestMap = (): JSX.Element => {
       <PasswordInputModal
         open={passwordInputModalOpen}
         onClose={() => setPasswordInputModalOpen(false)}
-        onSubmit={handleDeleteReservation}
+        onSubmit={handleDeleteGuestReservation}
       />
 
       {!accessToken && (
