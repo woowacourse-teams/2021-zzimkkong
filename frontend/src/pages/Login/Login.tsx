@@ -11,7 +11,7 @@ import MESSAGE from 'constants/message';
 import PATH from 'constants/path';
 import { AccessTokenContext } from 'providers/AccessTokenProvider';
 import { ErrorResponse, LoginSuccess } from 'types/response';
-import * as Styled from './ManagerLogin.styles';
+import * as Styled from './Login.styles';
 import LoginForm from './units/LoginForm';
 
 export interface ErrorMessage {
@@ -24,7 +24,7 @@ export interface LoginParams {
   password: string;
 }
 
-const ManagerLogin = (): JSX.Element => {
+const Login = (): JSX.Element => {
   const history = useHistory();
 
   const { setAccessToken, resetAccessToken } = useContext(AccessTokenContext);
@@ -93,4 +93,4 @@ const ManagerLogin = (): JSX.Element => {
   );
 };
 
-export default ManagerLogin;
+export default Login;

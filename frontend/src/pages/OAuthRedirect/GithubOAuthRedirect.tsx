@@ -41,7 +41,7 @@ const GithubOAuthRedirect = (): JSX.Element => {
 
         alert(error.response?.data.message ?? MESSAGE.LOGIN.UNEXPECTED_ERROR);
 
-        history.replace(PATH.MANAGER_LOGIN);
+        history.replace(PATH.LOGIN);
       },
     }
   );

@@ -40,7 +40,7 @@ const Header = ({ onClickLogin }: HeaderProps): JSX.Element => {
       return;
     }
 
-    history.push(PATH.MANAGER_LOGIN);
+    history.push(PATH.LOGIN);
   };
 
   return (
@@ -60,7 +60,7 @@ const Header = ({ onClickLogin }: HeaderProps): JSX.Element => {
           ) : (
             <>
               <Styled.TextLink
-                to={sharingMapId ? HREF.GUEST_MAP(sharingMapId) : PATH.MANAGER_LOGIN}
+                to={sharingMapId ? HREF.GUEST_MAP(sharingMapId) : PATH.LOGIN}
                 onClick={onClickLogin}
               >
                 로그인
