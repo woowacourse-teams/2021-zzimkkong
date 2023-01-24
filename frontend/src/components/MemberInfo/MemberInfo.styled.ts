@@ -3,7 +3,6 @@ import styled from 'styled-components';
 export const Container = styled.div`
   display: flex;
   align-items: center;
-  padding: 64px 96px;
 `;
 
 export const EmojiContainer = styled.div`
@@ -37,7 +36,7 @@ export const InfoContainer = styled.div`
 `;
 
 export const NameTextContainer = styled.div`
-  font-size: 1.375rem;
+  font-size: 1.5rem;
 `;
 
 export const NameText = styled.span`

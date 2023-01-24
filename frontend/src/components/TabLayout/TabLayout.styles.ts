@@ -15,4 +15,5 @@ export const TabContainer = styled.div`
 export const Content = styled.div`
   height: 300px;
   background-color: ${({ theme }) => theme.white};
+  padding: 64px 96px;
 `;

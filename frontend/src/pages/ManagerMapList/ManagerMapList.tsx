@@ -17,7 +17,7 @@ import MapListItem from 'components/MapListItem/MapListItem';
 import MemberInfo from 'components/MemberInfo/MemberInfo';
 import TabLayout from 'components/TabLayout/TabLayout';
 import MESSAGE from 'constants/message';
-import { HREF } from 'constants/path';
+import PATH, { HREF } from 'constants/path';
 import { TAB_LABEL, TAB_LIST } from 'constants/tab';
 import useManagerMaps from 'hooks/query/useManagerMaps';
 import { ErrorResponse } from 'types/response';
@@ -73,6 +73,12 @@ const ManagerMapList = (): JSX.Element => {
               />
             ))}
           </Styled.MapList>
+
+          <Styled.MapCreateButtonContainer>
+            <Styled.MapCreateButton onClick={() => history.push(PATH.MANAGER_MAP_CREATE)}>
+              맵 만들기
+            </Styled.MapCreateButton>
+          </Styled.MapCreateButtonContainer>
         </Styled.MapListContainer>
       </TabLayout>
     </>
