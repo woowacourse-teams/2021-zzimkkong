@@ -54,7 +54,7 @@ const GuestMap = (): JSX.Element => {
 
   const [map, setMap] = useState<MapItem | null>(null);
   const mapDrawing = map?.mapDrawing;
-  const getMap = useGuestMap(
+  useGuestMap(
     { sharingMapId },
     {
       onError: () => {
@@ -87,7 +87,7 @@ const GuestMap = (): JSX.Element => {
     return result;
   }, [spaceList]);
 
-  const getSpaces = useGuestSpaces(
+  useGuestSpaces(
     { mapId: map?.mapId as number },
     {
       enabled: map?.mapId !== undefined,
@@ -137,7 +137,7 @@ const GuestMap = (): JSX.Element => {
     if (!selectedSpaceId) return;
 
     history.push({
-      pathname: `/guest/${sharingMapId}/reservation/edit`,
+      pathname: HREF.GUEST_RESERVATION_EDIT(sharingMapId),
       state: {
         mapId: map?.mapId,
         space: spaces[selectedSpaceId],

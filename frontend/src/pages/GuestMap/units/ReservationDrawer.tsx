@@ -3,7 +3,7 @@ import { ReactComponent as DeleteIcon } from 'assets/svg/delete.svg';
 import { ReactComponent as EditIcon } from 'assets/svg/edit.svg';
 import Drawer from 'components/Drawer/Drawer';
 import IconButton from 'components/IconButton/IconButton';
-import ReservationListItem from 'components/ReservationListItem/ReservationListItem';
+import ManagerReservationListItem from 'components/ManagerReservationListItem/ManagerReservationListItem';
 import { Reservation, Space } from 'types/common';
 import { isPastDate, isPastTime } from 'utils/datetime';
 import { getReservationStatus } from 'utils/reservation';
@@ -61,7 +61,7 @@ const ReservationDrawer = ({
         <Styled.ReservationList role="list">
           {reservations.map((reservation) => {
             return (
-              <ReservationListItem
+              <ManagerReservationListItem
                 key={reservation.id}
                 data-testid={`reservation-${reservation.id}`}
                 reservation={reservation}

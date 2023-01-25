@@ -74,11 +74,15 @@ const ManagerMapList = (): JSX.Element => {
             ))}
           </Styled.MapList>
 
-          <Styled.MapCreateButtonContainer>
-            <Styled.MapCreateButton onClick={() => history.push(PATH.MANAGER_MAP_CREATE)}>
+          <Styled.ButtonContainer>
+            <Styled.RoundedButton
+              variant="default"
+              shape="round"
+              onClick={() => history.push(PATH.MANAGER_MAP_CREATE)}
+            >
               맵 만들기
-            </Styled.MapCreateButton>
-          </Styled.MapCreateButtonContainer>
+            </Styled.RoundedButton>
+          </Styled.ButtonContainer>
         </Styled.MapListContainer>
       </TabLayout>
     </>

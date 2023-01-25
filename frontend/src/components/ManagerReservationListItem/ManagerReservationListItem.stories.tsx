@@ -3,14 +3,14 @@ import { ReactComponent as DeleteIcon } from 'assets/svg/delete.svg';
 import { ReactComponent as EditIcon } from 'assets/svg/edit.svg';
 import IconButton from 'components/IconButton/IconButton';
 import { ReservationStatus } from 'types/common';
-import ReservationListItem, { Props } from './ReservationListItem';
+import ManagerReservationListItem, { Props } from './ManagerReservationListItem';
 
 export default {
   title: 'shared/ReservationListItem',
-  component: ReservationListItem,
+  component: ManagerReservationListItem,
 };
 
-const Template: Story<Props> = (args) => <ReservationListItem {...args} />;
+const Template: Story<Props> = (args) => <ManagerReservationListItem {...args} />;
 
 export const Default = Template.bind({});
 Default.args = {

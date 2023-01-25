@@ -2,7 +2,7 @@ import dayjs from 'dayjs';
 import { ReactNode } from 'react';
 import { Reservation, ReservationStatus } from 'types/common';
 import { formatTime } from 'utils/datetime';
-import * as Styled from './ReservationListItem.styles';
+import * as Styled from './ManagerReservationListItem.styles';
 
 export interface Props {
   reservation: Reservation;
@@ -10,7 +10,12 @@ export interface Props {
   status?: ReservationStatus;
 }
 
-const ReservationListItem = ({ reservation, control, status, ...props }: Props): JSX.Element => {
+const ManagerReservationListItem = ({
+  reservation,
+  control,
+  status,
+  ...props
+}: Props): JSX.Element => {
   const { name, description, startDateTime, endDateTime } = reservation;
 
   const start = formatTime(dayjs(startDateTime).tz());
@@ -37,4 +42,4 @@ const ReservationListItem = ({ reservation, control, status, ...props }: Props):
   );
 };
 
-export default ReservationListItem;
+export default ManagerReservationListItem;

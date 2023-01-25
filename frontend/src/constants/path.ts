@@ -62,6 +62,8 @@ export const HREF = {
     PATH.GUEST_MAP.replace(':sharingMapId', `${sharingMapId}`),
   GUEST_RESERVATION: (sharingMapId: string): string =>
     PATH.GUEST_RESERVATION.replace(':sharingMapId', `${sharingMapId}`),
+  GUEST_RESERVATION_EDIT: (sharingMapId: string): string =>
+    PATH.GUEST_RESERVATION_EDIT.replace(':sharingMapId', `${sharingMapId}`),
   GUEST_RESERVATION_SUCCESS: (sharingMapId: string): string =>
     PATH.GUEST_RESERVATION_SUCCESS.replace(':sharingMapId', `${sharingMapId}`),
 };

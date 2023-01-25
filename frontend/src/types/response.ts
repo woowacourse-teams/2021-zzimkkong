@@ -1,11 +1,12 @@
 import {
+  Emoji,
+  ManagerSpaceAPI,
   MapItem,
+  MemberReservarion,
+  Preset,
   Reservation,
   Space,
   SpaceReservation,
-  ManagerSpaceAPI,
-  Preset,
-  Emoji,
 } from './common';
 
 export interface MapItemResponse extends Omit<MapItem, 'mapDrawing'> {
@@ -77,4 +78,10 @@ export interface QueryPresetsSuccess {
 
 export interface QuerySlackWebhookUrlSuccess {
   slackUrl: string;
+}
+
+export interface QueryMemberReservationsSuccess {
+  data: MemberReservarion[];
+  hasNext: boolean;
+  pageNumber: number;
 }
