@@ -3,6 +3,7 @@ package com.woowacourse.zzimkkong.controller;
 import com.woowacourse.zzimkkong.domain.*;
 import com.woowacourse.zzimkkong.dto.reservation.*;
 import com.woowacourse.zzimkkong.infrastructure.auth.AuthorizationExtractor;
+import com.woowacourse.zzimkkong.infrastructure.sharingid.SharingIdGenerator;
 import com.woowacourse.zzimkkong.service.SlackService;
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
@@ -10,6 +11,7 @@ import io.restassured.response.Response;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -27,6 +29,9 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.restdocs.restassured3.RestAssuredRestDocumentation.document;
 
 class GuestReservationControllerTest extends AcceptanceTest {
+    @Autowired
+    private SharingIdGenerator sharingIdGenerator;
+
     @MockBean
     private SlackService slackService;
 
@@ -77,7 +82,7 @@ class GuestReservationControllerTest extends AcceptanceTest {
                 .password(passwordEncoder.encode(PW))
                 .organization(ORGANIZATION)
                 .build();
-        Map luther = new Map(LUTHER_NAME, MAP_DRAWING_DATA, MAP_SVG, pobi);
+        Map luther = new Map(1L, LUTHER_NAME, MAP_DRAWING_DATA, MAP_SVG, pobi);
 
         Setting beSetting = Setting.builder()
                 .settingTimeSlot(TimeSlot.of(
@@ -452,9 +457,11 @@ class GuestReservationControllerTest extends AcceptanceTest {
     @DisplayName("로그인 한 예약자가 다가오는 예약 내역을 조회할 떄, 해당 예약자가 예약한 내역들을 반환한다")
     void findAllUpcomingReservations() {
         // given
+        bePmTwoThreeByPobi.getSpace().getMap().activateSharingMapId(sharingIdGenerator);
+        fePmTwoThreeByPobi.getSpace().getMap().activateSharingMapId(sharingIdGenerator);
 
         // when
-        ExtractableResponse<Response> response = findAllUpcomingReservations("/api/guests/reservations?page=0");
+        ExtractableResponse<Response> response = findAllUpcomingReservations("/api/guests/reservations?page=0&size=10");
         ReservationInfiniteScrollResponse actualResponse = response.as(ReservationInfiniteScrollResponse.class);
         ReservationInfiniteScrollResponse expectedResponse = ReservationInfiniteScrollResponse.of(
                 List.of(bePmTwoThreeByPobi, fePmTwoThreeByPobi),
@@ -473,9 +480,10 @@ class GuestReservationControllerTest extends AcceptanceTest {
     @DisplayName("로그인 한 예약자가 이전 예약 내역을 조회할 떄, 해당 예약자의 이전 예약 내역들을 반환한다")
     void findAllPreviousReservations() {
         // given
+        beFiveDaysAgoPmTwoThreeByPobi.getSpace().getMap().activateSharingMapId(sharingIdGenerator);
 
         // when
-        ExtractableResponse<Response> response = findAllPreviousReservations("/api/guests/reservations/history?page=0");
+        ExtractableResponse<Response> response = findAllPreviousReservations("/api/guests/reservations/history?page=0&size=10");
         ReservationInfiniteScrollResponse actualResponse = response.as(ReservationInfiniteScrollResponse.class);
         ReservationInfiniteScrollResponse expectedResponse = ReservationInfiniteScrollResponse.of(
                 List.of(beFiveDaysAgoPmTwoThreeByPobi),

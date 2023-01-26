@@ -1,7 +1,9 @@
 package com.woowacourse.zzimkkong.domain;
 
+import com.woowacourse.zzimkkong.infrastructure.sharingid.SharingIdGenerator;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import net.logstash.logback.encoder.org.apache.commons.lang3.StringUtils;
 
 import javax.persistence.*;
 import java.util.*;
@@ -45,6 +47,9 @@ public class Map {
      */
     @Transient
     private final ServiceZone serviceZone = ServiceZone.KOREA;
+
+    @Transient
+    private String sharingMapId;
 
     public Map(final String name,
                final String mapDrawing,
@@ -103,6 +108,13 @@ public class Map {
 
     public void addSpace(final Space space) {
         spaces.add(space);
+    }
+
+    public void activateSharingMapId(final SharingIdGenerator sharingIdGenerator) {
+        if (StringUtils.isNotBlank(this.sharingMapId)) {
+            return;
+        }
+        this.sharingMapId = sharingIdGenerator.from(this);
     }
 
     public List<Space> getSpaces() {

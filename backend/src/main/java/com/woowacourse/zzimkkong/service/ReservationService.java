@@ -65,8 +65,10 @@ public class ReservationService {
         validateAvailability(reservation, new ExcludeReservationCreateStrategy());
 
         Reservation savedReservation = reservations.save(reservation);
-        String sharingMapId = sharingIdGenerator.from(map);
-        return ReservationCreateResponse.of(savedReservation, sharingMapId, map.getSlackUrl());
+
+        map.activateSharingMapId(sharingIdGenerator);
+
+        return ReservationCreateResponse.of(savedReservation, map);
     }
 
     @Transactional(readOnly = true)
@@ -131,6 +133,47 @@ public class ReservationService {
         return ReservationResponse.from(reservation, getLoginUser(loginUserEmail));
     }
 
+    @Transactional(readOnly = true)
+    public ReservationInfiniteScrollResponse findUpcomingReservations(final LoginUserEmail loginUserEmail, final Pageable pageable) {
+        Member member = members.findByEmail(loginUserEmail.getEmail())
+                .orElseThrow(NoSuchMemberException::new);
+
+        LocalDateTime now = LocalDateTime.now();
+        Slice<Reservation> reservationSlice = reservations.findAllByMemberAndReservationTimeDateGreaterThanEqual(
+                member,
+                TimeZoneUtils.convertTo(now, ServiceZone.KOREA).toLocalDate(),
+                pageable);
+        List<Reservation> upcomingReservations = reservationSlice.getContent()
+                .stream()
+                .filter(reservation -> !reservation.isExpired(now))
+                .sorted(Comparator.comparing(Reservation::getStartTime))
+                .peek(reservation -> reservation.getSpace().getMap().activateSharingMapId(sharingIdGenerator))
+                .collect(Collectors.toList());
+
+        return ReservationInfiniteScrollResponse.of(upcomingReservations, reservationSlice.hasNext(), pageable.getPageNumber());
+    }
+
+    @Transactional(readOnly = true)
+    public ReservationInfiniteScrollResponse findPreviousReservations(final LoginUserEmail loginUserEmail, final Pageable pageable) {
+        Member member = members.findByEmail(loginUserEmail.getEmail())
+                .orElseThrow(NoSuchMemberException::new);
+
+        LocalDateTime now = LocalDateTime.now();
+        Slice<Reservation> reservationSlice = reservations.findAllByMemberAndReservationTimeDateLessThanEqual(
+                member,
+                TimeZoneUtils.convertTo(now, ServiceZone.KOREA).toLocalDate(),
+                pageable);
+
+        List<Reservation> previousReservations = reservationSlice.getContent()
+                .stream()
+                .filter(reservation -> reservation.isExpired(now))
+                .sorted(Comparator.comparing(Reservation::getStartTime).reversed())
+                .peek(reservation -> reservation.getSpace().getMap().activateSharingMapId(sharingIdGenerator))
+                .collect(Collectors.toList());
+
+        return ReservationInfiniteScrollResponse.of(previousReservations, reservationSlice.hasNext(), pageable.getPageNumber());
+    }
+
     public SlackResponse updateReservation(final ReservationUpdateDto reservationUpdateDto) {
         ReservationStrategy reservationStrategy = reservationStrategies.getStrategyByReservationType(reservationUpdateDto.getReservationType());
         Long mapId = reservationUpdateDto.getMapId();
@@ -151,8 +194,9 @@ public class ReservationService {
 
         reservation.update(updateReservation);
 
-        String sharingMapId = sharingIdGenerator.from(map);
-        return SlackResponse.of(reservation, sharingMapId, map.getSlackUrl());
+        map.activateSharingMapId(sharingIdGenerator);
+
+        return SlackResponse.of(reservation, map);
     }
 
     public SlackResponse deleteReservation(final ReservationAuthenticationDto reservationAuthenticationDto) {
@@ -182,8 +226,9 @@ public class ReservationService {
 
         reservations.delete(reservation);
 
-        String sharingMapId = sharingIdGenerator.from(map);
-        return SlackResponse.of(reservation, sharingMapId, map.getSlackUrl());
+        map.activateSharingMapId(sharingIdGenerator);
+
+        return SlackResponse.of(reservation, map);
     }
 
     private Member getLoginUser(final LoginUserEmail loginUserEmail) {
@@ -278,42 +323,5 @@ public class ReservationService {
         if (map.doesNotHaveSpaceId(spaceId)) {
             throw new NoSuchSpaceException();
         }
-    }
-
-    public ReservationInfiniteScrollResponse findUpcomingReservations(final LoginUserEmail loginUserEmail, final Pageable pageable) {
-        Member member = members.findByEmail(loginUserEmail.getEmail())
-                .orElseThrow(NoSuchMemberException::new);
-
-        LocalDateTime now = LocalDateTime.now();
-        Slice<Reservation> reservationSlice = reservations.findAllByMemberAndReservationTimeDateGreaterThanEqual(
-                member,
-                TimeZoneUtils.convertTo(now, ServiceZone.KOREA).toLocalDate(),
-                pageable);
-        List<Reservation> upcomingReservations = reservationSlice.getContent()
-                .stream()
-                .filter(reservation -> !reservation.isExpired(now))
-                .sorted(Comparator.comparing(Reservation::getStartTime))
-                .collect(Collectors.toList());
-
-        return ReservationInfiniteScrollResponse.of(upcomingReservations, reservationSlice.hasNext(), pageable.getPageNumber());
-    }
-
-    public ReservationInfiniteScrollResponse findPreviousReservations(final LoginUserEmail loginUserEmail, final Pageable pageable) {
-        Member member = members.findByEmail(loginUserEmail.getEmail())
-                .orElseThrow(NoSuchMemberException::new);
-
-        LocalDateTime now = LocalDateTime.now();
-        Slice<Reservation> reservationSlice = reservations.findAllByMemberAndReservationTimeDateLessThanEqual(
-                member,
-                TimeZoneUtils.convertTo(now, ServiceZone.KOREA).toLocalDate(),
-                pageable);
-
-        List<Reservation> previousReservations = reservationSlice.getContent()
-                .stream()
-                .filter(reservation -> reservation.isExpired(now))
-                .sorted(Comparator.comparing(Reservation::getStartTime).reversed())
-                .collect(Collectors.toList());
-
-        return ReservationInfiniteScrollResponse.of(previousReservations, reservationSlice.hasNext(), pageable.getPageNumber());
     }
 }

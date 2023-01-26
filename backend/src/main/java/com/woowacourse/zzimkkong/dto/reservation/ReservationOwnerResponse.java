@@ -25,6 +25,7 @@ public class ReservationOwnerResponse {
     private String name;
     private String description;
     private Long mapId;
+    private String sharingMapId;
     private String mapName;
     private Long spaceId;
     private String spaceName;
@@ -43,6 +44,7 @@ public class ReservationOwnerResponse {
                 .name(member.getUserName())
                 .description(reservation.getDescription())
                 .mapId(map.getId())
+                .sharingMapId(map.getSharingMapId())
                 .mapName(map.getName())
                 .spaceId(space.getId())
                 .spaceName(space.getName())

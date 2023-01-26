@@ -59,7 +59,10 @@ public class MapService {
                 .orElseThrow(NoSuchMapException::new);
 
         validateManagerOfMap(map, loginUserEmail.getEmail());
-        return MapFindResponse.of(map, sharingIdGenerator.from(map));
+
+        map.activateSharingMapId(sharingIdGenerator);
+
+        return MapFindResponse.of(map);
     }
 
     @Transactional(readOnly = true)
@@ -70,7 +73,8 @@ public class MapService {
         List<Map> findMaps = manager.getMaps();
 
         return findMaps.stream()
-                .map(map -> MapFindResponse.of(map, sharingIdGenerator.from(map)))
+                .peek(map -> map.activateSharingMapId(sharingIdGenerator))
+                .map(MapFindResponse::of)
                 .collect(collectingAndThen(toList(), mapFindResponses -> MapFindAllResponse.of(mapFindResponses, manager)));
     }
 
@@ -79,7 +83,9 @@ public class MapService {
         Long mapId = sharingIdGenerator.parseIdFrom(sharingMapId);
         Map map = maps.findById(mapId)
                 .orElseThrow(NoSuchMapException::new);
-        return MapFindResponse.of(map, sharingIdGenerator.from(map));
+        map.activateSharingMapId(sharingIdGenerator);
+
+        return MapFindResponse.of(map);
     }
 
     public void updateMap(final Long mapId,

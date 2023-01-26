@@ -51,6 +51,9 @@ class MapServiceTest extends ServiceTest {
         smallHouse = new Map(2L, SMALL_HOUSE_NAME, MAP_DRAWING_DATA, MAP_SVG, pobi);
         lutherId = luther.getId();
 
+        luther.activateSharingMapId(sharingIdGenerator);
+        smallHouse.activateSharingMapId(sharingIdGenerator);
+
         Setting beSetting = Setting.builder()
                 .settingTimeSlot(TimeSlot.of(
                         BE_AVAILABLE_START_TIME,
@@ -122,7 +125,7 @@ class MapServiceTest extends ServiceTest {
         //then
         assertThat(mapFindResponse)
                 .usingRecursiveComparison()
-                .isEqualTo(MapFindResponse.of(luther, sharingIdGenerator.from(luther)));
+                .isEqualTo(MapFindResponse.of(luther));
     }
 
     @Test
@@ -139,7 +142,7 @@ class MapServiceTest extends ServiceTest {
         //then
         assertThat(mapFindAllResponse).usingRecursiveComparison()
                 .isEqualTo(expectedMaps.stream()
-                        .map(map -> MapFindResponse.of(map, sharingIdGenerator.from(map)))
+                        .map(MapFindResponse::of)
                         .collect(collectingAndThen(toList(), mapFindResponses -> MapFindAllResponse.of(mapFindResponses, pobi))));
     }
 
@@ -209,7 +212,7 @@ class MapServiceTest extends ServiceTest {
 
         // when
         MapFindResponse actual = mapService.findMapBySharingId(sharingId);
-        MapFindResponse expected = MapFindResponse.of(luther, sharingIdGenerator.from(luther));
+        MapFindResponse expected = MapFindResponse.of(luther);
 
         // then
         assertThat(actual)

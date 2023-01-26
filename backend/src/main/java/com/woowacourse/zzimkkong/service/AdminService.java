@@ -76,8 +76,7 @@ public class AdminService {
     }
 
     public MapsResponse findMaps(Pageable pageable) {
-        Page<MapFindResponse> allMaps = maps
-                .findAllByFetch(pageable)
+        Page<MapFindResponse> allMaps = maps.findAllByFetch(pageable)
                 .map(map -> MapFindResponse.ofAdmin(map, sharingIdGenerator.from(map)));
 
         return MapsResponse.of(allMaps.getContent(), PageInfo.from(allMaps));
