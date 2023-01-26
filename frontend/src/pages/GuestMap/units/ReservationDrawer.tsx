@@ -74,7 +74,7 @@ const ReservationDrawer = ({
                   return false;
                 }
 
-                if (!reservation.isMyReservation) {
+                if (accessToken && !reservation.isMyReservation) {
                   return false;
                 }
 
