@@ -25,6 +25,7 @@ interface Props {
   space: Space;
   reservation?: Reservation;
   date: string;
+  userName: string;
   onChangeDate: ChangeEventHandler<HTMLInputElement>;
   onSubmit: (
     event: React.FormEvent<HTMLFormElement>,
@@ -41,6 +42,7 @@ const MemberGuestReservationForm = ({
   space,
   date,
   reservation,
+  userName,
   onSubmit,
   onChangeDate,
 }: Props): JSX.Element => {
@@ -101,6 +103,9 @@ const MemberGuestReservationForm = ({
     <Styled.ReservationForm onSubmit={handleSubmit}>
       <Styled.Section>
         <Styled.InputWrapper>
+          <Input label="이름" value={userName} disabled />
+        </Styled.InputWrapper>
+        <Styled.InputWrapper>
           <Input
             label="사용 목적"
             name="description"
@@ -108,6 +113,7 @@ const MemberGuestReservationForm = ({
             onChange={onChangeForm}
             maxLength={RESERVATION.DESCRIPTION.MAX_LENGTH}
             required
+            autoFocus
           />
         </Styled.InputWrapper>
         <Styled.InputWrapper>

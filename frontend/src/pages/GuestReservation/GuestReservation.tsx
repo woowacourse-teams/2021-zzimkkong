@@ -19,6 +19,7 @@ import DATE from 'constants/date';
 import MESSAGE from 'constants/message';
 import { HREF } from 'constants/path';
 import useGuestReservations from 'hooks/query/useGuestReservations';
+import useMember from 'hooks/query/useMember';
 import useInput from 'hooks/useInput';
 import { GuestMapState } from 'pages/GuestMap/GuestMap';
 import { AccessTokenContext } from 'providers/AccessTokenProvider';
@@ -64,6 +65,9 @@ const GuestReservation = (): JSX.Element => {
 
   const isEditMode = !!reservation;
 
+  const member = useMember();
+  const userName = member.data?.data.userName;
+
   const getReservations = useGuestReservations(
     { mapId, spaceId: space.id, date },
     {
@@ -106,7 +110,7 @@ const GuestReservation = (): JSX.Element => {
           reservation: {
             startDateTime,
             endDateTime,
-            name: '',
+            name: userName ?? '',
             description,
           },
           targetDate: dayjs(date).tz(),
@@ -273,6 +277,7 @@ const GuestReservation = (): JSX.Element => {
               space={space}
               reservation={reservation}
               date={date}
+              userName={userName ?? ''}
               onChangeDate={handleChangeDate}
               onSubmit={handleSubmitMemberGuest}
             />
