@@ -194,6 +194,10 @@ const GuestMap = (): JSX.Element => {
     });
   };
 
+  const handleLogin = () => {
+    getReservations.refetch();
+  };
+
   useEffect(() => {
     if (scrollPosition) {
       mapRef.current?.scrollTo(scrollPosition.x ?? 0, scrollPosition.y ?? 0);
@@ -328,7 +332,11 @@ const GuestMap = (): JSX.Element => {
       />
 
       {!accessToken && (
-        <LoginPopup open={loginPopupOpen} onClose={() => setLoginPopupOpen(false)} />
+        <LoginPopup
+          open={loginPopupOpen}
+          onClose={() => setLoginPopupOpen(false)}
+          onLogin={handleLogin}
+        />
       )}
     </>
   );
