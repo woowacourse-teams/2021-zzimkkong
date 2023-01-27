@@ -8,14 +8,16 @@ import * as Styled from './PasswordInputModal.styles';
 interface PasswordInputModalProps {
   open: boolean;
   onClose: () => void;
-  onSubmit: (event: React.FormEvent<HTMLFormElement>, passwordInput: string) => void;
+  onSubmit: (passwordInput: string) => void;
 }
 
 const PasswordInputModal = ({ open, onClose, onSubmit }: PasswordInputModalProps): JSX.Element => {
   const [passwordInput, onChangePasswordInput] = useInput('');
 
   const handleSubmit: React.FormEventHandler<HTMLFormElement> = (event) => {
-    onSubmit(event, passwordInput);
+    event.preventDefault();
+
+    onSubmit(passwordInput);
   };
 
   return (

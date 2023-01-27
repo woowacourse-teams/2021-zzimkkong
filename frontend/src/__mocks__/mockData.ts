@@ -16,6 +16,8 @@ interface Reservation {
   password: string;
   name: string;
   description: string;
+  isLoginReservation: boolean;
+  isMyReservation: boolean;
 }
 
 interface Reservations {
@@ -76,6 +78,8 @@ export const reservations: Reservations = {
         name: '찜꽁',
         description: '찜꽁 5차 회의',
         password: '1111',
+        isLoginReservation: false,
+        isMyReservation: false,
       },
       {
         id: 2,
@@ -84,6 +88,8 @@ export const reservations: Reservations = {
         name: '샐리',
         description: '찜꽁 데모데이 회의.',
         password: '1111',
+        isLoginReservation: false,
+        isMyReservation: false,
       },
       {
         id: 3,
@@ -92,6 +98,8 @@ export const reservations: Reservations = {
         name: '체프',
         description: '찜꽁 165차 회의',
         password: '1111',
+        isLoginReservation: false,
+        isMyReservation: false,
       },
       {
         id: 4,
@@ -100,6 +108,8 @@ export const reservations: Reservations = {
         name: '썬',
         description: '찜꽁 A시리즈 투자 관련 회의.',
         password: '1111',
+        isLoginReservation: false,
+        isMyReservation: false,
       },
     ],
   },
@@ -113,6 +123,8 @@ export const reservations: Reservations = {
         name: '체프',
         description: '야식 먹자',
         password: '1111',
+        isLoginReservation: false,
+        isMyReservation: false,
       },
       {
         id: 11,
@@ -121,6 +133,8 @@ export const reservations: Reservations = {
         name: '샐리',
         description: '바다와 함께하는 페어프로그래밍.',
         password: '1111',
+        isLoginReservation: false,
+        isMyReservation: false,
       },
     ],
     2: [
@@ -131,6 +145,8 @@ export const reservations: Reservations = {
         name: '유조',
         description: '제천 여행 계획',
         password: '1111',
+        isLoginReservation: false,
+        isMyReservation: false,
       },
       {
         id: 13,
@@ -139,6 +155,8 @@ export const reservations: Reservations = {
         name: '썬',
         description: '도예 클래스',
         password: '1111',
+        isLoginReservation: false,
+        isMyReservation: false,
       },
     ],
   },

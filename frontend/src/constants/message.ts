@@ -83,6 +83,7 @@ const MESSAGE = {
   },
   GUEST_MAP: {
     MAP_DRAWING_PARSE_ERROR: '맵을 불러오는 중에 문제가 발생했습니다. 잠시 후에 다시 시도해주세요.',
+    DELETE_CONFIRM: '정말로 예약을 삭제하시겠습니까?',
   },
 };
 

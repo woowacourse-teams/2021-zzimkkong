@@ -20,6 +20,8 @@ Default.args = {
     description: '맛있는 커피를 내리는 법',
     startDateTime: '2021-07-09T20:00:00',
     endDateTime: '2021-07-09T21:00:00',
+    isLoginReservation: false,
+    isMyReservation: false,
   },
 };
 
@@ -31,6 +33,8 @@ Control.args = {
     description: '맛있는 커피를 내리는 법',
     startDateTime: '2021-07-09T20:00:00',
     endDateTime: '2021-07-09T21:00:00',
+    isLoginReservation: false,
+    isMyReservation: false,
   },
   control: (
     <>
@@ -52,6 +56,8 @@ StatusUsing.args = {
     description: '맛있는 커피를 내리는 법',
     startDateTime: '2021-07-09T20:00:00',
     endDateTime: '2021-07-09T21:00:00',
+    isLoginReservation: false,
+    isMyReservation: false,
   },
   status: ReservationStatus.using,
 };
@@ -64,6 +70,8 @@ StatusDone.args = {
     description: '맛있는 커피를 내리는 법',
     startDateTime: '2021-07-09T20:00:00',
     endDateTime: '2021-07-09T21:00:00',
+    isLoginReservation: false,
+    isMyReservation: false,
   },
   status: ReservationStatus.done,
 };

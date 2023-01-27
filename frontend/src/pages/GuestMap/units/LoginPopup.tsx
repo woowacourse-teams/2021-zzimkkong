@@ -17,9 +17,10 @@ import * as Styled from './LoginPopup.styles';
 interface LoginPopupProps {
   open: boolean;
   onClose: () => void;
+  onLogin?: () => void;
 }
 
-const LoginPopup = ({ open, onClose }: LoginPopupProps): JSX.Element => {
+const LoginPopup = ({ open, onClose, onLogin }: LoginPopupProps): JSX.Element => {
   const { setAccessToken } = useContext(AccessTokenContext);
 
   const history = useHistory();
@@ -45,6 +46,7 @@ const LoginPopup = ({ open, onClose }: LoginPopupProps): JSX.Element => {
 
       setAccessToken(accessToken);
       setValues({ email: '', password: '' });
+      onLogin?.();
     },
     onError: (error: AxiosError<ErrorResponse>) => {
       const field = error.response?.data.field;
