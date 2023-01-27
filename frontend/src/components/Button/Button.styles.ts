@@ -65,6 +65,7 @@ const sizeCSS = {
     padding: 0.25rem 0.5rem;
   `,
   medium: css`
+    font-size: 1rem;
     padding: 0.625rem 0.875rem;
   `,
   large: css`

@@ -3,8 +3,8 @@ import { ReactComponent as DeleteIcon } from 'assets/svg/delete.svg';
 import { ReactComponent as EditIcon } from 'assets/svg/edit.svg';
 import Button from 'components/Button/Button';
 import IconButton from 'components/IconButton/IconButton';
+import ManagerReservationListItem from 'components/ManagerReservationListItem/ManagerReservationListItem';
 import Panel from 'components/Panel/Panel';
-import ReservationListItem from 'components/ReservationListItem/ReservationListItem';
 import PATH, { HREF } from 'constants/path';
 import { Order, Reservation, SpaceReservation } from 'types/common';
 import { getReservationStatus } from 'utils/reservation';
@@ -91,7 +91,7 @@ const ReservationList = ({
                   ) : (
                     <>
                       {reservations.map((reservation) => (
-                        <ReservationListItem
+                        <ManagerReservationListItem
                           key={`reservation-${reservation.id}`}
                           reservation={reservation}
                           status={getReservationStatus(

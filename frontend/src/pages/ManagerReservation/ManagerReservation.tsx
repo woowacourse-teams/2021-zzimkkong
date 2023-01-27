@@ -11,8 +11,8 @@ import {
 } from 'api/managerReservation';
 import Header from 'components/Header/Header';
 import Layout from 'components/Layout/Layout';
+import ManagerReservationListItem from 'components/ManagerReservationListItem/ManagerReservationListItem';
 import PageHeader from 'components/PageHeader/PageHeader';
-import ReservationListItem from 'components/ReservationListItem/ReservationListItem';
 import DATE from 'constants/date';
 import MESSAGE from 'constants/message';
 import PATH, { HREF } from 'constants/path';
@@ -178,7 +178,7 @@ const ManagerReservation = (): JSX.Element => {
             {getReservations.isSuccess && reservations.length > 0 && (
               <Styled.ReservationList role="list">
                 {reservations?.map((reservation) => (
-                  <ReservationListItem
+                  <ManagerReservationListItem
                     key={reservation.id}
                     reservation={reservation}
                     status={getReservationStatus(

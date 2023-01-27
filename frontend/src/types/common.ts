@@ -95,6 +95,16 @@ export interface Reservation {
   description: string;
 }
 
+export interface MemberReservarion extends Reservation {
+  memberId: number;
+  mapId: MapItem['mapId'];
+  sharingMapId: MapItem['sharingMapId'];
+  mapName: MapItem['mapName'];
+  spaceId: Space['id'];
+  spaceName: Space['name'];
+  spaceColor: Space['color'];
+}
+
 export interface SpaceReservation {
   spaceId: number;
   spaceName: string;

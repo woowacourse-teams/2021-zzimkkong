@@ -6,8 +6,8 @@ import { useHistory, useLocation, useParams } from 'react-router-dom';
 import { postGuestReservation, putGuestReservation, ReservationParams } from 'api/guestReservation';
 import Header from 'components/Header/Header';
 import Layout from 'components/Layout/Layout';
+import ManagerReservationListItem from 'components/ManagerReservationListItem/ManagerReservationListItem';
 import PageHeader from 'components/PageHeader/PageHeader';
-import ReservationListItem from 'components/ReservationListItem/ReservationListItem';
 import DATE from 'constants/date';
 import MESSAGE from 'constants/message';
 import { HREF } from 'constants/path';
@@ -203,7 +203,7 @@ const GuestReservation = (): JSX.Element => {
             {getReservations.isSuccess && reservations.length > 0 && (
               <Styled.ReservationList role="list">
                 {reservations?.map((reservation) => (
-                  <ReservationListItem
+                  <ManagerReservationListItem
                     key={reservation.id}
                     reservation={reservation}
                     status={getReservationStatus(

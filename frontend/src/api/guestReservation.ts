@@ -1,7 +1,7 @@
 import { AxiosResponse } from 'axios';
 import { QueryFunction, QueryKey } from 'react-query';
 import THROW_ERROR from 'constants/throwError';
-import { QueryGuestReservationsSuccess } from 'types/response';
+import { QueryGuestReservationsSuccess, QueryMemberReservationsSuccess } from 'types/response';
 import api from './api';
 
 export interface QueryMapReservationsParams {
@@ -11,6 +11,10 @@ export interface QueryMapReservationsParams {
 
 export interface QuerySpaceReservationsParams extends QueryMapReservationsParams {
   spaceId: number;
+}
+
+export interface QueryMemberReservationsParams {
+  page: number;
 }
 
 export interface ReservationParams {
@@ -55,6 +59,20 @@ export const queryGuestReservations: QueryFunction<
   return api.get(`/guests/maps/${mapId}/spaces/${spaceId}/reservations?date=${date}`);
 };
 
+// 내 예약 조회
+export const queryMemberReservations = ({
+  page,
+}: QueryMemberReservationsParams): Promise<AxiosResponse<QueryMemberReservationsSuccess>> => {
+  return api.get(`/guests/reservations?page=${page}`);
+};
+
+// 내 이전 예약 조회
+export const queryMemberReservationHistory = ({
+  page,
+}: QueryMemberReservationsParams): Promise<AxiosResponse<QueryMemberReservationsSuccess>> => {
+  return api.get(`/guests/reservations/history?page=${page}`);
+};
+
 export const postGuestReservation = ({
   reservation,
   mapId,
@@ -78,4 +96,13 @@ export const deleteGuestReservation = ({
 }: DeleteReservationParams): Promise<AxiosResponse<never>> =>
   api.delete(`/guests/maps/${mapId}/spaces/${spaceId}/reservations/${reservationId}`, {
     data: { password },
+  });
+
+export const deleteMemberReservation = ({
+  mapId,
+  spaceId,
+  reservationId,
+}: Omit<DeleteReservationParams, 'password'>): Promise<AxiosResponse<never>> =>
+  api.delete(`/guests/maps/${mapId}/spaces/${spaceId}/reservations/${reservationId}`, {
+    data: { password: null },
   });

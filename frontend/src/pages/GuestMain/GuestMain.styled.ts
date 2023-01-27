@@ -1,17 +1,19 @@
 import styled from 'styled-components';
 import Button from 'components/Button/Button';
 
-export const MapListContainer = styled.div`
-  margin-top: 60px;
+export const Container = styled.div`
+  padding: 60px 0 80px;
 `;
 
-export const MapListTitle = styled.div`
+export const ListTitle = styled.div`
+  display: flex;
+  align-items: center;
   font-size: 1.25rem;
   font-weight: bold;
 `;
 
-export const MapList = styled.div`
-  margin: 28px 0;
+export const List = styled.div`
+  margin: 28px 0 0;
 `;
 
 export const ButtonContainer = styled.div`
@@ -28,4 +30,13 @@ export const RoundedButton = styled(Button)`
   :hover {
     background-color: ${({ theme }) => theme.gray[100]};
   }
+`;
+
+export const FlexLeft = styled.div`
+  display: flex;
+  justify-content: flex-end;
+`;
+
+export const HistoryListContainer = styled.div`
+  margin: 40px 0;
 `;
