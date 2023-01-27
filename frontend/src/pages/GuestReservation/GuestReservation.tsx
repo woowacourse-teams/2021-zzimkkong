@@ -65,7 +65,9 @@ const GuestReservation = (): JSX.Element => {
 
   const isEditMode = !!reservation;
 
-  const member = useMember();
+  const member = useMember({
+    enabled: !!accessToken,
+  });
   const userName = member.data?.data.userName;
 
   const getReservations = useGuestReservations(

@@ -43,6 +43,8 @@ api.interceptors.response.use(
   (error: AxiosError<ErrorResponse>) => {
     if (error?.response?.status === 401) {
       removeLocalStorageItem({ key: LOCAL_STORAGE_KEY.ACCESS_TOKEN });
+
+      history.push(PATH.LOGIN);
     }
 
     return Promise.reject(error);
