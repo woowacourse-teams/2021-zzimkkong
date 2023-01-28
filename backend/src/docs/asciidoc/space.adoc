@@ -32,6 +32,12 @@ include::{snippets}/space/guest/get/http-request.adoc[]
 ===== Response
 include::{snippets}/space/guest/get/http-response.adoc[]
 
+=== 공간 전체 사용 가능 여부 조회
+==== Request
+include::{snippets}/space/guest/getAllAvailability/http-request.adoc[]
+==== Response
+include::{snippets}/space/guest/getAllAvailability/http-response.adoc[]
+
 === 공간 수정
 ==== Request
 include::{snippets}/space/manager/put/http-request.adoc[]

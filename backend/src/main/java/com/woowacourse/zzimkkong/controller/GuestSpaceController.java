@@ -28,11 +28,11 @@ public class GuestSpaceController {
             @PathVariable final Long mapId,
             @RequestParam @DateTimeFormat(pattern = DATETIME_FORMAT) final ZonedDateTime startDateTime,
             @RequestParam @DateTimeFormat(pattern = DATETIME_FORMAT) final ZonedDateTime endDateTime) {
-        SpaceFindAllAvailabilityResponse spaceFindAllResponse = spaceService.findAllSpaceAvailability(
+        SpaceFindAllAvailabilityResponse spaceFindAllAvailabilityResponse = spaceService.findAllSpaceAvailability(
                 mapId,
                 startDateTime.toLocalDateTime(),
                 endDateTime.toLocalDateTime());
-        return ResponseEntity.ok().body(spaceFindAllResponse);
+        return ResponseEntity.ok().body(spaceFindAllAvailabilityResponse);
     }
 
     @GetMapping

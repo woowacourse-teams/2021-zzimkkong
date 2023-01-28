@@ -1,6 +1,5 @@
 package com.woowacourse.zzimkkong.dto.space;
 
-import com.woowacourse.zzimkkong.domain.Reservation;
 import com.woowacourse.zzimkkong.domain.Space;
 import lombok.Builder;
 import lombok.Getter;

@@ -1,6 +1,7 @@
 package com.woowacourse.zzimkkong.controller;
 
 import com.woowacourse.zzimkkong.domain.*;
+import com.woowacourse.zzimkkong.dto.space.SpaceFindAllAvailabilityResponse;
 import com.woowacourse.zzimkkong.dto.space.SpaceFindAllResponse;
 import com.woowacourse.zzimkkong.dto.space.SpaceFindDetailResponse;
 import com.woowacourse.zzimkkong.infrastructure.auth.AuthorizationExtractor;
@@ -13,6 +14,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 
+import java.util.HashSet;
 import java.util.List;
 
 import static com.woowacourse.zzimkkong.Constants.*;
@@ -27,6 +29,7 @@ class GuestSpaceControllerTest extends AcceptanceTest {
     private Space be;
     private Space fe;
     private Long beSpaceId;
+    private Map luther;
 
     @BeforeEach
     void setUp() {
@@ -45,7 +48,7 @@ class GuestSpaceControllerTest extends AcceptanceTest {
                 .password(passwordEncoder.encode(PW))
                 .organization(ORGANIZATION)
                 .build();
-        Map luther = new Map(LUTHER_NAME, MAP_DRAWING_DATA, MAP_SVG, pobi);
+        luther = new Map(Long.valueOf(lutherId), LUTHER_NAME, MAP_DRAWING_DATA, MAP_SVG, pobi);
         Setting beSetting = Setting.builder()
                 .settingTimeSlot(TimeSlot.of(
                         BE_AVAILABLE_START_TIME,
@@ -121,6 +124,25 @@ class GuestSpaceControllerTest extends AcceptanceTest {
                 .isEqualTo(expected);
     }
 
+    @Test
+    @DisplayName("mapId와 함께 특정 time slot (start, end date time)이 주어지면, 맵 상의 모든 공간에 대해서 사용 가능 여부를 반환한다")
+    void findAllSpaceAvailability() {
+        // given, when
+        String guestSpaceApi = spaceApi.replaceAll("managers", "guests");
+        String api = guestSpaceApi + "/availability";
+        ExtractableResponse<Response> response = findAllSpaceAvailability(api);
+        SpaceFindAllAvailabilityResponse actual = response.body().as(SpaceFindAllAvailabilityResponse.class);
+        SpaceFindAllAvailabilityResponse expected = SpaceFindAllAvailabilityResponse.of(
+                luther.getId(), List.of(be, fe), new HashSet<>());
+
+        // then
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
+        assertThat(actual).usingRecursiveComparison()
+                .ignoringActualNullFields()
+                .ignoringExpectedNullFields()
+                .isEqualTo(expected);
+    }
+
     private ExtractableResponse<Response> findAllSpace(final String api) {
         return RestAssured
                 .given(getRequestSpecification()).log().all()
@@ -136,6 +158,18 @@ class GuestSpaceControllerTest extends AcceptanceTest {
                 .given(getRequestSpecification()).log().all()
                 .accept("application/json")
                 .filter(document("space/guest/get", getRequestPreprocessor(), getResponsePreprocessor()))
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .when().get(api)
+                .then().log().all().extract();
+    }
+
+    private ExtractableResponse<Response> findAllSpaceAvailability(final String api) {
+        return RestAssured
+                .given(getRequestSpecification()).log().all()
+                .accept("application/json")
+                .param("startDateTime", BE_AM_TEN_ELEVEN_START_TIME_KST.toLocalDate().toString() + "T10:00:00+09:00")
+                .param("endDateTime", BE_AM_TEN_ELEVEN_END_TIME_KST.toLocalDate().toString()+ "T11:00:00+09:00")
+                .filter(document("space/guest/getAllAvailability", getRequestPreprocessor(), getResponsePreprocessor()))
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .when().get(api)
                 .then().log().all().extract();
