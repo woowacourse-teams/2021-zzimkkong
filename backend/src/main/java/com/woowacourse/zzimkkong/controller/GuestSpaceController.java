@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.*;
 import java.time.ZonedDateTime;
 
 import static com.woowacourse.zzimkkong.dto.ValidatorMessage.DATETIME_FORMAT;
+import static com.woowacourse.zzimkkong.infrastructure.datetime.TimeZoneUtils.UTC;
 
 @LogMethodExecutionTime(group = "controller")
 @RestController
@@ -30,8 +31,8 @@ public class GuestSpaceController {
             @RequestParam @DateTimeFormat(pattern = DATETIME_FORMAT) final ZonedDateTime endDateTime) {
         SpaceFindAllAvailabilityResponse spaceFindAllAvailabilityResponse = spaceService.findAllSpaceAvailability(
                 mapId,
-                startDateTime.toLocalDateTime(),
-                endDateTime.toLocalDateTime());
+                startDateTime.withZoneSameInstant(UTC.toZoneId()).toLocalDateTime(),
+                endDateTime.withZoneSameInstant(UTC.toZoneId()).toLocalDateTime());
         return ResponseEntity.ok().body(spaceFindAllAvailabilityResponse);
     }
 
