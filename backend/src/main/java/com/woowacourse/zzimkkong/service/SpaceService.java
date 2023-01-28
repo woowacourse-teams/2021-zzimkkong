@@ -73,6 +73,17 @@ public class SpaceService {
     }
 
     @Transactional(readOnly = true)
+    public SpaceFindDetailResponse findSpace(
+            final Long mapId,
+            final Long spaceId) {
+        Map map = maps.findByIdFetch(mapId)
+                .orElseThrow(NoSuchMapException::new);
+        Space space = map.findSpaceById(spaceId)
+                .orElseThrow(NoSuchSpaceException::new);
+        return SpaceFindDetailResponse.from(space);
+    }
+
+    @Transactional(readOnly = true)
     public SpaceFindAllResponse findAllSpace(
             final Long mapId,
             final LoginUserEmail loginUserEmail) {
@@ -89,7 +100,6 @@ public class SpaceService {
             final Long mapId) {
         Map map = maps.findByIdFetch(mapId)
                 .orElseThrow(NoSuchMapException::new);
-
         List<Space> findAllSpaces = map.getSpaces();
         return SpaceFindAllResponse.from(findAllSpaces);
     }
