@@ -187,7 +187,7 @@ public class ReservationService {
         List<Reservation> upcomingNonLoginReservations = reservationSlice.getContent()
                 .stream()
                 .filter(reservation -> !reservation.isExpired(searchStartTime))
-                .filter(Reservation::isNonLoginReservation)
+                .filter(reservation -> !reservation.hasMember())
                 .sorted(Comparator.comparing(Reservation::getStartTime))
                 .peek(reservation -> reservation.getSpace().getMap().activateSharingMapId(sharingIdGenerator))
                 .collect(Collectors.toList());

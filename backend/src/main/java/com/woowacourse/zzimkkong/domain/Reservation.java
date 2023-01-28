@@ -129,7 +129,17 @@ public class Reservation {
         return this.member != null;
     }
 
-    public boolean isNonLoginReservation() {
-        return StringUtils.isBlank(this.password);
+    public Long getMemberId() {
+        if (!hasMember()) {
+            return null;
+        }
+        return this.member.getId();
+    }
+
+    public String getUserName() {
+        if (hasMember()) {
+            return this.member.getUserName();
+        }
+        return this.userName;
     }
 }

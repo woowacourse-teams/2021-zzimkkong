@@ -55,10 +55,10 @@ public class ReservationCreateUpdateRequest {
     }
 
     public LocalDateTime localStartDateTime() {
-        return startDateTime.toLocalDateTime();
+        return startDateTime.withZoneSameInstant(UTC.toZoneId()).toLocalDateTime();
     }
 
     public LocalDateTime localEndDateTime() {
-        return endDateTime.toLocalDateTime();
+        return endDateTime.withZoneSameInstant(UTC.toZoneId()).toLocalDateTime();
     }
 }

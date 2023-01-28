@@ -48,6 +48,7 @@ class GuestReservationControllerTest extends AcceptanceTest {
 
     private Reservation beAmZeroOne;
     private Reservation bePmOneTwo;
+    private Reservation beNextDayPmFourSix;
     private Reservation fe1ZeroOne;
     private Reservation bePmTwoThreeByPobi;
     private Reservation fePmTwoThreeByPobi;
@@ -498,6 +499,29 @@ class GuestReservationControllerTest extends AcceptanceTest {
                 .isEqualTo(expectedResponse);
     }
 
+    @Test
+    @DisplayName("비로그인 예약자가 username 과 함께 예약을 조회하면, 가장 임박한 예약 순서대로 예약을 반환한다")
+    void findUpcomingNonLoginReservations() {
+        // given
+        bePmOneTwo.getSpace().getMap().activateSharingMapId(sharingIdGenerator);
+        beNextDayPmFourSix.getSpace().getMap().activateSharingMapId(sharingIdGenerator);
+
+        // when
+        ExtractableResponse<Response> response = findAllUpcomingNonLoginReservations("/api/guests/non-login/reservations");
+        ReservationInfiniteScrollResponse actualResponse = response.as(ReservationInfiniteScrollResponse.class);
+        ReservationInfiniteScrollResponse expectedResponse = ReservationInfiniteScrollResponse.of(
+                List.of(bePmOneTwo, beNextDayPmFourSix),
+                false,
+                0);
+
+        // then
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
+        assertThat(actualResponse).usingRecursiveComparison()
+                .ignoringCollectionOrder()
+                .ignoringExpectedNullFields()
+                .isEqualTo(expectedResponse);
+    }
+
     private void saveExampleReservations() {
         ReservationCreateUpdateWithPasswordRequest beAmZeroOneRequest = new ReservationCreateUpdateWithPasswordRequest(
                 BE_AM_TEN_ELEVEN_START_TIME_KST,
@@ -573,7 +597,17 @@ class GuestReservationControllerTest extends AcceptanceTest {
                 .space(be)
                 .build();
 
-        getNonLoginReservationIdAfterSave(beReservationApi, beNextDayAmSixTwelveRequest);
+        beNextDayPmFourSix = Reservation.builder()
+                .id(getNonLoginReservationIdAfterSave(beReservationApi, beNextDayAmSixTwelveRequest))
+                .reservationTime(
+                        ReservationTime.ofDefaultServiceZone(
+                                BE_NEXT_DAY_PM_FOUR_TO_SIX_START_TIME_KST.withZoneSameInstant(UTC.toZoneId()).toLocalDateTime(),
+                                BE_NEXT_DAY_PM_FOUR_TO_SIX_END_TIME_KST.withZoneSameInstant(UTC.toZoneId()).toLocalDateTime()))
+                .description(BE_NEXT_DAY_PM_FOUR_TO_SIX_DESCRIPTION)
+                .userName(BE_NEXT_DAY_PM_FOUR_TO_SIX_USERNAME)
+                .password(BE_NEXT_DAY_PM_FOUR_TO_SIX_PW)
+                .space(be)
+                .build();
 
         fe1ZeroOne = Reservation.builder()
                 .id(getNonLoginReservationIdAfterSave(fe1ReservationApi, feZeroOneRequest))
@@ -788,6 +822,20 @@ class GuestReservationControllerTest extends AcceptanceTest {
                 .accept("application/json")
                 .header("Authorization", AuthorizationExtractor.AUTHENTICATION_TYPE + " " + accessToken)
                 .filter(document("reservation/guest/getAllPreviousMine", getRequestPreprocessor(), getResponsePreprocessor()))
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .when().get(api)
+                .then().log().all().extract();
+    }
+
+    private ExtractableResponse<Response> findAllUpcomingNonLoginReservations(final String api) {
+        return RestAssured
+                .given(getRequestSpecification()).log().all()
+                .accept("application/json")
+                .param("userName", RESERVATION_USER_NAME)
+                .param("searchStartTime", BE_AM_TEN_ELEVEN_START_TIME_KST.toLocalDate() + "T12:00:00+09:00")
+                .param("page", 0)
+                .param("size", 10)
+                .filter(document("reservation/guest/getAllUpcomingNonLogin", getRequestPreprocessor(), getResponsePreprocessor()))
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .when().get(api)
                 .then().log().all().extract();

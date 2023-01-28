@@ -32,7 +32,6 @@ public class ReservationOwnerResponse {
     private String spaceColor;
 
     public static ReservationOwnerResponse from(final Reservation reservation) {
-        Member member = reservation.getMember();
         Space space = reservation.getSpace();
         Map map = space.getMap();
 
@@ -40,8 +39,8 @@ public class ReservationOwnerResponse {
                 .id(reservation.getId())
                 .startDateTime(reservation.getStartTime().atZone(UTC.toZoneId()))
                 .endDateTime(reservation.getEndTime().atZone(UTC.toZoneId()))
-                .memberId(member.getId())
-                .name(member.getUserName())
+                .memberId(reservation.getMemberId())
+                .name(reservation.getUserName())
                 .description(reservation.getDescription())
                 .mapId(map.getId())
                 .sharingMapId(map.getSharingMapId())

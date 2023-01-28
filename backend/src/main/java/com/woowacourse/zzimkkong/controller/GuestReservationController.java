@@ -22,6 +22,7 @@ import java.time.ZonedDateTime;
 
 import static com.woowacourse.zzimkkong.dto.ValidatorMessage.DATETIME_FORMAT;
 import static com.woowacourse.zzimkkong.dto.ValidatorMessage.DATE_FORMAT;
+import static com.woowacourse.zzimkkong.infrastructure.datetime.TimeZoneUtils.UTC;
 
 @LogMethodExecutionTime(group = "controller")
 @RestController
@@ -44,7 +45,7 @@ public class GuestReservationController {
             @PageableDefault(sort = {"reservationTime.date"}) final Pageable Pageable) {
         ReservationInfiniteScrollResponse reservationInfiniteScrollResponse = reservationService.findUpcomingNonLoginReservations(
                 userName,
-                searchStartTime.toLocalDateTime(),
+                searchStartTime.withZoneSameInstant(UTC.toZoneId()).toLocalDateTime(),
                 Pageable);
         return ResponseEntity.ok().body(reservationInfiniteScrollResponse);
     }
