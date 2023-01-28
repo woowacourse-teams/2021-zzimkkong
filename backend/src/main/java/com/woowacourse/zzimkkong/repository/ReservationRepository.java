@@ -40,6 +40,11 @@ public interface ReservationRepository extends JpaRepository<Reservation, Long>,
             final LocalDate date,
             final Pageable pageable);
 
+    Slice<Reservation> findAllByUserNameAndReservationTimeDateGreaterThanEqual(
+            final String userName,
+            final LocalDate date,
+            final Pageable pageable);
+
     Boolean existsBySpaceIdAndReservationTimeEndTimeAfter(final Long spaceId, final LocalDateTime now);
 
     @Query(value = "select r from Reservation r inner join fetch r.space s " +

@@ -18,7 +18,9 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 import java.net.URI;
 import java.time.LocalDate;
+import java.time.ZonedDateTime;
 
+import static com.woowacourse.zzimkkong.dto.ValidatorMessage.DATETIME_FORMAT;
 import static com.woowacourse.zzimkkong.dto.ValidatorMessage.DATE_FORMAT;
 
 @LogMethodExecutionTime(group = "controller")
@@ -33,6 +35,18 @@ public class GuestReservationController {
             final ReservationService reservationService) {
         this.slackService = slackService;
         this.reservationService = reservationService;
+    }
+
+    @GetMapping("/non-login/reservations")
+    public ResponseEntity<ReservationInfiniteScrollResponse> findUpcomingNonLoginReservations(
+            @RequestParam final String userName,
+            @RequestParam @DateTimeFormat(pattern = DATETIME_FORMAT) final ZonedDateTime searchStartTime,
+            @PageableDefault(sort = {"reservationTime.date"}) final Pageable Pageable) {
+        ReservationInfiniteScrollResponse reservationInfiniteScrollResponse = reservationService.findUpcomingNonLoginReservations(
+                userName,
+                searchStartTime.toLocalDateTime(),
+                Pageable);
+        return ResponseEntity.ok().body(reservationInfiniteScrollResponse);
     }
 
     @GetMapping("/reservations")

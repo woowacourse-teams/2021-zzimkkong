@@ -3,6 +3,7 @@ package com.woowacourse.zzimkkong.domain;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import net.logstash.logback.encoder.org.apache.commons.lang3.StringUtils;
 
 import javax.persistence.*;
 import java.time.DayOfWeek;
@@ -126,5 +127,9 @@ public class Reservation {
 
     public boolean hasMember() {
         return this.member != null;
+    }
+
+    public boolean isNonLoginReservation() {
+        return StringUtils.isBlank(this.password);
     }
 }
