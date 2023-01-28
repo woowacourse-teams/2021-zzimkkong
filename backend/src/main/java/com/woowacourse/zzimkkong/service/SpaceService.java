@@ -1,8 +1,6 @@
 package com.woowacourse.zzimkkong.service;
 
-import com.woowacourse.zzimkkong.domain.Map;
-import com.woowacourse.zzimkkong.domain.Settings;
-import com.woowacourse.zzimkkong.domain.Space;
+import com.woowacourse.zzimkkong.domain.*;
 import com.woowacourse.zzimkkong.dto.member.LoginUserEmail;
 import com.woowacourse.zzimkkong.dto.space.*;
 import com.woowacourse.zzimkkong.dto.map.NoAuthorityOnMapException;
@@ -17,6 +15,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 @Service
 @Transactional
@@ -102,6 +102,27 @@ public class SpaceService {
                 .orElseThrow(NoSuchMapException::new);
         List<Space> findAllSpaces = map.getSpaces();
         return SpaceFindAllResponse.from(findAllSpaces);
+    }
+
+    public SpaceFindAllAvailabilityResponse findAllSpaceAvailability(
+            final Long mapId,
+            final LocalDateTime startDateTime,
+            final LocalDateTime endDateTime) {
+        Map map = maps.findByIdFetch(mapId)
+                .orElseThrow(NoSuchMapException::new);
+        List<Space> allSpaces = map.getSpaces();
+
+        Set<Long> spaceIds = allSpaces.stream().map(Space::getId).collect(Collectors.toSet());
+        ReservationTime reservationTime = ReservationTime.ofDefaultServiceZone(startDateTime, endDateTime);
+        Set<Space> occupiedSpaces = reservations.findAllBySpaceIdInAndReservationTimeDate(
+                spaceIds,
+                reservationTime.getDate())
+                .stream()
+                .filter(reservation -> reservationTime.hasConflictWith(reservation.getReservationTime()))
+                .map(Reservation::getSpace)
+                .collect(Collectors.toSet());
+
+        return SpaceFindAllAvailabilityResponse.of(mapId, allSpaces, occupiedSpaces);
     }
 
     public void updateSpace(
