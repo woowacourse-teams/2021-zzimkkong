@@ -39,7 +39,13 @@ class AdminServiceTest extends ServiceTest {
 
     @BeforeEach
     void setUp() {
-        pobi = new Member(EMAIL, passwordEncoder.encode(PW), ORGANIZATION);
+        pobi = Member.builder()
+                .email(EMAIL)
+                .userName(POBI)
+                .emoji(ProfileEmoji.MAN_DARK_SKIN_TONE_TECHNOLOGIST)
+                .password(passwordEncoder.encode(PW))
+                .organization(ORGANIZATION)
+                .build();
     }
 
     @Test

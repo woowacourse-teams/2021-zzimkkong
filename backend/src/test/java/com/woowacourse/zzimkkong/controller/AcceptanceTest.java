@@ -1,6 +1,7 @@
 package com.woowacourse.zzimkkong.controller;
 
 import com.woowacourse.zzimkkong.DatabaseCleaner;
+import com.woowacourse.zzimkkong.domain.ProfileEmoji;
 import com.woowacourse.zzimkkong.dto.map.MapCreateUpdateRequest;
 import com.woowacourse.zzimkkong.dto.member.LoginRequest;
 import com.woowacourse.zzimkkong.dto.member.MemberSaveRequest;
@@ -32,7 +33,6 @@ import static com.woowacourse.zzimkkong.Constants.*;
 import static com.woowacourse.zzimkkong.DocumentUtils.setRequestSpecification;
 import static com.woowacourse.zzimkkong.controller.AuthControllerTest.getToken;
 import static com.woowacourse.zzimkkong.controller.MemberControllerTest.saveMember;
-import static org.mockito.ArgumentMatchers.any;
 import static org.springframework.restdocs.restassured3.RestAssuredRestDocumentation.documentationConfiguration;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
@@ -41,7 +41,7 @@ import static org.springframework.restdocs.restassured3.RestAssuredRestDocumenta
 @ActiveProfiles("test")
 class AcceptanceTest {
     protected static String accessToken;
-    protected static final MemberSaveRequest memberSaveRequest = new MemberSaveRequest(EMAIL, PW, ORGANIZATION);
+    protected static final MemberSaveRequest memberSaveRequest = new MemberSaveRequest(EMAIL, POBI, ProfileEmoji.MAN_DARK_SKIN_TONE_TECHNOLOGIST, PW);
     protected static final LoginRequest loginRequest = new LoginRequest(EMAIL, PW);
     protected final MapCreateUpdateRequest mapCreateUpdateRequest = new MapCreateUpdateRequest(LUTHER_NAME, MAP_DRAWING_DATA, MAP_SVG);
     protected final SettingRequest beSettingRequest = new SettingRequest(

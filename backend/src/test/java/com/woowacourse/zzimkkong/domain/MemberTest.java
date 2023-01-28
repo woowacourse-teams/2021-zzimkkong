@@ -15,7 +15,14 @@ class MemberTest {
     @DisplayName("자신의 preset 중에 id가 같은 것을 반환한다.")
     void findPresetById() {
         //given, when
-        Member member = new Member(1L, EMAIL, PW, ORGANIZATION);
+        Member member = Member.builder()
+                .id(1L)
+                .email(EMAIL)
+                .userName(POBI)
+                .emoji(ProfileEmoji.MAN_DARK_SKIN_TONE_TECHNOLOGIST)
+                .password(PW)
+                .organization(ORGANIZATION)
+                .build();
         Preset preset = Preset.builder()
                 .id(1L)
                 .name(PRESET_NAME1)
@@ -39,10 +46,17 @@ class MemberTest {
     @CsvSource(value = {"pobi@email.com, true", "wrongemail@woowa.com, false"}, delimiter = ',')
     void isSameEmail(String email, boolean expected) {
         // given
-        Member member = new Member(1L, EMAIL, PW, ORGANIZATION);
+        Member member = Member.builder()
+                .id(1L)
+                .email(EMAIL)
+                .userName(POBI)
+                .emoji(ProfileEmoji.MAN_DARK_SKIN_TONE_TECHNOLOGIST)
+                .password(PW)
+                .organization(ORGANIZATION)
+                .build();
 
         // when
-        boolean actual = member.isSameEmail(email);
+        boolean actual = member.hasEmail(email);
 
         // then
         assertThat(actual).isEqualTo(expected);

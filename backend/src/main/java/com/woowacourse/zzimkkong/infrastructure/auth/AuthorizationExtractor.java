@@ -25,4 +25,15 @@ public class AuthorizationExtractor {
         }
         throw new AuthorizationHeaderUninvolvedException();
     }
+
+    public static boolean hasAccessToken(HttpServletRequest request) {
+        Enumeration<String> headers = request.getHeaders(AUTHORIZATION_HEADER_KEY);
+        while (headers.hasMoreElements()) {
+            String value = headers.nextElement();
+            if (value.toLowerCase().startsWith(AUTHENTICATION_TYPE.toLowerCase())) {
+                return true;
+            }
+        }
+        return false;
+    }
 }

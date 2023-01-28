@@ -13,7 +13,9 @@ import java.time.LocalDateTime;
 @Builder
 @NoArgsConstructor
 @Entity
-@Table(indexes = @Index(name = "i_spaceid_date", columnList = "space_id, date"))
+@Table(indexes = {
+        @Index(name = "i_spaceid_date", columnList = "space_id, date"),
+        @Index(name = "i_memberid_date", columnList = "member_id, date")})
 public class Reservation {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -22,7 +24,7 @@ public class Reservation {
     @Embedded
     private ReservationTime reservationTime;
 
-    @Column(nullable = false, length = 20)
+    @Column(length = 4)
     private String password;
 
     @Column(nullable = false, length = 20)
@@ -35,19 +37,25 @@ public class Reservation {
     @JoinColumn(name = "space_id", foreignKey = @ForeignKey(name = "fk_reservation_space"), nullable = false)
     private Space space;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "member_id", foreignKey = @ForeignKey(name = "fk_reservation_member"))
+    private Member member;
+
     protected Reservation(
             final Long id,
             final ReservationTime reservationTime,
             final String password,
             final String userName,
             final String description,
-            final Space space) {
+            final Space space,
+            final Member member) {
         this.id = id;
         this.reservationTime = reservationTime;
         this.password = password;
         this.userName = userName;
         this.description = description;
         this.space = space;
+        this.member = member;
 
         if (space != null) {
             this.space.addReservation(this);
@@ -58,15 +66,19 @@ public class Reservation {
         return this.reservationTime.hasConflictWith(that.reservationTime);
     }
 
-    public boolean isWrongPassword(final String password) {
-        return !this.password.equals(password);
+    public boolean isWrongPassword(final String thatPassword) {
+        if (this.password == null || thatPassword == null) {
+            return true;
+        }
+        return !this.password.equals(thatPassword);
     }
 
-    public void update(final Reservation updateReservation, final Space space) {
+    public void update(final Reservation updateReservation) {
         this.reservationTime = updateReservation.reservationTime;
+        this.member = updateReservation.member;
         this.userName = updateReservation.userName;
         this.description = updateReservation.description;
-        this.space = space;
+        this.space = updateReservation.space;
     }
 
     public LocalDateTime getStartTime() {
@@ -99,5 +111,20 @@ public class Reservation {
 
     public DayOfWeek getDayOfWeek() {
         return reservationTime.getDayOfWeek();
+    }
+
+    public Boolean isOwnedBy(final Member loginUser) {
+        return !isNotOwnedBy(loginUser);
+    }
+
+    public boolean isNotOwnedBy(final Member thatMember) {
+        if (member == null || thatMember == null) {
+            return true;
+        }
+        return !this.member.equals(thatMember);
+    }
+
+    public boolean hasMember() {
+        return this.member != null;
     }
 }

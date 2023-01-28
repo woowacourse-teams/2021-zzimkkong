@@ -2,6 +2,7 @@ package com.woowacourse.zzimkkong.infrastructure.sharingid;
 
 import com.woowacourse.zzimkkong.domain.Map;
 import com.woowacourse.zzimkkong.domain.Member;
+import com.woowacourse.zzimkkong.domain.ProfileEmoji;
 import com.woowacourse.zzimkkong.exception.map.InvalidAccessLinkException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -28,7 +29,14 @@ class SharingIdGeneratorTest {
 
     @BeforeEach
     void setUp() {
-        pobi = new Member(1L, EMAIL, PW, ORGANIZATION);
+        pobi = Member.builder()
+                .id(1L)
+                .email(EMAIL)
+                .userName(POBI)
+                .emoji(ProfileEmoji.MAN_DARK_SKIN_TONE_TECHNOLOGIST)
+                .password(PW)
+                .organization(ORGANIZATION)
+                .build();
         luther = new Map(1L,
                 LUTHER_NAME,
                 MAP_DRAWING_DATA,

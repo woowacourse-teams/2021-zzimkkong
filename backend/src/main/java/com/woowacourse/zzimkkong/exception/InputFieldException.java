@@ -6,6 +6,7 @@ import org.springframework.http.HttpStatus;
 @Getter
 public class InputFieldException extends ZzimkkongException {
     protected static final String EMAIL = "email";
+    protected static final String USER_NAME = "userName";
     protected static final String PASSWORD = "password";
     protected static final String RESERVATION_PASSWORD = "password";
     protected static final String START_DATE_TIME = "startDateTime";

@@ -1,4 +1,4 @@
-package com.woowacourse.zzimkkong.exception.authorization;
+package com.woowacourse.zzimkkong.dto.map;
 
 import com.woowacourse.zzimkkong.exception.ZzimkkongException;
 import org.springframework.http.HttpStatus;

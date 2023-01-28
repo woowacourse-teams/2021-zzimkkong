@@ -20,10 +20,17 @@ include::{snippets}/space/guest/getAll/http-request.adoc[]
 include::{snippets}/space/guest/getAll/http-response.adoc[]
 
 === 특정 공간 조회
-==== Request
+==== 공간 관리자
+===== Request
 include::{snippets}/space/manager/get/http-request.adoc[]
-==== Response
+===== Response
 include::{snippets}/space/manager/get/http-response.adoc[]
+
+==== 예약자
+===== Request
+include::{snippets}/space/guest/get/http-request.adoc[]
+===== Response
+include::{snippets}/space/guest/get/http-response.adoc[]
 
 === 공간 수정
 ==== Request

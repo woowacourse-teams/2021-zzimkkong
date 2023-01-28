@@ -1,6 +1,8 @@
 package com.woowacourse.zzimkkong.dto.reservation;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -16,6 +18,7 @@ import static com.woowacourse.zzimkkong.infrastructure.datetime.TimeZoneUtils.UT
 
 @Getter
 @NoArgsConstructor
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class ReservationCreateUpdateRequest {
     @JsonFormat(pattern = DATETIME_FORMAT)
     @NotNull(message = EMPTY_MESSAGE)
@@ -25,7 +28,6 @@ public class ReservationCreateUpdateRequest {
     @NotNull(message = EMPTY_MESSAGE)
     protected ZonedDateTime endDateTime;
 
-    @NotBlank(message = EMPTY_MESSAGE)
     @Pattern(regexp = NAMING_FORMAT, message = NAME_MESSAGE)
     protected String name;
 
@@ -45,6 +47,10 @@ public class ReservationCreateUpdateRequest {
     }
 
     public String getPassword() {
+        return null;
+    }
+
+    public String getEmail() {
         return null;
     }
 

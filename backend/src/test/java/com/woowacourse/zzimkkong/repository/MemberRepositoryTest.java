@@ -1,12 +1,11 @@
 package com.woowacourse.zzimkkong.repository;
 
-import com.woowacourse.zzimkkong.domain.*;
+import com.woowacourse.zzimkkong.domain.Member;
+import com.woowacourse.zzimkkong.domain.ProfileEmoji;
 import com.woowacourse.zzimkkong.exception.member.NoSuchMemberException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.CsvSource;
 import org.springframework.dao.DataAccessException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -21,7 +20,13 @@ class MemberRepositoryTest extends RepositoryTest {
 
     @BeforeEach
     void setUp() {
-        pobi = new Member(EMAIL, PW, ORGANIZATION);
+        pobi = Member.builder()
+                .email(EMAIL)
+                .userName(POBI)
+                .emoji(ProfileEmoji.MAN_DARK_SKIN_TONE_TECHNOLOGIST)
+                .password(PW)
+                .organization(ORGANIZATION)
+                .build();
     }
 
     @Test
@@ -66,7 +71,13 @@ class MemberRepositoryTest extends RepositoryTest {
         members.save(pobi);
 
         // when
-        Member sameEmailMember = new Member(EMAIL, "another123", "루터회관");
+        Member sameEmailMember = Member.builder()
+                .email(EMAIL)
+                .userName("삭정")
+                .emoji(ProfileEmoji.MAN_DARK_SKIN_TONE_TECHNOLOGIST)
+                .password("another123")
+                .organization("루터회관")
+                .build();
 
         // then
         assertThatThrownBy(() -> members.save(sameEmailMember))

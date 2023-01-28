@@ -2,6 +2,8 @@ package com.woowacourse.zzimkkong.controller;
 
 import com.woowacourse.zzimkkong.domain.*;
 import com.woowacourse.zzimkkong.dto.space.SpaceFindAllResponse;
+import com.woowacourse.zzimkkong.dto.space.SpaceFindDetailResponse;
+import com.woowacourse.zzimkkong.infrastructure.auth.AuthorizationExtractor;
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
@@ -24,6 +26,7 @@ class GuestSpaceControllerTest extends AcceptanceTest {
     private String spaceApi;
     private Space be;
     private Space fe;
+    private Long beSpaceId;
 
     @BeforeEach
     void setUp() {
@@ -32,10 +35,16 @@ class GuestSpaceControllerTest extends AcceptanceTest {
         ExtractableResponse<Response> saveBeSpaceResponse = saveSpace(spaceApi, beSpaceCreateUpdateRequest);
         ExtractableResponse<Response> saveFe1SpaceResponse = saveSpace(spaceApi, feSpaceCreateUpdateRequest);
 
-        Long beSpaceId = Long.valueOf(saveBeSpaceResponse.header("location").split("/")[6]);
+        beSpaceId = Long.valueOf(saveBeSpaceResponse.header("location").split("/")[6]);
         Long feSpaceId = Long.valueOf(saveFe1SpaceResponse.header("location").split("/")[6]);
 
-        Member pobi = new Member(EMAIL, passwordEncoder.encode(PW), ORGANIZATION);
+        Member pobi = Member.builder()
+                .email(EMAIL)
+                .userName(POBI)
+                .emoji(ProfileEmoji.MAN_DARK_SKIN_TONE_TECHNOLOGIST)
+                .password(passwordEncoder.encode(PW))
+                .organization(ORGANIZATION)
+                .build();
         Map luther = new Map(LUTHER_NAME, MAP_DRAWING_DATA, MAP_SVG, pobi);
         Setting beSetting = Setting.builder()
                 .settingTimeSlot(TimeSlot.of(
@@ -94,11 +103,39 @@ class GuestSpaceControllerTest extends AcceptanceTest {
                 .isEqualTo(expected);
     }
 
+    @Test
+    @DisplayName("spaceId를 받아 해당 공간에 대한 정보를 조회한다.")
+    void find() {
+        // given, when
+        String guestSpaceApi = spaceApi.replaceAll("managers", "guests");
+        String api = guestSpaceApi + "/" + beSpaceId;
+        ExtractableResponse<Response> response = findSpace(api);
+        SpaceFindDetailResponse actual = response.body().as(SpaceFindDetailResponse.class);
+        SpaceFindDetailResponse expected = SpaceFindDetailResponse.from(be);
+
+        // then
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
+        assertThat(actual).usingRecursiveComparison()
+                .ignoringActualNullFields()
+                .ignoringExpectedNullFields()
+                .isEqualTo(expected);
+    }
+
     private ExtractableResponse<Response> findAllSpace(final String api) {
         return RestAssured
                 .given(getRequestSpecification()).log().all()
                 .accept("application/json")
                 .filter(document("space/guest/getAll", getRequestPreprocessor(), getResponsePreprocessor()))
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .when().get(api)
+                .then().log().all().extract();
+    }
+
+    private ExtractableResponse<Response> findSpace(final String api) {
+        return RestAssured
+                .given(getRequestSpecification()).log().all()
+                .accept("application/json")
+                .filter(document("space/guest/get", getRequestPreprocessor(), getResponsePreprocessor()))
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .when().get(api)
                 .then().log().all().extract();

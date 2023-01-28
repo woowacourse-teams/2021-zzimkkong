@@ -1,6 +1,7 @@
 package com.woowacourse.zzimkkong.dto.reservation;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.woowacourse.zzimkkong.domain.Map;
 import com.woowacourse.zzimkkong.domain.Member;
@@ -18,6 +19,7 @@ import static com.woowacourse.zzimkkong.infrastructure.datetime.TimeZoneUtils.UT
 
 @Getter
 @NoArgsConstructor
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class ReservationResponse {
     @JsonProperty
     private Long id;
@@ -29,6 +31,10 @@ public class ReservationResponse {
     private String name;
     @JsonProperty
     private String description;
+    @JsonProperty
+    private Boolean isLoginReservation;
+    @JsonProperty
+    private Boolean isMyReservation;
 
     private Long spaceId;
     private Long mapId;
@@ -39,12 +45,16 @@ public class ReservationResponse {
             final LocalDateTime startDateTime,
             final LocalDateTime endDateTime,
             final String name,
-            final String description) {
+            final String description,
+            final Boolean isLoginReservation,
+            final Boolean isMyReservation) {
         this.id = id;
         this.startDateTime = startDateTime.atZone(UTC.toZoneId());
         this.endDateTime = endDateTime.atZone(UTC.toZoneId());
         this.name = name;
         this.description = description;
+        this.isLoginReservation = isLoginReservation;
+        this.isMyReservation = isMyReservation;
     }
 
     public ReservationResponse(
@@ -53,22 +63,26 @@ public class ReservationResponse {
             final LocalDateTime endDateTime,
             final String name,
             final String description,
+            final Boolean isLoginReservation,
+            final Boolean isMyReservation,
             final Long spaceId,
             final Long mapId,
             final Long managerId) {
-        this(id, startDateTime, endDateTime, name, description);
+        this(id, startDateTime, endDateTime, name, description, isLoginReservation, isMyReservation);
         this.spaceId = spaceId;
         this.mapId = mapId;
         this.managerId = managerId;
     }
 
-    public static ReservationResponse from(final Reservation reservation) {
+    public static ReservationResponse from(final Reservation reservation, final Member loginUser) {
         return new ReservationResponse(
                 reservation.getId(),
                 reservation.getStartTime(),
                 reservation.getEndTime(),
                 reservation.getUserName(),
-                reservation.getDescription()
+                reservation.getDescription(),
+                reservation.hasMember(),
+                reservation.isOwnedBy(loginUser)
         );
     }
 
@@ -83,6 +97,8 @@ public class ReservationResponse {
                 reservation.getEndTime(),
                 reservation.getUserName(),
                 reservation.getDescription(),
+                reservation.hasMember(),
+                false,
                 space.getId(),
                 map.getId(),
                 member.getId()

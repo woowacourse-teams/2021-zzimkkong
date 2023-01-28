@@ -1,5 +1,6 @@
 package com.woowacourse.zzimkkong.dto.slack;
 
+import com.woowacourse.zzimkkong.domain.Map;
 import com.woowacourse.zzimkkong.domain.Reservation;
 import com.woowacourse.zzimkkong.infrastructure.datetime.TimeZoneUtils;
 import lombok.Getter;
@@ -36,7 +37,7 @@ public class SlackResponse {
         this.slackUrl = slackUrl;
     }
 
-    public static SlackResponse of(final Reservation reservation, final String sharingMapId, final String slackUrl) {
+    public static SlackResponse of(final Reservation reservation, final Map map) {
         LocalDateTime reservationStartTime = TimeZoneUtils.convertTo(
                 reservation.getStartTime(),
                 reservation.getServiceZone());
@@ -51,8 +52,8 @@ public class SlackResponse {
                 reservationStartTime,
                 reservationEndTime,
                 reservation.getDescription(),
-                sharingMapId,
-                slackUrl);
+                map.getSharingMapId(),
+                map.getSlackUrl());
     }
 
     @Override

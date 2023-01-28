@@ -1,9 +1,11 @@
 package com.woowacourse.zzimkkong.repository;
 
 import com.woowacourse.zzimkkong.config.logaspect.LogMethodExecutionTime;
+import com.woowacourse.zzimkkong.domain.Member;
 import com.woowacourse.zzimkkong.domain.Reservation;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -27,6 +29,16 @@ public interface ReservationRepository extends JpaRepository<Reservation, Long>,
     List<Reservation> findAllBySpaceIdInAndReservationTimeDate(
             final Collection<Long> spaceIds,
             final LocalDate date);
+
+    Slice<Reservation> findAllByMemberAndReservationTimeDateGreaterThanEqual(
+            final Member member,
+            final LocalDate date,
+            final Pageable pageable);
+
+    Slice<Reservation> findAllByMemberAndReservationTimeDateLessThanEqual(
+            final Member member,
+            final LocalDate date,
+            final Pageable pageable);
 
     Boolean existsBySpaceIdAndReservationTimeEndTimeAfter(final Long spaceId, final LocalDateTime now);
 

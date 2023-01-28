@@ -1,0 +1,4 @@
+UPDATE member SET user_name = (SELECT SUBSTR(REPLACE(UUID(),'-',''), 1, 20));
+UPDATE member SET emoji = 'MAN_MEDIUM_LIGHT_SKIN_TONE_TECHNOLOGIST';
+
+ALTER TABLE member ADD UNIQUE (user_name);
