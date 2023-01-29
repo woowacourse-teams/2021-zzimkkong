@@ -3,6 +3,7 @@ package com.woowacourse.zzimkkong.controller;
 import com.woowacourse.zzimkkong.domain.*;
 import com.woowacourse.zzimkkong.dto.reservation.*;
 import com.woowacourse.zzimkkong.infrastructure.auth.AuthorizationExtractor;
+import com.woowacourse.zzimkkong.infrastructure.datetime.TimeZoneUtils;
 import com.woowacourse.zzimkkong.infrastructure.sharingid.SharingIdGenerator;
 import com.woowacourse.zzimkkong.service.SlackService;
 import io.restassured.RestAssured;
@@ -577,8 +578,8 @@ class GuestReservationControllerTest extends AcceptanceTest {
                 .id(getNonLoginReservationIdAfterSave(beReservationApi, beAmZeroOneRequest))
                 .reservationTime(
                         ReservationTime.ofDefaultServiceZone(
-                                BE_AM_TEN_ELEVEN_START_TIME_KST.withZoneSameInstant(UTC.toZoneId()).toLocalDateTime(),
-                                BE_AM_TEN_ELEVEN_END_TIME_KST.withZoneSameInstant(UTC.toZoneId()).toLocalDateTime()))
+                                TimeZoneUtils.convertToUTC(BE_AM_TEN_ELEVEN_START_TIME_KST),
+                                TimeZoneUtils.convertToUTC(BE_AM_TEN_ELEVEN_END_TIME_KST)))
                 .description(BE_AM_TEN_ELEVEN_DESCRIPTION)
                 .userName(BE_AM_TEN_ELEVEN_USERNAME)
                 .password(BE_AM_TEN_ELEVEN_PW)
@@ -589,8 +590,8 @@ class GuestReservationControllerTest extends AcceptanceTest {
                 .id(getNonLoginReservationIdAfterSave(beReservationApi, bePmOneTwoRequest))
                 .reservationTime(
                         ReservationTime.ofDefaultServiceZone(
-                                BE_PM_ONE_TWO_START_TIME_KST.withZoneSameInstant(UTC.toZoneId()).toLocalDateTime(),
-                                BE_PM_ONE_TWO_END_TIME_KST.withZoneSameInstant(UTC.toZoneId()).toLocalDateTime()))
+                                TimeZoneUtils.convertToUTC(BE_PM_ONE_TWO_START_TIME_KST),
+                                TimeZoneUtils.convertToUTC(BE_PM_ONE_TWO_END_TIME_KST)))
                 .description(BE_PM_ONE_TWO_DESCRIPTION)
                 .userName(BE_PM_ONE_TWO_USERNAME)
                 .password(BE_PM_ONE_TWO_PW)
@@ -601,8 +602,8 @@ class GuestReservationControllerTest extends AcceptanceTest {
                 .id(getNonLoginReservationIdAfterSave(beReservationApi, beNextDayAmSixTwelveRequest))
                 .reservationTime(
                         ReservationTime.ofDefaultServiceZone(
-                                BE_NEXT_DAY_PM_FOUR_TO_SIX_START_TIME_KST.withZoneSameInstant(UTC.toZoneId()).toLocalDateTime(),
-                                BE_NEXT_DAY_PM_FOUR_TO_SIX_END_TIME_KST.withZoneSameInstant(UTC.toZoneId()).toLocalDateTime()))
+                                TimeZoneUtils.convertToUTC(BE_NEXT_DAY_PM_FOUR_TO_SIX_START_TIME_KST),
+                                TimeZoneUtils.convertToUTC(BE_NEXT_DAY_PM_FOUR_TO_SIX_END_TIME_KST)))
                 .description(BE_NEXT_DAY_PM_FOUR_TO_SIX_DESCRIPTION)
                 .userName(BE_NEXT_DAY_PM_FOUR_TO_SIX_USERNAME)
                 .password(BE_NEXT_DAY_PM_FOUR_TO_SIX_PW)
@@ -613,8 +614,8 @@ class GuestReservationControllerTest extends AcceptanceTest {
                 .id(getNonLoginReservationIdAfterSave(fe1ReservationApi, feZeroOneRequest))
                 .reservationTime(
                         ReservationTime.ofDefaultServiceZone(
-                                FE1_AM_TEN_ELEVEN_START_TIME_KST.withZoneSameInstant(UTC.toZoneId()).toLocalDateTime(),
-                                FE1_AM_TEN_ELEVEN_END_TIME_KST.withZoneSameInstant(UTC.toZoneId()).toLocalDateTime()))
+                                TimeZoneUtils.convertToUTC(FE1_AM_TEN_ELEVEN_START_TIME_KST),
+                                TimeZoneUtils.convertToUTC(FE1_AM_TEN_ELEVEN_END_TIME_KST)))
                 .description(FE1_AM_TEN_ELEVEN_DESCRIPTION)
                 .userName(FE1_AM_TEN_ELEVEN_USERNAME)
                 .password(FE1_AM_TEN_ELEVEN_PW)
@@ -625,8 +626,8 @@ class GuestReservationControllerTest extends AcceptanceTest {
                 .id(getLoginReservationIdAfterSave(beReservationApi, bePmTwoThreeRequestPobi))
                 .reservationTime(
                         ReservationTime.ofDefaultServiceZone(
-                                BE_PM_TWO_THREE_START_TIME_KST.withZoneSameInstant(UTC.toZoneId()).toLocalDateTime(),
-                                BE_PM_TWO_THREE_END_TIME_KST.withZoneSameInstant(UTC.toZoneId()).toLocalDateTime()))
+                                TimeZoneUtils.convertToUTC(BE_PM_TWO_THREE_START_TIME_KST),
+                                TimeZoneUtils.convertToUTC(BE_PM_TWO_THREE_END_TIME_KST)))
                 .description(BE_PM_TWO_THREE_DESCRIPTION)
                 .member(pobi)
                 .userName(pobi.getUserName())
@@ -637,8 +638,8 @@ class GuestReservationControllerTest extends AcceptanceTest {
                 .id(getLoginReservationIdAfterSave(fe1ReservationApi, fe1PmTwoThreeRequestPobi))
                 .reservationTime(
                         ReservationTime.ofDefaultServiceZone(
-                                FE1_PM_TWO_THREE_START_TIME_KST.withZoneSameInstant(UTC.toZoneId()).toLocalDateTime(),
-                                FE1_PM_TWO_THREE_END_TIME_KST.withZoneSameInstant(UTC.toZoneId()).toLocalDateTime()))
+                                TimeZoneUtils.convertToUTC(FE1_PM_TWO_THREE_START_TIME_KST),
+                                TimeZoneUtils.convertToUTC(FE1_PM_TWO_THREE_END_TIME_KST)))
                 .description(FE1_PM_TWO_THREE_DESCRIPTION)
                 .member(pobi)
                 .userName(pobi.getUserName())
@@ -649,8 +650,8 @@ class GuestReservationControllerTest extends AcceptanceTest {
                 .id(getLoginReservationIdAfterSave(beReservationApi.replaceAll("guests", "managers"), beFiveDaysAgoPmTwoThreeRequestPobi))
                 .reservationTime(
                         ReservationTime.ofDefaultServiceZone(
-                                BE_FIVE_DAYS_AGO_PM_TWO_THREE_START_TIME_KST.withZoneSameInstant(UTC.toZoneId()).toLocalDateTime(),
-                                BE_FIVE_DAYS_AGO_PM_TWO_THREE_END_TIME_KST.withZoneSameInstant(UTC.toZoneId()).toLocalDateTime()))
+                                TimeZoneUtils.convertToUTC(BE_FIVE_DAYS_AGO_PM_TWO_THREE_START_TIME_KST),
+                                TimeZoneUtils.convertToUTC(BE_FIVE_DAYS_AGO_PM_TWO_THREE_END_TIME_KST)))
                 .description(BE_FIVE_DAYS_AGO_PM_TWO_THREE_DESCRIPTION)
                 .member(pobi)
                 .userName(pobi.getUserName())

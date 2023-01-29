@@ -6,6 +6,7 @@ import com.woowacourse.zzimkkong.domain.ReservationType;
 import com.woowacourse.zzimkkong.dto.member.LoginUserEmail;
 import com.woowacourse.zzimkkong.dto.reservation.*;
 import com.woowacourse.zzimkkong.dto.slack.SlackResponse;
+import com.woowacourse.zzimkkong.infrastructure.datetime.TimeZoneUtils;
 import com.woowacourse.zzimkkong.service.ReservationService;
 import com.woowacourse.zzimkkong.service.SlackService;
 import org.springframework.data.domain.Pageable;
@@ -45,7 +46,7 @@ public class GuestReservationController {
             @PageableDefault(sort = {"reservationTime.date"}) final Pageable Pageable) {
         ReservationInfiniteScrollResponse reservationInfiniteScrollResponse = reservationService.findUpcomingNonLoginReservations(
                 userName,
-                searchStartTime.withZoneSameInstant(UTC.toZoneId()).toLocalDateTime(),
+                TimeZoneUtils.convertToUTC(searchStartTime),
                 Pageable);
         return ResponseEntity.ok().body(reservationInfiniteScrollResponse);
     }
