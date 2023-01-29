@@ -139,7 +139,7 @@ public class ReservationService {
                 .orElseThrow(NoSuchMemberException::new);
 
         LocalDateTime now = LocalDateTime.now();
-        Slice<Reservation> reservationSlice = reservations.findAllByMemberAndReservationTimeDateGreaterThanEqualAndReservationTimeStartTimeGreaterThanEqual(
+        Slice<Reservation> reservationSlice = reservations.findAllByMemberAndReservationTimeDateGreaterThanEqualAndReservationTimeEndTimeGreaterThanEqual(
                 member,
                 TimeZoneUtils.convertTo(now, ServiceZone.KOREA).toLocalDate(),
                 now,

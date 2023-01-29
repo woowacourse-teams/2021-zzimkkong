@@ -269,7 +269,7 @@ class ReservationRepositoryTest extends RepositoryTest {
     @DisplayName("로그인한 예약자의 특정 시간 이후 (Inclusive) 예약 내역을 조회한다")
     void findAllByMemberAndReservationTimeDateGreaterThanEqualAndReservationTimeStartTimeGreaterThanEqual() {
         PageRequest pageRequest = PageRequest.of(0, 10, Sort.by("reservationTime.startTime"));
-        Slice<Reservation> actual = reservations.findAllByMemberAndReservationTimeDateGreaterThanEqualAndReservationTimeStartTimeGreaterThanEqual(
+        Slice<Reservation> actual = reservations.findAllByMemberAndReservationTimeDateGreaterThanEqualAndReservationTimeEndTimeGreaterThanEqual(
                 pobi,
                 THE_DAY_AFTER_TOMORROW,
                 TimeZoneUtils.convertToUTC(BE_PM_TWO_THREE_START_TIME_KST),

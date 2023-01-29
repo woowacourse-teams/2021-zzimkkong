@@ -62,7 +62,7 @@ public class GuestReservationController {
     @GetMapping("/reservations/history")
     public ResponseEntity<ReservationInfiniteScrollResponse> findPreviousReservations(
             @LoginEmail final LoginUserEmail loginUserEmail,
-            @PageableDefault(sort = {"reservationTime.endTime"}, direction = Sort.Direction.DESC) final Pageable Pageable) {
+            @PageableDefault(sort = {"reservationTime.startTime"}, direction = Sort.Direction.DESC) final Pageable Pageable) {
         ReservationInfiniteScrollResponse reservationFindPreviousResponse = reservationService.findPreviousReservations(loginUserEmail, Pageable);
         return ResponseEntity.ok().body(reservationFindPreviousResponse);
     }

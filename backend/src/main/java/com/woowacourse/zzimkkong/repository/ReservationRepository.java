@@ -30,7 +30,7 @@ public interface ReservationRepository extends JpaRepository<Reservation, Long>,
             final Collection<Long> spaceIds,
             final LocalDate date);
 
-    Slice<Reservation> findAllByMemberAndReservationTimeDateGreaterThanEqualAndReservationTimeStartTimeGreaterThanEqual(
+    Slice<Reservation> findAllByMemberAndReservationTimeDateGreaterThanEqualAndReservationTimeEndTimeGreaterThanEqual(
             final Member member,
             final LocalDate date,
             final LocalDateTime dateTime,
