@@ -146,7 +146,6 @@ public class ReservationService {
                 pageable);
         List<Reservation> upcomingReservations = reservationSlice.getContent()
                 .stream()
-                .filter(reservation -> !reservation.isExpired(now))
                 .sorted(Comparator.comparing(Reservation::getStartTime))
                 .peek(reservation -> reservation.getSpace().getMap().activateSharingMapId(sharingIdGenerator))
                 .collect(Collectors.toList());
@@ -168,7 +167,6 @@ public class ReservationService {
 
         List<Reservation> previousReservations = reservationSlice.getContent()
                 .stream()
-                .filter(reservation -> reservation.isExpired(now))
                 .sorted(Comparator.comparing(Reservation::getStartTime).reversed())
                 .peek(reservation -> reservation.getSpace().getMap().activateSharingMapId(sharingIdGenerator))
                 .collect(Collectors.toList());
