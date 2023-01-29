@@ -43,7 +43,7 @@ public class GuestReservationController {
     public ResponseEntity<ReservationInfiniteScrollResponse> findUpcomingNonLoginReservations(
             @RequestParam final String userName,
             @RequestParam @DateTimeFormat(pattern = DATETIME_FORMAT) final ZonedDateTime searchStartTime,
-            @PageableDefault(sort = {"reservationTime.date"}) final Pageable Pageable) {
+            @PageableDefault(sort = {"reservationTime.startTime"}) final Pageable Pageable) {
         ReservationInfiniteScrollResponse reservationInfiniteScrollResponse = reservationService.findUpcomingNonLoginReservations(
                 userName,
                 TimeZoneUtils.convertToUTC(searchStartTime),
@@ -54,7 +54,7 @@ public class GuestReservationController {
     @GetMapping("/reservations")
     public ResponseEntity<ReservationInfiniteScrollResponse> findUpcomingReservations(
             @LoginEmail final LoginUserEmail loginUserEmail,
-            @PageableDefault(sort = {"reservationTime.date"}) final Pageable Pageable) {
+            @PageableDefault(sort = {"reservationTime.startTime"}) final Pageable Pageable) {
         ReservationInfiniteScrollResponse reservationInfiniteScrollResponse = reservationService.findUpcomingReservations(loginUserEmail, Pageable);
         return ResponseEntity.ok().body(reservationInfiniteScrollResponse);
     }
@@ -62,7 +62,7 @@ public class GuestReservationController {
     @GetMapping("/reservations/history")
     public ResponseEntity<ReservationInfiniteScrollResponse> findPreviousReservations(
             @LoginEmail final LoginUserEmail loginUserEmail,
-            @PageableDefault(sort = {"reservationTime.date"}, direction = Sort.Direction.DESC) final Pageable Pageable) {
+            @PageableDefault(sort = {"reservationTime.endTime"}, direction = Sort.Direction.DESC) final Pageable Pageable) {
         ReservationInfiniteScrollResponse reservationFindPreviousResponse = reservationService.findPreviousReservations(loginUserEmail, Pageable);
         return ResponseEntity.ok().body(reservationFindPreviousResponse);
     }

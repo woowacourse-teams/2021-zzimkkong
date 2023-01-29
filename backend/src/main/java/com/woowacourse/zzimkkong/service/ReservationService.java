@@ -139,9 +139,10 @@ public class ReservationService {
                 .orElseThrow(NoSuchMemberException::new);
 
         LocalDateTime now = LocalDateTime.now();
-        Slice<Reservation> reservationSlice = reservations.findAllByMemberAndReservationTimeDateGreaterThanEqual(
+        Slice<Reservation> reservationSlice = reservations.findAllByMemberAndReservationTimeDateGreaterThanEqualAndReservationTimeStartTimeGreaterThanEqual(
                 member,
                 TimeZoneUtils.convertTo(now, ServiceZone.KOREA).toLocalDate(),
+                now,
                 pageable);
         List<Reservation> upcomingReservations = reservationSlice.getContent()
                 .stream()
@@ -159,9 +160,10 @@ public class ReservationService {
                 .orElseThrow(NoSuchMemberException::new);
 
         LocalDateTime now = LocalDateTime.now();
-        Slice<Reservation> reservationSlice = reservations.findAllByMemberAndReservationTimeDateLessThanEqual(
+        Slice<Reservation> reservationSlice = reservations.findAllByMemberAndReservationTimeDateLessThanEqualAndReservationTimeEndTimeLessThanEqual(
                 member,
                 TimeZoneUtils.convertTo(now, ServiceZone.KOREA).toLocalDate(),
+                now,
                 pageable);
 
         List<Reservation> previousReservations = reservationSlice.getContent()
@@ -179,14 +181,14 @@ public class ReservationService {
             final String userName,
             final LocalDateTime searchStartTime,
             final Pageable pageable) {
-        Slice<Reservation> reservationSlice = reservations.findAllByUserNameAndReservationTimeDateGreaterThanEqual(
+        Slice<Reservation> reservationSlice = reservations.findAllByUserNameAndReservationTimeDateGreaterThanEqualAndReservationTimeStartTimeGreaterThanEqual(
                 userName,
                 TimeZoneUtils.convertTo(searchStartTime, ServiceZone.KOREA).toLocalDate(),
+                searchStartTime,
                 pageable);
 
         List<Reservation> upcomingNonLoginReservations = reservationSlice.getContent()
                 .stream()
-                .filter(reservation -> !reservation.isExpired(searchStartTime))
                 .filter(reservation -> !reservation.hasMember())
                 .sorted(Comparator.comparing(Reservation::getStartTime))
                 .peek(reservation -> reservation.getSpace().getMap().activateSharingMapId(sharingIdGenerator))
