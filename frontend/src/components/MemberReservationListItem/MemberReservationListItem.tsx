@@ -1,10 +1,10 @@
 import dayjs from 'dayjs';
 import { ReactNode } from 'react';
-import { MemberReservarion } from 'types/common';
+import { MemberReservation } from 'types/common';
 import * as Styled from './MemberReservationListItem.styles';
 
 export interface Props {
-  reservation: MemberReservarion;
+  reservation: MemberReservation;
   control?: ReactNode;
   onClick?: () => void;
 }

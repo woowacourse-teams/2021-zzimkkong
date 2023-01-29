@@ -80,7 +80,7 @@ export interface Reservation {
   isMyReservation: boolean;
 }
 
-export interface MemberReservarion extends Reservation {
+export interface MemberReservation extends Reservation {
   memberId: number;
   mapId: MapItem['mapId'];
   sharingMapId: MapItem['sharingMapId'];
