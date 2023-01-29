@@ -4,6 +4,7 @@ import com.woowacourse.zzimkkong.config.logaspect.LogMethodExecutionTime;
 import com.woowacourse.zzimkkong.dto.space.SpaceFindAllAvailabilityResponse;
 import com.woowacourse.zzimkkong.dto.space.SpaceFindAllResponse;
 import com.woowacourse.zzimkkong.dto.space.SpaceFindDetailResponse;
+import com.woowacourse.zzimkkong.infrastructure.datetime.TimeZoneUtils;
 import com.woowacourse.zzimkkong.service.SpaceService;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
@@ -31,8 +32,8 @@ public class GuestSpaceController {
             @RequestParam @DateTimeFormat(pattern = DATETIME_FORMAT) final ZonedDateTime endDateTime) {
         SpaceFindAllAvailabilityResponse spaceFindAllAvailabilityResponse = spaceService.findAllSpaceAvailability(
                 mapId,
-                startDateTime.withZoneSameInstant(UTC.toZoneId()).toLocalDateTime(),
-                endDateTime.withZoneSameInstant(UTC.toZoneId()).toLocalDateTime());
+                TimeZoneUtils.convertToUTC(startDateTime),
+                TimeZoneUtils.convertToUTC(endDateTime));
         return ResponseEntity.ok().body(spaceFindAllAvailabilityResponse);
     }
 

@@ -1,6 +1,7 @@
 package com.woowacourse.zzimkkong.repository;
 
 import com.woowacourse.zzimkkong.domain.*;
+import com.woowacourse.zzimkkong.infrastructure.datetime.TimeZoneUtils;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -90,8 +91,8 @@ class ReservationRepositoryTest extends RepositoryTest {
         beAmZeroOne = Reservation.builder()
                 .reservationTime(
                         ReservationTime.ofDefaultServiceZone(
-                                BE_AM_TEN_ELEVEN_START_TIME_KST.withZoneSameInstant(UTC.toZoneId()).toLocalDateTime(),
-                                BE_AM_TEN_ELEVEN_END_TIME_KST.withZoneSameInstant(UTC.toZoneId()).toLocalDateTime()))
+                                TimeZoneUtils.convertToUTC(BE_AM_TEN_ELEVEN_START_TIME_KST),
+                                TimeZoneUtils.convertToUTC(BE_AM_TEN_ELEVEN_END_TIME_KST)))
                 .description(BE_AM_TEN_ELEVEN_DESCRIPTION)
                 .userName(BE_AM_TEN_ELEVEN_USERNAME)
                 .password(BE_AM_TEN_ELEVEN_PW)
@@ -101,8 +102,8 @@ class ReservationRepositoryTest extends RepositoryTest {
         bePmOneTwo = Reservation.builder()
                 .reservationTime(
                         ReservationTime.ofDefaultServiceZone(
-                                BE_PM_ONE_TWO_START_TIME_KST.withZoneSameInstant(UTC.toZoneId()).toLocalDateTime(),
-                                BE_PM_ONE_TWO_END_TIME_KST.withZoneSameInstant(UTC.toZoneId()).toLocalDateTime()))
+                                TimeZoneUtils.convertToUTC(BE_PM_ONE_TWO_START_TIME_KST),
+                                TimeZoneUtils.convertToUTC(BE_PM_ONE_TWO_END_TIME_KST)))
                 .description(BE_PM_ONE_TWO_DESCRIPTION)
                 .userName(BE_PM_ONE_TWO_USERNAME)
                 .password(BE_PM_ONE_TWO_PW)
@@ -112,8 +113,8 @@ class ReservationRepositoryTest extends RepositoryTest {
         beNextDayAmSixTwelve = Reservation.builder()
                 .reservationTime(
                         ReservationTime.ofDefaultServiceZone(
-                                BE_NEXT_DAY_PM_FOUR_TO_SIX_START_TIME_KST.withZoneSameInstant(UTC.toZoneId()).toLocalDateTime(),
-                                BE_NEXT_DAY_PM_FOUR_TO_SIX_END_TIME_KST.withZoneSameInstant(UTC.toZoneId()).toLocalDateTime()))
+                                TimeZoneUtils.convertToUTC(BE_NEXT_DAY_PM_FOUR_TO_SIX_START_TIME_KST),
+                                TimeZoneUtils.convertToUTC(BE_NEXT_DAY_PM_FOUR_TO_SIX_END_TIME_KST)))
                 .description(BE_NEXT_DAY_PM_FOUR_TO_SIX_DESCRIPTION)
                 .userName(BE_NEXT_DAY_PM_FOUR_TO_SIX_USERNAME)
                 .password(BE_NEXT_DAY_PM_FOUR_TO_SIX_PW)
@@ -123,8 +124,8 @@ class ReservationRepositoryTest extends RepositoryTest {
         fe1ZeroOne = Reservation.builder()
                 .reservationTime(
                         ReservationTime.ofDefaultServiceZone(
-                                FE1_AM_TEN_ELEVEN_START_TIME_KST.withZoneSameInstant(UTC.toZoneId()).toLocalDateTime(),
-                                FE1_AM_TEN_ELEVEN_END_TIME_KST.withZoneSameInstant(UTC.toZoneId()).toLocalDateTime()))
+                                TimeZoneUtils.convertToUTC(FE1_AM_TEN_ELEVEN_START_TIME_KST),
+                                TimeZoneUtils.convertToUTC(FE1_AM_TEN_ELEVEN_END_TIME_KST)))
                 .description(FE1_AM_TEN_ELEVEN_DESCRIPTION)
                 .userName(FE1_AM_TEN_ELEVEN_USERNAME)
                 .password(FE1_AM_TEN_ELEVEN_PW)
@@ -134,8 +135,8 @@ class ReservationRepositoryTest extends RepositoryTest {
         bePmTwoThreeByPobi = Reservation.builder()
                 .reservationTime(
                         ReservationTime.ofDefaultServiceZone(
-                                BE_PM_TWO_THREE_START_TIME_KST.withZoneSameInstant(UTC.toZoneId()).toLocalDateTime(),
-                                BE_PM_TWO_THREE_END_TIME_KST.withZoneSameInstant(UTC.toZoneId()).toLocalDateTime()))
+                                TimeZoneUtils.convertToUTC(BE_PM_TWO_THREE_START_TIME_KST),
+                                TimeZoneUtils.convertToUTC(BE_PM_TWO_THREE_END_TIME_KST)))
                 .description(BE_PM_TWO_THREE_DESCRIPTION)
                 .userName(pobi.getUserName())
                 .member(pobi)
@@ -145,8 +146,8 @@ class ReservationRepositoryTest extends RepositoryTest {
         beFiveDaysAgoPmTwoThreeByPobi = Reservation.builder()
                 .reservationTime(
                         ReservationTime.ofDefaultServiceZone(
-                                BE_FIVE_DAYS_AGO_PM_TWO_THREE_START_TIME_KST.withZoneSameInstant(UTC.toZoneId()).toLocalDateTime(),
-                                BE_FIVE_DAYS_AGO_PM_TWO_THREE_END_TIME_KST.withZoneSameInstant(UTC.toZoneId()).toLocalDateTime()))
+                                TimeZoneUtils.convertToUTC(BE_FIVE_DAYS_AGO_PM_TWO_THREE_START_TIME_KST),
+                                TimeZoneUtils.convertToUTC(BE_FIVE_DAYS_AGO_PM_TWO_THREE_END_TIME_KST)))
                 .description(BE_FIVE_DAYS_AGO_PM_TWO_THREE_DESCRIPTION)
                 .userName(pobi.getUserName())
                 .member(pobi)
@@ -238,7 +239,7 @@ class ReservationRepositoryTest extends RepositoryTest {
         //given, when
         Boolean actual = reservations.existsBySpaceIdAndReservationTimeEndTimeAfter(
                 be.getId(),
-                BE_NEXT_DAY_PM_FOUR_TO_SIX_END_TIME_KST.withZoneSameInstant(UTC.toZoneId()).toLocalDateTime().minusMinutes(minusMinute));
+                TimeZoneUtils.convertToUTC(BE_NEXT_DAY_PM_FOUR_TO_SIX_END_TIME_KST).minusMinutes(minusMinute));
 
         //then
         assertThat(actual).isEqualTo(expected);
