@@ -179,7 +179,7 @@ public class ReservationService {
             final String userName,
             final LocalDateTime searchStartTime,
             final Pageable pageable) {
-        Slice<Reservation> reservationSlice = reservations.findAllByUserNameAndReservationTimeDateGreaterThanEqualAndReservationTimeStartTimeGreaterThanEqual(
+        Slice<Reservation> reservationSlice = reservations.findAllByUserNameAndReservationTimeDateGreaterThanEqualAndReservationTimeStartTimeGreaterThanEqualAndMemberIsNull(
                 userName,
                 TimeZoneUtils.convertTo(searchStartTime, ServiceZone.KOREA).toLocalDate(),
                 searchStartTime,
@@ -187,7 +187,6 @@ public class ReservationService {
 
         List<Reservation> upcomingNonLoginReservations = reservationSlice.getContent()
                 .stream()
-                .filter(reservation -> !reservation.hasMember())
                 .sorted(Comparator.comparing(Reservation::getStartTime))
                 .peek(reservation -> reservation.getSpace().getMap().activateSharingMapId(sharingIdGenerator))
                 .collect(Collectors.toList());
