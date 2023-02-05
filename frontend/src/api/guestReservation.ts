@@ -27,7 +27,7 @@ export interface GuestReservationParams {
   };
 }
 
-interface PostGuestReservationParams extends GuestReservationParams {
+export interface PostGuestReservationParams extends GuestReservationParams {
   mapId: number;
   spaceId: number;
 }
@@ -53,7 +53,7 @@ export interface MemberGuestReservationParams {
   };
 }
 
-interface PostMemberGuestReservationParams extends MemberGuestReservationParams {
+export interface PostMemberGuestReservationParams extends MemberGuestReservationParams {
   mapId: number;
   spaceId: number;
 }

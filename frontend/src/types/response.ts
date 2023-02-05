@@ -1,4 +1,5 @@
 import {
+  Area,
   Emoji,
   ManagerSpaceAPI,
   MapItem,
@@ -65,6 +66,13 @@ export interface QuerySpacesSuccess {
 }
 
 export type QueryGuestSpaceSuccess = ManagerSpaceAPI;
+
+export type AvailableSpace = { spaceId: Space['id']; isAvailable: boolean };
+
+export type QueryGuestSpaceAvailableSuccess = {
+  mapId: MapItem['mapId'];
+  spaces: AvailableSpace[];
+};
 
 export interface QueryManagerSpacesSuccess {
   spaces: ManagerSpaceAPI[];

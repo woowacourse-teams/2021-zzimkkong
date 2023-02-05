@@ -35,6 +35,7 @@
     "prepare": "cd .. && husky install frontend/.husky && cd frontend"
   },
   "dependencies": {
+    "@toss/utils": "^1.3.1",
     "axios": "^0.21.1",
     "dayjs": "^1.10.7",
     "react": "^17.0.2",

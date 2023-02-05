@@ -4,9 +4,7 @@ import React, { useContext, useEffect, useMemo, useRef, useState } from 'react';
 import { useMutation } from 'react-query';
 import { useHistory, useLocation, useParams } from 'react-router-dom';
 import { deleteGuestReservation } from 'api/guestReservation';
-import DateInput from 'components/DateInput/DateInput';
 import Header from 'components/Header/Header';
-import Layout from 'components/Layout/Layout';
 import { EDITOR } from 'constants/editor';
 import MESSAGE from 'constants/message';
 import PALETTE from 'constants/palette';
@@ -23,9 +21,9 @@ import { formatDate } from 'utils/datetime';
 import { getPolygonCenterPoint } from 'utils/editor';
 import { isNullish } from 'utils/type';
 import * as Styled from './GuestMap.styles';
+import Aside from './units/Aside';
 import LoginPopup from './units/LoginPopup';
 import PasswordInputModal from './units/PasswordInputModal';
-import ReservationDrawer from './units/ReservationDrawer';
 
 export interface GuestMapState {
   spaceId?: Space['id'];
@@ -36,7 +34,6 @@ export interface GuestMapState {
 const GuestMap = (): JSX.Element => {
   const { accessToken } = useContext(AccessTokenContext);
 
-  const [detailOpen, setDetailOpen] = useState(false);
   const [passwordInputModalOpen, setPasswordInputModalOpen] = useState(false);
   const [selectedReservation, setSelectedReservation] = useState<Reservation>();
 
@@ -130,7 +127,6 @@ const GuestMap = (): JSX.Element => {
 
   const handleClickSpaceArea = (spaceId: number) => {
     setSelectedSpaceId(spaceId);
-    setDetailOpen(true);
   };
 
   const handleEdit = (reservation: Reservation) => {
@@ -211,120 +207,90 @@ const GuestMap = (): JSX.Element => {
   }, [targetDate]);
 
   return (
-    <>
-      <Header onClickLogin={() => setLoginPopupOpen(true)} />
-      <Layout>
-        <Styled.Page>
-          <Styled.PageHeader>
-            <Styled.MapInfo>
-              <Styled.PageTitle>{map?.mapName}</Styled.PageTitle>
-              <DateInput date={date} setDate={setDate} hasBackground={false} />
-            </Styled.MapInfo>
-            {map?.notice && (
-              <Styled.NoticeWrapper>
-                <Styled.Notice>
-                  <Styled.NoticeTitle>공지사항</Styled.NoticeTitle>
-                  <Styled.NoticeText>{map?.notice ?? ''}</Styled.NoticeText>
-                </Styled.Notice>
-              </Styled.NoticeWrapper>
-            )}
-          </Styled.PageHeader>
-          <Styled.MapContainer ref={mapRef}>
-            {mapDrawing && (
-              <Styled.MapContainerInner width={mapDrawing.width} height={mapDrawing.height}>
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  version="1.1"
-                  width={mapDrawing.width}
-                  height={mapDrawing.height}
-                >
-                  {/* Note: 맵을 그리는 부분 */}
-                  {mapDrawing.mapElements.map((element) =>
-                    element.type === 'polyline' ? (
-                      <polyline
-                        key={`polyline-${element.id}`}
-                        points={element.points.join(' ')}
-                        stroke={element.stroke}
-                        strokeWidth={EDITOR.STROKE_WIDTH}
-                        strokeLinecap="round"
-                      />
-                    ) : (
-                      <rect
-                        key={`rect-${element.id}`}
-                        x={element?.x}
-                        y={element?.y}
-                        width={element?.width}
-                        height={element?.height}
-                        stroke={element.stroke}
-                        fill="none"
-                        strokeWidth={EDITOR.STROKE_WIDTH}
-                      />
-                    )
-                  )}
+    <Styled.Page>
+      {map && <Aside map={map} />}
+      <Styled.MapContainer ref={mapRef}>
+        <Header onClickLogin={() => setLoginPopupOpen(true)} />
+        {mapDrawing && (
+          <Styled.MapItem width={mapDrawing.width} height={mapDrawing.height}>
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              version="1.1"
+              width={mapDrawing.width}
+              height={mapDrawing.height}
+            >
+              {/* Note: 맵을 그리는 부분 */}
+              {mapDrawing.mapElements.map((element) =>
+                element.type === 'polyline' ? (
+                  <polyline
+                    key={`polyline-${element.id}`}
+                    points={element.points.join(' ')}
+                    stroke={element.stroke}
+                    strokeWidth={EDITOR.STROKE_WIDTH}
+                    strokeLinecap="round"
+                  />
+                ) : (
+                  <rect
+                    key={`rect-${element.id}`}
+                    x={element?.x}
+                    y={element?.y}
+                    width={element?.width}
+                    height={element?.height}
+                    stroke={element.stroke}
+                    fill="none"
+                    strokeWidth={EDITOR.STROKE_WIDTH}
+                  />
+                )
+              )}
 
-                  {/* Note: 공간을 그리는 부분 */}
-                  {spaceList.length > 0 &&
-                    spaceList.map(({ id, area, color, name }) => (
-                      <Styled.Space
-                        key={`area-${id}`}
-                        data-testid={id}
-                        onClick={() => handleClickSpaceArea(id)}
-                      >
-                        {area.shape === DrawingAreaShape.Rect && (
-                          <>
-                            <Styled.SpaceRect
-                              x={area.x}
-                              y={area.y}
-                              width={area.width}
-                              height={area.height}
-                              fill={color ?? PALETTE.RED[200]}
-                              opacity="0.3"
-                            />
-                            <Styled.SpaceAreaText
-                              x={area.x + area.width / 2}
-                              y={area.y + area.height / 2}
-                            >
-                              {name}
-                            </Styled.SpaceAreaText>
-                          </>
-                        )}
-                        {area.shape === DrawingAreaShape.Polygon && (
-                          <>
-                            <Styled.SpacePolygon
-                              points={area.points.map(({ x, y }) => `${x},${y}`).join(' ')}
-                              fill={color ?? PALETTE.RED[200]}
-                              opacity="0.3"
-                            />
-                            <Styled.SpaceAreaText
-                              x={getPolygonCenterPoint(area.points).x}
-                              y={getPolygonCenterPoint(area.points).y}
-                            >
-                              {name}
-                            </Styled.SpaceAreaText>
-                          </>
-                        )}
-                      </Styled.Space>
-                    ))}
-                </svg>
-              </Styled.MapContainerInner>
-            )}
-          </Styled.MapContainer>
-        </Styled.Page>
-      </Layout>
-      {selectedSpaceId && map?.mapId && detailOpen && (
-        <ReservationDrawer
-          reservations={reservations}
-          space={spaces[selectedSpaceId]}
-          date={date}
-          open={detailOpen}
-          isSuccess={getReservations.isSuccess}
-          isLoadingError={getReservations.isLoadingError}
-          onClose={() => setDetailOpen(false)}
-          onClickReservation={handleReservation}
-          onEdit={handleEdit}
-          onDelete={handleDelete}
-        />
-      )}
+              {/* Note: 공간을 그리는 부분 */}
+              {spaceList.length > 0 &&
+                spaceList.map(({ id, area, color, name }) => (
+                  <Styled.Space
+                    key={`area-${id}`}
+                    data-testid={id}
+                    onClick={() => handleClickSpaceArea(id)}
+                  >
+                    {area.shape === DrawingAreaShape.Rect && (
+                      <>
+                        <Styled.SpaceRect
+                          x={area.x}
+                          y={area.y}
+                          width={area.width}
+                          height={area.height}
+                          fill={color ?? PALETTE.RED[200]}
+                          opacity="0.3"
+                        />
+                        <Styled.SpaceAreaText
+                          x={area.x + area.width / 2}
+                          y={area.y + area.height / 2}
+                        >
+                          {name}
+                        </Styled.SpaceAreaText>
+                      </>
+                    )}
+                    {area.shape === DrawingAreaShape.Polygon && (
+                      <>
+                        <Styled.SpacePolygon
+                          points={area.points.map(({ x, y }) => `${x},${y}`).join(' ')}
+                          fill={color ?? PALETTE.RED[200]}
+                          opacity="0.3"
+                        />
+                        <Styled.SpaceAreaText
+                          x={getPolygonCenterPoint(area.points).x}
+                          y={getPolygonCenterPoint(area.points).y}
+                        >
+                          {name}
+                        </Styled.SpaceAreaText>
+                      </>
+                    )}
+                  </Styled.Space>
+                ))}
+            </svg>
+          </Styled.MapItem>
+        )}
+      </Styled.MapContainer>
+
       <PasswordInputModal
         open={passwordInputModalOpen}
         onClose={() => setPasswordInputModalOpen(false)}
@@ -338,7 +304,7 @@ const GuestMap = (): JSX.Element => {
           onLogin={handleLogin}
         />
       )}
-    </>
+    </Styled.Page>
   );
 };
 
