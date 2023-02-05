@@ -8,5 +8,5 @@ import lombok.Getter;
 @Getter
 public class SpaceFindAvailabilityResponse {
     private Long spaceId;
-    private Boolean isOccupied;
+    private Boolean isAvailable;
 }

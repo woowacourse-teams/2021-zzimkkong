@@ -21,7 +21,7 @@ public class SpaceFindAllAvailabilityResponse {
         List<SpaceFindAvailabilityResponse> spaces = allSpaces.stream()
                 .map(space -> SpaceFindAvailabilityResponse.builder()
                         .spaceId(space.getId())
-                        .isOccupied(occupiedSpaces.contains(space))
+                        .isAvailable(!occupiedSpaces.contains(space))
                         .build())
                 .collect(Collectors.toList());
 
