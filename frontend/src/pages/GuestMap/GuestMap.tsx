@@ -107,11 +107,9 @@ const GuestMap = (): JSX.Element => {
       date: formatDate(date),
     },
     {
-      enabled: !isNullish(selectedSpaceId),
+      enabled: !isNullish(selectedSpaceId) && dayjs(date).isValid(),
     }
   );
-
-  const reservations = getReservations.data?.data?.reservations ?? [];
 
   const removeReservation = useMutation(deleteGuestReservation, {
     onSuccess: () => {
