@@ -23,7 +23,7 @@ import * as Styled from './GuestReservationForm.styles';
 
 interface Props {
   isEditMode: boolean;
-  space: Space;
+  space: Pick<Space, 'settings'>;
   reservation?: Reservation;
   date: string;
   onChangeDate: ChangeEventHandler<HTMLInputElement>;

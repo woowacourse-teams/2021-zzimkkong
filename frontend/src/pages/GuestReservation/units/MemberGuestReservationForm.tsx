@@ -22,7 +22,7 @@ import * as Styled from './GuestReservationForm.styles';
 
 interface Props {
   isEditMode: boolean;
-  space: Space;
+  space: Pick<Space, 'settings'>;
   reservation?: Reservation;
   date: string;
   userName: string;
@@ -150,15 +150,13 @@ const MemberGuestReservationForm = ({
                   reservationMinimumTimeUnit,
                 },
                 index
-              ) => {
-                return (
-                  <Styled.TimeFormMessage key={index}>
-                    {settingStartTime.slice(0, 5)} ~ {settingEndTime.slice(0, 5)}
-                    (최소 {formatTimePrettier(reservationMinimumTimeUnit)}, 최대{' '}
-                    {formatTimePrettier(reservationMaximumTimeUnit)})
-                  </Styled.TimeFormMessage>
-                );
-              }
+              ) => (
+                <Styled.TimeFormMessage key={index}>
+                  {settingStartTime.slice(0, 5)} ~ {settingEndTime.slice(0, 5)}
+                  (최소 {formatTimePrettier(reservationMinimumTimeUnit)}, 최대{' '}
+                  {formatTimePrettier(reservationMaximumTimeUnit)})
+                </Styled.TimeFormMessage>
+              )
             )}
           </Styled.TimeFormMessageWrapper>
         </Styled.InputWrapper>

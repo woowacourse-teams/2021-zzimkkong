@@ -6,12 +6,13 @@ import * as Styled from './MemberReservationListItem.styles';
 export interface Props {
   reservation: MemberReservarion;
   control?: ReactNode;
+  onClick?: () => void;
 }
 
-const MemberReservationListItem = ({ reservation, control }: Props): JSX.Element => {
+const MemberReservationListItem = ({ reservation, control, onClick }: Props): JSX.Element => {
   return (
     <Styled.Container role="listitem">
-      <Styled.InfoContainer>
+      <Styled.InfoContainer onClick={onClick}>
         <Styled.Description>{reservation.description}</Styled.Description>
         <Styled.DetailContainer>
           <Styled.Date>

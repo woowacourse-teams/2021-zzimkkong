@@ -64,9 +64,7 @@ export interface QuerySpacesSuccess {
   spaces: SpaceResponse[];
 }
 
-export interface QueryManagerSpaceSuccess {
-  data: ManagerSpaceAPI;
-}
+export type QueryGuestSpaceSuccess = ManagerSpaceAPI;
 
 export interface QueryManagerSpacesSuccess {
   spaces: ManagerSpaceAPI[];

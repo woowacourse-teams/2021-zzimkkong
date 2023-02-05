@@ -140,7 +140,7 @@ const GuestMap = (): JSX.Element => {
       pathname: HREF.GUEST_RESERVATION_EDIT(sharingMapId),
       state: {
         mapId: map?.mapId,
-        space: spaces[selectedSpaceId],
+        spaceId: spaces[selectedSpaceId].id,
         reservation,
         selectedDate: formatDate(date),
         scrollPosition: { x: mapRef?.current?.scrollLeft, y: mapRef?.current?.scrollTop },
@@ -187,7 +187,7 @@ const GuestMap = (): JSX.Element => {
       pathname: HREF.GUEST_RESERVATION(sharingMapId),
       state: {
         mapId: map?.mapId,
-        space: spaces[selectedSpaceId],
+        spaceId: spaces[selectedSpaceId].id,
         selectedDate: formatDate(date),
         scrollPosition: { x: mapRef?.current?.scrollLeft, y: mapRef?.current?.scrollTop },
       },
