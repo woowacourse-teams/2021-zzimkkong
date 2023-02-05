@@ -2,7 +2,6 @@ import styled from 'styled-components';
 import { FORM_MAX_WIDTH } from 'constants/style';
 
 export const Container = styled.div`
-  // padding: 60px 0 80px;
   width: 100%;
   max-width: ${FORM_MAX_WIDTH};
   margin: 0 auto;
