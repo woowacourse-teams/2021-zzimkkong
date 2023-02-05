@@ -13,7 +13,6 @@ import org.springframework.web.bind.annotation.*;
 import java.time.ZonedDateTime;
 
 import static com.woowacourse.zzimkkong.dto.ValidatorMessage.DATETIME_FORMAT;
-import static com.woowacourse.zzimkkong.infrastructure.datetime.TimeZoneUtils.UTC;
 
 @LogMethodExecutionTime(group = "controller")
 @RestController

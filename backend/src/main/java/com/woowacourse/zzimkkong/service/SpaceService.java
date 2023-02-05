@@ -1,9 +1,9 @@
 package com.woowacourse.zzimkkong.service;
 
 import com.woowacourse.zzimkkong.domain.*;
+import com.woowacourse.zzimkkong.dto.map.NoAuthorityOnMapException;
 import com.woowacourse.zzimkkong.dto.member.LoginUserEmail;
 import com.woowacourse.zzimkkong.dto.space.*;
-import com.woowacourse.zzimkkong.dto.map.NoAuthorityOnMapException;
 import com.woowacourse.zzimkkong.exception.map.NoSuchMapException;
 import com.woowacourse.zzimkkong.exception.space.NoSuchSpaceException;
 import com.woowacourse.zzimkkong.exception.space.ReservationExistOnSpaceException;
@@ -114,9 +114,7 @@ public class SpaceService {
 
         Set<Long> spaceIds = allSpaces.stream().map(Space::getId).collect(Collectors.toSet());
         ReservationTime reservationTime = ReservationTime.ofDefaultServiceZone(startDateTime, endDateTime);
-        Set<Space> occupiedSpaces = reservations.findAllBySpaceIdInAndReservationTimeDate(
-                spaceIds,
-                reservationTime.getDate())
+        Set<Space> occupiedSpaces = reservations.findAllBySpaceIdInAndReservationTimeDate(spaceIds, reservationTime.getDate())
                 .stream()
                 .filter(reservation -> reservationTime.hasConflictWith(reservation.getReservationTime()))
                 .map(Reservation::getSpace)

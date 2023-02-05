@@ -4,7 +4,6 @@ import com.woowacourse.zzimkkong.domain.*;
 import com.woowacourse.zzimkkong.dto.space.SpaceFindAllAvailabilityResponse;
 import com.woowacourse.zzimkkong.dto.space.SpaceFindAllResponse;
 import com.woowacourse.zzimkkong.dto.space.SpaceFindDetailResponse;
-import com.woowacourse.zzimkkong.infrastructure.auth.AuthorizationExtractor;
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
