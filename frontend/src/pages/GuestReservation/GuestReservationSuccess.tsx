@@ -10,7 +10,7 @@ import { formatDateWithDay, formatTime } from 'utils/datetime';
 import * as Styled from './GuestReservationSuccess.styles';
 
 export interface GuestReservationSuccessState {
-  space: Space;
+  space: Pick<Space, 'id' | 'name'>;
   targetDate: Date;
   reservation: {
     name: string;

@@ -13,6 +13,7 @@ export const Container = styled.div`
 export const InfoContainer = styled.div`
   display: flex;
   flex: 1;
+  cursor: pointer;
 `;
 
 export const Description = styled.div`

@@ -4,11 +4,11 @@ import React, { useContext, useEffect } from 'react';
 import { useMutation } from 'react-query';
 import { useHistory, useLocation, useParams } from 'react-router-dom';
 import {
-  postGuestReservation,
-  putGuestReservation,
   GuestReservationParams,
-  postMemberGuestReservation,
   MemberGuestReservationParams,
+  postGuestReservation,
+  postMemberGuestReservation,
+  putGuestReservation,
   putMemberGuestReservation,
 } from 'api/guestReservation';
 import Header from 'components/Header/Header';
@@ -19,6 +19,7 @@ import DATE from 'constants/date';
 import MESSAGE from 'constants/message';
 import { HREF } from 'constants/path';
 import useGuestReservations from 'hooks/query/useGuestReservations';
+import useGuestSpace from 'hooks/query/useGuestSpace';
 import useMember from 'hooks/query/useMember';
 import useInput from 'hooks/useInput';
 import { GuestMapState } from 'pages/GuestMap/GuestMap';
@@ -35,9 +36,9 @@ import MemberGuestReservationForm from './units/MemberGuestReservationForm';
 
 interface GuestReservationState {
   mapId: number;
-  space: Space;
+  spaceId: Space['id'];
   selectedDate: string;
-  scrollPosition: ScrollPosition;
+  scrollPosition?: ScrollPosition;
   reservation?: Reservation;
 }
 
@@ -56,11 +57,11 @@ const GuestReservation = (): JSX.Element => {
   const history = useHistory<GuestReservationSuccessState | GuestMapState>();
   const { sharingMapId } = useParams<GuestPageURLParams>();
 
-  if (!location.state?.mapId || !location.state?.space) {
+  if (!location.state?.mapId || !location.state?.spaceId) {
     history.replace(HREF.GUEST_MAP(sharingMapId));
   }
 
-  const { mapId, space, selectedDate, scrollPosition, reservation } = location.state;
+  const { mapId, spaceId, selectedDate, scrollPosition, reservation } = location.state;
   const [date, , setDate] = useInput(selectedDate);
 
   const isEditMode = !!reservation;
@@ -70,8 +71,10 @@ const GuestReservation = (): JSX.Element => {
   });
   const userName = member.data?.data.userName;
 
+  const getSpace = useGuestSpace({ mapId, spaceId }, { enabled: spaceId != null });
+
   const getReservations = useGuestReservations(
-    { mapId, spaceId: space.id, date },
+    { mapId, spaceId, date },
     {
       enabled: !isPastDate(dayjs(date).tz(), DATE.MIN_DATE) && !!date,
     }
@@ -80,12 +83,16 @@ const GuestReservation = (): JSX.Element => {
 
   const addGuestReservation = useMutation(postGuestReservation, {
     onSuccess: (_, { reservation }) => {
+      if (getSpace.data?.data == null) {
+        return;
+      }
+
       const { startDateTime, endDateTime, name, description } = reservation;
 
       history.push({
         pathname: HREF.GUEST_RESERVATION_SUCCESS(sharingMapId),
         state: {
-          space,
+          space: getSpace.data?.data,
           reservation: {
             startDateTime,
             endDateTime,
@@ -108,7 +115,7 @@ const GuestReservation = (): JSX.Element => {
       history.push({
         pathname: HREF.GUEST_RESERVATION_SUCCESS(sharingMapId),
         state: {
-          space,
+          space: getSpace.data?.data,
           reservation: {
             startDateTime,
             endDateTime,
@@ -129,7 +136,7 @@ const GuestReservation = (): JSX.Element => {
       history.push({
         pathname: HREF.GUEST_MAP(sharingMapId),
         state: {
-          spaceId: space.id,
+          spaceId,
           targetDate: dayjs(date).tz(),
         },
       });
@@ -145,7 +152,7 @@ const GuestReservation = (): JSX.Element => {
       history.push({
         pathname: HREF.GUEST_MAP(sharingMapId),
         state: {
-          spaceId: space.id,
+          spaceId,
           targetDate: dayjs(date).tz(),
         },
       });
@@ -162,7 +169,7 @@ const GuestReservation = (): JSX.Element => {
     addGuestReservation.mutate({
       reservation,
       mapId,
-      spaceId: space.id,
+      spaceId,
     });
   };
 
@@ -172,7 +179,7 @@ const GuestReservation = (): JSX.Element => {
     addMemberGuestReservation.mutate({
       reservation,
       mapId,
-      spaceId: space.id,
+      spaceId,
     });
   };
 
@@ -182,7 +189,7 @@ const GuestReservation = (): JSX.Element => {
     updateGuestReservation.mutate({
       reservation,
       mapId,
-      spaceId: space.id,
+      spaceId,
       reservationId,
     });
   };
@@ -196,7 +203,7 @@ const GuestReservation = (): JSX.Element => {
     updateMemberGuestReservation.mutate({
       reservation,
       mapId,
-      spaceId: space.id,
+      spaceId,
       reservationId,
     });
   };
@@ -256,13 +263,17 @@ const GuestReservation = (): JSX.Element => {
         location.pathname === HREF.GUEST_MAP(sharingMapId) + '/'
       ) {
         location.state = {
-          spaceId: space.id,
+          spaceId,
           targetDate: dayjs(date).tz(),
           scrollPosition,
         };
       }
     });
-  }, [history, scrollPosition, date, space, sharingMapId]);
+  }, [history, scrollPosition, date, spaceId, sharingMapId]);
+
+  if (getSpace.isLoading) {
+    return <></>;
+  }
 
   return (
     <>
@@ -270,29 +281,31 @@ const GuestReservation = (): JSX.Element => {
       <Layout>
         <Styled.Container>
           <Styled.PageHeader title="공간 이름" data-testid="spaceName">
-            <Styled.ColorDot color={space.color} size="medium" />
-            {space.name}
+            <Styled.ColorDot color={getSpace.data?.data.color ?? ''} size="medium" />
+            {getSpace.data?.data.name}
           </Styled.PageHeader>
-          {accessToken ? (
-            <MemberGuestReservationForm
-              isEditMode={isEditMode}
-              space={space}
-              reservation={reservation}
-              date={date}
-              userName={userName ?? ''}
-              onChangeDate={handleChangeDate}
-              onSubmit={handleSubmitMemberGuest}
-            />
-          ) : (
-            <GuestReservationForm
-              isEditMode={isEditMode}
-              space={space}
-              reservation={reservation}
-              date={date}
-              onChangeDate={handleChangeDate}
-              onSubmit={handleSubmitGuest}
-            />
-          )}
+          {getSpace.data?.data ? (
+            accessToken ? (
+              <MemberGuestReservationForm
+                isEditMode={isEditMode}
+                space={getSpace.data?.data}
+                reservation={reservation}
+                date={date}
+                userName={userName ?? ''}
+                onChangeDate={handleChangeDate}
+                onSubmit={handleSubmitMemberGuest}
+              />
+            ) : (
+              <GuestReservationForm
+                isEditMode={isEditMode}
+                space={getSpace.data?.data}
+                reservation={reservation}
+                date={date}
+                onChangeDate={handleChangeDate}
+                onSubmit={handleSubmitGuest}
+              />
+            )
+          ) : null}
           <Styled.Section>
             <PageHeader title={`${date}${date && '의'} 예약 목록`} />
             {getReservations.isLoadingError && (

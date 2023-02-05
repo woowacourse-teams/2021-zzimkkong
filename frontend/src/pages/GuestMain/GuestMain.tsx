@@ -60,7 +60,7 @@ const GuestMain = (): JSX.Element => {
       pathname: HREF.GUEST_RESERVATION_EDIT(reservation.sharingMapId),
       state: {
         mapId: reservation.mapId,
-        space: reservation.spaceId,
+        spaceId: reservation.spaceId,
         reservation,
         selectedDate: formatDate(new Date(reservation.startDateTime)),
       },
@@ -80,6 +80,7 @@ const GuestMain = (): JSX.Element => {
             {flattedReservations.map((reservation) => (
               <MemberReservationListItem
                 reservation={reservation}
+                onClick={() => history.push(HREF.GUEST_MAP(reservation.sharingMapId))}
                 control={
                   <>
                     <IconButton
@@ -115,7 +116,10 @@ const GuestMain = (): JSX.Element => {
 
               <Styled.List role="list">
                 {flattedReservationHistory.map((reservation) => (
-                  <MemberReservationListItem reservation={reservation} />
+                  <MemberReservationListItem
+                    reservation={reservation}
+                    onClick={() => history.push(HREF.GUEST_MAP(reservation.sharingMapId))}
+                  />
                 ))}
               </Styled.List>
 

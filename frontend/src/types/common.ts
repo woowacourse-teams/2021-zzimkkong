@@ -45,23 +45,6 @@ export interface MapItem {
   notice: string | null;
 }
 
-interface SpaceSetting {
-  settingStartTime: string;
-  settingEndTime: string;
-  reservationTimeUnit: number;
-  reservationMinimumTimeUnit: number;
-  reservationMaximumTimeUnit: number;
-  enabledDayOfWeek: {
-    monday: boolean;
-    tuesday: boolean;
-    wednesday: boolean;
-    thursday: boolean;
-    friday: boolean;
-    saturday: boolean;
-    sunday: boolean;
-  };
-}
-
 export interface AreaRect {
   shape: DrawingAreaShape.Rect;
   width: number;
@@ -114,7 +97,7 @@ export interface SpaceReservation {
   reservations: Reservation[];
 }
 
-export interface ReservationSettings {
+export interface SpaceSetting {
   settingStartTime: string;
   settingEndTime: string;
   reservationTimeUnit: number;
@@ -156,7 +139,7 @@ export interface ManagerSpace {
   color: Color;
   area: Area;
   reservationEnable: boolean;
-  settings: ReservationSettings[];
+  settings: SpaceSetting[];
 }
 
 export interface ManagerSpaceAPI extends Omit<ManagerSpace, 'area'> {

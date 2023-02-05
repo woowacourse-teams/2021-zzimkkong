@@ -1,5 +1,5 @@
 import { useContext } from 'react';
-import { useHistory, useParams } from 'react-router-dom';
+import { useHistory, useLocation, useParams } from 'react-router-dom';
 import { queryClient } from 'App';
 import { ReactComponent as LogoIcon } from 'assets/svg/logo.svg';
 import PATH, { HREF } from 'constants/path';
@@ -16,6 +16,7 @@ interface HeaderProps {
 }
 
 const Header = ({ onClickLogin }: HeaderProps): JSX.Element => {
+  const location = useLocation();
   const history = useHistory();
   const { accessToken, resetAccessToken } = useContext(AccessTokenContext);
 
@@ -23,11 +24,13 @@ const Header = ({ onClickLogin }: HeaderProps): JSX.Element => {
   const sharingMapId = params?.sharingMapId;
 
   const getHeaderLinkPath = () => {
-    if (sharingMapId) return HREF.GUEST_MAP(sharingMapId);
+    if (!accessToken && sharingMapId) return HREF.GUEST_MAP(sharingMapId);
 
-    if (accessToken) return PATH.MANAGER_MAP_LIST;
+    if (!accessToken) return PATH.MAIN;
 
-    return PATH.MAIN;
+    if (location.pathname.includes('/guest')) return PATH.GUEST_MAIN;
+
+    return PATH.MANAGER_MAP_LIST;
   };
 
   const handleLogout = () => {
