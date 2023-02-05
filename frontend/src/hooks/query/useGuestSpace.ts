@@ -1,6 +1,6 @@
 import { AxiosError, AxiosResponse } from 'axios';
 import { QueryKey, useQuery, UseQueryOptions, UseQueryResult } from 'react-query';
-import { QueryGuestSpaceParams, queryGusetSpace } from 'api/guestSpace';
+import { QueryGuestSpaceParams, queryGuestSpace } from 'api/guestSpace';
 import { ErrorResponse, QueryGuestSpaceSuccess } from 'types/response';
 
 const useGuestSpace = <TData = AxiosResponse<QueryGuestSpaceSuccess>>(
@@ -12,6 +12,6 @@ const useGuestSpace = <TData = AxiosResponse<QueryGuestSpaceSuccess>>(
     [QueryKey, QueryGuestSpaceParams]
   >
 ): UseQueryResult<TData, AxiosError<ErrorResponse>> =>
-  useQuery(['getGuestSpace', { mapId, spaceId }], queryGusetSpace, options);
+  useQuery(['getGuestSpace', { mapId, spaceId }], queryGuestSpace, options);
 
 export default useGuestSpace;

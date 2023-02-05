@@ -23,12 +23,12 @@ export const queryGuestSpaces: QueryFunction<
   return api.get(`/guests/maps/${mapId}/spaces`);
 };
 
-export const queryGusetSpace: QueryFunction<
+export const queryGuestSpace: QueryFunction<
   AxiosResponse<QueryGuestSpaceSuccess>,
   [QueryKey, QueryGuestSpaceParams]
 > = ({ queryKey }) => {
   const [, data] = queryKey;
   const { mapId, spaceId } = data;
 
-  return api.get(`/managers/maps/${mapId}/spaces/${spaceId}`);
+  return api.get(`/guests/maps/${mapId}/spaces/${spaceId}`);
 };
