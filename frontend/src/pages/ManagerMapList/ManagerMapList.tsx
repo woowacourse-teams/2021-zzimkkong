@@ -2,12 +2,8 @@ import { AxiosError } from 'axios';
 import React from 'react';
 import { useMutation } from 'react-query';
 import { useHistory } from 'react-router-dom';
-import { theme } from 'App.styles';
 import { deleteMap } from 'api/managerMap';
 import { ReactComponent as DeleteIcon } from 'assets/svg/delete.svg';
-import { ReactComponent as LinkIcon } from 'assets/svg/link.svg';
-import { ReactComponent as NoticeIcon } from 'assets/svg/notice.svg';
-import { ReactComponent as SlackIcon } from 'assets/svg/slack.svg';
 import Header from 'components/Header/Header';
 import IconButton from 'components/IconButton/IconButton';
 import MapNoticeButton from 'components/ManagerIconButtons/MapNoticeButton';
@@ -18,7 +14,7 @@ import MemberInfo from 'components/MemberInfo/MemberInfo';
 import TabLayout from 'components/TabLayout/TabLayout';
 import MESSAGE from 'constants/message';
 import PATH, { HREF } from 'constants/path';
-import { TAB_LABEL, TAB_LIST } from 'constants/tab';
+import { TAB_LABEL, TAB_LIST, TAB_PATH_FOR_LABEL } from 'constants/tab';
 import useManagerMaps from 'hooks/query/useManagerMaps';
 import { ErrorResponse } from 'types/response';
 import * as Styled from './ManagerMapList.styles';
@@ -48,7 +44,11 @@ const ManagerMapList = (): JSX.Element => {
   return (
     <>
       <Header />
-      <TabLayout tabList={TAB_LIST} defaultTabLabel={TAB_LABEL.MANAGER}>
+      <TabLayout
+        tabList={TAB_LIST}
+        defaultTabLabel={TAB_LABEL.MANAGER}
+        onClick={(selectedTab) => history.push(TAB_PATH_FOR_LABEL[selectedTab])}
+      >
         <MemberInfo />
 
         <Styled.MapListContainer>
