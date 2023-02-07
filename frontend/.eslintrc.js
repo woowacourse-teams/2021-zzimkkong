@@ -33,6 +33,7 @@ module.exports = {
     ],
     'react/react-in-jsx-scope': 'off',
     '@typescript-eslint/no-floating-promises': 'off',
+    '@typescript-eslint/explicit-module-boundary-types': 'off',
   },
   settings: {
     'import/resolver': {

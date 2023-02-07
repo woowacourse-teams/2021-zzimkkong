@@ -13,7 +13,7 @@ import MemberReservationListItem from 'components/MemberReservationListItem/Memb
 import TabLayout from 'components/TabLayout/TabLayout';
 import MESSAGE from 'constants/message';
 import { HREF } from 'constants/path';
-import { TAB_LABEL, TAB_LIST } from 'constants/tab';
+import { TAB_LABEL, TAB_LIST, TAB_PATH_FOR_LABEL } from 'constants/tab';
 import useMemberReservationHistory from 'hooks/infiniteQuery/useMemberReservationHistory';
 import useMemberReservations from 'hooks/infiniteQuery/useMemberReservations';
 import { MemberReservarion } from 'types/common';
@@ -70,7 +70,11 @@ const GuestMain = (): JSX.Element => {
   return (
     <>
       <Header />
-      <TabLayout tabList={TAB_LIST} defaultTabLabel={TAB_LABEL.GUEST}>
+      <TabLayout
+        tabList={TAB_LIST}
+        defaultTabLabel={TAB_LABEL.GUEST}
+        onClick={(selectedTab) => history.push(TAB_PATH_FOR_LABEL[selectedTab])}
+      >
         <MemberInfo />
 
         <Styled.Container>
