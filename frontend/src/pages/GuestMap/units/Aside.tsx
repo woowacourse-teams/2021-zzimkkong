@@ -3,6 +3,7 @@ import { MapItem } from 'types/common';
 import { SWITCH_LABEL_LIST } from '../GuestMap';
 import * as Styled from './Aside.styled';
 import ReservationForm from './ReservationForm';
+import ReservationList from './ReservationList';
 
 interface Props {
   map: MapItem;
@@ -11,6 +12,8 @@ interface Props {
 }
 
 const Aside = ({ map, selectedLabel, onClickSwitch }: Props) => {
+  const isReservation = selectedLabel === SWITCH_LABEL_LIST[0];
+
   return (
     <Styled.Container>
       {map.notice && (
@@ -27,7 +30,7 @@ const Aside = ({ map, selectedLabel, onClickSwitch }: Props) => {
         />
       </Styled.SwitchContainer>
 
-      <ReservationForm map={map} />
+      {isReservation ? <ReservationForm map={map} /> : <ReservationList map={map} />}
     </Styled.Container>
   );
 };
