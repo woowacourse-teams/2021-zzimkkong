@@ -25,6 +25,7 @@ import static org.springframework.restdocs.restassured3.RestAssuredRestDocumenta
 
 class GuestSpaceControllerTest extends AcceptanceTest {
     private String spaceApi;
+    private String guestSpaceApi;
     private Space be;
     private Space fe;
     private Long beSpaceId;
@@ -34,6 +35,7 @@ class GuestSpaceControllerTest extends AcceptanceTest {
     void setUp() {
         String lutherId = saveMap("/api/managers/maps", mapCreateUpdateRequest).header("location").split("/")[4];
         spaceApi = "/api/managers/maps/" + lutherId + "/spaces";
+        guestSpaceApi = spaceApi.replaceAll("managers", "guests");
         ExtractableResponse<Response> saveBeSpaceResponse = saveSpace(spaceApi, beSpaceCreateUpdateRequest);
         ExtractableResponse<Response> saveFe1SpaceResponse = saveSpace(spaceApi, feSpaceCreateUpdateRequest);
 
@@ -93,7 +95,6 @@ class GuestSpaceControllerTest extends AcceptanceTest {
     @DisplayName("전체 공간에 대한 정보를 조회한다.")
     void findAll() {
         // given, when
-        String guestSpaceApi = spaceApi.replaceAll("managers", "guests");
         ExtractableResponse<Response> response = findAllSpace(guestSpaceApi);
         SpaceFindAllResponse actual = response.body().as(SpaceFindAllResponse.class);
         SpaceFindAllResponse expected = SpaceFindAllResponse.from(List.of(be, fe));
@@ -109,7 +110,6 @@ class GuestSpaceControllerTest extends AcceptanceTest {
     @DisplayName("spaceId를 받아 해당 공간에 대한 정보를 조회한다.")
     void find() {
         // given, when
-        String guestSpaceApi = spaceApi.replaceAll("managers", "guests");
         String api = guestSpaceApi + "/" + beSpaceId;
         ExtractableResponse<Response> response = findSpace(api);
         SpaceFindDetailResponse actual = response.body().as(SpaceFindDetailResponse.class);
@@ -127,7 +127,6 @@ class GuestSpaceControllerTest extends AcceptanceTest {
     @DisplayName("mapId와 함께 특정 time slot (start, end date time)이 주어지면, 맵 상의 모든 공간에 대해서 사용 가능 여부를 반환한다")
     void findAllSpaceAvailability() {
         // given, when
-        String guestSpaceApi = spaceApi.replaceAll("managers", "guests");
         String api = guestSpaceApi + "/availability";
         ExtractableResponse<Response> response = findAllSpaceAvailability(api);
         SpaceFindAllAvailabilityResponse actual = response.body().as(SpaceFindAllAvailabilityResponse.class);
