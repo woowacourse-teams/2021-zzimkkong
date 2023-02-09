@@ -3,7 +3,7 @@ import { MouseEventHandler, useState } from 'react';
 import { Step } from 'components/TimePicker/TimePicker';
 import { Midday, Range, Time } from 'types/time';
 
-type SelectedTime = keyof Range | null;
+export type SelectedTime = keyof Range | null;
 
 interface Props {
   initialStartTime?: Date;

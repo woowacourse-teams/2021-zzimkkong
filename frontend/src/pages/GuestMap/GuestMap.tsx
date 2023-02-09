@@ -1,29 +1,28 @@
 import { AxiosError } from 'axios';
 import dayjs, { Dayjs } from 'dayjs';
-import React, { useContext, useEffect, useMemo, useRef, useState } from 'react';
+import { useContext, useEffect, useMemo, useRef, useState } from 'react';
 import { useMutation } from 'react-query';
 import { useHistory, useLocation, useParams } from 'react-router-dom';
 import { deleteGuestReservation } from 'api/guestReservation';
 import Header from 'components/Header/Header';
-import { EDITOR } from 'constants/editor';
 import MESSAGE from 'constants/message';
-import PALETTE from 'constants/palette';
-import PATH, { HREF } from 'constants/path';
-import useGuestMap from 'hooks/query/useGuestMap';
+import { HREF } from 'constants/path';
 import useGuestReservations from 'hooks/query/useGuestReservations';
 import useGuestSpaces from 'hooks/query/useGuestSpaces';
 import { AccessTokenContext } from 'providers/AccessTokenProvider';
-import { Area, MapDrawing, MapItem, Reservation, ScrollPosition, Space } from 'types/common';
-import { DrawingAreaShape } from 'types/editor';
+import { Area, MapItem, Reservation, ScrollPosition, Space } from 'types/common';
 import { GuestPageURLParams } from 'types/guest';
 import { ErrorResponse } from 'types/response';
 import { formatDate } from 'utils/datetime';
-import { getPolygonCenterPoint } from 'utils/editor';
 import { isNullish } from 'utils/type';
 import * as Styled from './GuestMap.styles';
+import { GuestMapFormContext } from './providers/GuestMapFormProvider';
 import Aside from './units/Aside';
+import GuestMapDrawing from './units/GuestMapDrawing';
 import LoginPopup from './units/LoginPopup';
 import PasswordInputModal from './units/PasswordInputModal';
+
+export const SWITCH_LABEL_LIST = ['예약하기', '예약현황'];
 
 export interface GuestMapState {
   spaceId?: Space['id'];
@@ -31,8 +30,13 @@ export interface GuestMapState {
   scrollPosition?: ScrollPosition;
 }
 
-const GuestMap = (): JSX.Element => {
+interface GuestMapProps {
+  map: MapItem;
+}
+
+const GuestMap = ({ map }: GuestMapProps): JSX.Element => {
   const { accessToken } = useContext(AccessTokenContext);
+  const { setSelectedSpaceId: setSelectedSpaceIdForm } = useContext(GuestMapFormContext);
 
   const [passwordInputModalOpen, setPasswordInputModalOpen] = useState(false);
   const [selectedReservation, setSelectedReservation] = useState<Reservation>();
@@ -49,33 +53,15 @@ const GuestMap = (): JSX.Element => {
   const targetDate = location.state?.targetDate;
   const scrollPosition = location.state?.scrollPosition;
 
-  const [map, setMap] = useState<MapItem | null>(null);
-  const mapDrawing = map?.mapDrawing;
-  useGuestMap(
-    { sharingMapId },
-    {
-      onError: () => {
-        history.replace(PATH.NOT_FOUND);
-      },
-      onSuccess: (response) => {
-        const mapData = response.data;
-
-        try {
-          setMap({
-            ...mapData,
-            mapDrawing: JSON.parse(mapData.mapDrawing) as MapDrawing,
-          });
-        } catch (error) {
-          alert(MESSAGE.GUEST_MAP.MAP_DRAWING_PARSE_ERROR);
-        }
-      },
-      retry: false,
-    }
-  );
+  const mapDrawing = map.mapDrawing;
 
   const [spaceList, setSpaceList] = useState<Space[]>([]);
   const [selectedSpaceId, setSelectedSpaceId] = useState<Space['id'] | null>(spaceId ?? null);
   const [date, setDate] = useState(targetDate ? dayjs(targetDate).tz() : dayjs().tz());
+
+  const [selectedSwitchLabel, setSelectedSwitchLabel] = useState<typeof SWITCH_LABEL_LIST[number]>(
+    SWITCH_LABEL_LIST[0]
+  );
 
   const spaces = useMemo(() => {
     const result: { [key: string]: Space } = {};
@@ -85,9 +71,9 @@ const GuestMap = (): JSX.Element => {
   }, [spaceList]);
 
   useGuestSpaces(
-    { mapId: map?.mapId as number },
+    { mapId: map.mapId },
     {
-      enabled: map?.mapId !== undefined,
+      enabled: map.mapId !== undefined,
       onSuccess: (response) => {
         const { spaces } = response.data;
 
@@ -102,7 +88,7 @@ const GuestMap = (): JSX.Element => {
 
   const getReservations = useGuestReservations(
     {
-      mapId: map?.mapId as number,
+      mapId: map.mapId,
       spaceId: selectedSpaceId as number,
       date: formatDate(date),
     },
@@ -123,8 +109,16 @@ const GuestMap = (): JSX.Element => {
     },
   });
 
+  const handleClickSwitch = (label: typeof SWITCH_LABEL_LIST[number]) => {
+    setSelectedSwitchLabel(label);
+  };
+
   const handleClickSpaceArea = (spaceId: number) => {
-    setSelectedSpaceId(spaceId);
+    if (selectedSwitchLabel === SWITCH_LABEL_LIST[0]) {
+      setSelectedSpaceIdForm?.(`${spaceId}`);
+    } else if (selectedSwitchLabel === SWITCH_LABEL_LIST[1]) {
+      setSelectedSpaceId(spaceId);
+    }
   };
 
   const handleEdit = (reservation: Reservation) => {
@@ -133,7 +127,7 @@ const GuestMap = (): JSX.Element => {
     history.push({
       pathname: HREF.GUEST_RESERVATION_EDIT(sharingMapId),
       state: {
-        mapId: map?.mapId,
+        mapId: map.mapId,
         spaceId: spaces[selectedSpaceId].id,
         reservation,
         selectedDate: formatDate(date),
@@ -143,22 +137,22 @@ const GuestMap = (): JSX.Element => {
   };
 
   const deleteLoginReservation = (reservationId: number) => {
-    if (typeof map?.mapId !== 'number' || selectedSpaceId === null) return;
+    if (typeof map.mapId !== 'number' || selectedSpaceId === null) return;
 
     if (!window.confirm(MESSAGE.GUEST_MAP.DELETE_CONFIRM)) return;
 
     removeReservation.mutate({
-      mapId: map?.mapId,
+      mapId: map.mapId,
       spaceId: selectedSpaceId,
       reservationId: reservationId,
     });
   };
 
   const handleDeleteGuestReservation = (passwordInput: string) => {
-    if (typeof map?.mapId !== 'number' || selectedSpaceId === null) return;
+    if (typeof map.mapId !== 'number' || selectedSpaceId === null) return;
 
     removeReservation.mutate({
-      mapId: map?.mapId,
+      mapId: map.mapId,
       spaceId: selectedSpaceId,
       password: passwordInput,
       reservationId: Number(selectedReservation?.id),
@@ -180,7 +174,7 @@ const GuestMap = (): JSX.Element => {
     history.push({
       pathname: HREF.GUEST_RESERVATION(sharingMapId),
       state: {
-        mapId: map?.mapId,
+        mapId: map.mapId,
         spaceId: spaces[selectedSpaceId].id,
         selectedDate: formatDate(date),
         scrollPosition: { x: mapRef?.current?.scrollLeft, y: mapRef?.current?.scrollTop },
@@ -205,87 +199,16 @@ const GuestMap = (): JSX.Element => {
   }, [targetDate]);
 
   return (
-    <Styled.Page>
-      {map && <Aside map={map} />}
+    <>
+      <Aside map={map} selectedLabel={selectedSwitchLabel} onClickSwitch={handleClickSwitch} />
       <Styled.MapContainer ref={mapRef}>
         <Header onClickLogin={() => setLoginPopupOpen(true)} />
         {mapDrawing && (
-          <Styled.MapItem width={mapDrawing.width} height={mapDrawing.height}>
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              version="1.1"
-              width={mapDrawing.width}
-              height={mapDrawing.height}
-            >
-              {/* Note: 맵을 그리는 부분 */}
-              {mapDrawing.mapElements.map((element) =>
-                element.type === 'polyline' ? (
-                  <polyline
-                    key={`polyline-${element.id}`}
-                    points={element.points.join(' ')}
-                    stroke={element.stroke}
-                    strokeWidth={EDITOR.STROKE_WIDTH}
-                    strokeLinecap="round"
-                  />
-                ) : (
-                  <rect
-                    key={`rect-${element.id}`}
-                    x={element?.x}
-                    y={element?.y}
-                    width={element?.width}
-                    height={element?.height}
-                    stroke={element.stroke}
-                    fill="none"
-                    strokeWidth={EDITOR.STROKE_WIDTH}
-                  />
-                )
-              )}
-
-              {/* Note: 공간을 그리는 부분 */}
-              {spaceList.length > 0 &&
-                spaceList.map(({ id, area, color, name }) => (
-                  <Styled.Space
-                    key={`area-${id}`}
-                    data-testid={id}
-                    onClick={() => handleClickSpaceArea(id)}
-                  >
-                    {area.shape === DrawingAreaShape.Rect && (
-                      <>
-                        <Styled.SpaceRect
-                          x={area.x}
-                          y={area.y}
-                          width={area.width}
-                          height={area.height}
-                          fill={color ?? PALETTE.RED[200]}
-                          opacity="0.3"
-                        />
-                        <Styled.SpaceAreaText
-                          x={area.x + area.width / 2}
-                          y={area.y + area.height / 2}
-                        >
-                          {name}
-                        </Styled.SpaceAreaText>
-                      </>
-                    )}
-                    {area.shape === DrawingAreaShape.Polygon && (
-                      <>
-                        <Styled.SpacePolygon
-                          points={area.points.map(({ x, y }) => `${x},${y}`).join(' ')}
-                          fill={color ?? PALETTE.RED[200]}
-                          opacity="0.3"
-                        />
-                        <Styled.SpaceAreaText
-                          x={getPolygonCenterPoint(area.points).x}
-                          y={getPolygonCenterPoint(area.points).y}
-                        >
-                          {name}
-                        </Styled.SpaceAreaText>
-                      </>
-                    )}
-                  </Styled.Space>
-                ))}
-            </svg>
-          </Styled.MapItem>
+          <GuestMapDrawing
+            mapDrawing={mapDrawing}
+            spaceList={spaceList}
+            onClickSpaceArea={handleClickSpaceArea}
+          />
         )}
       </Styled.MapContainer>
 
@@ -302,7 +225,7 @@ const GuestMap = (): JSX.Element => {
           onLogin={handleLogin}
         />
       )}
-    </Styled.Page>
+    </>
   );
 };
 
