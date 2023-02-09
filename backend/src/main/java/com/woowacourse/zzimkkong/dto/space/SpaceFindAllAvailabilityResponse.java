@@ -18,12 +18,9 @@ public class SpaceFindAllAvailabilityResponse {
     public static SpaceFindAllAvailabilityResponse of(
             final Long mapId,
             final Collection<Space> allSpaces,
-            final Collection<Space> occupiedSpaces) {
+            final Collection<Space> unavailableSpaces) {
         List<SpaceFindAvailabilityResponse> spaces = allSpaces.stream()
-                .map(space -> SpaceFindAvailabilityResponse.builder()
-                        .spaceId(space.getId())
-                        .isAvailable(!occupiedSpaces.contains(space))
-                        .build())
+                .map(space -> SpaceFindAvailabilityResponse.of(space, unavailableSpaces))
                 .collect(Collectors.toList());
 
         return SpaceFindAllAvailabilityResponse.builder()

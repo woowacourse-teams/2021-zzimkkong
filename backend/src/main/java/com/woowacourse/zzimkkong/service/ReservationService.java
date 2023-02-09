@@ -282,6 +282,7 @@ public class ReservationService {
             throw new InvalidStartEndTimeException(relevantSettings, timeSlot);
         }
 
+        // TODO: 2023/02/09 기준, 예약은 하나의 세팅만 걸쳐야한다
         Setting setting = relevantSettings.getSettings().get(0);
 
         if (setting.cannotAcceptDueToTimeUnit(timeSlot)) {

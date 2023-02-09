@@ -13,7 +13,10 @@ import com.woowacourse.zzimkkong.repository.SpaceRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.DayOfWeek;
 import java.time.LocalDateTime;
+import java.util.AbstractMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -114,13 +117,11 @@ public class SpaceService {
 
         Set<Long> spaceIds = allSpaces.stream().map(Space::getId).collect(Collectors.toSet());
         ReservationTime reservationTime = ReservationTime.ofDefaultServiceZone(startDateTime, endDateTime);
-        Set<Space> occupiedSpaces = reservations.findAllBySpaceIdInAndReservationTimeDate(spaceIds, reservationTime.getDate())
-                .stream()
-                .filter(reservation -> reservationTime.hasConflictWith(reservation.getReservationTime()))
-                .map(Reservation::getSpace)
-                .collect(Collectors.toSet());
+        List<Reservation> allReservations = reservations.findAllBySpaceIdInAndReservationTimeDate(spaceIds, reservationTime.getDate());
 
-        return SpaceFindAllAvailabilityResponse.of(mapId, allSpaces, occupiedSpaces);
+        Set<Space> unavailableSpaces = getUnavailableSpaces(reservationTime, allReservations);
+
+        return SpaceFindAllAvailabilityResponse.of(mapId, allSpaces, unavailableSpaces);
     }
 
     public void updateSpace(
@@ -178,5 +179,38 @@ public class SpaceService {
         if (!map.isOwnedBy(email)) {
             throw new NoAuthorityOnMapException();
         }
+    }
+
+    private Set<Space> getUnavailableSpaces(final ReservationTime reservationTime, final List<Reservation> allReservations) {
+        Set<Space> occupiedSpaces = allReservations.stream()
+                .filter(reservation -> reservationTime.hasConflictWith(reservation.getReservationTime()))
+                .map(Reservation::getSpace)
+                .collect(Collectors.toSet());
+        List<Space> settingViolatedSpaces = allReservations.stream()
+                .map(Reservation::getSpace)
+                .distinct()
+                .filter(space -> isSpaceSettingViolated(space, reservationTime))
+                .collect(Collectors.toList());
+        occupiedSpaces.addAll(settingViolatedSpaces);
+
+        return occupiedSpaces;
+    }
+
+    /**
+     * Reference {@link ReservationService#validateSpaceSetting(Space, Reservation)}
+     */
+    private Boolean isSpaceSettingViolated(final Space space, final ReservationTime reservationTime) {
+        TimeSlot timeSlot = reservationTime.at(space.getServiceZone());
+        DayOfWeek dayOfWeek = reservationTime.getDayOfWeek();
+
+        Settings relevantSettings = space.getRelevantSettings(timeSlot, dayOfWeek);
+
+        return relevantSettings.isEmpty() ||
+                relevantSettings.haveMultipleSettings() ||
+                relevantSettings.cannotAcceptDueToAvailableTime(timeSlot) ||
+                relevantSettings.getSettings().get(0).cannotAcceptDueToTimeUnit(timeSlot) ||
+                relevantSettings.getSettings().get(0).cannotAcceptDueToMinimumTimeUnit(timeSlot) ||
+                relevantSettings.getSettings().get(0).cannotAcceptDueToMaximumTimeUnit(timeSlot) ||
+                space.isUnableToReserve();
     }
 }
