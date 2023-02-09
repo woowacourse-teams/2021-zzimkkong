@@ -1,20 +1,16 @@
-import React, { useState } from 'react';
 import Switch from 'components/Switch/Switch';
-import { MapItem, Space } from 'types/common';
+import { MapItem } from 'types/common';
+import { SWITCH_LABEL_LIST } from '../GuestMap';
 import * as Styled from './Aside.styled';
 import ReservationForm from './ReservationForm';
 
 interface Props {
   map: MapItem;
+  selectedLabel: typeof SWITCH_LABEL_LIST[number];
+  onClickSwitch: (label: typeof SWITCH_LABEL_LIST[number]) => void;
 }
 
-const SWITCH_LABEL_LIST = ['예약하기', '예약현황'];
-
-const Aside = ({ map }: Props) => {
-  const [selectedLabel, setSelectedLabel] = useState<typeof SWITCH_LABEL_LIST[number]>(
-    SWITCH_LABEL_LIST[0]
-  );
-
+const Aside = ({ map, selectedLabel, onClickSwitch }: Props) => {
   return (
     <Styled.Container>
       {map.notice && (
@@ -27,7 +23,7 @@ const Aside = ({ map }: Props) => {
         <Switch
           labelList={SWITCH_LABEL_LIST}
           selectedLabel={selectedLabel}
-          onClick={(label) => setSelectedLabel(label)}
+          onClick={onClickSwitch}
         />
       </Styled.SwitchContainer>
 

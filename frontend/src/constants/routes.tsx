@@ -1,5 +1,6 @@
 import React, { ReactNode } from 'react';
 import GuestMain from 'pages/GuestMain/GuestMain';
+import GuestMapContainer from 'pages/GuestMap/GuestMapContainer';
 import ManagerMapList from 'pages/ManagerMapList/ManagerMapList';
 import PATH from './path';
 
@@ -55,7 +56,7 @@ export const PUBLIC_ROUTES: Route[] = [
   },
   {
     path: PATH.GUEST_MAP,
-    component: <GuestMap />,
+    component: <GuestMapContainer />,
   },
   {
     path: PATH.GUEST_RESERVATION,
