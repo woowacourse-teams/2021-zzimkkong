@@ -21,6 +21,7 @@ import { formatDate } from 'utils/datetime';
 import { getPolygonCenterPoint } from 'utils/editor';
 import { isNullish } from 'utils/type';
 import * as Styled from './GuestMap.styles';
+import GuestMapFormProvider from './providers/GuestMapFormProvider';
 import Aside from './units/Aside';
 import LoginPopup from './units/LoginPopup';
 import PasswordInputModal from './units/PasswordInputModal';
@@ -204,90 +205,94 @@ const GuestMap = (): JSX.Element => {
     }
   }, [targetDate]);
 
+  if (map === null) return <></>;
+
   return (
     <Styled.Page>
-      {map && <Aside map={map} />}
-      <Styled.MapContainer ref={mapRef}>
-        <Header onClickLogin={() => setLoginPopupOpen(true)} />
-        {mapDrawing && (
-          <Styled.MapItem width={mapDrawing.width} height={mapDrawing.height}>
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              version="1.1"
-              width={mapDrawing.width}
-              height={mapDrawing.height}
-            >
-              {/* Note: 맵을 그리는 부분 */}
-              {mapDrawing.mapElements.map((element) =>
-                element.type === 'polyline' ? (
-                  <polyline
-                    key={`polyline-${element.id}`}
-                    points={element.points.join(' ')}
-                    stroke={element.stroke}
-                    strokeWidth={EDITOR.STROKE_WIDTH}
-                    strokeLinecap="round"
-                  />
-                ) : (
-                  <rect
-                    key={`rect-${element.id}`}
-                    x={element?.x}
-                    y={element?.y}
-                    width={element?.width}
-                    height={element?.height}
-                    stroke={element.stroke}
-                    fill="none"
-                    strokeWidth={EDITOR.STROKE_WIDTH}
-                  />
-                )
-              )}
+      <GuestMapFormProvider mapId={map.mapId}>
+        <Aside map={map} />
+        <Styled.MapContainer ref={mapRef}>
+          <Header onClickLogin={() => setLoginPopupOpen(true)} />
+          {mapDrawing && (
+            <Styled.MapItem width={mapDrawing.width} height={mapDrawing.height}>
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                version="1.1"
+                width={mapDrawing.width}
+                height={mapDrawing.height}
+              >
+                {/* Note: 맵을 그리는 부분 */}
+                {mapDrawing.mapElements.map((element) =>
+                  element.type === 'polyline' ? (
+                    <polyline
+                      key={`polyline-${element.id}`}
+                      points={element.points.join(' ')}
+                      stroke={element.stroke}
+                      strokeWidth={EDITOR.STROKE_WIDTH}
+                      strokeLinecap="round"
+                    />
+                  ) : (
+                    <rect
+                      key={`rect-${element.id}`}
+                      x={element?.x}
+                      y={element?.y}
+                      width={element?.width}
+                      height={element?.height}
+                      stroke={element.stroke}
+                      fill="none"
+                      strokeWidth={EDITOR.STROKE_WIDTH}
+                    />
+                  )
+                )}
 
-              {/* Note: 공간을 그리는 부분 */}
-              {spaceList.length > 0 &&
-                spaceList.map(({ id, area, color, name }) => (
-                  <Styled.Space
-                    key={`area-${id}`}
-                    data-testid={id}
-                    onClick={() => handleClickSpaceArea(id)}
-                  >
-                    {area.shape === DrawingAreaShape.Rect && (
-                      <>
-                        <Styled.SpaceRect
-                          x={area.x}
-                          y={area.y}
-                          width={area.width}
-                          height={area.height}
-                          fill={color ?? PALETTE.RED[200]}
-                          opacity="0.3"
-                        />
-                        <Styled.SpaceAreaText
-                          x={area.x + area.width / 2}
-                          y={area.y + area.height / 2}
-                        >
-                          {name}
-                        </Styled.SpaceAreaText>
-                      </>
-                    )}
-                    {area.shape === DrawingAreaShape.Polygon && (
-                      <>
-                        <Styled.SpacePolygon
-                          points={area.points.map(({ x, y }) => `${x},${y}`).join(' ')}
-                          fill={color ?? PALETTE.RED[200]}
-                          opacity="0.3"
-                        />
-                        <Styled.SpaceAreaText
-                          x={getPolygonCenterPoint(area.points).x}
-                          y={getPolygonCenterPoint(area.points).y}
-                        >
-                          {name}
-                        </Styled.SpaceAreaText>
-                      </>
-                    )}
-                  </Styled.Space>
-                ))}
-            </svg>
-          </Styled.MapItem>
-        )}
-      </Styled.MapContainer>
+                {/* Note: 공간을 그리는 부분 */}
+                {spaceList.length > 0 &&
+                  spaceList.map(({ id, area, color, name }) => (
+                    <Styled.Space
+                      key={`area-${id}`}
+                      data-testid={id}
+                      onClick={() => handleClickSpaceArea(id)}
+                    >
+                      {area.shape === DrawingAreaShape.Rect && (
+                        <>
+                          <Styled.SpaceRect
+                            x={area.x}
+                            y={area.y}
+                            width={area.width}
+                            height={area.height}
+                            fill={color ?? PALETTE.RED[200]}
+                            opacity="0.3"
+                          />
+                          <Styled.SpaceAreaText
+                            x={area.x + area.width / 2}
+                            y={area.y + area.height / 2}
+                          >
+                            {name}
+                          </Styled.SpaceAreaText>
+                        </>
+                      )}
+                      {area.shape === DrawingAreaShape.Polygon && (
+                        <>
+                          <Styled.SpacePolygon
+                            points={area.points.map(({ x, y }) => `${x},${y}`).join(' ')}
+                            fill={color ?? PALETTE.RED[200]}
+                            opacity="0.3"
+                          />
+                          <Styled.SpaceAreaText
+                            x={getPolygonCenterPoint(area.points).x}
+                            y={getPolygonCenterPoint(area.points).y}
+                          >
+                            {name}
+                          </Styled.SpaceAreaText>
+                        </>
+                      )}
+                    </Styled.Space>
+                  ))}
+              </svg>
+            </Styled.MapItem>
+          )}
+        </Styled.MapContainer>
+      </GuestMapFormProvider>
 
       <PasswordInputModal
         open={passwordInputModalOpen}

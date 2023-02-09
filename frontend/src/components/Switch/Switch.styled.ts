@@ -19,6 +19,7 @@ export const SwitchButton = styled.button<{ selected: boolean }>`
   font-size: 1rem;
   background-color: ${({ theme, selected }) => (selected ? theme.primary[500] : theme.gray[100])};
   color: ${({ theme, selected }) => (selected ? theme.white : theme.black[500])};
+  cursor: pointer;
 
   &:last-of-type {
     margin-right: 0;
