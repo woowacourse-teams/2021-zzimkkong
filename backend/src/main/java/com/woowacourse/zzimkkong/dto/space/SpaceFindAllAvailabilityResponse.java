@@ -4,6 +4,7 @@ import com.woowacourse.zzimkkong.domain.Space;
 import lombok.Builder;
 import lombok.Getter;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -16,8 +17,8 @@ public class SpaceFindAllAvailabilityResponse {
 
     public static SpaceFindAllAvailabilityResponse of(
             final Long mapId,
-            final List<Space> allSpaces,
-            final Set<Space> occupiedSpaces) {
+            final Collection<Space> allSpaces,
+            final Collection<Space> occupiedSpaces) {
         List<SpaceFindAvailabilityResponse> spaces = allSpaces.stream()
                 .map(space -> SpaceFindAvailabilityResponse.builder()
                         .spaceId(space.getId())
