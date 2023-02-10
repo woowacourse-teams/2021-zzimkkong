@@ -207,7 +207,9 @@ const GuestMap = ({ map }: GuestMapProps): JSX.Element => {
         selectedSpaceId={selectedSpaceId}
       />
       <Styled.MapContainer ref={mapRef}>
-        <Header onClickLogin={() => setLoginPopupOpen(true)} />
+        <Styled.HeaderWrapper>
+          <Header onClickLogin={() => setLoginPopupOpen(true)} />
+        </Styled.HeaderWrapper>
         {mapDrawing && (
           <GuestMapDrawing
             isReservation={selectedSwitchLabel === SWITCH_LABEL_LIST[0]}
