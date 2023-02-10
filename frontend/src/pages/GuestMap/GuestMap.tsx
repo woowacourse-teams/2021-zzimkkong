@@ -121,21 +121,6 @@ const GuestMap = ({ map }: GuestMapProps): JSX.Element => {
     }
   };
 
-  const handleEdit = (reservation: Reservation) => {
-    if (!selectedSpaceId) return;
-
-    history.push({
-      pathname: HREF.GUEST_RESERVATION_EDIT(sharingMapId),
-      state: {
-        mapId: map.mapId,
-        spaceId: spaces[selectedSpaceId].id,
-        reservation,
-        selectedDate: formatDate(date),
-        scrollPosition: { x: mapRef?.current?.scrollLeft, y: mapRef?.current?.scrollTop },
-      },
-    });
-  };
-
   const deleteLoginReservation = (reservationId: number) => {
     if (typeof map.mapId !== 'number' || selectedSpaceId === null) return;
 
@@ -168,14 +153,15 @@ const GuestMap = ({ map }: GuestMapProps): JSX.Element => {
     }
   };
 
-  const handleReservation = () => {
+  const handleEdit = (reservation: Reservation) => {
     if (!selectedSpaceId) return;
 
     history.push({
-      pathname: HREF.GUEST_RESERVATION(sharingMapId),
+      pathname: HREF.GUEST_RESERVATION_EDIT(sharingMapId),
       state: {
         mapId: map.mapId,
         spaceId: spaces[selectedSpaceId].id,
+        reservation,
         selectedDate: formatDate(date),
         scrollPosition: { x: mapRef?.current?.scrollLeft, y: mapRef?.current?.scrollTop },
       },
