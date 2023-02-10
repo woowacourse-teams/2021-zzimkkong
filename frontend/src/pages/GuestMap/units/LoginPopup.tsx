@@ -71,7 +71,7 @@ const LoginPopup = ({ open, onClose, onLogin }: LoginPopupProps): JSX.Element =>
     <Modal open={open} onClose={onClose}>
       <Styled.LoginPopupWrapper>
         <Styled.LoginPopupHeading>
-          <strong>나의 예약 내역</strong>을 관리해보세요!
+          로그인 후 <strong>나의 예약 내역</strong>을 관리해보세요!
         </Styled.LoginPopupHeading>
         <Styled.LoginPopupForm onSubmit={handleSubmitLogin}>
           <Styled.LoginFormInputWrapper>
