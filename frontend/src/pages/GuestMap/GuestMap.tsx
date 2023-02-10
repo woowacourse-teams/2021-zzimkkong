@@ -205,6 +205,7 @@ const GuestMap = ({ map }: GuestMapProps): JSX.Element => {
         <Header onClickLogin={() => setLoginPopupOpen(true)} />
         {mapDrawing && (
           <GuestMapDrawing
+            isReservation={selectedSwitchLabel === SWITCH_LABEL_LIST[0]}
             mapDrawing={mapDrawing}
             spaceList={spaceList}
             onClickSpaceArea={handleClickSpaceArea}
