@@ -200,6 +200,7 @@ const GuestMap = ({ map }: GuestMapProps): JSX.Element => {
 
   return (
     <>
+      {/* TODO HeaderWrapper가 Aside의 length에 의존하고 있음 공통값으로 관리해야 함 */}
       <Aside
         map={map}
         selectedLabel={selectedSwitchLabel}
