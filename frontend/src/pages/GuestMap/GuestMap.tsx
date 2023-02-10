@@ -192,6 +192,8 @@ const GuestMap = ({ map }: GuestMapProps): JSX.Element => {
         selectedLabel={selectedSwitchLabel}
         onClickSwitch={handleClickSwitch}
         selectedSpaceId={selectedSpaceId}
+        onEdit={handleEdit}
+        onDelete={handleDelete}
       />
       <Styled.MapContainer ref={mapRef}>
         <Styled.HeaderWrapper>

@@ -1,5 +1,5 @@
 import Switch from 'components/Switch/Switch';
-import { MapItem } from 'types/common';
+import { MapItem, Reservation } from 'types/common';
 import { SWITCH_LABEL_LIST } from '../GuestMap';
 import * as Styled from './Aside.styled';
 import ReservationForm from './ReservationForm';
@@ -10,9 +10,11 @@ interface Props {
   selectedLabel: typeof SWITCH_LABEL_LIST[number];
   onClickSwitch: (label: typeof SWITCH_LABEL_LIST[number]) => void;
   selectedSpaceId: number | null;
+  onEdit: (reservation: Reservation) => void;
+  onDelete: (reservation: Reservation) => void;
 }
 
-const Aside = ({ map, selectedLabel, onClickSwitch, selectedSpaceId }: Props) => {
+const Aside = ({ map, selectedLabel, onClickSwitch, selectedSpaceId, onDelete, onEdit }: Props) => {
   const isReservation = selectedLabel === SWITCH_LABEL_LIST[0];
 
   return (
@@ -34,7 +36,12 @@ const Aside = ({ map, selectedLabel, onClickSwitch, selectedSpaceId }: Props) =>
       {isReservation ? (
         <ReservationForm map={map} />
       ) : (
-        <ReservationList map={map} selectedSpaceId={selectedSpaceId} />
+        <ReservationList
+          map={map}
+          selectedSpaceId={selectedSpaceId}
+          onEdit={onEdit}
+          onDelete={onDelete}
+        />
       )}
     </Styled.Container>
   );

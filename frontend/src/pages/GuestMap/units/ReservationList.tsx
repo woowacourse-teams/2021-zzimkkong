@@ -10,7 +10,7 @@ import DATE from 'constants/date';
 import useGuestReservations from 'hooks/query/useGuestReservations';
 import useGuestSpace from 'hooks/query/useGuestSpace';
 import { AccessTokenContext } from 'providers/AccessTokenProvider';
-import { MapItem } from 'types/common';
+import { MapItem, Reservation } from 'types/common';
 import { formatDate, isPastDate } from 'utils/datetime';
 import { getReservationStatus } from 'utils/reservation';
 import { isNullish } from 'utils/type';
@@ -19,9 +19,11 @@ import * as Styled from './ReservationList.styled';
 interface Props {
   map: MapItem;
   selectedSpaceId: number | null;
+  onEdit: (reservation: Reservation) => void;
+  onDelete: (reservation: Reservation) => void;
 }
 
-const ReservationList = ({ map: { mapId }, selectedSpaceId }: Props) => {
+const ReservationList = ({ map: { mapId }, selectedSpaceId, onDelete, onEdit }: Props) => {
   const { accessToken } = useContext(AccessTokenContext);
 
   const [date, setDate] = useState<string>(dayjs().format('YYYY-MM-DD'));
@@ -111,14 +113,14 @@ const ReservationList = ({ map: { mapId }, selectedSpaceId }: Props) => {
                       <Styled.IconButtonWrapper>
                         <IconButton
                           size="small"
-                          // onClick={() => onEdit(reservation)}
+                          onClick={() => onEdit(reservation)}
                           aria-label="수정"
                         >
                           <EditIcon width="100%" height="100%" />
                         </IconButton>
                         <IconButton
                           size="small"
-                          // onClick={() => onDelete(reservation)}
+                          onClick={() => onDelete(reservation)}
                           aria-label="삭제"
                         >
                           <DeleteIcon width="100%" height="100%" />
