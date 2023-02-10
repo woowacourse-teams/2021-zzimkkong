@@ -4,6 +4,7 @@ import { ReactComponent as CalendarIcon } from 'assets/svg/calendar.svg';
 import Input from 'components/Input/Input';
 import DATE from 'constants/date';
 import useGuestReservations from 'hooks/query/useGuestReservations';
+import useGuestSpace from 'hooks/query/useGuestSpace';
 import { MapItem } from 'types/common';
 import { formatDate } from 'utils/datetime';
 import { isNullish } from 'utils/type';
@@ -17,7 +18,7 @@ interface Props {
 const ReservationList = ({ map: { mapId }, selectedSpaceId }: Props) => {
   const [date, setDate] = useState<string>(dayjs().format('YYYY-MM-DD'));
 
-  const getReservations = useGuestReservations(
+  const { data: reservaitons } = useGuestReservations(
     {
       mapId: mapId,
       spaceId: selectedSpaceId as number,
@@ -28,12 +29,26 @@ const ReservationList = ({ map: { mapId }, selectedSpaceId }: Props) => {
     }
   );
 
+  const { data: space } = useGuestSpace(
+    {
+      mapId,
+      spaceId: selectedSpaceId as number,
+    },
+    {
+      enabled: !isNullish(selectedSpaceId),
+    }
+  );
+
   const handleDate = (e: React.ChangeEvent<HTMLInputElement>) => {
     setDate(e.target.value);
   };
 
   return (
     <Styled.ReservationListWrapper>
+      <Styled.SpaceTitle>
+        <Styled.ColorDot color={space?.data.color ?? 'transparent'} />
+        {space?.data.name}
+      </Styled.SpaceTitle>
       <Input
         type="date"
         name="date"
