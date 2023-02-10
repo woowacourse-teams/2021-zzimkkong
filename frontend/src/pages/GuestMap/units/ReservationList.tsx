@@ -5,10 +5,8 @@ import { ReactComponent as DeleteIcon } from 'assets/svg/delete.svg';
 import { ReactComponent as EditIcon } from 'assets/svg/edit.svg';
 import DateInput from 'components/DateInput/DateInput';
 import IconButton from 'components/IconButton/IconButton';
-import Input from 'components/Input/Input';
 import ManagerReservationListItem from 'components/ManagerReservationListItem/ManagerReservationListItem';
 import Panel from 'components/Panel/Panel';
-import DATE from 'constants/date';
 import MESSAGE from 'constants/message';
 import useManagerMapReservations from 'hooks/query/useManagerMapReservations';
 import { MapItem } from 'types/common';
@@ -16,7 +14,6 @@ import { ErrorResponse } from 'types/response';
 import { formatDate } from 'utils/datetime';
 import { getReservationStatus } from 'utils/reservation';
 import { isNullish } from 'utils/type';
-import ReservationItem from './ReservationItem';
 import * as Styled from './ReservationList.styled';
 
 interface Props {
