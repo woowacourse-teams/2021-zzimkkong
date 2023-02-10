@@ -200,7 +200,12 @@ const GuestMap = ({ map }: GuestMapProps): JSX.Element => {
 
   return (
     <>
-      <Aside map={map} selectedLabel={selectedSwitchLabel} onClickSwitch={handleClickSwitch} />
+      <Aside
+        map={map}
+        selectedLabel={selectedSwitchLabel}
+        onClickSwitch={handleClickSwitch}
+        selectedSpaceId={selectedSpaceId}
+      />
       <Styled.MapContainer ref={mapRef}>
         <Header onClickLogin={() => setLoginPopupOpen(true)} />
         {mapDrawing && (

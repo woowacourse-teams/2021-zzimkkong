@@ -6,10 +6,13 @@ import * as Styled from './ReservationList.styled';
 
 interface Props {
   map: MapItem;
+  selectedSpaceId: number | null;
 }
 
-const ReservationList = ({ map: { mapId } }: Props) => {
+const ReservationList = ({ map: { mapId }, selectedSpaceId }: Props) => {
   const [date, setDate] = useState(dayjs());
+
+  console.log('selectedSpaceId', selectedSpaceId);
 
   return (
     <Styled.ReservationListWrapper>

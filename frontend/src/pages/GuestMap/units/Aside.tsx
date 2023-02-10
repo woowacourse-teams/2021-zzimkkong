@@ -9,9 +9,10 @@ interface Props {
   map: MapItem;
   selectedLabel: typeof SWITCH_LABEL_LIST[number];
   onClickSwitch: (label: typeof SWITCH_LABEL_LIST[number]) => void;
+  selectedSpaceId: number | null;
 }
 
-const Aside = ({ map, selectedLabel, onClickSwitch }: Props) => {
+const Aside = ({ map, selectedLabel, onClickSwitch, selectedSpaceId }: Props) => {
   const isReservation = selectedLabel === SWITCH_LABEL_LIST[0];
 
   return (
@@ -30,7 +31,11 @@ const Aside = ({ map, selectedLabel, onClickSwitch }: Props) => {
         />
       </Styled.SwitchContainer>
 
-      {isReservation ? <ReservationForm map={map} /> : <ReservationList map={map} />}
+      {isReservation ? (
+        <ReservationForm map={map} />
+      ) : (
+        <ReservationList map={map} selectedSpaceId={selectedSpaceId} />
+      )}
     </Styled.Container>
   );
 };
