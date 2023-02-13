@@ -90,7 +90,7 @@ const Login = (): JSX.Element => {
           <Styled.HorizontalLine />
           <Styled.JoinLinkMessage>
             비회원으로 예약하셨나요?
-            <Link to={PATH.GUEST_NON_LOGIN_RESERVATION_SEARCH}>비회원 예약 검색</Link>
+            <Link to={PATH.GUEST_NON_LOGIN_RESERVATION_SEARCH}>비회원 예약 조회</Link>
           </Styled.JoinLinkMessage>
         </Styled.Container>
       </Layout>
