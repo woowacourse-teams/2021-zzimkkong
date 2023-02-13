@@ -11,7 +11,7 @@ import useGuestReservations from 'hooks/query/useGuestReservations';
 import useGuestSpace from 'hooks/query/useGuestSpace';
 import { AccessTokenContext } from 'providers/AccessTokenProvider';
 import { MapItem, Reservation } from 'types/common';
-import { formatDate, isPastDate, isPastTime } from 'utils/datetime';
+import { formatDate, isPastTime } from 'utils/datetime';
 import { getReservationStatus } from 'utils/reservation';
 import { isNullish } from 'utils/type';
 import * as Styled from './ReservationList.styled';
@@ -83,8 +83,10 @@ const ReservationList = ({ map: { mapId }, selectedSpaceId, onDelete, onEdit }: 
           </Styled.Message>
         )}
 
-        {isSuccess && reservations?.data.reservations?.length === 0 && isPastDate(dayjs(date)) && (
-          <Styled.Message>예약이 없습니다.</Styled.Message>
+        {isSuccess && reservations?.data.reservations?.length === 0 && (
+          <Styled.MessageWrapper>
+            <Styled.Message>예약이 없습니다.</Styled.Message>
+          </Styled.MessageWrapper>
         )}
 
         {isSuccess && (reservations?.data.reservations?.length ?? 0) > 0 && (

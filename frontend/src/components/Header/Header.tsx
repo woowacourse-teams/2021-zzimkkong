@@ -62,6 +62,9 @@ const Header = ({ onClickLogin }: HeaderProps): JSX.Element => {
             </Styled.TextButton>
           ) : (
             <>
+              <Styled.TextLink to={PATH.GUEST_NON_LOGIN_RESERVATION_SEARCH}>
+                비회원 예약 조회
+              </Styled.TextLink>
               <Styled.TextLink
                 to={sharingMapId ? HREF.GUEST_MAP(sharingMapId) : PATH.LOGIN}
                 onClick={onClickLogin}

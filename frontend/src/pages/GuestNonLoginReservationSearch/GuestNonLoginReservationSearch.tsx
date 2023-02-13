@@ -38,7 +38,7 @@ const GuestNonLoginReservationSearch = (): JSX.Element => {
     <>
       <Header />
       <Styled.Container>
-        <Styled.ListTitle>비회원 예약 검색</Styled.ListTitle>
+        <Styled.ListTitle>비회원 예약 조회</Styled.ListTitle>
         <Styled.Form onSubmit={handleSubmit}>
           <Input
             type="userName"
