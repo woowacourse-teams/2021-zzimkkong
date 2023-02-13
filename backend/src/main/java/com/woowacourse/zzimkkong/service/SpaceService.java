@@ -119,7 +119,14 @@ public class SpaceService {
         ReservationTime reservationTime = ReservationTime.ofDefaultServiceZone(startDateTime, endDateTime);
         List<Reservation> allReservations = reservations.findAllBySpaceIdInAndReservationTimeDate(spaceIds, reservationTime.getDate());
 
-        Set<Space> unavailableSpaces = getUnavailableSpaces(reservationTime, allReservations);
+        Set<Space> unavailableSpaces = allReservations.stream()
+                .filter(reservation -> reservationTime.hasConflictWith(reservation.getReservationTime()))
+                .map(Reservation::getSpace)
+                .collect(Collectors.toSet());
+        List<Space> settingViolatedSpaces = allSpaces.stream()
+                .filter(space -> isSpaceSettingViolated(space, reservationTime))
+                .collect(Collectors.toList());
+        unavailableSpaces.addAll(settingViolatedSpaces);
 
         return SpaceFindAllAvailabilityResponse.of(mapId, allSpaces, unavailableSpaces);
     }
@@ -181,23 +188,8 @@ public class SpaceService {
         }
     }
 
-    private Set<Space> getUnavailableSpaces(final ReservationTime reservationTime, final List<Reservation> allReservations) {
-        Set<Space> occupiedSpaces = allReservations.stream()
-                .filter(reservation -> reservationTime.hasConflictWith(reservation.getReservationTime()))
-                .map(Reservation::getSpace)
-                .collect(Collectors.toSet());
-        List<Space> settingViolatedSpaces = allReservations.stream()
-                .map(Reservation::getSpace)
-                .distinct()
-                .filter(space -> isSpaceSettingViolated(space, reservationTime))
-                .collect(Collectors.toList());
-        occupiedSpaces.addAll(settingViolatedSpaces);
-
-        return occupiedSpaces;
-    }
-
     /**
-     * Reference {@link ReservationService#validateSpaceSetting(Space, Reservation)}
+     * Reference {@link ReservationService#validateSpaceSetting(Space, Reservation)}}
      */
     private Boolean isSpaceSettingViolated(final Space space, final ReservationTime reservationTime) {
         TimeSlot timeSlot = reservationTime.at(space.getServiceZone());
