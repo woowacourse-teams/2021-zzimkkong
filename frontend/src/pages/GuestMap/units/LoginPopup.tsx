@@ -9,6 +9,7 @@ import Modal from 'components/Modal/Modal';
 import SocialLoginButton from 'components/SocialAuthButton/SocialLoginButton';
 import MANAGER from 'constants/manager';
 import MESSAGE from 'constants/message';
+import PATH from 'constants/path';
 import useInputs from 'hooks/useInputs';
 import { AccessTokenContext } from 'providers/AccessTokenProvider';
 import { ErrorResponse, LoginSuccess } from 'types/response';
@@ -116,8 +117,8 @@ const LoginPopup = ({ open, onClose, onLogin }: LoginPopupProps): JSX.Element =>
         </Styled.LoginPopupForm>
         <Styled.Line />
         <Styled.SocialLoginButtonWrapper>
-          <SocialLoginButton provider="GITHUB" variant="icon" />
-          <SocialLoginButton provider="GOOGLE" variant="icon" />
+          <SocialLoginButton provider="GITHUB" variant="icon" href={PATH.GITHUB_LOGIN} />
+          <SocialLoginButton provider="GOOGLE" variant="icon" href={PATH.GOOGLE_LOGIN} />
         </Styled.SocialLoginButtonWrapper>
         <Styled.ContinueWithNonMemberWrapper>
           <Styled.ContinueWithNonMember onClick={onClose}>

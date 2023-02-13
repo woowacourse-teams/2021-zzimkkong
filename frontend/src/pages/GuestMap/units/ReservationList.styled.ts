@@ -42,3 +42,8 @@ export const IconButtonWrapper = styled.div`
   display: flex;
   gap: 0.5rem;
 `;
+
+export const MessageWrapper = styled.div`
+  display: flex;
+  justify-content: center;
+`;
