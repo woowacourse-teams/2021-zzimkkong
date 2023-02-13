@@ -7,6 +7,11 @@ export const Container = styled.aside`
   min-width: ${({ theme }) => theme.breakpoints.sm}px;
   box-shadow: 0.25rem 0 0.25rem 0 ${({ theme }) => theme.shadow};
   z-index: ${Z_INDEX.ASIDE};
+
+  @media (max-width: ${({ theme: { breakpoints } }) => breakpoints.sm}px) {
+    width: 100%;
+    min-width: 0;
+  }
 `;
 
 export const Notice = styled.div`
