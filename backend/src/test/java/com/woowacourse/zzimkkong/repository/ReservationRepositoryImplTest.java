@@ -1,6 +1,7 @@
 package com.woowacourse.zzimkkong.repository;
 
 import com.woowacourse.zzimkkong.domain.*;
+import com.woowacourse.zzimkkong.infrastructure.datetime.TimeZoneUtils;
 import org.assertj.core.api.AssertionsForClassTypes;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -67,8 +68,8 @@ class ReservationRepositoryImplTest extends RepositoryTest {
             Reservation beAmZeroOne = Reservation.builder()
                     .reservationTime(
                             ReservationTime.ofDefaultServiceZone(
-                                    BE_AM_TEN_ELEVEN_START_TIME_KST.withZoneSameInstant(UTC.toZoneId()).toLocalDateTime(),
-                                    BE_AM_TEN_ELEVEN_END_TIME_KST.withZoneSameInstant(UTC.toZoneId()).toLocalDateTime()))
+                                    TimeZoneUtils.convertToUTC(BE_AM_TEN_ELEVEN_START_TIME_KST),
+                                    TimeZoneUtils.convertToUTC(BE_AM_TEN_ELEVEN_END_TIME_KST)))
                     .description(BE_AM_TEN_ELEVEN_DESCRIPTION)
                     .userName(BE_AM_TEN_ELEVEN_USERNAME)
                     .password(BE_AM_TEN_ELEVEN_PW)

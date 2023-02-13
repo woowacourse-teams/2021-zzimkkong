@@ -1,16 +1,18 @@
 package com.woowacourse.zzimkkong.controller;
 
 import com.woowacourse.zzimkkong.config.logaspect.LogMethodExecutionTime;
-import com.woowacourse.zzimkkong.domain.LoginEmail;
-import com.woowacourse.zzimkkong.dto.member.LoginUserEmail;
+import com.woowacourse.zzimkkong.dto.space.SpaceFindAllAvailabilityResponse;
 import com.woowacourse.zzimkkong.dto.space.SpaceFindAllResponse;
 import com.woowacourse.zzimkkong.dto.space.SpaceFindDetailResponse;
+import com.woowacourse.zzimkkong.infrastructure.datetime.TimeZoneUtils;
 import com.woowacourse.zzimkkong.service.SpaceService;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.time.ZonedDateTime;
+
+import static com.woowacourse.zzimkkong.dto.ValidatorMessage.DATETIME_FORMAT;
 
 @LogMethodExecutionTime(group = "controller")
 @RestController
@@ -20,6 +22,18 @@ public class GuestSpaceController {
 
     public GuestSpaceController(SpaceService spaceService) {
         this.spaceService = spaceService;
+    }
+
+    @GetMapping("/availability")
+    public ResponseEntity<SpaceFindAllAvailabilityResponse> findAllSpaceAvailability(
+            @PathVariable final Long mapId,
+            @RequestParam @DateTimeFormat(pattern = DATETIME_FORMAT) final ZonedDateTime startDateTime,
+            @RequestParam @DateTimeFormat(pattern = DATETIME_FORMAT) final ZonedDateTime endDateTime) {
+        SpaceFindAllAvailabilityResponse spaceFindAllAvailabilityResponse = spaceService.findAllSpaceAvailability(
+                mapId,
+                TimeZoneUtils.convertToUTC(startDateTime),
+                TimeZoneUtils.convertToUTC(endDateTime));
+        return ResponseEntity.ok().body(spaceFindAllAvailabilityResponse);
     }
 
     @GetMapping

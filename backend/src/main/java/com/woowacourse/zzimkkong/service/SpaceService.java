@@ -1,11 +1,9 @@
 package com.woowacourse.zzimkkong.service;
 
-import com.woowacourse.zzimkkong.domain.Map;
-import com.woowacourse.zzimkkong.domain.Settings;
-import com.woowacourse.zzimkkong.domain.Space;
+import com.woowacourse.zzimkkong.domain.*;
+import com.woowacourse.zzimkkong.dto.map.NoAuthorityOnMapException;
 import com.woowacourse.zzimkkong.dto.member.LoginUserEmail;
 import com.woowacourse.zzimkkong.dto.space.*;
-import com.woowacourse.zzimkkong.dto.map.NoAuthorityOnMapException;
 import com.woowacourse.zzimkkong.exception.map.NoSuchMapException;
 import com.woowacourse.zzimkkong.exception.space.NoSuchSpaceException;
 import com.woowacourse.zzimkkong.exception.space.ReservationExistOnSpaceException;
@@ -15,8 +13,13 @@ import com.woowacourse.zzimkkong.repository.SpaceRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.DayOfWeek;
 import java.time.LocalDateTime;
+import java.util.AbstractMap;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 @Service
 @Transactional
@@ -104,6 +107,30 @@ public class SpaceService {
         return SpaceFindAllResponse.from(findAllSpaces);
     }
 
+    public SpaceFindAllAvailabilityResponse findAllSpaceAvailability(
+            final Long mapId,
+            final LocalDateTime startDateTime,
+            final LocalDateTime endDateTime) {
+        Map map = maps.findByIdFetch(mapId)
+                .orElseThrow(NoSuchMapException::new);
+        List<Space> allSpaces = map.getSpaces();
+
+        Set<Long> spaceIds = allSpaces.stream().map(Space::getId).collect(Collectors.toSet());
+        ReservationTime reservationTime = ReservationTime.ofDefaultServiceZone(startDateTime, endDateTime);
+        List<Reservation> allReservations = reservations.findAllBySpaceIdInAndReservationTimeDate(spaceIds, reservationTime.getDate());
+
+        Set<Space> unavailableSpaces = allReservations.stream()
+                .filter(reservation -> reservationTime.hasConflictWith(reservation.getReservationTime()))
+                .map(Reservation::getSpace)
+                .collect(Collectors.toSet());
+        List<Space> settingViolatedSpaces = allSpaces.stream()
+                .filter(space -> isSpaceSettingViolated(space, reservationTime))
+                .collect(Collectors.toList());
+        unavailableSpaces.addAll(settingViolatedSpaces);
+
+        return SpaceFindAllAvailabilityResponse.of(mapId, allSpaces, unavailableSpaces);
+    }
+
     public void updateSpace(
             final Long mapId,
             final Long spaceId,
@@ -159,5 +186,23 @@ public class SpaceService {
         if (!map.isOwnedBy(email)) {
             throw new NoAuthorityOnMapException();
         }
+    }
+
+    /**
+     * Reference {@link ReservationService#validateSpaceSetting(Space, Reservation)}}
+     */
+    private Boolean isSpaceSettingViolated(final Space space, final ReservationTime reservationTime) {
+        TimeSlot timeSlot = reservationTime.at(space.getServiceZone());
+        DayOfWeek dayOfWeek = reservationTime.getDayOfWeek();
+
+        Settings relevantSettings = space.getRelevantSettings(timeSlot, dayOfWeek);
+
+        return relevantSettings.isEmpty() ||
+                relevantSettings.haveMultipleSettings() ||
+                relevantSettings.cannotAcceptDueToAvailableTime(timeSlot) ||
+                relevantSettings.getSettings().get(0).cannotAcceptDueToTimeUnit(timeSlot) ||
+                relevantSettings.getSettings().get(0).cannotAcceptDueToMinimumTimeUnit(timeSlot) ||
+                relevantSettings.getSettings().get(0).cannotAcceptDueToMaximumTimeUnit(timeSlot) ||
+                space.isUnableToReserve();
     }
 }

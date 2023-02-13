@@ -3,6 +3,7 @@ package com.woowacourse.zzimkkong.dto.reservation;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
+import com.woowacourse.zzimkkong.infrastructure.datetime.TimeZoneUtils;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -55,10 +56,10 @@ public class ReservationCreateUpdateRequest {
     }
 
     public LocalDateTime localStartDateTime() {
-        return startDateTime.toLocalDateTime();
+        return TimeZoneUtils.convertToUTC(startDateTime);
     }
 
     public LocalDateTime localEndDateTime() {
-        return endDateTime.toLocalDateTime();
+        return TimeZoneUtils.convertToUTC(endDateTime);
     }
 }
