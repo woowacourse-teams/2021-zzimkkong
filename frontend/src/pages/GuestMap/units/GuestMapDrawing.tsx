@@ -12,9 +12,16 @@ interface GuestMapDrawingProps {
   mapDrawing: MapDrawing;
   spaceList: Space[];
   onClickSpaceArea: (spaceId: Space['id']) => void;
+  // 예약하기에서 조회된 맵인지 예약현황에서 조횐된 맵인지 판별하기 위한 flag
+  isReservation: boolean;
 }
 
-const GuestMapDrawing = ({ mapDrawing, spaceList, onClickSpaceArea }: GuestMapDrawingProps) => {
+const GuestMapDrawing = ({
+  mapDrawing,
+  spaceList,
+  onClickSpaceArea,
+  isReservation,
+}: GuestMapDrawingProps) => {
   const { availableSpaceList } = useContext(GuestMapFormContext);
 
   const availableSpace = useMemo(() => {
@@ -72,7 +79,7 @@ const GuestMapDrawing = ({ mapDrawing, spaceList, onClickSpaceArea }: GuestMapDr
                     height={area.height}
                     fill={color ?? PALETTE.RED[200]}
                     opacity="0.5"
-                    disabled={!availableSpace[id]}
+                    disabled={isReservation && !availableSpace[id]}
                   />
                   <Styled.SpaceAreaText x={area.x + area.width / 2} y={area.y + area.height / 2}>
                     {name}
@@ -85,7 +92,7 @@ const GuestMapDrawing = ({ mapDrawing, spaceList, onClickSpaceArea }: GuestMapDr
                     points={area.points.map(({ x, y }) => `${x},${y}`).join(' ')}
                     fill={color ?? PALETTE.RED[200]}
                     opacity="0.5"
-                    disabled={!availableSpace[id]}
+                    disabled={isReservation && !availableSpace[id]}
                   />
                   <Styled.SpaceAreaText
                     x={getPolygonCenterPoint(area.points).x}

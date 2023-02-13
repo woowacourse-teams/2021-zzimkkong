@@ -121,21 +121,6 @@ const GuestMap = ({ map }: GuestMapProps): JSX.Element => {
     }
   };
 
-  const handleEdit = (reservation: Reservation) => {
-    if (!selectedSpaceId) return;
-
-    history.push({
-      pathname: HREF.GUEST_RESERVATION_EDIT(sharingMapId),
-      state: {
-        mapId: map.mapId,
-        spaceId: spaces[selectedSpaceId].id,
-        reservation,
-        selectedDate: formatDate(date),
-        scrollPosition: { x: mapRef?.current?.scrollLeft, y: mapRef?.current?.scrollTop },
-      },
-    });
-  };
-
   const deleteLoginReservation = (reservationId: number) => {
     if (typeof map.mapId !== 'number' || selectedSpaceId === null) return;
 
@@ -168,14 +153,15 @@ const GuestMap = ({ map }: GuestMapProps): JSX.Element => {
     }
   };
 
-  const handleReservation = () => {
+  const handleEdit = (reservation: Reservation) => {
     if (!selectedSpaceId) return;
 
     history.push({
-      pathname: HREF.GUEST_RESERVATION(sharingMapId),
+      pathname: HREF.GUEST_RESERVATION_EDIT(sharingMapId),
       state: {
         mapId: map.mapId,
         spaceId: spaces[selectedSpaceId].id,
+        reservation,
         selectedDate: formatDate(date),
         scrollPosition: { x: mapRef?.current?.scrollLeft, y: mapRef?.current?.scrollTop },
       },
@@ -200,11 +186,22 @@ const GuestMap = ({ map }: GuestMapProps): JSX.Element => {
 
   return (
     <>
-      <Aside map={map} selectedLabel={selectedSwitchLabel} onClickSwitch={handleClickSwitch} />
+      {/* TODO HeaderWrapper가 Aside의 length에 의존하고 있음 공통값으로 관리해야 함 */}
+      <Aside
+        map={map}
+        selectedLabel={selectedSwitchLabel}
+        onClickSwitch={handleClickSwitch}
+        selectedSpaceId={selectedSpaceId}
+        onEdit={handleEdit}
+        onDelete={handleDelete}
+      />
       <Styled.MapContainer ref={mapRef}>
-        <Header onClickLogin={() => setLoginPopupOpen(true)} />
+        <Styled.HeaderWrapper>
+          <Header onClickLogin={() => setLoginPopupOpen(true)} />
+        </Styled.HeaderWrapper>
         {mapDrawing && (
           <GuestMapDrawing
+            isReservation={selectedSwitchLabel === SWITCH_LABEL_LIST[0]}
             mapDrawing={mapDrawing}
             spaceList={spaceList}
             onClickSpaceArea={handleClickSpaceArea}

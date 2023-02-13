@@ -4,6 +4,11 @@ export const Page = styled.div`
   display: flex;
 `;
 
+export const HeaderWrapper = styled.div`
+  position: fixed;
+  width: calc(100% - 576px);
+`;
+
 export const MapContainer = styled.div`
   height: 100vh;
   flex: 1;
