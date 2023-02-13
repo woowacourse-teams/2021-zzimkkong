@@ -11,7 +11,7 @@ import useGuestReservations from 'hooks/query/useGuestReservations';
 import useGuestSpace from 'hooks/query/useGuestSpace';
 import { AccessTokenContext } from 'providers/AccessTokenProvider';
 import { MapItem, Reservation } from 'types/common';
-import { formatDate, isPastDate, isPastTime } from 'utils/datetime';
+import { formatDate, isPastTime } from 'utils/datetime';
 import { getReservationStatus } from 'utils/reservation';
 import { isNullish } from 'utils/type';
 import * as Styled from './ReservationList.styled';
