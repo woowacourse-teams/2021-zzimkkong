@@ -1,8 +1,8 @@
 package com.woowacourse.zzimkkong.controller;
 
-import com.woowacourse.zzimkkong.Constants;
 import com.woowacourse.zzimkkong.domain.Map;
 import com.woowacourse.zzimkkong.domain.Member;
+import com.woowacourse.zzimkkong.domain.ProfileEmoji;
 import com.woowacourse.zzimkkong.dto.map.*;
 import com.woowacourse.zzimkkong.infrastructure.auth.AuthorizationExtractor;
 import com.woowacourse.zzimkkong.infrastructure.sharingid.SharingIdGenerator;
@@ -19,6 +19,7 @@ import org.springframework.http.MediaType;
 import java.util.Iterator;
 import java.util.List;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import static com.woowacourse.zzimkkong.Constants.*;
 import static com.woowacourse.zzimkkong.DocumentUtils.*;
@@ -41,9 +42,18 @@ class MapControllerTest extends AcceptanceTest {
         createdMapApi = saveMap(saveMapApi, mapCreateUpdateRequest).header("location");
 
         // For Test Comparison
-        pobi = new Member(EMAIL, passwordEncoder.encode(PW), ORGANIZATION);
-        luther = new Map(LUTHER_NAME, MAP_DRAWING_DATA, MAP_SVG, pobi);
-        smallHouse = new Map(SMALL_HOUSE_NAME, MAP_DRAWING_DATA, MAP_SVG, pobi);
+        pobi = Member.builder()
+                .email(EMAIL)
+                .userName(POBI)
+                .emoji(ProfileEmoji.MAN_DARK_SKIN_TONE_TECHNOLOGIST)
+                .password(passwordEncoder.encode(PW))
+                .organization(ORGANIZATION)
+                .build();
+        luther = new Map(1L, LUTHER_NAME, MAP_DRAWING_DATA, MAP_SVG, pobi);
+        smallHouse = new Map(2L, SMALL_HOUSE_NAME, MAP_DRAWING_DATA, MAP_SVG, pobi);
+
+        luther.activateSharingMapId(sharingIdGenerator);
+        smallHouse.activateSharingMapId(sharingIdGenerator);
     }
 
     @Test
@@ -52,7 +62,7 @@ class MapControllerTest extends AcceptanceTest {
         // given, when
         ExtractableResponse<Response> response = findMap(createdMapApi);
         MapFindResponse actualResponse = response.as(MapFindResponse.class);
-        MapFindResponse expectedResponse = MapFindResponse.of(luther, actualResponse.getSharingMapId());
+        MapFindResponse expectedResponse = MapFindResponse.of(luther);
 
         // then
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
@@ -78,8 +88,8 @@ class MapControllerTest extends AcceptanceTest {
         // when
         ExtractableResponse<Response> response = findAllMaps(saveMapApi);
         List<MapFindResponse> findMaps = response.as(MapFindAllResponse.class).getMaps();
-        List<MapFindResponse> expected = List.of(luther, smallHouse).stream()
-                .map(map -> MapFindResponse.of(map, sharingIdGenerator.from(expectedMapIterator.next())))
+        List<MapFindResponse> expected = Stream.of(luther, smallHouse)
+                .map(MapFindResponse::of)
                 .collect(Collectors.toList());
 
         // then

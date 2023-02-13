@@ -2,13 +2,14 @@ package com.woowacourse.zzimkkong.service;
 
 import com.woowacourse.zzimkkong.domain.Member;
 import com.woowacourse.zzimkkong.domain.OauthProvider;
+import com.woowacourse.zzimkkong.domain.ProfileEmoji;
 import com.woowacourse.zzimkkong.domain.oauth.OauthUserInfo;
 import com.woowacourse.zzimkkong.dto.member.LoginRequest;
 import com.woowacourse.zzimkkong.dto.member.TokenResponse;
 import com.woowacourse.zzimkkong.exception.authorization.OauthProviderMismatchException;
+import com.woowacourse.zzimkkong.exception.member.IdPasswordMismatchException;
 import com.woowacourse.zzimkkong.exception.member.NoSuchMemberException;
 import com.woowacourse.zzimkkong.exception.member.NoSuchOAuthMemberException;
-import com.woowacourse.zzimkkong.exception.member.IdPasswordMismatchException;
 import com.woowacourse.zzimkkong.infrastructure.auth.JwtUtils;
 import com.woowacourse.zzimkkong.infrastructure.oauth.OauthHandler;
 import org.junit.jupiter.api.BeforeEach;
@@ -37,7 +38,13 @@ class AuthServiceTest extends ServiceTest {
 
     @BeforeEach
     void setUp() {
-        pobi = new Member(EMAIL, passwordEncoder.encode(PW), ORGANIZATION);
+        pobi = Member.builder()
+                .email(EMAIL)
+                .userName(POBI)
+                .emoji(ProfileEmoji.MAN_DARK_SKIN_TONE_TECHNOLOGIST)
+                .password(passwordEncoder.encode(PW))
+                .organization(ORGANIZATION)
+                .build();
     }
 
     @MockBean
@@ -88,7 +95,13 @@ class AuthServiceTest extends ServiceTest {
 
         //when
         given(members.findByEmail(anyString()))
-                .willReturn(Optional.of(new Member(EMAIL, passwordEncoder.encode("wrong_password"), ORGANIZATION)));
+                .willReturn(Optional.of(Member.builder()
+                        .email(EMAIL)
+                        .userName(POBI)
+                        .emoji(ProfileEmoji.MAN_DARK_SKIN_TONE_TECHNOLOGIST)
+                        .password(passwordEncoder.encode("wrong_password"))
+                        .organization(ORGANIZATION)
+                        .build()));
 
         //then
         assertThatThrownBy(() -> authService.login(loginRequest))
@@ -108,7 +121,13 @@ class AuthServiceTest extends ServiceTest {
         given(mockOauthUserInfo.getEmail())
                 .willReturn(EMAIL);
         given(members.findByEmail(EMAIL))
-                .willReturn(Optional.of(new Member(EMAIL, ORGANIZATION, oauthProvider)));
+                .willReturn(Optional.of(Member.builder()
+                        .email(EMAIL)
+                        .userName(POBI)
+                        .emoji(ProfileEmoji.MAN_DARK_SKIN_TONE_TECHNOLOGIST)
+                        .organization(ORGANIZATION)
+                        .oauthProvider(oauthProvider)
+                        .build()));
 
         // when
         TokenResponse tokenResponse = authService.loginByOauth(oauthProvider, mockCode);
@@ -160,7 +179,13 @@ class AuthServiceTest extends ServiceTest {
         given(mockOauthUserInfo.getEmail())
                 .willReturn(EMAIL);
         given(members.findByEmail(EMAIL))
-                .willReturn(Optional.of(new Member(EMAIL, ORGANIZATION, actualOauthProvider)));
+                .willReturn(Optional.of(Member.builder()
+                        .email(EMAIL)
+                        .userName(POBI)
+                        .emoji(ProfileEmoji.MAN_DARK_SKIN_TONE_TECHNOLOGIST)
+                        .organization(ORGANIZATION)
+                        .oauthProvider(actualOauthProvider)
+                        .build()));
 
         // when, then
         assertThatThrownBy(() -> authService.loginByOauth(oauthProvider, mockCode))

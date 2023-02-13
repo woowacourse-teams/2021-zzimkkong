@@ -1,9 +1,11 @@
 package com.woowacourse.zzimkkong.repository;
 
-import com.woowacourse.zzimkkong.config.logaspect.FindInstanceAndCreateLogProxy;
+import com.woowacourse.zzimkkong.config.logaspect.LogMethodExecutionTime;
+import com.woowacourse.zzimkkong.domain.Member;
 import com.woowacourse.zzimkkong.domain.Reservation;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -13,7 +15,7 @@ import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.List;
 
-@FindInstanceAndCreateLogProxy(group = "repository")
+@LogMethodExecutionTime(group = "repository")
 public interface ReservationRepository extends JpaRepository<Reservation, Long>, ReservationRepositoryCustom {
     @Query(value = "SELECT r FROM Reservation r " +
             "WHERE r.space.id IN :spaceIds AND " +
@@ -27,6 +29,24 @@ public interface ReservationRepository extends JpaRepository<Reservation, Long>,
     List<Reservation> findAllBySpaceIdInAndReservationTimeDate(
             final Collection<Long> spaceIds,
             final LocalDate date);
+
+    Slice<Reservation> findAllByMemberAndReservationTimeDateGreaterThanEqualAndReservationTimeEndTimeGreaterThanEqual(
+            final Member member,
+            final LocalDate date,
+            final LocalDateTime dateTime,
+            final Pageable pageable);
+
+    Slice<Reservation> findAllByMemberAndReservationTimeDateLessThanEqualAndReservationTimeEndTimeLessThanEqual(
+            final Member member,
+            final LocalDate date,
+            final LocalDateTime dateTime,
+            final Pageable pageable);
+
+    Slice<Reservation> findAllByUserNameAndReservationTimeDateGreaterThanEqualAndReservationTimeStartTimeGreaterThanEqualAndMemberIsNull(
+            final String userName,
+            final LocalDate date,
+            final LocalDateTime dateTime,
+            final Pageable pageable);
 
     Boolean existsBySpaceIdAndReservationTimeEndTimeAfter(final Long spaceId, final LocalDateTime now);
 

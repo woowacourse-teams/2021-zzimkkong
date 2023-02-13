@@ -20,10 +20,26 @@ include::{snippets}/space/guest/getAll/http-request.adoc[]
 include::{snippets}/space/guest/getAll/http-response.adoc[]
 
 === 특정 공간 조회
-==== Request
+==== 공간 관리자
+===== Request
 include::{snippets}/space/manager/get/http-request.adoc[]
-==== Response
+===== Response
 include::{snippets}/space/manager/get/http-response.adoc[]
+
+==== 예약자
+===== Request
+include::{snippets}/space/guest/get/http-request.adoc[]
+===== Response
+include::{snippets}/space/guest/get/http-response.adoc[]
+
+=== 공간 전체 사용 가능 여부 조회
+==== Request
+include::{snippets}/space/guest/getAllAvailability/http-request.adoc[]
+NOTE: request param의 startDateTime, endDateTime의 format은 다음과 같다: `yyyy-MM-dd'T'HH:mm:ssxxx`
+e.g. "2023-01-30T10:00:00+09:00"
+
+==== Response
+include::{snippets}/space/guest/getAllAvailability/http-response.adoc[]
 
 === 공간 수정
 ==== Request

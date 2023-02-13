@@ -13,9 +13,10 @@ import * as Styled from './ManagerJoin.styles';
 import JoinForm from './units/JoinForm';
 
 export interface JoinParams {
+  emoji: string;
   email: string;
   password: string;
-  organization: string;
+  userName: string;
 }
 
 const ManagerJoin = (): JSX.Element => {
@@ -24,7 +25,7 @@ const ManagerJoin = (): JSX.Element => {
   const join = useMutation(postJoin, {
     onSuccess: () => {
       alert(MESSAGE.JOIN.SUCCESS);
-      history.push(PATH.MANAGER_LOGIN);
+      history.push(PATH.LOGIN);
     },
 
     onError: (error: AxiosError<ErrorResponse>) => {
@@ -32,10 +33,10 @@ const ManagerJoin = (): JSX.Element => {
     },
   });
 
-  const handleSubmit = ({ email, password, organization }: JoinParams) => {
-    if (!email || !password || !organization) return;
+  const handleSubmit = ({ emoji, email, password, userName }: JoinParams) => {
+    if (!emoji || !email || !password || !userName) return;
 
-    join.mutate({ email, password, organization });
+    join.mutate({ emoji, email, password, userName });
   };
 
   return (
@@ -47,7 +48,7 @@ const ManagerJoin = (): JSX.Element => {
           <JoinForm onSubmit={handleSubmit} />
           <Styled.JoinLinkMessage>
             이미 회원이신가요?
-            <Link to={PATH.MANAGER_LOGIN}>로그인하기</Link>
+            <Link to={PATH.LOGIN}>로그인하기</Link>
           </Styled.JoinLinkMessage>
         </Styled.Container>
       </Layout>

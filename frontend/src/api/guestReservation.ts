@@ -1,7 +1,7 @@
 import { AxiosResponse } from 'axios';
 import { QueryFunction, QueryKey } from 'react-query';
 import THROW_ERROR from 'constants/throwError';
-import { QueryGuestReservationsSuccess } from 'types/response';
+import { QueryGuestReservationsSuccess, QueryMemberReservationsSuccess } from 'types/response';
 import api from './api';
 
 export interface QueryMapReservationsParams {
@@ -13,7 +13,17 @@ export interface QuerySpaceReservationsParams extends QueryMapReservationsParams
   spaceId: number;
 }
 
-export interface ReservationParams {
+export interface QueryNonLoginReservationsParams {
+  userName: string;
+  searchStartTime: string;
+  page: number;
+}
+
+export interface QueryMemberReservationsParams {
+  page: number;
+}
+
+export interface GuestReservationParams {
   reservation: {
     startDateTime: string;
     endDateTime: string;
@@ -23,22 +33,41 @@ export interface ReservationParams {
   };
 }
 
-interface PostReservationParams extends ReservationParams {
+export interface PostGuestReservationParams extends GuestReservationParams {
   mapId: number;
   spaceId: number;
 }
 
-interface PutReservationParams extends ReservationParams {
+interface PutGuestReservationParams extends GuestReservationParams {
   mapId: number;
   spaceId: number;
   reservationId: number;
 }
 
-interface DeleteReservationParams {
+interface DeleteGuestReservationParams {
   mapId: number;
   spaceId: number;
   reservationId: number;
-  password: string;
+  password?: string;
+}
+
+export interface MemberGuestReservationParams {
+  reservation: {
+    startDateTime: string;
+    endDateTime: string;
+    description: string;
+  };
+}
+
+export interface PostMemberGuestReservationParams extends MemberGuestReservationParams {
+  mapId: number;
+  spaceId: number;
+}
+
+interface PutMemberGuestReservationParams extends MemberGuestReservationParams {
+  mapId: number;
+  spaceId: number;
+  reservationId: number;
 }
 
 export const queryGuestReservations: QueryFunction<
@@ -55,11 +84,36 @@ export const queryGuestReservations: QueryFunction<
   return api.get(`/guests/maps/${mapId}/spaces/${spaceId}/reservations?date=${date}`);
 };
 
+// 비회원 예약 조회
+export const queryGuestNonLoginReservations = ({
+  userName,
+  searchStartTime,
+  page,
+}: QueryNonLoginReservationsParams): Promise<AxiosResponse<QueryMemberReservationsSuccess>> => {
+  return api.get(
+    `/guests/non-login/reservations?userName=${userName}&searchStartTime=${searchStartTime}&page=${page}`
+  );
+};
+
+// 내 예약 조회
+export const queryMemberReservations = ({
+  page,
+}: QueryMemberReservationsParams): Promise<AxiosResponse<QueryMemberReservationsSuccess>> => {
+  return api.get(`/guests/reservations?page=${page}`);
+};
+
+// 내 이전 예약 조회
+export const queryMemberReservationHistory = ({
+  page,
+}: QueryMemberReservationsParams): Promise<AxiosResponse<QueryMemberReservationsSuccess>> => {
+  return api.get(`/guests/reservations/history?page=${page}`);
+};
+
 export const postGuestReservation = ({
   reservation,
   mapId,
   spaceId,
-}: PostReservationParams): Promise<AxiosResponse<never>> =>
+}: PostGuestReservationParams): Promise<AxiosResponse<never>> =>
   api.post(`/guests/maps/${mapId}/spaces/${spaceId}/reservations`, reservation);
 
 export const putGuestReservation = ({
@@ -67,7 +121,7 @@ export const putGuestReservation = ({
   mapId,
   spaceId,
   reservationId,
-}: PutReservationParams): Promise<AxiosResponse<never>> =>
+}: PutGuestReservationParams): Promise<AxiosResponse<never>> =>
   api.put(`/guests/maps/${mapId}/spaces/${spaceId}/reservations/${reservationId}`, reservation);
 
 export const deleteGuestReservation = ({
@@ -75,7 +129,31 @@ export const deleteGuestReservation = ({
   spaceId,
   reservationId,
   password,
-}: DeleteReservationParams): Promise<AxiosResponse<never>> =>
+}: DeleteGuestReservationParams): Promise<AxiosResponse<never>> =>
   api.delete(`/guests/maps/${mapId}/spaces/${spaceId}/reservations/${reservationId}`, {
     data: { password },
   });
+
+export const deleteMemberReservation = ({
+  mapId,
+  spaceId,
+  reservationId,
+}: Omit<DeleteGuestReservationParams, 'password'>): Promise<AxiosResponse<never>> =>
+  api.delete(`/guests/maps/${mapId}/spaces/${spaceId}/reservations/${reservationId}`, {
+    data: { password: null },
+  });
+
+export const postMemberGuestReservation = ({
+  reservation,
+  mapId,
+  spaceId,
+}: PostMemberGuestReservationParams): Promise<AxiosResponse<never>> =>
+  api.post(`/guests/maps/${mapId}/spaces/${spaceId}/reservations`, reservation);
+
+export const putMemberGuestReservation = ({
+  reservation,
+  mapId,
+  spaceId,
+  reservationId,
+}: PutMemberGuestReservationParams): Promise<AxiosResponse<never>> =>
+  api.put(`/guests/maps/${mapId}/spaces/${spaceId}/reservations/${reservationId}`, reservation);

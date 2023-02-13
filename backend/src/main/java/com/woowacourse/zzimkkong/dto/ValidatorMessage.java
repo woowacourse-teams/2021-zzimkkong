@@ -9,7 +9,7 @@ public class ValidatorMessage {
     public static final String MEMBER_PW_MESSAGE = "비밀번호는 영어와 숫자를 포함해서 8자 이상 20자 이내로 입력해주세요.";
     public static final String RESERVATION_PW_MESSAGE = "비밀번호는 숫자 4자리만 입력 가능합니다.";
     public static final String ORGANIZATION_MESSAGE = "조직명은 특수문자 없이 20자 이내로 작성 가능합니다.";
-    public static final String NAME_MESSAGE = "이름은 특수문자(-_!?.,)를 포함하여 20자 이내로 작성 가능합니다.";
+    public static final String NAME_MESSAGE = "이름은 특수문자(-_!?.,)를 포함하여 공백없이 20자 이내로 작성 가능합니다.";
     public static final String PRESET_NAME_MESSAGE = "프리셋 이름은 공백과 특수문자(-_!?.,)를 포함하여 20자 이내로 작성 가능합니다.";
     public static final String DESCRIPTION_MESSAGE = "예약 내용은 100자 이내로 작성 가능합니다.";
     public static final String NOTICE_MESSAGE = "공지사항은 100자 이내로 작성 가능합니다.";

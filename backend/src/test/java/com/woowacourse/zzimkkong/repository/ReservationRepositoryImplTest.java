@@ -1,6 +1,7 @@
 package com.woowacourse.zzimkkong.repository;
 
 import com.woowacourse.zzimkkong.domain.*;
+import com.woowacourse.zzimkkong.infrastructure.datetime.TimeZoneUtils;
 import org.assertj.core.api.AssertionsForClassTypes;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -17,7 +18,13 @@ class ReservationRepositoryImplTest extends RepositoryTest {
     @DisplayName("멤버를 이용해 오늘 이후의 예약이 존재하는지 확인할 수 있다.")
     void existsReservationsByMember(boolean isReservationExists) {
         // given
-        Member sakjung = new Member(NEW_EMAIL, PW, ORGANIZATION);
+        Member sakjung = Member.builder()
+                .email(NEW_EMAIL)
+                .userName(POBI)
+                .emoji(ProfileEmoji.MAN_DARK_SKIN_TONE_TECHNOLOGIST)
+                .password(PW)
+                .organization(ORGANIZATION)
+                .build();
         Member savedMember = members.save(sakjung);
 
         Map luther = new Map(LUTHER_NAME, MAP_DRAWING_DATA, MAP_SVG, savedMember);
@@ -61,8 +68,8 @@ class ReservationRepositoryImplTest extends RepositoryTest {
             Reservation beAmZeroOne = Reservation.builder()
                     .reservationTime(
                             ReservationTime.ofDefaultServiceZone(
-                                    BE_AM_TEN_ELEVEN_START_TIME_KST.withZoneSameInstant(UTC.toZoneId()).toLocalDateTime(),
-                                    BE_AM_TEN_ELEVEN_END_TIME_KST.withZoneSameInstant(UTC.toZoneId()).toLocalDateTime()))
+                                    TimeZoneUtils.convertToUTC(BE_AM_TEN_ELEVEN_START_TIME_KST),
+                                    TimeZoneUtils.convertToUTC(BE_AM_TEN_ELEVEN_END_TIME_KST)))
                     .description(BE_AM_TEN_ELEVEN_DESCRIPTION)
                     .userName(BE_AM_TEN_ELEVEN_USERNAME)
                     .password(BE_AM_TEN_ELEVEN_PW)

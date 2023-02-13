@@ -11,10 +11,10 @@ interface Props {
   spaces: ManagerSpace[];
   selectedSpaceIdState: [number | null, Dispatch<SetStateAction<number | null>>];
   disabled: boolean;
-  children: ReactNode;
+  children?: ReactNode;
 }
 
-const SpaceSelect = ({ spaces, selectedSpaceIdState, disabled, children }: Props): JSX.Element => {
+const SpaceSelect = ({ spaces, selectedSpaceIdState, disabled, children }: Props) => {
   const [selectedSpaceId, setSelectedSpaceId] = selectedSpaceIdState;
 
   const { updateWithSpace } = useFormContext(SpaceFormContext);
@@ -47,7 +47,7 @@ const SpaceSelect = ({ spaces, selectedSpaceIdState, disabled, children }: Props
           label="공간 선택"
           options={spaceOptions}
           disabled={disabled}
-          value={`${selectedSpaceId ?? ''}`}
+          value={String(selectedSpaceId ?? '')}
           onChange={(id) => handleChangeSpace(Number(id))}
         />
       </Styled.SpaceSelectWrapper>

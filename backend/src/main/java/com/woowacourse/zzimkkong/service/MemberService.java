@@ -2,18 +2,24 @@ package com.woowacourse.zzimkkong.service;
 
 import com.woowacourse.zzimkkong.domain.Member;
 import com.woowacourse.zzimkkong.domain.OauthProvider;
+import com.woowacourse.zzimkkong.domain.ProfileEmoji;
 import com.woowacourse.zzimkkong.dto.member.*;
 import com.woowacourse.zzimkkong.dto.member.oauth.OauthMemberSaveRequest;
 import com.woowacourse.zzimkkong.exception.member.DuplicateEmailException;
+import com.woowacourse.zzimkkong.exception.member.DuplicateUserNameException;
 import com.woowacourse.zzimkkong.exception.member.NoSuchMemberException;
 import com.woowacourse.zzimkkong.exception.member.ReservationExistsOnMemberException;
 import com.woowacourse.zzimkkong.repository.MemberRepository;
 import com.woowacourse.zzimkkong.repository.ReservationRepository;
+import net.logstash.logback.encoder.org.apache.commons.lang3.StringUtils;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @Transactional
@@ -32,13 +38,15 @@ public class MemberService {
 
     public MemberSaveResponse saveMember(final MemberSaveRequest memberSaveRequest) {
         validateDuplicateEmail(memberSaveRequest.getEmail());
+        validateDuplicateUserName(memberSaveRequest.getUserName());
 
         String password = passwordEncoder.encode(memberSaveRequest.getPassword());
-        Member member = new Member(
-                memberSaveRequest.getEmail(),
-                password,
-                memberSaveRequest.getOrganization()
-        );
+        Member member = Member.builder()
+                .email(memberSaveRequest.getEmail())
+                .userName(memberSaveRequest.getUserName())
+                .emoji(memberSaveRequest.getEmoji())
+                .password(password)
+                .build();
         Member saveMember = members.save(member);
         return MemberSaveResponse.from(saveMember);
     }
@@ -48,12 +56,14 @@ public class MemberService {
         OauthProvider oauthProvider = OauthProvider.valueOfWithIgnoreCase(oauthMemberSaveRequest.getOauthProvider());
 
         validateDuplicateEmail(email);
+        validateDuplicateUserName(oauthMemberSaveRequest.getUserName());
 
-        Member member = new Member(
-                email,
-                oauthMemberSaveRequest.getOrganization(),
-                oauthProvider
-        );
+        Member member = Member.builder()
+                .email(email)
+                .userName(oauthMemberSaveRequest.getUserName())
+                .emoji(oauthMemberSaveRequest.getEmoji())
+                .oauthProvider(oauthProvider)
+                .build();
         Member saveMember = members.save(member);
         return MemberSaveResponse.from(saveMember);
     }
@@ -66,20 +76,30 @@ public class MemberService {
     }
 
     @Transactional(readOnly = true)
-    public MemberFindResponse findMember(final LoginEmailDto loginEmailDto) {
-        Member member = members.findByEmail(loginEmailDto.getEmail())
+    public void validateDuplicateUserName(final String userName) {
+        if (members.existsByUserName(userName)) {
+            throw new DuplicateUserNameException();
+        }
+    }
+
+    @Transactional(readOnly = true)
+    public MemberFindResponse findMember(final LoginUserEmail loginUserEmail) {
+        Member member = members.findByEmail(loginUserEmail.getEmail())
                 .orElseThrow(NoSuchMemberException::new);
         return MemberFindResponse.from(member);
     }
 
-    public void updateMember(final LoginEmailDto loginEmailDto, final MemberUpdateRequest memberUpdateRequest) {
-        Member member = members.findByEmail(loginEmailDto.getEmail())
+    public void updateMember(final LoginUserEmail loginUserEmail, final MemberUpdateRequest memberUpdateRequest) {
+        Member member = members.findByEmail(loginUserEmail.getEmail())
                 .orElseThrow(NoSuchMemberException::new);
-        member.update(memberUpdateRequest.getOrganization());
+
+        validateDuplicateUserName(memberUpdateRequest.getUserName());
+
+        member.update(memberUpdateRequest);
     }
 
-    public void deleteMember(final LoginEmailDto loginEmailDto) {
-        Member member = members.findByEmail(loginEmailDto.getEmail())
+    public void deleteMember(final LoginUserEmail loginUserEmail) {
+        Member member = members.findByEmail(loginUserEmail.getEmail())
                 .orElseThrow(NoSuchMemberException::new);
         boolean hasAnyReservations = reservations.existsByMemberAndEndTimeAfter(member, LocalDateTime.now());
         if (hasAnyReservations) {
@@ -87,5 +107,10 @@ public class MemberService {
         }
 
         members.delete(member);
+    }
+
+    @Transactional(readOnly = true)
+    public ProfileEmojisResponse getProfileEmojis() {
+        return ProfileEmojisResponse.from(List.of(ProfileEmoji.values()));
     }
 }

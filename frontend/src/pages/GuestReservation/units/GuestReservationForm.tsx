@@ -18,18 +18,18 @@ import {
   formatTimeWithSecond,
   isPastDate,
 } from 'utils/datetime';
-import { EditReservationParams } from '../GuestReservation';
+import { EditGuestReservationParams } from '../GuestReservation';
 import * as Styled from './GuestReservationForm.styles';
 
 interface Props {
   isEditMode: boolean;
-  space: Space;
+  space: Pick<Space, 'settings'>;
   reservation?: Reservation;
   date: string;
   onChangeDate: ChangeEventHandler<HTMLInputElement>;
   onSubmit: (
     event: React.FormEvent<HTMLFormElement>,
-    { reservation, reservationId }: EditReservationParams
+    { reservation, reservationId }: EditGuestReservationParams
   ) => void;
 }
 

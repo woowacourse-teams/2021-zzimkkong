@@ -45,23 +45,6 @@ export interface MapItem {
   notice: string | null;
 }
 
-interface SpaceSetting {
-  settingStartTime: string;
-  settingEndTime: string;
-  reservationTimeUnit: number;
-  reservationMinimumTimeUnit: number;
-  reservationMaximumTimeUnit: number;
-  enabledDayOfWeek: {
-    monday: boolean;
-    tuesday: boolean;
-    wednesday: boolean;
-    thursday: boolean;
-    friday: boolean;
-    saturday: boolean;
-    sunday: boolean;
-  };
-}
-
 export interface AreaRect {
   shape: DrawingAreaShape.Rect;
   width: number;
@@ -93,6 +76,18 @@ export interface Reservation {
   endDateTime: string;
   name: string;
   description: string;
+  isLoginReservation: boolean;
+  isMyReservation: boolean;
+}
+
+export interface MemberReservation extends Reservation {
+  memberId: number;
+  mapId: MapItem['mapId'];
+  sharingMapId: MapItem['sharingMapId'];
+  mapName: MapItem['mapName'];
+  spaceId: Space['id'];
+  spaceName: Space['name'];
+  spaceColor: Space['color'];
 }
 
 export interface SpaceReservation {
@@ -102,7 +97,7 @@ export interface SpaceReservation {
   reservations: Reservation[];
 }
 
-export interface ReservationSettings {
+export interface SpaceSetting {
   settingStartTime: string;
   settingEndTime: string;
   reservationTimeUnit: number;
@@ -144,7 +139,7 @@ export interface ManagerSpace {
   color: Color;
   area: Area;
   reservationEnable: boolean;
-  settings: ReservationSettings[];
+  settings: SpaceSetting[];
 }
 
 export interface ManagerSpaceAPI extends Omit<ManagerSpace, 'area'> {
@@ -175,4 +170,9 @@ export interface EditorBoard {
   x: number;
   y: number;
   scale: number;
+}
+
+export interface Emoji {
+  name: string;
+  code: string;
 }

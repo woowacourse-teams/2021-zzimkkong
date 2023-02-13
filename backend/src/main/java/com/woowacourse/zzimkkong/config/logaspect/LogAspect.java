@@ -21,30 +21,6 @@ import static net.logstash.logback.argument.StructuredArguments.value;
 public class LogAspect {
     public static final String ALL_ZZIMKKONG_PUBLIC_METHOD_POINTCUT_EXPRESSION = "execution(public * com.woowacourse.zzimkkong..*(..))";
 
-    @Around("@target(com.woowacourse.zzimkkong.config.logaspect.LogMethodExecutionTime)" +
-            "&& allZzimkkongPublicMethod()")
-    public Object logExecutionTime(ProceedingJoinPoint joinPoint) throws Throwable {
-        long startTime = System.currentTimeMillis();
-        Object result = joinPoint.proceed();
-        long endTime = System.currentTimeMillis();
-        long timeTaken = endTime - startTime;
-
-        String logGroup = getLogGroupFromAnnotation(joinPoint);
-
-        MethodSignature methodSignature = (MethodSignature) joinPoint.getSignature();
-
-        logExecutionInfo(methodSignature, timeTaken, logGroup);
-
-        return result;
-    }
-
-    void logExecutionInfo(MethodSignature methodSignature, long timeTaken, String logGroup) {
-        final Class<?> declaringType = methodSignature.getDeclaringType();
-        final Method method = methodSignature.getMethod();
-
-        logExecutionInfo(declaringType, method, timeTaken, logGroup);
-    }
-
     void logExecutionInfo(Class<?> typeToLog, Method method, long timeTaken, String logGroup) {
         String traceId = MDC.get("traceId");
 
@@ -67,14 +43,5 @@ public class LogAspect {
         proxyFactory.setProxyTargetClass(true);
 
         return proxyFactory.getProxy();
-    }
-
-    private String getLogGroupFromAnnotation(ProceedingJoinPoint joinPoint) {
-        Class<?> targetClass = joinPoint.getTarget().getClass();
-        return targetClass.getAnnotation(LogMethodExecutionTime.class).group();
-    }
-
-    @Pointcut(ALL_ZZIMKKONG_PUBLIC_METHOD_POINTCUT_EXPRESSION)
-    private void allZzimkkongPublicMethod() {
     }
 }

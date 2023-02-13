@@ -50,8 +50,7 @@ public class MapFindResponse {
         this.managerEmail = managerEmail;
     }
 
-    public static MapFindResponse of(final Map map,
-                                     final String sharingMapId) {
+    public static MapFindResponse of(final Map map) {
         return new MapFindResponse(
                 map.getId(),
                 map.getName(),
@@ -59,7 +58,7 @@ public class MapFindResponse {
                 map.getThumbnail(),
                 map.getSlackUrl(),
                 map.getNotice(),
-                sharingMapId
+                map.getSharingMapId()
         );
     }
 

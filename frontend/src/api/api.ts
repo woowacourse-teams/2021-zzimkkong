@@ -44,7 +44,7 @@ api.interceptors.response.use(
     if (error?.response?.status === 401) {
       removeLocalStorageItem({ key: LOCAL_STORAGE_KEY.ACCESS_TOKEN });
 
-      history.push(PATH.MANAGER_LOGIN);
+      history.push(PATH.LOGIN);
     }
 
     return Promise.reject(error);

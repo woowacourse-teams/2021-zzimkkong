@@ -1,30 +1,28 @@
 import { ReactNode } from 'react';
+import { theme } from 'App.styles';
+import { ReactComponent as CaretIcon } from 'assets/svg/caret-right.svg';
+import { MapItemResponse } from 'types/response';
 import * as Styled from './MapListItem.styles';
 
 export interface Props {
-  thumbnail: string;
-  title: string;
+  map: MapItemResponse;
   control?: ReactNode;
-  selected?: boolean;
   onClick?: () => void;
 }
 
-const MapListItem = ({
-  thumbnail,
-  title,
-  control,
-  selected = false,
-  onClick = () => null,
-}: Props): JSX.Element => {
+const MapListItem = ({ map, control, onClick = () => undefined }: Props): JSX.Element => {
   return (
-    <Styled.Container role="listitem" selected={selected}>
-      <Styled.ImageWrapper onClick={onClick}>
-        <Styled.ImageInner dangerouslySetInnerHTML={{ __html: `${thumbnail}` }} />
-      </Styled.ImageWrapper>
-      <Styled.TitleWrapper>
-        <Styled.Title>{title}</Styled.Title>
-        {control && <Styled.Control>{control}</Styled.Control>}
-      </Styled.TitleWrapper>
+    <Styled.Container role="listitem">
+      <Styled.MapInfo onClick={onClick}>
+        <Styled.ImageWrapper>
+          <Styled.ImageInner dangerouslySetInnerHTML={{ __html: `${map.thumbnail}` }} />
+        </Styled.ImageWrapper>
+        <Styled.TitleWrapper>
+          <Styled.Title>{map.mapName}</Styled.Title>
+          <CaretIcon width={36} height={36} fill={theme.gray[400]} />
+        </Styled.TitleWrapper>
+      </Styled.MapInfo>
+      {control && <Styled.ControlWrapper>{control}</Styled.ControlWrapper>}
     </Styled.Container>
   );
 };

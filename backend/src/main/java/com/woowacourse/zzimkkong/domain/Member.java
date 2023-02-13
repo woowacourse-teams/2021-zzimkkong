@@ -1,5 +1,8 @@
 package com.woowacourse.zzimkkong.domain;
 
+import com.woowacourse.zzimkkong.dto.member.MemberUpdateRequest;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -9,7 +12,9 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
+@Builder
 @Getter
+@AllArgsConstructor
 @NoArgsConstructor
 @Entity
 @Table(indexes = @Index(name = "email", columnList = "email", unique = true))
@@ -21,10 +26,18 @@ public class Member {
     @Column(nullable = false, length = 50, unique = true)
     private String email;
 
+    @Column(nullable = false, length = 20, unique = true)
+    private String userName;
+
+    @Column(nullable = false)
+    @Enumerated(EnumType.STRING)
+    @Builder.Default
+    private ProfileEmoji emoji = ProfileEmoji.MAN_LIGHT_SKIN_TONE_TECHNOLOGIST;
+
     @Column(length = 128)
     private String password;
 
-    @Column(nullable = false, length = 20)
+    @Column(length = 20)
     private String organization;
 
     @Column(length = 10)
@@ -32,39 +45,12 @@ public class Member {
     private OauthProvider oauthProvider;
 
     @OneToMany(mappedBy = "member", cascade = CascadeType.REMOVE, orphanRemoval = true)
+    @Builder.Default
     private final List<Preset> presets = new ArrayList<>();
 
     @OneToMany(mappedBy = "member", cascade = CascadeType.REMOVE, orphanRemoval = true)
+    @Builder.Default
     private final List<Map> maps = new ArrayList<>();
-
-    public Member(
-            final String email,
-            final String password,
-            final String organization) {
-        this.email = email;
-        this.password = password;
-        this.organization = organization;
-    }
-
-    public Member(
-            final Long id,
-            final String email,
-            final String password,
-            final String organization) {
-        this(email, password, organization);
-        this.id = id;
-    }
-
-    public Member(final String email, final String organization, final OauthProvider oauthProvider) {
-        this.email = email;
-        this.organization = organization;
-        this.oauthProvider = oauthProvider;
-    }
-
-    public Member(final Long id, final String email, final String organization, final OauthProvider oauthProvider) {
-        this(email, organization, oauthProvider);
-        this.id = id;
-    }
 
     public Optional<Preset> findPresetById(final Long presetId) {
         return this.presets.stream()
@@ -84,11 +70,12 @@ public class Member {
         return Collections.unmodifiableList(presets);
     }
 
-    public void update(final String organization) {
-        this.organization = organization;
+    public void update(final MemberUpdateRequest memberUpdateRequest) {
+        this.userName = memberUpdateRequest.getUserName();
+        this.emoji = memberUpdateRequest.getEmoji();
     }
 
-    public boolean isSameEmail(String email) {
+    public boolean hasEmail(String email) {
         return this.email.equals(email);
     }
 }

@@ -1,32 +1,28 @@
 import { AxiosError } from 'axios';
 import dayjs, { Dayjs } from 'dayjs';
-import { FormEventHandler, useEffect, useMemo, useRef, useState } from 'react';
+import { useContext, useEffect, useMemo, useRef, useState } from 'react';
 import { useMutation } from 'react-query';
 import { useHistory, useLocation, useParams } from 'react-router-dom';
 import { deleteGuestReservation } from 'api/guestReservation';
-import Button from 'components/Button/Button';
-import DateInput from 'components/DateInput/DateInput';
 import Header from 'components/Header/Header';
-import Input from 'components/Input/Input';
-import Layout from 'components/Layout/Layout';
-import Modal from 'components/Modal/Modal';
-import { EDITOR } from 'constants/editor';
 import MESSAGE from 'constants/message';
-import PALETTE from 'constants/palette';
-import PATH, { HREF } from 'constants/path';
-import useGuestMap from 'hooks/query/useGuestMap';
+import { HREF } from 'constants/path';
 import useGuestReservations from 'hooks/query/useGuestReservations';
 import useGuestSpaces from 'hooks/query/useGuestSpaces';
-import useInput from 'hooks/useInput';
-import { Area, MapDrawing, MapItem, Reservation, ScrollPosition, Space } from 'types/common';
-import { DrawingAreaShape } from 'types/editor';
+import { AccessTokenContext } from 'providers/AccessTokenProvider';
+import { Area, MapItem, Reservation, ScrollPosition, Space } from 'types/common';
 import { GuestPageURLParams } from 'types/guest';
 import { ErrorResponse } from 'types/response';
 import { formatDate } from 'utils/datetime';
-import { getPolygonCenterPoint } from 'utils/editor';
 import { isNullish } from 'utils/type';
 import * as Styled from './GuestMap.styles';
-import ReservationDrawer from './units/ReservationDrawer';
+import { GuestMapFormContext } from './providers/GuestMapFormProvider';
+import Aside from './units/Aside';
+import GuestMapDrawing from './units/GuestMapDrawing';
+import LoginPopup from './units/LoginPopup';
+import PasswordInputModal from './units/PasswordInputModal';
+
+export const SWITCH_LABEL_LIST = ['예약하기', '예약현황'];
 
 export interface GuestMapState {
   spaceId?: Space['id'];
@@ -34,12 +30,18 @@ export interface GuestMapState {
   scrollPosition?: ScrollPosition;
 }
 
-const GuestMap = (): JSX.Element => {
-  const [detailOpen, setDetailOpen] = useState(false);
+interface GuestMapProps {
+  map: MapItem;
+}
+
+const GuestMap = ({ map }: GuestMapProps): JSX.Element => {
+  const { accessToken } = useContext(AccessTokenContext);
+  const { setSelectedSpaceId: setSelectedSpaceIdForm } = useContext(GuestMapFormContext);
+
   const [passwordInputModalOpen, setPasswordInputModalOpen] = useState(false);
   const [selectedReservation, setSelectedReservation] = useState<Reservation>();
 
-  const [passwordInput, onChangePasswordInput] = useInput('');
+  const [loginPopupOpen, setLoginPopupOpen] = useState(true);
 
   const history = useHistory();
   const location = useLocation<GuestMapState>();
@@ -51,33 +53,15 @@ const GuestMap = (): JSX.Element => {
   const targetDate = location.state?.targetDate;
   const scrollPosition = location.state?.scrollPosition;
 
-  const [map, setMap] = useState<MapItem | null>(null);
-  const mapDrawing = map?.mapDrawing;
-  const getMap = useGuestMap(
-    { sharingMapId },
-    {
-      onError: () => {
-        history.replace(PATH.NOT_FOUND);
-      },
-      onSuccess: (response) => {
-        const mapData = response.data;
-
-        try {
-          setMap({
-            ...mapData,
-            mapDrawing: JSON.parse(mapData.mapDrawing) as MapDrawing,
-          });
-        } catch (error) {
-          alert(MESSAGE.GUEST_MAP.MAP_DRAWING_PARSE_ERROR);
-        }
-      },
-      retry: false,
-    }
-  );
+  const mapDrawing = map.mapDrawing;
 
   const [spaceList, setSpaceList] = useState<Space[]>([]);
   const [selectedSpaceId, setSelectedSpaceId] = useState<Space['id'] | null>(spaceId ?? null);
   const [date, setDate] = useState(targetDate ? dayjs(targetDate).tz() : dayjs().tz());
+
+  const [selectedSwitchLabel, setSelectedSwitchLabel] = useState<typeof SWITCH_LABEL_LIST[number]>(
+    SWITCH_LABEL_LIST[0]
+  );
 
   const spaces = useMemo(() => {
     const result: { [key: string]: Space } = {};
@@ -86,10 +70,10 @@ const GuestMap = (): JSX.Element => {
     return result;
   }, [spaceList]);
 
-  const getSpaces = useGuestSpaces(
-    { mapId: map?.mapId as number },
+  useGuestSpaces(
+    { mapId: map.mapId },
     {
-      enabled: map?.mapId !== undefined,
+      enabled: map.mapId !== undefined,
       onSuccess: (response) => {
         const { spaces } = response.data;
 
@@ -104,16 +88,14 @@ const GuestMap = (): JSX.Element => {
 
   const getReservations = useGuestReservations(
     {
-      mapId: map?.mapId as number,
+      mapId: map.mapId,
       spaceId: selectedSpaceId as number,
       date: formatDate(date),
     },
     {
-      enabled: !isNullish(selectedSpaceId),
+      enabled: !isNullish(selectedSpaceId) && dayjs(date).isValid(),
     }
   );
-
-  const reservations = getReservations.data?.data?.reservations ?? [];
 
   const removeReservation = useMutation(deleteGuestReservation, {
     onSuccess: () => {
@@ -127,19 +109,58 @@ const GuestMap = (): JSX.Element => {
     },
   });
 
+  const handleClickSwitch = (label: typeof SWITCH_LABEL_LIST[number]) => {
+    setSelectedSwitchLabel(label);
+  };
+
   const handleClickSpaceArea = (spaceId: number) => {
-    setSelectedSpaceId(spaceId);
-    setDetailOpen(true);
+    if (selectedSwitchLabel === SWITCH_LABEL_LIST[0]) {
+      setSelectedSpaceIdForm?.(`${spaceId}`);
+    } else if (selectedSwitchLabel === SWITCH_LABEL_LIST[1]) {
+      setSelectedSpaceId(spaceId);
+    }
+  };
+
+  const deleteLoginReservation = (reservationId: number) => {
+    if (typeof map.mapId !== 'number' || selectedSpaceId === null) return;
+
+    if (!window.confirm(MESSAGE.GUEST_MAP.DELETE_CONFIRM)) return;
+
+    removeReservation.mutate({
+      mapId: map.mapId,
+      spaceId: selectedSpaceId,
+      reservationId: reservationId,
+    });
+  };
+
+  const handleDeleteGuestReservation = (passwordInput: string) => {
+    if (typeof map.mapId !== 'number' || selectedSpaceId === null) return;
+
+    removeReservation.mutate({
+      mapId: map.mapId,
+      spaceId: selectedSpaceId,
+      password: passwordInput,
+      reservationId: Number(selectedReservation?.id),
+    });
+  };
+
+  const handleDelete = (reservation: Reservation) => {
+    if (!reservation.isLoginReservation) {
+      setPasswordInputModalOpen(true);
+      setSelectedReservation(reservation);
+    } else {
+      deleteLoginReservation(reservation.id);
+    }
   };
 
   const handleEdit = (reservation: Reservation) => {
     if (!selectedSpaceId) return;
 
     history.push({
-      pathname: `/guest/${sharingMapId}/reservation/edit`,
+      pathname: HREF.GUEST_RESERVATION_EDIT(sharingMapId),
       state: {
-        mapId: map?.mapId,
-        space: spaces[selectedSpaceId],
+        mapId: map.mapId,
+        spaceId: spaces[selectedSpaceId].id,
         reservation,
         selectedDate: formatDate(date),
         scrollPosition: { x: mapRef?.current?.scrollLeft, y: mapRef?.current?.scrollTop },
@@ -147,36 +168,8 @@ const GuestMap = (): JSX.Element => {
     });
   };
 
-  const handleDelete = (reservation: Reservation) => {
-    setPasswordInputModalOpen(true);
-    setSelectedReservation(reservation);
-  };
-
-  const handleDeleteReservation: FormEventHandler<HTMLFormElement> = (event) => {
-    event.preventDefault();
-
-    if (typeof map?.mapId !== 'number' || selectedSpaceId === null) return;
-
-    removeReservation.mutate({
-      mapId: map?.mapId,
-      spaceId: selectedSpaceId,
-      password: passwordInput,
-      reservationId: Number(selectedReservation?.id),
-    });
-  };
-
-  const handleReservation = () => {
-    if (!selectedSpaceId) return;
-
-    history.push({
-      pathname: HREF.GUEST_RESERVATION(sharingMapId),
-      state: {
-        mapId: map?.mapId,
-        space: spaces[selectedSpaceId],
-        selectedDate: formatDate(date),
-        scrollPosition: { x: mapRef?.current?.scrollLeft, y: mapRef?.current?.scrollTop },
-      },
-    });
+  const handleLogin = () => {
+    getReservations.refetch();
   };
 
   useEffect(() => {
@@ -193,153 +186,41 @@ const GuestMap = (): JSX.Element => {
 
   return (
     <>
-      <Header />
-      <Layout>
-        <Styled.Page>
-          <Styled.PageHeader>
-            <Styled.MapInfo>
-              <Styled.PageTitle>{map?.mapName}</Styled.PageTitle>
-              <DateInput date={date} setDate={setDate} hasBackground={false} />
-            </Styled.MapInfo>
-            {map?.notice && (
-              <Styled.NoticeWrapper>
-                <Styled.Notice>
-                  <Styled.NoticeTitle>공지사항</Styled.NoticeTitle>
-                  <Styled.NoticeText>{map?.notice ?? ''}</Styled.NoticeText>
-                </Styled.Notice>
-              </Styled.NoticeWrapper>
-            )}
-          </Styled.PageHeader>
-          <Styled.MapContainer ref={mapRef}>
-            {mapDrawing && (
-              <Styled.MapContainerInner width={mapDrawing.width} height={mapDrawing.height}>
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  version="1.1"
-                  width={mapDrawing.width}
-                  height={mapDrawing.height}
-                >
-                  {/* Note: 맵을 그리는 부분 */}
-                  {mapDrawing.mapElements.map((element) =>
-                    element.type === 'polyline' ? (
-                      <polyline
-                        key={`polyline-${element.id}`}
-                        points={element.points.join(' ')}
-                        stroke={element.stroke}
-                        strokeWidth={EDITOR.STROKE_WIDTH}
-                        strokeLinecap="round"
-                      />
-                    ) : (
-                      <rect
-                        key={`rect-${element.id}`}
-                        x={element?.x}
-                        y={element?.y}
-                        width={element?.width}
-                        height={element?.height}
-                        stroke={element.stroke}
-                        fill="none"
-                        strokeWidth={EDITOR.STROKE_WIDTH}
-                      />
-                    )
-                  )}
+      {/* TODO HeaderWrapper가 Aside의 length에 의존하고 있음 공통값으로 관리해야 함 */}
+      <Aside
+        map={map}
+        selectedLabel={selectedSwitchLabel}
+        onClickSwitch={handleClickSwitch}
+        selectedSpaceId={selectedSpaceId}
+        onEdit={handleEdit}
+        onDelete={handleDelete}
+      />
+      <Styled.MapContainer ref={mapRef}>
+        <Styled.HeaderWrapper>
+          <Header onClickLogin={() => setLoginPopupOpen(true)} />
+        </Styled.HeaderWrapper>
+        {mapDrawing && (
+          <GuestMapDrawing
+            isReservation={selectedSwitchLabel === SWITCH_LABEL_LIST[0]}
+            mapDrawing={mapDrawing}
+            spaceList={spaceList}
+            onClickSpaceArea={handleClickSpaceArea}
+          />
+        )}
+      </Styled.MapContainer>
 
-                  {/* Note: 공간을 그리는 부분 */}
-                  {spaceList.length > 0 &&
-                    spaceList.map(({ id, area, color, name }) => (
-                      <Styled.Space
-                        key={`area-${id}`}
-                        data-testid={id}
-                        onClick={() => handleClickSpaceArea(id)}
-                      >
-                        {area.shape === DrawingAreaShape.Rect && (
-                          <>
-                            <Styled.SpaceRect
-                              x={area.x}
-                              y={area.y}
-                              width={area.width}
-                              height={area.height}
-                              fill={color ?? PALETTE.RED[200]}
-                              opacity="0.3"
-                            />
-                            <Styled.SpaceAreaText
-                              x={area.x + area.width / 2}
-                              y={area.y + area.height / 2}
-                            >
-                              {name}
-                            </Styled.SpaceAreaText>
-                          </>
-                        )}
-                        {area.shape === DrawingAreaShape.Polygon && (
-                          <>
-                            <Styled.SpacePolygon
-                              points={area.points.map(({ x, y }) => `${x},${y}`).join(' ')}
-                              fill={color ?? PALETTE.RED[200]}
-                              opacity="0.3"
-                            />
-                            <Styled.SpaceAreaText
-                              x={getPolygonCenterPoint(area.points).x}
-                              y={getPolygonCenterPoint(area.points).y}
-                            >
-                              {name}
-                            </Styled.SpaceAreaText>
-                          </>
-                        )}
-                      </Styled.Space>
-                    ))}
-                </svg>
-              </Styled.MapContainerInner>
-            )}
-          </Styled.MapContainer>
-        </Styled.Page>
-      </Layout>
+      <PasswordInputModal
+        open={passwordInputModalOpen}
+        onClose={() => setPasswordInputModalOpen(false)}
+        onSubmit={handleDeleteGuestReservation}
+      />
 
-      {selectedSpaceId && map?.mapId && detailOpen && (
-        <ReservationDrawer
-          reservations={reservations}
-          space={spaces[selectedSpaceId]}
-          date={date}
-          open={detailOpen}
-          isSuccess={getReservations.isSuccess}
-          isLoadingError={getReservations.isLoadingError}
-          onClose={() => setDetailOpen(false)}
-          onClickReservation={handleReservation}
-          onEdit={handleEdit}
-          onDelete={handleDelete}
+      {!accessToken && (
+        <LoginPopup
+          open={loginPopupOpen}
+          onClose={() => setLoginPopupOpen(false)}
+          onLogin={handleLogin}
         />
-      )}
-
-      {passwordInputModalOpen && (
-        <Modal
-          open={passwordInputModalOpen}
-          isClosableDimmer={true}
-          onClose={() => setPasswordInputModalOpen(false)}
-        >
-          <Modal.Header>예약시 사용하신 비밀번호를 입력해주세요.</Modal.Header>
-          <Modal.Inner>
-            <form onSubmit={handleDeleteReservation}>
-              <Input
-                type="password"
-                label="비밀번호"
-                minLength={4}
-                maxLength={4}
-                value={passwordInput}
-                onChange={onChangePasswordInput}
-              />
-              <Styled.DeleteModalContainer>
-                <Button
-                  variant="text"
-                  type="button"
-                  onClick={() => setPasswordInputModalOpen(false)}
-                >
-                  취소
-                </Button>
-                <Button variant="text" type="submit">
-                  확인
-                </Button>
-              </Styled.DeleteModalContainer>
-            </form>
-          </Modal.Inner>
-        </Modal>
       )}
     </>
   );

@@ -13,6 +13,14 @@ export const Container = styled.div`
 export const ButtonContainer = styled.div`
   display: flex;
   align-items: center;
+
+  & > * {
+    margin-right: 0.75rem;
+
+    :last-child {
+      margin-right: 0;
+    }
+  }
 `;
 
 export const Title = styled.h2<TitleProps>`

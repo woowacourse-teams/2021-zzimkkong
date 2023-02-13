@@ -39,10 +39,15 @@ public class DataLoader implements CommandLineRunner {
         String meetingRoomColor = "#FFE3AC";
 
         Member pobi = members.save(
-                new Member("pobi@woowa.com",
-                        "$2a$10$c3BysogWR4hnexYx60/r/e3lEUIbSs4zhW6kuX4UW733MW5/NmbW.", // test1234 입니다.
-                        "woowacourse")
+                Member.builder()
+                        .email("pobi@woowa.com")
+                        .userName("pobi")
+                        .emoji(ProfileEmoji.MAN_DARK_SKIN_TONE_TECHNOLOGIST)
+                        .password("$2a$10$c3BysogWR4hnexYx60/r/e3lEUIbSs4zhW6kuX4UW733MW5/NmbW.") // test1234 입니다.
+                        .organization("woowacourse")
+                        .build()
         );
+
 
         Map luther = maps.save(
                 new Map(

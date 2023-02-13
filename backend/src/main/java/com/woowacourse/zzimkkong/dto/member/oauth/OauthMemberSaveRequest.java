@@ -1,5 +1,6 @@
 package com.woowacourse.zzimkkong.dto.member.oauth;
 
+import com.woowacourse.zzimkkong.domain.ProfileEmoji;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -17,18 +18,23 @@ public class OauthMemberSaveRequest {
     @Email(message = EMAIL_MESSAGE)
     private String email;
 
+    @NotBlank(message = EMPTY_MESSAGE)
+    @Pattern(regexp = NAMING_FORMAT, message = NAME_MESSAGE)
+    private String userName;
+
     @NotNull(message = EMPTY_MESSAGE)
-    @Pattern(regexp = ORGANIZATION_FORMAT, message = ORGANIZATION_MESSAGE)
-    private String organization;
+    private ProfileEmoji emoji;
 
     @NotNull(message = EMPTY_MESSAGE)
     private String oauthProvider;
 
     public OauthMemberSaveRequest(final String email,
-                                  final String organization,
+                                  final String userName,
+                                  final ProfileEmoji emoji,
                                   final String oauthProvider) {
         this.email = email;
-        this.organization = organization;
+        this.userName = userName;
+        this.emoji = emoji;
         this.oauthProvider = oauthProvider;
     }
 }

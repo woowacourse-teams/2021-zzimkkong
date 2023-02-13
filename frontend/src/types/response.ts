@@ -1,4 +1,14 @@
-import { MapItem, Reservation, Space, SpaceReservation, ManagerSpaceAPI, Preset } from './common';
+import {
+  Area,
+  Emoji,
+  ManagerSpaceAPI,
+  MapItem,
+  MemberReservation,
+  Preset,
+  Reservation,
+  Space,
+  SpaceReservation,
+} from './common';
 
 export interface MapItemResponse extends Omit<MapItem, 'mapDrawing'> {
   mapDrawing: string;
@@ -27,6 +37,10 @@ export interface QuerySocialEmailSuccess {
   oauthProvider: 'GITHUB' | 'GOOGLE';
 }
 
+export interface QueryEmojiListSuccess {
+  emojis: Emoji[];
+}
+
 export type QueryGuestMapSuccess = MapItemResponse;
 
 export type QueryManagerMapSuccess = MapItemResponse;
@@ -51,9 +65,14 @@ export interface QuerySpacesSuccess {
   spaces: SpaceResponse[];
 }
 
-export interface QueryManagerSpaceSuccess {
-  data: ManagerSpaceAPI;
-}
+export type QueryGuestSpaceSuccess = ManagerSpaceAPI;
+
+export type AvailableSpace = { spaceId: Space['id']; isAvailable: boolean };
+
+export type QueryGuestSpaceAvailableSuccess = {
+  mapId: MapItem['mapId'];
+  spaces: AvailableSpace[];
+};
 
 export interface QueryManagerSpacesSuccess {
   spaces: ManagerSpaceAPI[];
@@ -65,4 +84,10 @@ export interface QueryPresetsSuccess {
 
 export interface QuerySlackWebhookUrlSuccess {
   slackUrl: string;
+}
+
+export interface QueryMemberReservationsSuccess {
+  data: MemberReservation[];
+  hasNext: boolean;
+  pageNumber: number;
 }

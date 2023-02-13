@@ -1,5 +1,6 @@
 package com.woowacourse.zzimkkong.controller;
 
+import com.woowacourse.zzimkkong.domain.ProfileEmoji;
 import com.woowacourse.zzimkkong.dto.map.MapCreateUpdateRequest;
 import com.woowacourse.zzimkkong.dto.map.MapFindResponse;
 import com.woowacourse.zzimkkong.dto.member.MemberSaveRequest;
@@ -25,7 +26,7 @@ class GuestMapControllerTest extends AcceptanceTest {
 
     @BeforeEach
     void setUp() {
-        createMemberResponse = saveMember(new MemberSaveRequest(EMAIL, PW, ORGANIZATION));
+        createMemberResponse = saveMember(new MemberSaveRequest(EMAIL, POBI, ProfileEmoji.MAN_DARK_SKIN_TONE_TECHNOLOGIST, PW));
         createMapResponse = saveMap("/api/managers/maps",
                 new MapCreateUpdateRequest(
                         LUTHER_NAME,

@@ -1,6 +1,7 @@
 package com.woowacourse.zzimkkong.controller;
 
 import com.woowacourse.zzimkkong.domain.OauthProvider;
+import com.woowacourse.zzimkkong.domain.ProfileEmoji;
 import com.woowacourse.zzimkkong.domain.oauth.GithubUserInfo;
 import com.woowacourse.zzimkkong.domain.oauth.GoogleUserInfo;
 import com.woowacourse.zzimkkong.dto.member.LoginRequest;
@@ -17,8 +18,7 @@ import org.springframework.http.MediaType;
 
 import java.util.Map;
 
-import static com.woowacourse.zzimkkong.Constants.NEW_EMAIL;
-import static com.woowacourse.zzimkkong.Constants.ORGANIZATION;
+import static com.woowacourse.zzimkkong.Constants.*;
 import static com.woowacourse.zzimkkong.DocumentUtils.*;
 import static com.woowacourse.zzimkkong.controller.MemberControllerTest.saveMember;
 import static com.woowacourse.zzimkkong.controller.MemberControllerTest.saveMemberByOauth;
@@ -49,7 +49,7 @@ class AuthControllerTest extends AcceptanceTest {
     void loginByGithubOauth() {
         // given
         OauthProvider oauthProvider = OauthProvider.GITHUB;
-        saveMemberByOauth(new OauthMemberSaveRequest(NEW_EMAIL, ORGANIZATION, oauthProvider.name()));
+        saveMemberByOauth(new OauthMemberSaveRequest(NEW_EMAIL, SAKJUNG, ProfileEmoji.MAN_DARK_SKIN_TONE_TECHNOLOGIST, oauthProvider.name()));
         String code = "example-code";
 
         given(githubRequester.supports(OauthProvider.GITHUB))
@@ -72,7 +72,7 @@ class AuthControllerTest extends AcceptanceTest {
     void loginByGoogleOauth() {
         // given
         OauthProvider oauthProvider = OauthProvider.GOOGLE;
-        saveMemberByOauth(new OauthMemberSaveRequest(NEW_EMAIL, ORGANIZATION, oauthProvider.name()));
+        saveMemberByOauth(new OauthMemberSaveRequest(NEW_EMAIL, SAKJUNG, ProfileEmoji.MAN_DARK_SKIN_TONE_TECHNOLOGIST, oauthProvider.name()));
         String code = "example-code";
 
         given(googleRequester.supports(any(OauthProvider.class)))
@@ -132,7 +132,7 @@ class AuthControllerTest extends AcceptanceTest {
                 .filter(document("member/login", getRequestPreprocessor(), getResponsePreprocessor()))
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body(loginRequest)
-                .when().post("/api/managers/login/token")
+                .when().post("/api/members/login/token")
                 .then().log().all().extract();
     }
 
@@ -142,7 +142,7 @@ class AuthControllerTest extends AcceptanceTest {
                 .accept("application/json")
                 .filter(document("member/login/oauth/" + oauthProvider.name(), getRequestPreprocessor(), getResponsePreprocessor()))
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .when().get("/api/managers/" + oauthProvider + "/login/token?code=" + code)
+                .when().get("/api/members/" + oauthProvider + "/login/token?code=" + code)
                 .then().log().all().extract();
     }
 
@@ -153,7 +153,7 @@ class AuthControllerTest extends AcceptanceTest {
                 .header("Authorization", token)
                 .filter(document("member/token/" + docName, getRequestPreprocessor(), getResponsePreprocessor()))
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .when().post("/api/managers/token")
+                .when().post("/api/members/token")
                 .then().log().all().extract();
     }
 }

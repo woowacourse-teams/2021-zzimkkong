@@ -12,7 +12,13 @@ class MapTest {
     @Test
     @DisplayName("Space가 생성되면 Map에 Space를 추가한다")
     void addSpace() {
-        Member pobi = new Member(EMAIL, PW, ORGANIZATION);
+        Member pobi = Member.builder()
+                .email(EMAIL)
+                .userName(POBI)
+                .emoji(ProfileEmoji.MAN_DARK_SKIN_TONE_TECHNOLOGIST)
+                .password(PW)
+                .organization(ORGANIZATION)
+                .build();
         Map luther = new Map(LUTHER_NAME, MAP_DRAWING_DATA, MAP_SVG, pobi);
 
         assertThat(luther.getSpaces().size()).isZero();
@@ -26,7 +32,13 @@ class MapTest {
     @CsvSource({"pobi@email.com,true", "sakjung@email.com,false"})
     @DisplayName("맵의 관리자가 맞으면 true, 아니면 false")
     void isOwnedBy(String email, boolean expected) {
-        Member pobi = new Member(EMAIL, PW, ORGANIZATION);
+        Member pobi = Member.builder()
+                .email(EMAIL)
+                .userName(POBI)
+                .emoji(ProfileEmoji.MAN_DARK_SKIN_TONE_TECHNOLOGIST)
+                .password(PW)
+                .organization(ORGANIZATION)
+                .build();
         Map luther = new Map(LUTHER_NAME, MAP_DRAWING_DATA, MAP_SVG, pobi);
 
         boolean result = luther.isOwnedBy(email);
@@ -43,7 +55,13 @@ class MapTest {
             assertThat(luther.getMember()).isNull();
             return;
         }
-        Member pobi = new Member(EMAIL, PW, ORGANIZATION);
+        Member pobi = Member.builder()
+                .email(EMAIL)
+                .userName(POBI)
+                .emoji(ProfileEmoji.MAN_DARK_SKIN_TONE_TECHNOLOGIST)
+                .password(PW)
+                .organization(ORGANIZATION)
+                .build();
         luther = new Map(LUTHER_NAME, MAP_DRAWING_DATA, MAP_SVG, pobi);
 
         assertThat(pobi.getMaps()).contains(luther);

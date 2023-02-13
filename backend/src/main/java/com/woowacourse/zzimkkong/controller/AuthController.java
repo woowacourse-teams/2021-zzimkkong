@@ -12,7 +12,7 @@ import javax.validation.Valid;
 
 @LogMethodExecutionTime(group = "controller")
 @RestController
-@RequestMapping("/api/managers")
+@RequestMapping("/api/members")
 public class AuthController {
     private final AuthService authService;
 

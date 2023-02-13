@@ -1,27 +1,31 @@
 package com.woowacourse.zzimkkong.service;
 
 import com.woowacourse.zzimkkong.domain.*;
-import com.woowacourse.zzimkkong.dto.member.LoginEmailDto;
+import com.woowacourse.zzimkkong.dto.member.LoginUserEmail;
+import com.woowacourse.zzimkkong.dto.reservation.ReservationCreateUpdateWithPasswordRequest;
 import com.woowacourse.zzimkkong.dto.space.*;
-import com.woowacourse.zzimkkong.exception.authorization.NoAuthorityOnMapException;
+import com.woowacourse.zzimkkong.dto.map.NoAuthorityOnMapException;
 import com.woowacourse.zzimkkong.exception.map.NoSuchMapException;
 import com.woowacourse.zzimkkong.exception.space.NoSuchSpaceException;
 import com.woowacourse.zzimkkong.exception.space.ReservationExistOnSpaceException;
+import com.woowacourse.zzimkkong.infrastructure.datetime.TimeZoneUtils;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 import static com.woowacourse.zzimkkong.Constants.*;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.BDDMockito.given;
 
 class SpaceServiceTest extends ServiceTest {
@@ -57,8 +61,8 @@ class SpaceServiceTest extends ServiceTest {
 
     private Member pobi;
     private Member sakjung;
-    private LoginEmailDto pobiEmail;
-    private LoginEmailDto sakjungEmail;
+    private LoginUserEmail pobiEmail;
+    private LoginUserEmail sakjungEmail;
     private Map luther;
     private Space be;
     private Space fe;
@@ -70,10 +74,22 @@ class SpaceServiceTest extends ServiceTest {
 
     @BeforeEach
     void setUp() {
-        pobi = new Member(EMAIL, PW, ORGANIZATION);
-        sakjung = new Member(NEW_EMAIL, PW, ORGANIZATION);
-        pobiEmail = LoginEmailDto.from(EMAIL);
-        sakjungEmail = LoginEmailDto.from(NEW_EMAIL);
+        pobi = Member.builder()
+                .email(EMAIL)
+                .userName(POBI)
+                .emoji(ProfileEmoji.MAN_DARK_SKIN_TONE_TECHNOLOGIST)
+                .password(PW)
+                .organization(ORGANIZATION)
+                .build();
+        sakjung = Member.builder()
+                .email(NEW_EMAIL)
+                .userName(POBI)
+                .emoji(ProfileEmoji.MAN_DARK_SKIN_TONE_TECHNOLOGIST)
+                .password(PW)
+                .organization(ORGANIZATION)
+                .build();
+        pobiEmail = LoginUserEmail.from(EMAIL);
+        sakjungEmail = LoginUserEmail.from(NEW_EMAIL);
         luther = new Map(1L, LUTHER_NAME, MAP_DRAWING_DATA, MAP_SVG, pobi);
 
         Setting beSetting = Setting.builder()
@@ -333,5 +349,55 @@ class SpaceServiceTest extends ServiceTest {
 
         assertThatThrownBy(() -> spaceService.deleteSpace(lutherId, beId, spaceDeleteRequest, pobiEmail))
                 .isInstanceOf(ReservationExistOnSpaceException.class);
+    }
+
+    @Test
+    @DisplayName("특정 맵의 전체 공간 사용 가능 여부 조회 시, 주어진 시간대역에 대한 총 예약 현황을 고려하여 공간들의 사용가능 여부를 반환한다")
+    void findAllSpaceAvailability() {
+        // given
+        Reservation beAmTenEleven = Reservation.builder()
+                .id(1L)
+                .reservationTime(
+                        ReservationTime.ofDefaultServiceZone(
+                                TimeZoneUtils.convertToUTC(BE_AM_TEN_ELEVEN_START_TIME_KST),
+                                TimeZoneUtils.convertToUTC(BE_AM_TEN_ELEVEN_END_TIME_KST)))
+                .description(BE_AM_TEN_ELEVEN_DESCRIPTION)
+                .userName(BE_AM_TEN_ELEVEN_USERNAME)
+                .password(BE_AM_TEN_ELEVEN_PW)
+                .space(be)
+                .build();
+
+        Reservation bePmOneTwo = Reservation.builder()
+                .id(2L)
+                .reservationTime(
+                        ReservationTime.ofDefaultServiceZone(
+                                TimeZoneUtils.convertToUTC(BE_PM_ONE_TWO_START_TIME_KST),
+                                TimeZoneUtils.convertToUTC(BE_PM_ONE_TWO_END_TIME_KST)))
+                .description(BE_PM_ONE_TWO_DESCRIPTION)
+                .userName(BE_PM_ONE_TWO_USERNAME)
+                .password(BE_PM_ONE_TWO_PW)
+                .space(be)
+                .build();
+
+        given(maps.findByIdFetch(anyLong()))
+                .willReturn(Optional.of(luther));
+        given(reservations.findAllBySpaceIdInAndReservationTimeDate(anyCollection(), any()))
+                .willReturn(List.of(beAmTenEleven, bePmOneTwo));
+
+        // when
+        ZonedDateTime tenThirtyKST = THE_DAY_AFTER_TOMORROW.atTime(10, 30).atZone(ZoneId.of(ServiceZone.KOREA.getTimeZone()));
+        ZonedDateTime elevenThirtyKST = THE_DAY_AFTER_TOMORROW.atTime(11, 30).atZone(ZoneId.of(ServiceZone.KOREA.getTimeZone()));
+        SpaceFindAllAvailabilityResponse actualResult = spaceService.findAllSpaceAvailability(
+                1L,
+                TimeZoneUtils.convertToUTC(tenThirtyKST),
+                TimeZoneUtils.convertToUTC(elevenThirtyKST));
+
+        // then
+        SpaceFindAllAvailabilityResponse expectedResult = SpaceFindAllAvailabilityResponse.of(
+                1L,
+                List.of(be, fe),
+                Set.of(be));
+
+        assertThat(actualResult).usingRecursiveComparison().isEqualTo(expectedResult);
     }
 }

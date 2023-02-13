@@ -1,5 +1,6 @@
 package com.woowacourse.zzimkkong.dto.reservation;
 
+import com.woowacourse.zzimkkong.domain.Map;
 import com.woowacourse.zzimkkong.domain.Reservation;
 import com.woowacourse.zzimkkong.dto.slack.SlackResponse;
 import lombok.Getter;
@@ -16,8 +17,8 @@ public class ReservationCreateResponse {
         this.slackResponse = slackResponse;
     }
 
-    public static ReservationCreateResponse of(final Reservation reservation, final String sharingMapId, final String slackUrl) {
-        SlackResponse slackResponse = SlackResponse.of(reservation, sharingMapId, slackUrl);
+    public static ReservationCreateResponse of(final Reservation reservation, final Map map) {
+        SlackResponse slackResponse = SlackResponse.of(reservation, map);
         return new ReservationCreateResponse(reservation.getId(), slackResponse);
     }
 }

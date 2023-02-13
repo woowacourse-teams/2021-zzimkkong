@@ -1,20 +1,23 @@
 package com.woowacourse.zzimkkong.service;
 
 import com.woowacourse.zzimkkong.domain.*;
+import com.woowacourse.zzimkkong.dto.member.LoginUserEmail;
 import com.woowacourse.zzimkkong.dto.reservation.*;
 import com.woowacourse.zzimkkong.dto.slack.SlackResponse;
 import com.woowacourse.zzimkkong.exception.map.NoSuchMapException;
+import com.woowacourse.zzimkkong.exception.member.NoSuchMemberException;
 import com.woowacourse.zzimkkong.exception.reservation.*;
 import com.woowacourse.zzimkkong.exception.setting.MultipleSettingsException;
 import com.woowacourse.zzimkkong.exception.setting.NoSettingAvailableException;
 import com.woowacourse.zzimkkong.exception.space.NoSuchSpaceException;
+import com.woowacourse.zzimkkong.infrastructure.datetime.TimeZoneUtils;
 import com.woowacourse.zzimkkong.infrastructure.sharingid.SharingIdGenerator;
 import com.woowacourse.zzimkkong.repository.MapRepository;
+import com.woowacourse.zzimkkong.repository.MemberRepository;
 import com.woowacourse.zzimkkong.repository.ReservationRepository;
-import com.woowacourse.zzimkkong.service.strategy.ExcludeReservationCreateStrategy;
-import com.woowacourse.zzimkkong.service.strategy.ExcludeReservationStrategy;
-import com.woowacourse.zzimkkong.service.strategy.ExcludeReservationUpdateStrategy;
-import com.woowacourse.zzimkkong.service.strategy.ReservationStrategy;
+import com.woowacourse.zzimkkong.service.strategy.*;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -23,6 +26,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -31,79 +35,69 @@ import java.util.stream.Collectors;
 public class ReservationService {
     private final MapRepository maps;
     private final ReservationRepository reservations;
+    private final MemberRepository members;
     private final SharingIdGenerator sharingIdGenerator;
+    private final ReservationStrategies reservationStrategies;
 
     public ReservationService(
             final MapRepository maps,
             final ReservationRepository reservations,
-            final SharingIdGenerator sharingIdGenerator) {
+            final MemberRepository members,
+            final SharingIdGenerator sharingIdGenerator,
+            final ReservationStrategies reservationStrategies) {
         this.maps = maps;
         this.reservations = reservations;
+        this.members = members;
         this.sharingIdGenerator = sharingIdGenerator;
+        this.reservationStrategies = reservationStrategies;
     }
 
     public ReservationCreateResponse saveReservation(
-            final ReservationCreateDto reservationCreateDto,
-            final ReservationStrategy reservationStrategy) {
-        Long mapId = reservationCreateDto.getMapId();
-        String loginEmail = reservationCreateDto.getLoginEmail();
+            final ReservationCreateDto reservationCreateDto) {
+        ReservationStrategy reservationStrategy = reservationStrategies.getStrategyByReservationType(reservationCreateDto.getReservationType());
 
+        Long mapId = reservationCreateDto.getMapId();
         Map map = maps.findByIdFetch(mapId)
                 .orElseThrow(NoSuchMapException::new);
-        reservationStrategy.validateManagerOfMap(map, loginEmail);
 
-        Long spaceId = reservationCreateDto.getSpaceId();
-        Space space = map.findSpaceById(spaceId)
-                .orElseThrow(NoSuchSpaceException::new);
+        Reservation reservation = reservationStrategy.createReservation(map, reservationCreateDto);
 
-        ReservationTime reservationTime = ReservationTime.of(
-                reservationCreateDto.getStartDateTime(),
-                reservationCreateDto.getEndDateTime(),
-                map.getServiceZone(),
-                reservationStrategy.isManager());
-        Reservation reservation = Reservation.builder()
-                .reservationTime(reservationTime)
-                .password(reservationCreateDto.getPassword())
-                .userName(reservationCreateDto.getName())
-                .description(reservationCreateDto.getDescription())
-                .space(space)
-                .build();
-
-        validateAvailability(space, reservation, new ExcludeReservationCreateStrategy());
+        validateAvailability(reservation, new ExcludeReservationCreateStrategy());
 
         Reservation savedReservation = reservations.save(reservation);
-        String sharingMapId = sharingIdGenerator.from(map);
-        return ReservationCreateResponse.of(savedReservation, sharingMapId, map.getSlackUrl());
+
+        map.activateSharingMapId(sharingIdGenerator);
+
+        return ReservationCreateResponse.of(savedReservation, map);
     }
 
     @Transactional(readOnly = true)
-    public ReservationFindAllResponse findAllReservations(
-            final ReservationFindAllDto reservationFindAllDto,
-            final ReservationStrategy reservationStrategy) {
+    public ReservationFindAllResponse findAllReservations(final ReservationFindAllDto reservationFindAllDto) {
+        ReservationStrategy reservationStrategy = reservationStrategies.getStrategyByReservationType(reservationFindAllDto.getReservationType());
+
         Long mapId = reservationFindAllDto.getMapId();
-        String loginEmail = reservationFindAllDto.getLoginEmail();
+        LoginUserEmail loginUserEmail = reservationFindAllDto.getLoginUserEmail();
 
         Map map = maps.findByIdFetch(mapId)
                 .orElseThrow(NoSuchMapException::new);
-        reservationStrategy.validateManagerOfMap(map, loginEmail);
+        reservationStrategy.validateManagerOfMap(map, loginUserEmail);
 
         List<Space> findSpaces = map.getSpaces();
         LocalDate date = reservationFindAllDto.getDate();
         List<Reservation> findReservations = getReservations(findSpaces, date);
 
-        return ReservationFindAllResponse.of(findSpaces, findReservations);
+        return ReservationFindAllResponse.of(findSpaces, findReservations, getLoginUser(loginUserEmail));
     }
 
     @Transactional(readOnly = true)
-    public ReservationFindResponse findReservations(
-            final ReservationFindDto reservationFindDto,
-            final ReservationStrategy reservationStrategy) {
+    public ReservationFindResponse findReservations(final ReservationFindDto reservationFindDto) {
+        ReservationStrategy reservationStrategy = reservationStrategies.getStrategyByReservationType(reservationFindDto.getReservationType());
         Long mapId = reservationFindDto.getMapId();
-        String loginEmail = reservationFindDto.getLoginEmail();
+        LoginUserEmail loginUserEmail = reservationFindDto.getLoginUserEmail();
 
         Map map = maps.findByIdFetch(mapId)
                 .orElseThrow(NoSuchMapException::new);
-        reservationStrategy.validateManagerOfMap(map, loginEmail);
+        reservationStrategy.validateManagerOfMap(map, loginUserEmail);
 
         Long spaceId = reservationFindDto.getSpaceId();
         LocalDate date = reservationFindDto.getDate();
@@ -111,94 +105,140 @@ public class ReservationService {
                 .orElseThrow(NoSuchSpaceException::new);
         List<Reservation> findReservations = getReservations(Collections.singletonList(space), date);
 
-        return ReservationFindResponse.from(findReservations);
+        return ReservationFindResponse.from(findReservations, getLoginUser(loginUserEmail));
     }
 
     @Transactional(readOnly = true)
-    public ReservationResponse findReservation(
-            final ReservationAuthenticationDto reservationAuthenticationDto,
-            final ReservationStrategy reservationStrategy) {
+    public ReservationResponse findReservation(final ReservationAuthenticationDto reservationAuthenticationDto) {
+        ReservationStrategy reservationStrategy = reservationStrategies.getStrategyByReservationType(reservationAuthenticationDto.getReservationType());
         Long mapId = reservationAuthenticationDto.getMapId();
-        String loginEmail = reservationAuthenticationDto.getLoginEmail();
+        LoginUserEmail loginUserEmail = reservationAuthenticationDto.getLoginUserEmail();
 
         Map map = maps.findByIdFetch(mapId)
                 .orElseThrow(NoSuchMapException::new);
-        reservationStrategy.validateManagerOfMap(map, loginEmail);
+        reservationStrategy.validateManagerOfMap(map, loginUserEmail);
 
         Long spaceId = reservationAuthenticationDto.getSpaceId();
         validateSpaceExistence(map, spaceId);
 
         Long reservationId = reservationAuthenticationDto.getReservationId();
-        String password = reservationAuthenticationDto.getPassword();
         Reservation reservation = reservations
                 .findById(reservationId)
                 .orElseThrow(NoSuchReservationException::new);
-        reservationStrategy.checkCorrectPassword(reservation, password);
+        reservationStrategy.validateOwnerOfReservation(
+                reservation,
+                reservationAuthenticationDto.getPassword(),
+                loginUserEmail);
 
-        return ReservationResponse.from(reservation);
+        return ReservationResponse.from(reservation, getLoginUser(loginUserEmail));
     }
 
-    public SlackResponse updateReservation(
-            final ReservationUpdateDto reservationUpdateDto,
-            final ReservationStrategy reservationStrategy) {
+    @Transactional(readOnly = true)
+    public ReservationInfiniteScrollResponse findUpcomingReservations(final LoginUserEmail loginUserEmail, final Pageable pageable) {
+        Member member = members.findByEmail(loginUserEmail.getEmail())
+                .orElseThrow(NoSuchMemberException::new);
+
+        LocalDateTime now = LocalDateTime.now();
+        Slice<Reservation> reservationSlice = reservations.findAllByMemberAndReservationTimeDateGreaterThanEqualAndReservationTimeEndTimeGreaterThanEqual(
+                member,
+                TimeZoneUtils.convertTo(now, ServiceZone.KOREA).toLocalDate(),
+                now,
+                pageable);
+        List<Reservation> upcomingReservations = reservationSlice.getContent()
+                .stream()
+                .sorted(Comparator.comparing(Reservation::getStartTime))
+                .peek(reservation -> reservation.getSpace().getMap().activateSharingMapId(sharingIdGenerator))
+                .collect(Collectors.toList());
+
+        return ReservationInfiniteScrollResponse.of(upcomingReservations, reservationSlice.hasNext(), pageable.getPageNumber());
+    }
+
+    @Transactional(readOnly = true)
+    public ReservationInfiniteScrollResponse findPreviousReservations(final LoginUserEmail loginUserEmail, final Pageable pageable) {
+        Member member = members.findByEmail(loginUserEmail.getEmail())
+                .orElseThrow(NoSuchMemberException::new);
+
+        LocalDateTime now = LocalDateTime.now();
+        Slice<Reservation> reservationSlice = reservations.findAllByMemberAndReservationTimeDateLessThanEqualAndReservationTimeEndTimeLessThanEqual(
+                member,
+                TimeZoneUtils.convertTo(now, ServiceZone.KOREA).toLocalDate(),
+                now,
+                pageable);
+
+        List<Reservation> previousReservations = reservationSlice.getContent()
+                .stream()
+                .sorted(Comparator.comparing(Reservation::getStartTime).reversed())
+                .peek(reservation -> reservation.getSpace().getMap().activateSharingMapId(sharingIdGenerator))
+                .collect(Collectors.toList());
+
+        return ReservationInfiniteScrollResponse.of(previousReservations, reservationSlice.hasNext(), pageable.getPageNumber());
+    }
+
+    @Transactional(readOnly = true)
+    public ReservationInfiniteScrollResponse findUpcomingNonLoginReservations(
+            final String userName,
+            final LocalDateTime searchStartTime,
+            final Pageable pageable) {
+        Slice<Reservation> reservationSlice = reservations.findAllByUserNameAndReservationTimeDateGreaterThanEqualAndReservationTimeStartTimeGreaterThanEqualAndMemberIsNull(
+                userName,
+                TimeZoneUtils.convertTo(searchStartTime, ServiceZone.KOREA).toLocalDate(),
+                searchStartTime,
+                pageable);
+
+        List<Reservation> upcomingNonLoginReservations = reservationSlice.getContent()
+                .stream()
+                .sorted(Comparator.comparing(Reservation::getStartTime))
+                .peek(reservation -> reservation.getSpace().getMap().activateSharingMapId(sharingIdGenerator))
+                .collect(Collectors.toList());
+
+        return ReservationInfiniteScrollResponse.of(upcomingNonLoginReservations, reservationSlice.hasNext(), pageable.getPageNumber());
+    }
+
+    public SlackResponse updateReservation(final ReservationUpdateDto reservationUpdateDto) {
+        ReservationStrategy reservationStrategy = reservationStrategies.getStrategyByReservationType(reservationUpdateDto.getReservationType());
         Long mapId = reservationUpdateDto.getMapId();
-        String loginEmail = reservationUpdateDto.getLoginEmail();
+        LoginUserEmail loginUserEmail = reservationUpdateDto.getLoginUserEmail();
 
         Map map = maps.findByIdFetch(mapId)
                 .orElseThrow(NoSuchMapException::new);
-        reservationStrategy.validateManagerOfMap(map, loginEmail);
-
-        Long spaceId = reservationUpdateDto.getSpaceId();
-        Space space = map.findSpaceById(spaceId)
-                .orElseThrow(NoSuchSpaceException::new);
-
-        ReservationTime reservationTime = ReservationTime.of(
-                reservationUpdateDto.getStartDateTime(),
-                reservationUpdateDto.getEndDateTime(),
-                map.getServiceZone(),
-                reservationStrategy.isManager());
+        reservationStrategy.validateManagerOfMap(map, loginUserEmail);
 
         Long reservationId = reservationUpdateDto.getReservationId();
-        String password = reservationUpdateDto.getPassword();
-
-        Reservation reservation = reservations
-                .findById(reservationId)
+        Reservation reservation = reservations.findById(reservationId)
                 .orElseThrow(NoSuchReservationException::new);
-        reservationStrategy.checkCorrectPassword(reservation, password);
-        Reservation updateReservation = Reservation.builder()
-                .reservationTime(reservationTime)
-                .userName(reservationUpdateDto.getName())
-                .description(reservationUpdateDto.getDescription())
-                .space(space)
-                .build();
+        reservationStrategy.validateOwnerOfReservation(reservation, reservationUpdateDto.getPassword(), loginUserEmail);
 
-        validateAvailability(space, updateReservation, new ExcludeReservationUpdateStrategy(reservation));
+        Reservation updateReservation = reservationStrategy.createReservation(map, reservationUpdateDto);
 
-        reservation.update(updateReservation, space);
+        validateAvailability(updateReservation, new ExcludeReservationUpdateStrategy(reservation));
 
-        String sharingMapId = sharingIdGenerator.from(map);
-        return SlackResponse.of(reservation, sharingMapId, map.getSlackUrl());
+        reservation.update(updateReservation);
+
+        map.activateSharingMapId(sharingIdGenerator);
+
+        return SlackResponse.of(reservation, map);
     }
 
-    public SlackResponse deleteReservation(
-            final ReservationAuthenticationDto reservationAuthenticationDto,
-            final ReservationStrategy reservationStrategy) {
+    public SlackResponse deleteReservation(final ReservationAuthenticationDto reservationAuthenticationDto) {
+        ReservationStrategy reservationStrategy = reservationStrategies.getStrategyByReservationType(reservationAuthenticationDto.getReservationType());
         Long mapId = reservationAuthenticationDto.getMapId();
-        String loginEmail = reservationAuthenticationDto.getLoginEmail();
+        LoginUserEmail loginUserEmail = reservationAuthenticationDto.getLoginUserEmail();
 
         Map map = maps.findByIdFetch(mapId)
                 .orElseThrow(NoSuchMapException::new);
-        reservationStrategy.validateManagerOfMap(map, loginEmail);
+        reservationStrategy.validateManagerOfMap(map, loginUserEmail);
 
         Long spaceId = reservationAuthenticationDto.getSpaceId();
         validateSpaceExistence(map, spaceId);
 
         Long reservationId = reservationAuthenticationDto.getReservationId();
-        String password = reservationAuthenticationDto.getPassword();
         Reservation reservation = reservations
                 .findById(reservationId)
                 .orElseThrow(NoSuchReservationException::new);
-        reservationStrategy.checkCorrectPassword(reservation, password);
+        reservationStrategy.validateOwnerOfReservation(
+                reservation,
+                reservationAuthenticationDto.getPassword(),
+                loginUserEmail);
 
         if (!reservationStrategy.isManager()) {
             validateDeletability(reservation);
@@ -206,8 +246,17 @@ public class ReservationService {
 
         reservations.delete(reservation);
 
-        String sharingMapId = sharingIdGenerator.from(map);
-        return SlackResponse.of(reservation, sharingMapId, map.getSlackUrl());
+        map.activateSharingMapId(sharingIdGenerator);
+
+        return SlackResponse.of(reservation, map);
+    }
+
+    private Member getLoginUser(final LoginUserEmail loginUserEmail) {
+        if (!loginUserEmail.exists()) {
+            return Member.builder().build();
+        }
+        return members.findByEmail(loginUserEmail.getEmail())
+                .orElseThrow(NoSuchMemberException::new);
     }
 
     private void validateDeletability(final Reservation reservation) {
@@ -222,9 +271,9 @@ public class ReservationService {
     }
 
     private void validateAvailability(
-            final Space space,
             final Reservation reservation,
             final ExcludeReservationStrategy excludeReservationStrategy) {
+        Space space = reservation.getSpace();
         validateSpaceSetting(space, reservation);
 
         List<Reservation> reservationsOnDate = getReservations(
@@ -253,6 +302,7 @@ public class ReservationService {
             throw new InvalidStartEndTimeException(relevantSettings, timeSlot);
         }
 
+        // TODO: 2023/02/09 기준, 예약은 하나의 세팅만 걸쳐야한다
         Setting setting = relevantSettings.getSettings().get(0);
 
         if (setting.cannotAcceptDueToTimeUnit(timeSlot)) {

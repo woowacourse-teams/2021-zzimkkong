@@ -1,3 +1,4 @@
+import { QS } from '@toss/utils';
 import { AxiosResponse } from 'axios';
 import { QueryFunction, QueryKey } from 'react-query';
 import {
@@ -52,7 +53,7 @@ export const queryManagerSpaceReservations: QueryFunction<
   const [, data] = queryKey;
   const { mapId, spaceId, date } = data;
 
-  return api.get(`/managers/maps/${mapId}/spaces/${spaceId}/reservations?date=${date}`);
+  return api.get(`/managers/maps/${mapId}/spaces/${spaceId}/reservations${QS.create({ date })}`);
 };
 
 export const queryManagerMapReservations: QueryFunction<
@@ -62,7 +63,7 @@ export const queryManagerMapReservations: QueryFunction<
   const [, data] = queryKey;
   const { mapId, date } = data;
 
-  return api.get(`/managers/maps/${mapId}/spaces/reservations?date=${date}`);
+  return api.get(`/managers/maps/${mapId}/spaces/reservations${QS.create({ date })}`);
 };
 
 export const postManagerReservation = ({

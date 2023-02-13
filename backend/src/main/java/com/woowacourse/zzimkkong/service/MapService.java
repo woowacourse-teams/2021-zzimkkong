@@ -4,8 +4,8 @@ import com.woowacourse.zzimkkong.domain.Map;
 import com.woowacourse.zzimkkong.domain.Member;
 import com.woowacourse.zzimkkong.domain.Space;
 import com.woowacourse.zzimkkong.dto.map.*;
-import com.woowacourse.zzimkkong.dto.member.LoginEmailDto;
-import com.woowacourse.zzimkkong.exception.authorization.NoAuthorityOnMapException;
+import com.woowacourse.zzimkkong.dto.member.LoginUserEmail;
+import com.woowacourse.zzimkkong.dto.map.NoAuthorityOnMapException;
 import com.woowacourse.zzimkkong.exception.map.NoSuchMapException;
 import com.woowacourse.zzimkkong.exception.member.NoSuchMemberException;
 import com.woowacourse.zzimkkong.exception.space.ReservationExistOnSpaceException;
@@ -41,8 +41,8 @@ public class MapService {
         this.sharingIdGenerator = sharingIdGenerator;
     }
 
-    public MapCreateResponse saveMap(final MapCreateUpdateRequest mapCreateUpdateRequest, final LoginEmailDto loginEmailDto) {
-        Member manager = members.findByEmail(loginEmailDto.getEmail())
+    public MapCreateResponse saveMap(final MapCreateUpdateRequest mapCreateUpdateRequest, final LoginUserEmail loginUserEmail) {
+        Member manager = members.findByEmail(loginUserEmail.getEmail())
                 .orElseThrow(NoSuchMemberException::new);
         Map saveMap = maps.save(new Map(
                 mapCreateUpdateRequest.getMapName(),
@@ -54,23 +54,27 @@ public class MapService {
     }
 
     @Transactional(readOnly = true)
-    public MapFindResponse findMap(final Long mapId, final LoginEmailDto loginEmailDto) {
+    public MapFindResponse findMap(final Long mapId, final LoginUserEmail loginUserEmail) {
         Map map = maps.findById(mapId)
                 .orElseThrow(NoSuchMapException::new);
 
-        validateManagerOfMap(map, loginEmailDto.getEmail());
-        return MapFindResponse.of(map, sharingIdGenerator.from(map));
+        validateManagerOfMap(map, loginUserEmail.getEmail());
+
+        map.activateSharingMapId(sharingIdGenerator);
+
+        return MapFindResponse.of(map);
     }
 
     @Transactional(readOnly = true)
-    public MapFindAllResponse findAllMaps(final LoginEmailDto loginEmailDto) {
-        Member manager = members.findByEmailWithFetchMaps(loginEmailDto.getEmail())
+    public MapFindAllResponse findAllMaps(final LoginUserEmail loginUserEmail) {
+        Member manager = members.findByEmailWithFetchMaps(loginUserEmail.getEmail())
                 .orElseThrow(NoSuchMemberException::new);
 
         List<Map> findMaps = manager.getMaps();
 
         return findMaps.stream()
-                .map(map -> MapFindResponse.of(map, sharingIdGenerator.from(map)))
+                .peek(map -> map.activateSharingMapId(sharingIdGenerator))
+                .map(MapFindResponse::of)
                 .collect(collectingAndThen(toList(), mapFindResponses -> MapFindAllResponse.of(mapFindResponses, manager)));
     }
 
@@ -79,15 +83,17 @@ public class MapService {
         Long mapId = sharingIdGenerator.parseIdFrom(sharingMapId);
         Map map = maps.findById(mapId)
                 .orElseThrow(NoSuchMapException::new);
-        return MapFindResponse.of(map, sharingIdGenerator.from(map));
+        map.activateSharingMapId(sharingIdGenerator);
+
+        return MapFindResponse.of(map);
     }
 
     public void updateMap(final Long mapId,
                           final MapCreateUpdateRequest mapCreateUpdateRequest,
-                          final LoginEmailDto loginEmailDto) {
+                          final LoginUserEmail loginUserEmail) {
         Map map = maps.findById(mapId)
                 .orElseThrow(NoSuchMapException::new);
-        validateManagerOfMap(map, loginEmailDto.getEmail());
+        validateManagerOfMap(map, loginUserEmail.getEmail());
 
         map.update(
                 mapCreateUpdateRequest.getMapName(),
@@ -95,11 +101,11 @@ public class MapService {
         map.updateThumbnail(mapCreateUpdateRequest.getThumbnail());
     }
 
-    public void deleteMap(final Long mapId, final LoginEmailDto loginEmailDto) {
+    public void deleteMap(final Long mapId, final LoginUserEmail loginUserEmail) {
         Map map = maps.findByIdFetch(mapId)
                 .orElseThrow(NoSuchMapException::new);
 
-        validateManagerOfMap(map, loginEmailDto.getEmail());
+        validateManagerOfMap(map, loginUserEmail.getEmail());
         validateExistReservations(map);
 
         maps.delete(map);
@@ -107,27 +113,27 @@ public class MapService {
 
     public void saveSlackUrl(final Long mapId,
                              final SlackCreateRequest slackCreateRequest,
-                             final LoginEmailDto loginEmailDto) {
+                             final LoginUserEmail loginUserEmail) {
         Map map = maps.findById(mapId)
                 .orElseThrow(NoSuchMapException::new);
-        validateManagerOfMap(map, loginEmailDto.getEmail());
+        validateManagerOfMap(map, loginUserEmail.getEmail());
         map.updateSlackUrl(slackCreateRequest.getSlackUrl());
     }
 
     public void saveNotice(final Long mapId,
                            final NoticeCreateRequest noticeCreateRequest,
-                           final LoginEmailDto loginEmailDto) {
+                           final LoginUserEmail loginUserEmail) {
         Map map = maps.findById(mapId)
                 .orElseThrow(NoSuchMapException::new);
-        validateManagerOfMap(map, loginEmailDto.getEmail());
+        validateManagerOfMap(map, loginUserEmail.getEmail());
         map.updateNotice(noticeCreateRequest.getNotice());
     }
 
     @Transactional(readOnly = true)
-    public SlackFindResponse findSlackUrl(final Long mapId, final LoginEmailDto loginEmailDto) {
+    public SlackFindResponse findSlackUrl(final Long mapId, final LoginUserEmail loginUserEmail) {
         Map map = maps.findById(mapId)
                 .orElseThrow(NoSuchMapException::new);
-        validateManagerOfMap(map, loginEmailDto.getEmail());
+        validateManagerOfMap(map, loginUserEmail.getEmail());
         return SlackFindResponse.from(map);
     }
 

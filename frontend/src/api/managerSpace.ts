@@ -1,7 +1,7 @@
 import { AxiosResponse } from 'axios';
 import { QueryFunction, QueryKey } from 'react-query';
-import { Color, ReservationSettings } from 'types/common';
-import { QueryManagerSpacesSuccess, QueryManagerSpaceSuccess } from 'types/response';
+import { Color, SpaceSetting } from 'types/common';
+import { QueryManagerSpacesSuccess, QueryGuestSpaceSuccess } from 'types/response';
 import api from './api';
 
 export interface QueryManagerSpacesParams {
@@ -19,7 +19,7 @@ export interface PostManagerSpaceParams {
     name: string;
     color: Color;
     area: string;
-    settings: ReservationSettings[];
+    settings: SpaceSetting[];
     thumbnail: string;
   };
 }
@@ -45,7 +45,7 @@ export const queryManagerSpaces: QueryFunction<
 };
 
 export const queryManagerSpace: QueryFunction<
-  AxiosResponse<QueryManagerSpaceSuccess>,
+  AxiosResponse<QueryGuestSpaceSuccess>,
   [QueryKey, QueryManagerSpaceParams]
 > = ({ queryKey }) => {
   const [, data] = queryKey;

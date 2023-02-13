@@ -82,6 +82,9 @@ public class Settings {
         return settings.size() >= 2;
     }
 
+    /**
+     * settings 중 조건에 위배되는 예약이 불가능한 시간 대역을 반환한다
+     */
     public List<TimeSlot> getUnavailableTimeSlots() {
         List<TimeSlot> unavailableTimeSlots = new ArrayList<>();
         LocalTime unavailableStartTime = LocalTime.MIN;
@@ -109,6 +112,9 @@ public class Settings {
         return unavailableTimeSlots;
     }
 
+    /**
+     * settings 중 조건에 위배되지 않는 예약 가능한 시간 대역을 반환한다
+     */
     private List<TimeSlot> getAvailableTimeSlots() {
         if (!haveMultipleSettings()) {
             return settings.stream()

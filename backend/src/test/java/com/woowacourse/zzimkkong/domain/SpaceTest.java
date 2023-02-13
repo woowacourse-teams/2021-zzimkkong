@@ -37,7 +37,13 @@ class SpaceTest {
 
     @Test
     void update() {
-        Member member = new Member(EMAIL, PW, ORGANIZATION);
+        Member member = Member.builder()
+                .email(EMAIL)
+                .userName(POBI)
+                .emoji(ProfileEmoji.MAN_DARK_SKIN_TONE_TECHNOLOGIST)
+                .password(PW)
+                .organization(ORGANIZATION)
+                .build();
         Map map = new Map(LUTHER_NAME, MAP_DRAWING_DATA, MAP_SVG, member);
 
         Setting setting = Setting.builder()

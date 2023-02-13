@@ -11,8 +11,9 @@ import * as Styled from './ManagerSocialJoin.styles';
 import SocialJoinForm from './units/SocialJoinForm';
 
 export interface SocialJoinParams {
+  emoji: string;
   email: string;
-  organization: string;
+  userName: string;
 }
 
 interface SocialJoinState {
@@ -29,7 +30,7 @@ const ManagerSocialJoin = (): JSX.Element => {
 
   const socialJoin = useMutation(postSocialJoin, {
     onSuccess: () => {
-      history.replace(PATH.MANAGER_LOGIN);
+      history.replace(PATH.LOGIN);
     },
 
     onError: (error: AxiosError<ErrorResponse>) => {
@@ -37,14 +38,14 @@ const ManagerSocialJoin = (): JSX.Element => {
     },
   });
 
-  const handleSubmit = ({ email, organization }: SocialJoinParams) => {
-    if (!email || !organization || !oauthProvider || socialJoin.isLoading) return;
+  const handleSubmit = ({ emoji, email, userName }: SocialJoinParams) => {
+    if (!emoji || !email || !userName || !oauthProvider || socialJoin.isLoading) return;
 
-    socialJoin.mutate({ email, organization, oauthProvider });
+    socialJoin.mutate({ emoji, email, userName, oauthProvider });
   };
 
   if (!email || !oauthProvider) {
-    history.replace(PATH.MANAGER_LOGIN);
+    history.replace(PATH.LOGIN);
   }
 
   return (

@@ -2,6 +2,7 @@ package com.woowacourse.zzimkkong.dto.reservation;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.woowacourse.zzimkkong.domain.Member;
 import com.woowacourse.zzimkkong.domain.Reservation;
 import com.woowacourse.zzimkkong.domain.Space;
 import lombok.Getter;
@@ -24,7 +25,10 @@ public class ReservationFindAllResponse {
         this.data = data;
     }
 
-    public static ReservationFindAllResponse of(final List<Space> spaces, final List<Reservation> reservations) {
+    public static ReservationFindAllResponse of(
+            final List<Space> spaces,
+            final List<Reservation> reservations,
+            final Member loginUser) {
         Map<Space, List<Reservation>> reservationGroups = reservations.stream()
                 .collect(Collectors.groupingBy(Reservation::getSpace));
 
@@ -38,7 +42,7 @@ public class ReservationFindAllResponse {
 
         List<ReservationSpaceResponse> reservationSpaceResponses = reservationGroups.entrySet()
                 .stream()
-                .map(ReservationSpaceResponse::from)
+                .map(reservationGroup -> ReservationSpaceResponse.from(reservationGroup, loginUser))
                 .sorted(Comparator.comparing(ReservationSpaceResponse::getSpaceId))
                 .collect(Collectors.toList());
 

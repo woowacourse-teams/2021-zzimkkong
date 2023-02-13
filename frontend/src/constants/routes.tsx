@@ -1,4 +1,7 @@
 import React, { ReactNode } from 'react';
+import GuestMain from 'pages/GuestMain/GuestMain';
+import GuestMapContainer from 'pages/GuestMap/GuestMapContainer';
+import ManagerMapList from 'pages/ManagerMapList/ManagerMapList';
 import PATH from './path';
 
 const GuestMap = React.lazy(() => import('pages/GuestMap/GuestMap'));
@@ -9,13 +12,16 @@ const GuestReservationSuccess = React.lazy(
 const Main = React.lazy(() => import('pages/Main/Main'));
 const ManagerJoin = React.lazy(() => import('pages/ManagerJoin/ManagerJoin'));
 const ManagerSocialJoin = React.lazy(() => import('pages/ManagerSocialJoin/ManagerSocialJoin'));
-const ManagerLogin = React.lazy(() => import('pages/ManagerLogin/ManagerLogin'));
-const ManagerMain = React.lazy(() => import('pages/ManagerMain/ManagerMain'));
+const Login = React.lazy(() => import('pages/Login/Login'));
+const ManagerMapDetail = React.lazy(() => import('pages/ManagerMapDetail/ManagerMapDetail'));
 const ManagerMapEditor = React.lazy(() => import('pages/ManagerMapEditor/ManagerMapEditor'));
 const ManagerReservation = React.lazy(() => import('pages/ManagerReservation/ManagerReservation'));
 const ManagerSpaceEditor = React.lazy(() => import('pages/ManagerSpaceEditor/ManagerSpaceEditor'));
 const GithubOAuthRedirect = React.lazy(() => import('pages/OAuthRedirect/GithubOAuthRedirect'));
 const GoogleOAuthRedirect = React.lazy(() => import('pages/OAuthRedirect/GoogleOAuthRedirect'));
+const GuestNonLoginReservationSearch = React.lazy(
+  () => import('pages/GuestNonLoginReservationSearch/GuestNonLoginReservationSearch')
+);
 
 interface Route {
   path: string;
@@ -32,8 +38,8 @@ export const PUBLIC_ROUTES: Route[] = [
     component: <Main />,
   },
   {
-    path: PATH.MANAGER_LOGIN,
-    component: <ManagerLogin />,
+    path: PATH.LOGIN,
+    component: <Login />,
   },
   {
     path: PATH.MANAGER_JOIN,
@@ -53,7 +59,7 @@ export const PUBLIC_ROUTES: Route[] = [
   },
   {
     path: PATH.GUEST_MAP,
-    component: <GuestMap />,
+    component: <GuestMapContainer />,
   },
   {
     path: PATH.GUEST_RESERVATION,
@@ -67,37 +73,51 @@ export const PUBLIC_ROUTES: Route[] = [
     path: PATH.GUEST_RESERVATION_SUCCESS,
     component: <GuestReservationSuccess />,
   },
+  {
+    path: PATH.GUEST_NON_LOGIN_RESERVATION_SEARCH,
+    component: <GuestNonLoginReservationSearch />,
+  },
 ];
 
 export const PRIVATE_ROUTES: PrivateRoute[] = [
   {
-    path: PATH.MANAGER_MAIN,
-    component: <ManagerMain />,
-    redirectPath: PATH.MANAGER_LOGIN,
+    path: PATH.MANAGER_MAP_LIST,
+    component: <ManagerMapList />,
+    redirectPath: PATH.LOGIN,
   },
   {
     path: PATH.MANAGER_RESERVATION,
     component: <ManagerReservation />,
-    redirectPath: PATH.MANAGER_LOGIN,
+    redirectPath: PATH.LOGIN,
   },
   {
     path: PATH.MANAGER_RESERVATION_EDIT,
     component: <ManagerReservation />,
-    redirectPath: PATH.MANAGER_LOGIN,
+    redirectPath: PATH.LOGIN,
   },
   {
     path: PATH.MANAGER_MAP_CREATE,
     component: <ManagerMapEditor />,
-    redirectPath: PATH.MANAGER_LOGIN,
+    redirectPath: PATH.LOGIN,
   },
   {
     path: PATH.MANAGER_MAP_EDIT,
     component: <ManagerMapEditor />,
-    redirectPath: PATH.MANAGER_LOGIN,
+    redirectPath: PATH.LOGIN,
   },
   {
     path: PATH.MANAGER_SPACE_EDIT,
     component: <ManagerSpaceEditor />,
-    redirectPath: PATH.MANAGER_LOGIN,
+    redirectPath: PATH.LOGIN,
+  },
+  {
+    path: PATH.GUEST_MAIN,
+    component: <GuestMain />,
+    redirectPath: PATH.LOGIN,
+  },
+  {
+    path: PATH.MANAGER_MAP_DETAIL,
+    component: <ManagerMapDetail />,
+    redirectPath: PATH.LOGIN,
   },
 ];

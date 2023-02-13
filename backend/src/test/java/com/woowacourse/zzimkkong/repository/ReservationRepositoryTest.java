@@ -1,6 +1,7 @@
 package com.woowacourse.zzimkkong.repository;
 
 import com.woowacourse.zzimkkong.domain.*;
+import com.woowacourse.zzimkkong.infrastructure.datetime.TimeZoneUtils;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -8,6 +9,7 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Slice;
 import org.springframework.data.domain.Sort;
 
 import java.time.LocalDate;
@@ -15,7 +17,6 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 import static com.woowacourse.zzimkkong.Constants.*;
-import static com.woowacourse.zzimkkong.infrastructure.datetime.TimeZoneUtils.UTC;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 
@@ -27,12 +28,20 @@ class ReservationRepositoryTest extends RepositoryTest {
     private Reservation bePmOneTwo;
     private Reservation beNextDayAmSixTwelve;
     private Reservation fe1ZeroOne;
+    private Reservation bePmTwoThreeByPobi;
+    private Reservation beFiveDaysAgoPmTwoThreeByPobi;
 
     private Member pobi;
 
     @BeforeEach
     void setUp() {
-        pobi = new Member(EMAIL, PW, ORGANIZATION);
+        pobi = Member.builder()
+                .email(EMAIL)
+                .userName(POBI)
+                .emoji(ProfileEmoji.MAN_DARK_SKIN_TONE_TECHNOLOGIST)
+                .password(PW)
+                .organization(ORGANIZATION)
+                .build();
         Map luther = new Map(LUTHER_NAME, MAP_DRAWING_DATA, MAP_SVG, pobi);
 
         Setting beSetting = Setting.builder()
@@ -81,8 +90,8 @@ class ReservationRepositoryTest extends RepositoryTest {
         beAmZeroOne = Reservation.builder()
                 .reservationTime(
                         ReservationTime.ofDefaultServiceZone(
-                                BE_AM_TEN_ELEVEN_START_TIME_KST.withZoneSameInstant(UTC.toZoneId()).toLocalDateTime(),
-                                BE_AM_TEN_ELEVEN_END_TIME_KST.withZoneSameInstant(UTC.toZoneId()).toLocalDateTime()))
+                                TimeZoneUtils.convertToUTC(BE_AM_TEN_ELEVEN_START_TIME_KST),
+                                TimeZoneUtils.convertToUTC(BE_AM_TEN_ELEVEN_END_TIME_KST)))
                 .description(BE_AM_TEN_ELEVEN_DESCRIPTION)
                 .userName(BE_AM_TEN_ELEVEN_USERNAME)
                 .password(BE_AM_TEN_ELEVEN_PW)
@@ -92,8 +101,8 @@ class ReservationRepositoryTest extends RepositoryTest {
         bePmOneTwo = Reservation.builder()
                 .reservationTime(
                         ReservationTime.ofDefaultServiceZone(
-                                BE_PM_ONE_TWO_START_TIME_KST.withZoneSameInstant(UTC.toZoneId()).toLocalDateTime(),
-                                BE_PM_ONE_TWO_END_TIME_KST.withZoneSameInstant(UTC.toZoneId()).toLocalDateTime()))
+                                TimeZoneUtils.convertToUTC(BE_PM_ONE_TWO_START_TIME_KST),
+                                TimeZoneUtils.convertToUTC(BE_PM_ONE_TWO_END_TIME_KST)))
                 .description(BE_PM_ONE_TWO_DESCRIPTION)
                 .userName(BE_PM_ONE_TWO_USERNAME)
                 .password(BE_PM_ONE_TWO_PW)
@@ -103,8 +112,8 @@ class ReservationRepositoryTest extends RepositoryTest {
         beNextDayAmSixTwelve = Reservation.builder()
                 .reservationTime(
                         ReservationTime.ofDefaultServiceZone(
-                                BE_NEXT_DAY_PM_FOUR_TO_SIX_START_TIME_KST.withZoneSameInstant(UTC.toZoneId()).toLocalDateTime(),
-                                BE_NEXT_DAY_PM_FOUR_TO_SIX_END_TIME_KST.withZoneSameInstant(UTC.toZoneId()).toLocalDateTime()))
+                                TimeZoneUtils.convertToUTC(BE_NEXT_DAY_PM_FOUR_TO_SIX_START_TIME_KST),
+                                TimeZoneUtils.convertToUTC(BE_NEXT_DAY_PM_FOUR_TO_SIX_END_TIME_KST)))
                 .description(BE_NEXT_DAY_PM_FOUR_TO_SIX_DESCRIPTION)
                 .userName(BE_NEXT_DAY_PM_FOUR_TO_SIX_USERNAME)
                 .password(BE_NEXT_DAY_PM_FOUR_TO_SIX_PW)
@@ -114,18 +123,42 @@ class ReservationRepositoryTest extends RepositoryTest {
         fe1ZeroOne = Reservation.builder()
                 .reservationTime(
                         ReservationTime.ofDefaultServiceZone(
-                                FE1_AM_TEN_ELEVEN_START_TIME_KST.withZoneSameInstant(UTC.toZoneId()).toLocalDateTime(),
-                                FE1_AM_TEN_ELEVEN_END_TIME_KST.withZoneSameInstant(UTC.toZoneId()).toLocalDateTime()))
+                                TimeZoneUtils.convertToUTC(FE1_AM_TEN_ELEVEN_START_TIME_KST),
+                                TimeZoneUtils.convertToUTC(FE1_AM_TEN_ELEVEN_END_TIME_KST)))
                 .description(FE1_AM_TEN_ELEVEN_DESCRIPTION)
                 .userName(FE1_AM_TEN_ELEVEN_USERNAME)
                 .password(FE1_AM_TEN_ELEVEN_PW)
                 .space(fe)
                 .build();
 
+        bePmTwoThreeByPobi = Reservation.builder()
+                .reservationTime(
+                        ReservationTime.ofDefaultServiceZone(
+                                TimeZoneUtils.convertToUTC(BE_PM_TWO_THREE_START_TIME_KST),
+                                TimeZoneUtils.convertToUTC(BE_PM_TWO_THREE_END_TIME_KST)))
+                .description(BE_PM_TWO_THREE_DESCRIPTION)
+                .userName(pobi.getUserName())
+                .member(pobi)
+                .space(be)
+                .build();
+
+        beFiveDaysAgoPmTwoThreeByPobi = Reservation.builder()
+                .reservationTime(
+                        ReservationTime.ofDefaultServiceZone(
+                                TimeZoneUtils.convertToUTC(BE_FIVE_DAYS_AGO_PM_TWO_THREE_START_TIME_KST),
+                                TimeZoneUtils.convertToUTC(BE_FIVE_DAYS_AGO_PM_TWO_THREE_END_TIME_KST)))
+                .description(BE_FIVE_DAYS_AGO_PM_TWO_THREE_DESCRIPTION)
+                .userName(pobi.getUserName())
+                .member(pobi)
+                .space(be)
+                .build();
+
         reservations.save(beAmZeroOne);
         reservations.save(bePmOneTwo);
         reservations.save(beNextDayAmSixTwelve);
         reservations.save(fe1ZeroOne);
+        reservations.save(bePmTwoThreeByPobi);
+        reservations.save(beFiveDaysAgoPmTwoThreeByPobi);
     }
 
     @Test
@@ -162,7 +195,7 @@ class ReservationRepositoryTest extends RepositoryTest {
         // then
         assertThat(foundReservations).usingRecursiveComparison()
                 .ignoringCollectionOrder()
-                .isEqualTo(List.of(beAmZeroOne, beNextDayAmSixTwelve, bePmOneTwo, fe1ZeroOne));
+                .isEqualTo(List.of(beAmZeroOne, beNextDayAmSixTwelve, bePmOneTwo, fe1ZeroOne, bePmTwoThreeByPobi));
     }
 
     @Test
@@ -205,7 +238,7 @@ class ReservationRepositoryTest extends RepositoryTest {
         //given, when
         Boolean actual = reservations.existsBySpaceIdAndReservationTimeEndTimeAfter(
                 be.getId(),
-                BE_NEXT_DAY_PM_FOUR_TO_SIX_END_TIME_KST.withZoneSameInstant(UTC.toZoneId()).toLocalDateTime().minusMinutes(minusMinute));
+                TimeZoneUtils.convertToUTC(BE_NEXT_DAY_PM_FOUR_TO_SIX_END_TIME_KST).minusMinutes(minusMinute));
 
         //then
         assertThat(actual).isEqualTo(expected);
@@ -220,9 +253,9 @@ class ReservationRepositoryTest extends RepositoryTest {
 
         // then
         assertThat(actual.getSize()).isEqualTo(20);
-        assertThat(actual.getContent()).hasSize(4);
+        assertThat(actual.getContent()).hasSize(6);
         assertThat(actual.getContent()).usingRecursiveComparison()
-                .isEqualTo(List.of(beAmZeroOne, bePmOneTwo, beNextDayAmSixTwelve, fe1ZeroOne));
+                .isEqualTo(List.of(beAmZeroOne, bePmOneTwo, beNextDayAmSixTwelve, fe1ZeroOne, bePmTwoThreeByPobi, beFiveDaysAgoPmTwoThreeByPobi));
     }
 
     private List<Reservation> getReservations(List<Long> spaceIds, LocalDate date) {
@@ -230,5 +263,32 @@ class ReservationRepositoryTest extends RepositoryTest {
                 spaceIds,
                 date.minusDays(1L),
                 date.plusDays(1L));
+    }
+
+    @Test
+    @DisplayName("로그인한 예약자의 특정 시간 이후 (Inclusive) 예약 내역을 조회한다")
+    void findAllByMemberAndReservationTimeDateGreaterThanEqualAndReservationTimeStartTimeGreaterThanEqual() {
+        PageRequest pageRequest = PageRequest.of(0, 10, Sort.by("reservationTime.startTime"));
+        Slice<Reservation> actual = reservations.findAllByMemberAndReservationTimeDateGreaterThanEqualAndReservationTimeEndTimeGreaterThanEqual(
+                pobi,
+                THE_DAY_AFTER_TOMORROW,
+                TimeZoneUtils.convertToUTC(BE_PM_TWO_THREE_START_TIME_KST),
+                pageRequest);
+
+        List<Reservation> expectedContent = List.of(bePmTwoThreeByPobi);
+        assertThat(actual.getContent()).isEqualTo(expectedContent);
+    }
+
+    @Test
+    @DisplayName("로그인한 예약자의 특정 날짜 이전 (Inclusive) 예약 내역을 조회한다")
+    void findAllByMemberAndReservationTimeDateLessThanEqual() {
+        PageRequest pageRequest = PageRequest.of(0, 10, Sort.by("reservationTime.endTime").descending());
+        Slice<Reservation> actual = reservations.findAllByMemberAndReservationTimeDateLessThanEqualAndReservationTimeEndTimeLessThanEqual(
+                pobi,
+                THE_DAY_AFTER_TOMORROW,
+                TimeZoneUtils.convertToUTC(BE_PM_TWO_THREE_END_TIME_KST),
+                pageRequest);
+
+        assertThat(actual.getContent()).containsExactly(bePmTwoThreeByPobi, beFiveDaysAgoPmTwoThreeByPobi);
     }
 }
