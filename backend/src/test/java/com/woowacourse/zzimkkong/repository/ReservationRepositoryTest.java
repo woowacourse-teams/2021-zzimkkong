@@ -17,7 +17,6 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 import static com.woowacourse.zzimkkong.Constants.*;
-import static com.woowacourse.zzimkkong.infrastructure.datetime.TimeZoneUtils.UTC;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 
@@ -267,10 +266,14 @@ class ReservationRepositoryTest extends RepositoryTest {
     }
 
     @Test
-    @DisplayName("로그인한 예약자의 특정 날짜 이후 (Inclusive) 예약 내역을 조회한다")
-    void findAllByMemberAndReservationTimeDateGreaterThanEqual() {
-        PageRequest pageRequest = PageRequest.of(0, 10, Sort.by("reservationTime.date"));
-        Slice<Reservation> actual = reservations.findAllByMemberAndReservationTimeDateGreaterThanEqual(pobi, THE_DAY_AFTER_TOMORROW, pageRequest);
+    @DisplayName("로그인한 예약자의 특정 시간 이후 (Inclusive) 예약 내역을 조회한다")
+    void findAllByMemberAndReservationTimeDateGreaterThanEqualAndReservationTimeStartTimeGreaterThanEqual() {
+        PageRequest pageRequest = PageRequest.of(0, 10, Sort.by("reservationTime.startTime"));
+        Slice<Reservation> actual = reservations.findAllByMemberAndReservationTimeDateGreaterThanEqualAndReservationTimeEndTimeGreaterThanEqual(
+                pobi,
+                THE_DAY_AFTER_TOMORROW,
+                TimeZoneUtils.convertToUTC(BE_PM_TWO_THREE_START_TIME_KST),
+                pageRequest);
 
         List<Reservation> expectedContent = List.of(bePmTwoThreeByPobi);
         assertThat(actual.getContent()).isEqualTo(expectedContent);
@@ -279,10 +282,13 @@ class ReservationRepositoryTest extends RepositoryTest {
     @Test
     @DisplayName("로그인한 예약자의 특정 날짜 이전 (Inclusive) 예약 내역을 조회한다")
     void findAllByMemberAndReservationTimeDateLessThanEqual() {
-        PageRequest pageRequest = PageRequest.of(0, 10, Sort.by("reservationTime.date"));
-        Slice<Reservation> actual = reservations.findAllByMemberAndReservationTimeDateLessThanEqual(pobi, THE_DAY_AFTER_TOMORROW, pageRequest);
+        PageRequest pageRequest = PageRequest.of(0, 10, Sort.by("reservationTime.endTime").descending());
+        Slice<Reservation> actual = reservations.findAllByMemberAndReservationTimeDateLessThanEqualAndReservationTimeEndTimeLessThanEqual(
+                pobi,
+                THE_DAY_AFTER_TOMORROW,
+                TimeZoneUtils.convertToUTC(BE_PM_TWO_THREE_END_TIME_KST),
+                pageRequest);
 
-        List<Reservation> expectedContent = List.of(bePmTwoThreeByPobi, beFiveDaysAgoPmTwoThreeByPobi);
-        assertThat(actual.getContent()).containsExactlyInAnyOrderElementsOf(expectedContent);
+        assertThat(actual.getContent()).containsExactly(bePmTwoThreeByPobi, beFiveDaysAgoPmTwoThreeByPobi);
     }
 }

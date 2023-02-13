@@ -60,7 +60,6 @@ public class Constants {
 
     public static final ZonedDateTime BE_AM_TEN_ELEVEN_START_TIME_KST = THE_DAY_AFTER_TOMORROW.atTime(10, 0).atZone(ZoneId.of(ServiceZone.KOREA.getTimeZone()));
     public static final ZonedDateTime BE_AM_TEN_ELEVEN_END_TIME_KST = THE_DAY_AFTER_TOMORROW.atTime(11, 0).atZone(ZoneId.of(ServiceZone.KOREA.getTimeZone()));
-
     public static final String BE_AM_TEN_ELEVEN_DESCRIPTION = DESCRIPTION;
     public static final String BE_AM_TEN_ELEVEN_USERNAME = RESERVATION_USER_NAME;
     public static final String BE_AM_TEN_ELEVEN_PW = RESERVATION_PW;

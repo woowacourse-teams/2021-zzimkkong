@@ -30,14 +30,22 @@ public interface ReservationRepository extends JpaRepository<Reservation, Long>,
             final Collection<Long> spaceIds,
             final LocalDate date);
 
-    Slice<Reservation> findAllByMemberAndReservationTimeDateGreaterThanEqual(
+    Slice<Reservation> findAllByMemberAndReservationTimeDateGreaterThanEqualAndReservationTimeEndTimeGreaterThanEqual(
             final Member member,
             final LocalDate date,
+            final LocalDateTime dateTime,
             final Pageable pageable);
 
-    Slice<Reservation> findAllByMemberAndReservationTimeDateLessThanEqual(
+    Slice<Reservation> findAllByMemberAndReservationTimeDateLessThanEqualAndReservationTimeEndTimeLessThanEqual(
             final Member member,
             final LocalDate date,
+            final LocalDateTime dateTime,
+            final Pageable pageable);
+
+    Slice<Reservation> findAllByUserNameAndReservationTimeDateGreaterThanEqualAndReservationTimeStartTimeGreaterThanEqualAndMemberIsNull(
+            final String userName,
+            final LocalDate date,
+            final LocalDateTime dateTime,
             final Pageable pageable);
 
     Boolean existsBySpaceIdAndReservationTimeEndTimeAfter(final Long spaceId, final LocalDateTime now);

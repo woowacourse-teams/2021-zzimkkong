@@ -127,3 +127,12 @@ include::{snippets}/reservation/guest/getAllUpcomingMine/http-response.adoc[]
 include::{snippets}/reservation/guest/getAllPreviousMine/http-request.adoc[]
 ===== Response
 include::{snippets}/reservation/guest/getAllPreviousMine/http-response.adoc[]
+
+=== 비로그인 예약 조회
+==== Request
+include::{snippets}/reservation/guest/getAllUpcomingNonLogin/http-request.adoc[]
+NOTE: request param의 searchStartTime의 format은 다음과 같다: `yyyy-MM-dd'T'HH:mm:ssxxx`
+e.g. "2023-01-30T10:00:00+09:00"
+
+==== Response
+include::{snippets}/reservation/guest/getAllUpcomingNonLogin/http-response.adoc[]

@@ -6,6 +6,7 @@ import com.woowacourse.zzimkkong.domain.ReservationType;
 import com.woowacourse.zzimkkong.dto.member.LoginUserEmail;
 import com.woowacourse.zzimkkong.dto.reservation.*;
 import com.woowacourse.zzimkkong.dto.slack.SlackResponse;
+import com.woowacourse.zzimkkong.infrastructure.datetime.TimeZoneUtils;
 import com.woowacourse.zzimkkong.service.ReservationService;
 import com.woowacourse.zzimkkong.service.SlackService;
 import org.springframework.data.domain.Pageable;
@@ -18,8 +19,11 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 import java.net.URI;
 import java.time.LocalDate;
+import java.time.ZonedDateTime;
 
+import static com.woowacourse.zzimkkong.dto.ValidatorMessage.DATETIME_FORMAT;
 import static com.woowacourse.zzimkkong.dto.ValidatorMessage.DATE_FORMAT;
+import static com.woowacourse.zzimkkong.infrastructure.datetime.TimeZoneUtils.UTC;
 
 @LogMethodExecutionTime(group = "controller")
 @RestController
@@ -35,10 +39,22 @@ public class GuestReservationController {
         this.reservationService = reservationService;
     }
 
+    @GetMapping("/non-login/reservations")
+    public ResponseEntity<ReservationInfiniteScrollResponse> findUpcomingNonLoginReservations(
+            @RequestParam final String userName,
+            @RequestParam @DateTimeFormat(pattern = DATETIME_FORMAT) final ZonedDateTime searchStartTime,
+            @PageableDefault(sort = {"reservationTime.startTime"}) final Pageable Pageable) {
+        ReservationInfiniteScrollResponse reservationInfiniteScrollResponse = reservationService.findUpcomingNonLoginReservations(
+                userName,
+                TimeZoneUtils.convertToUTC(searchStartTime),
+                Pageable);
+        return ResponseEntity.ok().body(reservationInfiniteScrollResponse);
+    }
+
     @GetMapping("/reservations")
     public ResponseEntity<ReservationInfiniteScrollResponse> findUpcomingReservations(
             @LoginEmail final LoginUserEmail loginUserEmail,
-            @PageableDefault(sort = {"reservationTime.date"}) final Pageable Pageable) {
+            @PageableDefault(sort = {"reservationTime.startTime"}) final Pageable Pageable) {
         ReservationInfiniteScrollResponse reservationInfiniteScrollResponse = reservationService.findUpcomingReservations(loginUserEmail, Pageable);
         return ResponseEntity.ok().body(reservationInfiniteScrollResponse);
     }
@@ -46,7 +62,7 @@ public class GuestReservationController {
     @GetMapping("/reservations/history")
     public ResponseEntity<ReservationInfiniteScrollResponse> findPreviousReservations(
             @LoginEmail final LoginUserEmail loginUserEmail,
-            @PageableDefault(sort = {"reservationTime.date"}, direction = Sort.Direction.DESC) final Pageable Pageable) {
+            @PageableDefault(sort = {"reservationTime.startTime"}, direction = Sort.Direction.DESC) final Pageable Pageable) {
         ReservationInfiniteScrollResponse reservationFindPreviousResponse = reservationService.findPreviousReservations(loginUserEmail, Pageable);
         return ResponseEntity.ok().body(reservationFindPreviousResponse);
     }

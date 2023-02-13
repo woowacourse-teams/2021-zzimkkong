@@ -139,13 +139,13 @@ public class ReservationService {
                 .orElseThrow(NoSuchMemberException::new);
 
         LocalDateTime now = LocalDateTime.now();
-        Slice<Reservation> reservationSlice = reservations.findAllByMemberAndReservationTimeDateGreaterThanEqual(
+        Slice<Reservation> reservationSlice = reservations.findAllByMemberAndReservationTimeDateGreaterThanEqualAndReservationTimeEndTimeGreaterThanEqual(
                 member,
                 TimeZoneUtils.convertTo(now, ServiceZone.KOREA).toLocalDate(),
+                now,
                 pageable);
         List<Reservation> upcomingReservations = reservationSlice.getContent()
                 .stream()
-                .filter(reservation -> !reservation.isExpired(now))
                 .sorted(Comparator.comparing(Reservation::getStartTime))
                 .peek(reservation -> reservation.getSpace().getMap().activateSharingMapId(sharingIdGenerator))
                 .collect(Collectors.toList());
@@ -159,19 +159,39 @@ public class ReservationService {
                 .orElseThrow(NoSuchMemberException::new);
 
         LocalDateTime now = LocalDateTime.now();
-        Slice<Reservation> reservationSlice = reservations.findAllByMemberAndReservationTimeDateLessThanEqual(
+        Slice<Reservation> reservationSlice = reservations.findAllByMemberAndReservationTimeDateLessThanEqualAndReservationTimeEndTimeLessThanEqual(
                 member,
                 TimeZoneUtils.convertTo(now, ServiceZone.KOREA).toLocalDate(),
+                now,
                 pageable);
 
         List<Reservation> previousReservations = reservationSlice.getContent()
                 .stream()
-                .filter(reservation -> reservation.isExpired(now))
                 .sorted(Comparator.comparing(Reservation::getStartTime).reversed())
                 .peek(reservation -> reservation.getSpace().getMap().activateSharingMapId(sharingIdGenerator))
                 .collect(Collectors.toList());
 
         return ReservationInfiniteScrollResponse.of(previousReservations, reservationSlice.hasNext(), pageable.getPageNumber());
+    }
+
+    @Transactional(readOnly = true)
+    public ReservationInfiniteScrollResponse findUpcomingNonLoginReservations(
+            final String userName,
+            final LocalDateTime searchStartTime,
+            final Pageable pageable) {
+        Slice<Reservation> reservationSlice = reservations.findAllByUserNameAndReservationTimeDateGreaterThanEqualAndReservationTimeStartTimeGreaterThanEqualAndMemberIsNull(
+                userName,
+                TimeZoneUtils.convertTo(searchStartTime, ServiceZone.KOREA).toLocalDate(),
+                searchStartTime,
+                pageable);
+
+        List<Reservation> upcomingNonLoginReservations = reservationSlice.getContent()
+                .stream()
+                .sorted(Comparator.comparing(Reservation::getStartTime))
+                .peek(reservation -> reservation.getSpace().getMap().activateSharingMapId(sharingIdGenerator))
+                .collect(Collectors.toList());
+
+        return ReservationInfiniteScrollResponse.of(upcomingNonLoginReservations, reservationSlice.hasNext(), pageable.getPageNumber());
     }
 
     public SlackResponse updateReservation(final ReservationUpdateDto reservationUpdateDto) {
