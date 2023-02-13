@@ -118,6 +118,7 @@ const GuestMap = ({ map }: GuestMapProps): JSX.Element => {
       setSelectedSpaceIdForm?.(`${spaceId}`);
     } else if (selectedSwitchLabel === SWITCH_LABEL_LIST[1]) {
       setSelectedSpaceId(spaceId);
+      setSelectedSpaceIdForm?.(`${spaceId}`);
     }
   };
 
