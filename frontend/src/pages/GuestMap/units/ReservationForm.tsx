@@ -167,23 +167,25 @@ const ReservationForm = ({ map }: Props) => {
           {spacesMap?.[Number(selectedSpaceId)] && (
             <Styled.TimeFormMessageWrapper>
               <Styled.TimeFormMessage fontWeight="bold">예약 가능 시간</Styled.TimeFormMessage>
-              {spacesMap[Number(selectedSpaceId)].settings.map(
-                (
-                  {
-                    settingStartTime,
-                    settingEndTime,
-                    reservationMaximumTimeUnit,
-                    reservationMinimumTimeUnit,
-                  },
-                  index
-                ) => (
-                  <Styled.TimeFormMessage key={index}>
-                    {settingStartTime.slice(0, 5)} ~ {settingEndTime.slice(0, 5)}
-                    (최소 {formatTimePrettier(reservationMinimumTimeUnit)}, 최대{' '}
-                    {formatTimePrettier(reservationMaximumTimeUnit)})
-                  </Styled.TimeFormMessage>
-                )
-              )}
+              <Styled.TimeFormMessageList>
+                {spacesMap[Number(selectedSpaceId)].settings.map(
+                  (
+                    {
+                      settingStartTime,
+                      settingEndTime,
+                      reservationMaximumTimeUnit,
+                      reservationMinimumTimeUnit,
+                    },
+                    index
+                  ) => (
+                    <Styled.TimeFormMessage key={index}>
+                      {settingStartTime.slice(0, 5)} ~ {settingEndTime.slice(0, 5)}
+                      (최소 {formatTimePrettier(reservationMinimumTimeUnit)}, 최대{' '}
+                      {formatTimePrettier(reservationMaximumTimeUnit)})
+                    </Styled.TimeFormMessage>
+                  )
+                )}{' '}
+              </Styled.TimeFormMessageList>
             </Styled.TimeFormMessageWrapper>
           )}
         </Styled.InputWrapper>

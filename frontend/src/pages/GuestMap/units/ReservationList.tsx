@@ -1,11 +1,13 @@
 import dayjs from 'dayjs';
-import { useContext, useState } from 'react';
+import { Dispatch, SetStateAction, useContext, useState } from 'react';
 import { ReactComponent as CalendarIcon } from 'assets/svg/calendar.svg';
 import { ReactComponent as DeleteIcon } from 'assets/svg/delete.svg';
 import { ReactComponent as EditIcon } from 'assets/svg/edit.svg';
+import ColorDot from 'components/ColorDot/ColorDot';
 import IconButton from 'components/IconButton/IconButton';
 import Input from 'components/Input/Input';
 import ManagerReservationListItem from 'components/ManagerReservationListItem/ManagerReservationListItem';
+import Select from 'components/Select/Select';
 import DATE from 'constants/date';
 import useGuestReservations from 'hooks/query/useGuestReservations';
 import useGuestSpace from 'hooks/query/useGuestSpace';
@@ -14,17 +16,24 @@ import { MapItem, Reservation } from 'types/common';
 import { formatDate, isPastTime } from 'utils/datetime';
 import { getReservationStatus } from 'utils/reservation';
 import { isNullish } from 'utils/type';
+import { GuestMapFormContext } from '../providers/GuestMapFormProvider';
 import * as Styled from './ReservationList.styled';
 
 interface Props {
   map: MapItem;
-  selectedSpaceId: number | null;
+  // selectedSpaceId: number | null;
   onEdit: (reservation: Reservation) => void;
   onDelete: (reservation: Reservation) => void;
 }
 
-const ReservationList = ({ map: { mapId }, selectedSpaceId, onDelete, onEdit }: Props) => {
+const ReservationList = ({
+  map: { mapId },
+  // selectedSpaceId,
+  onDelete,
+  onEdit,
+}: Props) => {
   const { accessToken } = useContext(AccessTokenContext);
+  const { spaceList, selectedSpaceId, setSelectedSpaceId } = useContext(GuestMapFormContext);
 
   const [date, setDate] = useState<string>(dayjs().format('YYYY-MM-DD'));
 
@@ -35,26 +44,42 @@ const ReservationList = ({ map: { mapId }, selectedSpaceId, onDelete, onEdit }: 
   } = useGuestReservations(
     {
       mapId: mapId,
-      spaceId: selectedSpaceId as number,
+      spaceId: +selectedSpaceId,
       date: formatDate(dayjs(date)),
     },
     {
-      enabled: !isNullish(selectedSpaceId) && dayjs(date).isValid(),
+      enabled: !!selectedSpaceId && !isNullish(selectedSpaceId) && dayjs(date).isValid(),
     }
   );
 
   const { data: space } = useGuestSpace(
     {
       mapId,
-      spaceId: selectedSpaceId as number,
+      spaceId: +selectedSpaceId,
     },
     {
-      enabled: !isNullish(selectedSpaceId),
+      enabled: !!selectedSpaceId && !isNullish(selectedSpaceId),
     }
   );
 
   const handleDate = (e: React.ChangeEvent<HTMLInputElement>) => {
     setDate(e.target.value);
+  };
+
+  console.log('spaceList', spaceList);
+
+  const getSpaceOptions = () => {
+    return (
+      spaceList?.map((space) => ({
+        value: `${space.id}`,
+        children: (
+          <Styled.SpaceOption>
+            <ColorDot size="medium" color={space.color} />
+            {space.name}
+          </Styled.SpaceOption>
+        ),
+      })) ?? []
+    );
   };
 
   return (
@@ -74,6 +99,15 @@ const ReservationList = ({ map: { mapId }, selectedSpaceId, onDelete, onEdit }: 
         onChange={handleDate}
         required
       />
+      <Styled.InputWrapper>
+        <Select
+          name="space"
+          label="공간 선택"
+          options={getSpaceOptions()}
+          value={String(selectedSpaceId)}
+          onChange={(id) => setSelectedSpaceId?.(id)}
+        />
+      </Styled.InputWrapper>
       <>
         {isLoadingError && (
           <Styled.Message>

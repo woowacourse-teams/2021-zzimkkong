@@ -47,3 +47,21 @@ export const MessageWrapper = styled.div`
   display: flex;
   justify-content: center;
 `;
+
+export const InputWrapper = styled.div`
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 1.625rem;
+
+  & > label,
+  & > div {
+    flex: 1;
+  }
+`;
+
+export const SpaceOption = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+`;

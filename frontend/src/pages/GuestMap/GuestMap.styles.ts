@@ -16,6 +16,10 @@ export const MapContainer = styled.div`
   display: flex;
   flex-direction: column;
   position: relative;
+
+  @media (max-width: ${({ theme: { breakpoints } }) => breakpoints.sm}px) {
+    display: none;
+  }
 `;
 
 export const SelectBox = styled.div`

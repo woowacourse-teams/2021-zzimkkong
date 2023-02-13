@@ -38,6 +38,12 @@ export const TimeFormMessageWrapper = styled.div`
   margin-top: 0.5rem;
 `;
 
+export const TimeFormMessageList = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+`;
+
 export const TimeFormMessage = styled.p<{ fontWeight?: string }>`
   left: 0.75rem;
   bottom: -1rem;

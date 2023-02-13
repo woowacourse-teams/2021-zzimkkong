@@ -28,6 +28,7 @@ export interface GuestMapFormProviderValue {
   selectedSpaceId: string;
   setSelectedSpaceId?: React.Dispatch<React.SetStateAction<string>>;
   timePicker?: ReturnType<typeof useTimePicker>;
+  spaceList?: SpaceResponse[];
   availableSpaceList?: SpaceResponse[];
   spacesMap?: Record<number, SpaceResponse>;
 }
@@ -84,6 +85,8 @@ const GuestMapFormProvider = ({ mapId, children }: GuestMapFormProviderProps) =>
     { enabled: !!timePicker.range.start && !!timePicker.range.end }
   );
 
+  const spaceList = getSpaces.data?.data.spaces ?? [];
+
   const availableSpaceList =
     getSpaceAvailable.data?.data.spaces
       .filter((space) => space.isAvailable)
@@ -95,6 +98,7 @@ const GuestMapFormProvider = ({ mapId, children }: GuestMapFormProviderProps) =>
     selectedSpaceId,
     setSelectedSpaceId,
     timePicker,
+    spaceList,
     availableSpaceList,
     spacesMap,
   };
