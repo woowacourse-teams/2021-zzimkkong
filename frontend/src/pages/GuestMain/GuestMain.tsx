@@ -16,7 +16,7 @@ import { HREF } from 'constants/path';
 import { TAB_LABEL, TAB_LIST, TAB_PATH_FOR_LABEL } from 'constants/tab';
 import useMemberReservationHistory from 'hooks/infiniteQuery/useMemberReservationHistory';
 import useMemberReservations from 'hooks/infiniteQuery/useMemberReservations';
-import { MemberReservarion } from 'types/common';
+import { MemberReservation } from 'types/common';
 import { ErrorResponse } from 'types/response';
 import { formatDate } from 'utils/datetime';
 import * as Styled from './GuestMain.styled';
@@ -47,7 +47,7 @@ const GuestMain = (): JSX.Element => {
     },
   });
 
-  const handleDeleteReservation = (reservation: MemberReservarion) => {
+  const handleDeleteReservation = (reservation: MemberReservation) => {
     removeReservation.mutate({
       mapId: reservation.mapId,
       spaceId: reservation.spaceId,
@@ -55,7 +55,7 @@ const GuestMain = (): JSX.Element => {
     });
   };
 
-  const handleEdit = (reservation: MemberReservarion) => {
+  const handleEdit = (reservation: MemberReservation) => {
     history.push({
       pathname: HREF.GUEST_RESERVATION_EDIT(reservation.sharingMapId),
       state: {

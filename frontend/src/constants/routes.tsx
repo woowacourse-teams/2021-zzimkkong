@@ -19,6 +19,9 @@ const ManagerReservation = React.lazy(() => import('pages/ManagerReservation/Man
 const ManagerSpaceEditor = React.lazy(() => import('pages/ManagerSpaceEditor/ManagerSpaceEditor'));
 const GithubOAuthRedirect = React.lazy(() => import('pages/OAuthRedirect/GithubOAuthRedirect'));
 const GoogleOAuthRedirect = React.lazy(() => import('pages/OAuthRedirect/GoogleOAuthRedirect'));
+const GuestNonLoginReservationSearch = React.lazy(
+  () => import('pages/GuestNonLoginReservationSearch/GuestNonLoginReservationSearch')
+);
 
 interface Route {
   path: string;
@@ -69,6 +72,10 @@ export const PUBLIC_ROUTES: Route[] = [
   {
     path: PATH.GUEST_RESERVATION_SUCCESS,
     component: <GuestReservationSuccess />,
+  },
+  {
+    path: PATH.GUEST_NON_LOGIN_RESERVATION_SEARCH,
+    component: <GuestNonLoginReservationSearch />,
   },
 ];
 

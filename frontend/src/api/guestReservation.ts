@@ -13,6 +13,12 @@ export interface QuerySpaceReservationsParams extends QueryMapReservationsParams
   spaceId: number;
 }
 
+export interface QueryNonLoginReservationsParams {
+  userName: string;
+  searchStartTime: string;
+  page: number;
+}
+
 export interface QueryMemberReservationsParams {
   page: number;
 }
@@ -76,6 +82,17 @@ export const queryGuestReservations: QueryFunction<
   }
 
   return api.get(`/guests/maps/${mapId}/spaces/${spaceId}/reservations?date=${date}`);
+};
+
+// 비회원 예약 조회
+export const queryGuestNonLoginReservations = ({
+  userName,
+  searchStartTime,
+  page,
+}: QueryNonLoginReservationsParams): Promise<AxiosResponse<QueryMemberReservationsSuccess>> => {
+  return api.get(
+    `/guests/non-login/reservations?userName=${userName}&searchStartTime=${searchStartTime}&page=${page}`
+  );
 };
 
 // 내 예약 조회

@@ -3,7 +3,7 @@ import {
   Emoji,
   ManagerSpaceAPI,
   MapItem,
-  MemberReservarion,
+  MemberReservation,
   Preset,
   Reservation,
   Space,
@@ -87,7 +87,7 @@ export interface QuerySlackWebhookUrlSuccess {
 }
 
 export interface QueryMemberReservationsSuccess {
-  data: MemberReservarion[];
+  data: MemberReservation[];
   hasNext: boolean;
   pageNumber: number;
 }
