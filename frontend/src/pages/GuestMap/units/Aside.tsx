@@ -38,7 +38,7 @@ const Aside = ({ map, selectedLabel, onClickSwitch, selectedSpaceId, onDelete, o
       ) : (
         <ReservationList
           map={map}
-          selectedSpaceId={selectedSpaceId}
+          // selectedSpaceId={selectedSpaceId}
           onEdit={onEdit}
           onDelete={onDelete}
         />
