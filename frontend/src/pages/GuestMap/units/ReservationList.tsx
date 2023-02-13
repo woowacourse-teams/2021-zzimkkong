@@ -83,8 +83,10 @@ const ReservationList = ({ map: { mapId }, selectedSpaceId, onDelete, onEdit }: 
           </Styled.Message>
         )}
 
-        {isSuccess && reservations?.data.reservations?.length === 0 && isPastDate(dayjs(date)) && (
-          <Styled.Message>예약이 없습니다.</Styled.Message>
+        {isSuccess && reservations?.data.reservations?.length === 0 && (
+          <Styled.MessageWrapper>
+            <Styled.Message>예약이 없습니다.</Styled.Message>
+          </Styled.MessageWrapper>
         )}
 
         {isSuccess && (reservations?.data.reservations?.length ?? 0) > 0 && (
