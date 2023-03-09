@@ -11,7 +11,6 @@ import static com.woowacourse.zzimkkong.dto.ValidatorMessage.*;
 
 @Getter
 @NoArgsConstructor
-@JsonInclude(JsonInclude.Include.NON_NULL)
 public class ChangePasswordRequest {
     @NotNull(message = EMPTY_MESSAGE)
     @Pattern(regexp = MEMBER_PW_FORMAT, message = MEMBER_PW_MESSAGE)

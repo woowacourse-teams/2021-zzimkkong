@@ -2,6 +2,7 @@ package com.woowacourse.zzimkkong.controller;
 
 import com.woowacourse.zzimkkong.config.logaspect.LogMethodExecutionTime;
 import com.woowacourse.zzimkkong.domain.LoginEmail;
+import com.woowacourse.zzimkkong.dto.member.ChangePasswordRequest;
 import com.woowacourse.zzimkkong.dto.member.*;
 import com.woowacourse.zzimkkong.dto.member.oauth.OauthMemberSaveRequest;
 import com.woowacourse.zzimkkong.service.MemberService;
@@ -75,5 +76,11 @@ public class MemberController {
     public ResponseEntity<ProfileEmojisResponse> getEmojis() {
         ProfileEmojisResponse profileEmojis = memberService.getProfileEmojis();
         return ResponseEntity.ok().body(profileEmojis);
+    }
+
+    @PutMapping("/me/password")
+    public ResponseEntity<Void> changePassword(@LoginEmail final LoginUserEmail loginUserEmail, @RequestBody @Valid final ChangePasswordRequest changePasswordRequest) {
+        memberService.changePassword(loginUserEmail, changePasswordRequest);
+        return ResponseEntity.ok().build();
     }
 }
