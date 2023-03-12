@@ -49,10 +49,16 @@ export const PageHeader = styled.h2`
 `;
 
 export const Image = styled.img`
-  width: 15%;
+  width: 40%;
 `;
 
-export const NotFoundContainer = styled.div`
+export const FlexCenter = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+`;
+
+export const StatusContainer = styled.div`
   padding: 60px 0 80px;
   display: flex;
   justify-content: center;
