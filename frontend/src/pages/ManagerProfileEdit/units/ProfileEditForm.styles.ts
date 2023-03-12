@@ -7,3 +7,11 @@ export const Form = styled.form`
 export const InputWrapper = styled.div`
   margin-bottom: 3rem;
 `;
+
+export const ButtonContainer = styled.div`
+  display: flex;
+
+  *:first-child {
+    margin-right: 0.5rem;
+  }
+`;
