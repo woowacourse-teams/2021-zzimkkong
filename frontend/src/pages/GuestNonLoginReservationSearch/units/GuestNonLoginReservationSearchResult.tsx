@@ -1,12 +1,14 @@
 import { AxiosError } from 'axios';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useMutation } from 'react-query';
 import { useHistory } from 'react-router-dom';
 import { deleteGuestReservation, queryGuestNonLoginReservations } from 'api/guestReservation';
+import GrayLogoImage from 'assets/images/gray-logo.png';
 import { ReactComponent as DeleteIcon } from 'assets/svg/delete.svg';
 import { ReactComponent as EditIcon } from 'assets/svg/edit.svg';
 import Button from 'components/Button/Button';
 import IconButton from 'components/IconButton/IconButton';
+import Loader from 'components/Loader/Loader';
 import MemberReservationListItem from 'components/MemberReservationListItem/MemberReservationListItem';
 import MESSAGE from 'constants/message';
 import { HREF } from 'constants/path';
@@ -30,19 +32,14 @@ const GuestNonLoginReservationSearchResult = ({
   const history = useHistory();
   const [passwordInputModalOpen, setPasswordInputModalOpen] = useState(false);
   const [selectedReservation, setSelectedReservation] = useState<MemberReservation>();
-  const [currentSearchStartTime, setCurrentSearchStartTime] = useState('');
 
   const {
     refetch,
+    isFetching: isFetchingReservations,
     fetchNextPage: fetchNextReservations,
     hasNextPage: hasNextReservations,
     flattedResults: flattedReservations,
   } = useNonLoginReservations(userName, searchStartTime);
-
-  if (searchStartTime !== currentSearchStartTime) {
-    refetch();
-    setCurrentSearchStartTime(searchStartTime);
-  }
 
   const removeReservation = useMutation(deleteGuestReservation, {
     onSuccess: () => {
@@ -97,9 +94,27 @@ const GuestNonLoginReservationSearchResult = ({
     });
   };
 
+  useEffect(() => {
+    refetch();
+  }, [refetch, searchStartTime]);
+
+  console.log(isFetchingReservations);
   return (
     <>
       <Styled.HorizontalLine />
+      <Styled.FlexCenter>
+        {!isFetchingReservations && flattedReservations.length === 0 && (
+          <Styled.StatusContainer>
+            <Styled.Image src={GrayLogoImage} alt="Not Found" />
+            <Styled.PageHeader>검색 결과가 없습니다.</Styled.PageHeader>
+          </Styled.StatusContainer>
+        )}
+        {isFetchingReservations && (
+          <Styled.StatusContainer>
+            <Loader />
+          </Styled.StatusContainer>
+        )}
+      </Styled.FlexCenter>
       <Styled.List role="list">
         {flattedReservations.map((reservation) => (
           <MemberReservationListItem

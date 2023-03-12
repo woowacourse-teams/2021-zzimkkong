@@ -70,7 +70,9 @@ export const Input = styled.input<InputProps>`
   }
 
   &:disabled {
+    -webkit-text-fill-color: ${({ theme }) => theme.gray[400]};
     color: ${({ theme }) => theme.gray[400]};
+    opacity: 1;
   }
 `;
 

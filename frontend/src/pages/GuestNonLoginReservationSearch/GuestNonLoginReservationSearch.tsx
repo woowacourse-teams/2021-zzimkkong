@@ -16,12 +16,7 @@ const GuestNonLoginReservationSearch = (): JSX.Element => {
   const [{ userName }, onChangeForm] = useInputs<Form>({
     userName: '',
   });
-  const [searchStartTime, setSearchStartTime] = useState(() => {
-    const nowDateTime = new Date();
-    return `${formatDate(nowDateTime)}T${formatTimeWithSecond(nowDateTime)}${
-      DATE.TIMEZONE_OFFSET_QUERY_STRING
-    }`;
-  });
+  const [searchStartTime, setSearchStartTime] = useState<string | null>(null);
 
   const handleSubmit: FormEventHandler<HTMLFormElement> = (event) => {
     event.preventDefault();
@@ -46,17 +41,20 @@ const GuestNonLoginReservationSearch = (): JSX.Element => {
             name="userName"
             value={userName}
             onChange={onChangeForm}
+            message="지난 예약은 조회되지 않습니다."
             autoFocus
             required
           />
           <Button variant="primary" size="large" fullWidth>
-            찾기
+            조회
           </Button>
         </Styled.Form>
-        <GuestNonLoginReservationSearchResult
-          userName={userName}
-          searchStartTime={searchStartTime}
-        />
+        {searchStartTime !== null && (
+          <GuestNonLoginReservationSearchResult
+            userName={userName}
+            searchStartTime={searchStartTime}
+          />
+        )}
       </Styled.Container>
     </>
   );

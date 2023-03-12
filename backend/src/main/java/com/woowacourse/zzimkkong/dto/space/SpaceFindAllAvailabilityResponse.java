@@ -1,8 +1,10 @@
 package com.woowacourse.zzimkkong.dto.space;
 
 import com.woowacourse.zzimkkong.domain.Space;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 import java.util.Collection;
 import java.util.List;
@@ -11,6 +13,8 @@ import java.util.stream.Collectors;
 
 @Builder
 @Getter
+@NoArgsConstructor
+@AllArgsConstructor
 public class SpaceFindAllAvailabilityResponse {
     private Long mapId;
     private List<SpaceFindAvailabilityResponse> spaces;

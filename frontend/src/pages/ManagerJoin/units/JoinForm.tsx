@@ -3,6 +3,7 @@ import React, { FormEventHandler, useEffect, useState } from 'react';
 import { useQuery } from 'react-query';
 import { queryValidateEmail, queryValidateUserName } from 'api/join';
 import Button from 'components/Button/Button';
+import EmojiSelector from 'components/EmojiSelector/EmojiSelector';
 import Input from 'components/Input/Input';
 import MANAGER from 'constants/manager';
 import MESSAGE from 'constants/message';
@@ -10,7 +11,6 @@ import REGEXP from 'constants/regexp';
 import useInputs from 'hooks/useInputs';
 import { ErrorResponse } from 'types/response';
 import { JoinParams } from '../ManagerJoin';
-import EmojiSelector from './EmojiSelector';
 import * as Styled from './JoinForm.styles';
 
 interface Form {

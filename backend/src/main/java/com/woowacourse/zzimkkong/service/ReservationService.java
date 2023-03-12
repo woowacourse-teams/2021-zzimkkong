@@ -179,7 +179,7 @@ public class ReservationService {
             final String userName,
             final LocalDateTime searchStartTime,
             final Pageable pageable) {
-        Slice<Reservation> reservationSlice = reservations.findAllByUserNameAndReservationTimeDateGreaterThanEqualAndReservationTimeStartTimeGreaterThanEqualAndMemberIsNull(
+        Slice<Reservation> reservationSlice = reservations.findAllByUserNameAndReservationTimeDateGreaterThanEqualAndReservationTimeEndTimeGreaterThanEqualAndMemberIsNull(
                 userName,
                 TimeZoneUtils.convertTo(searchStartTime, ServiceZone.KOREA).toLocalDate(),
                 searchStartTime,

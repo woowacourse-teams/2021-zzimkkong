@@ -1,15 +1,17 @@
 package com.woowacourse.zzimkkong.dto.space;
 
 import com.woowacourse.zzimkkong.domain.Space;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 import java.util.Collection;
-import java.util.Set;
 
-
-@Builder
 @Getter
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class SpaceFindAvailabilityResponse {
     private Long spaceId;
     private Boolean isAvailable;
@@ -21,3 +23,4 @@ public class SpaceFindAvailabilityResponse {
                 .build();
     }
 }
+

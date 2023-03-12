@@ -2,11 +2,12 @@ package com.woowacourse.zzimkkong.dto.reservation;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.woowacourse.zzimkkong.domain.Map;
-import com.woowacourse.zzimkkong.domain.Member;
 import com.woowacourse.zzimkkong.domain.Reservation;
 import com.woowacourse.zzimkkong.domain.Space;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 import java.time.ZonedDateTime;
 
@@ -15,6 +16,8 @@ import static com.woowacourse.zzimkkong.infrastructure.datetime.TimeZoneUtils.UT
 
 @Getter
 @Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class ReservationOwnerResponse {
     private Long id;
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = DATETIME_FORMAT)

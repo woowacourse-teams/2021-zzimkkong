@@ -5,21 +5,15 @@ import com.woowacourse.zzimkkong.domain.OauthProvider;
 import com.woowacourse.zzimkkong.domain.ProfileEmoji;
 import com.woowacourse.zzimkkong.dto.member.*;
 import com.woowacourse.zzimkkong.dto.member.oauth.OauthMemberSaveRequest;
-import com.woowacourse.zzimkkong.exception.member.DuplicateEmailException;
-import com.woowacourse.zzimkkong.exception.member.DuplicateUserNameException;
-import com.woowacourse.zzimkkong.exception.member.NoSuchMemberException;
-import com.woowacourse.zzimkkong.exception.member.ReservationExistsOnMemberException;
+import com.woowacourse.zzimkkong.exception.member.*;
 import com.woowacourse.zzimkkong.repository.MemberRepository;
 import com.woowacourse.zzimkkong.repository.ReservationRepository;
-import net.logstash.logback.encoder.org.apache.commons.lang3.StringUtils;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
-import java.util.Arrays;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 @Transactional
@@ -93,7 +87,9 @@ public class MemberService {
         Member member = members.findByEmail(loginUserEmail.getEmail())
                 .orElseThrow(NoSuchMemberException::new);
 
-        validateDuplicateUserName(memberUpdateRequest.getUserName());
+        if (!member.getUserName().equals(memberUpdateRequest.getUserName())) {
+            validateDuplicateUserName(memberUpdateRequest.getUserName());
+        }
 
         member.update(memberUpdateRequest);
     }
@@ -112,5 +108,27 @@ public class MemberService {
     @Transactional(readOnly = true)
     public ProfileEmojisResponse getProfileEmojis() {
         return ProfileEmojisResponse.from(List.of(ProfileEmoji.values()));
+    }
+
+    public void changePassword(final LoginUserEmail loginUserEmail, final ChangePasswordRequest changePasswordRequest) {
+        Member member = members.findByEmail(loginUserEmail.getEmail())
+                .orElseThrow(NoSuchMemberException::new);
+        validateOldPassword(member, changePasswordRequest);
+        validateConfirmationPassword(changePasswordRequest);
+
+        String newPassword = passwordEncoder.encode(changePasswordRequest.getNewPassword());
+        member.updatePassword(newPassword);
+    }
+
+    private void validateOldPassword(final Member member, final ChangePasswordRequest changePasswordRequest) {
+        if (!passwordEncoder.matches(changePasswordRequest.getOldPassword(), member.getPassword())) {
+            throw new PasswordMismatchException();
+        }
+    }
+
+    private void validateConfirmationPassword(final ChangePasswordRequest changePasswordRequest) {
+        if (!changePasswordRequest.getNewPassword().equals(changePasswordRequest.getNewPasswordConfirm())) {
+            throw new ConfirmationNewPasswordMismatchException();
+        }
     }
 }

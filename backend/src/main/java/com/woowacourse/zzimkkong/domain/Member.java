@@ -78,4 +78,8 @@ public class Member {
     public boolean hasEmail(String email) {
         return this.email.equals(email);
     }
+
+    public void updatePassword(String password) {
+        this.password = password;
+    }
 }

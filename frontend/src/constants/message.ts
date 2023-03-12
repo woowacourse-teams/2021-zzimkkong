@@ -19,6 +19,10 @@ const MESSAGE = {
   LOGIN: {
     UNEXPECTED_ERROR: '로그인에 문제가 발생했습니다. 잠시 후에 다시 시도해주세요.',
   },
+  MEMBER: {
+    EDIT_PROFILE_UNEXPECTED_ERROR:
+      '내 정보를 수정하는데 문제가 발생했습니다. 잠시 후에 다시 시도해주세요.',
+  },
   RESERVATION: {
     CREATE: '예약하기',
     EDIT: '예약 수정하기',

@@ -42,7 +42,7 @@ public interface ReservationRepository extends JpaRepository<Reservation, Long>,
             final LocalDateTime dateTime,
             final Pageable pageable);
 
-    Slice<Reservation> findAllByUserNameAndReservationTimeDateGreaterThanEqualAndReservationTimeStartTimeGreaterThanEqualAndMemberIsNull(
+    Slice<Reservation> findAllByUserNameAndReservationTimeDateGreaterThanEqualAndReservationTimeEndTimeGreaterThanEqualAndMemberIsNull(
             final String userName,
             final LocalDate date,
             final LocalDateTime dateTime,
