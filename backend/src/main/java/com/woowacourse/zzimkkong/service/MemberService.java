@@ -108,7 +108,7 @@ public class MemberService {
         return ProfileEmojisResponse.from(List.of(ProfileEmoji.values()));
     }
 
-    public void changePassword(LoginUserEmail loginUserEmail, ChangePasswordRequest changePasswordRequest) {
+    public void changePassword(final LoginUserEmail loginUserEmail, final ChangePasswordRequest changePasswordRequest) {
         Member member = members.findByEmail(loginUserEmail.getEmail())
                 .orElseThrow(NoSuchMemberException::new);
         validateOldPassword(member, changePasswordRequest);
@@ -118,13 +118,13 @@ public class MemberService {
         member.updatePassword(newPassword);
     }
 
-    private void validateOldPassword(Member member, ChangePasswordRequest changePasswordRequest) {
+    private void validateOldPassword(final Member member, final ChangePasswordRequest changePasswordRequest) {
         if (!passwordEncoder.matches(changePasswordRequest.getOldPassword(), member.getPassword())) {
             throw new PasswordMismatchException();
         }
     }
 
-    private void validateConfirmationPassword(ChangePasswordRequest changePasswordRequest) {
+    private void validateConfirmationPassword(final ChangePasswordRequest changePasswordRequest) {
         if (!changePasswordRequest.getNewPassword().equals(changePasswordRequest.getNewPasswordConfirm())) {
             throw new ConfirmationNewPasswordMismatchException();
         }
