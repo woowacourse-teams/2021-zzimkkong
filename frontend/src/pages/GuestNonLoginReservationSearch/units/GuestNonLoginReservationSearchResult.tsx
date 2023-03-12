@@ -21,7 +21,7 @@ import * as Styled from './GuestNonLoginReservationSearchResult.styles';
 
 interface Props {
   userName: string;
-  searchStartTime: string | null;
+  searchStartTime: string;
 }
 
 const GuestNonLoginReservationSearchResult = ({
