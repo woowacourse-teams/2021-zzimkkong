@@ -13,7 +13,7 @@ import { ErrorResponse } from 'types/response';
 import * as Styled from './ProfileEditForm.styles';
 
 interface ProfileEditFormProps {
-  onSubmit?: ({ userName, emoji }: { userName: string; emoji: string }) => void;
+  onSubmit: ({ userName, emoji }: { userName: string; emoji: string }) => void;
 }
 
 const ProfileEditForm = ({ onSubmit }: ProfileEditFormProps) => {
@@ -59,7 +59,7 @@ const ProfileEditForm = ({ onSubmit }: ProfileEditFormProps) => {
   const handleSubmit: React.FormEventHandler<HTMLFormElement> = (event) => {
     event.preventDefault();
 
-    onSubmit?.({ userName, emoji });
+    onSubmit({ userName, emoji });
   };
 
   const isSubmitButtonDisabled = !(emoji && userName);
