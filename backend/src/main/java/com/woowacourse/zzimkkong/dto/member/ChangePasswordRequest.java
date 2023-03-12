@@ -1,9 +1,9 @@
 package com.woowacourse.zzimkkong.dto.member;
 
-import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 
@@ -12,8 +12,7 @@ import static com.woowacourse.zzimkkong.dto.ValidatorMessage.*;
 @Getter
 @NoArgsConstructor
 public class ChangePasswordRequest {
-    @NotNull(message = EMPTY_MESSAGE)
-    @Pattern(regexp = MEMBER_PW_FORMAT, message = MEMBER_PW_MESSAGE)
+    @NotBlank(message = EMPTY_MESSAGE)
     private String oldPassword;
 
     @NotNull(message = EMPTY_MESSAGE)
