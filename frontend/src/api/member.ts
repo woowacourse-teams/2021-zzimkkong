@@ -16,6 +16,12 @@ export interface PutMemberParams {
   emoji: string;
 }
 
+export interface PutMemberPasswordParams {
+  oldPassword: string;
+  newPassword: string;
+  newPasswordConfirm: string;
+}
+
 export const queryMember: QueryFunction<AxiosResponse<QueryMemberSuccess>> = () => {
   return api.get('/members/me');
 };
@@ -25,4 +31,8 @@ export const putMember = ({ userName, emoji }: PutMemberParams) => {
     userName,
     emoji,
   });
+};
+
+export const putMemberPassword = (params: PutMemberPasswordParams) => {
+  return api.put('members/me/password', params);
 };

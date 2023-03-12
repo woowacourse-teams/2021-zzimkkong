@@ -1,5 +1,8 @@
+import { AxiosError } from 'axios';
 import { useEffect, useState } from 'react';
+import { useMutation } from 'react-query';
 import { Link, useHistory } from 'react-router-dom';
+import { putMemberPassword } from 'api/member';
 import Button from 'components/Button/Button';
 import Header from 'components/Header/Header';
 import Input from 'components/Input/Input';
@@ -9,6 +12,7 @@ import MESSAGE from 'constants/message';
 import PATH from 'constants/path';
 import REGEXP from 'constants/regexp';
 import useInputs from 'hooks/useInputs';
+import { ErrorResponse } from 'types/response';
 import * as Styled from './ManagerPasswordEdit.styles';
 
 interface Form {
@@ -29,6 +33,26 @@ const ManagerPasswordEdit = () => {
   const [passwordMessage, setPasswordMessage] = useState('');
   const [passwordConfirmMessage, setPasswordConfirmMessage] = useState('');
 
+  const editPassword = useMutation(putMemberPassword, {
+    onSuccess: () => {
+      history.push(PATH.MANAGER_MAP_LIST);
+    },
+
+    onError: (error: AxiosError<ErrorResponse>) => {
+      alert(error?.response?.data.message ?? MESSAGE.MEMBER.EDIT_PROFILE_UNEXPECTED_ERROR);
+    },
+  });
+
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+
+    editPassword.mutate({
+      newPassword: password,
+      newPasswordConfirm: passwordConfirm,
+      oldPassword: prevPassword,
+    });
+  };
+
   const isValidPassword = REGEXP.PASSWORD.test(password);
   const isValidPasswordConfirm = password === passwordConfirm;
 
@@ -41,7 +65,7 @@ const ManagerPasswordEdit = () => {
   );
 
   const handleCancel = () => {
-    history.goBack();
+    history.push(PATH.MANAGER_PROFILE_EDIT);
   };
 
   useEffect(() => {
@@ -66,7 +90,7 @@ const ManagerPasswordEdit = () => {
     <>
       <Header />
       <Layout>
-        <Styled.Container>
+        <Styled.ContainerForm onSubmit={handleSubmit}>
           <Styled.PageTitle>내 비밀번호 수정</Styled.PageTitle>
           <Styled.InputWrapper>
             <Input
@@ -116,7 +140,7 @@ const ManagerPasswordEdit = () => {
               수정
             </Button>
           </Styled.ButtonContainer>
-        </Styled.Container>
+        </Styled.ContainerForm>
       </Layout>
     </>
   );

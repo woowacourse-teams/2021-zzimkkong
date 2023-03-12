@@ -8,6 +8,7 @@ import EmojiSelector from 'components/EmojiSelector/EmojiSelector';
 import Input from 'components/Input/Input';
 import MANAGER from 'constants/manager';
 import MESSAGE from 'constants/message';
+import PATH from 'constants/path';
 import useMember from 'hooks/query/useMember';
 import useInputs from 'hooks/useInputs';
 import { ErrorResponse } from 'types/response';
@@ -68,7 +69,7 @@ const ProfileEditForm = ({ onSubmit }: ProfileEditFormProps) => {
   const isSubmitButtonDisabled = !(emoji && userName);
 
   const handleCancel = () => {
-    history.goBack();
+    history.push(PATH.MANAGER_MAP_LIST);
   };
 
   useEffect(() => {
