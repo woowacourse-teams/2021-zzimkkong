@@ -116,7 +116,11 @@ public class SpaceService {
         List<Space> allSpaces = map.getSpaces();
 
         Set<Long> spaceIds = allSpaces.stream().map(Space::getId).collect(Collectors.toSet());
-        ReservationTime reservationTime = ReservationTime.ofDefaultServiceZone(startDateTime, endDateTime);
+        ReservationTime reservationTime = ReservationTime.of(
+                startDateTime,
+                endDateTime,
+                map.getServiceZone(),
+                false);
         List<Reservation> allReservations = reservations.findAllBySpaceIdInAndReservationTimeDate(spaceIds, reservationTime.getDate());
 
         Set<Space> unavailableSpaces = allReservations.stream()
