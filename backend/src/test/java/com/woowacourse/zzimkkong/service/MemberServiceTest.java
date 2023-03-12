@@ -193,6 +193,53 @@ class MemberServiceTest extends ServiceTest {
     }
 
     @Test
+    @DisplayName("회원이 자신의 정보를 수정할 때 중복된 닉네임을 입력하면 실패한다.")
+    void updateMemberFailWhenDuplicatedUsername() {
+        // given
+        LoginUserEmail loginUserEmail = LoginUserEmail.from(EMAIL);
+        Member member = Member.builder()
+                .email(EMAIL)
+                .userName(POBI)
+                .emoji(ProfileEmoji.MAN_DARK_SKIN_TONE_TECHNOLOGIST)
+                .password(PW)
+                .organization(ORGANIZATION)
+                .build();
+        MemberUpdateRequest memberUpdateRequest = new MemberUpdateRequest("sakjung", ProfileEmoji.MAN_DARK_SKIN_TONE_TECHNOLOGIST);
+
+        given(members.findByEmail(anyString()))
+                .willReturn(Optional.of(member));
+        given(members.existsByUserName(anyString()))
+                .willReturn(true);
+
+        // when, then
+        assertThatThrownBy(() -> memberService.updateMember(loginUserEmail, memberUpdateRequest))
+                .isInstanceOf(DuplicateUserNameException.class);
+    }
+
+    @Test
+    @DisplayName("회원이 자신의 정보를 수정할 때, 자신의 닉네임은 중복 검사에서 제외한다.")
+    void updateMemberIgnoreUsernameValidationWhenGivenUsernameAsIs() {
+        // given
+        LoginUserEmail loginUserEmail = LoginUserEmail.from(EMAIL);
+        Member member = Member.builder()
+                .email(EMAIL)
+                .userName(POBI)
+                .emoji(ProfileEmoji.MAN_DARK_SKIN_TONE_TECHNOLOGIST)
+                .password(PW)
+                .organization(ORGANIZATION)
+                .build();
+        MemberUpdateRequest memberUpdateRequest = new MemberUpdateRequest(member.getUserName(), ProfileEmoji.MAN_DARK_SKIN_TONE_TECHNOLOGIST);
+
+        given(members.findByEmail(anyString()))
+                .willReturn(Optional.of(member));
+        given(members.existsByUserName(anyString()))
+                .willReturn(true);
+
+        // when, then
+        assertDoesNotThrow(() -> memberService.updateMember(loginUserEmail, memberUpdateRequest));
+    }
+
+    @Test
     @DisplayName("회원을 삭제할 수 있다.")
     void deleteMember() {
         // given

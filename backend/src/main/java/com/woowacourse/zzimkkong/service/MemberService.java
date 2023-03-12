@@ -93,7 +93,9 @@ public class MemberService {
         Member member = members.findByEmail(loginUserEmail.getEmail())
                 .orElseThrow(NoSuchMemberException::new);
 
-        validateDuplicateUserName(memberUpdateRequest.getUserName());
+        if (!member.getUserName().equals(memberUpdateRequest.getUserName())) {
+            validateDuplicateUserName(memberUpdateRequest.getUserName());
+        }
 
         member.update(memberUpdateRequest);
     }
