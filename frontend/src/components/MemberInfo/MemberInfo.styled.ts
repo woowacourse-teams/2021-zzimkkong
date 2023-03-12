@@ -27,7 +27,7 @@ export const InfoContainer = styled.div`
   flex-direction: column;
 
   & > * {
-    margin-bottom: 12px;
+    margin-bottom: 6px;
 
     ::last-of-type {
       margin-bottom: 0;
@@ -37,6 +37,8 @@ export const InfoContainer = styled.div`
 
 export const NameTextContainer = styled.div`
   font-size: 1.5rem;
+  display: flex;
+  align-items: center;
 `;
 
 export const NameText = styled.span`
@@ -44,6 +46,6 @@ export const NameText = styled.span`
   margin-right: 0.375rem;
 `;
 
-export const OranizationTextContainer = styled.div`
+export const OrganizationTextContainer = styled.div`
   font-size: 0.875rem;
 `;
