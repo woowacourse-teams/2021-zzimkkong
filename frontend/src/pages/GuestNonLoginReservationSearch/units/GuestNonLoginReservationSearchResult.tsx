@@ -35,7 +35,7 @@ const GuestNonLoginReservationSearchResult = ({
 
   const {
     refetch,
-    isLoading: isLoadingReservations,
+    isFetching: isFetchingReservations,
     fetchNextPage: fetchNextReservations,
     hasNextPage: hasNextReservations,
     flattedResults: flattedReservations,
@@ -98,17 +98,18 @@ const GuestNonLoginReservationSearchResult = ({
     refetch();
   }, [refetch, searchStartTime]);
 
+  console.log(isFetchingReservations);
   return (
     <>
       <Styled.HorizontalLine />
       <Styled.FlexCenter>
-        {!isLoadingReservations && flattedReservations.length === 0 && (
+        {!isFetchingReservations && flattedReservations.length === 0 && (
           <Styled.StatusContainer>
             <Styled.Image src={GrayLogoImage} alt="Not Found" />
             <Styled.PageHeader>검색 결과가 없습니다.</Styled.PageHeader>
           </Styled.StatusContainer>
         )}
-        {isLoadingReservations && (
+        {isFetchingReservations && (
           <Styled.StatusContainer>
             <Loader />
           </Styled.StatusContainer>
