@@ -6,12 +6,8 @@ interface SpaceElementProps {
 
 const disabledCSS = css`
   opacity: 0.2;
+  filter: grayscale(1) brightness(3);
   pointer-events: none;
-  filter: brightness(0.5);
-
-  &:hover {
-    opacity: 0.2;
-  }
 `;
 
 export const MapItem = styled.div<{ width: number; height: number }>`
