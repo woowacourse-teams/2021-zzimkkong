@@ -9,6 +9,7 @@ export interface QueryMemberSuccess {
   userName: string;
   emoji: Emoji;
   organization: string | null;
+  oauthProvider: 'GOOGLE' | 'GITHUB' | null;
 }
 
 export interface PutMemberParams {
