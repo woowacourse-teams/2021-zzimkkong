@@ -34,5 +34,5 @@ export const putMember = ({ userName, emoji }: PutMemberParams) => {
 };
 
 export const putMemberPassword = (params: PutMemberPasswordParams) => {
-  return api.put('members/me/password', params);
+  return api.put('/members/me/password', params);
 };
