@@ -153,6 +153,24 @@ class MemberControllerTest extends AcceptanceTest {
         assertThat(actual).usingRecursiveComparison().isEqualTo(expected);
     }
 
+    @Test
+    @DisplayName("비밀번호를 변경할 수 있다.")
+    void changePassword() {
+        //given
+        String newPassword = "newPassword1234";
+        ChangePasswordRequest changePasswordRequest = new ChangePasswordRequest(PW, newPassword, newPassword);
+
+        //when
+        ExtractableResponse<Response> response = changePassword(changePasswordRequest);
+
+        //then
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
+
+        LoginRequest loginRequest = new LoginRequest(EMAIL, newPassword);
+        ExtractableResponse<Response> loginResponse = login(loginRequest);
+        assertThat(loginResponse.statusCode()).isEqualTo(HttpStatus.OK.value());
+    }
+
     static ExtractableResponse<Response> saveMember(final MemberSaveRequest memberSaveRequest) {
         return RestAssured
                 .given(getRequestSpecification()).log().all()
@@ -238,6 +256,29 @@ class MemberControllerTest extends AcceptanceTest {
                 .filter(document("member/get/emojis", getRequestPreprocessor(), getResponsePreprocessor()))
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .when().get("/api/members/emojis")
+                .then().log().all().extract();
+    }
+
+    private ExtractableResponse<Response> changePassword(ChangePasswordRequest changePasswordRequest) {
+        return RestAssured
+                .given(getRequestSpecification()).log().all()
+                .accept("application/json")
+                .header("Authorization", AuthorizationExtractor.AUTHENTICATION_TYPE + " " + accessToken)
+                .filter(document("member/password/put", getRequestPreprocessor(), getResponsePreprocessor()))
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .body(changePasswordRequest)
+                .when().put("/api/members/me/password/put")
+                .then().log().all().extract();
+    }
+
+    private ExtractableResponse<Response> login(final LoginRequest loginRequest) {
+        return RestAssured
+                .given(getRequestSpecification()).log().all()
+                .accept("application/json")
+                .filter(document("member/login", getRequestPreprocessor(), getResponsePreprocessor()))
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .body(loginRequest)
+                .when().post("/api/members/login/token")
                 .then().log().all().extract();
     }
 }

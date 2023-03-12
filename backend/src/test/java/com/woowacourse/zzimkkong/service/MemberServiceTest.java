@@ -3,14 +3,9 @@ package com.woowacourse.zzimkkong.service;
 import com.woowacourse.zzimkkong.domain.Member;
 import com.woowacourse.zzimkkong.domain.OauthProvider;
 import com.woowacourse.zzimkkong.domain.ProfileEmoji;
-import com.woowacourse.zzimkkong.dto.member.MemberSaveRequest;
-import com.woowacourse.zzimkkong.dto.member.MemberSaveResponse;
-import com.woowacourse.zzimkkong.dto.member.MemberUpdateRequest;
+import com.woowacourse.zzimkkong.dto.member.*;
 import com.woowacourse.zzimkkong.dto.member.oauth.OauthMemberSaveRequest;
-import com.woowacourse.zzimkkong.exception.member.DuplicateEmailException;
-import com.woowacourse.zzimkkong.exception.member.DuplicateUserNameException;
-import com.woowacourse.zzimkkong.exception.member.ReservationExistsOnMemberException;
-import com.woowacourse.zzimkkong.dto.member.LoginUserEmail;
+import com.woowacourse.zzimkkong.exception.member.*;
 import com.woowacourse.zzimkkong.infrastructure.oauth.OauthHandler;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -18,6 +13,7 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.time.LocalDateTime;
 import java.util.Optional;
@@ -33,6 +29,9 @@ import static org.mockito.BDDMockito.given;
 class MemberServiceTest extends ServiceTest {
     @Autowired
     private MemberService memberService;
+
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 
     @MockBean
     private OauthHandler oauthHandler;
@@ -249,5 +248,73 @@ class MemberServiceTest extends ServiceTest {
         //then
         assertThatThrownBy(() -> memberService.validateDuplicateUserName("중복된이름"))
                 .isInstanceOf(DuplicateUserNameException.class);
+    }
+
+    @Test
+    @DisplayName("비밀번호를 변경할 수 있다.")
+    void changePassword() {
+        // given
+        LoginUserEmail loginUserEmail = LoginUserEmail.from(EMAIL);
+        Member member = Member.builder()
+                .email(EMAIL)
+                .userName(POBI)
+                .emoji(ProfileEmoji.MAN_DARK_SKIN_TONE_TECHNOLOGIST)
+                .password(passwordEncoder.encode(PW))
+                .organization(ORGANIZATION)
+                .build();
+        given(members.findByEmail(anyString()))
+                .willReturn(Optional.of(member));
+
+        ChangePasswordRequest changePasswordRequest = new ChangePasswordRequest(PW, "newPassword1234", "newPassword1234");
+
+        //when
+        memberService.changePassword(loginUserEmail, changePasswordRequest);
+
+        //then
+        assertThat(passwordEncoder.matches(changePasswordRequest.getNewPassword(), member.getPassword())).isTrue();
+    }
+
+    @Test
+    @DisplayName("기존 비밀번호를 오기입하면 비밀변호를 변경할 수 없다.")
+    void changePasswordFailedWhenOldPasswordMismatch() {
+        // given
+        LoginUserEmail loginUserEmail = LoginUserEmail.from(EMAIL);
+        Member member = Member.builder()
+                .email(EMAIL)
+                .userName(POBI)
+                .emoji(ProfileEmoji.MAN_DARK_SKIN_TONE_TECHNOLOGIST)
+                .password(passwordEncoder.encode(PW))
+                .organization(ORGANIZATION)
+                .build();
+        given(members.findByEmail(anyString()))
+                .willReturn(Optional.of(member));
+
+        ChangePasswordRequest changePasswordRequest = new ChangePasswordRequest("wrongPassword1234", "newPassword1234", "newPassword1234");
+
+        //when, then
+        assertThatThrownBy(() -> memberService.changePassword(loginUserEmail, changePasswordRequest))
+                .isInstanceOf(PasswordMismatchException.class);
+    }
+
+    @Test
+    @DisplayName("새 비밀번호와 새 비밀번호 확인란이 불일치하면 비밀번호를 변경할 수 없다.")
+    void changePasswordFailedWhenNewPasswordConfirmation() {
+        // given
+        LoginUserEmail loginUserEmail = LoginUserEmail.from(EMAIL);
+        Member member = Member.builder()
+                .email(EMAIL)
+                .userName(POBI)
+                .emoji(ProfileEmoji.MAN_DARK_SKIN_TONE_TECHNOLOGIST)
+                .password(passwordEncoder.encode(PW))
+                .organization(ORGANIZATION)
+                .build();
+        given(members.findByEmail(anyString()))
+                .willReturn(Optional.of(member));
+
+        ChangePasswordRequest changePasswordRequest = new ChangePasswordRequest(PW, "wrongConfirmationPassword1234", "newPassword1234");
+
+        //when, then
+        assertThatThrownBy(() -> memberService.changePassword(loginUserEmail, changePasswordRequest))
+                .isInstanceOf(ConfirmationNewPasswordMismatchException.class);
     }
 }
