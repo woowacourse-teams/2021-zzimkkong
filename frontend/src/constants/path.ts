@@ -27,6 +27,7 @@ const PATH = {
   MANAGER_SOCIAL_JOIN: '/join/social',
   MANAGER_GITHUB_OAUTH_REDIRECT: '/login/oauth/github',
   MANAGER_GOOGLE_OAUTH_REDIRECT: '/login/oauth/google',
+  MANAGER_PROFILE_EDIT: '/profile/edit',
   MANAGER_MAP_DETAIL: '/map/:mapId',
   MANAGER_MAP_LIST: '/map/list',
   MANAGER_MAP_CREATE: '/map/create',

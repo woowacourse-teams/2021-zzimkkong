@@ -1,13 +1,16 @@
-import { useMemo } from 'react';
+import { useMemo, useState } from 'react';
 import useEmojiList from 'hooks/query/useEmojiList';
 import * as Styled from './EmojiSelector.styles';
 
 interface EmojiSelectorProps {
+  initialEmoji?: string;
   onSelect?: (emoji: string) => void;
 }
 
-const EmojiSelector = ({ onSelect }: EmojiSelectorProps): JSX.Element => {
+const EmojiSelector = ({ initialEmoji, onSelect }: EmojiSelectorProps): JSX.Element => {
   const emojiListQuery = useEmojiList();
+
+  const [selectedEmoji, setSelectedEmoji] = useState<string | null>(initialEmoji ?? null);
 
   const emojiList = useMemo(
     () => emojiListQuery.data?.data.emojis ?? [],
@@ -15,6 +18,7 @@ const EmojiSelector = ({ onSelect }: EmojiSelectorProps): JSX.Element => {
   );
 
   const handleSelect = (emoji: string) => {
+    setSelectedEmoji(emoji);
     onSelect?.(emoji);
   };
 
@@ -28,6 +32,7 @@ const EmojiSelector = ({ onSelect }: EmojiSelectorProps): JSX.Element => {
               type="radio"
               name="emoji"
               id={emoji.name}
+              checked={selectedEmoji === emoji.name}
               onChange={() => handleSelect(emoji.name)}
             />
             <Styled.EmojiCode>{emoji.code}</Styled.EmojiCode>
