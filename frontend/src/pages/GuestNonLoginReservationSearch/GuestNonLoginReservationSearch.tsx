@@ -46,7 +46,7 @@ const GuestNonLoginReservationSearch = (): JSX.Element => {
             required
           />
           <Button variant="primary" size="large" fullWidth>
-            찾기
+            조회
           </Button>
         </Styled.Form>
         {searchStartTime !== null && (

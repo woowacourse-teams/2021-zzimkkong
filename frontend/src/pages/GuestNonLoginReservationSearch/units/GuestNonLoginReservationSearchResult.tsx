@@ -8,6 +8,7 @@ import { ReactComponent as DeleteIcon } from 'assets/svg/delete.svg';
 import { ReactComponent as EditIcon } from 'assets/svg/edit.svg';
 import Button from 'components/Button/Button';
 import IconButton from 'components/IconButton/IconButton';
+import Loader from 'components/Loader/Loader';
 import MemberReservationListItem from 'components/MemberReservationListItem/MemberReservationListItem';
 import MESSAGE from 'constants/message';
 import { HREF } from 'constants/path';
@@ -34,7 +35,7 @@ const GuestNonLoginReservationSearchResult = ({
 
   const {
     refetch,
-    isLoading: isLoadingReservations,
+    isFetching: isFetchingReservations,
     fetchNextPage: fetchNextReservations,
     hasNextPage: hasNextReservations,
     flattedResults: flattedReservations,
@@ -97,15 +98,23 @@ const GuestNonLoginReservationSearchResult = ({
     refetch();
   }, [refetch, searchStartTime]);
 
+  console.log(isFetchingReservations);
   return (
     <>
       <Styled.HorizontalLine />
-      {!isLoadingReservations && flattedReservations.length === 0 && (
-        <Styled.NotFoundContainer>
-          <Styled.Image src={GrayLogoImage} alt="Not Found" />
-          <Styled.PageHeader>검색 결과가 없습니다.</Styled.PageHeader>
-        </Styled.NotFoundContainer>
-      )}
+      <Styled.FlexCenter>
+        {!isFetchingReservations && flattedReservations.length === 0 && (
+          <Styled.StatusContainer>
+            <Styled.Image src={GrayLogoImage} alt="Not Found" />
+            <Styled.PageHeader>검색 결과가 없습니다.</Styled.PageHeader>
+          </Styled.StatusContainer>
+        )}
+        {isFetchingReservations && (
+          <Styled.StatusContainer>
+            <Loader />
+          </Styled.StatusContainer>
+        )}
+      </Styled.FlexCenter>
       <Styled.List role="list">
         {flattedReservations.map((reservation) => (
           <MemberReservationListItem
