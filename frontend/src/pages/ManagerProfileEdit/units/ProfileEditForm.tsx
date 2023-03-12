@@ -1,12 +1,14 @@
 import { AxiosError } from 'axios';
 import React, { useEffect, useState } from 'react';
 import { useQuery } from 'react-query';
+import { useHistory } from 'react-router-dom';
 import { queryValidateUserName } from 'api/join';
 import Button from 'components/Button/Button';
 import EmojiSelector from 'components/EmojiSelector/EmojiSelector';
 import Input from 'components/Input/Input';
 import MANAGER from 'constants/manager';
 import MESSAGE from 'constants/message';
+import PATH from 'constants/path';
 import useMember from 'hooks/query/useMember';
 import useInputs from 'hooks/useInputs';
 import { ErrorResponse } from 'types/response';
@@ -17,6 +19,8 @@ interface ProfileEditFormProps {
 }
 
 const ProfileEditForm = ({ onSubmit }: ProfileEditFormProps) => {
+  const history = useHistory();
+
   const member = useMember();
   const initialUserName = member.data?.data.userName;
   const initialEmoji = member.data?.data.emoji.name;
@@ -64,6 +68,10 @@ const ProfileEditForm = ({ onSubmit }: ProfileEditFormProps) => {
 
   const isSubmitButtonDisabled = !(emoji && userName);
 
+  const handleCancel = () => {
+    history.goBack();
+  };
+
   useEffect(() => {
     if (!initialUserName) return;
 
@@ -99,9 +107,14 @@ const ProfileEditForm = ({ onSubmit }: ProfileEditFormProps) => {
           />
         </Styled.InputWrapper>
       )}
-      <Button variant="primary" size="large" fullWidth disabled={isSubmitButtonDisabled}>
-        수정하기
-      </Button>
+      <Styled.ButtonContainer>
+        <Button size="large" type="button" fullWidth onClick={handleCancel}>
+          취소
+        </Button>
+        <Button variant="primary" size="large" fullWidth disabled={isSubmitButtonDisabled}>
+          수정
+        </Button>
+      </Styled.ButtonContainer>
     </Styled.Form>
   );
 };
