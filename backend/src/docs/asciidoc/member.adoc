@@ -67,6 +67,12 @@ include::{snippets}/member/myinfo/put/http-request.adoc[]
 ==== Response
 include::{snippets}/member/myinfo/put/http-response.adoc[]
 
+=== 비밀번호 변경
+==== Request
+include::{snippets}/member/password/put/http-request.adoc[]
+==== Response
+include::{snippets}/member/password/put/http-response.adoc[]
+
 === 회원 탈퇴
 ==== Request
 include::{snippets}/member/myinfo/delete/http-request.adoc[]
