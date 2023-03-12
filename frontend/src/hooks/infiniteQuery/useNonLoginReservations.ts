@@ -2,7 +2,7 @@ import { useMemo } from 'react';
 import { useInfiniteQuery } from 'react-query';
 import { queryGuestNonLoginReservations } from '../../api/guestReservation';
 
-const useNonLoginReservations = (userName: string, searchStartTime: string) => {
+const useNonLoginReservations = (userName: string, searchStartTime: string | null) => {
   const infiniteQueryResponse = useInfiniteQuery(
     ['infiniteQueryNonLoginReservations'],
     ({ pageParam = 0 }) => {
@@ -15,6 +15,7 @@ const useNonLoginReservations = (userName: string, searchStartTime: string) => {
     {
       getNextPageParam: (response) => response.data.hasNext,
       refetchOnWindowFocus: false,
+      enabled: searchStartTime !== null,
     }
   );
 
