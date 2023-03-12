@@ -94,7 +94,7 @@ const ManagerPasswordEdit = () => {
           <Styled.PageTitle>내 비밀번호 수정</Styled.PageTitle>
           <Styled.InputWrapper>
             <Input
-              type="prevPassword"
+              type="password"
               label="이전 비밀번호"
               name="prevPassword"
               minLength={MANAGER.PASSWORD.MIN_LENGTH}
