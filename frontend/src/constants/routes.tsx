@@ -2,6 +2,7 @@ import React, { ReactNode } from 'react';
 import GuestMain from 'pages/GuestMain/GuestMain';
 import GuestMapContainer from 'pages/GuestMap/GuestMapContainer';
 import ManagerMapList from 'pages/ManagerMapList/ManagerMapList';
+import ManagerPasswordEdit from 'pages/ManagerPasswordEdit/ManagerPasswordEdit';
 import ManagerProfileEdit from 'pages/ManagerProfileEdit/ManagerProfileEdit';
 import PATH from './path';
 
@@ -89,6 +90,11 @@ export const PRIVATE_ROUTES: PrivateRoute[] = [
   {
     path: PATH.MANAGER_PROFILE_EDIT,
     component: <ManagerProfileEdit />,
+    redirectPath: PATH.LOGIN,
+  },
+  {
+    path: PATH.MANAGER_PASSWORD_EDIT,
+    component: <ManagerPasswordEdit />,
     redirectPath: PATH.LOGIN,
   },
   {

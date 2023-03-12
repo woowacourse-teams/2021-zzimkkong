@@ -37,7 +37,7 @@ const ManagerProfileEdit = () => {
           <ProfileEditForm onSubmit={handleSubmit} />
           <Styled.PasswordChangeLinkMessage>
             비밀번호를 변경하고 싶으신가요?
-            <Link to="/">변경하기</Link>
+            <Link to={PATH.MANAGER_PASSWORD_EDIT}>변경하기</Link>
           </Styled.PasswordChangeLinkMessage>
         </Styled.Container>
       </Layout>
