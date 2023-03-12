@@ -41,3 +41,21 @@ export const Form = styled.form`
     margin-bottom: 3rem;
   }
 `;
+
+export const PageHeader = styled.h2`
+  font-size: 1.5rem;
+  font-weight: 700;
+  margin: 0.75rem 0 1.25rem;
+`;
+
+export const Image = styled.img`
+  width: 15%;
+`;
+
+export const NotFoundContainer = styled.div`
+  padding: 60px 0 80px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+`;

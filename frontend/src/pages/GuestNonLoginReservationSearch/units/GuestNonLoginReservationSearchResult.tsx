@@ -1,8 +1,9 @@
 import { AxiosError } from 'axios';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useMutation } from 'react-query';
 import { useHistory } from 'react-router-dom';
 import { deleteGuestReservation, queryGuestNonLoginReservations } from 'api/guestReservation';
+import GrayLogoImage from 'assets/images/gray-logo.png';
 import { ReactComponent as DeleteIcon } from 'assets/svg/delete.svg';
 import { ReactComponent as EditIcon } from 'assets/svg/edit.svg';
 import Button from 'components/Button/Button';
@@ -30,19 +31,14 @@ const GuestNonLoginReservationSearchResult = ({
   const history = useHistory();
   const [passwordInputModalOpen, setPasswordInputModalOpen] = useState(false);
   const [selectedReservation, setSelectedReservation] = useState<MemberReservation>();
-  const [currentSearchStartTime, setCurrentSearchStartTime] = useState('');
 
   const {
     refetch,
+    isLoading: isLoadingReservations,
     fetchNextPage: fetchNextReservations,
     hasNextPage: hasNextReservations,
     flattedResults: flattedReservations,
   } = useNonLoginReservations(userName, searchStartTime);
-
-  if (searchStartTime !== currentSearchStartTime) {
-    refetch();
-    setCurrentSearchStartTime(searchStartTime);
-  }
 
   const removeReservation = useMutation(deleteGuestReservation, {
     onSuccess: () => {
@@ -97,9 +93,19 @@ const GuestNonLoginReservationSearchResult = ({
     });
   };
 
+  useEffect(() => {
+    refetch();
+  }, [refetch, searchStartTime]);
+
   return (
     <>
       <Styled.HorizontalLine />
+      {!isLoadingReservations && flattedReservations.length === 0 && (
+        <Styled.NotFoundContainer>
+          <Styled.Image src={GrayLogoImage} alt="Not Found" />
+          <Styled.PageHeader>검색 결과가 없습니다.</Styled.PageHeader>
+        </Styled.NotFoundContainer>
+      )}
       <Styled.List role="list">
         {flattedReservations.map((reservation) => (
           <MemberReservationListItem
