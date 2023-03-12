@@ -267,7 +267,7 @@ class MemberControllerTest extends AcceptanceTest {
                 .filter(document("member/password/put", getRequestPreprocessor(), getResponsePreprocessor()))
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body(changePasswordRequest)
-                .when().put("/api/members/me/password/put")
+                .when().put("/api/members/me/password")
                 .then().log().all().extract();
     }
 
