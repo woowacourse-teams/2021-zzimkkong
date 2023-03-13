@@ -5,19 +5,16 @@
                datePattern="yyyy-MM-dd"/>
 
     <property name="CONSOLE_LOG_PATTERN"
-              value="%highlight([%-5level]) %d{yyyy-MM-dd HH:mm:ss} %cyan([%thread]) %magenta([%logger{0}:%line]) - %message %n"/>
+              value="%highlight([%-5level]) %d{yyyy-MM-dd HH:mm:ss.SSS,Asia/Seoul} %cyan([%thread]) %magenta([%logger{0}:%line]) - %message %n"/>
 
     <property name="FILE_LOG_PATTERN"
-              value="[%-5level] %d{yyyy-MM-dd HH:mm:ss} [%thread] [%logger{0}:%line] - %message %n"/>
+              value="%d{yyyy-MM-dd HH:mm:ss.SSS,Asia/Seoul} | ${LOG_LEVEL_PATTERN:-%5p} | %thread |  %X{traceId} | [%logger{0}:%line] - %message %n"/>
 
     <!-- Console   -->
     <include resource="appenders/async-console-appender.xml"/>
 
     <!--    Profiles    -->
     <springProfile name="local">
-        <property name="FILE_PATH"
-                  value="${user.home}/logs/local"/>
-
         <root level="INFO">
             <appender-ref ref="ASYNC_CONSOLE_APPENDER"/>
         </root>
@@ -28,16 +25,12 @@
                   value="${user.home}/logs/dev"/>
 
         <include resource="appenders/slack-appender.xml"/>
-
-        <include resource="appenders/async-file-appender-error.xml"/>
-        <include resource="appenders/async-file-appender-warn.xml"/>
+        <include resource="appenders/file-appender.xml"/>
 
         <root level="INFO">
             <appender-ref ref="ASYNC_CONSOLE_APPENDER"/>
             <appender-ref ref="ASYNC_SLACK_DEV"/>
-
-            <appender-ref ref="ASYNC_FILE_APPENDER_ERROR"/>
-            <appender-ref ref="ASYNC_FILE_APPENDER_WARN"/>
+            <appender-ref ref="FILE_APPENDER"/>
         </root>
     </springProfile>
 
@@ -46,17 +39,12 @@
                   value="${user.home}/logs/prod"/>
 
         <include resource="appenders/slack-appender.xml"/>
-
-        <include resource="appenders/async-file-appender-error.xml"/>
-        <include resource="appenders/async-file-appender-warn.xml"/>
+        <include resource="appenders/file-appender.xml"/>
 
         <root level="INFO">
             <appender-ref ref="ASYNC_CONSOLE_APPENDER"/>
             <appender-ref ref="ASYNC_SLACK_PROD"/>
-
-            <appender-ref ref="ASYNC_FILE_APPENDER_ERROR"/>
-            <appender-ref ref="ASYNC_FILE_APPENDER_WARN"/>
+            <appender-ref ref="FILE_APPENDER"/>
         </root>
     </springProfile>
-
 </configuration>

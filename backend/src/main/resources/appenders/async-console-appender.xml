@@ -1,10 +1,9 @@
 <included>
     <appender name="CONSOLE_APPENDER" class="ch.qos.logback.core.ConsoleAppender">
-
         <encoder>
             <pattern>${CONSOLE_LOG_PATTERN}</pattern>
+            <charset>utf8</charset>
         </encoder>
-
     </appender>
 
     <appender name="ASYNC_CONSOLE_APPENDER" class="ch.qos.logback.classic.AsyncAppender">
@@ -12,6 +11,6 @@
         <queueSize>1024</queueSize>
         <discardingThreshold>0</discardingThreshold>
         <includeCallerData>false</includeCallerData>
-        <neverBlock>false</neverBlock>
+        <neverBlock>true</neverBlock>
     </appender>
 </included>
