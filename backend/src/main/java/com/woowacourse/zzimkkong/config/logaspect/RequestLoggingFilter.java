@@ -84,7 +84,7 @@ public class RequestLoggingFilter extends OncePerRequestFilter {
                         (reqBody) -> logMsgBuilder.append("[REQUEST BODY: ").append(reqBody).append("] "));
 
                 appendIfNotBlank(request.getRemoteAddr(),
-                        (remoteAddr) -> logMsgBuilder.append("[REMOTE ADDRESS: ").append(request.getRemoteAddr()).append("] "));
+                        (remoteAddr) -> logMsgBuilder.append("[REMOTE ADDRESS: ").append(getRemoteAddress(request)).append("] "));
 
                 appendIfNotBlank(new String(response.getContentAsByteArray(), response.getCharacterEncoding()),
                         (resBody) -> {
@@ -129,6 +129,15 @@ public class RequestLoggingFilter extends OncePerRequestFilter {
         if (!CollectionUtils.isEmpty(value)) {
             appender.accept(value);
         }
+    }
+
+    private String getRemoteAddress(final ContentCachingRequestWrapper request) {
+        String xForwardedFor = request.getHeader("X-Forwarded-For");
+        if(StringUtils.isBlank(xForwardedFor)) {
+            return request.getRemoteAddr();
+        }
+        String clientIp = StringUtils.substringBefore(xForwardedFor, ",");
+        return StringUtils.trim(clientIp);
     }
 
     private void removeMDCInfo() {
