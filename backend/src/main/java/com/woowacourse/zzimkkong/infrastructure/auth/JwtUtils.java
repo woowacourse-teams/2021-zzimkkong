@@ -48,7 +48,13 @@ public class JwtUtils {
     }
 
     public String getPayload(String token) {
-        return jwtParser.parseClaimsJws(token).getBody().getSubject();
+        try {
+            return jwtParser.parseClaimsJws(token).getBody().getSubject();
+        } catch (ExpiredJwtException e) {
+            throw new TokenExpiredException();
+        } catch (JwtException e) {
+            throw new InvalidTokenException();
+        }
     }
 
     public static PayloadBuilder payloadBuilder() {
