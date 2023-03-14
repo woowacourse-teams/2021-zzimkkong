@@ -18,6 +18,7 @@ import org.springframework.security.web.firewall.RequestRejectedHandler;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -80,7 +81,7 @@ public class ControllerAdvice implements RequestRejectedHandler {
         return ResponseEntity.badRequest().body(ErrorResponse.from(exception));
     }
 
-    @ExceptionHandler({InvalidFormatException.class, HttpMessageNotReadableException.class})
+    @ExceptionHandler({InvalidFormatException.class, HttpMessageNotReadableException.class, MethodArgumentTypeMismatchException.class})
     public ResponseEntity<ErrorResponse> invalidFormatHandler(final Exception exception) {
         logInfo(exception);
         return ResponseEntity.badRequest().body(ErrorResponse.invalidFormat());
