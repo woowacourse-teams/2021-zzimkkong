@@ -24,7 +24,7 @@ public class LogAspect {
     void logExecutionInfo(Class<?> typeToLog, Method method, long timeTaken, String logGroup) {
         String traceId = MDC.get("traceId");
 
-        log.info("{} took {} ms. (info group: '{}', traceId: {})",
+        log.debug("{} took {} ms. (info group: '{}', traceId: {})",
                 value("method", typeToLog.getName() + "." + method.getName() + "()"),
                 value("execution_time", timeTaken),
                 value("group", logGroup),
