@@ -18,6 +18,7 @@ import org.springframework.security.web.firewall.RequestRejectedHandler;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -33,12 +34,12 @@ import static net.logstash.logback.argument.StructuredArguments.value;
 @Slf4j
 @RestControllerAdvice
 public class ControllerAdvice implements RequestRejectedHandler {
-    private static final String MESSAGE_FORMAT = "{} (traceId: {})";
+    private static final String MESSAGE_FORMAT = "%s (traceId: %s)";
     private static final String TRACE_ID_KEY = "traceId";
 
     @ExceptionHandler(NoSuchOAuthMemberException.class)
     public ResponseEntity<OAuthLoginFailErrorResponse> oAuthLoginFailHandler(final NoSuchOAuthMemberException exception) {
-        logInfo(exception.getMessage());
+        logInfo(exception);
         return ResponseEntity
                 .status(exception.getStatus())
                 .body(OAuthLoginFailErrorResponse.from(exception));
@@ -46,7 +47,7 @@ public class ControllerAdvice implements RequestRejectedHandler {
 
     @ExceptionHandler(InputFieldException.class)
     public ResponseEntity<InputFieldErrorResponse> inputFieldExceptionHandler(final InputFieldException exception) {
-        logInfo(exception.getMessage());
+        logInfo(exception);
         return ResponseEntity
                 .status(exception.getStatus())
                 .body(InputFieldErrorResponse.from(exception));
@@ -54,7 +55,7 @@ public class ControllerAdvice implements RequestRejectedHandler {
 
     @ExceptionHandler(InfrastructureMalfunctionException.class)
     public ResponseEntity<ErrorResponse> wrongConfigurationOfInfrastructureException(final InfrastructureMalfunctionException exception) {
-        logWarn(exception.getMessage(), exception);
+        logWarn(exception);
         return ResponseEntity
                 .status(exception.getStatus())
                 .body(ErrorResponse.from(exception));
@@ -62,7 +63,7 @@ public class ControllerAdvice implements RequestRejectedHandler {
 
     @ExceptionHandler(ZzimkkongException.class)
     public ResponseEntity<ErrorResponse> zzimkkongExceptionHandler(final ZzimkkongException exception) {
-        logInfo(exception.getMessage());
+        logInfo(exception);
         return ResponseEntity
                 .status(exception.getStatus())
                 .body(ErrorResponse.from(exception));
@@ -70,51 +71,42 @@ public class ControllerAdvice implements RequestRejectedHandler {
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<InputFieldErrorResponse> invalidArgumentHandler(final MethodArgumentNotValidException exception) {
-        logInfo(exception.getMessage());
+        logInfo(exception);
         return ResponseEntity.badRequest().body(InputFieldErrorResponse.from(exception));
     }
 
     @ExceptionHandler(ConstraintViolationException.class)
     public ResponseEntity<ErrorResponse> invalidParamHandler(final ConstraintViolationException exception) {
-        logInfo(exception.getMessage());
+        logInfo(exception);
         return ResponseEntity.badRequest().body(ErrorResponse.from(exception));
     }
 
-    @ExceptionHandler({InvalidFormatException.class, HttpMessageNotReadableException.class})
-    public ResponseEntity<ErrorResponse> invalidFormatHandler() {
-        logInfo(FORMAT_MESSAGE);
+    @ExceptionHandler({InvalidFormatException.class, HttpMessageNotReadableException.class, MethodArgumentTypeMismatchException.class})
+    public ResponseEntity<ErrorResponse> invalidFormatHandler(final Exception exception) {
+        logInfo(exception);
         return ResponseEntity.badRequest().body(ErrorResponse.invalidFormat());
     }
 
     @ExceptionHandler(DataAccessException.class)
-    public ResponseEntity<Void> invalidDataAccessHandler(final DataAccessException exception) {
-        logWarn(SERVER_ERROR_MESSAGE, exception);
-        return ResponseEntity.internalServerError().build();
+    public ResponseEntity<ErrorResponse> invalidDataAccessHandler(final DataAccessException exception) {
+        logWarn(exception);
+        return ResponseEntity.internalServerError().body(ErrorResponse.internalServerError());
     }
 
     @ExceptionHandler(Exception.class)
-    public ResponseEntity<Void> unhandledExceptionHandler(final Exception exception) {
-        logWarn(exception.getMessage(), exception);
-        return ResponseEntity.internalServerError().build();
+    public ResponseEntity<ErrorResponse> unhandledExceptionHandler(final Exception exception) {
+        logWarn(exception);
+        return ResponseEntity.internalServerError().body(ErrorResponse.internalServerError());
     }
 
-    private void logInfo(String message) {
-        log.info(MESSAGE_FORMAT,
-                message,
-                value(TRACE_ID_KEY, getTraceId()));
+    private void logInfo(Exception exception) {
+        String logMessage = String.format(MESSAGE_FORMAT, exception.getMessage(), value(TRACE_ID_KEY, getTraceId()));
+        log.info(logMessage, exception);
     }
 
-    private void logWarn(String message, Exception exception) {
-        StringWriter stringWriter = new StringWriter();
-        PrintWriter printWriter = new PrintWriter(stringWriter);
-
-        exception.printStackTrace(printWriter);
-        String stackTrace = stringWriter.toString();
-
-        log.warn(MESSAGE_FORMAT,
-                message,
-                value(TRACE_ID_KEY, getTraceId()),
-                value("stack_trace", stackTrace));
+    private void logWarn(Exception exception) {
+        String logMessage = String.format(MESSAGE_FORMAT, exception.getMessage(), value(TRACE_ID_KEY, getTraceId()));
+        log.warn(logMessage, exception);
     }
 
     private Object getTraceId() {
