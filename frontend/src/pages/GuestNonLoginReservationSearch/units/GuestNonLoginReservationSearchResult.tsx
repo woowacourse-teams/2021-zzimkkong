@@ -69,25 +69,12 @@ const GuestNonLoginReservationSearchResult = ({
     });
   };
 
-  const handleEdit = async (reservation: MemberReservation) => {
-    const space = await api
-      .get<ManagerSpaceAPI>(`/guests/maps/${reservation.mapId}/spaces/${reservation.spaceId}`)
-      .then((promise) => promise.data)
-      .catch(() => {
-        alert(MESSAGE.MANAGER_MAIN.UNEXPECTED_GET_DATA_ERROR);
-        return null;
-      });
-
-    if (space == null) {
-      return;
-    }
-
-    space.id = reservation.spaceId;
+  const handleEdit = (reservation: MemberReservation) => {
     history.push({
       pathname: HREF.GUEST_RESERVATION_EDIT(reservation.sharingMapId),
       state: {
         mapId: reservation.mapId,
-        space: space,
+        spaceId: reservation.spaceId,
         reservation,
         selectedDate: formatDate(new Date(reservation.startDateTime)),
       },
@@ -98,7 +85,6 @@ const GuestNonLoginReservationSearchResult = ({
     refetch();
   }, [refetch, searchStartTime]);
 
-  console.log(isFetchingReservations);
   return (
     <>
       <Styled.HorizontalLine />
