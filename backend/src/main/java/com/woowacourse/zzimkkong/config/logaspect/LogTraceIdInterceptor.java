@@ -22,9 +22,7 @@ public class LogTraceIdInterceptor implements HandlerInterceptor {
     }
 
     @Override
-    public void postHandle(HttpServletRequest request, HttpServletResponse response, Object handler, ModelAndView modelAndView) throws Exception {
-        MDC.clear();
-    }
+    public void postHandle(HttpServletRequest request, HttpServletResponse response, Object handler, ModelAndView modelAndView) throws Exception {}
 
     private String generateTraceId() {
         return UUID.randomUUID().toString().substring(24);

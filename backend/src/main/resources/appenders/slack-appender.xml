@@ -4,7 +4,7 @@
     <appender name="SLACK_PROD" class="com.github.maricn.logback.SlackAppender">
         <webhookUri>${slack.webhook.siren}</webhookUri>
         <layout class="ch.qos.logback.classic.PatternLayout">
-            <pattern>[PROD] [%-5level] [%thread] [%logger{0}:%line] - %message %n</pattern>
+            <pattern>[PROD] [%-5level] [%thread] [%X{traceId}] [%logger{0}:%line] - %message %n</pattern>
         </layout>
         <colorCoding>true</colorCoding>
     </appender>
@@ -19,7 +19,7 @@
     <appender name="SLACK_DEV" class="com.github.maricn.logback.SlackAppender">
         <webhookUri>${slack.webhook.siren}</webhookUri>
         <layout class="ch.qos.logback.classic.PatternLayout">
-            <pattern>[DEV] [%-5level] [%thread] [%logger{0}:%line] - %message %n</pattern>
+            <pattern>[DEV] [%-5level] [%thread] [%X{traceId}] [%logger{0}:%line] - %message %n</pattern>
         </layout>
         <colorCoding>true</colorCoding>
     </appender>
