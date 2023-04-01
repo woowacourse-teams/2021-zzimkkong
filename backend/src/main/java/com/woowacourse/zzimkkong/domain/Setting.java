@@ -1,6 +1,6 @@
 package com.woowacourse.zzimkkong.domain;
 
-import com.woowacourse.zzimkkong.exception.setting.InvalidPriorityException;
+import com.woowacourse.zzimkkong.exception.setting.InvalidOrderException;
 import com.woowacourse.zzimkkong.exception.space.InvalidMinimumMaximumTimeUnitException;
 import com.woowacourse.zzimkkong.exception.space.NotEnoughAvailableTimeException;
 import com.woowacourse.zzimkkong.exception.space.TimeUnitInconsistencyException;
@@ -14,7 +14,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static com.woowacourse.zzimkkong.dto.ValidatorMessage.NEGATIVE_SETTING_PRIORITY_MESSAGE;
+import static com.woowacourse.zzimkkong.dto.ValidatorMessage.NEGATIVE_SETTING_ORDER_MESSAGE;
 import static com.woowacourse.zzimkkong.infrastructure.message.MessageUtils.LINE_SEPARATOR;
 
 @Builder
@@ -60,7 +60,7 @@ public class Setting {
     private String enabledDayOfWeek;
 
     @Column(nullable = false)
-    private Integer priority;
+    private Integer order;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "space_id", foreignKey = @ForeignKey(name = "fk_setting_space"), nullable = false)
@@ -73,7 +73,7 @@ public class Setting {
             final TimeUnit reservationMinimumTimeUnit,
             final TimeUnit reservationMaximumTimeUnit,
             final String enabledDayOfWeek,
-            final Integer priority,
+            final Integer order,
             final Space space) {
         this.id = id;
         this.settingTimeSlot = settingTimeSlot;
@@ -81,7 +81,7 @@ public class Setting {
         this.reservationMinimumTimeUnit = reservationMinimumTimeUnit;
         this.reservationMaximumTimeUnit = reservationMaximumTimeUnit;
         this.enabledDayOfWeek = enabledDayOfWeek;
-        this.priority = priority;
+        this.order = order;
         this.space = space;
 
         validateSetting();
@@ -104,8 +104,8 @@ public class Setting {
             throw new NotEnoughAvailableTimeException();
         }
 
-        if (priority == null || priority <= 0) {
-            throw new InvalidPriorityException(NEGATIVE_SETTING_PRIORITY_MESSAGE);
+        if (order == null || order <= 0) {
+            throw new InvalidOrderException(NEGATIVE_SETTING_ORDER_MESSAGE);
         }
     }
 

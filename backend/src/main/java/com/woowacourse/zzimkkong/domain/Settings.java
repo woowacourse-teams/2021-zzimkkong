@@ -1,7 +1,7 @@
 package com.woowacourse.zzimkkong.domain;
 
 import com.woowacourse.zzimkkong.dto.space.SettingRequest;
-import com.woowacourse.zzimkkong.exception.setting.InvalidPriorityException;
+import com.woowacourse.zzimkkong.exception.setting.InvalidOrderException;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.springframework.util.CollectionUtils;
@@ -15,7 +15,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import static com.woowacourse.zzimkkong.dto.ValidatorMessage.DUPLICATE_SETTING_PRIORITY_MESSAGE;
+import static com.woowacourse.zzimkkong.dto.ValidatorMessage.DUPLICATE_SETTING_ORDER_MESSAGE;
 import static com.woowacourse.zzimkkong.infrastructure.message.MessageUtils.LINE_SEPARATOR;
 
 @Getter
@@ -29,7 +29,7 @@ public class Settings {
 
     public Settings(final List<Setting> settings) {
         this.settings = new ArrayList<>(settings);
-        validatePriorityConflict();
+        validateOrderConflict();
         sort();
     }
 
@@ -44,7 +44,7 @@ public class Settings {
                         .reservationMinimumTimeUnit(TimeUnit.from(settingRequest.getReservationMinimumTimeUnit()))
                         .reservationMaximumTimeUnit(TimeUnit.from(settingRequest.getReservationMaximumTimeUnit()))
                         .enabledDayOfWeek(settingRequest.enabledDayOfWeekAsString())
-                        .priority(settingRequest.getPriority())
+                        .order(settingRequest.getOrder())
                         .build())
                 .collect(Collectors.toList());
 
@@ -53,13 +53,13 @@ public class Settings {
 
     public void add(final Setting setting) {
         settings.add(setting);
-        validatePriorityConflict();
+        validateOrderConflict();
         sort();
     }
 
     public void addAll(final List<Setting> newSettings) {
         settings.addAll(newSettings);
-        validatePriorityConflict();
+        validateOrderConflict();
         sort();
     }
 
@@ -162,16 +162,16 @@ public class Settings {
     }
 
     private void sort() {
-        settings.sort(Comparator.comparing(Setting::getPriority));
+        settings.sort(Comparator.comparing(Setting::getOrder));
     }
 
-    private void validatePriorityConflict() {
+    private void validateOrderConflict() {
         Set<Integer> uniquePriorities = settings.stream()
-                .map(Setting::getPriority)
+                .map(Setting::getOrder)
                 .collect(Collectors.toSet());
 
         if (settings.size() != uniquePriorities.size()) {
-            throw new InvalidPriorityException(DUPLICATE_SETTING_PRIORITY_MESSAGE);
+            throw new InvalidOrderException(DUPLICATE_SETTING_ORDER_MESSAGE);
         }
     }
 

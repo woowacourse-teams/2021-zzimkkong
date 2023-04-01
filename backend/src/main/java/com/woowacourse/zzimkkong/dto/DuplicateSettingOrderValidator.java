@@ -8,11 +8,11 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-public class DuplicateSettingPriorityValidator implements ConstraintValidator<NotDuplicatedSettingPriority, List<SettingRequest>> {
+public class DuplicateSettingOrderValidator implements ConstraintValidator<NotDuplicatedSettingOrder, List<SettingRequest>> {
     @Override
     public boolean isValid(final List<SettingRequest> value, final ConstraintValidatorContext context) {
         Set<Integer> uniquePriorities = value.stream()
-                .map(SettingRequest::getPriority)
+                .map(SettingRequest::getOrder)
                 .collect(Collectors.toSet());
 
         return value.size() == uniquePriorities.size();

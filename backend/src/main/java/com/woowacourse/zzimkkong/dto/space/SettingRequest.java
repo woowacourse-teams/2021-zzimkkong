@@ -2,7 +2,6 @@ package com.woowacourse.zzimkkong.dto.space;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonInclude;
-import com.woowacourse.zzimkkong.dto.NotDuplicatedSettingPriority;
 import com.woowacourse.zzimkkong.dto.TimeUnit;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -33,8 +32,8 @@ public class SettingRequest {
     private EnabledDayOfWeekDto enabledDayOfWeek = new EnabledDayOfWeekDto();
 
     @NotNull(message = EMPTY_MESSAGE)
-    @Min(value = 0, message = NEGATIVE_SETTING_PRIORITY_MESSAGE)
-    private Integer priority;
+    @Min(value = 0, message = NEGATIVE_SETTING_ORDER_MESSAGE)
+    private Integer order;
 
     public SettingRequest(
             final LocalTime settingStartTime,
@@ -43,14 +42,14 @@ public class SettingRequest {
             final Integer reservationMinimumTimeUnit,
             final Integer reservationMaximumTimeUnit,
             final EnabledDayOfWeekDto enabledDayOfWeek,
-            final Integer priority) {
+            final Integer order) {
         this.settingStartTime = settingStartTime;
         this.settingEndTime = settingEndTime;
         this.reservationTimeUnit = reservationTimeUnit;
         this.reservationMinimumTimeUnit = reservationMinimumTimeUnit;
         this.reservationMaximumTimeUnit = reservationMaximumTimeUnit;
         this.enabledDayOfWeek = enabledDayOfWeek;
-        this.priority = priority;
+        this.order = order;
     }
 
     public String enabledDayOfWeekAsString() {

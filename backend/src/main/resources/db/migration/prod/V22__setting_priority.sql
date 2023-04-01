@@ -1,2 +1,2 @@
-ALTER TABLE setting ADD COLUMN priority integer not null;
-UPDATE setting SET priority = 1;
+ALTER TABLE setting ADD COLUMN order integer not null;
+UPDATE setting SET order = 1;
