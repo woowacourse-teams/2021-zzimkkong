@@ -1,5 +1,6 @@
 package com.woowacourse.zzimkkong.domain;
 
+import com.woowacourse.zzimkkong.exception.setting.InvalidPriorityException;
 import com.woowacourse.zzimkkong.exception.space.InvalidMinimumMaximumTimeUnitException;
 import com.woowacourse.zzimkkong.exception.space.NotEnoughAvailableTimeException;
 import com.woowacourse.zzimkkong.exception.space.TimeUnitInconsistencyException;
@@ -57,6 +58,9 @@ public class Setting {
     @Column(nullable = false)
     private String enabledDayOfWeek;
 
+    @Column(nullable = false)
+    private Integer priority;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "space_id", foreignKey = @ForeignKey(name = "fk_setting_space"), nullable = false)
     private Space space;
@@ -68,6 +72,7 @@ public class Setting {
             final TimeUnit reservationMinimumTimeUnit,
             final TimeUnit reservationMaximumTimeUnit,
             final String enabledDayOfWeek,
+            final Integer priority,
             final Space space) {
         this.id = id;
         this.settingTimeSlot = settingTimeSlot;
@@ -75,6 +80,7 @@ public class Setting {
         this.reservationMinimumTimeUnit = reservationMinimumTimeUnit;
         this.reservationMaximumTimeUnit = reservationMaximumTimeUnit;
         this.enabledDayOfWeek = enabledDayOfWeek;
+        this.priority = priority;
         this.space = space;
 
         validateSetting();
@@ -95,6 +101,10 @@ public class Setting {
 
         if (settingTimeSlot.isDurationShorterThan(reservationMaximumTimeUnit)) {
             throw new NotEnoughAvailableTimeException();
+        }
+
+        if (priority == null || priority <= 0) {
+            throw new InvalidPriorityException();
         }
     }
 

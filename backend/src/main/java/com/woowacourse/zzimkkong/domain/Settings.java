@@ -30,7 +30,6 @@ public class Settings {
     public Settings(final List<Setting> settings) {
         this.settings = new ArrayList<>(settings);
         sort();
-        validateConflicts();
     }
 
     public static Settings from(final List<SettingRequest> settingRequests) {
@@ -44,6 +43,7 @@ public class Settings {
                         .reservationMinimumTimeUnit(TimeUnit.from(settingRequest.getReservationMinimumTimeUnit()))
                         .reservationMaximumTimeUnit(TimeUnit.from(settingRequest.getReservationMaximumTimeUnit()))
                         .enabledDayOfWeek(settingRequest.enabledDayOfWeekAsString())
+                        .priority(settingRequest.getPriority())
                         .build())
                 .collect(Collectors.toList());
 
@@ -53,13 +53,11 @@ public class Settings {
     public void add(final Setting setting) {
         settings.add(setting);
         sort();
-        validateConflicts();
     }
 
     public void addAll(final List<Setting> newSettings) {
         settings.addAll(newSettings);
         sort();
-        validateConflicts();
     }
 
     public Settings getSettingsByTimeSlotAndDayOfWeek(final TimeSlot timeSlot, final DayOfWeek dayOfWeek) {
@@ -161,7 +159,7 @@ public class Settings {
     }
 
     private void sort() {
-        settings.sort(Comparator.comparing(Setting::getSettingStartTime));
+        settings.sort(Comparator.comparing(Setting::getPriority));
     }
 
     private void validateConflicts() {
