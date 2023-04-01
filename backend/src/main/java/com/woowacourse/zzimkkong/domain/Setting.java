@@ -14,6 +14,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static com.woowacourse.zzimkkong.dto.ValidatorMessage.NEGATIVE_SETTING_PRIORITY_MESSAGE;
 import static com.woowacourse.zzimkkong.infrastructure.message.MessageUtils.LINE_SEPARATOR;
 
 @Builder
@@ -104,7 +105,7 @@ public class Setting {
         }
 
         if (priority == null || priority <= 0) {
-            throw new InvalidPriorityException();
+            throw new InvalidPriorityException(NEGATIVE_SETTING_PRIORITY_MESSAGE);
         }
     }
 

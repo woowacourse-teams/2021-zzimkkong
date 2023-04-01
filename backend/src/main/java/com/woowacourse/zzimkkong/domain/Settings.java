@@ -1,7 +1,7 @@
 package com.woowacourse.zzimkkong.domain;
 
 import com.woowacourse.zzimkkong.dto.space.SettingRequest;
-import com.woowacourse.zzimkkong.exception.setting.SettingConflictException;
+import com.woowacourse.zzimkkong.exception.setting.InvalidPriorityException;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.springframework.util.CollectionUtils;
@@ -12,10 +12,10 @@ import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
-import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
-import java.util.stream.IntStream;
 
+import static com.woowacourse.zzimkkong.dto.ValidatorMessage.DUPLICATE_SETTING_PRIORITY_MESSAGE;
 import static com.woowacourse.zzimkkong.infrastructure.message.MessageUtils.LINE_SEPARATOR;
 
 @Getter
@@ -29,6 +29,7 @@ public class Settings {
 
     public Settings(final List<Setting> settings) {
         this.settings = new ArrayList<>(settings);
+        validatePriorityConflict();
         sort();
     }
 
@@ -52,11 +53,13 @@ public class Settings {
 
     public void add(final Setting setting) {
         settings.add(setting);
+        validatePriorityConflict();
         sort();
     }
 
     public void addAll(final List<Setting> newSettings) {
         settings.addAll(newSettings);
+        validatePriorityConflict();
         sort();
     }
 
@@ -154,7 +157,7 @@ public class Settings {
     }
 
     @PostLoad
-    public void postLoad(){
+    public void postLoad() {
         sort();
     }
 
@@ -162,17 +165,14 @@ public class Settings {
         settings.sort(Comparator.comparing(Setting::getPriority));
     }
 
-    private void validateConflicts() {
-        IntStream.range(0, settings.size() - 1)
-                .mapToObj(i -> Map.entry(settings.get(i), settings.get(i + 1)))
-                .collect(Collectors.toList())
-                .forEach(pair -> {
-                    Setting currentSetting = pair.getKey();
-                    Setting nextSetting = pair.getValue();
-                    if (currentSetting.hasConflictWith(nextSetting)) {
-                        throw new SettingConflictException(currentSetting, nextSetting);
-                    }
-                });
+    private void validatePriorityConflict() {
+        Set<Integer> uniquePriorities = settings.stream()
+                .map(Setting::getPriority)
+                .collect(Collectors.toSet());
+
+        if (settings.size() != uniquePriorities.size()) {
+            throw new InvalidPriorityException(DUPLICATE_SETTING_PRIORITY_MESSAGE);
+        }
     }
 
     @Override

@@ -1,6 +1,7 @@
 package com.woowacourse.zzimkkong.dto.space;
 
 import com.woowacourse.zzimkkong.domain.Settings;
+import com.woowacourse.zzimkkong.dto.NotDuplicatedSettingPriority;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -33,6 +34,7 @@ public class SpaceCreateUpdateRequest {
 
     @NotNull(message = SETTING_COUNT_MESSAGE)
     @Size(min = Settings.MINIMUM_SETTING_COUNT, message = SETTING_COUNT_MESSAGE)
+    @NotDuplicatedSettingPriority
     @Valid
     private List<SettingRequest> settings = Arrays.asList(new SettingRequest());
 
