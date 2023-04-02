@@ -8,6 +8,7 @@ import com.woowacourse.zzimkkong.exception.space.TimeUnitMismatchException;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import net.logstash.logback.encoder.org.apache.commons.lang3.StringUtils;
 import org.springframework.util.CollectionUtils;
 
 import javax.persistence.*;
@@ -138,8 +139,8 @@ public class Setting {
     }
 
     public boolean hasConflictWith(final Setting that) {
-        List<EnabledDayOfWeek> thisEnabledDayOfWeek = getEnabledDayOfWeekList(this);
-        boolean enabledDayOfWeekMatch = getEnabledDayOfWeekList(that).stream().anyMatch(thisEnabledDayOfWeek::contains);
+        List<EnabledDayOfWeek> thisEnabledDayOfWeek = this.getEnabledDayOfWeekList();
+        boolean enabledDayOfWeekMatch = that.getEnabledDayOfWeekList().stream().anyMatch(thisEnabledDayOfWeek::contains);
 
         return this.settingTimeSlot.hasConflictWith(that.settingTimeSlot) && enabledDayOfWeekMatch;
     }
@@ -165,23 +166,11 @@ public class Setting {
         this.space = space;
     }
 
-    @Override
-    public String toString() {
-        return "예약 가능한 요일: " +
-                EnabledDayOfWeek.getDisplayNames(enabledDayOfWeek) +
-                LINE_SEPARATOR +
-                "예약 가능한 시간대: " +
-                settingTimeSlot.toString() +
-                LINE_SEPARATOR +
-                "예약 시간 단위: " +
-                reservationTimeUnit.toString() +
-                LINE_SEPARATOR +
-                "최소 예약 가능 시간: " +
-                reservationMinimumTimeUnit.toString() +
-                LINE_SEPARATOR +
-                "최대 예약 가능 시간: " +
-                reservationMaximumTimeUnit.toString() +
-                LINE_SEPARATOR;
+    public List<EnabledDayOfWeek> getEnabledDayOfWeekList() {
+        return Arrays.stream(this.enabledDayOfWeek.split(Space.DELIMITER))
+                .map(String::trim)
+                .map(EnabledDayOfWeek::from)
+                .collect(Collectors.toList());
     }
 
     /**
@@ -212,8 +201,9 @@ public class Setting {
 
         List<Setting> newExclusiveSettingSlots = new ArrayList<>();
 
-        List<EnabledDayOfWeek> conflictingSettingEnabledDayOfWeek = getEnabledDayOfWeekList(setting);
-        Map<Boolean, List<EnabledDayOfWeek>> splitEnabledDayOfWeek = getEnabledDayOfWeekList(this).stream()
+        List<EnabledDayOfWeek> conflictingSettingEnabledDayOfWeek = setting.getEnabledDayOfWeekList();
+        Map<Boolean, List<EnabledDayOfWeek>> splitEnabledDayOfWeek = this.getEnabledDayOfWeekList()
+                .stream()
                 .collect(Collectors.partitioningBy(conflictingSettingEnabledDayOfWeek::contains));
 
         if (!CollectionUtils.isEmpty(splitEnabledDayOfWeek.get(false))) {
@@ -255,10 +245,35 @@ public class Setting {
         return newExclusiveSettingSlots;
     }
 
-    private List<EnabledDayOfWeek> getEnabledDayOfWeekList(final Setting setting) {
-        return Arrays.stream(setting.enabledDayOfWeek.split(Space.DELIMITER))
-                .map(String::trim)
-                .map(EnabledDayOfWeek::from)
-                .collect(Collectors.toList());
+    @Override
+    public String toString() {
+        return "예약 가능한 요일: " +
+                EnabledDayOfWeek.getDisplayNames(enabledDayOfWeek) +
+                LINE_SEPARATOR +
+                "예약 가능한 시간대: " +
+                settingTimeSlot.toString() +
+                LINE_SEPARATOR +
+                "예약 시간 단위: " +
+                reservationTimeUnit.toString() +
+                LINE_SEPARATOR +
+                "최소 예약 가능 시간: " +
+                reservationMinimumTimeUnit.toString() +
+                LINE_SEPARATOR +
+                "최대 예약 가능 시간: " +
+                reservationMaximumTimeUnit.toString() +
+                LINE_SEPARATOR;
+    }
+
+    public String toSummaryWithoutDayOfWeek(final Boolean flat) {
+        String priority = "[우선순위 " + order.toString() + "] ";
+        if (flat) {
+            priority = StringUtils.EMPTY;
+        }
+        return String.format("%s%s (최소 %s, 최대 %s, 예약 단위 %s)",
+                priority,
+                settingTimeSlot.toString(),
+                reservationMinimumTimeUnit.toString(),
+                reservationMaximumTimeUnit.toString(),
+                reservationTimeUnit.toString());
     }
 }

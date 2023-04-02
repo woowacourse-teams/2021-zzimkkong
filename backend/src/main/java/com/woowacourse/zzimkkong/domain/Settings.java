@@ -175,19 +175,6 @@ public class Settings {
         }
     }
 
-    @Override
-    public String toString() {
-        StringBuilder stringBuilder = new StringBuilder();
-        for (int i = 0; i < settings.size(); i++) {
-            Setting setting = settings.get(i);
-            stringBuilder.append(String.format("[예약 조건 %d]", i + 1));
-            stringBuilder.append(LINE_SEPARATOR);
-            stringBuilder.append(setting);
-            stringBuilder.append(LINE_SEPARATOR);
-        }
-        return stringBuilder.toString();
-    }
-
     /**
      * 2023.04.02 기준
      * 공간의 예약 조건은 서로 겹쳐질 (중복될) 수 있으며, 각각 우선순위 (order)를 가진다.
@@ -209,6 +196,53 @@ public class Settings {
         flatSettings.sort(Comparator.comparing(Setting::getSettingStartTime));
 
         this.settings = flatSettings;
+    }
+
+    @Override
+    public String toString() {
+        StringBuilder stringBuilder = new StringBuilder();
+        for (int i = 0; i < settings.size(); i++) {
+            Setting setting = settings.get(i);
+            stringBuilder.append(String.format("[예약 조건 %d]", i + 1));
+            stringBuilder.append(LINE_SEPARATOR);
+            stringBuilder.append(setting);
+            stringBuilder.append(LINE_SEPARATOR);
+        }
+        return stringBuilder.toString();
+    }
+
+    public String getSummary() {
+        StringBuilder stringBuilder = new StringBuilder();
+        for (EnabledDayOfWeek dayOfWeek : EnabledDayOfWeek.values()) {
+            stringBuilder.append(getSummaryOn(dayOfWeek));
+        }
+        return stringBuilder.toString();
+    }
+
+    public String getSummaryOn(final EnabledDayOfWeek dayOfWeek) {
+        List<Setting> relevantSettings = settings.stream()
+                .filter(setting -> setting.getEnabledDayOfWeekList().contains(dayOfWeek))
+                .collect(Collectors.toList());
+
+        StringBuilder stringBuilder = new StringBuilder();
+        stringBuilder.append("[")
+                .append(dayOfWeek.getDisplayName())
+                .append("]")
+                .append(LINE_SEPARATOR);
+
+        boolean flat = isFlat();
+        for (Setting relevantSetting : relevantSettings) {
+            stringBuilder.append(relevantSetting.toSummaryWithoutDayOfWeek(flat))
+                    .append(LINE_SEPARATOR);
+        }
+        return stringBuilder.append(LINE_SEPARATOR).toString();
+    }
+
+    private boolean isFlat() {
+        return settings.stream()
+                .map(Setting::getOrder)
+                .collect(Collectors.toSet())
+                .size() == 1;
     }
 }
 

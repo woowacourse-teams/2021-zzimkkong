@@ -1,6 +1,7 @@
 package com.woowacourse.zzimkkong.domain;
 
 import com.woowacourse.zzimkkong.exception.setting.NoSuchEnabledDayOfWeekException;
+import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.Arrays;
@@ -8,6 +9,7 @@ import java.util.Locale;
 import java.util.stream.Collectors;
 
 @Slf4j
+@Getter
 public enum EnabledDayOfWeek {
     MONDAY("월"),
     TUESDAY("화"),
