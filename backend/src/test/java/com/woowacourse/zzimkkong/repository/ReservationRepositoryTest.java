@@ -52,6 +52,7 @@ class ReservationRepositoryTest extends RepositoryTest {
                 .reservationMinimumTimeUnit(BE_RESERVATION_MINIMUM_TIME_UNIT)
                 .reservationMaximumTimeUnit(BE_RESERVATION_MAXIMUM_TIME_UNIT)
                 .enabledDayOfWeek(BE_ENABLED_DAY_OF_WEEK)
+                .priorityOrder(0)
                 .build();
 
         be = Space.builder()
@@ -71,6 +72,7 @@ class ReservationRepositoryTest extends RepositoryTest {
                 .reservationMinimumTimeUnit(FE_RESERVATION_MINIMUM_TIME_UNIT)
                 .reservationMaximumTimeUnit(FE_RESERVATION_MAXIMUM_TIME_UNIT)
                 .enabledDayOfWeek(FE_ENABLED_DAY_OF_WEEK)
+                .priorityOrder(0)
                 .build();
 
         fe = Space.builder()

@@ -32,8 +32,8 @@ public class SettingRequest {
     private EnabledDayOfWeekDto enabledDayOfWeek = new EnabledDayOfWeekDto();
 
     @NotNull(message = EMPTY_MESSAGE)
-    @Min(value = 0, message = NEGATIVE_SETTING_ORDER_MESSAGE)
-    private Integer order;
+    @Min(value = 0, message = INVALID_SETTING_ORDER_MESSAGE)
+    private Integer order = 0;
 
     public SettingRequest(
             final LocalTime settingStartTime,

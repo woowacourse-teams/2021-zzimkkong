@@ -24,6 +24,7 @@ class SpaceTest {
             .reservationMinimumTimeUnit(FE_RESERVATION_MINIMUM_TIME_UNIT)
             .reservationMaximumTimeUnit(FE_RESERVATION_MAXIMUM_TIME_UNIT)
             .enabledDayOfWeek(FE_ENABLED_DAY_OF_WEEK)
+            .priorityOrder(0)
             .build();
     private static final Setting setting2 = Setting.builder()
             .settingTimeSlot(TimeSlot.of(
@@ -33,6 +34,7 @@ class SpaceTest {
             .reservationMinimumTimeUnit(FE_RESERVATION_MINIMUM_TIME_UNIT)
             .reservationMaximumTimeUnit(FE_RESERVATION_MAXIMUM_TIME_UNIT)
             .enabledDayOfWeek(FE_ENABLED_DAY_OF_WEEK)
+            .priorityOrder(1)
             .build();
 
     @Test
@@ -54,6 +56,7 @@ class SpaceTest {
                 .reservationMinimumTimeUnit(FE_RESERVATION_MINIMUM_TIME_UNIT)
                 .reservationMaximumTimeUnit(FE_RESERVATION_MAXIMUM_TIME_UNIT)
                 .enabledDayOfWeek(FE_ENABLED_DAY_OF_WEEK)
+                .priorityOrder(0)
                 .build();
         Settings settings = new Settings(Arrays.asList(setting));
         Space space = Space.builder()
@@ -73,6 +76,7 @@ class SpaceTest {
                 .reservationMinimumTimeUnit(FE_RESERVATION_MINIMUM_TIME_UNIT)
                 .reservationMaximumTimeUnit(FE_RESERVATION_MAXIMUM_TIME_UNIT)
                 .enabledDayOfWeek(FE_ENABLED_DAY_OF_WEEK)
+                .priorityOrder(0)
                 .build();
         Settings updateSettings = new Settings(Arrays.asList(setting));
         Space updateSpace = Space.builder()
@@ -110,6 +114,7 @@ class SpaceTest {
                 .reservationMinimumTimeUnit(FE_RESERVATION_MINIMUM_TIME_UNIT)
                 .reservationMaximumTimeUnit(FE_RESERVATION_MAXIMUM_TIME_UNIT)
                 .enabledDayOfWeek(FE_ENABLED_DAY_OF_WEEK)
+                .priorityOrder(0)
                 .build();
         Settings settings = new Settings(Arrays.asList(reservationEnableSetting));
         Space reservationEnableSpace = Space.builder()
@@ -131,6 +136,7 @@ class SpaceTest {
                 .reservationMinimumTimeUnit(FE_RESERVATION_MINIMUM_TIME_UNIT)
                 .reservationMaximumTimeUnit(FE_RESERVATION_MAXIMUM_TIME_UNIT)
                 .enabledDayOfWeek(FE_ENABLED_DAY_OF_WEEK)
+                .priorityOrder(0)
                 .build();
         Settings settings = new Settings(Arrays.asList(reservationUnableSetting));
         Space reservationUnableSpace = Space.builder()

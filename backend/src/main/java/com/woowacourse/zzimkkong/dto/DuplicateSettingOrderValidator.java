@@ -1,6 +1,7 @@
 package com.woowacourse.zzimkkong.dto;
 
 import com.woowacourse.zzimkkong.dto.space.SettingRequest;
+import org.springframework.util.CollectionUtils;
 
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
@@ -11,6 +12,10 @@ import java.util.stream.Collectors;
 public class DuplicateSettingOrderValidator implements ConstraintValidator<NotDuplicatedSettingOrder, List<SettingRequest>> {
     @Override
     public boolean isValid(final List<SettingRequest> value, final ConstraintValidatorContext context) {
+        if (CollectionUtils.isEmpty(value)) {
+            return true;
+        }
+
         Set<Integer> uniquePriorities = value.stream()
                 .map(SettingRequest::getOrder)
                 .collect(Collectors.toSet());

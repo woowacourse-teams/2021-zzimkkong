@@ -44,7 +44,7 @@ public class Settings {
                         .reservationMinimumTimeUnit(TimeUnit.from(settingRequest.getReservationMinimumTimeUnit()))
                         .reservationMaximumTimeUnit(TimeUnit.from(settingRequest.getReservationMaximumTimeUnit()))
                         .enabledDayOfWeek(settingRequest.enabledDayOfWeekAsString())
-                        .order(settingRequest.getOrder())
+                        .priorityOrder(settingRequest.getOrder())
                         .build())
                 .collect(Collectors.toList());
 
@@ -162,12 +162,12 @@ public class Settings {
     }
 
     private void sort() {
-        settings.sort(Comparator.comparing(Setting::getOrder));
+        settings.sort(Comparator.comparing(Setting::getPriorityOrder));
     }
 
     private void validateOrderConflict() {
         Set<Integer> uniquePriorities = settings.stream()
-                .map(Setting::getOrder)
+                .map(Setting::getPriorityOrder)
                 .collect(Collectors.toSet());
 
         if (settings.size() != uniquePriorities.size()) {
@@ -240,7 +240,7 @@ public class Settings {
 
     private boolean isFlat() {
         return settings.stream()
-                .map(Setting::getOrder)
+                .map(Setting::getPriorityOrder)
                 .collect(Collectors.toSet())
                 .size() == 1;
     }

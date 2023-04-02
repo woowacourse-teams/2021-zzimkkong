@@ -38,7 +38,8 @@ class SpaceServiceTest extends ServiceTest {
             BE_RESERVATION_TIME_UNIT.getMinutes(),
             BE_RESERVATION_MINIMUM_TIME_UNIT.getMinutes(),
             BE_RESERVATION_MAXIMUM_TIME_UNIT.getMinutes(),
-            EnabledDayOfWeekDto.from(BE_ENABLED_DAY_OF_WEEK)
+            EnabledDayOfWeekDto.from(BE_ENABLED_DAY_OF_WEEK),
+            0
     );
 
     private final SpaceCreateUpdateRequest spaceCreateUpdateRequest = new SpaceCreateUpdateRequest(
@@ -100,6 +101,7 @@ class SpaceServiceTest extends ServiceTest {
                 .reservationMinimumTimeUnit(BE_RESERVATION_MINIMUM_TIME_UNIT)
                 .reservationMaximumTimeUnit(BE_RESERVATION_MAXIMUM_TIME_UNIT)
                 .enabledDayOfWeek(BE_ENABLED_DAY_OF_WEEK)
+                .priorityOrder(0)
                 .build();
 
         be = Space.builder()
@@ -119,6 +121,7 @@ class SpaceServiceTest extends ServiceTest {
                 .reservationMinimumTimeUnit(FE_RESERVATION_MINIMUM_TIME_UNIT)
                 .reservationMaximumTimeUnit(FE_RESERVATION_MAXIMUM_TIME_UNIT)
                 .enabledDayOfWeek(FE_ENABLED_DAY_OF_WEEK)
+                .priorityOrder(0)
                 .build();
 
         fe = Space.builder()
@@ -149,6 +152,7 @@ class SpaceServiceTest extends ServiceTest {
                 .reservationMinimumTimeUnit(BE_RESERVATION_MINIMUM_TIME_UNIT)
                 .reservationMaximumTimeUnit(BE_RESERVATION_MAXIMUM_TIME_UNIT)
                 .enabledDayOfWeek(BE_ENABLED_DAY_OF_WEEK)
+                .priorityOrder(0)
                 .build();
 
         Space newSpace = Space.builder()

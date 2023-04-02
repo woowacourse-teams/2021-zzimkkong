@@ -79,6 +79,7 @@ class GuestReservationServiceTest extends ServiceTest {
                 .reservationMinimumTimeUnit(BE_RESERVATION_MINIMUM_TIME_UNIT)
                 .reservationMaximumTimeUnit(BE_RESERVATION_MAXIMUM_TIME_UNIT)
                 .enabledDayOfWeek(BE_ENABLED_DAY_OF_WEEK)
+                .priorityOrder(0)
                 .build();
 
         be = Space.builder()
@@ -98,6 +99,7 @@ class GuestReservationServiceTest extends ServiceTest {
                 .reservationMinimumTimeUnit(FE_RESERVATION_MINIMUM_TIME_UNIT)
                 .reservationMaximumTimeUnit(FE_RESERVATION_MAXIMUM_TIME_UNIT)
                 .enabledDayOfWeek(FE_ENABLED_DAY_OF_WEEK)
+                .priorityOrder(0)
                 .build();
 
         fe = Space.builder()
@@ -343,6 +345,7 @@ class GuestReservationServiceTest extends ServiceTest {
                 .reservationMinimumTimeUnit(TimeUnit.from(10))
                 .reservationMaximumTimeUnit(TimeUnit.from(120))
                 .enabledDayOfWeek(BE_ENABLED_DAY_OF_WEEK)
+                .priorityOrder(0)
                 .build();
 
         Space closedSpace = Space.builder()
@@ -382,6 +385,7 @@ class GuestReservationServiceTest extends ServiceTest {
                 .reservationMinimumTimeUnit(TimeUnit.from(10))
                 .reservationMaximumTimeUnit(TimeUnit.from(120))
                 .enabledDayOfWeek(THE_DAY_AFTER_TOMORROW.plusDays(1L).getDayOfWeek().name())
+                .priorityOrder(0)
                 .build();
 
         Space invalidDayOfWeekSpace = Space.builder()
@@ -497,6 +501,7 @@ class GuestReservationServiceTest extends ServiceTest {
                 .reservationMinimumTimeUnit(TimeUnit.from(10))
                 .reservationMaximumTimeUnit(TimeUnit.from(60))
                 .enabledDayOfWeek(BE_ENABLED_DAY_OF_WEEK)
+                .priorityOrder(1)
                 .build());
         given(maps.findByIdFetch(anyLong()))
                 .willReturn(Optional.of(luther));
@@ -1163,6 +1168,7 @@ class GuestReservationServiceTest extends ServiceTest {
                 .reservationMinimumTimeUnit(TimeUnit.from(10))
                 .reservationMaximumTimeUnit(TimeUnit.from(120))
                 .enabledDayOfWeek(BE_ENABLED_DAY_OF_WEEK)
+                .priorityOrder(0)
                 .build();
 
         Space closedSpace = Space.builder()
@@ -1207,6 +1213,7 @@ class GuestReservationServiceTest extends ServiceTest {
                 .reservationMinimumTimeUnit(TimeUnit.from(10))
                 .reservationMaximumTimeUnit(TimeUnit.from(120))
                 .enabledDayOfWeek(THE_DAY_AFTER_TOMORROW.plusDays(1L).getDayOfWeek().name())
+                .priorityOrder(0)
                 .build();
 
         Space invalidDayOfWeekSpace = Space.builder()

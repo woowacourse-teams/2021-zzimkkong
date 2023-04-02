@@ -30,6 +30,7 @@ class SettingTest {
                 .reservationMinimumTimeUnit(FE_RESERVATION_MINIMUM_TIME_UNIT)
                 .reservationMaximumTimeUnit(FE_RESERVATION_MAXIMUM_TIME_UNIT)
                 .enabledDayOfWeek(FE_ENABLED_DAY_OF_WEEK)
+                .priorityOrder(0)
                 .build());
     }
 
@@ -73,6 +74,7 @@ class SettingTest {
                 .reservationMinimumTimeUnit(FE_RESERVATION_MINIMUM_TIME_UNIT)
                 .reservationMaximumTimeUnit(FE_RESERVATION_MAXIMUM_TIME_UNIT)
                 .enabledDayOfWeek(FE_ENABLED_DAY_OF_WEEK)
+                .priorityOrder(0)
                 .build());
     }
 
@@ -117,6 +119,7 @@ class SettingTest {
                 .reservationMinimumTimeUnit(FE_RESERVATION_MINIMUM_TIME_UNIT)
                 .reservationMaximumTimeUnit(FE_RESERVATION_MAXIMUM_TIME_UNIT)
                 .enabledDayOfWeek("monday, wednesday")
+                .priorityOrder(0)
                 .build();
 
         assertThat(setting.supports(reservationTimeSlot, dayOfWeek)).isTrue();
@@ -133,6 +136,7 @@ class SettingTest {
                 .reservationMinimumTimeUnit(FE_RESERVATION_MINIMUM_TIME_UNIT)
                 .reservationMaximumTimeUnit(FE_RESERVATION_MAXIMUM_TIME_UNIT)
                 .enabledDayOfWeek("monday, wednesday")
+                .priorityOrder(0)
                 .build();
 
         assertThat(setting.supports(reservationTimeSlot, dayOfWeek)).isFalse();

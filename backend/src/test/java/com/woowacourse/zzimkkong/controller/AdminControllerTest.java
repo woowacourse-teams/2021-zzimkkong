@@ -56,6 +56,7 @@ class AdminControllerTest extends AcceptanceTest {
             .reservationMinimumTimeUnit(BE_RESERVATION_MINIMUM_TIME_UNIT)
             .reservationMaximumTimeUnit(BE_RESERVATION_MAXIMUM_TIME_UNIT)
             .enabledDayOfWeek(BE_ENABLED_DAY_OF_WEEK)
+            .priorityOrder(0)
             .build();
     private static final Space BE = Space.builder()
             .name(BE_NAME)

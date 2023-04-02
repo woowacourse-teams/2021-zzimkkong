@@ -18,7 +18,7 @@ import java.util.Map;
 import java.util.*;
 import java.util.stream.Collectors;
 
-import static com.woowacourse.zzimkkong.dto.ValidatorMessage.NEGATIVE_SETTING_ORDER_MESSAGE;
+import static com.woowacourse.zzimkkong.dto.ValidatorMessage.INVALID_SETTING_ORDER_MESSAGE;
 import static com.woowacourse.zzimkkong.infrastructure.message.MessageUtils.LINE_SEPARATOR;
 
 @Builder
@@ -64,7 +64,7 @@ public class Setting {
     private String enabledDayOfWeek;
 
     @Column(nullable = false)
-    private Integer order;
+    private Integer priorityOrder;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "space_id", foreignKey = @ForeignKey(name = "fk_setting_space"), nullable = false)
@@ -77,7 +77,7 @@ public class Setting {
             final TimeUnit reservationMinimumTimeUnit,
             final TimeUnit reservationMaximumTimeUnit,
             final String enabledDayOfWeek,
-            final Integer order,
+            final Integer priorityOrder,
             final Space space) {
         this.id = id;
         this.settingTimeSlot = settingTimeSlot;
@@ -85,7 +85,7 @@ public class Setting {
         this.reservationMinimumTimeUnit = reservationMinimumTimeUnit;
         this.reservationMaximumTimeUnit = reservationMaximumTimeUnit;
         this.enabledDayOfWeek = enabledDayOfWeek;
-        this.order = order;
+        this.priorityOrder = priorityOrder;
         this.space = space;
 
         validateSetting();
@@ -108,8 +108,8 @@ public class Setting {
             throw new NotEnoughAvailableTimeException();
         }
 
-        if (order == null || order <= 0) {
-            throw new InvalidOrderException(NEGATIVE_SETTING_ORDER_MESSAGE);
+        if (priorityOrder == null || priorityOrder < 0) {
+            throw new InvalidOrderException(INVALID_SETTING_ORDER_MESSAGE);
         }
     }
 
@@ -217,7 +217,7 @@ public class Setting {
                     .reservationMinimumTimeUnit(this.reservationMinimumTimeUnit)
                     .reservationMaximumTimeUnit(this.reservationMaximumTimeUnit)
                     .enabledDayOfWeek(nonConflictingDayOfWeek)
-                    .order(0)
+                    .priorityOrder(0)
                     .space(this.space)
                     .build();
             newExclusiveSettingSlots.add(intactSettingSlot);
@@ -236,7 +236,7 @@ public class Setting {
                             .reservationMinimumTimeUnit(this.reservationMinimumTimeUnit)
                             .reservationMaximumTimeUnit(this.reservationMaximumTimeUnit)
                             .enabledDayOfWeek(conflictingDayOfWeek)
-                            .order(0)
+                            .priorityOrder(0)
                             .space(this.space)
                             .build())
                     .forEach(newExclusiveSettingSlots::add);
@@ -265,7 +265,7 @@ public class Setting {
     }
 
     public String toSummaryWithoutDayOfWeek(final Boolean flat) {
-        String priority = "[우선순위 " + order.toString() + "] ";
+        String priority = "[우선순위 " + priorityOrder.toString() + "] ";
         if (flat) {
             priority = StringUtils.EMPTY;
         }
