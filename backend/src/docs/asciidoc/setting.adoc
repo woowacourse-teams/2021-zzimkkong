@@ -1,0 +1,27 @@
+== Setting(공간 예약 조건)
+
+=== 특정 날짜 예약 조건 조회 (예약자 view 용 = flat)
+==== Request
+include::{snippets}/setting/get_flat/http-request.adoc[]
+==== Response
+include::{snippets}/setting/get_flat/http-response.adoc[]
+
+=== 특정 날짜 예약 조건 조회 (관리자 view 용 = stack)
+==== 공간 관리자
+===== Request
+include::{snippets}/setting/get_stack/http-request.adoc[]
+===== Response
+include::{snippets}/setting/get_stack/http-response.adoc[]
+
+=== 전체 예약 조건 조회 (예약자 view 용 = flat)
+==== Request
+include::{snippets}/setting/get_flat_all/http-request.adoc[]
+==== Response
+include::{snippets}/setting/get_flat_all/http-response.adoc[]
+
+=== 전체 예약 조건 조회 (관리자 view 용 = stack)
+==== 공간 관리자
+===== Request
+include::{snippets}/setting/get_stack_all/http-request.adoc[]
+===== Response
+include::{snippets}/setting/get_stack_all/http-response.adoc[]
