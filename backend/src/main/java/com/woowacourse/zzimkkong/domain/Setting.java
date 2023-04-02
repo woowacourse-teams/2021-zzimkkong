@@ -14,8 +14,10 @@ import org.springframework.util.CollectionUtils;
 import javax.persistence.*;
 import java.time.DayOfWeek;
 import java.time.LocalTime;
-import java.util.Map;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Locale;
 import java.util.stream.Collectors;
 
 import static com.woowacourse.zzimkkong.dto.ValidatorMessage.INVALID_SETTING_ORDER_MESSAGE;
@@ -201,45 +203,60 @@ public class Setting {
 
         List<Setting> newExclusiveSettingSlots = new ArrayList<>();
 
-        List<EnabledDayOfWeek> conflictingSettingEnabledDayOfWeek = setting.getEnabledDayOfWeekList();
-        Map<Boolean, List<EnabledDayOfWeek>> splitEnabledDayOfWeek = this.getEnabledDayOfWeekList()
-                .stream()
-                .collect(Collectors.partitioningBy(conflictingSettingEnabledDayOfWeek::contains));
+        List<TimeSlot> exclusiveTimeSlots = this.settingTimeSlot.extractExclusiveTimeSlots(setting.settingTimeSlot);
+        for (TimeSlot exclusiveTimeSlot : exclusiveTimeSlots) {
+            TimeUnit adjustedIntervalTimeUnit = this.reservationTimeUnit.getAdjustedIntervalTimeUnit(exclusiveTimeSlot);
 
-        if (!CollectionUtils.isEmpty(splitEnabledDayOfWeek.get(false))) {
-            String nonConflictingDayOfWeek = splitEnabledDayOfWeek.get(false).stream()
-                    .map(dayOfWeek -> dayOfWeek.name().toLowerCase(Locale.ROOT))
-                    .collect(Collectors.joining());
-            Setting intactSettingSlot = Setting.builder()
+            Setting survivedSettingSlot = Setting.builder()
                     .id(0L)
-                    .settingTimeSlot(this.settingTimeSlot)
-                    .reservationTimeUnit(this.reservationTimeUnit)
-                    .reservationMinimumTimeUnit(this.reservationMinimumTimeUnit)
-                    .reservationMaximumTimeUnit(this.reservationMaximumTimeUnit)
+                    .settingTimeSlot(exclusiveTimeSlot)
+                    .reservationTimeUnit(adjustedIntervalTimeUnit)
+                    .reservationMinimumTimeUnit(
+                            this.reservationMinimumTimeUnit.getAdjustedTimeUnit(
+                                    exclusiveTimeSlot,
+                                    adjustedIntervalTimeUnit))
+                    .reservationMaximumTimeUnit(
+                            this.reservationMaximumTimeUnit.getAdjustedTimeUnit(
+                                    exclusiveTimeSlot,
+                                    adjustedIntervalTimeUnit))
+                    .enabledDayOfWeek(this.enabledDayOfWeek)
+                    .priorityOrder(0)
+                    .space(this.space)
+                    .build();
+
+            newExclusiveSettingSlots.add(survivedSettingSlot);
+        }
+
+        List<EnabledDayOfWeek> conflictingSettingEnabledDayOfWeek = setting.getEnabledDayOfWeekList();
+        List<EnabledDayOfWeek> exclusiveEnabledDayOfWeek = this.getEnabledDayOfWeekList()
+                .stream()
+                .filter(dayOfWeek -> !conflictingSettingEnabledDayOfWeek.contains(dayOfWeek))
+                .collect(Collectors.toList());
+
+        if (!CollectionUtils.isEmpty(exclusiveEnabledDayOfWeek)) {
+            TimeSlot overlappingTimeSlot = this.settingTimeSlot.extractOverlappingTimeSlot(setting.settingTimeSlot);
+            String nonConflictingDayOfWeek = exclusiveEnabledDayOfWeek.stream()
+                    .map(dayOfWeek -> dayOfWeek.name().toLowerCase(Locale.ROOT))
+                    .collect(Collectors.joining(","));
+            TimeUnit adjustedIntervalTimeUnit = this.reservationTimeUnit.getAdjustedIntervalTimeUnit(overlappingTimeSlot);
+
+            Setting survivedSettingSlot = Setting.builder()
+                    .id(0L)
+                    .settingTimeSlot(overlappingTimeSlot)
+                    .reservationTimeUnit(adjustedIntervalTimeUnit)
+                    .reservationMinimumTimeUnit(
+                            this.reservationMinimumTimeUnit.getAdjustedTimeUnit(
+                                    overlappingTimeSlot,
+                                    adjustedIntervalTimeUnit))
+                    .reservationMaximumTimeUnit(
+                            this.reservationMaximumTimeUnit.getAdjustedTimeUnit(
+                                    overlappingTimeSlot,
+                                    adjustedIntervalTimeUnit))
                     .enabledDayOfWeek(nonConflictingDayOfWeek)
                     .priorityOrder(0)
                     .space(this.space)
                     .build();
-            newExclusiveSettingSlots.add(intactSettingSlot);
-        }
-
-        if (!CollectionUtils.isEmpty(splitEnabledDayOfWeek.get(true))) {
-            String conflictingDayOfWeek = splitEnabledDayOfWeek.get(true).stream()
-                    .map(dayOfWeek -> dayOfWeek.name().toLowerCase(Locale.ROOT))
-                    .collect(Collectors.joining());
-            List<TimeSlot> exclusiveTimeSlots = this.settingTimeSlot.extractExclusiveTimeSlots(setting.settingTimeSlot);
-            exclusiveTimeSlots.stream()
-                    .map(exclusiveTimeSlot -> Setting.builder()
-                            .id(0L)
-                            .settingTimeSlot(exclusiveTimeSlot)
-                            .reservationTimeUnit(this.reservationTimeUnit)
-                            .reservationMinimumTimeUnit(this.reservationMinimumTimeUnit)
-                            .reservationMaximumTimeUnit(this.reservationMaximumTimeUnit)
-                            .enabledDayOfWeek(conflictingDayOfWeek)
-                            .priorityOrder(0)
-                            .space(this.space)
-                            .build())
-                    .forEach(newExclusiveSettingSlots::add);
+            newExclusiveSettingSlots.add(survivedSettingSlot);
         }
 
         return newExclusiveSettingSlots;

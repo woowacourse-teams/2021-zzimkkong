@@ -4,8 +4,13 @@ import com.woowacourse.zzimkkong.exception.reservation.IllegalTimeUnitValueExcep
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.CsvSource;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.junit.jupiter.params.provider.ValueSource;
+
+import java.time.LocalTime;
+import java.util.stream.Stream;
 
 import static com.woowacourse.zzimkkong.domain.TimeUnit.MINIMUM_TIME_UNIT;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -59,5 +64,83 @@ class TimeUnitTest {
 
         boolean actualResult = thisTimeUnit.isShorterThan(thatTimeUnit);
         assertThat(actualResult).isEqualTo(expectedResult);
+    }
+
+    @ParameterizedTest
+    @DisplayName("timeSlot duration 에 맞는 예약 시간 단위를 반환한다. divisible by minimum possible time unit (i.e. 5)")
+    @MethodSource("provideTimeSlots1")
+    void getAdjustedIntervalTimeUnit(TimeUnit initialTimeUnit, TimeSlot timeSlot, TimeUnit expected) {
+        TimeUnit actual = initialTimeUnit.getAdjustedIntervalTimeUnit(timeSlot);
+        assertThat(actual).isEqualTo(expected);
+    }
+
+    @ParameterizedTest
+    @DisplayName("timeSlot duration 에 맞는 예약 (최소, 최대) 가능 시간을 반환한다. divisible by interval time unit & shorter than duration length")
+    @MethodSource("provideTimeSlots2")
+    void getAdjustedTimeUnit(TimeUnit initialTimeUnit, TimeUnit intervalTimeUnit, TimeSlot timeSlot, TimeUnit expected) {
+        TimeUnit actual = initialTimeUnit.getAdjustedTimeUnit(timeSlot, intervalTimeUnit);
+        assertThat(actual).isEqualTo(expected);
+    }
+
+    private static Stream<Arguments> provideTimeSlots1() {
+        return Stream.of(
+                Arguments.of(
+                        TimeUnit.from(60),
+                        TimeSlot.of(
+                                LocalTime.of(10, 0),
+                                LocalTime.of(11, 30)),
+                        TimeUnit.from(30)
+                ),
+                Arguments.of(
+                        TimeUnit.from(60),
+                        TimeSlot.of(
+                                LocalTime.of(10, 0),
+                                LocalTime.of(11, 0)),
+                        TimeUnit.from(60)
+                ),
+                Arguments.of(
+                        TimeUnit.from(60),
+                        TimeSlot.of(
+                                LocalTime.of(10, 0),
+                                LocalTime.of(10, 20)),
+                        TimeUnit.from(10)
+                ),
+                Arguments.of(
+                        TimeUnit.from(60),
+                        TimeSlot.of(
+                                LocalTime.of(10, 0),
+                                LocalTime.of(10, 30)),
+                        TimeUnit.from(30)
+                )
+        );
+    }
+
+    private static Stream<Arguments> provideTimeSlots2() {
+        return Stream.of(
+                Arguments.of(
+                        TimeUnit.from(60),
+                        TimeUnit.from(10),
+                        TimeSlot.of(
+                                LocalTime.of(10, 0),
+                                LocalTime.of(11, 30)),
+                        TimeUnit.from(60)
+                ),
+                Arguments.of(
+                        TimeUnit.from(60),
+                        TimeUnit.from(30),
+                        TimeSlot.of(
+                                LocalTime.of(10, 0),
+                                LocalTime.of(10, 30)),
+                        TimeUnit.from(30)
+                ),
+                Arguments.of(
+                        TimeUnit.from(10),
+                        TimeUnit.from(5),
+                        TimeSlot.of(
+                                LocalTime.of(10, 0),
+                                LocalTime.of(10, 5)),
+                        TimeUnit.from(5)
+                )
+        );
     }
 }

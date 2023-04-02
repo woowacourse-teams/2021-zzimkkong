@@ -26,8 +26,8 @@ class SettingsTest {
     void setUp() {
         setting1 = Setting.builder()
                 .settingTimeSlot(TimeSlot.of(
-                        LocalTime.of(10,0),
-                        LocalTime.of(13,0)))
+                        LocalTime.of(10, 0),
+                        LocalTime.of(13, 0)))
                 .reservationTimeUnit(BE_RESERVATION_TIME_UNIT)
                 .reservationMinimumTimeUnit(BE_RESERVATION_MINIMUM_TIME_UNIT)
                 .reservationMaximumTimeUnit(BE_RESERVATION_MAXIMUM_TIME_UNIT)
@@ -36,8 +36,8 @@ class SettingsTest {
                 .build();
         setting2 = Setting.builder()
                 .settingTimeSlot(TimeSlot.of(
-                        LocalTime.of(14,0),
-                        LocalTime.of(16,0)))
+                        LocalTime.of(14, 0),
+                        LocalTime.of(16, 0)))
                 .reservationTimeUnit(BE_RESERVATION_TIME_UNIT)
                 .reservationMinimumTimeUnit(BE_RESERVATION_MINIMUM_TIME_UNIT)
                 .reservationMaximumTimeUnit(BE_RESERVATION_MAXIMUM_TIME_UNIT)
@@ -46,8 +46,8 @@ class SettingsTest {
                 .build();
         setting3 = Setting.builder()
                 .settingTimeSlot(TimeSlot.of(
-                        LocalTime.of(16,0),
-                        LocalTime.of(20,0)))
+                        LocalTime.of(16, 0),
+                        LocalTime.of(20, 0)))
                 .reservationTimeUnit(BE_RESERVATION_TIME_UNIT)
                 .reservationMinimumTimeUnit(BE_RESERVATION_MINIMUM_TIME_UNIT)
                 .reservationMaximumTimeUnit(BE_RESERVATION_MAXIMUM_TIME_UNIT)
@@ -84,6 +84,83 @@ class SettingsTest {
         );
 
         assertThat(settings.getUnavailableTimeSlots()).usingRecursiveComparison().isEqualTo(expectedResult);
+    }
+
+    @Test
+    @DisplayName("겹쳐진 예약 조건들을 '동등한 우선순위를 가진 겹치지 않은 상태 (= flat 한 상태)' 로 변환한다")
+    void flatten() {
+        Settings settings = new Settings(List.of(
+                Setting.builder()
+                        .settingTimeSlot(TimeSlot.of(
+                                LocalTime.of(11, 0),
+                                LocalTime.of(12, 0)))
+                        .reservationTimeUnit(TimeUnit.from(10))
+                        .reservationMinimumTimeUnit(TimeUnit.from(10))
+                        .reservationMaximumTimeUnit(TimeUnit.from(30))
+                        .enabledDayOfWeek("monday,tuesday,wednesday")
+                        .priorityOrder(0)
+                        .build(),
+                Setting.builder()
+                        .settingTimeSlot(TimeSlot.of(
+                                LocalTime.of(10, 0),
+                                LocalTime.of(13, 0)))
+                        .reservationTimeUnit(TimeUnit.from(10))
+                        .reservationMinimumTimeUnit(TimeUnit.from(10))
+                        .reservationMaximumTimeUnit(TimeUnit.from(30))
+                        .enabledDayOfWeek("monday,tuesday,wednesday,thursday,friday,saturday,sunday")
+                        .priorityOrder(1)
+                        .build()
+        ));
+
+        settings.flatten();
+
+        List<Setting> expected = List.of(
+                Setting.builder()
+                        .settingTimeSlot(TimeSlot.of(
+                                LocalTime.of(10, 0),
+                                LocalTime.of(11, 0)))
+                        .reservationTimeUnit(TimeUnit.from(10))
+                        .reservationMinimumTimeUnit(TimeUnit.from(10))
+                        .reservationMaximumTimeUnit(TimeUnit.from(30))
+                        .enabledDayOfWeek("monday,tuesday,wednesday,thursday,friday,saturday,sunday")
+                        .priorityOrder(0)
+                        .build(),
+                Setting.builder()
+                        .settingTimeSlot(TimeSlot.of(
+                                LocalTime.of(11, 0),
+                                LocalTime.of(12, 0)))
+                        .reservationTimeUnit(TimeUnit.from(10))
+                        .reservationMinimumTimeUnit(TimeUnit.from(10))
+                        .reservationMaximumTimeUnit(TimeUnit.from(30))
+                        .enabledDayOfWeek("monday,tuesday,wednesday")
+                        .priorityOrder(0)
+                        .build(),
+                Setting.builder()
+                        .settingTimeSlot(TimeSlot.of(
+                                LocalTime.of(11, 0),
+                                LocalTime.of(12, 0)))
+                        .reservationTimeUnit(TimeUnit.from(10))
+                        .reservationMinimumTimeUnit(TimeUnit.from(10))
+                        .reservationMaximumTimeUnit(TimeUnit.from(30))
+                        .enabledDayOfWeek("thursday,friday,saturday,sunday")
+                        .priorityOrder(0)
+                        .build(),
+                Setting.builder()
+                        .settingTimeSlot(TimeSlot.of(
+                                LocalTime.of(12, 0),
+                                LocalTime.of(13, 0)))
+                        .reservationTimeUnit(TimeUnit.from(10))
+                        .reservationMinimumTimeUnit(TimeUnit.from(10))
+                        .reservationMaximumTimeUnit(TimeUnit.from(30))
+                        .enabledDayOfWeek("monday,tuesday,wednesday,thursday,friday,saturday,sunday")
+                        .priorityOrder(0)
+                        .build()
+        );
+
+        assertThat(settings.getSettings()).usingRecursiveComparison()
+                .ignoringCollectionOrder()
+                .ignoringExpectedNullFields()
+                .isEqualTo(expected);
     }
 
     private static Stream<Arguments> provideArgumentsForGetSettingsByTimeSlotAndDayOfWeek() {

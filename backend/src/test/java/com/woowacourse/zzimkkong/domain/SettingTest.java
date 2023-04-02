@@ -7,11 +7,16 @@ import com.woowacourse.zzimkkong.exception.space.TimeUnitMismatchException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.CsvSource;
 import org.junit.jupiter.params.provider.EnumSource;
+import org.junit.jupiter.params.provider.MethodSource;
 
 import java.time.DayOfWeek;
 import java.time.LocalTime;
+import java.util.Collections;
+import java.util.List;
+import java.util.stream.Stream;
 
 import static com.woowacourse.zzimkkong.Constants.*;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -141,4 +146,101 @@ class SettingTest {
 
         assertThat(setting.supports(reservationTimeSlot, dayOfWeek)).isFalse();
     }
+
+    @ParameterizedTest
+    @DisplayName("인자로 주어진 settings 의 조건들에 배타적인 (겹치지 않는) 새로운 setting slot 리스트를 생성한다")
+    @MethodSource("provideSettings")
+    void extractExclusiveSettingSlots(List<Setting> settings, List<Setting> expected) {
+        Setting setting = Setting.builder()
+                .settingTimeSlot(TimeSlot.of(
+                        LocalTime.of(10, 0),
+                        LocalTime.of(11, 0)))
+                .reservationTimeUnit(TimeUnit.from(10))
+                .reservationMinimumTimeUnit(TimeUnit.from(10))
+                .reservationMaximumTimeUnit(TimeUnit.from(30))
+                .enabledDayOfWeek("monday,tuesday,wednesday,thursday,friday,saturday,sunday")
+                .priorityOrder(0)
+                .build();
+
+        List<Setting> actual = setting.extractExclusiveSettingSlots(settings);
+        assertThat(actual).usingRecursiveComparison()
+                .ignoringCollectionOrder()
+                .ignoringExpectedNullFields()
+                .isEqualTo(expected);
+    }
+
+    private static Stream<Arguments> provideSettings() {
+        return Stream.of(
+                Arguments.of(
+                        List.of(
+                                Setting.builder()
+                                        .settingTimeSlot(TimeSlot.of(
+                                                LocalTime.of(9, 30),
+                                                LocalTime.of(10, 30)))
+                                        .reservationTimeUnit(TimeUnit.from(10))
+                                        .reservationMinimumTimeUnit(TimeUnit.from(10))
+                                        .reservationMaximumTimeUnit(TimeUnit.from(30))
+                                        .enabledDayOfWeek("monday,tuesday,wednesday,thursday,friday,saturday,sunday")
+                                        .priorityOrder(0)
+                                        .build(),
+                                Setting.builder()
+                                        .settingTimeSlot(TimeSlot.of(
+                                                LocalTime.of(10, 30),
+                                                LocalTime.of(11, 0)))
+                                        .reservationTimeUnit(TimeUnit.from(10))
+                                        .reservationMinimumTimeUnit(TimeUnit.from(10))
+                                        .reservationMaximumTimeUnit(TimeUnit.from(30))
+                                        .enabledDayOfWeek("monday,tuesday,wednesday,thursday,friday,saturday,sunday")
+                                        .priorityOrder(0)
+                                        .build()
+                        ),
+                        Collections.emptyList()),
+                Arguments.of(
+                        List.of(
+                                Setting.builder()
+                                        .settingTimeSlot(TimeSlot.of(
+                                                LocalTime.of(9, 30),
+                                                LocalTime.of(10, 30)))
+                                        .reservationTimeUnit(TimeUnit.from(10))
+                                        .reservationMinimumTimeUnit(TimeUnit.from(10))
+                                        .reservationMaximumTimeUnit(TimeUnit.from(30))
+                                        .enabledDayOfWeek("monday,tuesday,wednesday")
+                                        .priorityOrder(0)
+                                        .build(),
+                                Setting.builder()
+                                        .settingTimeSlot(TimeSlot.of(
+                                                LocalTime.of(10, 30),
+                                                LocalTime.of(11, 0)))
+                                        .reservationTimeUnit(TimeUnit.from(10))
+                                        .reservationMinimumTimeUnit(TimeUnit.from(10))
+                                        .reservationMaximumTimeUnit(TimeUnit.from(30))
+                                        .enabledDayOfWeek("thursday,friday,saturday,sunday")
+                                        .priorityOrder(0)
+                                        .build()
+                        ),
+                        List.of(
+                                Setting.builder()
+                                        .settingTimeSlot(TimeSlot.of(
+                                                LocalTime.of(10, 30),
+                                                LocalTime.of(11, 0)))
+                                        .reservationTimeUnit(TimeUnit.from(10))
+                                        .reservationMinimumTimeUnit(TimeUnit.from(10))
+                                        .reservationMaximumTimeUnit(TimeUnit.from(30))
+                                        .enabledDayOfWeek("monday,tuesday,wednesday")
+                                        .priorityOrder(0)
+                                        .build(),
+                                Setting.builder()
+                                        .settingTimeSlot(TimeSlot.of(
+                                                LocalTime.of(10, 0),
+                                                LocalTime.of(10, 30)))
+                                        .reservationTimeUnit(TimeUnit.from(10))
+                                        .reservationMinimumTimeUnit(TimeUnit.from(10))
+                                        .reservationMaximumTimeUnit(TimeUnit.from(30))
+                                        .enabledDayOfWeek("thursday,friday,saturday,sunday")
+                                        .priorityOrder(0)
+                                        .build()
+                        ))
+        );
+    }
 }
+

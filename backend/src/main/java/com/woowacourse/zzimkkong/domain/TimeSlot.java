@@ -96,14 +96,24 @@ public class TimeSlot {
         return TimeUnit.from(ChronoUnit.MINUTES.between(startTime, endTime));
     }
 
-    @Override
-    public String toString() {
-        String endTimeAsString = endTime.toString();
-        if (MAX_TIME.equals(endTime)) {
-            endTimeAsString = "24:00";
+    public TimeSlot extractOverlappingTimeSlot(final TimeSlot that) {
+        if (!this.hasConflictWith(that)) {
+            return null;
         }
 
-        return startTime + " ~ " + endTimeAsString;
+        if (that.contains(this)) {
+            return this;
+        }
+
+        if (this.hasLeftSkewedConflictWith(that)) {
+            return TimeSlot.of(that.startTime, this.endTime);
+        }
+
+        if (this.hasRightSkewedConflictWith(that)) {
+            return TimeSlot.of(this.startTime, that.endTime);
+        }
+
+        return TimeSlot.of(that.startTime, that.endTime);
     }
 
     public List<TimeSlot> extractExclusiveTimeSlots(final TimeSlot that) {
@@ -115,21 +125,39 @@ public class TimeSlot {
             return Collections.emptyList();
         }
 
-        if (this.contains(that)) {
-            return List.of(
-                    TimeSlot.of(this.startTime, that.startTime),
-                    TimeSlot.of(that.endTime, this.endTime));
-        }
-
         if (this.hasLeftSkewedConflictWith(that)) {
             return List.of(TimeSlot.of(this.startTime, that.startTime));
         }
 
-        return List.of(TimeSlot.of(that.endTime, this.endTime));
+        if (this.hasRightSkewedConflictWith(that)) {
+            return List.of(TimeSlot.of(that.endTime, this.endTime));
+        }
+
+        return List.of(
+                TimeSlot.of(this.startTime, that.startTime),
+                TimeSlot.of(that.endTime, this.endTime));
     }
 
     private boolean hasLeftSkewedConflictWith(final TimeSlot that) {
-        return this.startTime.isBefore(that.startTime) && this.endTime.isAfter(that.startTime) && this.endTime.isBefore(that.endTime);
+        return this.startTime.isBefore(that.startTime)
+                && ((this.endTime.isAfter(that.startTime) && this.endTime.isBefore(that.endTime))
+                || this.endTime.equals(that.endTime));
+    }
+
+    private boolean hasRightSkewedConflictWith(final TimeSlot that) {
+        return ((this.startTime.isAfter(that.startTime) && this.startTime.isBefore(that.endTime))
+                || this.startTime.equals(that.startTime))
+                && this.endTime.isAfter(that.endTime);
+    }
+
+    @Override
+    public String toString() {
+        String endTimeAsString = endTime.toString();
+        if (MAX_TIME.equals(endTime)) {
+            endTimeAsString = "24:00";
+        }
+
+        return startTime + " ~ " + endTimeAsString;
     }
 }
 
