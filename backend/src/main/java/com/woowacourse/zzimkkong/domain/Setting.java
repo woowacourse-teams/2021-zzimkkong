@@ -5,13 +5,16 @@ import com.woowacourse.zzimkkong.exception.space.InvalidMinimumMaximumTimeUnitEx
 import com.woowacourse.zzimkkong.exception.space.NotEnoughAvailableTimeException;
 import com.woowacourse.zzimkkong.exception.space.TimeUnitInconsistencyException;
 import com.woowacourse.zzimkkong.exception.space.TimeUnitMismatchException;
-import lombok.*;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import org.springframework.util.CollectionUtils;
 
 import javax.persistence.*;
 import java.time.DayOfWeek;
 import java.time.LocalTime;
-import java.util.Arrays;
-import java.util.List;
+import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import static com.woowacourse.zzimkkong.dto.ValidatorMessage.NEGATIVE_SETTING_ORDER_MESSAGE;
@@ -135,14 +138,8 @@ public class Setting {
     }
 
     public boolean hasConflictWith(final Setting that) {
-        List<EnabledDayOfWeek> thisEnabledDayOfWeek = Arrays.stream(this.enabledDayOfWeek.split(Space.DELIMITER))
-                .map(String::trim)
-                .map(EnabledDayOfWeek::from)
-                .collect(Collectors.toList());
-        boolean enabledDayOfWeekMatch = Arrays.stream(that.enabledDayOfWeek.split(Space.DELIMITER))
-                .map(String::trim)
-                .map(EnabledDayOfWeek::from)
-                .anyMatch(thisEnabledDayOfWeek::contains);
+        List<EnabledDayOfWeek> thisEnabledDayOfWeek = getEnabledDayOfWeekList(this);
+        boolean enabledDayOfWeekMatch = getEnabledDayOfWeekList(that).stream().anyMatch(thisEnabledDayOfWeek::contains);
 
         return this.settingTimeSlot.hasConflictWith(that.settingTimeSlot) && enabledDayOfWeekMatch;
     }
@@ -185,5 +182,83 @@ public class Setting {
                 "최대 예약 가능 시간: " +
                 reservationMaximumTimeUnit.toString() +
                 LINE_SEPARATOR;
+    }
+
+    /**
+     * 2023.04.02 기준
+     * 인자로 주어진 settings 의 조건들에 배타적인 (겹치지 않는) 새로운 setting slot 리스트를 생성한다
+     * 기존 setting 을 조각내어 새로운 여러개의 (transient) setting 을 생성한다
+     *
+     * @param settings 서로 시간대와 요일이 겹치지 않는 (= flat 한) setting 들
+     * @return List of Setting Slot (조각 내어진 세팅 슬롯들)
+     */
+
+    public List<Setting> extractExclusiveSettingSlots(final List<Setting> settings) {
+        List<Setting> exclusiveSettingSlots = List.of(this);
+        for (Setting setting : settings) {
+            List<Setting> newExclusiveSettingSlots = new ArrayList<>();
+            for (Setting exclusiveSettingSlot : exclusiveSettingSlots) {
+                newExclusiveSettingSlots.addAll(exclusiveSettingSlot.extractNewExclusiveSettingSlots(setting));
+            }
+            exclusiveSettingSlots = newExclusiveSettingSlots;
+        }
+        return exclusiveSettingSlots;
+    }
+
+    private List<Setting> extractNewExclusiveSettingSlots(final Setting setting) {
+        if (!this.hasConflictWith(setting)) {
+            return List.of(this);
+        }
+
+        List<Setting> newExclusiveSettingSlots = new ArrayList<>();
+
+        List<EnabledDayOfWeek> conflictingSettingEnabledDayOfWeek = getEnabledDayOfWeekList(setting);
+        Map<Boolean, List<EnabledDayOfWeek>> splitEnabledDayOfWeek = getEnabledDayOfWeekList(this).stream()
+                .collect(Collectors.partitioningBy(conflictingSettingEnabledDayOfWeek::contains));
+
+        if (!CollectionUtils.isEmpty(splitEnabledDayOfWeek.get(false))) {
+            String nonConflictingDayOfWeek = splitEnabledDayOfWeek.get(false).stream()
+                    .map(dayOfWeek -> dayOfWeek.name().toLowerCase(Locale.ROOT))
+                    .collect(Collectors.joining());
+            Setting intactSettingSlot = Setting.builder()
+                    .id(0L)
+                    .settingTimeSlot(this.settingTimeSlot)
+                    .reservationTimeUnit(this.reservationTimeUnit)
+                    .reservationMinimumTimeUnit(this.reservationMinimumTimeUnit)
+                    .reservationMaximumTimeUnit(this.reservationMaximumTimeUnit)
+                    .enabledDayOfWeek(nonConflictingDayOfWeek)
+                    .order(0)
+                    .space(this.space)
+                    .build();
+            newExclusiveSettingSlots.add(intactSettingSlot);
+        }
+
+        if (!CollectionUtils.isEmpty(splitEnabledDayOfWeek.get(true))) {
+            String conflictingDayOfWeek = splitEnabledDayOfWeek.get(true).stream()
+                    .map(dayOfWeek -> dayOfWeek.name().toLowerCase(Locale.ROOT))
+                    .collect(Collectors.joining());
+            List<TimeSlot> exclusiveTimeSlots = this.settingTimeSlot.extractExclusiveTimeSlots(setting.settingTimeSlot);
+            exclusiveTimeSlots.stream()
+                    .map(exclusiveTimeSlot -> Setting.builder()
+                            .id(0L)
+                            .settingTimeSlot(exclusiveTimeSlot)
+                            .reservationTimeUnit(this.reservationTimeUnit)
+                            .reservationMinimumTimeUnit(this.reservationMinimumTimeUnit)
+                            .reservationMaximumTimeUnit(this.reservationMaximumTimeUnit)
+                            .enabledDayOfWeek(conflictingDayOfWeek)
+                            .order(0)
+                            .space(this.space)
+                            .build())
+                    .forEach(newExclusiveSettingSlots::add);
+        }
+
+        return newExclusiveSettingSlots;
+    }
+
+    private List<EnabledDayOfWeek> getEnabledDayOfWeekList(final Setting setting) {
+        return Arrays.stream(setting.enabledDayOfWeek.split(Space.DELIMITER))
+                .map(String::trim)
+                .map(EnabledDayOfWeek::from)
+                .collect(Collectors.toList());
     }
 }

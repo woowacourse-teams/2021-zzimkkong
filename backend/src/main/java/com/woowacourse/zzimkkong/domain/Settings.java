@@ -64,11 +64,11 @@ public class Settings {
     }
 
     public Settings getSettingsByTimeSlotAndDayOfWeek(final TimeSlot timeSlot, final DayOfWeek dayOfWeek) {
-        List<Setting> filteredSettings = this.settings.stream()
+        List<Setting> relevantSettingsInReversedOrder = this.settings.stream()
                 .filter(setting -> setting.supports(timeSlot, dayOfWeek))
                 .collect(Collectors.toList());
 
-        return new Settings(filteredSettings);
+        return new Settings(relevantSettingsInReversedOrder);
     }
 
     public boolean cannotAcceptDueToAvailableTime(final TimeSlot timeSlot) {
@@ -186,6 +186,29 @@ public class Settings {
             stringBuilder.append(LINE_SEPARATOR);
         }
         return stringBuilder.toString();
+    }
+
+    /**
+     * 2023.04.02 기준
+     * 공간의 예약 조건은 서로 겹쳐질 (중복될) 수 있으며, 각각 우선순위 (order)를 가진다.
+     * 우선순위가 높은 예약조건을 우선시하여 검증한다.
+     * 비즈니스 로직을 단순화 시키기 위해, flatten 메서드로 겹쳐진 예약 조건들을 '동등한 우선순위를 가진 겹치지 않은 상태 (= flat 한 상태)' 로 변환한다.
+     *
+     * flatten 과정을 거치면 settings 의 모든 setting 들은:
+     * - {@link Setting#settingTimeSlot}, {@link Setting#enabledDayOfWeek} 두 조건이 서로 겹치지 않는다
+     * - 모두 id 가 0 이 된다 (transient entity 임을 명시하기 위함)
+     * - 모두 order 가 0 이 된다 (동등한 우선순위)
+     * - settingStartTime 기준으로 오름차순 정렬된다
+     */
+    public void flatten() {
+        List<Setting> flatSettings = new ArrayList<>();
+        for (Setting setting : settings) {
+            List<Setting> exclusiveSettingSlots = setting.extractExclusiveSettingSlots(new ArrayList<>(flatSettings));
+            flatSettings.addAll(exclusiveSettingSlots);
+        }
+        flatSettings.sort(Comparator.comparing(Setting::getSettingStartTime));
+
+        this.settings = flatSettings;
     }
 }
 

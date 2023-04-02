@@ -9,6 +9,7 @@ import org.hibernate.annotations.DynamicUpdate;
 import javax.persistence.*;
 import java.time.DayOfWeek;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 
 @Getter
@@ -110,7 +111,11 @@ public class Space {
     }
 
     public Settings getRelevantSettings(final TimeSlot timeSlot, final DayOfWeek dayOfWeek) {
-        return spaceSettings.getSettingsByTimeSlotAndDayOfWeek(timeSlot, dayOfWeek);
+        Settings settings = spaceSettings.getSettingsByTimeSlotAndDayOfWeek(timeSlot, dayOfWeek);
+
+        settings.flatten();
+
+        return settings;
     }
 
     public ServiceZone getServiceZone() {
