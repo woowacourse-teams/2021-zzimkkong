@@ -1,4 +1,4 @@
-import { Dispatch, FormEventHandler, SetStateAction, useEffect, useRef } from 'react';
+import React, { Dispatch, FormEventHandler, SetStateAction, useEffect, useRef } from 'react';
 import {
   DeleteManagerSpaceParams,
   PostManagerSpaceParams,
@@ -20,6 +20,7 @@ import { generateSvg, MapSvgData } from 'utils/generateSvg';
 import { colorSelectOptions, initialSpaceFormValueSetting, timeUnits } from '../data';
 import { SpaceFormContext } from '../providers/SpaceFormProvider';
 import * as Styled from './Form.styles';
+import { InfoMessage, InfoMessageWrapper } from './Form.styles';
 import FormDayOfWeekSelect from './FormDayOfWeekSelect';
 import FormTimeUnitSelect from './FormTimeUnitSelect';
 import Preset from './Preset';
@@ -186,6 +187,11 @@ const Form = ({
         <Styled.TitleContainer>
           <Styled.Title>예약 조건</Styled.Title>
         </Styled.TitleContainer>
+        <Styled.InfoMessageWrapper>
+          <Styled.InfoMessage>
+            예약 조건이 서로 겹칠 시, 뒷 순서의 예약 조건이 앞 순서의 예약 조건을 덮어씁니다.
+          </Styled.InfoMessage>
+        </Styled.InfoMessageWrapper>
 
         <Styled.TabList>
           {values.settings.map((_, index) => (
