@@ -17,7 +17,7 @@ import useFormContext from 'hooks/useFormContext';
 import { Area, Color, ManagerSpace, MapElement } from 'types/common';
 import { SpaceEditorMode as Mode } from 'types/editor';
 import { generateSvg, MapSvgData } from 'utils/generateSvg';
-import { colorSelectOptions, timeUnits } from '../data';
+import { colorSelectOptions, initialSpaceFormValueSetting, timeUnits } from '../data';
 import { SpaceFormContext } from '../providers/SpaceFormProvider';
 import * as Styled from './Form.styles';
 import FormDayOfWeekSelect from './FormDayOfWeekSelect';
