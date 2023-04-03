@@ -31,9 +31,8 @@ public class SettingRequest {
 
     private EnabledDayOfWeekDto enabledDayOfWeek = new EnabledDayOfWeekDto();
 
-    @NotNull(message = EMPTY_MESSAGE)
     @Min(value = 0, message = INVALID_SETTING_ORDER_MESSAGE)
-    private Integer order = 0;
+    private Integer priorityOrder = 0;
 
     public SettingRequest(
             final LocalTime settingStartTime,
@@ -42,14 +41,14 @@ public class SettingRequest {
             final Integer reservationMinimumTimeUnit,
             final Integer reservationMaximumTimeUnit,
             final EnabledDayOfWeekDto enabledDayOfWeek,
-            final Integer order) {
+            final Integer priorityOrder) {
         this.settingStartTime = settingStartTime;
         this.settingEndTime = settingEndTime;
         this.reservationTimeUnit = reservationTimeUnit;
         this.reservationMinimumTimeUnit = reservationMinimumTimeUnit;
         this.reservationMaximumTimeUnit = reservationMaximumTimeUnit;
         this.enabledDayOfWeek = enabledDayOfWeek;
-        this.order = order;
+        this.priorityOrder = priorityOrder;
     }
 
     public String enabledDayOfWeekAsString() {

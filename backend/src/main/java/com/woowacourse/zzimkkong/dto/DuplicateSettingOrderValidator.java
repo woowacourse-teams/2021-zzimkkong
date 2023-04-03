@@ -17,7 +17,7 @@ public class DuplicateSettingOrderValidator implements ConstraintValidator<NotDu
         }
 
         Set<Integer> uniquePriorities = value.stream()
-                .map(SettingRequest::getOrder)
+                .map(SettingRequest::getPriorityOrder)
                 .collect(Collectors.toSet());
 
         return value.size() == uniquePriorities.size();

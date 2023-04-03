@@ -44,7 +44,7 @@ public class Settings {
                         .reservationMinimumTimeUnit(TimeUnit.from(settingRequest.getReservationMinimumTimeUnit()))
                         .reservationMaximumTimeUnit(TimeUnit.from(settingRequest.getReservationMaximumTimeUnit()))
                         .enabledDayOfWeek(settingRequest.enabledDayOfWeekAsString())
-                        .priorityOrder(settingRequest.getOrder())
+                        .priorityOrder(settingRequest.getPriorityOrder())
                         .build())
                 .collect(Collectors.toList());
 
