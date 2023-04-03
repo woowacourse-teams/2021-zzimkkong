@@ -129,7 +129,7 @@ class ManagerSpaceControllerTest extends AcceptanceTest {
                 null,
                 null,
                 null,
-                1
+                null
         );
 
         SpaceCreateUpdateRequest defaultSpaceCreateUpdateRequest = new SpaceCreateUpdateRequest(

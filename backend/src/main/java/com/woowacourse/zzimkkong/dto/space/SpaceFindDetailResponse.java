@@ -1,5 +1,6 @@
 package com.woowacourse.zzimkkong.dto.space;
 
+import com.woowacourse.zzimkkong.domain.Settings;
 import com.woowacourse.zzimkkong.domain.Space;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -41,7 +42,9 @@ public class SpaceFindDetailResponse {
     }
 
     protected static List<SettingResponse> getSettingResponses(final Space space) {
-        return space.getSpaceSettings().getSettings()
+        Settings spaceSettings = space.getSpaceSettings();
+        spaceSettings.reverseSort();
+        return spaceSettings.getSettings()
                 .stream()
                 .map(SettingResponse::from)
                 .collect(Collectors.toList());

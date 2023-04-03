@@ -156,9 +156,8 @@ public class Settings {
         settings.clear();
     }
 
-    @PostLoad
-    public void postLoad() {
-        sort();
+    public void reverseSort() {
+        settings.sort(Comparator.comparing(Setting::getPriorityOrder).reversed());
     }
 
     private void sort() {
@@ -198,19 +197,6 @@ public class Settings {
         this.settings = flatSettings;
     }
 
-    @Override
-    public String toString() {
-        StringBuilder stringBuilder = new StringBuilder();
-        for (int i = 0; i < settings.size(); i++) {
-            Setting setting = settings.get(i);
-            stringBuilder.append(String.format("[예약 조건 %d]", i + 1));
-            stringBuilder.append(LINE_SEPARATOR);
-            stringBuilder.append(setting);
-            stringBuilder.append(LINE_SEPARATOR);
-        }
-        return stringBuilder.toString();
-    }
-
     public String getSummary() {
         StringBuilder stringBuilder = new StringBuilder();
         for (EnabledDayOfWeek dayOfWeek : EnabledDayOfWeek.values()) {
@@ -243,6 +229,24 @@ public class Settings {
                 .map(Setting::getPriorityOrder)
                 .collect(Collectors.toSet())
                 .size() == 1;
+    }
+
+    @PostLoad
+    public void postLoad() {
+        sort();
+    }
+
+    @Override
+    public String toString() {
+        StringBuilder stringBuilder = new StringBuilder();
+        for (int i = 0; i < settings.size(); i++) {
+            Setting setting = settings.get(i);
+            stringBuilder.append(String.format("[예약 조건 %d]", i + 1));
+            stringBuilder.append(LINE_SEPARATOR);
+            stringBuilder.append(setting);
+            stringBuilder.append(LINE_SEPARATOR);
+        }
+        return stringBuilder.toString();
     }
 }
 
