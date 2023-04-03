@@ -1,5 +1,4 @@
 import {
-  Area,
   Emoji,
   ManagerSpaceAPI,
   MapItem,
@@ -53,6 +52,7 @@ export interface QueryManagerMapsSuccess {
 export interface QueryManagerSpaceReservationsSuccess {
   reservations: Reservation[];
 }
+
 export interface QueryManagerMapReservationsSuccess {
   data: SpaceReservation[];
 }
@@ -90,4 +90,8 @@ export interface QueryMemberReservationsSuccess {
   data: MemberReservation[];
   hasNext: boolean;
   pageNumber: number;
+}
+
+export interface QuerySettingSummarySuccess {
+  summary: string;
 }

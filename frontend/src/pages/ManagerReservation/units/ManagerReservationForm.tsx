@@ -1,4 +1,5 @@
-import { ChangeEventHandler, useMemo } from 'react';
+import dayjs from 'dayjs';
+import React, { ChangeEventHandler, useMemo } from 'react';
 import { ReactComponent as CalendarIcon } from 'assets/svg/calendar.svg';
 import Button from 'components/Button/Button';
 import Input from 'components/Input/Input';
@@ -15,14 +16,15 @@ import { ManagerSpaceAPI, Reservation } from 'types/common';
 import {
   convertSettingTimeToMinutes,
   convertTimeToMinutes,
-  formatTimePrettier,
   formatTimeWithSecond,
 } from 'utils/datetime';
+import useSettingSummary from '../../../hooks/query/useSettingSummary';
 import { CreateReservationParams, EditReservationParams } from '../ManagerReservation';
 import * as Styled from './ManagerReservationForm.styles';
 
 interface Props {
   isEditMode: boolean;
+  mapId: number;
   space: ManagerSpaceAPI;
   reservation?: Reservation;
   date: string;
@@ -39,6 +41,7 @@ interface Form {
 
 const ManagerReservationForm = ({
   isEditMode,
+  mapId,
   space,
   date,
   reservation,
@@ -77,6 +80,18 @@ const ManagerReservationForm = ({
     initialStartTime: !!reservation ? new Date(reservation.startDateTime) : undefined,
     initialEndTime: !!reservation ? new Date(reservation.endDateTime) : undefined,
   });
+
+  const getSettingsSummary = useSettingSummary(
+    {
+      mapId,
+      spaceId: space?.id,
+      selectedDateTime: `${date}T${formatTimeWithSecond(range.start ?? dayjs().tz())}${
+        DATE.TIMEZONE_OFFSET
+      }`,
+    },
+    {}
+  );
+  const settingsSummary = getSettingsSummary.data?.data?.summary ?? '';
 
   const [{ name, description, password }, onChangeForm] = useInputs<Form>({
     name: reservation?.name ?? '',
@@ -166,26 +181,8 @@ const ManagerReservationForm = ({
           />
 
           <Styled.TimeFormMessageWrapper>
-            <Styled.TimeFormMessage>예약 가능 시간</Styled.TimeFormMessage>
-            {space.settings.map(
-              (
-                {
-                  settingStartTime,
-                  settingEndTime,
-                  reservationMaximumTimeUnit,
-                  reservationMinimumTimeUnit,
-                },
-                index
-              ) => {
-                return (
-                  <Styled.TimeFormMessage key={index}>
-                    {settingStartTime.slice(0, 5)} ~ {settingEndTime.slice(0, 5)}
-                    (최소 {formatTimePrettier(reservationMinimumTimeUnit)}, 최대{' '}
-                    {formatTimePrettier(reservationMaximumTimeUnit)})
-                  </Styled.TimeFormMessage>
-                );
-              }
-            )}
+            <Styled.TimeFormMessage fontWeight="bold">예약 가능 시간</Styled.TimeFormMessage>
+            <Styled.TimeFormMessage>{settingsSummary}</Styled.TimeFormMessage>
           </Styled.TimeFormMessageWrapper>
         </Styled.InputWrapper>
 

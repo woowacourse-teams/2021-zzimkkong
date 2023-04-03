@@ -289,6 +289,8 @@ const GuestReservation = (): JSX.Element => {
               <MemberGuestReservationForm
                 isEditMode={isEditMode}
                 space={getSpace.data?.data}
+                spaceId={spaceId}
+                mapId={mapId}
                 reservation={reservation}
                 date={date}
                 userName={userName ?? ''}
@@ -298,6 +300,8 @@ const GuestReservation = (): JSX.Element => {
             ) : (
               <GuestReservationForm
                 isEditMode={isEditMode}
+                mapId={mapId}
+                spaceId={spaceId}
                 space={getSpace.data?.data}
                 reservation={reservation}
                 date={date}

@@ -29,12 +29,15 @@ export const TimeFormMessageWrapper = styled.div`
   margin-top: 0.5rem;
 `;
 
-export const TimeFormMessage = styled.p`
+export const TimeFormMessage = styled.p<{ fontWeight?: string }>`
   left: 0.75rem;
-  bottom: -1rem;
+  bottom: -1.5rem;
   font-size: 0.75rem;
-  height: 1em;
+  height: 1.5em;
+  white-space: pre-line;
+  line-height: normal;
   color: ${({ theme }) => theme.gray[500]};
+  ${({ fontWeight }) => fontWeight && `font-weight: ${fontWeight}`};
 `;
 
 export const ButtonWrapper = styled.div`
