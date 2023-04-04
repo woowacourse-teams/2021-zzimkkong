@@ -1,5 +1,5 @@
 import dayjs from 'dayjs';
-import React, { ChangeEventHandler, useMemo } from 'react';
+import React, { ChangeEventHandler, useMemo, useState } from 'react';
 import { ReactComponent as CalendarIcon } from 'assets/svg/calendar.svg';
 import Button from 'components/Button/Button';
 import Input from 'components/Input/Input';
@@ -179,11 +179,10 @@ const ManagerReservationForm = ({
             onChange={onChange}
             onCloseOptions={onCloseOptions}
           />
-
-          <Styled.TimeFormMessageWrapper>
-            <Styled.TimeFormMessage fontWeight="bold">예약 가능 시간</Styled.TimeFormMessage>
-            <Styled.TimeFormMessage>{settingsSummary}</Styled.TimeFormMessage>
-          </Styled.TimeFormMessageWrapper>
+          <Styled.SettingSummaryWrapper>
+            <Styled.SettingSummary fontWeight="bold">예약 가능 시간</Styled.SettingSummary>
+            <Styled.SettingSummary>{settingsSummary}</Styled.SettingSummary>
+          </Styled.SettingSummaryWrapper>
         </Styled.InputWrapper>
 
         {isEditMode || (

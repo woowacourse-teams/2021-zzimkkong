@@ -1,6 +1,6 @@
 import { AxiosError } from 'axios';
 import dayjs from 'dayjs';
-import React, { useContext } from 'react';
+import React, { useContext, useState } from 'react';
 import { useMutation } from 'react-query';
 import { useHistory } from 'react-router-dom';
 import {
@@ -23,7 +23,7 @@ import useMember from 'hooks/query/useMember';
 import { AccessTokenContext } from 'providers/AccessTokenProvider';
 import { MapItem } from 'types/common';
 import { ErrorResponse } from 'types/response';
-import { formatTimePrettier, formatTimeWithSecond, isPastDate } from 'utils/datetime';
+import { formatTimeWithSecond, isPastDate } from 'utils/datetime';
 import { isNullish } from 'utils/type';
 import useSettingSummary from '../../../hooks/query/useSettingSummary';
 import { GuestMapFormContext } from '../providers/GuestMapFormProvider';
@@ -73,7 +73,7 @@ const ReservationForm = ({ map }: Props) => {
         timePicker?.range.start ?? dayjs().tz()
       )}${DATE.TIMEZONE_OFFSET}`,
     },
-    { enabled: selectedSpaceId !== null }
+    { enabled: selectedSpaceId !== null && !isNaN(parseInt(selectedSpaceId)) }
   );
   const settingsSummary = getSettingsSummary.data?.data?.summary ?? '';
 
@@ -178,10 +178,10 @@ const ReservationForm = ({ map }: Props) => {
             />
           )}
           {spacesMap?.[Number(selectedSpaceId)] && (
-            <Styled.TimeFormMessageWrapper>
-              <Styled.TimeFormMessage fontWeight="bold">예약 가능 시간</Styled.TimeFormMessage>
-              <Styled.TimeFormMessage>{settingsSummary}</Styled.TimeFormMessage>
-            </Styled.TimeFormMessageWrapper>
+            <Styled.SettingSummaryWrapper>
+              <Styled.SettingSummary fontWeight="bold">예약 가능 시간</Styled.SettingSummary>
+              <Styled.SettingSummary>{settingsSummary}</Styled.SettingSummary>
+            </Styled.SettingSummaryWrapper>
           )}
         </Styled.InputWrapper>
 

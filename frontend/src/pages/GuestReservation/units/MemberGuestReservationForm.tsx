@@ -156,10 +156,10 @@ const MemberGuestReservationForm = ({
             onChange={onChange}
             onCloseOptions={onCloseOptions}
           />
-          <Styled.TimeFormMessageWrapper>
-            <Styled.TimeFormMessage fontWeight="bold">예약 가능 시간</Styled.TimeFormMessage>
-            <Styled.TimeFormMessage>{settingsSummary}</Styled.TimeFormMessage>
-          </Styled.TimeFormMessageWrapper>
+          <Styled.SettingSummaryWrapper>
+            <Styled.SettingSummary fontWeight="bold">예약 가능 시간</Styled.SettingSummary>
+            <Styled.SettingSummary>{settingsSummary}</Styled.SettingSummary>
+          </Styled.SettingSummaryWrapper>
         </Styled.InputWrapper>
       </Styled.Section>
       <Styled.ButtonWrapper>
