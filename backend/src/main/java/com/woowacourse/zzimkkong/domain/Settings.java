@@ -196,9 +196,6 @@ public class Settings {
             return "[" + dayOfWeek.getDisplayName() + "] 이용 불가" + LINE_SEPARATOR;
         }
 
-        Settings mergedSettings = toFlattenedSettings(settingsOnDayOfWeek)
-                .getMergedSettings(dayOfWeek);
-
         StringBuilder stringBuilder = new StringBuilder();
         stringBuilder.append("[")
                 .append(dayOfWeek.getDisplayName())
@@ -206,8 +203,8 @@ public class Settings {
                 .append(LINE_SEPARATOR);
 
         boolean flat = isFlat();
-        for (Setting combinedSetting : mergedSettings.settings) {
-            stringBuilder.append(combinedSetting.toSummaryWithoutDayOfWeek(flat))
+        for (Setting setting : settingsOnDayOfWeek) {
+            stringBuilder.append(setting.toSummaryWithoutDayOfWeek(flat))
                     .append(LINE_SEPARATOR);
         }
         return stringBuilder.toString();

@@ -16,6 +16,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.DayOfWeek;
 import java.time.LocalDateTime;
+import java.util.Locale;
 
 @Service
 @Transactional(readOnly = true)
@@ -37,17 +38,17 @@ public class SettingService {
                 .orElseThrow(NoSuchSpaceException::new);
         Settings spaceSettings = space.getSpaceSettings();
 
+        DayOfWeek dayOfWeek = TimeZoneUtils.convertTo(selectedDateTime, map.getServiceZone())
+                .toLocalDate()
+                .getDayOfWeek();
         if (SettingViewType.FLAT.equals(settingViewType)) {
             spaceSettings.flatten();
+            spaceSettings = spaceSettings.getMergedSettings(EnabledDayOfWeek.from(dayOfWeek.name()));
         }
 
         if (selectedDateTime == null) {
             return SettingsSummaryResponse.from(spaceSettings.getSummary());
         }
-
-        DayOfWeek dayOfWeek = TimeZoneUtils.convertTo(selectedDateTime, map.getServiceZone())
-                .toLocalDate()
-                .getDayOfWeek();
         String summary = spaceSettings.getSummaryOn(EnabledDayOfWeek.from(dayOfWeek.name()));
         return SettingsSummaryResponse.from(summary);
     }
