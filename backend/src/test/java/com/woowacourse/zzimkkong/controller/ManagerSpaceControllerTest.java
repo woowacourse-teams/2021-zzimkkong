@@ -74,7 +74,7 @@ class ManagerSpaceControllerTest extends AcceptanceTest {
                 .map(luther)
                 .area(SPACE_DRAWING)
                 .reservationEnable(BE_RESERVATION_ENABLE)
-                .spaceSettings(new Settings(List.of(beSetting)))
+                .spaceSettings(Settings.toPrioritizedSettings(List.of(beSetting)))
                 .build();
 
         fe = Space.builder()
@@ -84,7 +84,7 @@ class ManagerSpaceControllerTest extends AcceptanceTest {
                 .map(luther)
                 .area(SPACE_DRAWING)
                 .reservationEnable(FE_RESERVATION_ENABLE)
-                .spaceSettings(new Settings(List.of(feSetting)))
+                .spaceSettings(Settings.toPrioritizedSettings(List.of(feSetting)))
                 .build();
     }
 
@@ -155,7 +155,7 @@ class ManagerSpaceControllerTest extends AcceptanceTest {
         Space defaultSpace = Space.builder()
                 .name(defaultSpaceCreateUpdateRequest.getName())
                 .color(defaultSpaceCreateUpdateRequest.getColor())
-                .spaceSettings(new Settings(List.of(defaultSetting)))
+                .spaceSettings(Settings.toPrioritizedSettings(List.of(defaultSetting)))
                 .reservationEnable(true)
                 .area(SPACE_DRAWING)
                 .build();

@@ -36,7 +36,7 @@ public class SpaceCreateUpdateRequest {
     @Size(min = Settings.MINIMUM_SETTING_COUNT, message = SETTING_COUNT_MESSAGE)
     @NotDuplicatedSettingOrder
     @Valid
-    private List<SettingRequest> settings = Arrays.asList(new SettingRequest());
+    private List<SettingRequest> settings = List.of(new SettingRequest());
 
     public SpaceCreateUpdateRequest(
             final String name,

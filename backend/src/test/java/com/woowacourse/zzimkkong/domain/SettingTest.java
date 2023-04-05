@@ -19,6 +19,7 @@ import java.util.List;
 import java.util.stream.Stream;
 
 import static com.woowacourse.zzimkkong.Constants.*;
+import static com.woowacourse.zzimkkong.domain.Setting.FLAT_PRIORITY_ORDER;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
@@ -181,7 +182,7 @@ class SettingTest {
                                         .reservationMinimumTimeUnit(TimeUnit.from(10))
                                         .reservationMaximumTimeUnit(TimeUnit.from(30))
                                         .enabledDayOfWeek("monday,tuesday,wednesday,thursday,friday,saturday,sunday")
-                                        .priorityOrder(0)
+                                        .priorityOrder(FLAT_PRIORITY_ORDER)
                                         .build(),
                                 Setting.builder()
                                         .settingTimeSlot(TimeSlot.of(
@@ -191,7 +192,7 @@ class SettingTest {
                                         .reservationMinimumTimeUnit(TimeUnit.from(10))
                                         .reservationMaximumTimeUnit(TimeUnit.from(30))
                                         .enabledDayOfWeek("monday,tuesday,wednesday,thursday,friday,saturday,sunday")
-                                        .priorityOrder(0)
+                                        .priorityOrder(FLAT_PRIORITY_ORDER)
                                         .build()
                         ),
                         Collections.emptyList()),
@@ -205,7 +206,7 @@ class SettingTest {
                                         .reservationMinimumTimeUnit(TimeUnit.from(10))
                                         .reservationMaximumTimeUnit(TimeUnit.from(30))
                                         .enabledDayOfWeek("monday,tuesday,wednesday")
-                                        .priorityOrder(0)
+                                        .priorityOrder(FLAT_PRIORITY_ORDER)
                                         .build(),
                                 Setting.builder()
                                         .settingTimeSlot(TimeSlot.of(
@@ -215,7 +216,7 @@ class SettingTest {
                                         .reservationMinimumTimeUnit(TimeUnit.from(10))
                                         .reservationMaximumTimeUnit(TimeUnit.from(30))
                                         .enabledDayOfWeek("thursday,friday,saturday,sunday")
-                                        .priorityOrder(0)
+                                        .priorityOrder(FLAT_PRIORITY_ORDER)
                                         .build()
                         ),
                         List.of(
@@ -227,7 +228,7 @@ class SettingTest {
                                         .reservationMinimumTimeUnit(TimeUnit.from(10))
                                         .reservationMaximumTimeUnit(TimeUnit.from(30))
                                         .enabledDayOfWeek("monday,tuesday,wednesday")
-                                        .priorityOrder(0)
+                                        .priorityOrder(FLAT_PRIORITY_ORDER)
                                         .build(),
                                 Setting.builder()
                                         .settingTimeSlot(TimeSlot.of(
@@ -237,7 +238,7 @@ class SettingTest {
                                         .reservationMinimumTimeUnit(TimeUnit.from(10))
                                         .reservationMaximumTimeUnit(TimeUnit.from(30))
                                         .enabledDayOfWeek("thursday,friday,saturday,sunday")
-                                        .priorityOrder(0)
+                                        .priorityOrder(FLAT_PRIORITY_ORDER)
                                         .build()
                         ))
         );

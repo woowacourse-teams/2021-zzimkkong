@@ -46,7 +46,7 @@ class SpaceRepositoryTest extends RepositoryTest {
                 .color(BE_COLOR)
                 .area(SPACE_DRAWING)
                 .reservationEnable(BE_RESERVATION_ENABLE)
-                .spaceSettings(new Settings(List.of(beSetting)))
+                .spaceSettings(Settings.toPrioritizedSettings(List.of(beSetting)))
                 .map(luther)
                 .build();
 
@@ -67,7 +67,7 @@ class SpaceRepositoryTest extends RepositoryTest {
                 .map(luther)
                 .area(SPACE_DRAWING)
                 .reservationEnable(FE_RESERVATION_ENABLE)
-                .spaceSettings(new Settings(List.of(feSetting)))
+                .spaceSettings(Settings.toPrioritizedSettings(List.of(feSetting)))
                 .build();
 
         members.save(pobi);

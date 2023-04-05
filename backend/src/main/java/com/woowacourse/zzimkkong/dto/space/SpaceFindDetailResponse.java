@@ -43,7 +43,7 @@ public class SpaceFindDetailResponse {
 
     protected static List<SettingResponse> getSettingResponses(final Space space) {
         Settings spaceSettings = space.getSpaceSettings();
-        spaceSettings.reverseSort();
+        spaceSettings.reverseSortByPriorityOrder();
         return spaceSettings.getSettings()
                 .stream()
                 .map(SettingResponse::from)

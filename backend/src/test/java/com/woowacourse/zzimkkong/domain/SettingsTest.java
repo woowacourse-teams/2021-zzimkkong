@@ -11,9 +11,12 @@ import java.time.DayOfWeek;
 import java.time.LocalTime;
 import java.util.Collections;
 import java.util.List;
+import java.util.Locale;
 import java.util.stream.Stream;
 
 import static com.woowacourse.zzimkkong.Constants.*;
+import static com.woowacourse.zzimkkong.domain.Setting.FLAT_PRIORITY_ORDER;
+import static com.woowacourse.zzimkkong.domain.Setting.FLAT_SETTING_ID;
 import static org.assertj.core.api.Assertions.assertThat;
 
 class SettingsTest {
@@ -55,7 +58,7 @@ class SettingsTest {
                 .priorityOrder(2)
                 .build();
 
-        settings = new Settings(List.of(setting1, setting2, setting3));
+        settings = Settings.toPrioritizedSettings(List.of(setting1, setting2, setting3));
     }
 
     @ParameterizedTest
@@ -70,7 +73,9 @@ class SettingsTest {
     @DisplayName("예약 가능한 시간대에 속한 예약이면 false, 아니면 true")
     @MethodSource("provideArgumentsForCannotAcceptDueToAvailableTime")
     void cannotAcceptDueToAvailableTime(TimeSlot reservationTimeSlot, boolean expectedResult) {
-        boolean result = this.settings.cannotAcceptDueToAvailableTime(reservationTimeSlot);
+        boolean result = this.settings.cannotAcceptDueToAvailableTime(
+                reservationTimeSlot,
+                DayOfWeek.MONDAY);
         assertThat(result).isEqualTo(expectedResult);
     }
 
@@ -83,13 +88,13 @@ class SettingsTest {
                 TimeSlot.of(LocalTime.of(20, 0), TimeSlot.MAX_TIME)
         );
 
-        assertThat(settings.getUnavailableTimeSlots()).usingRecursiveComparison().isEqualTo(expectedResult);
+        assertThat(settings.getUnavailableTimeSlots(DayOfWeek.MONDAY)).usingRecursiveComparison().isEqualTo(expectedResult);
     }
 
     @Test
     @DisplayName("겹쳐진 예약 조건들을 '동등한 우선순위를 가진 겹치지 않은 상태 (= flat 한 상태)' 로 변환한다")
     void flatten() {
-        Settings settings = new Settings(List.of(
+        Settings settings = Settings.toPrioritizedSettings(List.of(
                 Setting.builder()
                         .settingTimeSlot(TimeSlot.of(
                                 LocalTime.of(11, 0),
@@ -123,7 +128,7 @@ class SettingsTest {
                         .reservationMinimumTimeUnit(TimeUnit.from(10))
                         .reservationMaximumTimeUnit(TimeUnit.from(30))
                         .enabledDayOfWeek("monday,tuesday,wednesday,thursday,friday,saturday,sunday")
-                        .priorityOrder(0)
+                        .priorityOrder(FLAT_PRIORITY_ORDER)
                         .build(),
                 Setting.builder()
                         .settingTimeSlot(TimeSlot.of(
@@ -133,7 +138,7 @@ class SettingsTest {
                         .reservationMinimumTimeUnit(TimeUnit.from(10))
                         .reservationMaximumTimeUnit(TimeUnit.from(30))
                         .enabledDayOfWeek("monday,tuesday,wednesday")
-                        .priorityOrder(0)
+                        .priorityOrder(FLAT_PRIORITY_ORDER)
                         .build(),
                 Setting.builder()
                         .settingTimeSlot(TimeSlot.of(
@@ -143,7 +148,7 @@ class SettingsTest {
                         .reservationMinimumTimeUnit(TimeUnit.from(10))
                         .reservationMaximumTimeUnit(TimeUnit.from(30))
                         .enabledDayOfWeek("thursday,friday,saturday,sunday")
-                        .priorityOrder(0)
+                        .priorityOrder(FLAT_PRIORITY_ORDER)
                         .build(),
                 Setting.builder()
                         .settingTimeSlot(TimeSlot.of(
@@ -153,7 +158,7 @@ class SettingsTest {
                         .reservationMinimumTimeUnit(TimeUnit.from(10))
                         .reservationMaximumTimeUnit(TimeUnit.from(30))
                         .enabledDayOfWeek("monday,tuesday,wednesday,thursday,friday,saturday,sunday")
-                        .priorityOrder(0)
+                        .priorityOrder(FLAT_PRIORITY_ORDER)
                         .build()
         );
 
@@ -167,58 +172,51 @@ class SettingsTest {
         return Stream.of(
                 Arguments.of(
                         TimeSlot.of(LocalTime.of(8, 0), LocalTime.of(10, 0)),
-                        new Settings(Collections.emptyList())),
+                        Settings.toFlattenedSettings(Collections.emptyList())),
                 Arguments.of(
                         TimeSlot.of(LocalTime.of(8, 0), LocalTime.of(11, 0)),
-                        new Settings(List.of(
+                        Settings.toFlattenedSettings(List.of(
                                 Setting.builder()
+                                        .id(FLAT_SETTING_ID)
                                         .settingTimeSlot(TimeSlot.of(
                                                 LocalTime.of(10, 0),
                                                 LocalTime.of(13, 0)))
                                         .reservationTimeUnit(BE_RESERVATION_TIME_UNIT)
                                         .reservationMinimumTimeUnit(BE_RESERVATION_MINIMUM_TIME_UNIT)
                                         .reservationMaximumTimeUnit(BE_RESERVATION_MAXIMUM_TIME_UNIT)
-                                        .enabledDayOfWeek(BE_ENABLED_DAY_OF_WEEK)
-                                        .priorityOrder(0)
+                                        .enabledDayOfWeek(EnabledDayOfWeek.FRIDAY.name().toLowerCase(Locale.ROOT))
+                                        .priorityOrder(FLAT_PRIORITY_ORDER)
                                         .build()))),
                 Arguments.of(
                         TimeSlot.of(LocalTime.of(13, 0), LocalTime.of(14, 0)),
-                        new Settings(Collections.emptyList())),
+                        Settings.toFlattenedSettings(Collections.emptyList())),
                 Arguments.of(
                         TimeSlot.of(LocalTime.of(13, 30), LocalTime.of(15, 0)),
-                        new Settings(List.of(
+                        Settings.toFlattenedSettings(List.of(
                                 Setting.builder()
+                                        .id(FLAT_SETTING_ID)
                                         .settingTimeSlot(TimeSlot.of(
                                                 LocalTime.of(14, 0),
                                                 LocalTime.of(16, 0)))
                                         .reservationTimeUnit(BE_RESERVATION_TIME_UNIT)
                                         .reservationMinimumTimeUnit(BE_RESERVATION_MINIMUM_TIME_UNIT)
                                         .reservationMaximumTimeUnit(BE_RESERVATION_MAXIMUM_TIME_UNIT)
-                                        .enabledDayOfWeek(BE_ENABLED_DAY_OF_WEEK)
-                                        .priorityOrder(1)
+                                        .enabledDayOfWeek(EnabledDayOfWeek.FRIDAY.name().toLowerCase(Locale.ROOT))
+                                        .priorityOrder(FLAT_PRIORITY_ORDER)
                                         .build()))),
                 Arguments.of(
                         TimeSlot.of(LocalTime.of(15, 0), LocalTime.of(23, 0)),
-                        new Settings(List.of(
+                        Settings.toFlattenedSettings(List.of(
                                 Setting.builder()
+                                        .id(FLAT_SETTING_ID)
                                         .settingTimeSlot(TimeSlot.of(
                                                 LocalTime.of(14, 0),
-                                                LocalTime.of(16, 0)))
-                                        .reservationTimeUnit(BE_RESERVATION_TIME_UNIT)
-                                        .reservationMinimumTimeUnit(BE_RESERVATION_MINIMUM_TIME_UNIT)
-                                        .reservationMaximumTimeUnit(BE_RESERVATION_MAXIMUM_TIME_UNIT)
-                                        .enabledDayOfWeek(BE_ENABLED_DAY_OF_WEEK)
-                                        .priorityOrder(1)
-                                        .build(),
-                                Setting.builder()
-                                        .settingTimeSlot(TimeSlot.of(
-                                                LocalTime.of(16, 0),
                                                 LocalTime.of(20, 0)))
                                         .reservationTimeUnit(BE_RESERVATION_TIME_UNIT)
                                         .reservationMinimumTimeUnit(BE_RESERVATION_MINIMUM_TIME_UNIT)
                                         .reservationMaximumTimeUnit(BE_RESERVATION_MAXIMUM_TIME_UNIT)
-                                        .enabledDayOfWeek(BE_ENABLED_DAY_OF_WEEK)
-                                        .priorityOrder(2)
+                                        .enabledDayOfWeek(EnabledDayOfWeek.FRIDAY.name().toLowerCase(Locale.ROOT))
+                                        .priorityOrder(FLAT_PRIORITY_ORDER)
                                         .build()))));
     }
 

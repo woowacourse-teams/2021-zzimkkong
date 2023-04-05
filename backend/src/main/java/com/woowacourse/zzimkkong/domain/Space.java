@@ -111,11 +111,7 @@ public class Space {
     }
 
     public Settings getRelevantSettings(final TimeSlot timeSlot, final DayOfWeek dayOfWeek) {
-        Settings settings = spaceSettings.getSettingsByTimeSlotAndDayOfWeek(timeSlot, dayOfWeek);
-
-        settings.flatten();
-
-        return settings;
+        return spaceSettings.getSettingsByTimeSlotAndDayOfWeek(timeSlot, dayOfWeek);
     }
 
     public ServiceZone getServiceZone() {

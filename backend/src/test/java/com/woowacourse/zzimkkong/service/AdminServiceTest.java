@@ -132,7 +132,7 @@ class AdminServiceTest extends ServiceTest {
                 .map(luther)
                 .area(SPACE_DRAWING)
                 .reservationEnable(BE_RESERVATION_ENABLE)
-                .spaceSettings(new Settings(List.of(beSetting)))
+                .spaceSettings(Settings.toPrioritizedSettings(List.of(beSetting)))
                 .build();
 
         PageRequest pageRequest = PageRequest.of(0, 20, Sort.unsorted());
@@ -174,7 +174,7 @@ class AdminServiceTest extends ServiceTest {
                 .map(luther)
                 .area(SPACE_DRAWING)
                 .reservationEnable(BE_RESERVATION_ENABLE)
-                .spaceSettings(new Settings(List.of(beSetting)))
+                .spaceSettings(Settings.toPrioritizedSettings(List.of(beSetting)))
                 .build();
 
         Reservation beAmZeroOne = Reservation.builder()

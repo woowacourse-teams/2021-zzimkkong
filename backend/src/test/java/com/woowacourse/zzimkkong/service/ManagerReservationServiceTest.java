@@ -104,7 +104,7 @@ class ManagerReservationServiceTest extends ServiceTest {
                 .map(luther)
                 .area(SPACE_DRAWING)
                 .reservationEnable(BE_RESERVATION_ENABLE)
-                .spaceSettings(new Settings(List.of(beSetting)))
+                .spaceSettings(Settings.toPrioritizedSettings(List.of(beSetting)))
                 .build();
 
         Setting feSetting = Setting.builder()
@@ -125,7 +125,7 @@ class ManagerReservationServiceTest extends ServiceTest {
                 .map(luther)
                 .area(SPACE_DRAWING)
                 .reservationEnable(FE_RESERVATION_ENABLE)
-                .spaceSettings(new Settings(List.of(feSetting)))
+                .spaceSettings(Settings.toPrioritizedSettings(List.of(feSetting)))
                 .build();
 
         beAmZeroOne = Reservation.builder()
@@ -420,7 +420,7 @@ class ManagerReservationServiceTest extends ServiceTest {
                 .map(luther)
                 .area(SPACE_DRAWING)
                 .reservationEnable(false)
-                .spaceSettings(new Settings(List.of(setting)))
+                .spaceSettings(Settings.toPrioritizedSettings(List.of(setting)))
                 .build();
 
         given(maps.findByIdFetch(anyLong()))
@@ -462,7 +462,7 @@ class ManagerReservationServiceTest extends ServiceTest {
                 .map(luther)
                 .area(SPACE_DRAWING)
                 .reservationEnable(true)
-                .spaceSettings(new Settings(List.of(setting)))
+                .spaceSettings(Settings.toPrioritizedSettings(List.of(setting)))
                 .build();
 
         given(maps.findByIdFetch(anyLong()))
@@ -1376,7 +1376,7 @@ class ManagerReservationServiceTest extends ServiceTest {
                 .map(luther)
                 .area(SPACE_DRAWING)
                 .reservationEnable(false)
-                .spaceSettings(new Settings(List.of(setting)))
+                .spaceSettings(Settings.toPrioritizedSettings(List.of(setting)))
                 .build();
 
 
@@ -1423,7 +1423,7 @@ class ManagerReservationServiceTest extends ServiceTest {
                 .map(luther)
                 .area(SPACE_DRAWING)
                 .reservationEnable(true)
-                .spaceSettings(new Settings(List.of(setting)))
+                .spaceSettings(Settings.toPrioritizedSettings(List.of(setting)))
                 .build();
 
 

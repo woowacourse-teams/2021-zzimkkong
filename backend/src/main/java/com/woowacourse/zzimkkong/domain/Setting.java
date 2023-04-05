@@ -28,6 +28,9 @@ import static com.woowacourse.zzimkkong.infrastructure.message.MessageUtils.LINE
 @NoArgsConstructor
 @Entity
 public class Setting {
+    public static final int FLAT_PRIORITY_ORDER = -1;
+    public static final long FLAT_SETTING_ID = 0L;
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -93,6 +96,18 @@ public class Setting {
         validateSetting();
     }
 
+    public Setting createSettingBasedOn(final TimeSlot timeSlot, final EnabledDayOfWeek dayOfWeek) {
+        return Setting.builder()
+                .id(this.getId())
+                .settingTimeSlot(timeSlot)
+                .reservationTimeUnit(this.getReservationTimeUnit())
+                .reservationMinimumTimeUnit(this.getReservationMinimumTimeUnit())
+                .reservationMaximumTimeUnit(this.getReservationMaximumTimeUnit())
+                .enabledDayOfWeek(dayOfWeek.name().toLowerCase(Locale.ROOT))
+                .priorityOrder(this.getPriorityOrder())
+                .build();
+    }
+
     private void validateSetting() {
         if (settingTimeSlot.isNotDivisibleBy(reservationTimeUnit)) {
             throw new TimeUnitMismatchException();
@@ -110,7 +125,7 @@ public class Setting {
             throw new NotEnoughAvailableTimeException();
         }
 
-        if (priorityOrder == null || priorityOrder < 0) {
+        if (priorityOrder == null || priorityOrder < FLAT_PRIORITY_ORDER) {
             throw new InvalidOrderException(INVALID_SETTING_ORDER_MESSAGE);
         }
     }
@@ -185,7 +200,16 @@ public class Setting {
      */
 
     public List<Setting> extractExclusiveSettingSlots(final List<Setting> settings) {
-        List<Setting> exclusiveSettingSlots = List.of(this);
+        List<Setting> exclusiveSettingSlots = List.of(Setting.builder()
+                .id(FLAT_SETTING_ID)
+                .settingTimeSlot(this.settingTimeSlot)
+                .reservationTimeUnit(this.reservationTimeUnit)
+                .reservationMinimumTimeUnit(this.reservationMinimumTimeUnit)
+                .reservationMaximumTimeUnit(this.reservationMaximumTimeUnit)
+                .enabledDayOfWeek(this.enabledDayOfWeek)
+                .priorityOrder(FLAT_PRIORITY_ORDER)
+                .space(this.space)
+                .build());
         for (Setting setting : settings) {
             List<Setting> newExclusiveSettingSlots = new ArrayList<>();
             for (Setting exclusiveSettingSlot : exclusiveSettingSlots) {
@@ -208,7 +232,7 @@ public class Setting {
             TimeUnit adjustedIntervalTimeUnit = this.reservationTimeUnit.getAdjustedIntervalTimeUnit(exclusiveTimeSlot);
 
             Setting survivedSettingSlot = Setting.builder()
-                    .id(0L)
+                    .id(FLAT_SETTING_ID)
                     .settingTimeSlot(exclusiveTimeSlot)
                     .reservationTimeUnit(adjustedIntervalTimeUnit)
                     .reservationMinimumTimeUnit(
@@ -220,7 +244,7 @@ public class Setting {
                                     exclusiveTimeSlot,
                                     adjustedIntervalTimeUnit))
                     .enabledDayOfWeek(this.enabledDayOfWeek)
-                    .priorityOrder(0)
+                    .priorityOrder(FLAT_PRIORITY_ORDER)
                     .space(this.space)
                     .build();
 
@@ -241,7 +265,7 @@ public class Setting {
             TimeUnit adjustedIntervalTimeUnit = this.reservationTimeUnit.getAdjustedIntervalTimeUnit(overlappingTimeSlot);
 
             Setting survivedSettingSlot = Setting.builder()
-                    .id(0L)
+                    .id(FLAT_SETTING_ID)
                     .settingTimeSlot(overlappingTimeSlot)
                     .reservationTimeUnit(adjustedIntervalTimeUnit)
                     .reservationMinimumTimeUnit(
@@ -253,7 +277,7 @@ public class Setting {
                                     overlappingTimeSlot,
                                     adjustedIntervalTimeUnit))
                     .enabledDayOfWeek(nonConflictingDayOfWeek)
-                    .priorityOrder(0)
+                    .priorityOrder(FLAT_PRIORITY_ORDER)
                     .space(this.space)
                     .build();
             newExclusiveSettingSlots.add(survivedSettingSlot);
@@ -292,5 +316,16 @@ public class Setting {
                 reservationMinimumTimeUnit.toString(),
                 reservationMaximumTimeUnit.toString(),
                 reservationTimeUnit.toString());
+    }
+
+    public boolean canMergeIgnoringDayOfWeek(final Setting that) {
+        return this.settingTimeSlot.isExtendableWith(that.settingTimeSlot)
+                && this.reservationTimeUnit.equals(that.reservationTimeUnit)
+                && this.reservationMinimumTimeUnit.equals(that.reservationMinimumTimeUnit)
+                && this.reservationMaximumTimeUnit.equals(that.reservationMaximumTimeUnit);
+    }
+
+    public boolean isFlattenedSetting() {
+        return FLAT_PRIORITY_ORDER == this.priorityOrder;
     }
 }
