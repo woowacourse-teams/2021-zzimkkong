@@ -72,6 +72,7 @@ const ReservationForm = ({ map }: Props) => {
       selectedDateTime: `${formValues.date}T${formatTimeWithSecond(
         timePicker?.range.start ?? dayjs().tz()
       )}${DATE.TIMEZONE_OFFSET}`,
+      settingViewType: 'FLAT',
     },
     { enabled: selectedSpaceId !== null && !isNaN(parseInt(selectedSpaceId)) }
   );

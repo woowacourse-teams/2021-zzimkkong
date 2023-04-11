@@ -91,6 +91,7 @@ const GuestReservationForm = ({
       selectedDateTime: `${date}T${formatTimeWithSecond(range.start ?? dayjs().tz())}${
         DATE.TIMEZONE_OFFSET
       }`,
+      settingViewType: 'FLAT',
     },
     {}
   );

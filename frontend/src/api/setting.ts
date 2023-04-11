@@ -6,17 +6,20 @@ import api from './api';
 export interface QuerySettingSummaryParams {
   mapId: MapItem['mapId'];
   spaceId: Space['id'];
-  selectedDateTime: string;
+  selectedDateTime: string | null;
+  settingViewType: string | null;
 }
 
 export const querySettingSummary = ({
   mapId,
   spaceId,
   selectedDateTime,
+  settingViewType,
 }: QuerySettingSummaryParams) => {
   return api.get<QuerySettingSummarySuccess>(
     `/maps/${mapId}/spaces/${spaceId}/settings/summary${QS.create({
-      selectedDateTime,
+      selectedDateTime: selectedDateTime,
+      settingViewType: settingViewType,
     })}`
   );
 };

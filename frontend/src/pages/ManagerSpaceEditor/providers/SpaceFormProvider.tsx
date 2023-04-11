@@ -110,7 +110,6 @@ const SpaceFormProvider = ({ children }: Props): JSX.Element => {
     for (let i = 0; i < values.settings.length; i++) {
       const setting = values.settings[i];
       setting['priorityOrder'] = values.settings.length - (i + 1);
-      console.log('setting :', setting);
     }
 
     return {
