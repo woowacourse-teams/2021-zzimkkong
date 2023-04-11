@@ -38,7 +38,7 @@ public class SettingControllerTest extends AcceptanceTest {
             BE_RESERVATION_MINIMUM_TIME_UNIT.getMinutes(),
             BE_RESERVATION_MAXIMUM_TIME_UNIT.getMinutes(),
             EnabledDayOfWeekDto.from(BE_ENABLED_DAY_OF_WEEK),
-            1
+            0
     );
     private final SettingRequest beSettingRequest2 = new SettingRequest(
             LocalTime.of(11, 0),
@@ -47,7 +47,7 @@ public class SettingControllerTest extends AcceptanceTest {
             TimeUnit.from(30).getMinutes(),
             TimeUnit.from(60).getMinutes(),
             EnabledDayOfWeekDto.from(BE_ENABLED_DAY_OF_WEEK),
-            0
+            1
     );
     private final SpaceCreateUpdateRequest beSpaceCreateUpdateRequestUpgraded = new SpaceCreateUpdateRequest(
             BE_NAME,

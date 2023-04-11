@@ -15,6 +15,11 @@ public class ZzimkkongException extends RuntimeException {
         this.status = HttpStatus.INTERNAL_SERVER_ERROR;
     }
 
+    public ZzimkkongException(final HttpStatus status) {
+        super(SERVER_ERROR_MESSAGE);
+        this.status = status;
+    }
+
     public ZzimkkongException(final String message, final HttpStatus status) {
         super(message);
         this.status = status;

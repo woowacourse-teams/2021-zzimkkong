@@ -31,25 +31,15 @@ public class SettingService {
             final Long mapId,
             final Long spaceId,
             final LocalDateTime selectedDateTime,
-            final SettingViewType settingViewType) {
+            final String settingViewType) {
         Map map = maps.findByIdFetch(mapId)
                 .orElseThrow(NoSuchMapException::new);
         Space space = map.findSpaceById(spaceId)
                 .orElseThrow(NoSuchSpaceException::new);
-        Settings spaceSettings = space.getSpaceSettings();
 
-        DayOfWeek dayOfWeek = TimeZoneUtils.convertTo(selectedDateTime, map.getServiceZone())
-                .toLocalDate()
-                .getDayOfWeek();
-        if (SettingViewType.FLAT.equals(settingViewType)) {
-            spaceSettings.flatten();
-            spaceSettings = spaceSettings.getMergedSettings(EnabledDayOfWeek.from(dayOfWeek.name()));
-        }
+        String summary = SettingViewType.of(selectedDateTime, settingViewType)
+                .getSummary(space, selectedDateTime);
 
-        if (selectedDateTime == null) {
-            return SettingsSummaryResponse.from(spaceSettings.getSummary());
-        }
-        String summary = spaceSettings.getSummaryOn(EnabledDayOfWeek.from(dayOfWeek.name()));
         return SettingsSummaryResponse.from(summary);
     }
 }

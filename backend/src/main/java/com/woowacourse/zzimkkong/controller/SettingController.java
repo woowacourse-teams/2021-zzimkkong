@@ -28,7 +28,7 @@ public class SettingController {
             @PathVariable final Long mapId,
             @PathVariable final Long spaceId,
             @RequestParam(required = false) @DateTimeFormat(pattern = DATETIME_FORMAT) final ZonedDateTime selectedDateTime,
-            @RequestParam(required = false, defaultValue = "FLAT") final SettingViewType settingViewType) {
+            @RequestParam(required = false, defaultValue = "FLAT") final String settingViewType) {
         SettingsSummaryResponse settingsSummaryResponse = settingService.getSettingsSummary(
                 mapId,
                 spaceId,

@@ -164,8 +164,8 @@ public class Settings {
      * <p>
      * flatten 과정을 거치면 settings 의 모든 setting 들은:
      * - {@link Setting#settingTimeSlot}, {@link Setting#enabledDayOfWeek} 두 조건이 서로 겹치지 않는다
-     * - 모두 id 가 0 이 된다 (transient entity 임을 명시하기 위함)
-     * - 모두 order 가 0 이 된다 (동등한 우선순위)
+     * - id = {@link Setting#FLAT_SETTING_ID} (실제 존재하는 세팅이 아닌 추상적인 transient entity 임을 명시하기 위함)
+     * - order = {@link Setting#FLAT_PRIORITY_ORDER} (동등한 우선순위)
      * - settingStartTime 기준으로 오름차순 정렬된다
      *
      */
@@ -203,6 +203,9 @@ public class Settings {
                 .append(LINE_SEPARATOR);
 
         boolean flat = isFlat();
+        if (flat) {
+            settingsOnDayOfWeek = new Settings(settingsOnDayOfWeek).getMergedSettings(dayOfWeek).settings;
+        }
         for (Setting setting : settingsOnDayOfWeek) {
             stringBuilder.append(setting.toSummaryWithoutDayOfWeek(flat))
                     .append(LINE_SEPARATOR);
