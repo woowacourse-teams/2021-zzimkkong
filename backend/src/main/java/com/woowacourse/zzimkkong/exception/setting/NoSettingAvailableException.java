@@ -15,7 +15,7 @@ public class NoSettingAvailableException extends ZzimkkongException {
             "%s";
 
     public NoSettingAvailableException(final Space space) {
-        super(String.format(MESSAGE_FORMAT, space.getName(), space.getSpaceSettings()),
+        super(String.format(MESSAGE_FORMAT, space.getName(), space.getSpaceSettings().getSummary()),
                 HttpStatus.BAD_REQUEST);
     }
 }

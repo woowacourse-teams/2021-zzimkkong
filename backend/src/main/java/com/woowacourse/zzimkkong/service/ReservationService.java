@@ -291,6 +291,7 @@ public class ReservationService {
         Settings relevantSettings = space.getRelevantSettings(timeSlot, dayOfWeek);
 
         if (relevantSettings.isEmpty()) {
+            space.getSpaceSettings().flatten();
             throw new NoSettingAvailableException(space);
         }
 

@@ -286,25 +286,6 @@ public class Setting {
         return newExclusiveSettingSlots;
     }
 
-    @Override
-    public String toString() {
-        return "예약 가능한 요일: " +
-                EnabledDayOfWeek.getDisplayNames(enabledDayOfWeek) +
-                LINE_SEPARATOR +
-                "예약 가능한 시간대: " +
-                settingTimeSlot.toString() +
-                LINE_SEPARATOR +
-                "예약 시간 단위: " +
-                reservationTimeUnit.toString() +
-                LINE_SEPARATOR +
-                "최소 예약 가능 시간: " +
-                reservationMinimumTimeUnit.toString() +
-                LINE_SEPARATOR +
-                "최대 예약 가능 시간: " +
-                reservationMaximumTimeUnit.toString() +
-                LINE_SEPARATOR;
-    }
-
     public String toSummaryWithoutDayOfWeek(final Boolean flat) {
         String priority = "[우선순위 " + priorityOrder.toString() + "] ";
         if (flat) {
@@ -327,5 +308,24 @@ public class Setting {
 
     public boolean isFlattenedSetting() {
         return FLAT_PRIORITY_ORDER == this.priorityOrder;
+    }
+
+    @Override
+    public String toString() {
+        return "예약 요일: " +
+                EnabledDayOfWeek.getDisplayNames(enabledDayOfWeek) +
+                LINE_SEPARATOR +
+                "예약 가능한 시간대: " +
+                settingTimeSlot.toString() +
+                LINE_SEPARATOR +
+                "예약 시간 단위: " +
+                reservationTimeUnit.toString() +
+                LINE_SEPARATOR +
+                "최소 예약 가능 시간: " +
+                reservationMinimumTimeUnit.toString() +
+                LINE_SEPARATOR +
+                "최대 예약 가능 시간: " +
+                reservationMaximumTimeUnit.toString() +
+                LINE_SEPARATOR;
     }
 }
