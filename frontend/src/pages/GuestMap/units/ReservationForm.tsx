@@ -1,6 +1,6 @@
 import { AxiosError } from 'axios';
 import dayjs from 'dayjs';
-import React, { useContext } from 'react';
+import React, { useContext, useState } from 'react';
 import { useMutation } from 'react-query';
 import { useHistory } from 'react-router-dom';
 import {
@@ -23,8 +23,9 @@ import useMember from 'hooks/query/useMember';
 import { AccessTokenContext } from 'providers/AccessTokenProvider';
 import { MapItem } from 'types/common';
 import { ErrorResponse } from 'types/response';
-import { formatTimePrettier, formatTimeWithSecond, isPastDate } from 'utils/datetime';
+import { formatTimeWithSecond, isPastDate } from 'utils/datetime';
 import { isNullish } from 'utils/type';
+import useSettingSummary from '../../../hooks/query/useSettingSummary';
 import { GuestMapFormContext } from '../providers/GuestMapFormProvider';
 import * as Styled from './ReservationForm.styled';
 
@@ -63,6 +64,19 @@ const ReservationForm = ({ map }: Props) => {
       })) ?? []
     );
   };
+
+  const getSettingsSummary = useSettingSummary(
+    {
+      mapId: map?.mapId,
+      spaceId: parseInt(selectedSpaceId),
+      selectedDateTime: `${formValues.date}T${formatTimeWithSecond(
+        timePicker?.range.start ?? dayjs().tz()
+      )}${DATE.TIMEZONE_OFFSET}`,
+      settingViewType: 'FLAT',
+    },
+    { enabled: selectedSpaceId !== null && !isNaN(parseInt(selectedSpaceId)) }
+  );
+  const settingsSummary = getSettingsSummary.data?.data?.summary ?? '';
 
   const onSuccessCreateReservation = (
     _: unknown,
@@ -165,28 +179,10 @@ const ReservationForm = ({ map }: Props) => {
             />
           )}
           {spacesMap?.[Number(selectedSpaceId)] && (
-            <Styled.TimeFormMessageWrapper>
-              <Styled.TimeFormMessage fontWeight="bold">예약 가능 시간</Styled.TimeFormMessage>
-              <Styled.TimeFormMessageList>
-                {spacesMap[Number(selectedSpaceId)].settings.map(
-                  (
-                    {
-                      settingStartTime,
-                      settingEndTime,
-                      reservationMaximumTimeUnit,
-                      reservationMinimumTimeUnit,
-                    },
-                    index
-                  ) => (
-                    <Styled.TimeFormMessage key={index}>
-                      {settingStartTime.slice(0, 5)} ~ {settingEndTime.slice(0, 5)}
-                      (최소 {formatTimePrettier(reservationMinimumTimeUnit)}, 최대{' '}
-                      {formatTimePrettier(reservationMaximumTimeUnit)})
-                    </Styled.TimeFormMessage>
-                  )
-                )}{' '}
-              </Styled.TimeFormMessageList>
-            </Styled.TimeFormMessageWrapper>
+            <Styled.SettingSummaryWrapper>
+              <Styled.SettingSummary fontWeight="bold">예약 가능 시간</Styled.SettingSummary>
+              <Styled.SettingSummary>{settingsSummary}</Styled.SettingSummary>
+            </Styled.SettingSummaryWrapper>
           )}
         </Styled.InputWrapper>
 

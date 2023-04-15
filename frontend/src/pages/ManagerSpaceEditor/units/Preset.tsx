@@ -72,7 +72,7 @@ const Preset = (): JSX.Element => {
       ...values,
       settings: values.settings.map((setting, index) => {
         if (index === selectedSettingIndex) {
-          return rest;
+          return { ...rest, priorityOrder: 0 };
         }
 
         return setting;

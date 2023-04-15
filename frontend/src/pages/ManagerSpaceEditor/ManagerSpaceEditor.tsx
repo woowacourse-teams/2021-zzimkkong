@@ -109,6 +109,8 @@ const ManagerSpaceEditor = (): JSX.Element => {
     },
   });
 
+  // TODO: handleCreateSpace, handleUpdateSpace 시 priorityOrder 고려해서 request 발송
+  // TODO:
   const handleCreateSpace = (data: Omit<PostManagerSpaceParams, 'mapId'>) =>
     createSpace.mutate({ mapId: Number(mapId), ...data });
 
