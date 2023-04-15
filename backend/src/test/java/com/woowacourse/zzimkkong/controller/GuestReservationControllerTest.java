@@ -94,6 +94,7 @@ class GuestReservationControllerTest extends AcceptanceTest {
                 .reservationMinimumTimeUnit(BE_RESERVATION_MINIMUM_TIME_UNIT)
                 .reservationMaximumTimeUnit(BE_RESERVATION_MAXIMUM_TIME_UNIT)
                 .enabledDayOfWeek(BE_ENABLED_DAY_OF_WEEK)
+                .priorityOrder(0)
                 .build();
 
         be = Space.builder()
@@ -102,7 +103,7 @@ class GuestReservationControllerTest extends AcceptanceTest {
                 .map(luther)
                 .area(SPACE_DRAWING)
                 .reservationEnable(BE_RESERVATION_ENABLE)
-                .spaceSettings(new Settings(List.of(beSetting)))
+                .spaceSettings(Settings.toPrioritizedSettings(List.of(beSetting)))
                 .build();
 
         Setting feSetting = Setting.builder()
@@ -113,6 +114,7 @@ class GuestReservationControllerTest extends AcceptanceTest {
                 .reservationMinimumTimeUnit(FE_RESERVATION_MINIMUM_TIME_UNIT)
                 .reservationMaximumTimeUnit(FE_RESERVATION_MAXIMUM_TIME_UNIT)
                 .enabledDayOfWeek(FE_ENABLED_DAY_OF_WEEK)
+                .priorityOrder(0)
                 .build();
 
         fe = Space.builder()
@@ -122,7 +124,7 @@ class GuestReservationControllerTest extends AcceptanceTest {
                 .map(luther)
                 .area(SPACE_DRAWING)
                 .reservationEnable(FE_RESERVATION_ENABLE)
-                .spaceSettings(new Settings(List.of(feSetting)))
+                .spaceSettings(Settings.toPrioritizedSettings(List.of(feSetting)))
                 .build();
 
         saveExampleReservations();

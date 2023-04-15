@@ -95,6 +95,7 @@ class ManagerReservationServiceTest extends ServiceTest {
                 .reservationMinimumTimeUnit(BE_RESERVATION_MINIMUM_TIME_UNIT)
                 .reservationMaximumTimeUnit(BE_RESERVATION_MAXIMUM_TIME_UNIT)
                 .enabledDayOfWeek(BE_ENABLED_DAY_OF_WEEK)
+                .priorityOrder(0)
                 .build();
 
         be = Space.builder()
@@ -103,7 +104,7 @@ class ManagerReservationServiceTest extends ServiceTest {
                 .map(luther)
                 .area(SPACE_DRAWING)
                 .reservationEnable(BE_RESERVATION_ENABLE)
-                .spaceSettings(new Settings(List.of(beSetting)))
+                .spaceSettings(Settings.toPrioritizedSettings(List.of(beSetting)))
                 .build();
 
         Setting feSetting = Setting.builder()
@@ -114,6 +115,7 @@ class ManagerReservationServiceTest extends ServiceTest {
                 .reservationMinimumTimeUnit(FE_RESERVATION_MINIMUM_TIME_UNIT)
                 .reservationMaximumTimeUnit(FE_RESERVATION_MAXIMUM_TIME_UNIT)
                 .enabledDayOfWeek(FE_ENABLED_DAY_OF_WEEK)
+                .priorityOrder(0)
                 .build();
 
         fe = Space.builder()
@@ -123,7 +125,7 @@ class ManagerReservationServiceTest extends ServiceTest {
                 .map(luther)
                 .area(SPACE_DRAWING)
                 .reservationEnable(FE_RESERVATION_ENABLE)
-                .spaceSettings(new Settings(List.of(feSetting)))
+                .spaceSettings(Settings.toPrioritizedSettings(List.of(feSetting)))
                 .build();
 
         beAmZeroOne = Reservation.builder()
@@ -408,6 +410,7 @@ class ManagerReservationServiceTest extends ServiceTest {
                 .reservationMinimumTimeUnit(TimeUnit.from(10))
                 .reservationMaximumTimeUnit(TimeUnit.from(120))
                 .enabledDayOfWeek(BE_ENABLED_DAY_OF_WEEK)
+                .priorityOrder(0)
                 .build();
 
         Space closedSpace = Space.builder()
@@ -417,7 +420,7 @@ class ManagerReservationServiceTest extends ServiceTest {
                 .map(luther)
                 .area(SPACE_DRAWING)
                 .reservationEnable(false)
-                .spaceSettings(new Settings(List.of(setting)))
+                .spaceSettings(Settings.toPrioritizedSettings(List.of(setting)))
                 .build();
 
         given(maps.findByIdFetch(anyLong()))
@@ -449,6 +452,7 @@ class ManagerReservationServiceTest extends ServiceTest {
                 .reservationMinimumTimeUnit(TimeUnit.from(10))
                 .reservationMaximumTimeUnit(TimeUnit.from(120))
                 .enabledDayOfWeek(THE_DAY_AFTER_TOMORROW.plusDays(1L).getDayOfWeek().name())
+                .priorityOrder(0)
                 .build();
 
         Space invalidDayOfWeekSpace = Space.builder()
@@ -458,7 +462,7 @@ class ManagerReservationServiceTest extends ServiceTest {
                 .map(luther)
                 .area(SPACE_DRAWING)
                 .reservationEnable(true)
-                .spaceSettings(new Settings(List.of(setting)))
+                .spaceSettings(Settings.toPrioritizedSettings(List.of(setting)))
                 .build();
 
         given(maps.findByIdFetch(anyLong()))
@@ -568,6 +572,7 @@ class ManagerReservationServiceTest extends ServiceTest {
                 .reservationMinimumTimeUnit(TimeUnit.from(10))
                 .reservationMaximumTimeUnit(TimeUnit.from(60))
                 .enabledDayOfWeek(BE_ENABLED_DAY_OF_WEEK)
+                .priorityOrder(1)
                 .build());
         given(maps.findByIdFetch(anyLong()))
                 .willReturn(Optional.of(luther));
@@ -1361,6 +1366,7 @@ class ManagerReservationServiceTest extends ServiceTest {
                 .reservationMinimumTimeUnit(TimeUnit.from(10))
                 .reservationMaximumTimeUnit(TimeUnit.from(120))
                 .enabledDayOfWeek(BE_ENABLED_DAY_OF_WEEK)
+                .priorityOrder(0)
                 .build();
 
         Space closedSpace = Space.builder()
@@ -1370,7 +1376,7 @@ class ManagerReservationServiceTest extends ServiceTest {
                 .map(luther)
                 .area(SPACE_DRAWING)
                 .reservationEnable(false)
-                .spaceSettings(new Settings(List.of(setting)))
+                .spaceSettings(Settings.toPrioritizedSettings(List.of(setting)))
                 .build();
 
 
@@ -1407,6 +1413,7 @@ class ManagerReservationServiceTest extends ServiceTest {
                 .reservationMinimumTimeUnit(TimeUnit.from(10))
                 .reservationMaximumTimeUnit(TimeUnit.from(120))
                 .enabledDayOfWeek(THE_DAY_AFTER_TOMORROW.plusDays(1L).getDayOfWeek().name())
+                .priorityOrder(0)
                 .build();
 
         Space invalidDayOfWeekSpace = Space.builder()
@@ -1416,7 +1423,7 @@ class ManagerReservationServiceTest extends ServiceTest {
                 .map(luther)
                 .area(SPACE_DRAWING)
                 .reservationEnable(true)
-                .spaceSettings(new Settings(List.of(setting)))
+                .spaceSettings(Settings.toPrioritizedSettings(List.of(setting)))
                 .build();
 
 

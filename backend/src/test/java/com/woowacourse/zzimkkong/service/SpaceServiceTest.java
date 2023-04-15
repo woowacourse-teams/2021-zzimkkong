@@ -38,7 +38,8 @@ class SpaceServiceTest extends ServiceTest {
             BE_RESERVATION_TIME_UNIT.getMinutes(),
             BE_RESERVATION_MINIMUM_TIME_UNIT.getMinutes(),
             BE_RESERVATION_MAXIMUM_TIME_UNIT.getMinutes(),
-            EnabledDayOfWeekDto.from(BE_ENABLED_DAY_OF_WEEK)
+            EnabledDayOfWeekDto.from(BE_ENABLED_DAY_OF_WEEK),
+            0
     );
 
     private final SpaceCreateUpdateRequest spaceCreateUpdateRequest = new SpaceCreateUpdateRequest(
@@ -100,6 +101,7 @@ class SpaceServiceTest extends ServiceTest {
                 .reservationMinimumTimeUnit(BE_RESERVATION_MINIMUM_TIME_UNIT)
                 .reservationMaximumTimeUnit(BE_RESERVATION_MAXIMUM_TIME_UNIT)
                 .enabledDayOfWeek(BE_ENABLED_DAY_OF_WEEK)
+                .priorityOrder(0)
                 .build();
 
         be = Space.builder()
@@ -108,7 +110,7 @@ class SpaceServiceTest extends ServiceTest {
                 .map(luther)
                 .area(SPACE_DRAWING)
                 .reservationEnable(BE_RESERVATION_ENABLE)
-                .spaceSettings(new Settings(List.of(beSetting)))
+                .spaceSettings(Settings.toPrioritizedSettings(List.of(beSetting)))
                 .build();
 
         Setting feSetting = Setting.builder()
@@ -119,6 +121,7 @@ class SpaceServiceTest extends ServiceTest {
                 .reservationMinimumTimeUnit(FE_RESERVATION_MINIMUM_TIME_UNIT)
                 .reservationMaximumTimeUnit(FE_RESERVATION_MAXIMUM_TIME_UNIT)
                 .enabledDayOfWeek(FE_ENABLED_DAY_OF_WEEK)
+                .priorityOrder(0)
                 .build();
 
         fe = Space.builder()
@@ -128,7 +131,7 @@ class SpaceServiceTest extends ServiceTest {
                 .map(luther)
                 .area(SPACE_DRAWING)
                 .reservationEnable(FE_RESERVATION_ENABLE)
-                .spaceSettings(new Settings(List.of(feSetting)))
+                .spaceSettings(Settings.toPrioritizedSettings(List.of(feSetting)))
                 .build();
 
         lutherId = luther.getId();
@@ -149,6 +152,7 @@ class SpaceServiceTest extends ServiceTest {
                 .reservationMinimumTimeUnit(BE_RESERVATION_MINIMUM_TIME_UNIT)
                 .reservationMaximumTimeUnit(BE_RESERVATION_MAXIMUM_TIME_UNIT)
                 .enabledDayOfWeek(BE_ENABLED_DAY_OF_WEEK)
+                .priorityOrder(0)
                 .build();
 
         Space newSpace = Space.builder()
@@ -157,7 +161,7 @@ class SpaceServiceTest extends ServiceTest {
                 .map(luther)
                 .area(SPACE_DRAWING)
                 .reservationEnable(BE_RESERVATION_ENABLE)
-                .spaceSettings(new Settings(List.of(setting)))
+                .spaceSettings(Settings.toPrioritizedSettings(List.of(setting)))
                 .build();
 
         given(maps.findById(anyLong()))

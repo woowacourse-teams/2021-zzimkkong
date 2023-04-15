@@ -15,8 +15,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.DayOfWeek;
 import java.time.LocalDateTime;
-import java.util.AbstractMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -203,7 +201,7 @@ public class SpaceService {
 
         return relevantSettings.isEmpty() ||
                 relevantSettings.haveMultipleSettings() ||
-                relevantSettings.cannotAcceptDueToAvailableTime(timeSlot) ||
+                relevantSettings.cannotAcceptDueToAvailableTime(timeSlot, dayOfWeek) ||
                 relevantSettings.getSettings().get(0).cannotAcceptDueToTimeUnit(timeSlot) ||
                 relevantSettings.getSettings().get(0).cannotAcceptDueToMinimumTimeUnit(timeSlot) ||
                 relevantSettings.getSettings().get(0).cannotAcceptDueToMaximumTimeUnit(timeSlot) ||
