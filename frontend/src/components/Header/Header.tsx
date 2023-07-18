@@ -58,7 +58,11 @@ const Header = ({ onClickLogin }: HeaderProps): JSX.Element => {
         <Styled.ButtonContainer>
           {accessToken ? (
             <>
-              <Styled.TextLink to={PATH.MANAGER_MAP_LIST}>마이 페이지</Styled.TextLink>
+              <Styled.TextLink
+                to={location.pathname.includes('/guest') ? PATH.GUEST_MAIN : PATH.MANAGER_MAP_LIST}
+              >
+                마이 페이지
+              </Styled.TextLink>
               <Styled.TextButton variant="text" onClick={handleLogout}>
                 로그아웃
               </Styled.TextButton>
