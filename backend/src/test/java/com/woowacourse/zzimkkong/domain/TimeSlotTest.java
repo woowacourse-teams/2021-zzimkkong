@@ -26,7 +26,7 @@ class TimeSlotTest {
     }
 
     @ParameterizedTest
-    @DisplayName("startTime이나 endTime의 분 단위가 5의 배수가 아니면 에러를 반환한다")
+    @DisplayName("startTime이 5의 배수가 아니면 에러를 반환한다")
     @MethodSource("provideStartAndEndTime_notDivisibleByMinimumTimeUnit")
     void validateStartEndTime_startTimeAndEndTimeNotDivisibleByMinimumTimeUnit(final LocalTime startTime, final LocalTime endTime) {
         assertThatThrownBy(() -> TimeSlot.validateStartEndTime(startTime, endTime))
@@ -107,9 +107,9 @@ class TimeSlotTest {
 
     private static Stream<Arguments> provideStartAndEndTime_notDivisibleByMinimumTimeUnit() {
         return Stream.of(
-                Arguments.of(LocalTime.of(10, 0), LocalTime.of(10, 1)),
+                Arguments.of(LocalTime.of(10, 1), LocalTime.of(10, 5)),
                 Arguments.of(LocalTime.of(12, 4), LocalTime.of(12, 5)),
-                Arguments.of(LocalTime.of(13, 6), LocalTime.of(13, 11))
+                Arguments.of(LocalTime.of(13, 6), LocalTime.of(13, 10))
         );
     }
 
