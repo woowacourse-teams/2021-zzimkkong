@@ -24,8 +24,6 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.LocalTime;
-import java.time.chrono.ChronoLocalDateTime;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
@@ -234,8 +232,8 @@ public class ReservationService {
         Reservation reservation = reservations.findById(reservationId)
                 .orElseThrow(NoSuchReservationException::new);
         reservationStrategy.validateOwnerOfReservation(reservation, reservationUpdateDto.getPassword(), loginUserEmail);
-
-        ChronoLocalDateTime<?> now = ChronoLocalDateTime.from(LocalTime.now());
+        
+        LocalDateTime now = LocalDateTime.now();
         if (reservation.getStartTime().isAfter(now) || reservation.getEndTime().isBefore(now)) {
             throw new NotCurrentReservationException();
         }
