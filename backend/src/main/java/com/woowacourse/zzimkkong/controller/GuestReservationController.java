@@ -23,7 +23,6 @@ import java.time.ZonedDateTime;
 
 import static com.woowacourse.zzimkkong.dto.ValidatorMessage.DATETIME_FORMAT;
 import static com.woowacourse.zzimkkong.dto.ValidatorMessage.DATE_FORMAT;
-import static com.woowacourse.zzimkkong.infrastructure.datetime.TimeZoneUtils.UTC;
 
 @LogMethodExecutionTime(group = "controller")
 @RestController
@@ -149,6 +148,25 @@ public class GuestReservationController {
                 loginUserEmail,
                 ReservationType.Constants.GUEST);
         SlackResponse slackResponse = reservationService.updateReservation(reservationUpdateDto);
+        slackService.sendUpdateMessage(slackResponse);
+        return ResponseEntity.ok().build();
+    }
+
+    @PatchMapping("/maps/{mapId}/spaces/{spaceId}/reservations/{reservationId}")
+    public ResponseEntity<Void> updateEndTime(
+            @PathVariable final Long mapId,
+            @PathVariable final Long spaceId,
+            @PathVariable final Long reservationId,
+            @RequestBody @Valid final ReservationUpdateWithPasswordWithoutEndTimeRequest reservationUpdateWithPasswordWithoutEndTimeRequest,
+            @LoginEmail(isOptional = true) final LoginUserEmail loginUserEmail) {
+        ReservationUpdateDto reservationUpdateDto = ReservationUpdateDto.of(
+                mapId,
+                spaceId,
+                reservationId,
+                reservationUpdateWithPasswordWithoutEndTimeRequest,
+                loginUserEmail,
+                ReservationType.Constants.GUEST);
+        SlackResponse slackResponse = reservationService.updateReservationEndTime(reservationUpdateDto);
         slackService.sendUpdateMessage(slackResponse);
         return ResponseEntity.ok().build();
     }

@@ -3,7 +3,6 @@ package com.woowacourse.zzimkkong.domain;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import net.logstash.logback.encoder.org.apache.commons.lang3.StringUtils;
 
 import javax.persistence.*;
 import java.time.DayOfWeek;
@@ -80,6 +79,10 @@ public class Reservation {
         this.userName = updateReservation.userName;
         this.description = updateReservation.description;
         this.space = updateReservation.space;
+    }
+
+    public void updateReservationTime(final ReservationTime updateReservationTime) {
+        this.reservationTime = updateReservationTime;
     }
 
     public LocalDateTime getStartTime() {
