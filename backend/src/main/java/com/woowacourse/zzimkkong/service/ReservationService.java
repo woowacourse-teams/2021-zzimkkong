@@ -240,42 +240,15 @@ public class ReservationService {
                 reservationAuthenticationDto.getPassword(),
                 loginUserEmail);
 
-        if (!reservationStrategy.isManager() && (reservation.isExpired(LocalDateTime.now()))) {
-            throw new DeleteExpiredReservationException();
+        if (!reservationStrategy.isManager()) {
+            validateDeletability(reservation);
         }
 
-        deleteOrUpdateReservation(reservation);
+        reservations.delete(reservation);
 
         map.activateSharingMapId(sharingIdGenerator);
 
         return SlackResponse.of(reservation, map);
-    }
-
-    private void deleteOrUpdateReservation(Reservation reservation) {
-        if (reservation.isInUse(LocalDateTime.now())) {
-            updateEndTimeByCurrentTime(reservation);
-            return;
-        }
-
-        reservations.delete(reservation);
-    }
-
-    private void updateEndTimeByCurrentTime(Reservation reservation) {
-        ReservationTime reservationTime = reservation.getReservationTime();
-        ReservationTime updatedReservationTime = ReservationTime.ofDefaultServiceZone(
-                reservationTime.getStartTime(),
-                LocalDateTime.now()
-        );
-
-        reservation.update(
-                Reservation.builder()
-                        .reservationTime(updatedReservationTime)
-                        .member(reservation.getMember())
-                        .userName(reservation.getUserName())
-                        .description(reservation.getDescription())
-                        .space(reservation.getSpace()).
-                        build()
-        );
     }
 
     private Member getLoginUser(final LoginUserEmail loginUserEmail) {
@@ -284,6 +257,17 @@ public class ReservationService {
         }
         return members.findByEmail(loginUserEmail.getEmail())
                 .orElseThrow(NoSuchMemberException::new);
+    }
+
+    private void validateDeletability(final Reservation reservation) {
+        LocalDateTime now = LocalDateTime.now();
+        if (reservation.isInUse(now)) {
+            throw new DeleteReservationInUseException();
+        }
+
+        if (reservation.isExpired(now)) {
+            throw new DeleteExpiredReservationException();
+        }
     }
 
     private void validateAvailability(
