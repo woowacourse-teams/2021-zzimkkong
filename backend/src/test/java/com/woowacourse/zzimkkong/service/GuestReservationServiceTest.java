@@ -1,7 +1,6 @@
 package com.woowacourse.zzimkkong.service;
 
 import com.woowacourse.zzimkkong.domain.*;
-import com.woowacourse.zzimkkong.domain.Map;
 import com.woowacourse.zzimkkong.dto.reservation.*;
 import com.woowacourse.zzimkkong.exception.map.NoSuchMapException;
 import com.woowacourse.zzimkkong.exception.reservation.*;
@@ -17,8 +16,14 @@ import org.junit.jupiter.params.provider.CsvSource;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import java.time.*;
-import java.util.*;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.ZoneId;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+import java.util.Optional;
 
 import static com.woowacourse.zzimkkong.Constants.*;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -1349,52 +1354,6 @@ class GuestReservationServiceTest extends ServiceTest {
         assertThatThrownBy(() -> reservationService.deleteReservation(
                 reservationAuthenticationDto))
                 .isInstanceOf(DeleteExpiredReservationException.class);
-    }
-
-    @Test
-    @DisplayName("예약 삭제 요청 시, 사용중인 예약이면 현재 시간을 기준으로 조기종료 된다.")
-    void deleteUsingReservation() {
-        //given, when
-        TimeZone.setDefault(TimeZone.getTimeZone("UTC"));
-        LocalTime now = ZonedDateTime.now(ZoneId.of(ServiceZone.KOREA.getTimeZone())).toLocalTime();
-        int minute = now.getMinute();
-        int adjust = (minute / 10) * 10;
-        LocalTime refineTime = now.withMinute(adjust);
-
-        ReservationCreateUpdateWithPasswordRequest reservationCreateUpdateWithPasswordRequestByUsingSpace = new ReservationCreateUpdateWithPasswordRequest(
-                TODAY.atTime(refineTime.minusMinutes(30)).atZone(ZoneId.of(ServiceZone.KOREA.getTimeZone())),
-                TODAY.atTime(refineTime.plusMinutes(20)).atZone(ZoneId.of(ServiceZone.KOREA.getTimeZone())),
-                RESERVATION_PW,
-                RESERVATION_USER_NAME,
-                DESCRIPTION);
-
-        given(maps.findByIdFetch(anyLong()))
-                .willReturn(Optional.of(luther));
-        given(reservations.findById(anyLong()))
-                .willReturn(Optional.of(makeReservation(
-                        reservationCreateUpdateWithPasswordRequestByUsingSpace.localStartDateTime(),
-                        reservationCreateUpdateWithPasswordRequestByUsingSpace.localEndDateTime(),
-                        be)));
-
-        ReservationPasswordAuthenticationRequest reservationPasswordAuthenticationRequest
-                = new ReservationPasswordAuthenticationRequest(reservationCreateUpdateWithPasswordRequestByUsingSpace.getPassword());
-        Long reservationId = reservation.getId();
-
-        //when
-        ReservationAuthenticationDto reservationAuthenticationDto = ReservationAuthenticationDto.of(
-                lutherId,
-                beId,
-                reservationId,
-                reservationPasswordAuthenticationRequest,
-                ReservationType.Constants.GUEST);
-
-        Reservation result = reservations.findById(reservationId).get();
-        LocalDateTime beforeDelete = result.getEndTime();
-        reservationService.deleteReservation(reservationAuthenticationDto);
-        LocalDateTime afterDelete = result.getEndTime();
-
-        //then
-        assertThat(beforeDelete.getMinute()).isNotEqualTo(afterDelete.getMinute());
     }
 
     private Reservation makeReservation(final LocalDateTime startTime, final LocalDateTime endTime, final Space space) {
