@@ -1,9 +1,7 @@
 package com.woowacourse.zzimkkong.domain;
 
 public enum ServiceZone {
-    KOREA("Asia/Seoul"),
-    UTC("UTC"),
-    ;
+    KOREA("Asia/Seoul");
 
     private final String timeZone;
 
