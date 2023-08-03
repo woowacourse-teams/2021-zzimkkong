@@ -6,11 +6,9 @@ import com.woowacourse.zzimkkong.dto.TimeUnit;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import javax.validation.constraints.Min;
-import javax.validation.constraints.NotNull;
 import java.time.LocalTime;
 
-import static com.woowacourse.zzimkkong.dto.ValidatorMessage.*;
+import static com.woowacourse.zzimkkong.dto.ValidatorMessage.TIME_FORMAT;
 
 @Getter
 @NoArgsConstructor
@@ -31,24 +29,19 @@ public class SettingRequest {
 
     private EnabledDayOfWeekDto enabledDayOfWeek = new EnabledDayOfWeekDto();
 
-    @Min(value = 0, message = INVALID_SETTING_ORDER_MESSAGE)
-    private Integer priorityOrder = 0;
-
     public SettingRequest(
             final LocalTime settingStartTime,
             final LocalTime settingEndTime,
             final Integer reservationTimeUnit,
             final Integer reservationMinimumTimeUnit,
             final Integer reservationMaximumTimeUnit,
-            final EnabledDayOfWeekDto enabledDayOfWeek,
-            final Integer priorityOrder) {
+            final EnabledDayOfWeekDto enabledDayOfWeek) {
         this.settingStartTime = settingStartTime;
         this.settingEndTime = settingEndTime;
         this.reservationTimeUnit = reservationTimeUnit;
         this.reservationMinimumTimeUnit = reservationMinimumTimeUnit;
         this.reservationMaximumTimeUnit = reservationMaximumTimeUnit;
         this.enabledDayOfWeek = enabledDayOfWeek;
-        this.priorityOrder = priorityOrder;
     }
 
     public String enabledDayOfWeekAsString() {

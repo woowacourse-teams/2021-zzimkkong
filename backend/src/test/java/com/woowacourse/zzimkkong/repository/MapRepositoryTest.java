@@ -104,7 +104,6 @@ class MapRepositoryTest extends RepositoryTest {
                 .reservationMinimumTimeUnit(BE_RESERVATION_MINIMUM_TIME_UNIT)
                 .reservationMaximumTimeUnit(BE_RESERVATION_MAXIMUM_TIME_UNIT)
                 .enabledDayOfWeek(BE_ENABLED_DAY_OF_WEEK)
-                .priorityOrder(0)
                 .build();
 
         Space be = Space.builder()
@@ -112,7 +111,7 @@ class MapRepositoryTest extends RepositoryTest {
                 .color(BE_COLOR)
                 .area(SPACE_DRAWING)
                 .reservationEnable(BE_RESERVATION_ENABLE)
-                .spaceSettings(Settings.toPrioritizedSettings(List.of(beSetting)))
+                .spaceSettings(new Settings(List.of(beSetting)))
                 .map(luther)
                 .build();
 
@@ -124,7 +123,6 @@ class MapRepositoryTest extends RepositoryTest {
                 .reservationMinimumTimeUnit(FE_RESERVATION_MINIMUM_TIME_UNIT)
                 .reservationMaximumTimeUnit(FE_RESERVATION_MAXIMUM_TIME_UNIT)
                 .enabledDayOfWeek(FE_ENABLED_DAY_OF_WEEK)
-                .priorityOrder(0)
                 .build();
 
         Space fe = Space.builder()
@@ -133,7 +131,7 @@ class MapRepositoryTest extends RepositoryTest {
                 .map(luther)
                 .area(SPACE_DRAWING)
                 .reservationEnable(FE_RESERVATION_ENABLE)
-                .spaceSettings(Settings.toPrioritizedSettings(List.of(feSetting)))
+                .spaceSettings(new Settings(List.of(feSetting)))
                 .build();
 
         spaces.save(be);

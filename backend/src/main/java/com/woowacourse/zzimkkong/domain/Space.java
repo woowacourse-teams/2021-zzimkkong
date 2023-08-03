@@ -9,7 +9,6 @@ import org.hibernate.annotations.DynamicUpdate;
 import javax.persistence.*;
 import java.time.DayOfWeek;
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.List;
 
 @Getter

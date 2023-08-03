@@ -46,7 +46,6 @@ class PresetControllerTest extends AcceptanceTest {
                 .reservationMinimumTimeUnit(BE_RESERVATION_MINIMUM_TIME_UNIT)
                 .reservationMaximumTimeUnit(BE_RESERVATION_MAXIMUM_TIME_UNIT)
                 .enabledDayOfWeek(BE_ENABLED_DAY_OF_WEEK)
-                .priorityOrder(0)
                 .build();
 
         settingRequest = new SettingRequest(
@@ -55,8 +54,7 @@ class PresetControllerTest extends AcceptanceTest {
                 BE_RESERVATION_TIME_UNIT.getMinutes(),
                 BE_RESERVATION_MINIMUM_TIME_UNIT.getMinutes(),
                 BE_RESERVATION_MAXIMUM_TIME_UNIT.getMinutes(),
-                EnabledDayOfWeekDto.from(BE_ENABLED_DAY_OF_WEEK),
-                0
+                EnabledDayOfWeekDto.from(BE_ENABLED_DAY_OF_WEEK)
         );
         presetCreateRequest = new PresetCreateRequest(PRESET_NAME1, settingRequest);
     }

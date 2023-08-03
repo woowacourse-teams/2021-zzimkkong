@@ -9,8 +9,6 @@ import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 
 import java.time.LocalTime;
-import java.util.Collections;
-import java.util.List;
 import java.util.stream.Stream;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -77,25 +75,6 @@ class TimeSlotTest {
             final TimeSlot thatTimeSlot,
             final boolean expectedResult) {
         assertThat(thisTimeSlot.isNotWithin(thatTimeSlot)).isEqualTo(expectedResult);
-    }
-
-    @ParameterizedTest
-    @DisplayName("두 TimeSlot 이 주어질 떄, 겹치는 부분을 반환한다")
-    @MethodSource("provideOverlappingTimeSlot")
-    void extractOverlappingTimeSlot(
-            final TimeSlot thisTimeSlot,
-            final TimeSlot thatTimeSlot,
-            final TimeSlot expectedResult) {
-        assertThat(thisTimeSlot.extractOverlappingTimeSlot(thatTimeSlot)).isEqualTo(expectedResult);
-    }
-
-    @ParameterizedTest
-    @DisplayName("두 TimeSlot 이 주어질 때, 메서드를 호출하는 TimeSlot 이 인자로 들어가는 TimeSlot 에 배타적인 (겹치지 않는) 부분을 반환한다")
-    @MethodSource("provideExclusiveTimeSlots")
-    void extractExclusiveTimeSlots(final TimeSlot thisTimeSlot,
-                                   final TimeSlot thatTimeSlot,
-                                   final List<TimeSlot> expectedResult) {
-        assertThat(thisTimeSlot.extractExclusiveTimeSlots(thatTimeSlot)).isEqualTo(expectedResult);
     }
 
     private static Stream<Arguments> provideStartAndEndTime_endTimeEqualOrShorterThanStartTime() {
@@ -168,63 +147,6 @@ class TimeSlotTest {
                         TimeSlot.of(LocalTime.of(10, 0), LocalTime.of(10, 5)),
                         TimeSlot.of(LocalTime.of(10, 0), LocalTime.of(10, 5)),
                         false)
-        );
-    }
-
-    private static Stream<Arguments> provideOverlappingTimeSlot() {
-        return Stream.of(
-                Arguments.of(
-                        TimeSlot.of(LocalTime.of(10, 0), LocalTime.of(10, 5)),
-                        TimeSlot.of(LocalTime.of(10, 5), LocalTime.of(10, 10)),
-                        null),
-                Arguments.of(
-                        TimeSlot.of(LocalTime.of(10, 0), LocalTime.of(10, 30)),
-                        TimeSlot.of(LocalTime.of(10, 20), LocalTime.of(10, 40)),
-                        TimeSlot.of(LocalTime.of(10, 20), LocalTime.of(10, 30))),
-                Arguments.of(
-                        TimeSlot.of(LocalTime.of(10, 0), LocalTime.of(10, 30)),
-                        TimeSlot.of(LocalTime.of(10, 0), LocalTime.of(11, 0)),
-                        TimeSlot.of(LocalTime.of(10, 0), LocalTime.of(10, 30))),
-                Arguments.of(
-                        TimeSlot.of(LocalTime.of(10, 30), LocalTime.of(11, 0)),
-                        TimeSlot.of(LocalTime.of(10, 30), LocalTime.of(11, 30)),
-                        TimeSlot.of(LocalTime.of(10, 30), LocalTime.of(11, 0))),
-                Arguments.of(
-                        TimeSlot.of(LocalTime.of(10, 30), LocalTime.of(11, 0)),
-                        TimeSlot.of(LocalTime.of(10, 0), LocalTime.of(11, 30)),
-                        TimeSlot.of(LocalTime.of(10, 30), LocalTime.of(11, 0)))
-        );
-    }
-
-    private static Stream<Arguments> provideExclusiveTimeSlots() {
-        return Stream.of(
-                Arguments.of(
-                        TimeSlot.of(LocalTime.of(10, 0), LocalTime.of(10, 5)),
-                        TimeSlot.of(LocalTime.of(10, 5), LocalTime.of(10, 10)),
-                        List.of(TimeSlot.of(LocalTime.of(10, 0), LocalTime.of(10, 5)))),
-                Arguments.of(
-                        TimeSlot.of(LocalTime.of(10, 0), LocalTime.of(10, 30)),
-                        TimeSlot.of(LocalTime.of(10, 20), LocalTime.of(10, 40)),
-                        List.of(TimeSlot.of(LocalTime.of(10, 0), LocalTime.of(10, 20)))),
-                Arguments.of(
-                        TimeSlot.of(LocalTime.of(10, 0), LocalTime.of(10, 30)),
-                        TimeSlot.of(LocalTime.of(10, 0), LocalTime.of(11, 0)),
-                        Collections.emptyList()),
-                Arguments.of(
-                        TimeSlot.of(LocalTime.of(10, 30), LocalTime.of(11, 0)),
-                        TimeSlot.of(LocalTime.of(10, 30), LocalTime.of(11, 30)),
-                        Collections.emptyList()),
-                Arguments.of(
-                        TimeSlot.of(LocalTime.of(10, 30), LocalTime.of(11, 0)),
-                        TimeSlot.of(LocalTime.of(10, 0), LocalTime.of(11, 30)),
-                        Collections.emptyList()),
-                Arguments.of(
-                        TimeSlot.of(LocalTime.of(10, 0), LocalTime.of(11, 30)),
-                        TimeSlot.of(LocalTime.of(10, 30), LocalTime.of(11, 0)),
-                        List.of(
-                                TimeSlot.of(LocalTime.of(10, 0), LocalTime.of(10, 30)),
-                                TimeSlot.of(LocalTime.of(11, 0), LocalTime.of(11, 30))
-                        ))
         );
     }
 }
