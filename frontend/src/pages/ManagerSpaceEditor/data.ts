@@ -23,7 +23,6 @@ export interface SpaceFormValue {
       saturday: boolean;
       sunday: boolean;
     };
-    priorityOrder: number;
   }[];
 }
 
@@ -46,7 +45,6 @@ export const initialSpaceFormValueSetting = {
   reservationMinimumTimeUnit: 10,
   reservationMaximumTimeUnit: 120,
   enabledDayOfWeek: initialEnabledDayOfWeek,
-  priorityOrder: 0,
 };
 
 export const initialSpaceFormValue: Omit<SpaceFormValue, 'area'> = {

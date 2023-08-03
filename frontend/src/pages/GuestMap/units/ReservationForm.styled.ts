@@ -32,33 +32,23 @@ export const InputsRow = styled.div`
   }
 `;
 
-export const SettingSummaryWrapper = styled.div`
+export const TimeFormMessageWrapper = styled.div`
   display: flex;
-  flex-direction: column;
   gap: 0.25rem;
   margin-top: 0.5rem;
 `;
 
-/**
- * 세팅이 많아질 경우를 대비 (펼치기, 접기 용도)
- */
-export const PartialSettingSummary = styled.p`
-  height: 80px;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  display: -webkit-box;
-  -webkit-line-clamp: 2;
-  -webkit-box-orient: horizontal;
-  white-space: pre-line;
-  line-height: normal;
-  font-size: 0.75rem;
-  color: ${({ theme }) => theme.gray[500]};
+export const TimeFormMessageList = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
 `;
 
-export const SettingSummary = styled.p<{ fontWeight?: string }>`
-  white-space: pre-line;
-  line-height: normal;
+export const TimeFormMessage = styled.p<{ fontWeight?: string }>`
+  left: 0.75rem;
+  bottom: -1rem;
   font-size: 0.75rem;
+  height: 1em;
   color: ${({ theme }) => theme.gray[500]};
   ${({ fontWeight }) => fontWeight && `font-weight: ${fontWeight}`};
 `;

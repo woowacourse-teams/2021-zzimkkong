@@ -22,19 +22,19 @@ export const InputWrapper = styled.div`
   }
 `;
 
-export const SettingSummaryWrapper = styled.div`
+export const TimeFormMessageWrapper = styled.div`
   display: flex;
   flex-direction: column;
   gap: 0.25rem;
   margin-top: 0.5rem;
 `;
 
-export const SettingSummary = styled.p<{ fontWeight?: string }>`
-  white-space: pre-line;
-  line-height: normal;
+export const TimeFormMessage = styled.p`
+  left: 0.75rem;
+  bottom: -1rem;
   font-size: 0.75rem;
+  height: 1em;
   color: ${({ theme }) => theme.gray[500]};
-  ${({ fontWeight }) => fontWeight && `font-weight: ${fontWeight}`};
 `;
 
 export const ButtonWrapper = styled.div`

@@ -112,7 +112,6 @@ export interface SpaceSetting {
     saturday: boolean;
     sunday: boolean;
   };
-  priorityOrder: number;
 }
 
 export interface Preset {
