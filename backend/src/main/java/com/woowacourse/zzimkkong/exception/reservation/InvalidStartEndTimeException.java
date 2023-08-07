@@ -1,10 +1,10 @@
 package com.woowacourse.zzimkkong.exception.reservation;
 
+import com.woowacourse.zzimkkong.domain.Settings;
 import com.woowacourse.zzimkkong.domain.TimeSlot;
 import com.woowacourse.zzimkkong.exception.ZzimkkongException;
 import org.springframework.http.HttpStatus;
 
-import java.util.List;
 import java.util.stream.Collectors;
 
 import static com.woowacourse.zzimkkong.infrastructure.message.MessageUtils.LINE_SEPARATOR;
@@ -17,16 +17,14 @@ public class InvalidStartEndTimeException extends ZzimkkongException {
             LINE_SEPARATOR +
             "예약 불가 시간대: %s";
 
-    public InvalidStartEndTimeException(
-            final List<TimeSlot> unavailableTimeSlots,
-            final TimeSlot reservationTimeSlot) {
+    public InvalidStartEndTimeException(Settings settings, TimeSlot reservationTimeSlot) {
         super(String.format(
-                        MESSAGE_FORMAT,
-                        reservationTimeSlot,
-                        unavailableTimeSlots
-                                .stream()
-                                .map(TimeSlot::toString)
-                                .collect(Collectors.joining(", "))),
+                MESSAGE_FORMAT,
+                reservationTimeSlot,
+                settings.getUnavailableTimeSlots()
+                        .stream()
+                        .map(TimeSlot::toString)
+                        .collect(Collectors.joining(", "))),
                 HttpStatus.BAD_REQUEST);
     }
 }

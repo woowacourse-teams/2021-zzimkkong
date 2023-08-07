@@ -50,8 +50,7 @@ class AcceptanceTest {
             BE_RESERVATION_TIME_UNIT.getMinutes(),
             BE_RESERVATION_MINIMUM_TIME_UNIT.getMinutes(),
             BE_RESERVATION_MAXIMUM_TIME_UNIT.getMinutes(),
-            EnabledDayOfWeekDto.from(BE_ENABLED_DAY_OF_WEEK),
-            0
+            EnabledDayOfWeekDto.from(BE_ENABLED_DAY_OF_WEEK)
     );
     protected final SpaceCreateUpdateRequest beSpaceCreateUpdateRequest = new SpaceCreateUpdateRequest(
             BE_NAME,
@@ -67,8 +66,7 @@ class AcceptanceTest {
             FE_RESERVATION_TIME_UNIT.getMinutes(),
             FE_RESERVATION_MINIMUM_TIME_UNIT.getMinutes(),
             FE_RESERVATION_MAXIMUM_TIME_UNIT.getMinutes(),
-            EnabledDayOfWeekDto.from(FE_ENABLED_DAY_OF_WEEK),
-            0
+            EnabledDayOfWeekDto.from(FE_ENABLED_DAY_OF_WEEK)
     );
     protected final SpaceCreateUpdateRequest feSpaceCreateUpdateRequest = new SpaceCreateUpdateRequest(
             FE_NAME,

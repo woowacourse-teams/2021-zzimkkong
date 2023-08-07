@@ -368,9 +368,7 @@ public class ReservationService {
         DayOfWeek dayOfWeek = reservation.getDayOfWeek();
 
         Settings relevantSettings = space.getRelevantSettings(timeSlot, dayOfWeek);
-
         if (relevantSettings.isEmpty()) {
-            space.getSpaceSettings().flatten();
             throw new NoSettingAvailableException(space);
         }
 
@@ -379,8 +377,8 @@ public class ReservationService {
             throw new MultipleSettingsException(relevantSettings);
         }
 
-        if (relevantSettings.cannotAcceptDueToAvailableTime(timeSlot, dayOfWeek)) {
-            throw new InvalidStartEndTimeException(relevantSettings.getUnavailableTimeSlots(dayOfWeek), timeSlot);
+        if (relevantSettings.cannotAcceptDueToAvailableTime(timeSlot)) {
+            throw new InvalidStartEndTimeException(relevantSettings, timeSlot);
         }
 
         // TODO: 2023/02/09 기준, 예약은 하나의 세팅만 걸쳐야한다

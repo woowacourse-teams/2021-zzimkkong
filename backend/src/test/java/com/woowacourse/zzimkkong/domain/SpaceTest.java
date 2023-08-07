@@ -24,7 +24,6 @@ class SpaceTest {
             .reservationMinimumTimeUnit(FE_RESERVATION_MINIMUM_TIME_UNIT)
             .reservationMaximumTimeUnit(FE_RESERVATION_MAXIMUM_TIME_UNIT)
             .enabledDayOfWeek(FE_ENABLED_DAY_OF_WEEK)
-            .priorityOrder(0)
             .build();
     private static final Setting setting2 = Setting.builder()
             .settingTimeSlot(TimeSlot.of(
@@ -34,7 +33,6 @@ class SpaceTest {
             .reservationMinimumTimeUnit(FE_RESERVATION_MINIMUM_TIME_UNIT)
             .reservationMaximumTimeUnit(FE_RESERVATION_MAXIMUM_TIME_UNIT)
             .enabledDayOfWeek(FE_ENABLED_DAY_OF_WEEK)
-            .priorityOrder(1)
             .build();
 
     @Test
@@ -56,9 +54,8 @@ class SpaceTest {
                 .reservationMinimumTimeUnit(FE_RESERVATION_MINIMUM_TIME_UNIT)
                 .reservationMaximumTimeUnit(FE_RESERVATION_MAXIMUM_TIME_UNIT)
                 .enabledDayOfWeek(FE_ENABLED_DAY_OF_WEEK)
-                .priorityOrder(0)
                 .build();
-        Settings settings = Settings.toPrioritizedSettings(Arrays.asList(setting));
+        Settings settings = new Settings(Arrays.asList(setting));
         Space space = Space.builder()
                 .name("와우")
                 .color("색깔입니다")
@@ -76,9 +73,8 @@ class SpaceTest {
                 .reservationMinimumTimeUnit(FE_RESERVATION_MINIMUM_TIME_UNIT)
                 .reservationMaximumTimeUnit(FE_RESERVATION_MAXIMUM_TIME_UNIT)
                 .enabledDayOfWeek(FE_ENABLED_DAY_OF_WEEK)
-                .priorityOrder(0)
                 .build();
-        Settings updateSettings = Settings.toPrioritizedSettings(Arrays.asList(setting));
+        Settings updateSettings = new Settings(Arrays.asList(setting));
         Space updateSpace = Space.builder()
                 .name("우와")
                 .color("색깔")
@@ -114,9 +110,8 @@ class SpaceTest {
                 .reservationMinimumTimeUnit(FE_RESERVATION_MINIMUM_TIME_UNIT)
                 .reservationMaximumTimeUnit(FE_RESERVATION_MAXIMUM_TIME_UNIT)
                 .enabledDayOfWeek(FE_ENABLED_DAY_OF_WEEK)
-                .priorityOrder(0)
                 .build();
-        Settings settings = Settings.toPrioritizedSettings(Arrays.asList(reservationEnableSetting));
+        Settings settings = new Settings(Arrays.asList(reservationEnableSetting));
         Space reservationEnableSpace = Space.builder()
                 .spaceSettings(settings)
                 .reservationEnable(true)
@@ -136,9 +131,8 @@ class SpaceTest {
                 .reservationMinimumTimeUnit(FE_RESERVATION_MINIMUM_TIME_UNIT)
                 .reservationMaximumTimeUnit(FE_RESERVATION_MAXIMUM_TIME_UNIT)
                 .enabledDayOfWeek(FE_ENABLED_DAY_OF_WEEK)
-                .priorityOrder(0)
                 .build();
-        Settings settings = Settings.toPrioritizedSettings(Arrays.asList(reservationUnableSetting));
+        Settings settings = new Settings(Arrays.asList(reservationUnableSetting));
         Space reservationUnableSpace = Space.builder()
                 .spaceSettings(settings)
                 .reservationEnable(false)
@@ -154,7 +148,7 @@ class SpaceTest {
         // setting1: 10 ~ 14
         // setting2: 15 ~ 18
         Space space = Space.builder()
-                .spaceSettings(Settings.toPrioritizedSettings(Arrays.asList(setting1, setting2)))
+                .spaceSettings(new Settings(Arrays.asList(setting1, setting2)))
                 .build();
 
         Settings relevantSettings = space.getRelevantSettings(reservationTimeSlot, dayofWeek);
@@ -174,13 +168,13 @@ class SpaceTest {
                                 LocalTime.of(10, 0),
                                 LocalTime.of(12, 0)),
                         DayOfWeek.MONDAY,
-                        Settings.toFlattenedSettings(List.of(setting1)).getMergedSettings(EnabledDayOfWeek.MONDAY)),
+                        new Settings(List.of(setting1))),
                 Arguments.of(
                         TimeSlot.of(
                                 LocalTime.of(12, 0),
                                 LocalTime.of(15, 0)),
                         DayOfWeek.MONDAY,
-                        Settings.toFlattenedSettings(List.of(setting1)).getMergedSettings(EnabledDayOfWeek.MONDAY)),
+                        new Settings(List.of(setting1))),
                 Arguments.of(
                         TimeSlot.of(
                                 LocalTime.of(14, 0),
@@ -192,6 +186,6 @@ class SpaceTest {
                                 LocalTime.of(15, 0),
                                 LocalTime.of(19, 0)),
                         DayOfWeek.MONDAY,
-                        Settings.toFlattenedSettings(List.of(setting2)).getMergedSettings(EnabledDayOfWeek.MONDAY)));
+                        new Settings(List.of(setting2))));
     }
 }

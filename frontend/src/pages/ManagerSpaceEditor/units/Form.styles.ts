@@ -32,26 +32,6 @@ export const TitleContainer = styled.div`
   margin-bottom: 1rem;
 `;
 
-export const InfoMessageWrapper = styled.div`
-  display: flex;
-  flex-direction: column;
-  gap: 0.25rem;
-  margin-top: 0.5rem;
-  justify-content: space-between;
-  margin-bottom: 2rem;
-`;
-
-export const InfoMessage = styled.p<{ fontWeight?: string }>`
-  left: 0.75rem;
-  bottom: -1.5rem;
-  font-size: 0.75rem;
-  height: 1.5em;
-  white-space: pre-line;
-  line-height: normal;
-  color: ${({ theme }) => theme.gray[500]};
-  ${({ fontWeight }) => fontWeight && `font-weight: ${fontWeight}`};
-`;
-
 export const ContentsContainer = styled.div`
   display: flex;
   flex-direction: column;

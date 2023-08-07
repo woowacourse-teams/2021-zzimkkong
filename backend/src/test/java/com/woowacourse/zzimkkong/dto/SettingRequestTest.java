@@ -23,8 +23,7 @@ class SettingRequestTest extends RequestTest {
                 timeUnit,
                 60,
                 120,
-                EnabledDayOfWeekDto.from("Monday, Tuesday"),
-                0
+                EnabledDayOfWeekDto.from("Monday, Tuesday")
         );
 
         assertThat(getConstraintViolations(settingRequest).stream()
@@ -43,8 +42,7 @@ class SettingRequestTest extends RequestTest {
                 timeUnit,
                 60,
                 120,
-                EnabledDayOfWeekDto.from("Monday, Tuesday"),
-                0
+                EnabledDayOfWeekDto.from("Monday, Tuesday")
         );
 
         assertThat(getConstraintViolations(settingRequest).stream()

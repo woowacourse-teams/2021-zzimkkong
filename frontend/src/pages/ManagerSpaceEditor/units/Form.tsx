@@ -1,11 +1,4 @@
-import React, {
-  Dispatch,
-  FormEventHandler,
-  SetStateAction,
-  useEffect,
-  useRef,
-  useState,
-} from 'react';
+import { Dispatch, FormEventHandler, SetStateAction, useEffect, useRef } from 'react';
 import {
   DeleteManagerSpaceParams,
   PostManagerSpaceParams,
@@ -30,7 +23,6 @@ import * as Styled from './Form.styles';
 import FormDayOfWeekSelect from './FormDayOfWeekSelect';
 import FormTimeUnitSelect from './FormTimeUnitSelect';
 import Preset from './Preset';
-import SettingSummaryPopup from './SettingSummaryPopup';
 
 interface Props {
   modeState: [Mode, Dispatch<SetStateAction<Mode>>];
@@ -56,7 +48,6 @@ const Form = ({
   const nameInputRef = useRef<HTMLInputElement | null>(null);
 
   const [mode, setMode] = modeState;
-  const [settingSummaryPopupOpen, setSettingSummaryPopupOpen] = useState(false);
 
   const {
     values,
@@ -194,31 +185,7 @@ const Form = ({
       <Styled.Section>
         <Styled.TitleContainer>
           <Styled.Title>예약 조건</Styled.Title>
-          {selectedSpaceId != null && (
-            <Button
-              size="small"
-              type="button"
-              shape="round"
-              variant="inverse"
-              onClick={() => setSettingSummaryPopupOpen(true)}
-            >
-              현재 적용된 예약 조건 보기
-            </Button>
-          )}
         </Styled.TitleContainer>
-        <Styled.InfoMessageWrapper>
-          <Styled.InfoMessage>
-            예약 조건이 서로 겹칠 시, 뒷 순서의 예약 조건이 앞 순서의 예약 조건을 덮어씁니다.
-          </Styled.InfoMessage>
-        </Styled.InfoMessageWrapper>
-        {settingSummaryPopupOpen && selectedSpaceId != null && (
-          <SettingSummaryPopup
-            open={settingSummaryPopupOpen}
-            onClose={() => setSettingSummaryPopupOpen(false)}
-            mapId={Number(window.location.pathname.split('/', 3).pop())}
-            spaceId={selectedSpaceId}
-          />
-        )}
 
         <Styled.TabList>
           {values.settings.map((_, index) => (

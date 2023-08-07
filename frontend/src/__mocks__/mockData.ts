@@ -53,7 +53,6 @@ export const spaces: Spaces = {
           reservationTimeUnit: 10,
           reservationMinimumTimeUnit: 10,
           reservationMaximumTimeUnit: 1440,
-          priorityOrder: 0,
           enabledDayOfWeek: {
             monday: true,
             tuesday: true,

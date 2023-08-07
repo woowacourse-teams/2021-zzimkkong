@@ -1,6 +1,5 @@
 package com.woowacourse.zzimkkong.domain;
 
-import com.woowacourse.zzimkkong.exception.ZzimkkongException;
 import com.woowacourse.zzimkkong.exception.reservation.IllegalTimeUnitValueException;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -9,8 +8,6 @@ import lombok.NoArgsConstructor;
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
 import java.time.LocalTime;
-import java.util.Comparator;
-import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -19,8 +16,6 @@ import java.util.concurrent.ConcurrentHashMap;
 @EqualsAndHashCode
 @Embeddable
 public class TimeUnit {
-    public static final List<Integer> INTERVAL_TIME_UNITS = List.of(5, 10, 30, 60);
-
     public static final Integer MINIMUM_TIME_UNIT = 5;
     private static final Integer MINIMUM_TIME = 0;
     private static final Map<Integer, TimeUnit> cache = new ConcurrentHashMap<>();
@@ -81,45 +76,5 @@ public class TimeUnit {
         }
 
         return String.format("%d시간 %d분", hours, minutes);
-    }
-
-    public TimeUnit getAdjustedIntervalTimeUnit(final TimeSlot timeSlot) {
-        if (timeSlot.isNotDivisibleBy(this)) {
-            return INTERVAL_TIME_UNITS.stream()
-                    .sorted(Comparator.reverseOrder())
-                    .map(TimeUnit::from)
-                    .filter(timeUnit -> !timeSlot.isNotDivisibleBy(timeUnit))
-                    .findFirst()
-                    .orElseThrow(ZzimkkongException::new);
-        }
-        return this;
-    }
-
-    public TimeUnit getAdjustedTimeUnit(final TimeSlot timeSlot, final TimeUnit intervalTimeUnit) {
-        if (this.isShorterThan(intervalTimeUnit)) {
-            return intervalTimeUnit;
-        }
-
-        TimeUnit candidateMinimumTimeUnit = this;
-        if (!this.isDivisibleBy(intervalTimeUnit)) {
-            candidateMinimumTimeUnit = getNextDivisibleTimeUnit(intervalTimeUnit);
-        }
-        while (timeSlot.isDurationShorterThan(candidateMinimumTimeUnit)) {
-            candidateMinimumTimeUnit = candidateMinimumTimeUnit.minus(intervalTimeUnit);
-        }
-        return candidateMinimumTimeUnit;
-    }
-
-    private TimeUnit getNextDivisibleTimeUnit(final TimeUnit timeUnit) {
-        TimeUnit minimumTimeUnit = cache.get(MINIMUM_TIME_UNIT);
-        TimeUnit candidateTimeUnit = this;
-        while (!candidateTimeUnit.isDivisibleBy(timeUnit)) {
-            candidateTimeUnit = this.minus(minimumTimeUnit);
-        }
-        return candidateTimeUnit;
-    }
-
-    private TimeUnit minus(final TimeUnit timeUnit) {
-        return TimeUnit.from(this.minutes - timeUnit.minutes);
     }
 }

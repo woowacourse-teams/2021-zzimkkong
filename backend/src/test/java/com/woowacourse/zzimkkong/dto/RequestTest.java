@@ -20,8 +20,7 @@ class RequestTest {
             BE_RESERVATION_TIME_UNIT.getMinutes(),
             BE_RESERVATION_MINIMUM_TIME_UNIT.getMinutes(),
             BE_RESERVATION_MAXIMUM_TIME_UNIT.getMinutes(),
-            EnabledDayOfWeekDto.from(BE_ENABLED_DAY_OF_WEEK),
-            0
+            EnabledDayOfWeekDto.from(BE_ENABLED_DAY_OF_WEEK)
     );
 
     @BeforeAll

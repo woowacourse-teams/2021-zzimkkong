@@ -35,9 +35,6 @@ public class SettingResponse {
     @JsonProperty
     private EnabledDayOfWeekDto enabledDayOfWeek;
 
-    @JsonProperty
-    private Integer priorityOrder;
-
     protected SettingResponse(
             final Long settingId,
             final LocalTime settingStartTime,
@@ -45,8 +42,7 @@ public class SettingResponse {
             final Integer reservationTimeUnit,
             final Integer reservationMinimumTimeUnit,
             final Integer reservationMaximumTimeUnit,
-            final EnabledDayOfWeekDto enabledDayOfWeek,
-            final Integer priorityOrder) {
+            final EnabledDayOfWeekDto enabledDayOfWeek) {
         this.settingId = settingId;
         this.settingStartTime = settingStartTime;
         this.settingEndTime = settingEndTime;
@@ -54,7 +50,6 @@ public class SettingResponse {
         this.reservationMinimumTimeUnit = reservationMinimumTimeUnit;
         this.reservationMaximumTimeUnit = reservationMaximumTimeUnit;
         this.enabledDayOfWeek = enabledDayOfWeek;
-        this.priorityOrder = priorityOrder;
     }
 
     public static SettingResponse from(final Setting setting) {
@@ -65,8 +60,7 @@ public class SettingResponse {
                 setting.getReservationTimeUnitAsInt(),
                 setting.getReservationMinimumTimeUnitAsInt(),
                 setting.getReservationMaximumTimeUnitAsInt(),
-                EnabledDayOfWeekDto.from(setting.getEnabledDayOfWeek()),
-                setting.getPriorityOrder()
+                EnabledDayOfWeekDto.from(setting.getEnabledDayOfWeek())
         );
     }
 }

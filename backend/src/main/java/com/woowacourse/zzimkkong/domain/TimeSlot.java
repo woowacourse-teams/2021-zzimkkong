@@ -10,8 +10,6 @@ import javax.persistence.Column;
 import javax.persistence.Embeddable;
 import java.time.LocalTime;
 import java.time.temporal.ChronoUnit;
-import java.util.Collections;
-import java.util.List;
 
 @Getter
 @NoArgsConstructor
@@ -64,16 +62,10 @@ public class TimeSlot {
         return timeUnit.isShorterThan(getDurationMinute());
     }
 
-    public boolean contains(final TimeSlot that) {
-        boolean equalOrAfterStartTime = that.startTime.equals(this.startTime) || that.startTime.isAfter(this.startTime);
-        boolean equalOrBeforeEndTime = that.endTime.equals(this.endTime) || that.endTime.isBefore(this.endTime);
-        return equalOrAfterStartTime && equalOrBeforeEndTime;
-    }
-
     public boolean isNotWithin(final TimeSlot that) {
-        boolean equalOrAfterStartTime = this.startTime.equals(that.startTime) || this.startTime.isAfter(that.startTime);
-        boolean equalOrBeforeEndTime = this.endTime.equals(that.endTime) || this.endTime.isBefore(that.endTime);
-        return !(equalOrAfterStartTime && equalOrBeforeEndTime);
+        boolean isEqualOrAfterStartTime = this.startTime.equals(that.startTime) || this.startTime.isAfter(that.startTime);
+        boolean isEqualOrBeforeEndTime = this.endTime.equals(that.endTime) || this.endTime.isBefore(that.endTime);
+        return !(isEqualOrAfterStartTime && isEqualOrBeforeEndTime);
     }
 
     public boolean isExtendableWith(final TimeSlot that) {
@@ -94,60 +86,6 @@ public class TimeSlot {
 
     private TimeUnit getDurationMinute() {
         return TimeUnit.from(ChronoUnit.MINUTES.between(startTime, endTime));
-    }
-
-    public TimeSlot extractOverlappingTimeSlot(final TimeSlot that) {
-        if (!this.hasConflictWith(that)) {
-            return null;
-        }
-
-        if (that.contains(this)) {
-            return this;
-        }
-
-        if (this.hasLeftSkewedConflictWith(that)) {
-            return TimeSlot.of(that.startTime, this.endTime);
-        }
-
-        if (this.hasRightSkewedConflictWith(that)) {
-            return TimeSlot.of(this.startTime, that.endTime);
-        }
-
-        return TimeSlot.of(that.startTime, that.endTime);
-    }
-
-    public List<TimeSlot> extractExclusiveTimeSlots(final TimeSlot that) {
-        if (!this.hasConflictWith(that)) {
-            return List.of(this);
-        }
-
-        if (that.contains(this)) {
-            return Collections.emptyList();
-        }
-
-        if (this.hasLeftSkewedConflictWith(that)) {
-            return List.of(TimeSlot.of(this.startTime, that.startTime));
-        }
-
-        if (this.hasRightSkewedConflictWith(that)) {
-            return List.of(TimeSlot.of(that.endTime, this.endTime));
-        }
-
-        return List.of(
-                TimeSlot.of(this.startTime, that.startTime),
-                TimeSlot.of(that.endTime, this.endTime));
-    }
-
-    private boolean hasLeftSkewedConflictWith(final TimeSlot that) {
-        return this.startTime.isBefore(that.startTime)
-                && ((this.endTime.isAfter(that.startTime) && this.endTime.isBefore(that.endTime))
-                || this.endTime.equals(that.endTime));
-    }
-
-    private boolean hasRightSkewedConflictWith(final TimeSlot that) {
-        return ((this.startTime.isAfter(that.startTime) && this.startTime.isBefore(that.endTime))
-                || this.startTime.equals(that.startTime))
-                && this.endTime.isAfter(that.endTime);
     }
 
     @Override

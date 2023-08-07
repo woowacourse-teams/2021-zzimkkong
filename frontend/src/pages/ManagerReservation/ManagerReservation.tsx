@@ -150,7 +150,6 @@ const ManagerReservation = (): JSX.Element => {
           </Styled.PageHeader>
           <ManagerReservationForm
             isEditMode={isEditMode}
-            mapId={mapId}
             space={space}
             reservation={reservation}
             date={date}
