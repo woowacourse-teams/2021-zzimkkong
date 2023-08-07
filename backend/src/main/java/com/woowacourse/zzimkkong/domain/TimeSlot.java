@@ -46,6 +46,10 @@ public class TimeSlot {
         if (TimeUnit.cannotDivideByMinimumTimeUnit(startTime.getMinute())) {
             throw new IllegalTimeUnitValueException(startTime.getMinute());
         }
+
+        if (TimeUnit.cannotDivideByMinimumTimeUnit(endTime.getMinute())) {
+            throw new IllegalTimeUnitValueException(endTime.getMinute());
+        }
     }
 
     public boolean isNotDivisibleBy(final TimeUnit timeUnit) {
