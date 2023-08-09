@@ -188,8 +188,8 @@ public class GuestReservationController {
                 reservationEarlyStopRequest,
                 loginUserEmail,
                 ReservationType.Constants.GUEST);
-        SlackResponse slackResponse = reservationService.updateReservationEndTime(reservationUpdateDto);
-        slackService.sendUpdateMessage(slackResponse);
+        SlackResponse slackResponse = reservationService.earlyStop(reservationUpdateDto);
+        slackService.sendEarlyStopMessage(slackResponse);
         return ResponseEntity.ok().build();
     }
 

@@ -248,7 +248,7 @@ public class ReservationService {
         return SlackResponse.of(reservation, map);
     }
 
-    public SlackResponse updateReservationEndTime(final ReservationEarlyStopDto reservationEarlyStopDto) {
+    public SlackResponse earlyStop(final ReservationEarlyStopDto reservationEarlyStopDto) {
         ReservationStrategy reservationStrategy = reservationStrategies.getStrategyByReservationType(reservationEarlyStopDto.getReservationType());
         Long mapId = reservationEarlyStopDto.getMapId();
         LoginUserEmail loginUserEmail = reservationEarlyStopDto.getLoginUserEmail();

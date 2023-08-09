@@ -32,6 +32,11 @@ public class SlackService {
         send(attachments, slackResponse.getSlackUrl());
     }
 
+    public void sendEarlyStopMessage(SlackResponse slackResponse) {
+        Attachments attachments = Attachments.earlyStopMessageOf(slackResponse, titleLink);
+        send(attachments, slackResponse.getSlackUrl());
+    }
+
     public void sendDeleteMessage(SlackResponse slackResponse) {
         Attachments attachments = Attachments.deleteMessageOf(slackResponse, titleLink);
         send(attachments, slackResponse.getSlackUrl());
