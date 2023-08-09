@@ -13,6 +13,7 @@ import com.woowacourse.zzimkkong.dto.member.LoginUserEmail;
 import com.woowacourse.zzimkkong.dto.reservation.ReservationAuthenticationDto;
 import com.woowacourse.zzimkkong.dto.reservation.ReservationCreateDto;
 import com.woowacourse.zzimkkong.dto.reservation.ReservationCreateResponse;
+import com.woowacourse.zzimkkong.dto.reservation.ReservationEarlyStopDto;
 import com.woowacourse.zzimkkong.dto.reservation.ReservationFindAllDto;
 import com.woowacourse.zzimkkong.dto.reservation.ReservationFindAllResponse;
 import com.woowacourse.zzimkkong.dto.reservation.ReservationFindDto;
@@ -252,26 +253,26 @@ public class ReservationService {
         return SlackResponse.of(reservation, map);
     }
 
-    public SlackResponse updateReservationEndTime(final ReservationUpdateDto reservationUpdateDto) {
-        ReservationStrategy reservationStrategy = reservationStrategies.getStrategyByReservationType(reservationUpdateDto.getReservationType());
-        Long mapId = reservationUpdateDto.getMapId();
-        LoginUserEmail loginUserEmail = reservationUpdateDto.getLoginUserEmail();
+    public SlackResponse updateReservationEndTime(final ReservationEarlyStopDto reservationEarlyStopDto) {
+        ReservationStrategy reservationStrategy = reservationStrategies.getStrategyByReservationType(reservationEarlyStopDto.getReservationType());
+        Long mapId = reservationEarlyStopDto.getMapId();
+        LoginUserEmail loginUserEmail = reservationEarlyStopDto.getLoginUserEmail();
 
         Map map = maps.findByIdFetch(mapId)
                 .orElseThrow(NoSuchMapException::new);
         reservationStrategy.validateManagerOfMap(map, loginUserEmail);
 
-        Long reservationId = reservationUpdateDto.getReservationId();
+        Long reservationId = reservationEarlyStopDto.getReservationId();
         Reservation reservation = reservations.findById(reservationId)
                 .orElseThrow(NoSuchReservationException::new);
-        reservationStrategy.validateOwnerOfReservation(reservation, reservationUpdateDto.getPassword(), loginUserEmail);
+        reservationStrategy.validateOwnerOfReservation(reservation, reservationEarlyStopDto.getPassword(), loginUserEmail);
 
         LocalDateTime now = LocalDateTime.now();
         if (!reservation.isInUse(now)) {
             throw new NotCurrentReservationException();
         }
 
-        if (ChronoUnit.MINUTES.between(reservation.getStartTime(), reservationUpdateDto.getEndDateTime()) < 5L) {
+        if (ChronoUnit.MINUTES.between(reservation.getStartTime(), LocalTime.now()) < 5L) {
             throw new InvalidMinimumDurationTimeInEarlyStopException();
         }
 
@@ -282,7 +283,7 @@ public class ReservationService {
                                 reservation.getDate(),
                                 LocalTime.of(
                                         reservation.getEndTime().getHour(),
-                                        floorByFiveMinutes(reservationUpdateDto.getEndDateTime())
+                                        floorByFiveMinutes(LocalDateTime.now())
                                 )
                         ),
                         map.getServiceZone(),

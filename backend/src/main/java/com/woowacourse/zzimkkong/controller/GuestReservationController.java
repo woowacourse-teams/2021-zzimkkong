@@ -4,7 +4,20 @@ import com.woowacourse.zzimkkong.config.logaspect.LogMethodExecutionTime;
 import com.woowacourse.zzimkkong.domain.LoginEmail;
 import com.woowacourse.zzimkkong.domain.ReservationType;
 import com.woowacourse.zzimkkong.dto.member.LoginUserEmail;
-import com.woowacourse.zzimkkong.dto.reservation.*;
+import com.woowacourse.zzimkkong.dto.reservation.ReservationAuthenticationDto;
+import com.woowacourse.zzimkkong.dto.reservation.ReservationCreateDto;
+import com.woowacourse.zzimkkong.dto.reservation.ReservationCreateResponse;
+import com.woowacourse.zzimkkong.dto.reservation.ReservationCreateUpdateWithPasswordRequest;
+import com.woowacourse.zzimkkong.dto.reservation.ReservationEarlyStopDto;
+import com.woowacourse.zzimkkong.dto.reservation.ReservationEarlyStopRequest;
+import com.woowacourse.zzimkkong.dto.reservation.ReservationFindAllDto;
+import com.woowacourse.zzimkkong.dto.reservation.ReservationFindAllResponse;
+import com.woowacourse.zzimkkong.dto.reservation.ReservationFindDto;
+import com.woowacourse.zzimkkong.dto.reservation.ReservationFindResponse;
+import com.woowacourse.zzimkkong.dto.reservation.ReservationInfiniteScrollResponse;
+import com.woowacourse.zzimkkong.dto.reservation.ReservationPasswordAuthenticationRequest;
+import com.woowacourse.zzimkkong.dto.reservation.ReservationResponse;
+import com.woowacourse.zzimkkong.dto.reservation.ReservationUpdateDto;
 import com.woowacourse.zzimkkong.dto.slack.SlackResponse;
 import com.woowacourse.zzimkkong.infrastructure.datetime.TimeZoneUtils;
 import com.woowacourse.zzimkkong.service.ReservationService;
@@ -14,7 +27,16 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
 import java.net.URI;
@@ -153,17 +175,17 @@ public class GuestReservationController {
     }
 
     @PatchMapping("/maps/{mapId}/spaces/{spaceId}/reservations/{reservationId}")
-    public ResponseEntity<Void> updateEndTime(
+    public ResponseEntity<Void> earlyStop(
             @PathVariable final Long mapId,
             @PathVariable final Long spaceId,
             @PathVariable final Long reservationId,
-            @RequestBody @Valid final ReservationUpdateWithPasswordWithoutEndTimeRequest reservationUpdateWithPasswordWithoutEndTimeRequest,
+            @RequestBody @Valid final ReservationEarlyStopRequest reservationEarlyStopRequest,
             @LoginEmail(isOptional = true) final LoginUserEmail loginUserEmail) {
-        ReservationUpdateDto reservationUpdateDto = ReservationUpdateDto.of(
+        ReservationEarlyStopDto reservationUpdateDto = ReservationEarlyStopDto.of(
                 mapId,
                 spaceId,
                 reservationId,
-                reservationUpdateWithPasswordWithoutEndTimeRequest,
+                reservationEarlyStopRequest,
                 loginUserEmail,
                 ReservationType.Constants.GUEST);
         SlackResponse slackResponse = reservationService.updateReservationEndTime(reservationUpdateDto);
