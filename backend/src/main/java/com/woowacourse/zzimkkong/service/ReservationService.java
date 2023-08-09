@@ -57,7 +57,6 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.LocalTime;
 import java.time.temporal.ChronoUnit;
 import java.util.Collection;
 import java.util.Collections;
@@ -279,16 +278,13 @@ public class ReservationService {
             throw new InvalidMinimumDurationTimeInEarlyStopException();
         }
 
+        LocalDateTime endTime = reservation.getEndTime();
+        int endTimeFloor = reservationTimeUnit.floor(endTime);
+
         reservation.updateReservationTime(
                 ReservationTime.of(
                         reservation.getStartTime(),
-                        LocalDateTime.of(
-                                reservation.getDate(),
-                                LocalTime.of(
-                                        reservation.getEndTime().getHour(),
-                                        floorByFiveMinutes(now)
-                                )
-                        ),
+                        endTime.withMinute(endTimeFloor),
                         map.getServiceZone(),
                         false)
         );
@@ -299,7 +295,7 @@ public class ReservationService {
     }
 
     private int floorByFiveMinutes(final LocalDateTime baseTime) {
-        return (baseTime.getMinute() - 5) / 5 * 5;
+        return baseTime.getMinute() / 5 * 5;
     }
 
     public SlackResponse deleteReservation(final ReservationAuthenticationDto reservationAuthenticationDto) {
