@@ -1,5 +1,7 @@
 package com.woowacourse.zzimkkong.domain;
 
+import com.woowacourse.zzimkkong.exception.reservation.InvalidMinimumDurationTimeInEarlyStopException;
+import com.woowacourse.zzimkkong.exception.reservation.NotCurrentReservationException;
 import com.woowacourse.zzimkkong.exception.setting.NoMatchingSettingException;
 import lombok.Builder;
 import lombok.Getter;
@@ -20,6 +22,7 @@ import javax.persistence.Table;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 
 @Getter
 @Builder
@@ -166,5 +169,27 @@ public class Reservation {
                 .orElseThrow(NoMatchingSettingException::new);
 
         return setting.getReservationTimeUnit();
+    }
+
+    public void doEarlyClose(final LocalDateTime now, final Map map) {
+        validateEarlyCloseable(now);
+
+        int endTimeFloor = this.getReservationTimeUnit().floor(now);
+
+        this.reservationTime = ReservationTime.of(
+                reservationTime.getStartTime(),
+                now.withMinute(endTimeFloor),
+                map.getServiceZone(),
+                false);
+    }
+
+    private void validateEarlyCloseable(final LocalDateTime now) {
+        if (!this.isInUse(now)) {
+            throw new NotCurrentReservationException();
+        }
+
+        if (ChronoUnit.MINUTES.between(this.getStartTime(), now) < this.getReservationTimeUnit().getMinutes()) {
+            throw new InvalidMinimumDurationTimeInEarlyStopException();
+        }
     }
 }

@@ -3,13 +3,11 @@ package com.woowacourse.zzimkkong.service;
 import com.woowacourse.zzimkkong.domain.Map;
 import com.woowacourse.zzimkkong.domain.Member;
 import com.woowacourse.zzimkkong.domain.Reservation;
-import com.woowacourse.zzimkkong.domain.ReservationTime;
 import com.woowacourse.zzimkkong.domain.ServiceZone;
 import com.woowacourse.zzimkkong.domain.Setting;
 import com.woowacourse.zzimkkong.domain.Settings;
 import com.woowacourse.zzimkkong.domain.Space;
 import com.woowacourse.zzimkkong.domain.TimeSlot;
-import com.woowacourse.zzimkkong.domain.TimeUnit;
 import com.woowacourse.zzimkkong.dto.member.LoginUserEmail;
 import com.woowacourse.zzimkkong.dto.reservation.ReservationAuthenticationDto;
 import com.woowacourse.zzimkkong.dto.reservation.ReservationCreateDto;
@@ -29,12 +27,10 @@ import com.woowacourse.zzimkkong.exception.reservation.DeleteExpiredReservationE
 import com.woowacourse.zzimkkong.exception.reservation.DeleteReservationInUseException;
 import com.woowacourse.zzimkkong.exception.reservation.InvalidMaximumDurationTimeException;
 import com.woowacourse.zzimkkong.exception.reservation.InvalidMinimumDurationTimeException;
-import com.woowacourse.zzimkkong.exception.reservation.InvalidMinimumDurationTimeInEarlyStopException;
 import com.woowacourse.zzimkkong.exception.reservation.InvalidReservationEnableException;
 import com.woowacourse.zzimkkong.exception.reservation.InvalidStartEndTimeException;
 import com.woowacourse.zzimkkong.exception.reservation.InvalidTimeUnitException;
 import com.woowacourse.zzimkkong.exception.reservation.NoSuchReservationException;
-import com.woowacourse.zzimkkong.exception.reservation.NotCurrentReservationException;
 import com.woowacourse.zzimkkong.exception.reservation.ReservationAlreadyExistsException;
 import com.woowacourse.zzimkkong.exception.setting.MultipleSettingsException;
 import com.woowacourse.zzimkkong.exception.setting.NoSettingAvailableException;
@@ -57,7 +53,6 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.temporal.ChronoUnit;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
@@ -268,26 +263,8 @@ public class ReservationService {
         reservationStrategy.validateOwnerOfReservation(reservation, reservationEarlyStopDto.getPassword(), loginUserEmail);
 
         LocalDateTime now = LocalDateTime.now();
-        if (!reservation.isInUse(now)) {
-            throw new NotCurrentReservationException();
-        }
 
-        TimeUnit reservationTimeUnit = reservation.getReservationTimeUnit();
-
-        if (ChronoUnit.MINUTES.between(reservation.getStartTime(), now) < reservationTimeUnit.getMinutes()) {
-            throw new InvalidMinimumDurationTimeInEarlyStopException();
-        }
-
-        LocalDateTime endTime = reservation.getEndTime();
-        int endTimeFloor = reservationTimeUnit.floor(endTime);
-
-        reservation.updateReservationTime(
-                ReservationTime.of(
-                        reservation.getStartTime(),
-                        endTime.withMinute(endTimeFloor),
-                        map.getServiceZone(),
-                        false)
-        );
+        reservation.doEarlyClose(now, map);
 
         map.activateSharingMapId(sharingIdGenerator);
 
