@@ -1,14 +1,28 @@
 package com.woowacourse.zzimkkong.domain;
 
+import com.woowacourse.zzimkkong.exception.reservation.InvalidMinimumDurationTimeInEarlyStopException;
+import com.woowacourse.zzimkkong.exception.reservation.NotCurrentReservationException;
+import com.woowacourse.zzimkkong.exception.setting.NoMatchingSettingException;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import net.logstash.logback.encoder.org.apache.commons.lang3.StringUtils;
 
-import javax.persistence.*;
+import javax.persistence.Column;
+import javax.persistence.Embedded;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.ForeignKey;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.Index;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.Table;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 
 @Getter
 @Builder
@@ -82,6 +96,10 @@ public class Reservation {
         this.space = updateReservation.space;
     }
 
+    public void updateReservationTime(final ReservationTime updateReservationTime) {
+        this.reservationTime = updateReservationTime;
+    }
+
     public LocalDateTime getStartTime() {
         return reservationTime.getStartTime();
     }
@@ -141,5 +159,37 @@ public class Reservation {
             return this.member.getUserName();
         }
         return this.userName;
+    }
+
+    public TimeUnit getReservationTimeUnit() {
+        Setting setting = space.getSpaceSettings().getSettings()
+                .stream()
+                .filter(it -> it.supports(getTimeSlot(), getDayOfWeek()))
+                .findFirst()
+                .orElseThrow(NoMatchingSettingException::new);
+
+        return setting.getReservationTimeUnit();
+    }
+
+    public void doEarlyClose(final LocalDateTime now, final Map map) {
+        validateEarlyCloseable(now);
+
+        int endTimeFloor = this.getReservationTimeUnit().floor(now);
+
+        this.reservationTime = ReservationTime.of(
+                reservationTime.getStartTime(),
+                now.withMinute(endTimeFloor),
+                map.getServiceZone(),
+                false);
+    }
+
+    private void validateEarlyCloseable(final LocalDateTime now) {
+        if (!this.isInUse(now)) {
+            throw new NotCurrentReservationException();
+        }
+
+        if (ChronoUnit.MINUTES.between(this.getStartTime(), now) < this.getReservationTimeUnit().getMinutes()) {
+            throw new InvalidMinimumDurationTimeInEarlyStopException();
+        }
     }
 }

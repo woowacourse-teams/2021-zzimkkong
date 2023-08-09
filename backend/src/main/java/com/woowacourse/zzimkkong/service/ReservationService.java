@@ -1,12 +1,37 @@
 package com.woowacourse.zzimkkong.service;
 
-import com.woowacourse.zzimkkong.domain.*;
+import com.woowacourse.zzimkkong.domain.Map;
+import com.woowacourse.zzimkkong.domain.Member;
+import com.woowacourse.zzimkkong.domain.Reservation;
+import com.woowacourse.zzimkkong.domain.ServiceZone;
+import com.woowacourse.zzimkkong.domain.Setting;
+import com.woowacourse.zzimkkong.domain.Settings;
+import com.woowacourse.zzimkkong.domain.Space;
+import com.woowacourse.zzimkkong.domain.TimeSlot;
 import com.woowacourse.zzimkkong.dto.member.LoginUserEmail;
-import com.woowacourse.zzimkkong.dto.reservation.*;
+import com.woowacourse.zzimkkong.dto.reservation.ReservationAuthenticationDto;
+import com.woowacourse.zzimkkong.dto.reservation.ReservationCreateDto;
+import com.woowacourse.zzimkkong.dto.reservation.ReservationCreateResponse;
+import com.woowacourse.zzimkkong.dto.reservation.ReservationEarlyStopDto;
+import com.woowacourse.zzimkkong.dto.reservation.ReservationFindAllDto;
+import com.woowacourse.zzimkkong.dto.reservation.ReservationFindAllResponse;
+import com.woowacourse.zzimkkong.dto.reservation.ReservationFindDto;
+import com.woowacourse.zzimkkong.dto.reservation.ReservationFindResponse;
+import com.woowacourse.zzimkkong.dto.reservation.ReservationInfiniteScrollResponse;
+import com.woowacourse.zzimkkong.dto.reservation.ReservationResponse;
+import com.woowacourse.zzimkkong.dto.reservation.ReservationUpdateDto;
 import com.woowacourse.zzimkkong.dto.slack.SlackResponse;
 import com.woowacourse.zzimkkong.exception.map.NoSuchMapException;
 import com.woowacourse.zzimkkong.exception.member.NoSuchMemberException;
-import com.woowacourse.zzimkkong.exception.reservation.*;
+import com.woowacourse.zzimkkong.exception.reservation.DeleteExpiredReservationException;
+import com.woowacourse.zzimkkong.exception.reservation.DeleteReservationInUseException;
+import com.woowacourse.zzimkkong.exception.reservation.InvalidMaximumDurationTimeException;
+import com.woowacourse.zzimkkong.exception.reservation.InvalidMinimumDurationTimeException;
+import com.woowacourse.zzimkkong.exception.reservation.InvalidReservationEnableException;
+import com.woowacourse.zzimkkong.exception.reservation.InvalidStartEndTimeException;
+import com.woowacourse.zzimkkong.exception.reservation.InvalidTimeUnitException;
+import com.woowacourse.zzimkkong.exception.reservation.NoSuchReservationException;
+import com.woowacourse.zzimkkong.exception.reservation.ReservationAlreadyExistsException;
 import com.woowacourse.zzimkkong.exception.setting.MultipleSettingsException;
 import com.woowacourse.zzimkkong.exception.setting.NoSettingAvailableException;
 import com.woowacourse.zzimkkong.exception.space.NoSuchSpaceException;
@@ -15,7 +40,11 @@ import com.woowacourse.zzimkkong.infrastructure.sharingid.SharingIdGenerator;
 import com.woowacourse.zzimkkong.repository.MapRepository;
 import com.woowacourse.zzimkkong.repository.MemberRepository;
 import com.woowacourse.zzimkkong.repository.ReservationRepository;
-import com.woowacourse.zzimkkong.service.strategy.*;
+import com.woowacourse.zzimkkong.service.strategy.ExcludeReservationCreateStrategy;
+import com.woowacourse.zzimkkong.service.strategy.ExcludeReservationStrategy;
+import com.woowacourse.zzimkkong.service.strategy.ExcludeReservationUpdateStrategy;
+import com.woowacourse.zzimkkong.service.strategy.ReservationStrategies;
+import com.woowacourse.zzimkkong.service.strategy.ReservationStrategy;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Service;
@@ -217,6 +246,33 @@ public class ReservationService {
         map.activateSharingMapId(sharingIdGenerator);
 
         return SlackResponse.of(reservation, map);
+    }
+
+    public SlackResponse earlyStop(final ReservationEarlyStopDto reservationEarlyStopDto) {
+        ReservationStrategy reservationStrategy = reservationStrategies.getStrategyByReservationType(reservationEarlyStopDto.getReservationType());
+        Long mapId = reservationEarlyStopDto.getMapId();
+        LoginUserEmail loginUserEmail = reservationEarlyStopDto.getLoginUserEmail();
+
+        Map map = maps.findByIdFetch(mapId)
+                .orElseThrow(NoSuchMapException::new);
+        reservationStrategy.validateManagerOfMap(map, loginUserEmail);
+
+        Long reservationId = reservationEarlyStopDto.getReservationId();
+        Reservation reservation = reservations.findById(reservationId)
+                .orElseThrow(NoSuchReservationException::new);
+        reservationStrategy.validateOwnerOfReservation(reservation, reservationEarlyStopDto.getPassword(), loginUserEmail);
+
+        LocalDateTime now = LocalDateTime.now();
+
+        reservation.doEarlyClose(now, map);
+
+        map.activateSharingMapId(sharingIdGenerator);
+
+        return SlackResponse.of(reservation, map);
+    }
+
+    private int floorByFiveMinutes(final LocalDateTime baseTime) {
+        return baseTime.getMinute() / 5 * 5;
     }
 
     public SlackResponse deleteReservation(final ReservationAuthenticationDto reservationAuthenticationDto) {

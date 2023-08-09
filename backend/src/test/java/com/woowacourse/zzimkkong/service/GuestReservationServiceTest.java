@@ -26,7 +26,6 @@ import java.util.List;
 import java.util.Optional;
 
 import static com.woowacourse.zzimkkong.Constants.*;
-import static com.woowacourse.zzimkkong.infrastructure.datetime.TimeZoneUtils.UTC;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
