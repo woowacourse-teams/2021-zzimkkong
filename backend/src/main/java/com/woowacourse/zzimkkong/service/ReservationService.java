@@ -9,6 +9,7 @@ import com.woowacourse.zzimkkong.domain.Setting;
 import com.woowacourse.zzimkkong.domain.Settings;
 import com.woowacourse.zzimkkong.domain.Space;
 import com.woowacourse.zzimkkong.domain.TimeSlot;
+import com.woowacourse.zzimkkong.domain.TimeUnit;
 import com.woowacourse.zzimkkong.dto.member.LoginUserEmail;
 import com.woowacourse.zzimkkong.dto.reservation.ReservationAuthenticationDto;
 import com.woowacourse.zzimkkong.dto.reservation.ReservationCreateDto;
@@ -272,7 +273,9 @@ public class ReservationService {
             throw new NotCurrentReservationException();
         }
 
-        if (ChronoUnit.MINUTES.between(reservation.getStartTime(), LocalTime.now()) < 5L) {
+        TimeUnit reservationTimeUnit = reservation.getReservationTimeUnit();
+
+        if (ChronoUnit.MINUTES.between(reservation.getStartTime(), now) < reservationTimeUnit.getMinutes()) {
             throw new InvalidMinimumDurationTimeInEarlyStopException();
         }
 
@@ -283,7 +286,7 @@ public class ReservationService {
                                 reservation.getDate(),
                                 LocalTime.of(
                                         reservation.getEndTime().getHour(),
-                                        floorByFiveMinutes(LocalDateTime.now())
+                                        floorByFiveMinutes(now)
                                 )
                         ),
                         map.getServiceZone(),

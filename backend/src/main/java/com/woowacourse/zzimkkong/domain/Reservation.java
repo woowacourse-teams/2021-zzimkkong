@@ -1,10 +1,22 @@
 package com.woowacourse.zzimkkong.domain;
 
+import com.woowacourse.zzimkkong.exception.setting.NoMatchingSettingException;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import javax.persistence.*;
+import javax.persistence.Column;
+import javax.persistence.Embedded;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.ForeignKey;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.Index;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.Table;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -144,5 +156,15 @@ public class Reservation {
             return this.member.getUserName();
         }
         return this.userName;
+    }
+
+    public TimeUnit getReservationTimeUnit() {
+        Setting setting = space.getSpaceSettings().getSettings()
+                .stream()
+                .filter(it -> it.supports(getTimeSlot(), getDayOfWeek()))
+                .findFirst()
+                .orElseThrow(NoMatchingSettingException::new);
+
+        return setting.getReservationTimeUnit();
     }
 }
