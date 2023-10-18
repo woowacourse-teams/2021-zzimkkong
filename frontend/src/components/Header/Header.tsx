@@ -19,8 +19,8 @@ const Header = ({ onClickLogin }: HeaderProps): JSX.Element => {
   const location = useLocation();
   const history = useHistory();
   const { accessToken, resetAccessToken } = useContext(AccessTokenContext);
-
   const params = useParams<Params>();
+  const isGuestPath = location.pathname.includes('/guest');
   const sharingMapId = params?.sharingMapId;
 
   const getHeaderLinkPath = () => {
@@ -28,7 +28,7 @@ const Header = ({ onClickLogin }: HeaderProps): JSX.Element => {
 
     if (!accessToken) return PATH.MAIN;
 
-    if (location.pathname.includes('/guest')) return PATH.GUEST_MAIN;
+    if (isGuestPath) return PATH.GUEST_MAIN;
 
     return PATH.MANAGER_MAP_LIST;
   };
@@ -63,15 +63,19 @@ const Header = ({ onClickLogin }: HeaderProps): JSX.Element => {
           ) : (
             <>
               <Styled.TextLink to={PATH.GUEST_NON_LOGIN_RESERVATION_SEARCH}>
-                비회원 예약 조회
+                예약 조회
               </Styled.TextLink>
-              <Styled.TextLink
-                to={sharingMapId ? HREF.GUEST_MAP(sharingMapId) : PATH.LOGIN}
-                onClick={onClickLogin}
-              >
-                로그인
-              </Styled.TextLink>
-              <Styled.TextLink to={PATH.MANAGER_JOIN}>회원가입</Styled.TextLink>
+              {!isGuestPath && (
+                <>
+                  <Styled.TextLink
+                    to={sharingMapId ? HREF.GUEST_MAP(sharingMapId) : PATH.LOGIN}
+                    onClick={onClickLogin}
+                  >
+                    로그인
+                  </Styled.TextLink>
+                  <Styled.TextLink to={PATH.MANAGER_JOIN}>회원가입</Styled.TextLink>
+                </>
+              )}
             </>
           )}
         </Styled.ButtonContainer>
