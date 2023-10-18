@@ -56,6 +56,8 @@ const Header = ({ onClickLogin }: HeaderProps): JSX.Element => {
           <Styled.Title>찜꽁</Styled.Title>
         </Styled.HeaderLink>
         <Styled.ButtonContainer>
+          <Styled.TextLink to={PATH.JAMSIL_CAMPUS_MAP}>잠실 캠퍼스</Styled.TextLink>
+          <Styled.TextLink to={PATH.SEOLLEUNG_CAMPUS_MAP}>선릉 캠퍼스</Styled.TextLink>
           {accessToken ? (
             <Styled.TextButton variant="text" onClick={handleLogout}>
               로그아웃

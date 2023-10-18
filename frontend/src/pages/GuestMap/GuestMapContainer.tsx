@@ -10,6 +10,7 @@ import * as Styled from './GuestMap.styles';
 import GuestMapFormProvider from './providers/GuestMapFormProvider';
 
 const GuestMapContainer = () => {
+  // TODO: sharingMapId가 jamsil, seolleung등 고정값에 대한 대응이 필요함
   const { sharingMapId } = useParams<GuestPageURLParams>();
   const history = useHistory();
 

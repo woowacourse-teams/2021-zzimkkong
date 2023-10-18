@@ -53,6 +53,8 @@ const PATH = {
     'state=state_parameter_passthrough_value&' +
     `redirect_uri=${REDIRECT_URI}/login/oauth/google&` +
     `client_id=${GOOGLE_OAUTH_KEY}`,
+  JAMSIL_CAMPUS_MAP: '/guest/jamsil',
+  SEOLLEUNG_CAMPUS_MAP: '/guest/seolleung',
 };
 
 export const HREF = {
