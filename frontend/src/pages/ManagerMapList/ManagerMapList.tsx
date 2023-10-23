@@ -49,8 +49,6 @@ const ManagerMapList = (): JSX.Element => {
         defaultTabLabel={TAB_LABEL.MANAGER}
         onClick={(selectedTab) => history.push(TAB_PATH_FOR_LABEL[selectedTab])}
       >
-        <MemberInfo />
-
         <Styled.MapListContainer>
           <Styled.MapListTitle>나의 맵</Styled.MapListTitle>
 
