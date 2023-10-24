@@ -2,7 +2,7 @@ import { AxiosError } from 'axios';
 import React from 'react';
 import { useMutation } from 'react-query';
 import { useHistory } from 'react-router-dom';
-import { deleteMap } from 'api/managerMap';
+import { deleteMapV2 } from 'api-v2/managerMap';
 import { ReactComponent as DeleteIcon } from 'assets/svg/delete.svg';
 import Header from 'components/Header/Header';
 import IconButton from 'components/IconButton/IconButton';
@@ -25,7 +25,7 @@ const ManagerMapList = (): JSX.Element => {
     },
   });
 
-  const removeMap = useMutation(deleteMap, {
+  const removeMap = useMutation(deleteMapV2, {
     onSuccess: () => {
       alert(MESSAGE.MANAGER_MAIN.MAP_DELETED);
     },
