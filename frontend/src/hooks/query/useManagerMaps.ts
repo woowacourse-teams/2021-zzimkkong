@@ -1,16 +1,17 @@
 import { AxiosError, AxiosResponse } from 'axios';
 import { QueryKey, useQuery, UseQueryOptions, UseQueryResult } from 'react-query';
-import { queryManagerMaps } from 'api/managerMap';
-import { ErrorResponse, QueryManagerMapsSuccess } from 'types/response';
+import { queryManagerMapsV2 } from 'api-v2/managerMap';
+import { ErrorResponse } from 'types/response';
+import { QueryManagerMapsSuccessV2 } from 'types/response-v2';
 
-const useManagerMaps = <TData = AxiosResponse<QueryManagerMapsSuccess>>(
+const useManagerMaps = <TData = AxiosResponse<QueryManagerMapsSuccessV2>>(
   options?: UseQueryOptions<
-    AxiosResponse<QueryManagerMapsSuccess>,
+    AxiosResponse<QueryManagerMapsSuccessV2>,
     AxiosError<ErrorResponse>,
     TData,
     [QueryKey]
   >
 ): UseQueryResult<TData, AxiosError<ErrorResponse>> =>
-  useQuery(['getManagerMaps'], queryManagerMaps, options);
+  useQuery(['getManagerMaps'], queryManagerMapsV2, { ...options });
 
 export default useManagerMaps;
