@@ -6,11 +6,8 @@ import { deleteMap } from 'api/managerMap';
 import { ReactComponent as DeleteIcon } from 'assets/svg/delete.svg';
 import Header from 'components/Header/Header';
 import IconButton from 'components/IconButton/IconButton';
-import MapNoticeButton from 'components/ManagerIconButtons/MapNoticeButton';
-import ShareLinkButton from 'components/ManagerIconButtons/ShareLinkButton';
 import SlackNotiButton from 'components/ManagerIconButtons/SlackNotiButton';
 import MapListItem from 'components/MapListItem/MapListItem';
-import MemberInfo from 'components/MemberInfo/MemberInfo';
 import TabLayout from 'components/TabLayout/TabLayout';
 import MESSAGE from 'constants/message';
 import PATH, { HREF } from 'constants/path';
@@ -50,7 +47,7 @@ const ManagerMapList = (): JSX.Element => {
         onClick={(selectedTab) => history.push(TAB_PATH_FOR_LABEL[selectedTab])}
       >
         <Styled.MapListContainer>
-          <Styled.MapListTitle>나의 맵</Styled.MapListTitle>
+          <Styled.MapListTitle>맵 리스트</Styled.MapListTitle>
 
           <Styled.MapList role="list">
             {maps?.data.maps.map((map) => (
@@ -60,8 +57,6 @@ const ManagerMapList = (): JSX.Element => {
                 onClick={() => history.push(HREF.MANAGER_MAP_DETAIL(map.mapId))}
                 control={
                   <>
-                    <ShareLinkButton map={map} />
-                    <MapNoticeButton map={map} />
                     <SlackNotiButton map={map} />
                     <IconButton onClick={() => handleMapRemove(map.mapId)}>
                       <DeleteIcon width="24" height="24" />
