@@ -10,7 +10,7 @@ import Layout from 'components/Layout/Layout';
 import { BOARD } from 'constants/editor';
 import MESSAGE from 'constants/message';
 import PATH, { HREF } from 'constants/path';
-import useManagerMap from 'hooks/query/useManagerMap';
+import useManagerMapV2 from 'hooks/query-v2/useManagerMapV2';
 import useManagerSpaces from 'hooks/query/useManagerSpaces';
 import useInputs from 'hooks/useInputs';
 import { Area, ManagerSpace, MapDrawing, MapElement } from 'types/common';
@@ -56,7 +56,7 @@ const ManagerMapEditor = (): JSX.Element => {
     }
   }, [managerSpaces.data?.data.spaces]);
 
-  useManagerMap(
+  useManagerMapV2(
     { mapId: Number(mapId) },
     {
       enabled: isEdit,
