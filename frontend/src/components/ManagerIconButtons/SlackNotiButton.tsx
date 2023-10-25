@@ -10,11 +10,12 @@ import Modal from 'components/Modal/Modal';
 import MESSAGE from 'constants/message';
 import useInput from 'hooks/useInput';
 import useSlackWebhookUrl from 'pages/ManagerMapDetail/hooks/useSlackWebhookUrl';
-import { ErrorResponse, QueryManagerMapSuccess } from 'types/response';
+import { ErrorResponse } from 'types/response';
+import { QueryManagerMapSuccessV2 } from 'types/response-v2';
 import * as Styled from './ManagerIconButton.styled';
 
 interface Props extends ComponentProps<typeof IconButton> {
-  map: QueryManagerMapSuccess;
+  map: QueryManagerMapSuccessV2;
 }
 
 const SlackNotiButton = ({ map, ...props }: Props): JSX.Element => {
