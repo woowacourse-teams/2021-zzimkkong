@@ -12,14 +12,14 @@ import TabLayout from 'components/TabLayout/TabLayout';
 import MESSAGE from 'constants/message';
 import PATH, { HREF } from 'constants/path';
 import { TAB_LABEL, TAB_LIST, TAB_PATH_FOR_LABEL } from 'constants/tab';
-import useManagerMaps from 'hooks/query/useManagerMaps';
+import useManagerMapsV2 from 'hooks/query-v2/useManagerMapsV2';
 import { ErrorResponse } from 'types/response';
 import * as Styled from './ManagerMapList.styles';
 
 const ManagerMapList = (): JSX.Element => {
   const history = useHistory();
 
-  const { data: maps } = useManagerMaps({
+  const { data: maps } = useManagerMapsV2({
     onError: (error: AxiosError<ErrorResponse>) => {
       alert(error.response?.data.message ?? MESSAGE.MANAGER_MAIN.UNEXPECTED_GET_DATA_ERROR);
     },
