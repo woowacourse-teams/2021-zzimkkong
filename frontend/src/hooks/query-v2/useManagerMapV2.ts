@@ -13,6 +13,6 @@ const useManagerMapV2 = <TData = AxiosResponse<QueryManagerMapSuccessV2>>(
     [QueryKey, QueryManagerMapParamsV2]
   >
 ): UseQueryResult<TData, AxiosError<ErrorResponse>> =>
-  useQuery(['getManagerMap', { mapId }], queryManagerMapV2, { ...options });
+  useQuery(['getManagerMapV2', { mapId }], queryManagerMapV2, { ...options });
 
 export default useManagerMapV2;
