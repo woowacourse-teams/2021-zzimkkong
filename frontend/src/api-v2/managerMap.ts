@@ -14,6 +14,14 @@ interface PostMapParamsV2 {
   slackUrl: string;
 }
 
+interface PutMapParamsV2 {
+  mapId: number;
+  mapName: string;
+  mapDrawing: string;
+  thumbnail: string;
+  slackUrl: string;
+}
+
 export const queryManagerMapV2: QueryFunction<
   AxiosResponse<QueryManagerMapSuccessV2>,
   [QueryKey, QueryManagerMapParamsV2]
@@ -31,3 +39,12 @@ export const postMapV2 = ({
   slackUrl,
 }: PostMapParamsV2): Promise<AxiosResponse<never>> =>
   apiV2.post('/api/maps', { mapName, mapDrawing, thumbnail, slackUrl });
+
+export const putMapV2 = ({
+  mapId,
+  mapName,
+  mapDrawing,
+  thumbnail,
+  slackUrl,
+}: PutMapParamsV2): Promise<AxiosResponse<never>> =>
+  apiV2.put(`/api/maps/${mapId}`, { mapName, mapDrawing, thumbnail, slackUrl });

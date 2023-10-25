@@ -2,8 +2,7 @@ import { AxiosError } from 'axios';
 import React, { createRef, useMemo, useState } from 'react';
 import { useMutation } from 'react-query';
 import { useHistory, useParams } from 'react-router';
-import { postMapV2 } from 'api-v2/managerMap';
-import { postMap, putMap } from 'api/managerMap';
+import { postMapV2, putMapV2 } from 'api-v2/managerMap';
 import Button from 'components/Button/Button';
 import EditorOverlay from 'components/EditorOverlay/EditorOverlay';
 import Header from 'components/Header/Header';
@@ -42,6 +41,7 @@ const ManagerMapEditor = (): JSX.Element => {
     width: `${BOARD.DEFAULT_WIDTH}`,
     height: `${BOARD.DEFAULT_HEIGHT}`,
   });
+  const [mapSlackUrl, setMapSlackUrl] = useState('');
 
   const managerSpaces = useManagerSpaces({ mapId: Number(mapId) }, { enabled: isEdit });
   const spaces: ManagerSpace[] = useMemo(() => {
@@ -63,8 +63,8 @@ const ManagerMapEditor = (): JSX.Element => {
       enabled: isEdit,
       refetchOnWindowFocus: false,
       onSuccess: ({ data }) => {
-        const { mapName, mapDrawing } = data;
-
+        const { mapName, mapDrawing, slackUrl } = data;
+        setMapSlackUrl(slackUrl);
         try {
           const { mapElements, width, height } = JSON.parse(mapDrawing) as MapDrawing;
           const mapElementsWithRef = mapElements.map((element) => ({
@@ -103,7 +103,7 @@ const ManagerMapEditor = (): JSX.Element => {
     },
   });
 
-  const updateMap = useMutation(putMap, {
+  const updateMap = useMutation(putMapV2, {
     onSuccess: () => {
       alert(MESSAGE.MANAGER_MAP.UPDATE_SUCCESS);
     },
@@ -137,12 +137,18 @@ const ManagerMapEditor = (): JSX.Element => {
     });
 
     if (isEdit) {
-      updateMap.mutate({ mapId: Number(mapId), mapName: name, mapDrawing, thumbnail });
+      updateMap.mutate({
+        mapId: Number(mapId),
+        mapName: name,
+        mapDrawing,
+        thumbnail,
+        slackUrl: mapSlackUrl,
+      });
 
       return;
     }
 
-    createMap.mutate({ mapName: name, mapDrawing, thumbnail, slackUrl: '' });
+    createMap.mutate({ mapName: name, mapDrawing, thumbnail, slackUrl: mapSlackUrl });
   };
 
   return (
