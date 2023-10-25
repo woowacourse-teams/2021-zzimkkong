@@ -2,6 +2,7 @@ import { AxiosError } from 'axios';
 import React, { createRef, useMemo, useState } from 'react';
 import { useMutation } from 'react-query';
 import { useHistory, useParams } from 'react-router';
+import { postMapV2 } from 'api-v2/managerMap';
 import { postMap, putMap } from 'api/managerMap';
 import Button from 'components/Button/Button';
 import EditorOverlay from 'components/EditorOverlay/EditorOverlay';
@@ -84,7 +85,7 @@ const ManagerMapEditor = (): JSX.Element => {
     }
   );
 
-  const createMap = useMutation(postMap, {
+  const createMap = useMutation(postMapV2, {
     onSuccess: (response) => {
       const headers = response.headers as { location: string };
       const mapId = Number(headers.location.split('/').pop());
@@ -141,7 +142,7 @@ const ManagerMapEditor = (): JSX.Element => {
       return;
     }
 
-    createMap.mutate({ mapName: name, mapDrawing, thumbnail });
+    createMap.mutate({ mapName: name, mapDrawing, thumbnail, slackUrl: '' });
   };
 
   return (

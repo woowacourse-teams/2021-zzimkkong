@@ -7,6 +7,13 @@ export interface QueryManagerMapParamsV2 {
   mapId: number;
 }
 
+interface PostMapParamsV2 {
+  mapName: string;
+  mapDrawing: string;
+  thumbnail: string;
+  slackUrl: string;
+}
+
 export const queryManagerMapV2: QueryFunction<
   AxiosResponse<QueryManagerMapSuccessV2>,
   [QueryKey, QueryManagerMapParamsV2]
@@ -16,3 +23,11 @@ export const queryManagerMapV2: QueryFunction<
 
   return apiV2.get(`/api/maps/${mapId}`);
 };
+
+export const postMapV2 = ({
+  mapName,
+  mapDrawing,
+  thumbnail,
+  slackUrl,
+}: PostMapParamsV2): Promise<AxiosResponse<never>> =>
+  apiV2.post('/api/maps', { mapName, mapDrawing, thumbnail, slackUrl });
