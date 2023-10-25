@@ -164,7 +164,6 @@ const ManagerMapDetail = (): JSX.Element => {
                 <IconButton text="공간 편집" size="small" onClick={handleClickSpaceEditorIcon}>
                   <SpaceEditorIcon width="100%" height="100%" />
                 </IconButton>
-                <Styled.VerticalBar />
               </>
             )
           }
