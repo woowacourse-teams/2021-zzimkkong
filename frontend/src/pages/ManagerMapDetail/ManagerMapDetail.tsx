@@ -11,13 +11,11 @@ import DateInput from 'components/DateInput/DateInput';
 import Header from 'components/Header/Header';
 import IconButton from 'components/IconButton/IconButton';
 import Layout from 'components/Layout/Layout';
-import MapNoticeButton from 'components/ManagerIconButtons/MapNoticeButton';
-import ShareLinkButton from 'components/ManagerIconButtons/ShareLinkButton';
 import SlackNotiButton from 'components/ManagerIconButtons/SlackNotiButton';
 import PageHeader from 'components/PageHeader/PageHeader';
 import MESSAGE from 'constants/message';
 import PATH, { HREF } from 'constants/path';
-import useManagerMap from 'hooks/query/useManagerMap';
+import useManagerMapV2 from 'hooks/query-v2/useManagerMapV2';
 import useManagerMapReservations from 'hooks/query/useManagerMapReservations';
 import useManagerSpaces from 'hooks/query/useManagerSpaces';
 import { Reservation } from 'types/common';
@@ -41,7 +39,7 @@ const ManagerMapDetail = (): JSX.Element => {
 
   const [date, setDate] = useState(targetDate ?? dayjs().tz());
 
-  const getMap = useManagerMap(
+  const getMap = useManagerMapV2(
     { mapId: mapId },
     {
       enabled: !isNullish(mapId),
@@ -158,7 +156,6 @@ const ManagerMapDetail = (): JSX.Element => {
           rightButtons={
             getMap.data?.data != null && (
               <>
-                <MapNoticeButton text="공지사항" size="small" map={getMap.data.data} />
                 <SlackNotiButton text="알림 설정" size="small" map={getMap.data.data} />
                 <Styled.VerticalBar />
                 <IconButton text="맵 편집" size="small" onClick={handleClickMapEditorIcon}>
@@ -167,8 +164,6 @@ const ManagerMapDetail = (): JSX.Element => {
                 <IconButton text="공간 편집" size="small" onClick={handleClickSpaceEditorIcon}>
                   <SpaceEditorIcon width="100%" height="100%" />
                 </IconButton>
-                <Styled.VerticalBar />
-                <ShareLinkButton text="공유 링크" size="small" map={getMap.data.data} />
               </>
             )
           }
