@@ -1,11 +1,11 @@
 import { ReactNode } from 'react';
 import { theme } from 'App.styles';
 import { ReactComponent as CaretIcon } from 'assets/svg/caret-right.svg';
-import { MapItemResponse } from 'types/response';
+import { MapItemResponseV2 } from 'types/response-v2';
 import * as Styled from './MapListItem.styles';
 
 export interface Props {
-  map: MapItemResponse;
+  map: MapItemResponseV2;
   control?: ReactNode;
   onClick?: () => void;
 }
