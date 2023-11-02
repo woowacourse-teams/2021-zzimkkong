@@ -10,13 +10,15 @@ import Modal from 'components/Modal/Modal';
 import MESSAGE from 'constants/message';
 import useInput from 'hooks/useInput';
 import useSlackWebhookUrl from 'pages/ManagerMapDetail/hooks/useSlackWebhookUrl';
-import { ErrorResponse, QueryManagerMapSuccess } from 'types/response';
+import { ErrorResponse } from 'types/response';
+import { QueryManagerMapSuccessV2 } from 'types/response-v2';
 import * as Styled from './ManagerIconButton.styled';
 
 interface Props extends ComponentProps<typeof IconButton> {
-  map: QueryManagerMapSuccess;
+  map: QueryManagerMapSuccessV2;
 }
 
+// TODO: 슬랙 API 개발시 이부분 API 요청 변경해야함.
 const SlackNotiButton = ({ map, ...props }: Props): JSX.Element => {
   const [isModalOpened, setIsModalOpened] = useState(false);
   const [slackUrl, onChangeSlackUrl, setSlackUrl] = useInput();

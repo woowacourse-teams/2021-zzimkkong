@@ -6,4 +6,9 @@ export interface MapItemResponseV2
   slackUrl: string;
 }
 
+export interface QueryManagerMapsSuccessV2 {
+  maps: MapItemResponseV2[];
+  organization: string;
+}
+
 export type QueryManagerMapSuccessV2 = MapItemResponseV2;

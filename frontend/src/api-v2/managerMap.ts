@@ -22,6 +22,10 @@ interface PutMapParamsV2 {
   slackUrl: string;
 }
 
+interface DeleteMapParamsV2 {
+  mapId: number;
+}
+
 export const queryManagerMapV2: QueryFunction<
   AxiosResponse<QueryManagerMapSuccessV2>,
   [QueryKey, QueryManagerMapParamsV2]
@@ -31,6 +35,9 @@ export const queryManagerMapV2: QueryFunction<
 
   return apiV2.get(`/api/maps/${mapId}`);
 };
+
+export const queryManagerMapsV2: QueryFunction<AxiosResponse<QueryManagerMapsSuccessV2>> = () =>
+  apiV2.get('/api/maps');
 
 export const postMapV2 = ({
   mapName,
@@ -48,3 +55,6 @@ export const putMapV2 = ({
   slackUrl,
 }: PutMapParamsV2): Promise<AxiosResponse<never>> =>
   apiV2.put(`/api/maps/${mapId}`, { mapName, mapDrawing, thumbnail, slackUrl });
+
+export const deleteMapV2 = ({ mapId }: DeleteMapParamsV2): Promise<AxiosResponse<never>> =>
+  apiV2.delete(`/api/maps/${mapId}`);
