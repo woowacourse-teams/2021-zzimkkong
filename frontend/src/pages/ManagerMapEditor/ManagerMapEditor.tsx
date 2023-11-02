@@ -2,7 +2,7 @@ import { AxiosError } from 'axios';
 import React, { createRef, useMemo, useState } from 'react';
 import { useMutation } from 'react-query';
 import { useHistory, useParams } from 'react-router';
-import { postMap, putMap } from 'api/managerMap';
+import { postMapV2, putMapV2 } from 'api-v2/managerMap';
 import Button from 'components/Button/Button';
 import EditorOverlay from 'components/EditorOverlay/EditorOverlay';
 import Header from 'components/Header/Header';
@@ -10,7 +10,7 @@ import Layout from 'components/Layout/Layout';
 import { BOARD } from 'constants/editor';
 import MESSAGE from 'constants/message';
 import PATH, { HREF } from 'constants/path';
-import useManagerMap from 'hooks/query/useManagerMap';
+import useManagerMapV2 from 'hooks/query-v2/useManagerMapV2';
 import useManagerSpaces from 'hooks/query/useManagerSpaces';
 import useInputs from 'hooks/useInputs';
 import { Area, ManagerSpace, MapDrawing, MapElement } from 'types/common';
@@ -41,6 +41,7 @@ const ManagerMapEditor = (): JSX.Element => {
     width: `${BOARD.DEFAULT_WIDTH}`,
     height: `${BOARD.DEFAULT_HEIGHT}`,
   });
+  const [mapSlackUrl, setMapSlackUrl] = useState('');
 
   const managerSpaces = useManagerSpaces({ mapId: Number(mapId) }, { enabled: isEdit });
   const spaces: ManagerSpace[] = useMemo(() => {
@@ -56,14 +57,14 @@ const ManagerMapEditor = (): JSX.Element => {
     }
   }, [managerSpaces.data?.data.spaces]);
 
-  useManagerMap(
+  useManagerMapV2(
     { mapId: Number(mapId) },
     {
       enabled: isEdit,
       refetchOnWindowFocus: false,
       onSuccess: ({ data }) => {
-        const { mapName, mapDrawing } = data;
-
+        const { mapName, mapDrawing, slackUrl } = data;
+        setMapSlackUrl(slackUrl);
         try {
           const { mapElements, width, height } = JSON.parse(mapDrawing) as MapDrawing;
           const mapElementsWithRef = mapElements.map((element) => ({
@@ -84,7 +85,7 @@ const ManagerMapEditor = (): JSX.Element => {
     }
   );
 
-  const createMap = useMutation(postMap, {
+  const createMap = useMutation(postMapV2, {
     onSuccess: (response) => {
       const headers = response.headers as { location: string };
       const mapId = Number(headers.location.split('/').pop());
@@ -102,7 +103,7 @@ const ManagerMapEditor = (): JSX.Element => {
     },
   });
 
-  const updateMap = useMutation(putMap, {
+  const updateMap = useMutation(putMapV2, {
     onSuccess: () => {
       alert(MESSAGE.MANAGER_MAP.UPDATE_SUCCESS);
     },
@@ -136,12 +137,18 @@ const ManagerMapEditor = (): JSX.Element => {
     });
 
     if (isEdit) {
-      updateMap.mutate({ mapId: Number(mapId), mapName: name, mapDrawing, thumbnail });
+      updateMap.mutate({
+        mapId: Number(mapId),
+        mapName: name,
+        mapDrawing,
+        thumbnail,
+        slackUrl: mapSlackUrl,
+      });
 
       return;
     }
 
-    createMap.mutate({ mapName: name, mapDrawing, thumbnail });
+    createMap.mutate({ mapName: name, mapDrawing, thumbnail, slackUrl: mapSlackUrl });
   };
 
   return (

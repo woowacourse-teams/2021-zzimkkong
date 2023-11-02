@@ -6,7 +6,7 @@ import { ErrorResponse } from 'types/response';
 import { QueryManagerMapSuccessV2 } from 'types/response-v2';
 
 const useManagerMapV2 = <TData = AxiosResponse<QueryManagerMapSuccessV2>>(
-  { mapId }: QueryManagerMapParams,
+  { mapId }: QueryManagerMapParamsV2,
   options?: UseQueryOptions<
     AxiosResponse<QueryManagerMapSuccessV2>,
     AxiosError<ErrorResponse>,

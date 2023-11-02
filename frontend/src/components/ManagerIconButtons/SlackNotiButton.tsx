@@ -18,6 +18,7 @@ interface Props extends ComponentProps<typeof IconButton> {
   map: QueryManagerMapSuccessV2;
 }
 
+// TODO: 슬랙 API 개발시 이부분 API 요청 변경해야함.
 const SlackNotiButton = ({ map, ...props }: Props): JSX.Element => {
   const [isModalOpened, setIsModalOpened] = useState(false);
   const [slackUrl, onChangeSlackUrl, setSlackUrl] = useInput();
