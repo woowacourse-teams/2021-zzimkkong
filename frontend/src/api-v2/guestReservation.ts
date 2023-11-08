@@ -1,6 +1,12 @@
 import { AxiosResponse } from 'axios';
 import apiV2 from './apiv2';
 
+interface DeleteGuestReservationParamsV2 {
+  mapId: number;
+  spaceId: number;
+  reservationId: number;
+  password?: string;
+}
 export interface GuestReservationParamsV2 {
   reservation: {
     startDateTime: string;
@@ -35,4 +41,14 @@ export const putGuestReservationV2 = ({
   spaceId,
   reservationId,
 }: PutGuestReservationParamsV2): Promise<AxiosResponse<never>> =>
-  apiV2.put(`/guests/maps/${mapId}/spaces/${spaceId}/reservations/${reservationId}`, reservation);
+  apiV2.put(`/api/maps/${mapId}/spaces/${spaceId}/reservations/${reservationId}`, reservation);
+
+export const deleteGuestReservationV2 = ({
+  mapId,
+  spaceId,
+  reservationId,
+  password,
+}: DeleteGuestReservationParamsV2): Promise<AxiosResponse<never>> =>
+  apiV2.delete(`/api/maps/${mapId}/spaces/${spaceId}/reservations/${reservationId}`, {
+    data: { password },
+  });
