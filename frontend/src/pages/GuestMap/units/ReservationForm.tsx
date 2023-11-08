@@ -3,8 +3,8 @@ import dayjs from 'dayjs';
 import React, { useContext } from 'react';
 import { useMutation } from 'react-query';
 import { useHistory } from 'react-router-dom';
+import { postGuestReservationV2 } from 'api-v2/guestReservation';
 import {
-  postGuestReservation,
   PostGuestReservationParams,
   postMemberGuestReservation,
   PostMemberGuestReservationParams,
@@ -94,7 +94,7 @@ const ReservationForm = ({ map }: Props) => {
     },
   });
 
-  const addGuestReservation = useMutation(postGuestReservation, {
+  const addGuestReservation = useMutation(postGuestReservationV2, {
     onSuccess: onSuccessCreateReservation,
     onError: (error: AxiosError<ErrorResponse>) => {
       alert(error.response?.data.message ?? MESSAGE.RESERVATION.UNEXPECTED_ERROR);

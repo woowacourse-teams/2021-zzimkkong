@@ -3,7 +3,7 @@ import dayjs, { Dayjs } from 'dayjs';
 import { useContext, useEffect, useMemo, useRef, useState } from 'react';
 import { useMutation } from 'react-query';
 import { useHistory, useLocation, useParams } from 'react-router-dom';
-import { deleteGuestReservation } from 'api/guestReservation';
+import { deleteGuestReservationV2 } from 'api-v2/guestReservation';
 import Header from 'components/Header/Header';
 import MESSAGE from 'constants/message';
 import { HREF } from 'constants/path';
@@ -21,7 +21,6 @@ import Aside from './units/Aside';
 import GuestMapDrawing from './units/GuestMapDrawing';
 import LoginPopup from './units/LoginPopup';
 import PasswordInputModal from './units/PasswordInputModal';
-
 export const SWITCH_LABEL_LIST = ['예약하기', '예약현황'];
 
 export interface GuestMapState {
@@ -97,7 +96,7 @@ const GuestMap = ({ map }: GuestMapProps): JSX.Element => {
     }
   );
 
-  const removeReservation = useMutation(deleteGuestReservation, {
+  const removeReservation = useMutation(deleteGuestReservationV2, {
     onSuccess: () => {
       getReservations.refetch();
       window.alert(MESSAGE.RESERVATION.DELETE_SUCCESS);
