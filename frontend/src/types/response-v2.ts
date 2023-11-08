@@ -1,4 +1,4 @@
-import { MapItem } from './common';
+import { MapItem, SpaceReservation } from './common';
 
 export interface MapItemResponseV2
   extends Omit<MapItem, 'mapDrawing' | 'sharingMapId' | 'notice' | 'managerEmail'> {
@@ -12,3 +12,7 @@ export interface QueryManagerMapsSuccessV2 {
 }
 
 export type QueryManagerMapSuccessV2 = MapItemResponseV2;
+
+export interface QueryManagerMapReservationsSuccessV2 {
+  data: SpaceReservation[];
+}
