@@ -3,12 +3,11 @@ import dayjs from 'dayjs';
 import React, { useContext, useEffect } from 'react';
 import { useMutation } from 'react-query';
 import { useHistory, useLocation, useParams } from 'react-router-dom';
-import { postGuestReservationV2 } from 'api-v2/guestReservation';
+import { postGuestReservationV2, putGuestReservationV2 } from 'api-v2/guestReservation';
 import {
   GuestReservationParams,
   MemberGuestReservationParams,
   postMemberGuestReservation,
-  putGuestReservation,
   putMemberGuestReservation,
 } from 'api/guestReservation';
 import Header from 'components/Header/Header';
@@ -131,7 +130,7 @@ const GuestReservation = (): JSX.Element => {
     },
   });
 
-  const updateGuestReservation = useMutation(putGuestReservation, {
+  const updateGuestReservation = useMutation(putGuestReservationV2, {
     onSuccess: () => {
       history.push({
         pathname: HREF.GUEST_MAP(sharingMapId),

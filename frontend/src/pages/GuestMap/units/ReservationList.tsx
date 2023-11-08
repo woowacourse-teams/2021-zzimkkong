@@ -66,8 +66,6 @@ const ReservationList = ({
     setDate(e.target.value);
   };
 
-  console.log('spaceList', spaceList);
-
   const getSpaceOptions = () => {
     return (
       spaceList?.map((space) => ({
@@ -130,14 +128,14 @@ const ReservationList = ({
                 if (isPastTime(new Date(reservation.endDateTime))) {
                   return false;
                 }
+                // TODO: 속성이 없음!
+                // if (!accessToken && reservation.isLoginReservation) {
+                //   return false;
+                // }
 
-                if (!accessToken && reservation.isLoginReservation) {
-                  return false;
-                }
-
-                if (accessToken && !reservation.isMyReservation) {
-                  return false;
-                }
+                // if (accessToken && !reservation.isMyReservation) {
+                //   return false;
+                // }
 
                 return true;
               })();
