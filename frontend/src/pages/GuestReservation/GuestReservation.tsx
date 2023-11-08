@@ -3,10 +3,10 @@ import dayjs from 'dayjs';
 import React, { useContext, useEffect } from 'react';
 import { useMutation } from 'react-query';
 import { useHistory, useLocation, useParams } from 'react-router-dom';
+import { postGuestReservationV2 } from 'api-v2/guestReservation';
 import {
   GuestReservationParams,
   MemberGuestReservationParams,
-  postGuestReservation,
   postMemberGuestReservation,
   putGuestReservation,
   putMemberGuestReservation,
@@ -81,7 +81,7 @@ const GuestReservation = (): JSX.Element => {
   );
   const reservations = getReservations.data?.data?.reservations ?? [];
 
-  const addGuestReservation = useMutation(postGuestReservation, {
+  const addGuestReservation = useMutation(postGuestReservationV2, {
     onSuccess: (_, { reservation }) => {
       if (getSpace.data?.data == null) {
         return;
