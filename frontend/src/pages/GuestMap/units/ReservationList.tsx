@@ -9,6 +9,7 @@ import Input from 'components/Input/Input';
 import ManagerReservationListItem from 'components/ManagerReservationListItem/ManagerReservationListItem';
 import Select from 'components/Select/Select';
 import DATE from 'constants/date';
+import useGuestReservationsV2 from 'hooks/query-v2/useGuestReservationsV2';
 import useGuestReservations from 'hooks/query/useGuestReservations';
 import useGuestSpace from 'hooks/query/useGuestSpace';
 import { AccessTokenContext } from 'providers/AccessTokenProvider';
@@ -41,7 +42,7 @@ const ReservationList = ({
     data: reservations,
     isLoadingError,
     isSuccess,
-  } = useGuestReservations(
+  } = useGuestReservationsV2(
     {
       mapId: mapId,
       spaceId: +selectedSpaceId,

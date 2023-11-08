@@ -16,6 +16,10 @@ const useManagerMapReservationsV2 = <TData = AxiosResponse<QueryManagerMapReserv
     [QueryKey, QueryMapReservationsParamsV2]
   >
 ): UseQueryResult<TData, AxiosError<ErrorResponse>> =>
-  useQuery(['getManagerMapReservations', { mapId, date }], queryManagerMapReservationsV2, options);
+  useQuery(
+    ['getManagerMapReservationsV2', { mapId, date }],
+    queryManagerMapReservationsV2,
+    options
+  );
 
 export default useManagerMapReservationsV2;
