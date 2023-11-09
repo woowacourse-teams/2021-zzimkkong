@@ -52,8 +52,8 @@ const useTimePicker = ({
 } => {
   const [selectedTime, setSelectedTime] = useState<SelectedTime>(null);
   const [range, setRange] = useState<Range>({
-    start: initialStartTime ? generateDateToTime(dayjs(initialStartTime).tz(), step) : null,
-    end: initialEndTime ? generateDateToTime(dayjs(initialEndTime).tz(), step) : null,
+    start: initialStartTime ? generateDateToTime(dayjs(initialStartTime), step) : null,
+    end: initialEndTime ? generateDateToTime(dayjs(initialEndTime), step) : null,
   });
 
   const setInitialTime = (key: keyof Range) => {

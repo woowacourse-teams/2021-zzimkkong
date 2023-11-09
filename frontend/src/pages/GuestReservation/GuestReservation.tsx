@@ -8,7 +8,6 @@ import {
   GuestReservationParams,
   MemberGuestReservationParams,
   postMemberGuestReservation,
-  putMemberGuestReservation,
 } from 'api/guestReservation';
 import Header from 'components/Header/Header';
 import Layout from 'components/Layout/Layout';
@@ -17,8 +16,8 @@ import PageHeader from 'components/PageHeader/PageHeader';
 import DATE from 'constants/date';
 import MESSAGE from 'constants/message';
 import { HREF } from 'constants/path';
+import useGuestSpaceV2 from 'hooks/query-v2/useGuestSpaceV2';
 import useGuestReservations from 'hooks/query/useGuestReservations';
-import useGuestSpace from 'hooks/query/useGuestSpace';
 import useMember from 'hooks/query/useMember';
 import useInput from 'hooks/useInput';
 import { GuestMapState } from 'pages/GuestMap/GuestMap';
@@ -70,7 +69,7 @@ const GuestReservation = (): JSX.Element => {
   });
   const userName = member.data?.data.userName;
 
-  const getSpace = useGuestSpace({ mapId, spaceId }, { enabled: spaceId != null });
+  const getSpace = useGuestSpaceV2({ mapId, spaceId }, { enabled: spaceId != null });
 
   const getReservations = useGuestReservations(
     { mapId, spaceId, date },
@@ -146,7 +145,7 @@ const GuestReservation = (): JSX.Element => {
     },
   });
 
-  const updateMemberGuestReservation = useMutation(putMemberGuestReservation, {
+  const updateMemberGuestReservation = useMutation(putGuestReservationV2, {
     onSuccess: () => {
       history.push({
         pathname: HREF.GUEST_MAP(sharingMapId),

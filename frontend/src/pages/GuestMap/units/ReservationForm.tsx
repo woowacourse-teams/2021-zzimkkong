@@ -106,12 +106,8 @@ const ReservationForm = ({ map }: Props) => {
 
     if (timePicker?.range.start == null || timePicker?.range.end == null) return;
 
-    const startDateTime = `${formValues.date}T${formatTimeWithSecond(timePicker.range.start)}${
-      DATE.TIMEZONE_OFFSET
-    }`;
-    const endDateTime = `${formValues.date}T${formatTimeWithSecond(timePicker.range.end)}${
-      DATE.TIMEZONE_OFFSET
-    }`;
+    const startDateTime = `${formValues.date}T${formatTimeWithSecond(timePicker.range.start)}`;
+    const endDateTime = `${formValues.date}T${formatTimeWithSecond(timePicker.range.end)}`;
 
     accessToken
       ? addMemberGuestReservation.mutate({

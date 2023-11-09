@@ -1,4 +1,4 @@
-import React, { ChangeEventHandler, useMemo } from 'react';
+import React, { ChangeEventHandler } from 'react';
 import { ReactComponent as CalendarIcon } from 'assets/svg/calendar.svg';
 import Input from 'components/Input/Input';
 import TimePicker, { Step } from 'components/TimePicker/TimePicker';
@@ -6,18 +6,11 @@ import DATE from 'constants/date';
 import MESSAGE from 'constants/message';
 import REGEXP from 'constants/regexp';
 import RESERVATION from 'constants/reservation';
-import SPACE from 'constants/space';
 import useInputs from 'hooks/useInputs';
 import useScrollToTop from 'hooks/useScrollToTop';
 import useTimePicker from 'hooks/useTimePicker';
 import { Reservation, Space } from 'types/common';
-import {
-  convertSettingTimeToMinutes,
-  convertTimeToMinutes,
-  formatTimePrettier,
-  formatTimeWithSecond,
-  isPastDate,
-} from 'utils/datetime';
+import { formatTimePrettier, formatTimeWithSecond, isPastDate } from 'utils/datetime';
 import { EditGuestReservationParams } from '../GuestReservation';
 import * as Styled from './GuestReservationForm.styles';
 
@@ -49,32 +42,32 @@ const GuestReservationForm = ({
 }: Props): JSX.Element => {
   useScrollToTop();
 
-  const reservationTimeStep = useMemo(() => {
-    const startTime = convertTimeToMinutes(
-      reservation ? new Date(reservation.startDateTime) : new Date()
-    );
-    const endTime = convertTimeToMinutes(
-      reservation ? new Date(reservation.endDateTime) : new Date()
-    );
+  // const reservationTimeStep = useMemo(() => {
+  //   const startTime = convertTimeToMinutes(
+  //     reservation ? new Date(reservation.startDateTime) : new Date()
+  //   );
+  //   const endTime = convertTimeToMinutes(
+  //     reservation ? new Date(reservation.endDateTime) : new Date()
+  //   );
 
-    return Math.min(
-      ...space.settings
-        .filter((setting) => {
-          const settingStartTime = convertSettingTimeToMinutes(setting.settingStartTime);
-          const settingEndTime = convertSettingTimeToMinutes(setting.settingEndTime);
+  //   return Math.min(
+  //     ...space.settings
+  //       .filter((setting) => {
+  //         const settingStartTime = convertSettingTimeToMinutes(setting.settingStartTime);
+  //         const settingEndTime = convertSettingTimeToMinutes(setting.settingEndTime);
 
-          return (
-            (settingStartTime < startTime && settingEndTime < startTime) ||
-            (settingStartTime < endTime && settingEndTime > endTime)
-          );
-        })
-        .map(({ reservationTimeUnit }) => reservationTimeUnit),
-      SPACE.RESERVATION.MIN_STEP
-    );
-  }, [reservation, space.settings]);
+  //         return (
+  //           (settingStartTime < startTime && settingEndTime < startTime) ||
+  //           (settingStartTime < endTime && settingEndTime > endTime)
+  //         );
+  //       })
+  //       .map(({ reservationTimeUnit }) => reservationTimeUnit),
+  //     SPACE.RESERVATION.MIN_STEP
+  //   );
+  // }, [reservation, space.settings]);
 
   const { range, selectedTime, onClick, onChange, onCloseOptions } = useTimePicker({
-    step: reservationTimeStep as Step,
+    step: 10,
     initialStartTime: !!reservation ? new Date(reservation.startDateTime) : undefined,
     initialEndTime: !!reservation ? new Date(reservation.endDateTime) : undefined,
   });
@@ -90,8 +83,8 @@ const GuestReservationForm = ({
 
     if (range.start === null || range.end === null) return;
 
-    const startDateTime = `${date}T${formatTimeWithSecond(range.start)}${DATE.TIMEZONE_OFFSET}`;
-    const endDateTime = `${date}T${formatTimeWithSecond(range.end)}${DATE.TIMEZONE_OFFSET}`;
+    const startDateTime = `${date}T${formatTimeWithSecond(range.start)}`;
+    const endDateTime = `${date}T${formatTimeWithSecond(range.end)}`;
 
     onSubmit(event, {
       reservation: {

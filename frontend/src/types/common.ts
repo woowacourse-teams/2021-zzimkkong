@@ -70,6 +70,10 @@ export interface Space {
   settings: SpaceSetting[];
 }
 
+export interface SpaceV2 extends Omit<Space, 'settings'> {
+  settings: SpaceSettingV2[];
+}
+
 export interface Reservation {
   id: number;
   startDateTime: string;
@@ -114,6 +118,8 @@ export interface SpaceSetting {
   };
 }
 
+export type SpaceSettingV2 = Omit<SpaceSetting, 'reservationMinimumTimeUnit'>;
+
 export interface Preset {
   id: number;
   name: string;
@@ -143,6 +149,19 @@ export interface ManagerSpace {
 }
 
 export interface ManagerSpaceAPI extends Omit<ManagerSpace, 'area'> {
+  area: string;
+}
+
+export interface ManagerSpaceV2 {
+  id: number;
+  name: string;
+  color: Color;
+  area: Area;
+  reservationEnable: boolean;
+  settings: SpaceSettingV2[];
+}
+
+export interface ManagerSpaceAPIV2 extends Omit<ManagerSpaceV2, 'area'> {
   area: string;
 }
 

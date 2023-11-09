@@ -7,8 +7,8 @@ import { deleteGuestReservationV2 } from 'api-v2/guestReservation';
 import Header from 'components/Header/Header';
 import MESSAGE from 'constants/message';
 import { HREF } from 'constants/path';
+import useGuestSpacesV2 from 'hooks/query-v2/useGuestSpacesV2';
 import useGuestReservations from 'hooks/query/useGuestReservations';
-import useGuestSpaces from 'hooks/query/useGuestSpaces';
 import { AccessTokenContext } from 'providers/AccessTokenProvider';
 import { Area, MapItem, Reservation, ScrollPosition, Space } from 'types/common';
 import { GuestPageURLParams } from 'types/guest';
@@ -69,7 +69,7 @@ const GuestMap = ({ map }: GuestMapProps): JSX.Element => {
     return result;
   }, [spaceList]);
 
-  useGuestSpaces(
+  useGuestSpacesV2(
     { mapId: map.mapId },
     {
       enabled: map.mapId !== undefined,
