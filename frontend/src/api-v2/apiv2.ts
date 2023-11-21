@@ -7,7 +7,6 @@ import { getLocalStorageItem, removeLocalStorageItem } from 'utils/localStorage'
 
 const apiV2 = axios.create({
   baseURL: process.env.REACT_APP_SERVER_URL,
-  // baseURL: 'http://192.168.2.160:8080/',
   headers: {
     'Content-type': 'application/json',
   },
