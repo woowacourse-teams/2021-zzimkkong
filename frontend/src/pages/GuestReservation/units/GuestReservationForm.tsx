@@ -138,7 +138,7 @@ const GuestReservationForm = ({
           <TimePicker
             label="예약시간"
             range={range}
-            step={reservationTimeStep as Step}
+            step={10}
             selectedTime={selectedTime}
             onClick={onClick}
             onChange={onChange}
