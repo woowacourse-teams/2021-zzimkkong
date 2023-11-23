@@ -1,6 +1,7 @@
 import { createContext, useMemo, useState } from 'react';
 import DATE from 'constants/date';
 import SPACE from 'constants/space';
+import useGuestSpacesV2 from 'hooks/query-v2/useGuestSpacesV2';
 import useGuestSpaceAvailable from 'hooks/query/useGuestSpaceAvailable';
 import useGuestSpaces from 'hooks/query/useGuestSpaces';
 import useInputs from 'hooks/useInputs';
@@ -64,7 +65,7 @@ const GuestMapFormProvider = ({ mapId, children }: GuestMapFormProviderProps) =>
     initialEndTime: undefined,
   });
 
-  const getSpaces = useGuestSpaces({ mapId });
+  const getSpaces = useGuestSpacesV2({ mapId });
   const spacesMap = useMemo(() => {
     if (!getSpaces.data?.data) {
       return {};
@@ -87,10 +88,10 @@ const GuestMapFormProvider = ({ mapId, children }: GuestMapFormProviderProps) =>
 
   const spaceList = getSpaces.data?.data.spaces ?? [];
 
-  const availableSpaceList =
-    getSpaceAvailable.data?.data.spaces
-      .filter((space) => space.isAvailable)
-      .map((space) => spacesMap[space.spaceId]) ?? [];
+  const availableSpaceList = spaceList;
+  // getSpaceAvailable.data?.data.spaces
+  //   .filter((space) => space.isAvailable)
+  //   .map((space) => spacesMap[space.spaceId]) ?? [];
 
   const value: GuestMapFormProviderValue = {
     formValues,

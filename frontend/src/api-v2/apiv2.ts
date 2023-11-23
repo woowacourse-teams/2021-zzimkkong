@@ -6,7 +6,7 @@ import { ErrorResponse } from 'types/response';
 import { getLocalStorageItem, removeLocalStorageItem } from 'utils/localStorage';
 
 const apiV2 = axios.create({
-  baseURL: 'http://localhost:7742',
+  baseURL: process.env.REACT_APP_SERVER_URL,
   headers: {
     'Content-type': 'application/json',
   },

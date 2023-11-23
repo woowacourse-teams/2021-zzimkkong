@@ -57,7 +57,7 @@ const ManagerMapList = (): JSX.Element => {
                 onClick={() => history.push(HREF.MANAGER_MAP_DETAIL(map.mapId))}
                 control={
                   <>
-                    <SlackNotiButton map={map} />
+                    {/* <SlackNotiButton map={map} /> */}
                     <IconButton onClick={() => handleMapRemove(map.mapId)}>
                       <DeleteIcon width="24" height="24" />
                     </IconButton>

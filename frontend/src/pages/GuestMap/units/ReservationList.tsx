@@ -1,5 +1,5 @@
 import dayjs from 'dayjs';
-import { Dispatch, SetStateAction, useContext, useState } from 'react';
+import { useContext, useState } from 'react';
 import { ReactComponent as CalendarIcon } from 'assets/svg/calendar.svg';
 import { ReactComponent as DeleteIcon } from 'assets/svg/delete.svg';
 import { ReactComponent as EditIcon } from 'assets/svg/edit.svg';
@@ -10,7 +10,6 @@ import ManagerReservationListItem from 'components/ManagerReservationListItem/Ma
 import Select from 'components/Select/Select';
 import DATE from 'constants/date';
 import useGuestReservationsV2 from 'hooks/query-v2/useGuestReservationsV2';
-import useGuestReservations from 'hooks/query/useGuestReservations';
 import useGuestSpace from 'hooks/query/useGuestSpace';
 import { AccessTokenContext } from 'providers/AccessTokenProvider';
 import { MapItem, Reservation } from 'types/common';
@@ -27,12 +26,7 @@ interface Props {
   onDelete: (reservation: Reservation) => void;
 }
 
-const ReservationList = ({
-  map: { mapId },
-  // selectedSpaceId,
-  onDelete,
-  onEdit,
-}: Props) => {
+const ReservationList = ({ map: { mapId }, onDelete, onEdit }: Props) => {
   const { accessToken } = useContext(AccessTokenContext);
   const { spaceList, selectedSpaceId, setSelectedSpaceId } = useContext(GuestMapFormContext);
 

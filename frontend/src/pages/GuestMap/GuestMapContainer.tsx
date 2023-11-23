@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { useHistory, useParams } from 'react-router-dom';
 import MESSAGE from 'constants/message';
 import PATH from 'constants/path';
-import useGuestMap from 'hooks/query/useGuestMap';
+import useGuestMapV2 from 'hooks/query-v2/useGuestMapV2';
 import { MapDrawing, MapItem } from 'types/common';
 import { GuestPageURLParams } from 'types/guest';
 import GuestMap from './GuestMap';
@@ -15,7 +15,7 @@ const GuestMapContainer = () => {
 
   const [map, setMap] = useState<MapItem | null>(null);
 
-  useGuestMap(
+  useGuestMapV2(
     { sharingMapId },
     {
       onError: () => {

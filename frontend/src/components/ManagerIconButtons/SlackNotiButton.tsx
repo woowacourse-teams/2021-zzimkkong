@@ -27,19 +27,19 @@ const SlackNotiButton = ({ map, ...props }: Props): JSX.Element => {
     setIsModalOpened(false);
   };
 
-  const getSlackWebhookUrl = useSlackWebhookUrl(
-    { mapId: map.mapId },
-    {
-      refetchOnWindowFocus: false,
-      onSuccess: (response) => {
-        if (!slackUrl) setSlackUrl(response.data.slackUrl);
-      },
-    }
-  );
+  // const getSlackWebhookUrl = useSlackWebhookUrl(
+  //   { mapId: map.mapId },
+  //   {
+  //     refetchOnWindowFocus: false,
+  //     onSuccess: (response) => {
+  //       if (!slackUrl) setSlackUrl(response.data.slackUrl);
+  //     },
+  //   }
+  // );
 
   const createSlackWebhookUrl = useMutation(postSlackWebhookUrl, {
     onSuccess: () => {
-      getSlackWebhookUrl.refetch();
+      // getSlackWebhookUrl.refetch();
       alert(MESSAGE.MANAGER_MAIN.SLACK_WEBHOOK_CREATE_SUCCESS);
 
       setIsModalOpened(false);
