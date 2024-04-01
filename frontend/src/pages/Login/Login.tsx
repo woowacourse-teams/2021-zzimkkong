@@ -80,8 +80,18 @@ const Login = (): JSX.Element => {
           <LoginForm errorMessage={errorMessage} onSubmit={handleSubmit} />
           <Styled.HorizontalLine />
           <Styled.SocialLogin>
-            <SocialLoginButton provider="GITHUB" href={PATH.GITHUB_LOGIN} />
-            <SocialLoginButton provider="GOOGLE" href={PATH.GOOGLE_LOGIN} />
+            <SocialLoginButton
+              provider="GITHUB"
+              onClick={() => {
+                window.location.href = PATH.GITHUB_LOGIN;
+              }}
+            />
+            <SocialLoginButton
+              provider="GOOGLE"
+              onClick={() => {
+                window.location.href = PATH.GOOGLE_LOGIN;
+              }}
+            />
           </Styled.SocialLogin>
           <Styled.JoinLinkMessage>
             아직 회원이 아니신가요?
