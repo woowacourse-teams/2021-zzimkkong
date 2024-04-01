@@ -4,10 +4,14 @@ import com.woowacourse.zzimkkong.dto.slack.Attachments;
 import com.woowacourse.zzimkkong.dto.slack.SlackResponse;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.MediaType;
+import org.springframework.http.client.reactive.ReactorClientHttpConnector;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.reactive.function.client.WebClient;
+import reactor.netty.http.client.HttpClient;
+import reactor.netty.resources.ConnectionProvider;
 
+import java.time.Duration;
 import java.util.Objects;
 
 @Service
@@ -19,7 +23,14 @@ public class SlackService {
     public SlackService(@Value("${service.url}") final String titleLink,
                         final WebClient webClient) {
         this.titleLink = titleLink;
-        slackWebClient = webClient;
+        ConnectionProvider provider = ConnectionProvider.builder("slack-pool")
+                .maxConnections(10)
+                .maxIdleTime(Duration.ofSeconds(2L))
+                .maxLifeTime(Duration.ofSeconds(2L))
+                .lifo()
+                .build();
+        HttpClient httpClient = HttpClient.create(provider);
+        slackWebClient = webClient.mutate().clientConnector(new ReactorClientHttpConnector(httpClient)).build();
     }
 
     public void sendCreateMessage(SlackResponse slackResponse) {
@@ -39,10 +50,8 @@ public class SlackService {
 
     private void send(final Attachments attachments, final String slackUrl) {
         if (!Objects.isNull(slackUrl)) {
-            slackWebClient.mutate()
-                    .baseUrl(slackUrl)
-                    .build()
-                    .post()
+            slackWebClient.post()
+                    .uri(slackUrl)
                     .contentType(MediaType.APPLICATION_JSON)
                     .bodyValue(attachments.toString())
                     .retrieve()
