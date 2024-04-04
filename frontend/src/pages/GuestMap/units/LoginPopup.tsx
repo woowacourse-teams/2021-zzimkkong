@@ -1,7 +1,7 @@
 import { AxiosError, AxiosResponse } from 'axios';
 import { useContext, useState } from 'react';
 import { useMutation } from 'react-query';
-import { useHistory } from 'react-router-dom';
+import { useHistory, useLocation } from 'react-router-dom';
 import { postLogin } from 'api/login';
 import Button from 'components/Button/Button';
 import Input from 'components/Input/Input';
@@ -10,9 +10,11 @@ import SocialLoginButton from 'components/SocialAuthButton/SocialLoginButton';
 import MANAGER from 'constants/manager';
 import MESSAGE from 'constants/message';
 import PATH from 'constants/path';
+import { LOCAL_STORAGE_KEY } from 'constants/storage';
 import useInputs from 'hooks/useInputs';
 import { AccessTokenContext } from 'providers/AccessTokenProvider';
 import { ErrorResponse, LoginSuccess } from 'types/response';
+import { setLocalStorageItem } from 'utils/localStorage';
 import * as Styled from './LoginPopup.styles';
 
 interface LoginPopupProps {
@@ -25,6 +27,7 @@ const LoginPopup = ({ open, onClose, onLogin }: LoginPopupProps): JSX.Element =>
   const { setAccessToken } = useContext(AccessTokenContext);
 
   const history = useHistory();
+  const location = useLocation();
 
   const [{ email, password }, onChangeForm, setValues] = useInputs<{
     email: string;
@@ -109,7 +112,7 @@ const LoginPopup = ({ open, onClose, onLogin }: LoginPopupProps): JSX.Element =>
               variant="inverse"
               size="medium"
               fullWidth
-              onClick={() => history.push('/join')}
+              onClick={() => history.push(PATH.MANAGER_JOIN)}
             >
               회원가입
             </Button>
@@ -117,8 +120,28 @@ const LoginPopup = ({ open, onClose, onLogin }: LoginPopupProps): JSX.Element =>
         </Styled.LoginPopupForm>
         <Styled.Line />
         <Styled.SocialLoginButtonWrapper>
-          <SocialLoginButton provider="GITHUB" variant="icon" href={PATH.GITHUB_LOGIN} />
-          <SocialLoginButton provider="GOOGLE" variant="icon" href={PATH.GOOGLE_LOGIN} />
+          <SocialLoginButton
+            provider="GITHUB"
+            variant="icon"
+            onClick={() => {
+              setLocalStorageItem({
+                key: LOCAL_STORAGE_KEY.AFTER_LOGIN_PATH,
+                item: location.pathname,
+              });
+              window.location.href = PATH.GITHUB_LOGIN;
+            }}
+          />
+          <SocialLoginButton
+            provider="GOOGLE"
+            variant="icon"
+            onClick={() => {
+              setLocalStorageItem({
+                key: LOCAL_STORAGE_KEY.AFTER_LOGIN_PATH,
+                item: location.pathname,
+              });
+              window.location.href = PATH.GOOGLE_LOGIN;
+            }}
+          />
         </Styled.SocialLoginButtonWrapper>
         <Styled.ContinueWithNonMemberWrapper>
           <Styled.ContinueWithNonMember onClick={onClose}>

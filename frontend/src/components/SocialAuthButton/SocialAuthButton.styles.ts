@@ -27,7 +27,7 @@ const buttonCSS = css`
   border-radius: 0.125rem;
 `;
 
-export const SocialLoginButton = styled.a<LoginButtonProps>`
+export const SocialLoginButton = styled.button<LoginButtonProps>`
   ${({ provider }) => providerCSS[provider]}
   ${buttonCSS};
   width: ${({ variant }) => (variant === 'icon' ? '52px' : '100%')};
