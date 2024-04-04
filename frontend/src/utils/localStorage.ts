@@ -1,12 +1,12 @@
 import THROW_ERROR from 'constants/throwError';
 
-export const getLocalStorageItem = ({
+export const getLocalStorageItem = <T = unknown>({
   key,
   defaultValue,
 }: {
   key: string;
-  defaultValue: unknown;
-}): unknown => {
+  defaultValue: T;
+}): T => {
   const storedData = localStorage.getItem(key);
 
   if (!storedData) {
@@ -14,7 +14,7 @@ export const getLocalStorageItem = ({
   }
 
   try {
-    return JSON.parse(storedData);
+    return JSON.parse(storedData) as T;
   } catch {
     throw new Error(THROW_ERROR.NOT_JSON_FORMAT);
   }

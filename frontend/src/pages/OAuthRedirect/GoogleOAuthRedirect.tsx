@@ -3,10 +3,12 @@ import { useContext } from 'react';
 import { useHistory } from 'react-router';
 import MESSAGE from 'constants/message';
 import PATH from 'constants/path';
+import { LOCAL_STORAGE_KEY } from 'constants/storage';
 import useGoogleLogin from 'hooks/query/useGoogleLogin';
 import useQueryString from 'hooks/useQueryString';
 import { AccessTokenContext } from 'providers/AccessTokenProvider';
 import { LoginSuccess, SocialLoginFailure } from 'types/response';
+import { getLocalStorageItem, removeLocalStorageItem } from 'utils/localStorage';
 
 const GoogleOAuthRedirect = (): JSX.Element => {
   const history = useHistory();
@@ -23,7 +25,12 @@ const GoogleOAuthRedirect = (): JSX.Element => {
 
         setAccessToken(accessToken);
 
-        history.replace(PATH.GUEST_MAIN);
+        const afterLoginPath = getLocalStorageItem({
+          key: LOCAL_STORAGE_KEY.AFTER_LOGIN_PATH,
+          defaultValue: PATH.GUEST_MAIN,
+        });
+
+        history.replace(afterLoginPath);
       },
 
       onError: (error: AxiosError<SocialLoginFailure>) => {
@@ -41,7 +48,16 @@ const GoogleOAuthRedirect = (): JSX.Element => {
 
         alert(error.response?.data.message ?? MESSAGE.LOGIN.UNEXPECTED_ERROR);
 
-        history.replace(PATH.LOGIN);
+        const afterLoginPath = getLocalStorageItem({
+          key: LOCAL_STORAGE_KEY.AFTER_LOGIN_PATH,
+          defaultValue: PATH.LOGIN,
+        });
+
+        history.replace(afterLoginPath);
+      },
+
+      onSettled: () => {
+        removeLocalStorageItem({ key: LOCAL_STORAGE_KEY.AFTER_LOGIN_PATH });
       },
     }
   );
