@@ -37,10 +37,10 @@ function fetchGroups() {
 // 그룹 필터 버튼 동적 생성
 function renderGroupFilters() {
     const container = document.getElementById('group-filters');
-    let html = '<button class="btn btn-outline-primary filter-btn active" onclick="filterByGroup(\'ALL\')">전체</button>';
+    let html = '<button class="filter-btn active" onclick="filterByGroup(\'ALL\')">전체</button>';
 
     availableGroups.forEach(group => {
-        html += `<button class="btn btn-outline-primary filter-btn" onclick="filterByGroup('${group.name}')">${group.displayName}</button>`;
+        html += `<button class="filter-btn" onclick="filterByGroup('${group.name}')">${group.displayName}</button>`;
     });
 
     container.innerHTML = html;
@@ -79,11 +79,20 @@ function getMembers(pageNumber, isNewSearch = false) {
                         `<option value="${g.name}" ${member.group === g.name ? 'selected' : ''}>${g.displayName}</option>`
                     ).join('');
 
+                    // OAuth Provider 표시
+                    let oauthDisplay = '<span style="color: var(--color-gray);">일반</span>';
+                    if (member.oauthProvider === 'GOOGLE') {
+                        oauthDisplay = '<i class="bi bi-google" style="color: #DB4437; font-size: 1.2rem;" title="Google"></i> <span style="color: var(--color-gray);">Google</span>';
+                    } else if (member.oauthProvider === 'GITHUB') {
+                        oauthDisplay = '<i class="bi bi-github" style="color: #333; font-size: 1.2rem;" title="GitHub"></i> <span style="color: var(--color-gray);">GitHub</span>';
+                    }
+
                     return `<tr class="member">
                         <th scope="row">${member.id}</th>
                         <td>${member.email}</td>
                         <td>${member.userName}</td>
                         <td>${member.organization || '-'}</td>
+                        <td>${oauthDisplay}</td>
                         <td><span class="group-badge" style="background-color: ${groupInfo.color}">${groupInfo.displayName}</span></td>
                         <td>
                             <select class="form-select form-select-sm"
