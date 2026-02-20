@@ -2,65 +2,67 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>모든 멤버 조회</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>회원 관리 - 찜꽁 관리자</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.1/dist/css/bootstrap.min.css" rel="stylesheet"
           integrity="sha384-F3w7mX95PdgyTmZZMECAngseQB83DfGTowi0iMjiWaeVhAn4FJkqJByhZMI3AhiU" crossorigin="anonymous">
-    <style>
-        .btn{
-            display: inline-block;
-            background-color: darkorange;
-            color: white;
-            margin: 20px;
-        }
-        .group-badge {
-            padding: 4px 8px;
-            border-radius: 4px;
-            color: white;
-            font-weight: bold;
-        }
-        .filter-btn.active {
-            background-color: darkorange !important;
-            color: white !important;
-        }
-    </style>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="/admin/css/admin-theme.css">
+    <link rel="stylesheet" href="/admin/css/admin-layout.css">
+    <link rel="stylesheet" href="/admin/css/admin-sidebar.css">
 </head>
 <body>
-<div class="container mx-5" style="display: inline-block;text-align: center;">
-    <button type="button" id="btn-members" class="btn" onclick="move('members')">members</button>
-    <button type="button" id="btn-maps" class="btn" onclick="move('maps')">maps</button>
-    <button type="button" id="btn-spaces" class="btn" onclick="move('spaces')">spaces</button>
-    <button type="button" id="btn-reservations" class="btn" onclick="move('reservations')">reservations</button>
-</div>
-<div class="container mx-5 mb-3">
-    <div class="row">
-        <div class="col-md-6">
-            <input type="text" id="search-input" class="form-control" placeholder="이메일 또는 이름으로 검색">
-        </div>
-        <div class="col-md-6">
-            <button class="btn btn-primary" onclick="searchMembers()">검색</button>
-            <button class="btn btn-secondary" onclick="clearSearch()">초기화</button>
+<!-- Mobile Header -->
+<header class="admin-header">
+    <button class="hamburger-btn" id="hamburgerBtn">
+        <i class="bi bi-list"></i>
+    </button>
+    <h1 class="header-title">회원 관리</h1>
+</header>
+
+<!-- Main Content -->
+<main class="admin-main">
+    <div class="content-wrapper">
+        <div class="content-card">
+            <h1 class="page-title">회원 관리</h1>
+
+            <!-- Search Section -->
+            <div class="search-section">
+                <div style="flex: 1; min-width: 250px;">
+                    <input type="text" id="search-input" class="form-control" placeholder="이메일 또는 이름으로 검색">
+                </div>
+                <button class="btn btn-primary" onclick="searchMembers()">검색</button>
+                <button class="btn btn-secondary" onclick="clearSearch()">초기화</button>
+            </div>
+
+            <!-- Filter Section -->
+            <div class="filter-section" id="group-filters">
+                <!-- 그룹 필터 버튼은 JavaScript로 동적 생성됩니다 -->
+            </div>
+
+            <!-- Table Section -->
+            <div class="table-responsive">
+                <table class="table" id="member-table">
+                    <thead>
+                    <tr>
+                        <th scope="col">ID</th>
+                        <th scope="col">Email</th>
+                        <th scope="col">이름</th>
+                        <th scope="col">소속</th>
+                        <th scope="col">현재 그룹</th>
+                        <th scope="col">그룹 변경</th>
+                    </tr>
+                    </thead>
+                    <tbody class="members-row">
+                    </tbody>
+                </table>
+            </div>
         </div>
     </div>
-</div>
-<div class="container mx-5 mb-3" id="group-filters">
-    <!-- 그룹 필터 버튼은 JavaScript로 동적 생성됩니다 -->
-</div>
-<div class="container mx-5" style="display: inline-block;text-align: center;">
-    <table class="table" id="member-table">
-        <thead>
-        <tr>
-            <th scope="col">ID</th>
-            <th scope="col">email</th>
-            <th scope="col">userName</th>
-            <th scope="col">organization</th>
-            <th scope="col">현재 그룹</th>
-            <th scope="col">그룹 변경</th>
-        </tr>
-        </thead>
-        <tbody class="members-row">
-        </tbody>
-    </table>
-</div>
+</main>
+
+<script src="/admin/js/admin-layout.js"></script>
+<script src="/admin/js/sidebar.js"></script>
 <script src="/admin/js/member.js"></script>
 </body>
 </html>

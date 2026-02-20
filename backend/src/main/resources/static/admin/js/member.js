@@ -99,9 +99,16 @@ function getMembers(pageNumber, isNewSearch = false) {
 }
 
 MemberPage.prototype.initMemberPage = function () {
-    const btn = document.getElementById('btn-members');
-    btn.disabled = true;
     page = 0;
+
+    // URL에서 search 파라미터 확인
+    const urlParams = new URLSearchParams(window.location.search);
+    const searchParam = urlParams.get('search');
+
+    if (searchParam) {
+        currentSearch = searchParam;
+        document.getElementById('search-input').value = searchParam;
+    }
 
     // 그룹 목록 먼저 로드한 후 멤버 목록 조회
     fetchGroups().then(() => {
@@ -114,10 +121,6 @@ document.addEventListener('scroll', () => {
         getMembers(page + 1);
     }
 })
-
-function move(name) {
-    location.href = window.location.origin + '/admin/' + name;
-}
 
 function updateMemberGroup(memberId, currentGroup, newGroup) {
     if (currentGroup === newGroup) {

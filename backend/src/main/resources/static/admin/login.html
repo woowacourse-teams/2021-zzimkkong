@@ -2,43 +2,128 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>로그인입니다</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>로그인 - 찜꽁 관리자</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.1/dist/css/bootstrap.min.css" rel="stylesheet"
           integrity="sha384-F3w7mX95PdgyTmZZMECAngseQB83DfGTowi0iMjiWaeVhAn4FJkqJByhZMI3AhiU" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="/admin/css/admin-theme.css">
     <style>
-        .btn{
-            background-color: darkorange;
-            color: white;
-            margin: auto;
-            display: block;
+        body {
+            background-color: var(--color-bg);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            padding: 1rem;
         }
-        .login{
-            width: 500px;
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%,-50%);
+
+        .login-container {
+            width: 100%;
+            max-width: 420px;
+            background: var(--color-white);
+            padding: 2.5rem;
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .login-header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .login-icon {
+            font-size: 3rem;
+            color: var(--color-primary);
+            margin-bottom: 1rem;
+        }
+
+        .login-title {
+            font-size: var(--font-size-2xl);
+            font-weight: 700;
+            color: var(--color-dark);
+            margin-bottom: 0.5rem;
+        }
+
+        .login-subtitle {
+            font-size: var(--font-size-sm);
+            color: var(--color-gray);
+        }
+
+        .form-label {
+            font-weight: 600;
+            color: var(--color-dark);
+            margin-bottom: 0.5rem;
+            font-size: var(--font-size-sm);
+        }
+
+        .form-control {
+            border: 1px solid var(--color-gray-lighter);
+            border-radius: var(--radius-md);
+            padding: 0.75rem 1rem;
+            font-size: var(--font-size-sm);
+            transition: border-color var(--transition-fast);
+        }
+
+        .form-control:focus {
+            border-color: var(--color-primary);
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(255, 140, 0, 0.1);
+        }
+
+        .btn-login {
+            width: 100%;
+            background-color: var(--color-primary);
+            color: var(--color-white);
+            border: none;
+            border-radius: var(--radius-md);
+            padding: 0.875rem;
+            font-size: var(--font-size-base);
+            font-weight: 600;
+            cursor: pointer;
+            transition: all var(--transition-fast);
+            margin-top: 1rem;
+        }
+
+        .btn-login:hover {
+            background-color: var(--color-primary-dark);
+            transform: translateY(-1px);
+            box-shadow: var(--shadow-md);
+        }
+
+        .btn-login:active {
+            transform: translateY(0);
+        }
+
+        @media (max-width: 576px) {
+            .login-container {
+                padding: 1.5rem;
+            }
         }
     </style>
 </head>
 <body>
+<div class="login-container">
+    <div class="login-header">
+        <i class="bi bi-calendar-check-fill login-icon"></i>
+        <h1 class="login-title">찜꽁</h1>
+        <p class="login-subtitle">관리자 로그인</p>
+    </div>
 
-<div class="login">
-    <h4 style="text-align: center">찜꽁 관리자 로그인</h4>
     <form id="login-form">
-        <div class="mb-3 mx-5">
+        <div class="mb-3">
             <label for="inputId" class="form-label">아이디</label>
-            <input class="form-control" id="inputId">
+            <input class="form-control" id="inputId" autocomplete="username">
         </div>
-        <div class="mb-3 mx-5">
+        <div class="mb-3">
             <label for="inputPassword" class="form-label">비밀번호</label>
-            <input class="form-control" id="inputPassword" type="password">
+            <input class="form-control" id="inputPassword" type="password" autocomplete="current-password">
         </div>
-        <div class="mb-3 mx-5">
-            <button id="login" class="btn">로그인</button>
-        </div>
+        <button id="login" type="submit" class="btn-login">로그인</button>
     </form>
 </div>
+
+<script src="/admin/js/admin-layout.js"></script>
 <script src="/admin/js/login.js"></script>
 </body>
 </html>

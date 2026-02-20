@@ -39,8 +39,6 @@ function getMaps(pageNumber) {
 }
 
 MapPage.prototype.initMapPage = function () {
-    const btn = document.getElementById('btn-maps');
-    btn.disabled = true;
     page = 0;
     getMaps(page);
 }
@@ -50,10 +48,6 @@ document.addEventListener('scroll', () => {
         getMaps(page + 1);
     }
 })
-
-function move(name) {
-    location.href = window.location.origin + '/admin/' + name;
-}
 
 function moveToMap(sharingMapId) {
     fetch(mapPage.getProfile, {
