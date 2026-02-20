@@ -2,6 +2,7 @@ package com.woowacourse.zzimkkong.repository;
 
 import com.woowacourse.zzimkkong.config.logaspect.LogMethodExecutionTime;
 import com.woowacourse.zzimkkong.domain.Member;
+import com.woowacourse.zzimkkong.domain.Group;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -25,4 +26,12 @@ public interface MemberRepository extends JpaRepository<Member, Long> {
 
     @Query("select distinct m from Member m left outer join fetch m.presets where m.email = :email")
     Optional<Member> findByEmailWithFetchPresets(@Param("email") String email);
+
+    Page<Member> findAllByGroup(Group group, Pageable pageable);
+
+    Page<Member> findAllByEmailContainingOrUserNameContaining(
+            String email, String userName, Pageable pageable);
+
+    Page<Member> findAllByGroupAndEmailContainingOrGroupAndUserNameContaining(
+            Group group1, String email, Group group2, String userName, Pageable pageable);
 }

@@ -1,5 +1,5 @@
 import PALETTE from 'constants/palette';
-import { Area } from 'types/common';
+import { Area, Group } from 'types/common';
 import { SpaceEditorMode } from 'types/editor';
 import { formatDate, formatTimeWithSecond } from 'utils/datetime';
 
@@ -8,6 +8,7 @@ export interface SpaceFormValue {
   color: string;
   area: Area | null;
   reservationEnable: boolean;
+  allowedGroups: Group[];
   settings: {
     settingStartTime: string;
     settingEndTime: string;
@@ -51,6 +52,7 @@ export const initialSpaceFormValue: Omit<SpaceFormValue, 'area'> = {
   reservationEnable: true,
   name: '',
   color: PALETTE.RED[500],
+  allowedGroups: [],
   settings: [initialSpaceFormValueSetting],
 };
 

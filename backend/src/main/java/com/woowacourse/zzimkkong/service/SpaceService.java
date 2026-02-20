@@ -54,6 +54,12 @@ public class SpaceService {
                 .spaceSettings(settings)
                 .map(map)
                 .build();
+
+        List<AllowedGroup> allowedGroups = convertToAllowedGroups(spaceCreateUpdateRequest.getAllowedGroups(), space);
+        for (AllowedGroup allowedGroup : allowedGroups) {
+            space.getAllowedGroups().add(allowedGroup);
+        }
+
         Space saveSpace = spaces.save(space);
 
         map.updateThumbnail(spaceCreateUpdateRequest.getThumbnail());
@@ -148,12 +154,15 @@ public class SpaceService {
                 .orElseThrow(NoSuchSpaceException::new);
 
         Settings updateSettings = Settings.from(spaceCreateUpdateRequest.getSettings());
+        List<AllowedGroup> updateAllowedGroups = convertToAllowedGroups(spaceCreateUpdateRequest.getAllowedGroups(), space);
+
         Space updateSpace = Space.builder()
                 .name(spaceCreateUpdateRequest.getName())
                 .color(spaceCreateUpdateRequest.getColor())
                 .area(spaceCreateUpdateRequest.getArea())
                 .reservationEnable(spaceCreateUpdateRequest.getReservationEnable())
                 .spaceSettings(updateSettings)
+                .allowedGroups(updateAllowedGroups)
                 .build();
 
         space.update(updateSpace);
@@ -208,5 +217,13 @@ public class SpaceService {
                 relevantSettings.getSettings().get(0).cannotAcceptDueToMinimumTimeUnit(timeSlot) ||
                 relevantSettings.getSettings().get(0).cannotAcceptDueToMaximumTimeUnit(timeSlot) ||
                 space.isUnableToReserve();
+    }
+
+    private List<AllowedGroup> convertToAllowedGroups(
+            final List<AllowedGroupRequest> requests,
+            final Space space) {
+        return requests.stream()
+                .map(request -> new AllowedGroup(space, request.getGroup()))
+                .collect(Collectors.toList());
     }
 }

@@ -1,6 +1,7 @@
 package com.woowacourse.zzimkkong.dto.member;
 
 import com.woowacourse.zzimkkong.domain.ProfileEmoji;
+import com.woowacourse.zzimkkong.domain.Group;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -29,10 +30,21 @@ public class MemberSaveRequest {
     @Pattern(regexp = MEMBER_PW_FORMAT, message = MEMBER_PW_MESSAGE)
     private String password;
 
+    private Group group = Group.NONE;
+
     public MemberSaveRequest(final String email, final String userName, final ProfileEmoji emoji, final String password) {
         this.email = email;
         this.userName = userName;
         this.emoji = emoji;
         this.password = password;
+        this.group = Group.NONE;
+    }
+
+    public MemberSaveRequest(final String email, final String userName, final ProfileEmoji emoji, final String password, final Group group) {
+        this.email = email;
+        this.userName = userName;
+        this.emoji = emoji;
+        this.password = password;
+        this.group = group;
     }
 }

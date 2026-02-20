@@ -49,6 +49,10 @@ public class Space {
     @Builder.Default
     private List<Reservation> reservations = new ArrayList<>();
 
+    @OneToMany(mappedBy = "space", cascade = CascadeType.ALL, orphanRemoval = true)
+    @Builder.Default
+    private List<AllowedGroup> allowedGroups = new ArrayList<>();
+
     public Space(
             final Long id,
             final String name,
@@ -57,7 +61,8 @@ public class Space {
             final Boolean reservationEnable,
             final Map map,
             final Settings spaceSettings,
-            final List<Reservation> reservations) {
+            final List<Reservation> reservations,
+            final List<AllowedGroup> allowedGroups) {
         this.id = id;
         this.name = name;
         this.color = color;
@@ -66,6 +71,7 @@ public class Space {
         this.spaceSettings = new Settings();
         this.map = map;
         this.reservations = reservations;
+        this.allowedGroups = allowedGroups != null ? allowedGroups : new ArrayList<>();
 
         updateSpaceSettings(spaceSettings);
 
@@ -81,6 +87,15 @@ public class Space {
         this.reservationEnable = updateSpace.reservationEnable;
 
         updateSpaceSettings(updateSpace.getSpaceSettings());
+        updateAllowedGroups(updateSpace.getAllowedGroups());
+    }
+
+    private void updateAllowedGroups(final List<AllowedGroup> updateAllowedGroups) {
+        this.allowedGroups.clear();
+        for (AllowedGroup allowedGroup : updateAllowedGroups) {
+            allowedGroup.updateSpace(this);
+            this.allowedGroups.add(allowedGroup);
+        }
     }
 
     private void updateSpaceSettings(final Settings settings) {
@@ -115,5 +130,19 @@ public class Space {
 
     public ServiceZone getServiceZone() {
         return map.getServiceZone();
+    }
+
+    public boolean isReservableBy(final Member member) {
+        // allowedGroups가 비어있으면 모든 사용자 예약 가능
+        if (allowedGroups.isEmpty()) {
+            return true;
+        }
+        // 비로그인 사용자는 allowedGroups가 있으면 불가
+        if (member == null) {
+            return false;
+        }
+        // member의 group이 allowedGroups에 포함되어 있는지 확인
+        return allowedGroups.stream()
+                .anyMatch(allowedGroup -> allowedGroup.isGroup(member.getGroup()));
     }
 }

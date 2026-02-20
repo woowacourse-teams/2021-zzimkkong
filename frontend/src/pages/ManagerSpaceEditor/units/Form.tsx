@@ -14,13 +14,14 @@ import Input from 'components/Input/Input';
 import Toggle from 'components/Toggle/Toggle';
 import MESSAGE from 'constants/message';
 import useFormContext from 'hooks/useFormContext';
-import { Area, Color, ManagerSpace, MapElement } from 'types/common';
+import { Area, Color, ManagerSpace, MapElement, Group } from 'types/common';
 import { SpaceEditorMode as Mode } from 'types/editor';
 import { generateSvg, MapSvgData } from 'utils/generateSvg';
 import { colorSelectOptions, timeUnits } from '../data';
 import { SpaceFormContext } from '../providers/SpaceFormProvider';
 import * as Styled from './Form.styles';
 import FormDayOfWeekSelect from './FormDayOfWeekSelect';
+import FormGroupSelect from './FormGroupSelect';
 import FormTimeUnitSelect from './FormTimeUnitSelect';
 import Preset from './Preset';
 
@@ -65,13 +66,26 @@ const Form = ({
     setValues({ ...values, color });
   };
 
+  const handleGroupChange = (group: Group, checked: boolean) => {
+    if (checked) {
+      setValues({ ...values, allowedGroups: [...values.allowedGroups, group] });
+    } else {
+      setValues({ ...values, allowedGroups: values.allowedGroups.filter((g) => g !== group) });
+    }
+  };
+
   const getSpacesForSvg = (): MapSvgData['spaces'] => {
     if (selectedSpaceId === null && values.area) {
-      return [...spaces, { area: values.area, color: values.color }];
+      return [
+        ...spaces,
+        { area: values.area, color: values.color, allowedGroups: values.allowedGroups },
+      ];
     }
 
     return spaces.map((space) =>
-      space.id === selectedSpaceId ? { area: values.area as Area, color: values.color } : space
+      space.id === selectedSpaceId
+        ? { area: values.area as Area, color: values.color, allowedGroups: values.allowedGroups }
+        : space
     );
   };
 
@@ -178,6 +192,24 @@ const Form = ({
                 </Styled.ColorDotButton>
               ))}
             </Styled.ColorSelect>
+          </Styled.Row>
+        </Styled.ContentsContainer>
+      </Styled.Section>
+
+      <Styled.Section>
+        <Styled.TitleContainer>
+          <Styled.Title>예약 권한</Styled.Title>
+        </Styled.TitleContainer>
+
+        <Styled.ContentsContainer>
+          <Styled.Row>
+            <Styled.Fieldset>
+              <Styled.Label>예약 가능한 그룹</Styled.Label>
+              <FormGroupSelect selectedGroups={values.allowedGroups} onChange={handleGroupChange} />
+            </Styled.Fieldset>
+            <Styled.InputMessage>
+              선택하지 않으면 모든 사용자가 예약할 수 있습니다.
+            </Styled.InputMessage>
           </Styled.Row>
         </Styled.ContentsContainer>
       </Styled.Section>

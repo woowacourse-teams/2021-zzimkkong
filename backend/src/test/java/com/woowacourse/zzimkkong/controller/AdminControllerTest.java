@@ -236,4 +236,97 @@ class AdminControllerTest extends AcceptanceTest {
                 .when().get(api)
                 .then().log().all().extract();
     }
+
+    static ExtractableResponse<Response> put(String api, Object body) {
+        return RestAssured
+                .given(getRequestSpecification()).log().all()
+                .accept("application/json")
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .header("Authorization", AuthorizationExtractor.AUTHENTICATION_TYPE + " " + token)
+                .body(body)
+                .when().put(api)
+                .then().log().all().extract();
+    }
+
+    @Test
+    @DisplayName("관리자가 회원의 역할을 COACH로 변경한다.")
+    void updateMemberGroupToCoach() {
+        // given
+        MemberGroupUpdateRequest request = new MemberGroupUpdateRequest(Group.COACH);
+
+        // when
+        ExtractableResponse<Response> response = put("/admin/api/members/1/group", request);
+
+        // then
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
+    }
+
+    @Test
+    @DisplayName("관리자가 회원의 역할을 CREW로 변경한다.")
+    void updateMemberGroupToNone() {
+        // given
+        MemberGroupUpdateRequest request = new MemberGroupUpdateRequest(Group.NONE);
+
+        // when
+        ExtractableResponse<Response> response = put("/admin/api/members/1/group", request);
+
+        // then
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
+    }
+
+    @Test
+    @DisplayName("관리자가 회원의 역할을 GUEST로 변경한다.")
+    void updateMemberGroupToGuest() {
+        // given
+        MemberGroupUpdateRequest request = new MemberGroupUpdateRequest(Group.NONE);
+
+        // when
+        ExtractableResponse<Response> response = put("/admin/api/members/1/group", request);
+
+        // then
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
+    }
+
+    @Test
+    @DisplayName("존재하지 않는 회원의 역할 변경 시도 시 404를 반환한다.")
+    void updateNonExistentMemberGroup() {
+        // given
+        MemberGroupUpdateRequest request = new MemberGroupUpdateRequest(Group.COACH);
+
+        // when
+        ExtractableResponse<Response> response = put("/admin/api/members/999999/group", request);
+
+        // then
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.NOT_FOUND.value());
+    }
+
+    @Test
+    @DisplayName("역할별로 회원을 필터링하여 조회한다.")
+    void getMembersByGroup() {
+        // when
+        ExtractableResponse<Response> response = get("/admin/api/members?group=NONE");
+
+        // then
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
+    }
+
+    @Test
+    @DisplayName("검색어로 회원을 조회한다.")
+    void getMembersBySearch() {
+        // when
+        ExtractableResponse<Response> response = get("/admin/api/members?search=pobi");
+
+        // then
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
+    }
+
+    @Test
+    @DisplayName("검색어와 역할 필터를 함께 사용하여 회원을 조회한다.")
+    void getMembersBySearchAndGroup() {
+        // when
+        ExtractableResponse<Response> response = get("/admin/api/members?search=pobi&group=NONE");
+
+        // then
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
+    }
 }

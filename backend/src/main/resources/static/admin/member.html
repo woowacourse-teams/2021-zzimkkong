@@ -12,6 +12,16 @@
             color: white;
             margin: 20px;
         }
+        .group-badge {
+            padding: 4px 8px;
+            border-radius: 4px;
+            color: white;
+            font-weight: bold;
+        }
+        .filter-btn.active {
+            background-color: darkorange !important;
+            color: white !important;
+        }
     </style>
 </head>
 <body>
@@ -21,13 +31,30 @@
     <button type="button" id="btn-spaces" class="btn" onclick="move('spaces')">spaces</button>
     <button type="button" id="btn-reservations" class="btn" onclick="move('reservations')">reservations</button>
 </div>
+<div class="container mx-5 mb-3">
+    <div class="row">
+        <div class="col-md-6">
+            <input type="text" id="search-input" class="form-control" placeholder="이메일 또는 이름으로 검색">
+        </div>
+        <div class="col-md-6">
+            <button class="btn btn-primary" onclick="searchMembers()">검색</button>
+            <button class="btn btn-secondary" onclick="clearSearch()">초기화</button>
+        </div>
+    </div>
+</div>
+<div class="container mx-5 mb-3" id="group-filters">
+    <!-- 그룹 필터 버튼은 JavaScript로 동적 생성됩니다 -->
+</div>
 <div class="container mx-5" style="display: inline-block;text-align: center;">
     <table class="table" id="member-table">
         <thead>
         <tr>
-            <th scope="col"> </th>
+            <th scope="col">ID</th>
             <th scope="col">email</th>
+            <th scope="col">userName</th>
             <th scope="col">organization</th>
+            <th scope="col">현재 그룹</th>
+            <th scope="col">그룹 변경</th>
         </tr>
         </thead>
         <tbody class="members-row">

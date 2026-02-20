@@ -6,6 +6,7 @@ import React, {
   useEffect,
   useState,
 } from 'react';
+import { PostManagerSpaceParams } from 'api/managerSpace';
 import { Area, ManagerSpace, ManagerSpaceAPI } from 'types/common';
 import { WithOptional } from 'types/util';
 import { formatDate, formatTimeWithSecond } from 'utils/datetime';
@@ -28,7 +29,7 @@ export interface SpaceProviderValue {
   updateWithSpace: (space: ManagerSpace) => void;
   setValues: (nextValue: SpaceFormValue) => void;
   getRequestValues: () => {
-    space: WithOptional<ManagerSpaceAPI, 'id'>;
+    space: Omit<PostManagerSpaceParams['space'], 'thumbnail'>;
   };
   selectedPresetId: number | null;
   setSelectedPresetId: Dispatch<SetStateAction<number | null>>;
@@ -106,11 +107,13 @@ const SpaceFormProvider = ({ children }: Props): JSX.Element => {
 
   const getRequestValues = () => {
     const todayDate = formatDate(new Date());
+    const { allowedGroups: groups, ...restValues } = values;
 
     return {
       space: {
-        ...values,
+        ...restValues,
         area: JSON.stringify(values.area),
+        allowedGroups: groups.length > 0 ? groups.map((group) => ({ group })) : undefined,
         settings: values.settings?.map((setting) => ({
           ...setting,
           settingStartTime: formatTimeWithSecond(
