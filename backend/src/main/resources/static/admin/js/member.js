@@ -68,8 +68,8 @@ function getMembers(pageNumber, isNewSearch = false) {
         }
     }).then(function (response) {
         if (response.status === 401) {
-            alert('관리자만 사용할 수 있습니다.');
-            location.href = '/';
+            handleUnauthorized();
+            return;
         } else {
             response.json().then(data => {
                 const memberList = document.querySelector(".members-row");
@@ -154,6 +154,10 @@ function updateMemberGroup(memberId, currentGroup, newGroup) {
         body: JSON.stringify({ group: newGroup })
     })
     .then(response => {
+        if (response.status === 401) {
+            handleUnauthorized();
+            return;
+        }
         if (response.ok) {
             alert('그룹이 변경되었습니다.');
             // 페이지 새로고침

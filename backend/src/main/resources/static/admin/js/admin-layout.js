@@ -101,6 +101,21 @@ function handleLogout() {
 }
 
 /**
+ * Handle 401 Unauthorized error
+ * Removes expired token and redirects to login page
+ */
+function handleUnauthorized() {
+    // Remove expired token to prevent infinite redirect loop
+    window.localStorage.removeItem('accessToken');
+
+    // Show user-friendly message
+    alert('로그인 세션이 만료되었습니다. 다시 로그인해주세요.');
+
+    // Redirect to login page
+    window.location.href = '/admin/login';
+}
+
+/**
  * Initialize admin layout
  */
 function initAdminLayout() {

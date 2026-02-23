@@ -26,6 +26,10 @@ async function fetchMapInfo(mapId) {
                 Authorization: window.localStorage.getItem('accessToken')
             }
         });
+        if (response.status === 401) {
+            handleUnauthorized();
+            return { mapName: '알 수 없음' };
+        }
         const data = await response.json();
         data.maps.forEach(map => {
             mapsCache[map.mapId] = map;
@@ -49,6 +53,10 @@ async function fetchManagerInfo(managerId) {
                 Authorization: window.localStorage.getItem('accessToken')
             }
         });
+        if (response.status === 401) {
+            handleUnauthorized();
+            return { userName: '알 수 없음' };
+        }
         const data = await response.json();
         data.members.forEach(member => {
             managersCache[member.id] = member;
@@ -70,8 +78,7 @@ async function getSpaces(pageNumber) {
         });
 
         if (response.status === 401) {
-            alert('관리자만 사용할 수 있습니다.');
-            location.href = '/';
+            handleUnauthorized();
             return;
         }
 
