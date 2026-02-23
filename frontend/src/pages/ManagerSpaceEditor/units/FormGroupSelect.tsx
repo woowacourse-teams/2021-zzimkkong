@@ -16,18 +16,34 @@ const FormGroupSelect = ({ selectedGroups, onChange }: Props): JSX.Element => {
   }
 
   const groups = groupsResponse.data;
+  const filteredGroups = groups.filter((group) => group.name !== 'NONE');
+
+  const isAllUsersSelected = selectedGroups.length === 0;
+
+  const handleAllUsersClick = () => {
+    // 모든 그룹 선택 해제 (allowedGroups를 비움)
+    selectedGroups.forEach((group) => onChange(group, false));
+  };
+
+  const handleGroupClick = (groupName: Group) => {
+    const isSelected = selectedGroups.includes(groupName);
+    onChange(groupName, !isSelected);
+  };
 
   return (
     <Styled.Container>
-      {groups.map(({ name, displayName, color }) => (
-        <Styled.Label key={`group-select-${name}`} borderColor={color}>
-          <Styled.DisplayName>{displayName}</Styled.DisplayName>
-          <input
-            type="checkbox"
-            checked={selectedGroups.includes(name as Group)}
-            onChange={(event) => onChange(name as Group, event.target.checked)}
-          />
-        </Styled.Label>
+      <Styled.GroupButton type="button" selected={isAllUsersSelected} onClick={handleAllUsersClick}>
+        모든 사용자
+      </Styled.GroupButton>
+      {filteredGroups.map(({ name, displayName }) => (
+        <Styled.GroupButton
+          key={`group-select-${name}`}
+          type="button"
+          selected={selectedGroups.includes(name as Group)}
+          onClick={() => handleGroupClick(name as Group)}
+        >
+          {displayName}
+        </Styled.GroupButton>
       ))}
     </Styled.Container>
   );
