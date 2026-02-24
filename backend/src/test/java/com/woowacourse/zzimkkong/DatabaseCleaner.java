@@ -7,6 +7,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.persistence.Table;
 import java.util.List;
 import java.util.Locale;
 import java.util.stream.Collectors;
@@ -22,7 +23,20 @@ public class DatabaseCleaner implements InitializingBean {
     @Override
     public void afterPropertiesSet() {
         tableNames = entityManager.getMetamodel().getEntities().stream()
-                .map(entry -> entry.getName().toLowerCase(Locale.ROOT))
+                .map(entry -> {
+                    String tableName;
+                    Class<?> javaType = entry.getJavaType();
+                    Table tableAnnotation = javaType.getAnnotation(Table.class);
+
+                    if (tableAnnotation != null && !tableAnnotation.name().isEmpty()) {
+                        tableName = tableAnnotation.name();
+                    } else {
+                        // Convert camelCase to snake_case
+                        String className = entry.getName();
+                        tableName = className.replaceAll("([a-z])([A-Z])", "$1_$2").toLowerCase(Locale.ROOT);
+                    }
+                    return tableName;
+                })
                 .collect(Collectors.toList());
     }
 

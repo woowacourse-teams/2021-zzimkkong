@@ -7,7 +7,10 @@ export interface MapSvgData {
   width: number;
   height: number;
   mapElements: Omit<MapElement, 'id'>[];
-  spaces: Omit<ManagerSpace, 'id' | 'name' | 'description' | 'settings' | 'reservationEnable'>[];
+  spaces: Omit<
+    ManagerSpace,
+    'id' | 'name' | 'description' | 'settings' | 'reservationEnable' | 'allowedRoles'
+  >[];
 }
 
 const generateMapSvg = (mapElements: MapSvgData['mapElements']): string =>

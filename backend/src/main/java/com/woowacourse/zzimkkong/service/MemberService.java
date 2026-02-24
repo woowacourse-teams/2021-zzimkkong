@@ -40,6 +40,7 @@ public class MemberService {
                 .userName(memberSaveRequest.getUserName())
                 .emoji(memberSaveRequest.getEmoji())
                 .password(password)
+                .group(memberSaveRequest.getGroup())
                 .build();
         Member saveMember = members.save(member);
         return MemberSaveResponse.from(saveMember);

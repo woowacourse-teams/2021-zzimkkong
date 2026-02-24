@@ -36,6 +36,9 @@ public class SpaceCreateUpdateRequest {
     @Valid
     private List<SettingRequest> settings = Arrays.asList(new SettingRequest());
 
+    @Valid
+    private List<AllowedGroupRequest> allowedGroups = List.of();
+
     public SpaceCreateUpdateRequest(
             final String name,
             final String color,
@@ -49,5 +52,23 @@ public class SpaceCreateUpdateRequest {
         this.thumbnail = thumbnail;
         this.reservationEnable = reservationEnable;
         this.settings = settings;
+        this.allowedGroups = List.of();
+    }
+
+    public SpaceCreateUpdateRequest(
+            final String name,
+            final String color,
+            final String area,
+            final String thumbnail,
+            final Boolean reservationEnable,
+            final List<SettingRequest> settings,
+            final List<AllowedGroupRequest> allowedGroups) {
+        this.name = name;
+        this.color = color;
+        this.area = area;
+        this.thumbnail = thumbnail;
+        this.reservationEnable = reservationEnable;
+        this.settings = settings;
+        this.allowedGroups = allowedGroups;
     }
 }

@@ -1,6 +1,6 @@
 import { AxiosResponse } from 'axios';
 import { QueryFunction } from 'react-query';
-import { Emoji } from 'types/common';
+import { Emoji, Group } from 'types/common';
 import api from './api';
 
 export interface QueryMemberSuccess {
@@ -10,6 +10,7 @@ export interface QueryMemberSuccess {
   emoji: Emoji;
   organization: string | null;
   oauthProvider: 'GOOGLE' | 'GITHUB' | null;
+  group: Group;
 }
 
 export interface PutMemberParams {

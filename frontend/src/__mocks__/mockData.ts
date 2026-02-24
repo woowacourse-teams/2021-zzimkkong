@@ -46,6 +46,7 @@ export const spaces: Spaces = {
       color: '#EB3933',
       area: '{"shape":"rect","x":210,"y":90,"width":440,"height":140}',
       reservationEnable: true,
+      allowedGroups: [],
       settings: [
         {
           settingStartTime: '07:00:00',

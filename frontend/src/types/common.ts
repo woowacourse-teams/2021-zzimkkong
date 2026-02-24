@@ -4,6 +4,14 @@ import { MapElementType } from './editor';
 
 export type Color = string;
 
+export type Group = 'COACH' | 'NONE';
+
+export interface GroupOption {
+  name: string;
+  displayName: string;
+  color: string;
+}
+
 export enum Order {
   Ascending = 'ascending',
   Descending = 'descending',
@@ -67,6 +75,7 @@ export interface Space {
   description: string;
   area: AreaRect | AreaPolygon;
   reservationEnabled: boolean;
+  allowedGroups: Group[];
   settings: SpaceSetting[];
 }
 
@@ -139,6 +148,7 @@ export interface ManagerSpace {
   color: Color;
   area: Area;
   reservationEnable: boolean;
+  allowedGroups: Group[];
   settings: SpaceSetting[];
 }
 

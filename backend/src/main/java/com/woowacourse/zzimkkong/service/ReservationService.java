@@ -274,6 +274,7 @@ public class ReservationService {
             final Reservation reservation,
             final ExcludeReservationStrategy excludeReservationStrategy) {
         Space space = reservation.getSpace();
+        validateGroupAuthorization(space, reservation.getMember());
         validateSpaceSetting(space, reservation);
 
         List<Reservation> reservationsOnDate = getReservations(
@@ -282,6 +283,12 @@ public class ReservationService {
         excludeReservationStrategy.apply(space, reservationsOnDate);
 
         validateTimeConflicts(reservation, reservationsOnDate);
+    }
+
+    private void validateGroupAuthorization(final Space space, final Member member) {
+        if (!space.isReservableBy(member)) {
+            throw new InsufficientGroupException();
+        }
     }
 
     private void validateSpaceSetting(final Space space, final Reservation reservation) {

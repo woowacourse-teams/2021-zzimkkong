@@ -4,7 +4,10 @@ import { getPolygonCenterPoint } from 'utils/editor';
 import * as Styled from './BoardSpace.styles';
 
 interface Props {
-  space: Omit<ManagerSpace, 'reservationEnable' | 'id' | 'description' | 'settings'>;
+  space: Omit<
+    ManagerSpace,
+    'reservationEnable' | 'id' | 'description' | 'settings' | 'allowedRoles'
+  >;
   drawing: boolean;
   selected: boolean;
   onClick?: () => void;
