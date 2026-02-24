@@ -9,8 +9,9 @@ import MESSAGE from 'constants/message';
 import { HREF } from 'constants/path';
 import useGuestReservations from 'hooks/query/useGuestReservations';
 import useGuestSpaces from 'hooks/query/useGuestSpaces';
+import useMember from 'hooks/query/useMember';
 import { AccessTokenContext } from 'providers/AccessTokenProvider';
-import { Area, MapItem, Reservation, ScrollPosition, Space } from 'types/common';
+import { Area, MapItem, Reservation, Group, ScrollPosition, Space } from 'types/common';
 import { GuestPageURLParams } from 'types/guest';
 import { ErrorResponse } from 'types/response';
 import { formatDate } from 'utils/datetime';
@@ -42,6 +43,11 @@ const GuestMap = ({ map }: GuestMapProps): JSX.Element => {
   const [selectedReservation, setSelectedReservation] = useState<Reservation>();
 
   const [loginPopupOpen, setLoginPopupOpen] = useState(true);
+
+  const { data: memberData } = useMember({
+    enabled: !!accessToken,
+  });
+  const userGroup: Group | null = memberData?.data.group ?? null;
 
   const history = useHistory();
   const location = useLocation<GuestMapState>();
@@ -206,6 +212,7 @@ const GuestMap = ({ map }: GuestMapProps): JSX.Element => {
             mapDrawing={mapDrawing}
             spaceList={spaceList}
             onClickSpaceArea={handleClickSpaceArea}
+            userGroup={userGroup}
           />
         )}
       </Styled.MapContainer>

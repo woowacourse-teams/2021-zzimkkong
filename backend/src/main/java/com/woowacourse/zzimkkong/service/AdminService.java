@@ -2,11 +2,13 @@ package com.woowacourse.zzimkkong.service;
 
 import com.woowacourse.zzimkkong.domain.Member;
 import com.woowacourse.zzimkkong.domain.Reservation;
+import com.woowacourse.zzimkkong.domain.Group;
 import com.woowacourse.zzimkkong.domain.Space;
 import com.woowacourse.zzimkkong.dto.admin.*;
 import com.woowacourse.zzimkkong.dto.map.MapFindResponse;
 import com.woowacourse.zzimkkong.dto.member.TokenResponse;
 import com.woowacourse.zzimkkong.exception.member.IdPasswordMismatchException;
+import com.woowacourse.zzimkkong.exception.member.NoSuchMemberException;
 import com.woowacourse.zzimkkong.infrastructure.auth.JwtUtils;
 import com.woowacourse.zzimkkong.infrastructure.sharingid.SharingIdGenerator;
 import com.woowacourse.zzimkkong.repository.MapRepository;
@@ -14,6 +16,7 @@ import com.woowacourse.zzimkkong.repository.MemberRepository;
 import com.woowacourse.zzimkkong.repository.ReservationRepository;
 import com.woowacourse.zzimkkong.repository.SpaceRepository;
 import org.springframework.beans.factory.annotation.Value;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -21,6 +24,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Map;
 
+@Slf4j
 @Service
 @Transactional(readOnly = true)
 public class AdminService {
@@ -75,6 +79,28 @@ public class AdminService {
         return MembersResponse.from(allMembers);
     }
 
+    public MembersResponse findMembers(Pageable pageable, String search, Group group) {
+        Page<Member> memberPage;
+
+        if (search != null && !search.isBlank() && group != null) {
+            // Both search and group filter
+            memberPage = members.findAllByGroupAndEmailContainingOrGroupAndUserNameContaining(
+                    group, search, group, search, pageable);
+        } else if (search != null && !search.isBlank()) {
+            // Only search
+            memberPage = members.findAllByEmailContainingOrUserNameContaining(
+                    search, search, pageable);
+        } else if (group != null) {
+            // Only group filter
+            memberPage = members.findAllByGroup(group, pageable);
+        } else {
+            // No filter
+            memberPage = members.findAll(pageable);
+        }
+
+        return MembersResponse.from(memberPage);
+    }
+
     public MapsResponse findMaps(Pageable pageable) {
         Page<MapFindResponse> allMaps = maps.findAllByFetch(pageable)
                 .map(map -> MapFindResponse.ofAdmin(map, sharingIdGenerator.from(map)));
@@ -90,5 +116,17 @@ public class AdminService {
     public ReservationsResponse findReservations(Pageable pageable) {
         Page<Reservation> allReservations = reservations.findAllByFetch(pageable);
         return ReservationsResponse.from(allReservations);
+    }
+
+    @Transactional
+    public void updateMemberGroup(Long memberId, Group group) {
+        Member member = members.findById(memberId)
+                .orElseThrow(NoSuchMemberException::new);
+
+        Group oldGroup = member.getGroup();
+        member.updateGroup(group);
+
+        log.info("Admin changed member group: memberId={}, email={}, oldGroup={}, newGroup={}",
+                memberId, member.getEmail(), oldGroup, group);
     }
 }

@@ -30,10 +30,15 @@ const GuestMapContainer = () => {
             mapDrawing: JSON.parse(mapData.mapDrawing) as MapDrawing,
           });
         } catch (error) {
-          alert(MESSAGE.GUEST_MAP.MAP_DRAWING_PARSE_ERROR);
+          console.error('Failed to parse mapDrawing:', error);
+          history.replace(PATH.NOT_FOUND);
         }
       },
       retry: false,
+      refetchOnWindowFocus: false,
+      refetchOnMount: false,
+      refetchOnReconnect: false,
+      staleTime: Infinity,
     }
   );
 

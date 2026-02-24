@@ -2,6 +2,7 @@ package com.woowacourse.zzimkkong.dto.member;
 
 import com.woowacourse.zzimkkong.domain.Member;
 import com.woowacourse.zzimkkong.domain.OauthProvider;
+import com.woowacourse.zzimkkong.domain.Group;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -14,6 +15,7 @@ public class MemberFindResponse {
     private ProfileEmojiResponse emoji;
     private String organization;
     private OauthProvider oauthProvider;
+    private Group group;
 
     private MemberFindResponse(
             final Long id,
@@ -21,13 +23,15 @@ public class MemberFindResponse {
             final String userName,
             final ProfileEmojiResponse profileEmojiResponse,
             final String organization,
-            final OauthProvider oauthProvider) {
+            final OauthProvider oauthProvider,
+            final Group group) {
         this.id = id;
         this.email = email;
         this.userName = userName;
         this.emoji = profileEmojiResponse;
         this.organization = organization;
         this.oauthProvider = oauthProvider;
+        this.group = group;
     }
 
     public static MemberFindResponse from(final Member member) {
@@ -37,6 +41,7 @@ public class MemberFindResponse {
                 member.getUserName(),
                 ProfileEmojiResponse.from(member.getEmoji()),
                 member.getOrganization(),
-                member.getOauthProvider());
+                member.getOauthProvider(),
+                member.getGroup());
     }
 }

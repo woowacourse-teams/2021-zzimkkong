@@ -1,7 +1,6 @@
 plugins {
     id 'org.springframework.boot' version '2.5.2'
     id 'io.spring.dependency-management' version '1.0.11.RELEASE'
-    id "org.asciidoctor.convert" version "1.5.10"
     id 'java'
 }
 
@@ -40,7 +39,6 @@ dependencies {
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
 
     // Restdocs
-    asciidoctor 'org.springframework.restdocs:spring-restdocs-asciidoctor'
     testImplementation 'org.springframework.restdocs:spring-restdocs-restassured'
 
     // Jwt
@@ -50,8 +48,8 @@ dependencies {
     implementation 'commons-codec:commons-codec:1.15'
 
     // Lombok
-    compileOnly 'org.projectlombok:lombok'
-    annotationProcessor 'org.projectlombok:lombok'
+    compileOnly 'org.projectlombok:lombok:1.18.30'
+    annotationProcessor 'org.projectlombok:lombok:1.18.30'
 
     // Mock Web Server
     testImplementation 'com.squareup.okhttp3:okhttp:4.0.1'
@@ -70,22 +68,4 @@ dependencies {
 test {
     outputs.dir snippetsDir
     useJUnitPlatform()
-}
-
-asciidoctor {
-    inputs.dir snippetsDir
-    dependsOn test
-}
-
-task createDocument(type: Copy) {
-    dependsOn asciidoctor
-    from file("build/asciidoc/html5/index.html")
-    into file("src/main/resources/static/docs")
-}
-
-bootJar {
-    dependsOn createDocument
-    from("${asciidoctor.outputDir}/html5") {
-        into 'static/docs'
-    }
 }

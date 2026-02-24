@@ -44,6 +44,11 @@ public class Member {
     @Enumerated(EnumType.STRING)
     private OauthProvider oauthProvider;
 
+    @Column(name = "group_name", length = 10)
+    @Enumerated(EnumType.STRING)
+    @Builder.Default
+    private Group group = Group.NONE;
+
     @OneToMany(mappedBy = "member", cascade = CascadeType.REMOVE, orphanRemoval = true)
     @Builder.Default
     private final List<Preset> presets = new ArrayList<>();
@@ -81,5 +86,17 @@ public class Member {
 
     public void updatePassword(String password) {
         this.password = password;
+    }
+
+    public void updateGroup(Group group) {
+        this.group = group;
+    }
+
+    public boolean hasGroup(Group group) {
+        return this.group == group;
+    }
+
+    public boolean hasAnyGroup(java.util.Collection<Group> groups) {
+        return groups.contains(this.group);
     }
 }

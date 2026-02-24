@@ -183,6 +183,7 @@ const Editor = ({
             name: values.name,
             color: isDrawing ? PALETTE.GRAY[400] : values.color,
             area: values.area,
+            allowedGroups: values.allowedGroups,
           }}
           drawing={true}
           selected={true}

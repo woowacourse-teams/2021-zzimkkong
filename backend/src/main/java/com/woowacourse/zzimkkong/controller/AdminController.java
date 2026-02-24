@@ -1,12 +1,12 @@
 package com.woowacourse.zzimkkong.controller;
 
-import com.woowacourse.zzimkkong.dto.admin.MapsResponse;
-import com.woowacourse.zzimkkong.dto.admin.MembersResponse;
-import com.woowacourse.zzimkkong.dto.admin.ReservationsResponse;
-import com.woowacourse.zzimkkong.dto.admin.SpacesResponse;
+import com.woowacourse.zzimkkong.domain.Group;
+import com.woowacourse.zzimkkong.dto.admin.*;
 import com.woowacourse.zzimkkong.dto.member.LoginRequest;
 import com.woowacourse.zzimkkong.dto.member.TokenResponse;
 import com.woowacourse.zzimkkong.service.AdminService;
+
+import javax.validation.Valid;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
@@ -36,9 +36,20 @@ public class AdminController {
     }
 
     @GetMapping("/members")
-    public ResponseEntity<MembersResponse> members(@PageableDefault(value = 20) Pageable pageable) {
-        MembersResponse membersResponse = adminService.findMembers(pageable);
+    public ResponseEntity<MembersResponse> members(
+            @PageableDefault(value = 20) Pageable pageable,
+            @RequestParam(required = false) String search,
+            @RequestParam(required = false) Group group) {
+        MembersResponse membersResponse = adminService.findMembers(pageable, search, group);
         return ResponseEntity.ok(membersResponse);
+    }
+
+    @PutMapping("/members/{memberId}/group")
+    public ResponseEntity<Void> updateMemberGroup(
+            @PathVariable Long memberId,
+            @Valid @RequestBody MemberGroupUpdateRequest request) {
+        adminService.updateMemberGroup(memberId, request.getGroup());
+        return ResponseEntity.ok().build();
     }
 
     @GetMapping("/maps")

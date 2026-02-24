@@ -1,6 +1,6 @@
 import { AxiosResponse } from 'axios';
 import { QueryFunction, QueryKey } from 'react-query';
-import { Color, SpaceSetting } from 'types/common';
+import { Color, Group, SpaceSetting } from 'types/common';
 import { QueryManagerSpacesSuccess, QueryGuestSpaceSuccess } from 'types/response';
 import api from './api';
 
@@ -19,6 +19,7 @@ export interface PostManagerSpaceParams {
     name: string;
     color: Color;
     area: string;
+    allowedGroups?: { group: Group }[];
     settings: SpaceSetting[];
     thumbnail: string;
   };

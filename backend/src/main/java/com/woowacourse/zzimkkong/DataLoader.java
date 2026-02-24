@@ -48,6 +48,42 @@ public class DataLoader implements CommandLineRunner {
                         .build()
         );
 
+        // 일반 회원 (NONE)
+        Member guestMember = members.save(
+                Member.builder()
+                        .email("guest@woowa.com")
+                        .userName("게스트")
+                        .emoji(ProfileEmoji.MAN_MEDIUM_DARK_SKIN_TONE_TECHNOLOGIST)
+                        .password("$2a$10$c3BysogWR4hnexYx60/r/e3lEUIbSs4zhW6kuX4UW733MW5/NmbW.") // test1234
+                        .organization("woowacourse")
+                        .group(Group.NONE)
+                        .build()
+        );
+
+        // 크루 회원 (NONE으로 변경)
+        Member crewMember = members.save(
+                Member.builder()
+                        .email("crew@woowa.com")
+                        .userName("크루")
+                        .emoji(ProfileEmoji.WOMAN_LIGHT_SKIN_TONE_TECHNOLOGIST)
+                        .password("$2a$10$c3BysogWR4hnexYx60/r/e3lEUIbSs4zhW6kuX4UW733MW5/NmbW.") // test1234
+                        .organization("woowacourse")
+                        .group(Group.NONE)
+                        .build()
+        );
+
+        // 코치 회원 (COACH)
+        Member coachMember = members.save(
+                Member.builder()
+                        .email("coach@woowa.com")
+                        .userName("코치")
+                        .emoji(ProfileEmoji.MAN_LIGHT_SKIN_TONE_TECHNOLOGIST)
+                        .password("$2a$10$c3BysogWR4hnexYx60/r/e3lEUIbSs4zhW6kuX4UW733MW5/NmbW.") // test1234
+                        .organization("woowacourse")
+                        .group(Group.COACH)
+                        .build()
+        );
+
 
         Map luther = maps.save(
                 new Map(
@@ -113,6 +149,13 @@ public class DataLoader implements CommandLineRunner {
                 .reservationEnable(true)
                 .build();
 
+        Space coachMeetingRoom = Space.builder()
+                .name("코치 회의실")
+                .color("#E8D5F2")
+                .map(luther)
+                .reservationEnable(true)
+                .build();
+
         Space pairRoom1 = Space.builder()
                 .name("페어룸1")
                 .color(pairRoomColor)
@@ -159,6 +202,7 @@ public class DataLoader implements CommandLineRunner {
                 be,
                 fe1, fe2,
                 meetingRoom1, meetingRoom2, meetingRoom3, meetingRoom4, meetingRoom5,
+                coachMeetingRoom,
                 pairRoom1, pairRoom2, pairRoom3, pairRoom4, pairRoom5,
                 trackRoom
         );
@@ -177,6 +221,11 @@ public class DataLoader implements CommandLineRunner {
                     .enabledDayOfWeek("monday,tuesday,wednesday,thursday,friday,saturday,sunday")
                     .build());
         }
+
+        // 코치 회의실에 COACH만 예약 가능하도록 설정
+        AllowedGroup coachOnlyGroup = new AllowedGroup(coachMeetingRoom, Group.COACH);
+        coachMeetingRoom.getAllowedGroups().add(coachOnlyGroup);
+        spaces.save(coachMeetingRoom);
 
         LocalDate targetDate = LocalDate.now().plusDays(1L);
 
