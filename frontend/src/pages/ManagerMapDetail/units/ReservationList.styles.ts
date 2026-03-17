@@ -29,6 +29,12 @@ export const PanelHeadWrapper = styled.div`
   justify-content: space-between;
 `;
 
+export const PanelHeadButtons = styled.div`
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+`;
+
 export const PanelMessage = styled.p`
   padding: 1rem 0.75rem;
   font-size: 0.875rem;

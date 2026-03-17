@@ -40,6 +40,7 @@ interface GuestReservationState {
   selectedDate: string;
   scrollPosition?: ScrollPosition;
   reservation?: Reservation;
+  defaultDescription?: string;
 }
 
 export interface EditGuestReservationParams extends GuestReservationParams {
@@ -61,7 +62,8 @@ const GuestReservation = (): JSX.Element => {
     history.replace(HREF.GUEST_MAP(sharingMapId));
   }
 
-  const { mapId, spaceId, selectedDate, scrollPosition, reservation } = location.state;
+  const { mapId, spaceId, selectedDate, scrollPosition, reservation, defaultDescription } =
+    location.state;
   const [date, , setDate] = useInput(selectedDate);
 
   const isEditMode = !!reservation;
@@ -292,6 +294,7 @@ const GuestReservation = (): JSX.Element => {
                 reservation={reservation}
                 date={date}
                 userName={userName ?? ''}
+                defaultDescription={defaultDescription}
                 onChangeDate={handleChangeDate}
                 onSubmit={handleSubmitMemberGuest}
               />
@@ -301,6 +304,7 @@ const GuestReservation = (): JSX.Element => {
                 space={getSpace.data?.data}
                 reservation={reservation}
                 date={date}
+                defaultDescription={defaultDescription}
                 onChangeDate={handleChangeDate}
                 onSubmit={handleSubmitGuest}
               />

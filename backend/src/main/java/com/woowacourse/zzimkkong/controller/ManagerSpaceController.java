@@ -49,6 +49,15 @@ public class ManagerSpaceController {
         return ResponseEntity.ok().body(spaceFindDetailResponse);
     }
 
+    @GetMapping("/{spaceId}/sharing-id")
+    public ResponseEntity<SharingSpaceIdResponse> getSharingSpaceId(
+            @PathVariable final Long mapId,
+            @PathVariable final Long spaceId,
+            @LoginEmail final LoginUserEmail loginUserEmail) {
+        SharingSpaceIdResponse response = spaceService.getSharingSpaceId(mapId, spaceId, loginUserEmail);
+        return ResponseEntity.ok().body(response);
+    }
+
     @PutMapping("/{spaceId}")
     public ResponseEntity<Void> update(
             @PathVariable final Long mapId,
