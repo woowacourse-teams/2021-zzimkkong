@@ -17,6 +17,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -31,6 +32,9 @@ import static org.mockito.BDDMockito.given;
 class SpaceServiceTest extends ServiceTest {
     @Autowired
     private SpaceService spaceService;
+
+    @Autowired
+    private com.woowacourse.zzimkkong.infrastructure.sharingid.SharingIdGenerator sharingIdGenerator;
 
     private final SettingRequest settingRequest = new SettingRequest(
             BE_AVAILABLE_START_TIME,
@@ -399,5 +403,65 @@ class SpaceServiceTest extends ServiceTest {
                 Set.of(be));
 
         assertThat(actualResult).usingRecursiveComparison().isEqualTo(expectedResult);
+    }
+
+    @Test
+    @DisplayName("Sharing Space Id로 공간을 조회하면 공간 정보와 당일 예약 현황을 반환한다.")
+    void findSpaceBySharingId() {
+        // given
+        given(spaces.findById(anyLong()))
+                .willReturn(Optional.of(be));
+        given(reservations.findAllBySpaceIdInAndReservationTimeDate(anyCollection(), any()))
+                .willReturn(Collections.emptyList());
+
+        // when
+        SpaceEntryResponse response = spaceService.findSpaceBySharingId(
+                sharingIdGenerator.fromSpace(be));
+
+        // then
+        assertThat(response.getSpaceId()).isEqualTo(be.getId());
+        assertThat(response.getSpaceName()).isEqualTo(be.getName());
+        assertThat(response.getMapId()).isEqualTo(luther.getId());
+        assertThat(response.getMapName()).isEqualTo(luther.getName());
+    }
+
+    @Test
+    @DisplayName("존재하지 않는 Space의 Sharing Id로 조회하면 예외가 발생한다.")
+    void findSpaceBySharingIdNotExist() {
+        // given
+        given(spaces.findById(anyLong()))
+                .willReturn(Optional.empty());
+
+        String sharingSpaceId = sharingIdGenerator.fromSpace(be);
+
+        // when, then
+        assertThatThrownBy(() -> spaceService.findSpaceBySharingId(sharingSpaceId))
+                .isInstanceOf(NoSuchSpaceException.class);
+    }
+
+    @Test
+    @DisplayName("매니저가 공간의 Sharing Space Id를 조회한다.")
+    void getSharingSpaceId() {
+        // given
+        given(maps.findByIdFetch(anyLong()))
+                .willReturn(Optional.of(luther));
+
+        // when
+        SharingSpaceIdResponse response = spaceService.getSharingSpaceId(lutherId, beId, pobiEmail);
+
+        // then
+        assertThat(response.getSharingSpaceId()).isNotEmpty();
+    }
+
+    @Test
+    @DisplayName("매니저가 아닌 사용자가 Sharing Space Id를 조회하면 예외가 발생한다.")
+    void getSharingSpaceIdNoAuthority() {
+        // given
+        given(maps.findByIdFetch(anyLong()))
+                .willReturn(Optional.of(luther));
+
+        // when, then
+        assertThatThrownBy(() -> spaceService.getSharingSpaceId(lutherId, beId, sakjungEmail))
+                .isInstanceOf(NoAuthorityOnMapException.class);
     }
 }

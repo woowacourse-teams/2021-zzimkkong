@@ -6,7 +6,6 @@ import ManagerPasswordEdit from 'pages/ManagerPasswordEdit/ManagerPasswordEdit';
 import ManagerProfileEdit from 'pages/ManagerProfileEdit/ManagerProfileEdit';
 import PATH from './path';
 
-const GuestMap = React.lazy(() => import('pages/GuestMap/GuestMap'));
 const GuestReservation = React.lazy(() => import('pages/GuestReservation/GuestReservation'));
 const GuestReservationSuccess = React.lazy(
   () => import('pages/GuestReservation/GuestReservationSuccess')
@@ -24,6 +23,7 @@ const GoogleOAuthRedirect = React.lazy(() => import('pages/OAuthRedirect/GoogleO
 const GuestNonLoginReservationSearch = React.lazy(
   () => import('pages/GuestNonLoginReservationSearch/GuestNonLoginReservationSearch')
 );
+const SpaceEntry = React.lazy(() => import('pages/SpaceEntry/SpaceEntry'));
 
 interface Route {
   path: string;
@@ -78,6 +78,10 @@ export const PUBLIC_ROUTES: Route[] = [
   {
     path: PATH.GUEST_NON_LOGIN_RESERVATION_SEARCH,
     component: <GuestNonLoginReservationSearch />,
+  },
+  {
+    path: PATH.SPACE_ENTRY,
+    component: <SpaceEntry />,
   },
 ];
 

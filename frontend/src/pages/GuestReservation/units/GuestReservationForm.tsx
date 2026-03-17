@@ -26,6 +26,7 @@ interface Props {
   space: Pick<Space, 'settings'>;
   reservation?: Reservation;
   date: string;
+  defaultDescription?: string;
   onChangeDate: ChangeEventHandler<HTMLInputElement>;
   onSubmit: (
     event: React.FormEvent<HTMLFormElement>,
@@ -44,6 +45,7 @@ const GuestReservationForm = ({
   space,
   date,
   reservation,
+  defaultDescription,
   onSubmit,
   onChangeDate,
 }: Props): JSX.Element => {
@@ -81,7 +83,7 @@ const GuestReservationForm = ({
 
   const [{ name, description, password }, onChangeForm] = useInputs<Form>({
     name: reservation?.name ?? '',
-    description: reservation?.description ?? '',
+    description: reservation?.description ?? defaultDescription ?? '',
     password: '',
   });
 
