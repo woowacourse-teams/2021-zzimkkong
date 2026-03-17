@@ -48,15 +48,27 @@ const QRCode = ({
     if (!canvas) return;
 
     const dataUrl = canvas.toDataURL('image/png');
-    const printWindow = window.open('', '_blank');
-    if (!printWindow) return;
 
-    const doc = printWindow.document;
+    const iframe = document.createElement('iframe');
+    iframe.style.position = 'fixed';
+    iframe.style.top = '-10000px';
+    iframe.style.left = '-10000px';
+    iframe.style.width = '0';
+    iframe.style.height = '0';
+    document.body.appendChild(iframe);
+
+    const doc = iframe.contentDocument ?? iframe.contentWindow?.document;
+    if (!doc) {
+      document.body.removeChild(iframe);
+      return;
+    }
+
+    doc.open();
     doc.write(`
       <html>
         <head>
-          <title>QR - ${spaceName}</title>
           <style>
+            @page { margin: 10mm; }
             body {
               display: flex;
               flex-direction: column;
@@ -66,13 +78,18 @@ const QRCode = ({
               margin: 0;
               font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
             }
-            img { margin-bottom: 1rem; }
-            h2 { font-size: 1.5rem; margin: 0 0 0.5rem; }
-            p { color: #666; font-size: 0.875rem; margin: 0; }
+            img {
+              width: 100%;
+              max-width: 100vw;
+              height: auto;
+              margin-bottom: 0;
+            }
+            h2 { font-size: 2rem; margin: 0 0 0.5rem; }
+            p { color: #666; font-size: 1.25rem; margin: 0; }
           </style>
         </head>
         <body>
-          <img id="qr" src="${dataUrl}" width="${size}" height="${size}" />
+          <img src="${dataUrl}" />
           <h2>${spaceName}</h2>
           ${description ? `<p>${description}</p>` : ''}
         </body>
@@ -80,19 +97,12 @@ const QRCode = ({
     `);
     doc.close();
 
-    const img = doc.getElementById('qr') as HTMLImageElement;
-    const doPrint = () => {
-      printWindow.focus();
-      printWindow.print();
-      printWindow.close();
-    };
-
-    if (img.complete) {
-      doPrint();
-    } else {
-      img.onload = doPrint;
-    }
-  }, [spaceName, description, size]);
+    setTimeout(() => {
+      iframe.contentWindow?.focus();
+      iframe.contentWindow?.print();
+      document.body.removeChild(iframe);
+    }, 100);
+  }, [spaceName, description]);
 
   return (
     <Styled.Container>
