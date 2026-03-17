@@ -42,6 +42,7 @@ const PATH = {
   GUEST_RESERVATION_EDIT: '/guest/:sharingMapId/reservation/edit',
   GUEST_RESERVATION_SUCCESS: '/guest/:sharingMapId/success',
   GUEST_NON_LOGIN_RESERVATION_SEARCH: '/guest/non-login/reservation/search',
+  SPACE_ENTRY: '/entry/:sharingSpaceId',
   NOT_FOUND: '/not-found',
   GITHUB_LOGIN: `https://github.com/login/oauth/authorize?client_id=${GITHUB_OAUTH_KEY}&redirect_uri=${REDIRECT_URI}/login/oauth/github`,
   GOOGLE_LOGIN:
@@ -69,6 +70,8 @@ export const HREF = {
     PATH.GUEST_RESERVATION_EDIT.replace(':sharingMapId', `${sharingMapId}`),
   GUEST_RESERVATION_SUCCESS: (sharingMapId: string): string =>
     PATH.GUEST_RESERVATION_SUCCESS.replace(':sharingMapId', `${sharingMapId}`),
+  SPACE_ENTRY: (sharingSpaceId: string): string =>
+    PATH.SPACE_ENTRY.replace(':sharingSpaceId', `${sharingSpaceId}`),
 };
 
 export default PATH;

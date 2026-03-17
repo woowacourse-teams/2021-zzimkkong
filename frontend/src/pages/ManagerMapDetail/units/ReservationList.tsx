@@ -5,6 +5,7 @@ import Button from 'components/Button/Button';
 import IconButton from 'components/IconButton/IconButton';
 import ManagerReservationListItem from 'components/ManagerReservationListItem/ManagerReservationListItem';
 import Panel from 'components/Panel/Panel';
+import QRCodeModal from 'components/QRCode/QRCodeModal';
 import PATH, { HREF } from 'constants/path';
 import { Order, Reservation, SpaceReservation } from 'types/common';
 import { getReservationStatus } from 'utils/reservation';
@@ -29,6 +30,10 @@ const ReservationList = ({
   onDeleteReservation,
 }: Props): JSX.Element => {
   const [spacesOrder, setSpacesOrder] = useState<Order>(Order.Ascending);
+  const [qrModalSpace, setQrModalSpace] = useState<{
+    spaceId: number;
+    spaceName: string;
+  } | null>(null);
 
   const sortedReservations = useMemo(
     () => sortReservations(reservations, spacesOrder),
@@ -76,13 +81,22 @@ const ReservationList = ({
                 <Panel.Header dotColor={spaceColor}>
                   <Styled.PanelHeadWrapper>
                     <Panel.Title>{spaceName}</Panel.Title>
-                    <Button
-                      variant="primary-text"
-                      size="dense"
-                      onClick={() => onCreateReservation(spaceId)}
-                    >
-                      예약 추가하기
-                    </Button>
+                    <Styled.PanelHeadButtons>
+                      <Button
+                        variant="text"
+                        size="dense"
+                        onClick={() => setQrModalSpace({ spaceId, spaceName })}
+                      >
+                        QR
+                      </Button>
+                      <Button
+                        variant="primary-text"
+                        size="dense"
+                        onClick={() => onCreateReservation(spaceId)}
+                      >
+                        예약 추가하기
+                      </Button>
+                    </Styled.PanelHeadButtons>
                   </Styled.PanelHeadWrapper>
                 </Panel.Header>
                 <Panel.Content>
@@ -124,6 +138,16 @@ const ReservationList = ({
             ))}
         </Styled.SpaceList>
       </Styled.ReservationsContainer>
+
+      {qrModalSpace && (
+        <QRCodeModal
+          open={!!qrModalSpace}
+          onClose={() => setQrModalSpace(null)}
+          mapId={selectedMapId}
+          spaceId={qrModalSpace.spaceId}
+          spaceName={qrModalSpace.spaceName}
+        />
+      )}
     </>
   );
 };

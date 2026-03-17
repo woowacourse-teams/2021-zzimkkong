@@ -7,6 +7,7 @@ import com.woowacourse.zzimkkong.dto.space.*;
 import com.woowacourse.zzimkkong.exception.map.NoSuchMapException;
 import com.woowacourse.zzimkkong.exception.space.NoSuchSpaceException;
 import com.woowacourse.zzimkkong.exception.space.ReservationExistOnSpaceException;
+import com.woowacourse.zzimkkong.infrastructure.sharingid.SharingIdGenerator;
 import com.woowacourse.zzimkkong.repository.MapRepository;
 import com.woowacourse.zzimkkong.repository.ReservationRepository;
 import com.woowacourse.zzimkkong.repository.SpaceRepository;
@@ -14,8 +15,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.DayOfWeek;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.AbstractMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -27,14 +28,17 @@ public class SpaceService {
     private final MapRepository maps;
     private final SpaceRepository spaces;
     private final ReservationRepository reservations;
+    private final SharingIdGenerator sharingIdGenerator;
 
     public SpaceService(
             final MapRepository maps,
             final SpaceRepository spaces,
-            final ReservationRepository reservations) {
+            final ReservationRepository reservations,
+            final SharingIdGenerator sharingIdGenerator) {
         this.maps = maps;
         this.spaces = spaces;
         this.reservations = reservations;
+        this.sharingIdGenerator = sharingIdGenerator;
     }
 
     public SpaceCreateResponse saveSpace(
@@ -193,6 +197,38 @@ public class SpaceService {
         if (reservations.existsBySpaceIdAndReservationTimeEndTimeAfter(spaceId, LocalDateTime.now())) {
             throw new ReservationExistOnSpaceException();
         }
+    }
+
+    @Transactional(readOnly = true)
+    public SpaceEntryResponse findSpaceBySharingId(final String sharingSpaceId) {
+        Long spaceId = sharingIdGenerator.parseSpaceIdFrom(sharingSpaceId);
+        Space space = spaces.findById(spaceId)
+                .orElseThrow(NoSuchSpaceException::new);
+
+        Map map = space.getMap();
+        String sharingMapId = sharingIdGenerator.from(map);
+
+        LocalDate today = LocalDate.now();
+        Set<Long> spaceIdSet = Set.of(spaceId);
+        List<Reservation> todayReservations = reservations.findAllBySpaceIdInAndReservationTimeDate(spaceIdSet, today);
+
+        return SpaceEntryResponse.of(space, sharingMapId, todayReservations);
+    }
+
+    @Transactional(readOnly = true)
+    public SharingSpaceIdResponse getSharingSpaceId(
+            final Long mapId,
+            final Long spaceId,
+            final LoginUserEmail loginUserEmail) {
+        Map map = maps.findByIdFetch(mapId)
+                .orElseThrow(NoSuchMapException::new);
+        validateManagerOfMap(map, loginUserEmail.getEmail());
+
+        Space space = map.findSpaceById(spaceId)
+                .orElseThrow(NoSuchSpaceException::new);
+
+        String sharingSpaceId = sharingIdGenerator.fromSpace(space);
+        return SharingSpaceIdResponse.from(sharingSpaceId);
     }
 
     private void validateManagerOfMap(final Map map, final String email) {

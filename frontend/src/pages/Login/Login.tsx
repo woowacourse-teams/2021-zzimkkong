@@ -9,8 +9,10 @@ import Layout from 'components/Layout/Layout';
 import SocialLoginButton from 'components/SocialAuthButton/SocialLoginButton';
 import MESSAGE from 'constants/message';
 import PATH from 'constants/path';
+import { LOCAL_STORAGE_KEY } from 'constants/storage';
 import { AccessTokenContext } from 'providers/AccessTokenProvider';
 import { ErrorResponse, LoginSuccess } from 'types/response';
+import { getLocalStorageItem, removeLocalStorageItem } from 'utils/localStorage';
 import * as Styled from './Login.styles';
 import LoginForm from './units/LoginForm';
 
@@ -45,6 +47,17 @@ const Login = (): JSX.Element => {
       const { accessToken } = response.data;
 
       setAccessToken(accessToken);
+
+      const afterLoginPath = getLocalStorageItem({
+        key: LOCAL_STORAGE_KEY.AFTER_LOGIN_PATH,
+        defaultValue: '',
+      });
+
+      if (afterLoginPath && typeof afterLoginPath === 'string') {
+        removeLocalStorageItem({ key: LOCAL_STORAGE_KEY.AFTER_LOGIN_PATH });
+        history.push(afterLoginPath);
+        return;
+      }
 
       history.push(PATH.MANAGER_MAP_LIST);
     },
