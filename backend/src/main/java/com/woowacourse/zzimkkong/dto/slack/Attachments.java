@@ -43,6 +43,18 @@ public class Attachments {
         return Attachments.from(attachment);
     }
 
+    public static Attachments earlyStopMessageOf(final SlackResponse slackResponse,
+                                                 final String titleLink) {
+        Attachment attachment = Attachment.of(
+                "🙏 예약 종료 알림 🙏",
+                COLOR,
+                "🙏 예약이 종료되었습니다.",
+                TITLE_LINK_MESSAGE,
+                titleLink + GUEST_URI + slackResponse.getSharingMapId(),
+                slackResponse);
+        return Attachments.from(attachment);
+    }
+
     public static Attachments deleteMessageOf(final SlackResponse slackResponse,
                                               final String titleLink) {
         Attachment attachment = Attachment.of(

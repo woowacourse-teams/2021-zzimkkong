@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -60,6 +61,10 @@ public class TimeUnit {
 
     public boolean isShorterThan(final TimeUnit that) {
         return this.minutes < that.minutes;
+    }
+
+    public int floor(final LocalDateTime time) {
+        return time.getMinute() / this.minutes * this.minutes;
     }
 
     @Override

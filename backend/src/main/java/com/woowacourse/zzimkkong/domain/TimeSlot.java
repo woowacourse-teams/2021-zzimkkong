@@ -98,4 +98,3 @@ public class TimeSlot {
         return startTime + " ~ " + endTimeAsString;
     }
 }
-
